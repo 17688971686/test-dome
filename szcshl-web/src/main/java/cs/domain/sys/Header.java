@@ -31,6 +31,13 @@ public class Header extends DomainBase{
     @Column(columnDefinition = "VARCHAR(2)")
     private String headerstate;//表头状态 （9：选中 ， 0 ：未选）
 
+    /**
+     * 排序号
+     */
+    @Column(columnDefinition="INTEGER")
+    private Integer headSeq;
+
+
     public String getId() {
         return id;
     }
@@ -69,5 +76,13 @@ public class Header extends DomainBase{
 
     public void setHeaderstate(String headerstate) {
         this.headerstate = headerstate;
+    }
+
+    public Integer getHeadSeq() {
+        return headSeq;
+    }
+
+    public void setHeadSeq(Integer headSeq) {
+        this.headSeq = headSeq;
     }
 }

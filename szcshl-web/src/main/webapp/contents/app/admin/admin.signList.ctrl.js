@@ -180,6 +180,19 @@
         }
 
         /**
+         * 自定义导出
+         */
+        vm.excelDefineExport = function () {
+            var ids = [];
+            for (var i = 0; i < vm.signList.length; i++) {
+                ids.push(vm.signList[i].signid);
+            }
+            var idStr = ids.join(',');
+            signSvc.excelExport(idStr);
+
+        }
+
+        /**
          * 查看项目暂停信息
          */
         vm.ProjectStopInfo = function (signId) {
@@ -257,16 +270,16 @@
                             for (var i = 0; i < totalLength; i++) {
                                 signIds.push(isCheck[i].id);
                             }
-                           /* signSvc.sumExistDays(signIds.join(","),function (data) {
-                                console.log(data);
-                                if(data.flag || data.reCode == 'ok'){
-                                    vm.averageDay = (Number(data.reObj)/ totalLength).toFixed(2);
-                                    vm.isopens = true;
-                                    vm.isDay = true;
-                                }else{
-                                    bsWin.alert(data.reMsg);
-                                }
-                            });*/
+                            /* signSvc.sumExistDays(signIds.join(","),function (data) {
+                             console.log(data);
+                             if(data.flag || data.reCode == 'ok'){
+                             vm.averageDay = (Number(data.reObj)/ totalLength).toFixed(2);
+                             vm.isopens = true;
+                             vm.isDay = true;
+                             }else{
+                             bsWin.alert(data.reMsg);
+                             }
+                             });*/
 
                             signSvc.findAVGDayById(signIds , function(data){
                                 vm.isopens = true;

@@ -76,6 +76,15 @@ public class HeaderController {
         headerService.updateSelectedHeader(idStr);
     }
 
+    //设置头顺序
+    @RequiresAuthentication
+    @RequestMapping(name = "设置表头顺序", path = "headOrder", method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void setSelectHeadOrder(@RequestBody HeaderDto[] headerDtos) {
+        headerService.setSelectHeadOrder(headerDtos);
+    }
+
+
     //@RequiresPermissions("header#updateCancelHeader#put")
     @RequiresAuthentication
     @RequestMapping(name="改变表头状态（取消选中）" , path="updateCancelHeader"  ,method=RequestMethod.PUT)
@@ -107,7 +116,7 @@ public class HeaderController {
     @RequestMapping(name="更新表头信息" , path="updateHeader" , method= RequestMethod.PUT)
     @ResponseBody
     public ResultMsg updateHeader(@RequestBody  HeaderDto headerDto){
-      return   headerService.updateHeader(headerDto);
+        return   headerService.updateHeader(headerDto);
     }
 
 

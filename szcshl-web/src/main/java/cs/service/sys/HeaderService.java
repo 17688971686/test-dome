@@ -30,4 +30,6 @@ public interface HeaderService {
     ResultMsg updateHeader(HeaderDto headerDto);
 
     List<Header> findHeaderByType(String type);
+    //设置表头顺序
+    void setSelectHeadOrder(HeaderDto[] headerDtos);
 }

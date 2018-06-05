@@ -179,7 +179,7 @@
                 method : 'post',
                 url : rootPath + '/header/findHeaderListNoSelected',
                 data : vm.header
-               // params : {headerType : encodeURIComponent(vm.headerType)},
+                // params : {headerType : encodeURIComponent(vm.headerType)},
             }
             var httpSuccess = function success(response){
                 vm.allHeaderList = response.data;
@@ -325,6 +325,29 @@
         //end headerGrid
 
         /**
+         * 设置选中表头顺序
+         */
+        function setSelectHeadOrder(paramList){
+            var httpOptions = {
+                method : 'post',
+                url : rootPath + '/header/headOrder',
+                headers:{
+                    "contentType":"application/json;charset=utf-8"  //设置请求头信息
+                },
+                traditional: true,
+                dataType : "json",
+                data : angular.toJson(paramList)//将Json对象序列化成Json字符串，JSON.stringify()原生态方法
+            }
+            var httpSuccess = function success(response) {
+            }
+            common.http({
+                $http : $http,
+                httpOptions : httpOptions,
+                success : httpSuccess,
+            })
+        }
+
+        /**
          * 查询
          * @param vm
          * @param headerType
@@ -334,8 +357,6 @@
             findHeaderListSelected(vm , function(data){
                 vm.selectedHeaderList = data;
                 vm.header = true;
-
-                console.log(vm.selectedHeaderList);
             });
 
             $("#selectHeaderWindow").kendoWindow({
@@ -347,7 +368,6 @@
                 closable: true,
                 actions: ["Pin", "Minimize", "Maximize", "close"]
             }).data("kendoWindow").center().open();
-
             vm.headerType= headerType;
             vm.allChecked =function(){
                 var tab = $('#selectHeaderForm').find('input');
@@ -400,7 +420,7 @@
                     if(vm.selectedHeaderList[0].checkbox){
                         i=0;
                     }
-                     s = vm.selectedHeaderList[i];
+                    s = vm.selectedHeaderList[i];
                     if(s.checkbox){
                         ids.push(s.id);
                         vm.allHeaderList.push(s);
@@ -414,11 +434,38 @@
                 updateCancelHeader(vm,idStr);
             }
 
+            // 上移
+            vm.moveUp = function ($index) {
+                if ($index == 0) {
+                    return;
+                }
+                vm.selectedHeaderList = swapItems(vm.selectedHeaderList, $index, $index - 1);
+            };
+
+            // 下移
+            vm.moveDown = function ($index) {
+                if ($index == vm.selectedHeaderList.length - 1) {
+                    return;
+                }
+                vm.selectedHeaderList  = swapItems(vm.selectedHeaderList, $index, $index + 1);
+            };
+
+
+            // 交换数组元素
+            var swapItems = function (arr, index1, index2) {
+                arr[index1] = arr.splice(index2, 1, arr[index1])[0];
+                return arr;
+            };
 
             vm.changeType = function(){
-               findHeaderListNoSelected(vm);
+                findHeaderListNoSelected(vm);
                 vm.selectedHeaderList=[];
             }
+
+            //自定义关闭保存
+            $("#selectHeaderWindow").data("kendoWindow").center().wrapper.find(".k-i-close").click(function (e) {
+                setSelectHeadOrder(vm.selectedHeaderList);
+            });
         }
     }
 })();

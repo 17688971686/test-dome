@@ -4,10 +4,8 @@ import com.sn.framework.jxls.JxlsUtils;
 import cs.ahelper.MudoleAnnotation;
 import cs.common.constants.Constant;
 import cs.common.ResultMsg;
-import cs.common.utils.DateUtils;
-import cs.common.utils.ExcelJxlsUtls;
-import cs.common.utils.ExcelTools;
-import cs.common.utils.Validate;
+import cs.common.constants.SysConstants;
+import cs.common.utils.*;
 import cs.domain.project.SignDispaWork;
 import cs.domain.project.SignDispaWork_;
 import cs.domain.sys.Header;
@@ -32,7 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
 import java.util.*;
-
+import static com.sn.framework.common.StringUtil.GBK;
 import static com.sn.framework.common.StringUtil.ISO_8859_1;
 import static com.sn.framework.common.StringUtil.UTF_8;
 
@@ -142,35 +140,14 @@ public class SignDispaWorkController {
         ExcelTools excelTools = new ExcelTools();
         try {
             String title = java.net.URLDecoder.decode(fileName,"UTF-8");
-//            String filters = java.net.URLDecoder.decode(filterData,"UTF-8");
             ServletOutputStream sos = resp.getOutputStream();
             List<HeaderDto> headerDtoList = headerService.findHeaderList("项目类型", Constant.EnumState.YES.getValue());//选中的表字段
             List<Header> headerList = headerService.findHeaderByType("项目类型");//所有 表字段
 
-          /*  Boolean flag = true;
-            int page = 0;
-            while (flag){
-                List<SignDispaWork> slist = signDispaWorkService.queryStatistics(filters , page);
-                if(slist !=null && slist.size()>0){
-                    for(SignDispaWork signDispaWork : slist){
-                        signDispaWorkList.add(signDispaWork);
-                    }
-                }
-                if(slist ==null  || slist.size()<50 ){
-                    flag = false;
-                }else{
-                    page++;
-                }
-            }*/
-            List<SignDispaWork> signDispaWorkList = new ArrayList<>();
-
-            if(Validate.isString(signIds)){
-                String[] ids = signIds.split(",");
-                for(String signId : ids){
-                    SignDispaWork signDispaWork = signDispaWorkRepo.findById(SignDispaWork_.signid.getName() , signId);
-                    signDispaWorkList.add(signDispaWork);
-                }
-            }
+            String orderStr = "case reviewstage when '项目建议书' then 1 when '可行性研究报告' then 2 when '项目概算' then 3" +
+                    " when '资金申请报告' then 4  when '进口设备' then 5  when '设备清单（国产）'then  6  when '设备清单（进口）'then 7" +
+                    " else 8 end ";
+            List<SignDispaWork> signDispaWorkList =signDispaWorkRepo.findByIds(SignDispaWork_.signid.getName() , signIds,orderStr);
 
             String[] headerPair ;
             if(headerDtoList.size()>0) {
@@ -185,12 +162,10 @@ public class SignDispaWorkController {
                 }
             }
             HSSFWorkbook wb = excelTools.createExcelBook(title, headerPair, signDispaWorkList, SignDispaWork.class);
-
             resp.setContentType("application/vnd.ms-excel;charset=GBK");
             resp.setHeader("Content-type", "application/x-msexcel");
             resp.setHeader("Content_Length", String.valueOf(wb.getBytes().length));
             String fileName2 = new String((title + ".xls").getBytes("GB2312"), "ISO-8859-1");
-
             resp.setHeader("Content-Disposition", "attachment;filename=" + fileName2);
             wb.write(sos);
             sos.flush();
@@ -206,27 +181,26 @@ public class SignDispaWorkController {
     @RequiresAuthentication
     @RequestMapping(name = "项目统计导出", path = "excelExport2", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void excelExport2(HttpServletResponse resp, @RequestParam(required = true) String signIds) {
+    public void excelExport2(HttpServletResponse resp,HttpServletRequest request, @RequestParam(required = true) String signIds) {
         Map<String, Object> resultMap = new HashMap<String, Object>();
-        String fileName = "项目查询统计报表";
-        //ExcelTools excelTools = new ExcelTools();
         try {
-            String title = java.net.URLDecoder.decode(fileName,"UTF-8");
-            List<SignDispaWork> signDispaWorkList =signDispaWorkRepo.findByIds(SignDispaWork_.signid.getName() , signIds,null);
-            /*if(Validate.isString(signIds)){
-                String[] ids = signIds.split(",");
-                for(String signId : ids){
-                    SignDispaWork signDispaWork = signDispaWorkRepo.findById(SignDispaWork_.signid.getName() , signId);
-                    signDispaWorkList.add(signDispaWork);
-                }
-            }*/
+            String orderStr = "case reviewstage when '项目建议书' then 1 when '可行性研究报告' then 2 when '项目概算' then 3" +
+                    " when '资金申请报告' then 4  when '进口设备' then 5  when '设备清单（国产）'then  6  when '设备清单（进口）'then 7" +
+                    " else 8 end ";
+            List<SignDispaWork> signDispaWorkList =signDispaWorkRepo.findByIds(SignDispaWork_.signid.getName() , signIds,orderStr);
             resultMap.put("proCountList", signDispaWorkList);
             Map<String, Object> funcs = new HashMap<>(2);
             funcs.put("proUtils", new ExcelJxlsUtls());
             resp.setCharacterEncoding(UTF_8.name());
             resp.setContentType("application/vnd.ms-excel");
-           // resp.setHeader("Content-disposition", "attachment;filename=" + fileName);
-            String filename = new String("项目查询统计报表.xls".getBytes(UTF_8), ISO_8859_1);
+            String filename = new String("项目查询统计报表.xls"), userAgent = request.getHeader("user-agent");
+            // 判断是否 ie 浏览器
+            if (userAgent.indexOf("MSIE") != -1 || userAgent.indexOf("Trident") != -1 || userAgent.indexOf("Edge") != -1) {
+                filename = new String(filename.getBytes(GBK), ISO_8859_1);
+            } else {
+                filename = new String(filename.getBytes(UTF_8), ISO_8859_1);
+            }
+            resp.setHeader("Content-disposition", "attachment;filename=" + filename);
             resp.setHeader("Content-disposition", "attachment;filename=" + filename);
             JxlsUtils.exportExcel("classpath:jxls/proInfoCount.xls", resp.getOutputStream(), resultMap,funcs);
 

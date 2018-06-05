@@ -3,7 +3,7 @@
     <div class="toolbar">
         <button class="btn btn-sm btn-primary" ng-click="vm.allChecked()">全选</button>
         <button class="btn btn-sm btn-danger" ng-click="vm.allCancel()">全取消</button>
-    <!-- <button class="btn btn-sm btn-success" ng-click="vm.createTable()">确定</button>-->
+        <!-- <button class="btn btn-sm btn-success" ng-click="vm.createTable()">确定</button>-->
     </div >
     <table class="table table-bordered" style="margin-top:10px;border-top:0px;" >
         <tr>
@@ -62,6 +62,12 @@
                             <tr ng-repeat="x in vm.selectedHeaderList">
                                 <td >
                                     <input type="checkbox" name="{{x.headerName}}" value="{{x.headerValue}}" ng-model="x.checkbox"/>
+                                    <button ng-click="vm.moveUp($index)">
+                                        <span class="glyphicon glyphicon-menu-up"></span>
+                                    </button>
+                                    <button ng-click="vm.moveDown($index)">
+                                        <span class="glyphicon glyphicon-menu-down"></span>
+                                    </button>
                                 </td>
                                 <td >
                                     <span>{{x.headerName}}</span>

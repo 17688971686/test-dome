@@ -14,13 +14,13 @@ import java.util.List;
  *
  */
 public class HqlBuilder {
-	
+
 	private StringBuilder hqlBuilder;
-	
+
 	private List<String> params;
 	private List<Object> values;
 	private List<Type> types;
-		
+
 
 	protected HqlBuilder() {
 		hqlBuilder = new StringBuilder();
@@ -29,7 +29,7 @@ public class HqlBuilder {
 	protected HqlBuilder(String hql) {
 		hqlBuilder = new StringBuilder(hql);
 	}
-	
+
 	public String getHqlString(){
 		return hqlBuilder.toString();
 	}
@@ -46,10 +46,10 @@ public class HqlBuilder {
 		hqlBuilder.append(hql);
 		return this;
 	}
-	
+
 	/**
 	 * 设置参数
-	 * 
+	 *
 	 * @param param
 	 * @param value
 	 * @return
@@ -61,7 +61,7 @@ public class HqlBuilder {
 
 	/**
 	 * 设置参数。与hibernate的Query接口一致。
-	 * 
+	 *
 	 * @param param
 	 * @param value
 	 * @param type
@@ -75,35 +75,51 @@ public class HqlBuilder {
 		return this;
 	}
 
-    /**
-     * id封装方法
-     * @param sqlKeyWord(where 、and、 or)等连接关键词
-     * @param propoty
-     * @param values
-     * @return
-     */
+	/**
+	 * id封装方法
+	 * @param sqlKeyWord(where 、and、 or)等连接关键词
+	 * @param propoty
+	 * @param values
+	 * @return
+	 */
 	public 	HqlBuilder bulidPropotyString(String sqlKeyWord,String propoty,String values){
-        List<String> idList = StringUtil.getSplit(values, ",");
-        if(Validate.isString(sqlKeyWord)){
-            hqlBuilder.append(sqlKeyWord +" ");
-        }
-        if (idList.size() > 1) {
-            hqlBuilder.append(propoty + " in ( ");
-            for (int i = 0,l=idList.size(); i < l; i++) {
-                if (i > 0) {
-                    hqlBuilder.append(",");
-                }
-                hqlBuilder.append(" :id" + i);
-                setParam("id" + i, idList.get(i));
-            }
-            hqlBuilder.append(" )");
-        } else {
-            hqlBuilder.append(propoty + " = :id ");
-            setParam("id", idList.get(0));
-        }
-        return this;
+		List<String> idList = StringUtil.getSplit(values, ",");
+		if (idList.size() > 1) {
+			hqlBuilder.append(sqlKeyWord +" "+ propoty + " in (");
+		}else{
+			if(Validate.isString(sqlKeyWord)){
+				hqlBuilder.append(sqlKeyWord +" ");
+			}
+		}
+		for (int i = 0; i< idList.size(); i++) {
+			if (idList.size() > 1) {
+				if (i == (idList.size() - 1)) {
+					hqlBuilder.append(" :id" + i);
+					setParam("id" + i, idList.get(i));
+				}else if((i%999)==0 && i>0){
+					hqlBuilder.append(" :id" + i);
+					setParam("id" + i, idList.get(i));
+					hqlBuilder.append(") or "+propoty+" in (");
+					//hqlBuilder.append(idList.get(i)).append(") or "+propoty+" in (");
+				}else{
+					hqlBuilder.append(" :id" + i);
+					setParam("id" + i, idList.get(i));
+					hqlBuilder.append(",");
+				}
+			}else{
+				hqlBuilder.append(propoty + " = :id ");
+				setParam("id", idList.get(0));
+			}
+
+		}
+
+		if (idList.size() > 1) {
+			hqlBuilder.append(") ");
+		}
+
+		return this;
 	}
-	
+
 	public List<String> getParams() {
 		if (params == null) {
 			params = new ArrayList<String>();

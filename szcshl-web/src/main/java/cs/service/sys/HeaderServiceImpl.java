@@ -13,6 +13,7 @@ import cs.model.sys.HeaderDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.sys.HeaderRepo;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -65,7 +66,7 @@ public class HeaderServiceImpl implements  HeaderService {
         Criteria criteria = headerRepo.getExecutableCriteria();
         criteria.add(Restrictions.eq(Header_.headerType.getName(),headerType));
         criteria.add(Restrictions.eq(Header_.headerstate.getName(), headState));
-
+        criteria.addOrder(Order.asc(Header_.headSeq.getName()));
         List<Header> headerList = criteria.list();
         List<HeaderDto> headerDtoList = new ArrayList<>();
         if(Validate.isList(headerList)){
@@ -168,10 +169,10 @@ public class HeaderServiceImpl implements  HeaderService {
             header.setModifiedDate(new Date());
             header.setModifiedBy(SessionUtil.getDisplayName());
             headerRepo.save(header);
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "创建成功", header);
-    }else{
-        return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , String.format("表头key值：%s,已经存在，请重新输入！",headerDto.getHeaderKey()));
-    }
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "创建成功", header);
+        }else{
+            return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , String.format("表头key值：%s,已经存在，请重新输入！",headerDto.getHeaderKey()));
+        }
     }
 
     @Override
@@ -179,5 +180,19 @@ public class HeaderServiceImpl implements  HeaderService {
         Criteria criteria = headerRepo.getExecutableCriteria();
         criteria.add(Restrictions.eq(Header_.headerType.getName(),type));
         return criteria.list();
+    }
+
+    //设置表头顺序
+    @Override
+    public void setSelectHeadOrder(HeaderDto[] headerDtos) {
+        List<Header> headerList = new ArrayList<Header>();
+        for(int i = 0;i < headerDtos.length;i++){
+            Header header = headerRepo.findById(headerDtos[i].getId());
+            header.setHeadSeq(i+1);
+            headerList.add(header);
+        }
+        if(headerList.size() > 0){
+            headerRepo.bathUpdate(headerList);
+        }
     }
 }
