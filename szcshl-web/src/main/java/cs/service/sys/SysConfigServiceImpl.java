@@ -183,17 +183,17 @@ public class SysConfigServiceImpl implements SysConfigService {
     public List<SysConfigDto> findListBykey(String type) {
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append("select " + SysConfig_.configValue.getName() + "," + SysConfig_.configName.getName() +  " from cs_sysconfig ");
-        hqlBuilder.append(" where " + SysConfig_.configKey.getName()  + " =  SMS_SYS_USER_TYPE_1  ");
+        hqlBuilder.append(" where " + SysConfig_.configKey.getName()  + " like '"+type+""+'%'+"'  ");
         List<SysConfigDto> sysConfigDtoList = new ArrayList<>();
         List<Object[]> list = sysConfigRepo.getObjectArray(hqlBuilder);
-        if (list.size()> 0) {
-            for (int i = 0; i < list.size(); i++) {
+        if (Validate.isList(list)) {
+            for (int i = 0,l=list.size(); i < l; i++) {
                 Object[] userNames = list.get(i);
                 SysConfigDto sysConfigDto = new SysConfigDto();
-                if (userNames[0] != null){
+                if (Validate.isObject(userNames[0])){
                     sysConfigDto.setConfigValue((String) userNames[0]);
                 }
-                if (userNames[1] != null){
+                if (Validate.isObject(userNames[1])){
                     sysConfigDto.setConfigName((String) userNames[1]);
                 }
                 sysConfigDtoList.add(sysConfigDto);
