@@ -329,7 +329,7 @@ public class SignRestServiceImpl implements SignRestService {
         List<User> list = new ArrayList<>();
         User user = null;
         if ("收文失败".equals(type)){
-            List<SysConfigDto>  sysConfigDtoList = sysConfigService.findListBykey("SMS_SYS_USER_TYPE_1");
+            List<SysConfigDto>  sysConfigDtoList = sysConfigService.findListBykey("SMS_SYS_USER_TYPE");
             for(SysConfigDto sysConfigDto: sysConfigDtoList){
                 user = new User();
                 user.setUserMPhone(sysConfigDto.getConfigValue());
@@ -337,7 +337,7 @@ public class SignRestServiceImpl implements SignRestService {
             }
         }
         if ("发文失败".equals(type)){
-            List<SysConfigDto>  sysConfigDtoList = sysConfigService.findListBykey("SMS_SYS_USER_TYPE_2");
+            List<SysConfigDto>  sysConfigDtoList = sysConfigService.findListBykey("SMS_SYS_USER_POST_FAILURE");
             for(SysConfigDto sysConfigDto: sysConfigDtoList){
                 user = new User();
                 user.setUserMPhone(sysConfigDto.getConfigValue());
