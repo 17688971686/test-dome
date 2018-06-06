@@ -26,7 +26,7 @@ public class DispathUnit {
      */
     public static Date dispathDate(List<Workday> workdayList , Date signDate , int reviewDay){
         Date d = null;
-        for(int j = 1 , l = reviewDay ; j < l ; j++) {
+        for(int j = 1 , l = reviewDay-1 ; j < l ; j++) {
             d = DateUtils.addDay(signDate, j);
             Boolean flag = false;
             if(Validate.isList(workdayList)){

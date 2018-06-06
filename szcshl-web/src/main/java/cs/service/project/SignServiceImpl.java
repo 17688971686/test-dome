@@ -174,7 +174,7 @@ public class SignServiceImpl implements SignService {
          */
         boolean isSelfProj = signDto.getFilecode().endsWith("0000") || signDto.getFilecode().endsWith("00000");
         if (!isSelfProj) {
-            sign = signRepo.findByFilecode(signDto.getFilecode(), signDto.getSignState());
+            sign = signRepo.findByFilecode(signDto.getFilecode(), Constant.EnumState.DELETE.getValue());
         }
         //1、根据收文编号获取项目信息
         if (sign == null) {
