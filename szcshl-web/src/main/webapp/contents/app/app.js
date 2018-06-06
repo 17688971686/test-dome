@@ -1453,6 +1453,36 @@
         }
 
         /**
+         * 导出功能
+         */
+        $rootScope.exportInfo = function(businessId, businessType, stageType , fileName){
+            if (!businessId || !businessType || !stageType) {
+                bsWin.alert("没有项目阶段，找不到对应的导出模板，导出失败！");
+            } else {
+                var httpOptions = {
+                    method: 'post',
+                    url: rootPath + "/file/exportInfo",
+                    params: {
+                        "businessId" : businessId ,
+                        "businessType" : businessType ,
+                        "stageType" : stageType ,
+                        "fileName" : fileName
+                    }
+                }
+                var httpSuccess = function success(response) {
+                    fileName =fileName + ".doc";
+                    var fileType ="msword";
+                    common.downloadReport(response.data , fileName , fileType);
+                };
+                common.http({
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+            }
+        }
+
+        /**
          * 返回时列表状态不改变。
          * @type {{}}
          */

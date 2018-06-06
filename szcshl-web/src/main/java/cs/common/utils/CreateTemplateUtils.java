@@ -93,10 +93,16 @@ public class CreateTemplateUtils {
         dataMap.put("director", sign.getLeaderName());
         String leaderName = sign.getLeaderName() == null ? "" : sign.getLeaderName();
         dataMap.put("viceDirector", leaderName);
-        String ministerName = workProgram.getMinisterName() == null ? "" : workProgram.getMinisterName();
+        String ministerName  = "";
+        String projectDirector = "";
+        if(workProgram != null){
+            ministerName = workProgram.getMinisterName() == null ? "" : workProgram.getMinisterName();
+
+            projectDirector = (workProgram.getMianChargeUserName() == null ? "" : workProgram.getMianChargeUserName())
+                    + (workProgram.getSecondChargeUserName() == null ? "" : "   " + workProgram.getSecondChargeUserName().replaceAll(",", "   "));
+        }
+
         dataMap.put("minister", ministerName);
-        String projectDirector = (workProgram.getMianChargeUserName() == null ? "" : workProgram.getMianChargeUserName())
-                + (workProgram.getSecondChargeUserName() == null ? "" : "   " + workProgram.getSecondChargeUserName().replaceAll(",", "   "));
         dataMap.put("proojectDirector", projectDirector);
 
         String expertName = getExpertName(expertSelectedList);
@@ -228,10 +234,17 @@ public class CreateTemplateUtils {
         dataMap.put("director", sign.getLeaderName());
         String leanderName = sign.getLeaderName() == null ? "" : sign.getLeaderName();
         dataMap.put("viceDirector", leanderName);
-        String ministerName = workProgram.getMinisterName() == null ? "" : workProgram.getMinisterName();
+        String ministerName  = "";
+        String projectDirector = "";
+        if(workProgram != null){
+            ministerName = workProgram.getMinisterName() == null ? "" : workProgram.getMinisterName();
+
+            projectDirector = (workProgram.getMianChargeUserName() == null ? "" : workProgram.getMianChargeUserName())
+                    + (workProgram.getSecondChargeUserName() == null ? "" : "   " + workProgram.getSecondChargeUserName().replaceAll(",", "   "));
+        }
+
         dataMap.put("minister", ministerName);
-        String projectDirector = (workProgram.getMianChargeUserName() == null ? "" : workProgram.getMianChargeUserName())
-                + (workProgram.getSecondChargeUserName() == null ? "" : "   " + workProgram.getSecondChargeUserName().replaceAll(",", "   "));
+
         dataMap.put("proojectDirector", projectDirector);
 
         String expertName = getExpertName(expertSelectedList);
@@ -317,10 +330,16 @@ public class CreateTemplateUtils {
         dataMap.put("director", sign.getLeaderName());
         String leanderName = sign.getLeaderName() == null ? "" : sign.getLeaderName();
         dataMap.put("viceDirector", leanderName);
-        String ministerName = workProgram.getMinisterName() == null ? "" : workProgram.getMinisterName();
+        String ministerName  = "";
+        String projectDirector = "";
+        if(workProgram != null){
+            ministerName = workProgram.getMinisterName() == null ? "" : workProgram.getMinisterName();
+
+            projectDirector = (workProgram.getMianChargeUserName() == null ? "" : workProgram.getMianChargeUserName())
+                    + (workProgram.getSecondChargeUserName() == null ? "" : "   " + workProgram.getSecondChargeUserName().replaceAll(",", "   "));
+        }
+
         dataMap.put("minister", ministerName);
-        String projectDirector = (workProgram.getMianChargeUserName() == null ? "" : workProgram.getMianChargeUserName())
-                + (workProgram.getSecondChargeUserName() == null ? "" : "   " + workProgram.getSecondChargeUserName().replaceAll(",", "   "));
         dataMap.put("projectDirector", projectDirector);
 
         String expertName = getExpertName(expertSelectedList);
@@ -402,15 +421,21 @@ public class CreateTemplateUtils {
         dataMap.put("director", sign.getLeaderName());
         String leanderName = sign.getLeaderName() == null ? "" : sign.getLeaderName();
         dataMap.put("viceDirector", leanderName);
-        String ministeName = workProgram.getMinisterName() == null ? "" : workProgram.getMinisterName();
-        dataMap.put("minister", ministeName);
-        String projectDirector = (workProgram.getMianChargeUserName() == null ? "" : workProgram.getMianChargeUserName())
-                + (workProgram.getSecondChargeUserName() == null ? "" : "   " + workProgram.getSecondChargeUserName().replaceAll(",", "   "));
+        String ministerName  = "";
+        String projectDirector = "";
+        if(workProgram != null){
+            ministerName = workProgram.getMinisterName() == null ? "" : workProgram.getMinisterName();
+
+            projectDirector = (workProgram.getMianChargeUserName() == null ? "" : workProgram.getMianChargeUserName())
+                    + (workProgram.getSecondChargeUserName() == null ? "" : "   " + workProgram.getSecondChargeUserName().replaceAll(",", "   "));
+        }
+
+        dataMap.put("minister", ministerName);
         dataMap.put("proojectDirector", projectDirector);
 
         String expertName = getExpertName(expertSelectedList);
 
-        String reviewGroup = leanderName + "   " + ministeName;
+        String reviewGroup = leanderName + "   " + ministerName;
 
         if (!"".equals(expertName) && expertName.length() > 0) {
             reviewGroup += "   " + expertName.replaceAll(",", "   ");

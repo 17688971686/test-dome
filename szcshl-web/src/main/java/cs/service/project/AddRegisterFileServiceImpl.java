@@ -102,7 +102,7 @@ public class AddRegisterFileServiceImpl implements AddRegisterFileService {
 
             List<AddRegisterFileDto> resultList = new ArrayList<>(addRegisterFileDtos.length);
             List<AddRegisterFile> saveList = new ArrayList<>(addRegisterFileDtos.length);
-            addRegisterFileRepo.deleteByBusIdAndBusType(addRegisterFileDtos[0].getBusinessId() , addRegisterFileDtos[0].getBusinessType());
+            //addRegisterFileRepo.deleteByBusIdAndBusType(addRegisterFileDtos[0].getBusinessId() , addRegisterFileDtos[0].getBusinessType());
 //            addRegisterFileRepo.deleteById(AddRegisterFile_.businessId.getName(), addRegisterFileDtos[0].getBusinessId());
             Date now = new Date();
             for (AddRegisterFileDto addRegisterFileDto : addRegisterFileDtos) {

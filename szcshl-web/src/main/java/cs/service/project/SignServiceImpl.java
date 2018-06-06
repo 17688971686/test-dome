@@ -1776,6 +1776,8 @@ public class SignServiceImpl implements SignService {
                 //发送存档日期为第二负责人审批意见后的日期，
                 fileRecord.setSendStoreDate(new Date());
                 fileRecordRepo.save(fileRecord);
+                //改项目状态（已发送归档）
+                signRepo.updateSignProcessState(signid, Constant.SignProcessState.SEND_FILE.getValue());
                 break;
             //确认归档
             case FlowConstant.FLOW_SIGN_QRGD:
@@ -1810,8 +1812,6 @@ public class SignServiceImpl implements SignService {
                 //更改项目状态
                 sign.setSignState(EnumState.YES.getValue());
                 sign.setProcessState(Constant.SignProcessState.FINISH.getValue());
-                //归档员确认，改项目状态（已发送归档）
-                signRepo.updateSignProcessState(signid, Constant.SignProcessState.SEND_FILE.getValue());
                 signRepo.save(sign);
                 break;
             default:

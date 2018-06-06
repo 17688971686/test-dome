@@ -225,7 +225,7 @@ public class AdminController {
                 //过滤掉已发文的项目
                 authRuSignTask = authRuSignTask.stream().filter(x -> (x.getSignDate() != null && x.getSignprocessState() < Constant.SignProcessState.END_DIS_NUM.getValue())).collect(Collectors.toList());
                 int totalLength = authRuSignTask.size();
-                int doingNum = authRuSignTask.size() , dipathOverNum = 0  , stopNum = 0 , weekNum = 0 ; //(在办项目 ， 发文超期 ， 暂停 ， 少于3个工作日)
+                int doingNum = 0 , dipathOverNum = 0  , stopNum = 0 , weekNum = 0 ; //(在办项目 ， 发文超期 ， 暂停 ， 少于3个工作日)
                 //线性图
                 List<RuProcessTask> lineList = new ArrayList<>();
                 for (int i = 0; i < totalLength; i++) {
@@ -235,6 +235,16 @@ public class AdminController {
                     } else {
                         existList.add(rpt.getBusinessKey());
                         lineList.add(rpt);
+                        //如果有所属部门 ， 则根据所在的部门进行统计
+                        if(Validate.isList(orgIdList)){
+                            for(String orgName : orgIdList){
+                                if (orgName.equals(rpt.getmOrgId())){
+                                    doingNum ++ ;
+                                }
+                            }
+                        }else{
+                            doingNum = authRuSignTask.size();
+                        }
                         switch (rpt.getLightState()){
                             case "6":
                                 dipathOverNum ++ ;

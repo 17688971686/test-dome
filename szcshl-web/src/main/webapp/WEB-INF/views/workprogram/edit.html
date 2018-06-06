@@ -25,6 +25,13 @@
     <button  ng-if="vm.work.workreviveStage=='进口设备'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="printFile(vm.work.id,'WORKPROGRAM','STAGEDEVICE')">打印预览</button>
     <button  ng-if="vm.work.workreviveStage=='设备清单（国产）' ||vm.work.workreviveStage=='设备清单（进口）'" class="btn btn-sm btn-primary" style="width: 70px;" ng-click="printFile(vm.work.id,'WORKPROGRAM','STAGEIMPORT')">打印预览</button>
     <button  ng-if="vm.work.workreviveStage=='资金申请报告'" class="btn btn-sm btn-primary" style="width: 100px; margin: auto;" ng-click="printFile(vm.work.id,'WORKPROGRAM','STAGEREPORT')">打印预览</button>
+    <button ng-if="vm.work.expertSelectedDtoList" class="form-control btn-sm btn-primary"
+            style="width: 120px; margin: auto;display: inline"
+            ng-click="printFile(vm.work.id,'WORKPROGRAM','INFORMATION')">打印专家信息预览
+    </button>
+    <button ng-if="vm.work.expertSelectedDtoList"  class="form-control btn-sm btn-primary"
+            style="width: 120px; margin: auto;display: inline"  ng-click="exportInfo(vm.work.id,'WORKPROGRAM','INFORMATION' , '专家信息导出')">专家信息导出
+    </button>
 </div>
 
 

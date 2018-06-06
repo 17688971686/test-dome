@@ -55,6 +55,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -549,566 +550,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             String path = SysFileUtil.getUploadPath() + File.separator + Tools.generateRandomFilename() + Template.WORD_SUFFIX.getKey();
             String filePath = path.substring(0, path.lastIndexOf(".")) + Template.PDF_SUFFIX.getKey();
             String fileName = "";
-            switch (businessType) {
-                case "SIGN":
-                    Sign sign = signRepo.findById(Sign_.signid.getName(), businessId);
-                    Map<String, Object> dataMap = TemplateUtil.entryAddMap(sign);
-                    String ministerhandlesug = sign.getMinisterhandlesug();
-                    dataMap.put("ministerhandlesug", ministerhandlesug == null ? "" : ministerhandlesug.replaceAll("<br>", "<w:br />")
-                            .replaceAll("<p style='text-align:right;'>", "").replaceAll("</p>", ""));
-                    if (stageType.equals(RevireStageKey.KEY_SUG.getValue())
-                            || stageType.equals(Constant.RevireStageKey.KEY_STUDY.getValue())
-                            || stageType.equals(Constant.RevireStageKey.KEY_OTHER.getValue())) {
-                        //建议书、可研、其他
-                        file = TemplateUtil.createDoc(dataMap, Constant.Template.STAGE_SUG_SIGN.getKey(), path);
-                    } else if (stageType.equals(RevireStageKey.KEY_BUDGET.getValue())) {
-                        //概算
-                        file = TemplateUtil.createDoc(dataMap, Constant.Template.STAGE_BUDGET_SIGN.getKey(), path);
-                    } else if (stageType.equals(Constant.RevireStageKey.KEY_REPORT.getValue())) {
-                        //资金
-                        file = TemplateUtil.createDoc(dataMap, Constant.Template.APPLY_REPORT_SIGN.getKey(), path);
-
-                    } else if (stageType.equals(Constant.RevireStageKey.KEY_DEVICE.getValue())) {
-                        //进口
-                        file = TemplateUtil.createDoc(dataMap, Constant.Template.IMPORT_DEVICE_SIGN.getKey(), path);
-
-                    } else if (stageType.equals(Constant.RevireStageKey.KEY_HOMELAND.getValue())
-                            || stageType.equals(Constant.RevireStageKey.KEY_IMPORT.getValue())) {
-                        //设备清单（国产、进口）
-                        file = TemplateUtil.createDoc(dataMap, Constant.Template.DEVICE_BILL_SIGN.getKey(), path);
-
-                    }
-                    break;
-
-                case "WORKPROGRAM":
-                    WorkProgramDto workProgramDto = workProgramService.initWorkProgramById(businessId);
-//                  SignDto signDto =  signService.findById(workProgramDto.getSignId(), true);
-//                    WorkProgram workProgram = new WorkProgram();
-//                    BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto, workProgram);
-                    if (!Validate.isString(workProgramDto.getIsHaveEIA())) {
-                        workProgramDto.setIsHaveEIA("0");
-                    }
-                    Map<String, Object> workData = TemplateUtil.entryAddMap(workProgramDto);
-
-                    List<ExpertSelectedDto> expertSelectedDtoLists = expertSelectedRepo.findByBusinessId(workProgramDto.getId());
-                    List<ExpertDto> expertDtoList = workProgramDto.getExpertDtoList();
-                    ExpertDto[] expertDtos = new ExpertDto[10];
-
-                    if (expertSelectedDtoLists != null && expertSelectedDtoLists.size() > 0) {
-                        for (int i = 0; i < expertSelectedDtoLists.size() && i < 10; i++) {
-                            ExpertDto expertDto = expertSelectedDtoLists.get(i).getExpertDto();
-                            //目前先改代码，后期有时间转换为改模板，直接遍历select表就可以的
-                            //重新设置专业和专家类别，其中专业对应select表的专家小类 ， 专家类别对应select的专家类别
-                            expertDto.setMajorStudy(expertSelectedDtoLists.get(i).getMaJorSmall());
-                            expertDto.setExpertSort(expertSelectedDtoLists.get(i).getExpeRttype());
-                            expertDtos[i] = expertDto;
-                        }
-                    }
-                    String addressName = "";
-                    String rbDate = "";
-                    List<RoomBookingDto> roomBookingDtoList = workProgramDto.getRoomBookingDtos();
-                    if (roomBookingDtoList != null && roomBookingDtoList.size() > 0) {
-                        addressName = workProgramDto.getRoomBookingDtos().get(0).getAddressName();
-                        rbDate = workProgramDto.getRoomBookingDtos().get(0).getRbDate();
-                    }
-
-                    int count = signBranchRepo.countBranch(workProgramDto.getSignId());
-                    workData.put("expertList", expertDtos);//聘请专家
-                    workData.put("works", count);//控制是否多个分支
-                    workData.put("addressName", addressName);//会议室名称
-                    workData.put("rbDate", rbDate);//评审会时间
-                    workData.put("studyBeginTimeStr", DateUtils.getTimeNow(workProgramDto.getStudyBeginTime()));//调研开始时间
-                    workData.put("studyEndTimeStr", DateUtils.getTimeNow(workProgramDto.getStudyEndTime()));//调研结束时间
-                    if (null != stageType && (stageType.equals("STAGESUG") || stageType.equals("STAGESTUDY") || stageType.equals("STAGEBUDGET") || stageType.equals("STAGEOTHER"))) {
-                        if (stageType.equals("STAGESUG")) {
-                            workData.put("wpTile", "项目建议书评审工作方案");
-                            workData.put("wpCode", " QR-4.3-02-A3");
-                        } else if (stageType.equals("STAGEOTHER")) {
-                            workData.put("wpTile", "其它评审工作方案");
-                            workData.put("wpCode", " QR-4.3-02-A3");
-                        } else if (stageType.equals("STAGESTUDY")) {
-                            workData.put("wpTile", "可行性研究报告评审工作方案");
-                            workData.put("wpCode", " QR-4.4-01-A3");
-                        } else if (stageType.equals("STAGEBUDGET")) {
-                            workData.put("wpTile", "项目概算评审工作方案");
-                            workData.put("wpCode", " QR-4.7-01-A2");
-                        }
-                        file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_SUG_WORKPROGRAM.getKey(), path);
-                    } else if (null != stageType && stageType.equals("STAGEREPORT")) {
-                        workData.put("wpTile", "资金申请报告工作方案");
-                        workData.put("wpCode", "QR-4.9-02-A0");
-                        file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_REPORT_WORKPROGRAM.getKey(), path);
-                    } else if (null != stageType && stageType.equals("STAGEDEVICE")) {
-                        workData.put("wpTile", "进口设备工作方案");
-                        workData.put("wpCode", "QR-4.9-02-A0");
-                        file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_DEVICE_WORKPROGRAM.getKey(), path);
-                    } else if (null != stageType && stageType.equals("STAGEIMPORT")) {
-                        workData.put("wpTile", "设备清单工作方案");
-                        workData.put("wpCode", "QR-4.9-02-A0");
-                        file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_HOMELAND_WORKPROGRAM.getKey(), path);
-                    } else if (null != stageType && stageType.equals("INFORMATION")) {
-
-                        file = TemplateUtil.createDoc(workData, Constant.Template.INFORMATION.getKey(), path);
-                    }
-//                    file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_SUG_WORKPROGRAM.getKey(), path);
-                    break;
-                case "FILERECORD":
-                    FileRecordDto fileRecordDto = fileRecordService.initBySignId(businessId);
-                    Map<String, Object> fileData = TemplateUtil.entryAddMap(fileRecordDto);
-                    if (stageType.equals(RevireStageKey.KEY_SUG.getValue())) {
-                        //建议书
-                        file = TemplateUtil.createDoc(fileData, Template.STAGE_SUG_FILERECORD.getKey(), path);
-                    } else if (stageType.equals(RevireStageKey.KEY_STUDY.getValue())) {
-                        //可研
-                        file = TemplateUtil.createDoc(fileData, Template.STAGE_STUDY_FILERECORD.getKey(), path);
-
-                    } else if (stageType.equals(RevireStageKey.KEY_BUDGET.getValue())) {
-                        //概算
-                        file = TemplateUtil.createDoc(fileData, Template.STAGE_BUDGET_FILERECORD.getKey(), path);
-
-                    } else if ("STAGEBUDGET_XS".equals(stageType)) {
-                        //概算协审
-                        file = TemplateUtil.createDoc(fileData, Template.STAGE_BUDGET_XS_FILERECORD.getKey(), path);
-
-                    } else if (stageType.equals(Constant.RevireStageKey.KEY_REPORT.getValue())) {
-                        //资金
-                        file = TemplateUtil.createDoc(fileData, Template.APPLY_REPORT_FILERECORD.getKey(), path);
-
-                    } else if (stageType.equals(Constant.RevireStageKey.KEY_DEVICE.getValue())) {
-                        //进口
-                        file = TemplateUtil.createDoc(fileData, Template.IMPORT_DEVICE_FILERECORD.getKey(), path);
-
-                    } else if (stageType.equals(Constant.RevireStageKey.KEY_HOMELAND.getValue())
-                            || stageType.equals(Constant.RevireStageKey.KEY_IMPORT.getValue())) {
-                        //设备清单（国产、进口）
-                        AddRegisterFileDto[] registerFileDto = new AddRegisterFileDto[5];
-                        if (fileRecordDto != null && fileRecordDto.getRegisterFileDto() != null && fileRecordDto.getRegisterFileDto().size() > 0) {
-                            for (int i = 0; i < fileRecordDto.getRegisterFileDto().size() && i < 5; i++) {
-                                registerFileDto[i] = fileRecordDto.getRegisterFileDto().get(i);
-                            }
-                        }
-                        fileData.put("registerFileList", registerFileDto);
-                        file = TemplateUtil.createDoc(fileData, Template.DEVICE_BILL_FILERECORD.getKey(), path);
-
-                    } else if (stageType.equals(RevireStageKey.KEY_OTHER.getValue())) {
-                        //其他阶段
-                        Sign s = signRepo.getById(businessId);
-                        fileData.put("secrectlevel", s.getSecrectlevel());
-                        file = TemplateUtil.createDoc(fileData, Template.OTHERS_FILERECORD.getKey(), path);
-                    }
-                    break;
-
-                case "FILERECOED_OTHERFILE":
-                    //项目归档的其它资料
-                    FileRecordDto FileRecordDto = fileRecordService.initBySignId(businessId);
-                    Map<String, Object> otherFileData = new HashMap<>();
-                    otherFileData.put("fileNo", FileRecordDto.getFileNo());
-                    otherFileData.put("projectName", FileRecordDto.getProjectName());
-                    otherFileData.put("projectCompany", FileRecordDto.getProjectCompany());
-                    otherFileData.put("projectCode", FileRecordDto.getProjectCode());
-                    otherFileData.put("OtherTitle", "归档表");
-                    List<AddRegisterFile> addRegisterFileList = new ArrayList<>();
-                    //其它资料
-                    if ("OTHER_FILE".equals(stageType)) {
-                        otherFileData.put("otherFileType", "其它资料");
-                        addRegisterFileList = addRegisterFileRepo.findByBusIdNoAndBusType(businessId, "FILERECORD");
-                    }
-                    //图纸资料
-                    if ("DRAWING_FILE".equals(stageType)) {
-                        otherFileData.put("otherFileType", "图纸资料");
-                        addRegisterFileList = addRegisterFileService.findByBusIdAndBusType(businessId, 2);
-
-                    }
-                    otherFileData.put("otherFileList", addRegisterFileList);
-                    file = TemplateUtil.createDoc(otherFileData, Template.OTHER_FILE.getKey(), path);
-                    break;
-                case "SIGN_OTHERFILE":
-                    //项目申报的其它资料
-                    Sign signs = signRepo.findById(Sign_.signid.getName(), businessId);
-                    /*List<AddRegisterFile> addRegisterFile=addRegisterFileRepo*/
-
-                    Map<String, Object> otherFileDatas = new HashMap<>();
-                    otherFileDatas.put("fileNo", signs.getSignNum());
-                    otherFileDatas.put("projectName", signs.getProjectname());
-                    otherFileDatas.put("projectCompany", signs.getBuiltcompanyName());
-                    otherFileDatas.put("projectCode", signs.getProjectcode());
-                    otherFileDatas.put("OtherTitle", "报审登记");
-                    List<AddRegisterFile> addRegisterFileLists = new ArrayList<>();
-                    //其它资料
-                    if ("OTHER_FILE".equals(stageType)) {
-                        otherFileDatas.put("otherFileType", "其它资料");
-                        //查询不等于拟补充材料和图纸的其他材料
-                        addRegisterFileLists = addRegisterFileRepo.findByBusIdNoAndBusType(businessId, "SIGN");
-                    }
-                    otherFileDatas.put("otherFileList", addRegisterFileLists);
-                    file = TemplateUtil.createDoc(otherFileDatas, Template.OTHER_FILE.getKey(), path);
-                    break;
-
-                case "DISPATCHDOC":
-                    DispatchDoc dispatchDoc = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
-                    SignDto signDto = signService.findById(dispatchDoc.getSign().getSignid(), true);
-                    Map<String, Object> dispatchData = TemplateUtil.entryAddMap(dispatchDoc);
-                    String mianChargeSuggest = dispatchDoc.getMianChargeSuggest();
-                    String main = null;
-                    String second = null;
-                    String sugge = null;
-                    String vice = null;
-                    //项目第一负责人
-                    if (Validate.isString(mianChargeSuggest)) {
-                        main = mianChargeSuggest.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", " ");
-                    }
-                    //第二负责人
-                    String secondChargeSuggest = dispatchDoc.getSecondChargeSuggest();
-                    if (Validate.isString(secondChargeSuggest)) {
-                        second = secondChargeSuggest.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", " ");
-                    }
-                    String ministerSuggesttion = dispatchDoc.getMinisterSuggesttion();
-                    if (Validate.isString(ministerSuggesttion)) {
-                        sugge = ministerSuggesttion.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", " ")
-                                .replaceAll("<p style='text-align:right;'>", "").replaceAll("</p>", "");
-
-                    }
-                    String viceDirectorSuggesttion = dispatchDoc.getViceDirectorSuggesttion();
-                    if (Validate.isString(viceDirectorSuggesttion)) {
-                        vice = viceDirectorSuggesttion.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", " ")
-                                .replaceAll("<p style='text-align:right;'>", "").replaceAll("</p>", "");
-
-                    }
-                    dispatchData.put("mianChargeSuggest", main);
-                    dispatchData.put("secondChargeSuggest", second);
-                    dispatchData.put("ministerSuggesttion", sugge);
-                    dispatchData.put("viceDirectorSuggesttion", vice);
-                    dispatchData.put("ischangeEstimate", signDto.getIschangeEstimate());//是否调概
-
-                    if (stageType.equals(RevireStageKey.KEY_SUG.getValue())) {
-                        //建议书
-                        dispatchData.put("wpTile", "项目建议书发文审批表");
-                        file = TemplateUtil.createDoc(dispatchData, Template.STAGE_SUG_DISPATCHDOC.getKey(), path);
-                    } else if (stageType.equals(RevireStageKey.KEY_STUDY.getValue())) {
-                        //可研
-                        List<SignDto> signDtoList = signDto.getAssociateSignDtoList();
-                        List<DispatchDocDto> dispatchList = new ArrayList<DispatchDocDto>();
-                        List<DispatchDocDto> dispatchViewList = new ArrayList<DispatchDocDto>();
-                        if (null != signDtoList) {
-                            for (int i = 0; i < signDtoList.size(); i++) {
-                                if (null != signDtoList.get(i).getDispatchDocDto()) {
-                                    dispatchList.add(signDtoList.get(i).getDispatchDocDto());
-                                }
-                            }
-                        }
-                        dispatchViewList.add(getDispatchStage("项目建议书", dispatchList));
-                        dispatchData.put("dispatchList", dispatchViewList);
-                        file = TemplateUtil.createDoc(dispatchData, Template.STAGE_STUDY_DISPATCHDOC.getKey(), path);
-
-                    } else if (stageType.equals(RevireStageKey.KEY_BUDGET.getValue())) {
-                        //概算
-                        List<SignDto> signDtoList = signDto.getAssociateSignDtoList();
-                        List<DispatchDocDto> dispatchList = new ArrayList<DispatchDocDto>();
-                        List<DispatchDocDto> dispatchViewList = new ArrayList<DispatchDocDto>();
-                        if (null != signDtoList) {
-                            for (int i = 0; i < signDtoList.size(); i++) {
-                                if (null != signDtoList.get(i).getDispatchDocDto()) {
-                                    dispatchList.add(signDtoList.get(i).getDispatchDocDto());
-                                }
-                            }
-                        }
-                        dispatchViewList.add(getDispatchStage("项目建议书", dispatchList));
-                        dispatchViewList.add(getDispatchStage("可行性研究报告", dispatchList));
-                        if (signDto != null && signDto.getIschangeEstimate() != null
-                                && "9".equals(signDto.getIschangeEstimate())) {
-                            dispatchViewList.add(getDispatchStage("项目概算", dispatchList));
-                        }
-                        dispatchData.put("dispatchList", dispatchViewList);
-                        file = TemplateUtil.createDoc(dispatchData, Template.STAGE_BUDGET_DISPATCHDOC.getKey(), path);
-
-                    } else if (stageType.equals(Constant.RevireStageKey.KEY_REPORT.getValue())) {
-                        //资金
-                        dispatchData.put("wpTile", "资金申请报告发文审批表");
-                        file = TemplateUtil.createDoc(dispatchData, Template.APPLY_REPORT_DISPATCHDOC.getKey(), path);
-
-                    } else if (stageType.equals(Constant.RevireStageKey.KEY_DEVICE.getValue())) {
-                        //进口
-                        dispatchData.put("wpTile", "进口设备发文审批表");
-                        file = TemplateUtil.createDoc(dispatchData, Template.IMPORT_DEVICE_DISPATCHDOC.getKey(), path);
-
-                    } else if (stageType.equals(Constant.RevireStageKey.KEY_HOMELAND.getValue())
-                            || stageType.equals(Constant.RevireStageKey.KEY_IMPORT.getValue())) {
-                        //设备清单（国产、进口）
-                        dispatchData.put("wpTile", "设备清单发文审批表");
-                        file = TemplateUtil.createDoc(dispatchData, Template.DEVICE_BILL_DISPATCHDOC.getKey(), path);
-                    } else if (stageType.equals(RevireStageKey.KEY_OTHER.getValue())) {
-                        //其他阶段
-                        file = TemplateUtil.createDoc(dispatchData, Template.OTHERS_DISPATCHDOC.getKey(), path);
-                    }
-                    break;
-
-                case "SIGN_EXPERT":
-                    //项目环节的专家评分和专家评审费
-                    Map<String, Object> expertData = new HashMap<>();
-                    ExpertReview expertReview = expertReviewRepo.findByBusinessId(businessId);
-
-                    List<ExpertSelectedDto> expertSelectedList = new ArrayList<>();
-                    List<ExpertSelectedDto> expertSelectedList1 = new ArrayList<>();
-                    List<ExpertSelectedDto> expertSelectedList2 = new ArrayList<>();
-
-                    Boolean isSplit = false;
-
-                    //合计 ： 评审费 税额  总计
-                    BigDecimal reviewCostSum1 = new BigDecimal(0);
-                    BigDecimal reviewTaxesSum1 = new BigDecimal(0);
-                    BigDecimal totalCostSum1 = new BigDecimal(0);
-
-                    BigDecimal reviewCostSum2 = new BigDecimal(0);
-                    BigDecimal reviewTaxesSum2 = new BigDecimal(0);
-                    BigDecimal totalCostSum2 = new BigDecimal(0);
-
-                    if (Validate.isObject(expertReview)) {
-                        ExpertReviewDto expertReviewDto = expertReviewRepo.formatReview(expertReview);
-                        List<ExpertSelectedDto> expertSelectedDtoList = expertReviewDto.getExpertSelectedDtoList();
-                        if (expertSelectedDtoList != null && expertSelectedDtoList.size() > 0) {
-
-                            for (ExpertSelectedDto expertSelectedDto : expertSelectedDtoList) {
-                                ExpertSelectedDto expertSelected = new ExpertSelectedDto(); //不拆分时
-                                ExpertSelectedDto expertSelected1 = new ExpertSelectedDto(); //第一张表
-                                ExpertSelectedDto expertSelected2 = new ExpertSelectedDto(); //第二张表
-
-                                if (EnumState.YES.getValue().equals(expertSelectedDto.getIsJoin())
-                                        && EnumState.YES.getValue().equals(expertSelectedDto.getIsConfrim())) {
-                                    BeanCopierUtils.copyPropertiesIgnoreNull(expertSelectedDto, expertSelected);
-
-                                    //是专家评审费才需要计算费用
-                                    if ("SIGN_EXPERT_PAY".equals(stageType)) {
-                                        BeanCopierUtils.copyPropertiesIgnoreNull(expertSelectedDto, expertSelected1);
-                                        if (EnumState.YES.getValue().equals(expertSelectedDto.getIsSplit())) {
-                                            isSplit = true;
-
-                                            BeanCopierUtils.copyPropertiesIgnoreNull(expertSelectedDto, expertSelected2);
-                                            //判断第一张表费用是否为空，为空默认为评审费总金额
-                                            expertSelected1.setReviewCost(expertSelectedDto.getOneCost() == null ? expertSelectedDto.getReviewCost() : expertSelectedDto.getOneCost());
-
-                                            //判断缴税金额不为空，并且评审费不为0，则计算缴税金额，否则缴税金额为0
-                                            if (expertSelectedDto.getReviewTaxes() != null &&  expertSelectedDto.getReviewCost().compareTo(new BigDecimal(0)) != 0) {
-                                                expertSelected1.setReviewTaxes(expertSelectedDto.getReviewTaxes().divide(expertSelectedDto.getReviewCost(), 3, BigDecimal.ROUND_HALF_UP).multiply(expertSelected1.getReviewCost()));
-                                            } else {
-                                                expertSelected1.setReviewTaxes(BigDecimal.ZERO);
-                                            }
-                                            expertSelected1.setTotalCost(Arith.safeAdd(expertSelected1.getReviewCost(),expertSelected1.getReviewTaxes()));
-
-                                            expertSelected2.setReviewCost(expertSelectedDto.getReviewCost().subtract(expertSelected1.getReviewCost()));
-                                            if (expertSelectedDto.getReviewTaxes() != null && expertSelectedDto.getReviewCost().compareTo(BigDecimal.ZERO) != 0) {
-                                                expertSelected2.setReviewTaxes(expertSelectedDto.getReviewTaxes().subtract(expertSelected1.getReviewTaxes()));
-                                            } else {
-                                                expertSelected2.setReviewTaxes(BigDecimal.ZERO);
-                                            }
-                                            expertSelected2.setTotalCost(expertSelected2.getReviewCost().add(expertSelected2.getReviewTaxes()));
-
-                                            reviewCostSum2 = reviewCostSum2.add(expertSelected2.getReviewCost());
-                                            reviewTaxesSum2 = reviewTaxesSum2.add(expertSelected2.getReviewTaxes());
-                                            totalCostSum2 = totalCostSum2.add(Arith.safeAdd(expertSelected2.getReviewCost(), expertSelected2.getReviewTaxes()));
-                                            expertSelectedList2.add(expertSelected2);
-                                        }
-                                        BigDecimal reviewCostCount = expertSelected1.getReviewCost() == null ? BigDecimal.ZERO : expertSelected1.getReviewCost();
-                                        BigDecimal totalTaxesCount = expertSelected1.getReviewTaxes() == null ? BigDecimal.ZERO : expertSelected1.getReviewTaxes();
-                                        reviewCostSum1 = reviewCostSum1.add(reviewCostCount);
-                                        reviewTaxesSum1 = reviewTaxesSum1.add(totalTaxesCount);
-                                        totalCostSum1 = totalCostSum1.add(Arith.safeAdd(reviewCostCount, totalTaxesCount));
-
-                                        expertSelectedList1.add(expertSelected1);
-                                    }
-                                    expertSelectedList.add(expertSelected);
-                                }
-                            }
-                        }
-
-                        String[] projectNames = expertReview.getReviewTitle().split("》");
-                        expertData.put("projectName", projectNames.length > 0 ? projectNames[0].substring(1, projectNames[0].length()) : expertReview.getReviewTitle());
-
-                        if (isSplit) {
-                            expertData.put("expertList", expertSelectedList1);
-                            expertData.put("expertList2", expertSelectedList2);
-                        } else {
-                            expertData.put("expertList", expertSelectedList);
-                        }
-                    }
-                    //专家评审费发放表
-                    if ("SIGN_EXPERT_PAY".equals(stageType)) {
-                        expertData.put("reviewCostSum", isSplit ? reviewCostSum1 : expertReview.getReviewCost());
-                        expertData.put("reviewTaxesSum", isSplit ? reviewTaxesSum1 : expertReview.getReviewTaxes());
-                        expertData.put("totalCostSum", isSplit ? totalCostSum1 : Arith.safeAdd(expertReview.getReviewCost(), expertReview.getReviewTaxes()));
-
-                        expertData.put("reviewCostSum2", reviewCostSum2);
-                        expertData.put("reviewTaxesSum2", reviewTaxesSum2);
-                        expertData.put("totalCostSum2", totalCostSum2);
-
-                        expertData.put("payDate", expertReview.getReviewDate() == null ? "" : DateUtils.converToString(expertReview.getReviewDate(), "yyyy年MM月dd日"));
-
-                        if (isSplit) {
-                            file = TemplateUtil.createDoc(expertData, Template.EXPERT_PAYMENT.getKey(), path);
-                        } else {
-                            file = TemplateUtil.createDoc(expertData, Template.EXPERT_PAYMENT_one.getKey(), path);
-                        }
-
-
-                    }
-                    //专家评分
-                    if ("SIGN_EXPERT_SCORE".equals(stageType)) {
-                       /* expertData.put("projectName" , expertReview.getReviewTitle().substring(1,expertReview.getReviewTitle().length()-1));*/
-                        file = TemplateUtil.createDoc(expertData, Template.EXPERT_SCORD.getKey(), path);
-                    }
-                    break;
-                case "ADDSUPPLETER":
-                    //拟补充资料函
-                    AddSuppLetter addSuppLetter = addSuppLetterRepo.findById(AddSuppLetter_.id.getName(), businessId);
-                    Map<String, Object> addsuppletterData = TemplateUtil.entryAddMap(addSuppLetter);
-                    if (Validate.isString(addSuppLetter.getLeaderSignIdeaContent())) {
-                        String leaderSignIdea = addSuppLetter.getLeaderSignIdeaContent().replaceAll("<br>", "").replaceAll("&nbsp;", "");
-                        addsuppletterData.put("leaderSignIdea", leaderSignIdea);
-
-                    }
-                    file = TemplateUtil.createDoc(addsuppletterData, Template.ADDSUPPLETER.getKey(), path);
-                    break;
-
-                case "SIGN_UNIT":
-                    //单位评分
-                    if ("SIGN_UNIT_SCORE".equals(stageType)) {
-                        UnitScore unitScore = unitScoreRepo.findById(UnitScore_.id.getName(), businessId);
-                        Map<String, Object> unitScoerMap = new HashMap<>();
-                        if (Validate.isObject(unitScore)) {
-                            unitScoerMap.put("coName", unitScore.getCompany().getCoName());
-                            unitScoerMap.put("coPhone", unitScore.getCompany().getCoPhone());
-                            unitScoerMap.put("coPC", unitScore.getCompany().getCoPC());
-                            unitScoerMap.put("coAddress", unitScore.getCompany().getCoAddress());
-                            unitScoerMap.put("score", unitScore.getScore());
-                            unitScoerMap.put("describes", unitScore.getDescribes());
-                        }
-                        file = TemplateUtil.createDoc(unitScoerMap, Template.UNIT_SCORE.getKey(), path);
-                    }
-                    break;
-                case "EXPERT":
-                    //专家申请表
-                    ExpertDto expertDto = expertService.findById(businessId);
-                    Expert expert = new Expert();
-                    BeanCopierUtils.copyPropertiesIgnoreNull(expertDto, expert);
-                    Map<String, Object> expertDataMap = TemplateUtil.entryAddMap(expert);
-                    WorkExpeDto[] workExpes = new WorkExpeDto[4];
-                    ProjectExpeDto[] projectExpes = new ProjectExpeDto[4];
-
-                    if (expertDto.getWorkDtoList() != null && expertDto.getWorkDtoList().size() > 0) {
-                        for (int i = 0; i < expertDto.getWorkDtoList().size() && i < 4; i++) {
-                            WorkExpeDto workExpeDto = expertDto.getWorkDtoList().get(i);
-                            workExpeDto.setBeginTimeStr(DateUtils.converToString(workExpeDto.getBeginTime(), "yyyyMMdd"));
-                            workExpeDto.setEndTimeStr(DateUtils.converToString(workExpeDto.getEndTime(), "yyyyMmdd"));
-                            workExpes[i] = workExpeDto;
-                        }
-                    }
-                    if (expertDto.getProjectDtoList() != null && expertDto.getProjectDtoList().size() > 0) {
-                        for (int i = 0; i < expertDto.getProjectDtoList().size() && i < 4; i++) {
-                            projectExpes[i] = expertDto.getProjectDtoList().get(i);
-                        }
-                    }
-                    expertDataMap.put("workList", workExpes);
-                    expertDataMap.put("projectList", projectExpes);
-
-                    file = TemplateUtil.createDoc(expertDataMap, Template.EXPERT.getKey(), path);
-
-                    break;
-
-                case "EXPERTOFFER":
-                    //专家聘书
-                    ExpertOffer expertOffer = expertOfferRepo.findById(ExpertOffer_.id.getName(), businessId);
-                    Map<String, Object> expertOfferDataMap = new HashMap<>();
-                    expertOfferDataMap.put("name", expertOffer.getExpert().getName());
-                    expertOfferDataMap.put("sex", expertOffer.getExpert().getSex());
-                    expertOfferDataMap.put("birthDay", expertOffer.getExpert().getBirthDay());
-                    expertOfferDataMap.put("idCard", expertOffer.getExpert().getIdCard());
-                    expertOfferDataMap.put("qualifiCations", expertOffer.getExpert().getQualifiCations());
-                    expertOfferDataMap.put("post", expertOffer.getExpert().getPost());
-                    expertOfferDataMap.put("sendCcieDate", expertOffer.getSendCcieDate());
-                    expertOfferDataMap.put("period", expertOffer.getPeriod());
-                    expertOfferDataMap.put("expertNo", expertOffer.getExpert().getExpertNo());
-                    expertOfferDataMap.put("fafang", "深圳市政府投资项目评审中心");
-
-                    file = TemplateUtil.createDoc(expertOfferDataMap, Template.EXPERTOFFER.getKey(), path);
-                    break;
-
-                case "TOPICINFO":
-                    //课题研究
-                    TopicInfoDto topicInfoDto = topicInfoService.findById(businessId);
-                    //归档
-                    if ("TOPICINFO_FILERECORD".equals(stageType)) {
-                        if (topicInfoDto != null) {
-                            FilingDto filingDto = topicInfoDto.getFilingDto();
-                            Map<String, Object> filingData = TemplateUtil.entryAddMap(filingDto);
-                            AddRegisterFileDto[] registerFileDto = new AddRegisterFileDto[5];
-                            if (filingDto != null && filingDto.getRegisterFileDto() != null && filingDto.getRegisterFileDto().size() > 0) {
-                                for (int i = 0; i < filingDto.getRegisterFileDto().size() && i < 5; i++) {
-                                    registerFileDto[i] = filingDto.getRegisterFileDto().get(i);
-                                }
-                            }
-                            filingData.put("registerFileList", registerFileDto);
-                            file = TemplateUtil.createDoc(filingData, Template.TOPICINFO_FILERECORD.getKey(), path);
-                        }
-                    }
-
-                    //工作方案
-                    if ("TOPICINFO_WORKPROGRAM".equals(stageType)) {
-                        if (topicInfoDto != null) {
-                            WorkPlanDto workPlanDto = topicInfoDto.getWorkPlanDto();
-                            Map<String, Object> workPlanData = TemplateUtil.entryAddMap(workPlanDto);
-                            workPlanData.put("createdDate", DateUtils.converToString(workPlanDto.getCreatedDate(), "yyyy年MM月dd日"));
-                            String rbDateStr = "";
-                            String address = "";
-                            if (workPlanDto != null && workPlanDto.getRoomDtoList() != null && workPlanDto.getRoomDtoList().size() > 0) {
-                                rbDateStr = workPlanDto.getRoomDtoList().get(0).getRbDate();
-                                address = workPlanDto.getRoomDtoList().get(0).getAddressName();
-                            }
-                            workPlanData.put("rbDateStr", rbDateStr);
-                            workPlanData.put("addRess", address);
-                            ExpertDto[] expeDtos = new ExpertDto[10];
-                            if (workPlanDto != null && workPlanDto.getExpertDtoList() != null && workPlanDto.getExpertDtoList().size() > 0) {
-                                for (int i = 0; i < workPlanDto.getExpertDtoList().size() && i < 10; i++) {
-                                    expeDtos[i] = workPlanDto.getExpertDtoList().get(i);
-                                }
-                            }
-                            workPlanData.put("expertList", expeDtos);
-                            file = TemplateUtil.createDoc(workPlanData, Template.TOPICINFO_WORKPROGRAM.getKey(), path);
-                        }
-                    }
-
-                    break;
-
-                case "MONTHLY":
-                    //月报简报
-                    AddSuppLetterDto addSuppLetterDto = addSuppLetterService.findById(businessId);
-                    Map<String, Object> addSuppleterData = TemplateUtil.entryAddMap(addSuppLetterDto);
-                    file = TemplateUtil.createDoc(addSuppleterData, Template.MONTHLY.getKey(), path);
-                    break;
-
-                case "ARCHIVES":
-                    //借阅档案
-                    ArchivesLibraryDto archivesLibraryDto = archivesLibraryService.findById(businessId);
-                    Map<String, Object> archivesData = TemplateUtil.entryAddMap(archivesLibraryDto);
-                    file = TemplateUtil.createDoc(archivesData, Template.ARCHIVES_DETAIL.getKey(), path);
-                    break;
-
-                    //补充资料清单
-                case "ADDSUPPLEFILE":
-                    Sign signss = signRepo.findById(Sign_.signid.getName(), businessId);
-                    List<AddRegisterFile> addRegisterFileList2 = addRegisterFileService.findByBusIdAndBusType(businessId, 3);
-                    Map<String , Object> addFileData = new HashMap<>();
-                    addFileData.put("addFileList" , addRegisterFileList2);
-                    addFileData.put("signNum" , signss.getSignNum());
-                    addFileData.put("projectname" , signss.getProjectname());
-                    addFileData.put("builtcompanyName" , signss.getBuiltcompanyName());
-                    addFileData.put("projectcode" , signss.getProjectcode());
-                    addFileData.put("strDate" , DateUtils.converToString(new Date() , "yyyy年MM月dd日"));
-                    file = TemplateUtil.createDoc(addFileData, Template.ADD_REGISTER_FILE.getKey(), path);
-
-                    break;
-
-                default:
-                    ;
-            }
+            file = createFile(businessId , businessType , stageType , path);
 
             if (file != null) {
                 OfficeConverterUtil.convert2PDF(file.getAbsolutePath(), filePath);
@@ -1143,6 +585,617 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 }
                 if (printFile != null) {
                     Tools.deleteFile(printFile);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    /**
+     * 生成打印文件
+     * @return
+     */
+    private File createFile(String businessId, String businessType,  String stageType , String path){
+        File file = null;
+        switch (businessType) {
+            case "SIGN":
+                Sign sign = signRepo.findById(Sign_.signid.getName(), businessId);
+                Map<String, Object> dataMap = TemplateUtil.entryAddMap(sign);
+                String ministerhandlesug = sign.getMinisterhandlesug();
+                dataMap.put("ministerhandlesug", ministerhandlesug == null ? "" : ministerhandlesug.replaceAll("<br>", "<w:br />")
+                        .replaceAll("<p style='text-align:right;'>", "").replaceAll("</p>", ""));
+                if (stageType.equals(RevireStageKey.KEY_SUG.getValue())
+                        || stageType.equals(Constant.RevireStageKey.KEY_STUDY.getValue())
+                        || stageType.equals(Constant.RevireStageKey.KEY_OTHER.getValue())) {
+                    //建议书、可研、其他
+                    file = TemplateUtil.createDoc(dataMap, Constant.Template.STAGE_SUG_SIGN.getKey(), path);
+                } else if (stageType.equals(RevireStageKey.KEY_BUDGET.getValue())) {
+                    //概算
+                    file = TemplateUtil.createDoc(dataMap, Constant.Template.STAGE_BUDGET_SIGN.getKey(), path);
+                } else if (stageType.equals(Constant.RevireStageKey.KEY_REPORT.getValue())) {
+                    //资金
+                    file = TemplateUtil.createDoc(dataMap, Constant.Template.APPLY_REPORT_SIGN.getKey(), path);
+
+                } else if (stageType.equals(Constant.RevireStageKey.KEY_DEVICE.getValue())) {
+                    //进口
+                    file = TemplateUtil.createDoc(dataMap, Constant.Template.IMPORT_DEVICE_SIGN.getKey(), path);
+
+                } else if (stageType.equals(Constant.RevireStageKey.KEY_HOMELAND.getValue())
+                        || stageType.equals(Constant.RevireStageKey.KEY_IMPORT.getValue())) {
+                    //设备清单（国产、进口）
+                    file = TemplateUtil.createDoc(dataMap, Constant.Template.DEVICE_BILL_SIGN.getKey(), path);
+
+                }
+                break;
+
+            case "WORKPROGRAM":
+                WorkProgramDto workProgramDto = workProgramService.initWorkProgramById(businessId);
+//                  SignDto signDto =  signService.findById(workProgramDto.getSignId(), true);
+//                    WorkProgram workProgram = new WorkProgram();
+//                    BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto, workProgram);
+                if (!Validate.isString(workProgramDto.getIsHaveEIA())) {
+                    workProgramDto.setIsHaveEIA("0");
+                }
+                Map<String, Object> workData = TemplateUtil.entryAddMap(workProgramDto);
+
+                List<ExpertSelectedDto> expertSelectedDtoLists = expertSelectedRepo.findByBusinessId(workProgramDto.getId());
+                List<ExpertDto> expertDtoList = workProgramDto.getExpertDtoList();
+                ExpertDto[] expertDtos = new ExpertDto[10];
+
+                if (expertSelectedDtoLists != null && expertSelectedDtoLists.size() > 0) {
+                    for (int i = 0; i < expertSelectedDtoLists.size() && i < 10; i++) {
+                        ExpertDto expertDto = expertSelectedDtoLists.get(i).getExpertDto();
+                        //目前先改代码，后期有时间转换为改模板，直接遍历select表就可以的
+                        //重新设置专业和专家类别，其中专业对应select表的专家小类 ， 专家类别对应select的专家类别
+                        expertDto.setMajorStudy(expertSelectedDtoLists.get(i).getMaJorSmall());
+                        expertDto.setExpertSort(expertSelectedDtoLists.get(i).getExpeRttype());
+                        expertDtos[i] = expertDto;
+                    }
+                }
+                String addressName = "";
+                String rbDate = "";
+                List<RoomBookingDto> roomBookingDtoList = workProgramDto.getRoomBookingDtos();
+                if (roomBookingDtoList != null && roomBookingDtoList.size() > 0) {
+                    addressName = workProgramDto.getRoomBookingDtos().get(0).getAddressName();
+                    rbDate = workProgramDto.getRoomBookingDtos().get(0).getRbDate();
+                }
+
+                int count = signBranchRepo.countBranch(workProgramDto.getSignId());
+                workData.put("expertList", expertDtos);//聘请专家
+                workData.put("works", count);//控制是否多个分支
+                workData.put("addressName", addressName);//会议室名称
+                workData.put("rbDate", rbDate);//评审会时间
+                workData.put("studyBeginTimeStr", DateUtils.getTimeNow(workProgramDto.getStudyBeginTime()));//调研开始时间
+                workData.put("studyEndTimeStr", DateUtils.getTimeNow(workProgramDto.getStudyEndTime()));//调研结束时间
+                if (null != stageType && (stageType.equals("STAGESUG") || stageType.equals("STAGESTUDY") || stageType.equals("STAGEBUDGET") || stageType.equals("STAGEOTHER"))) {
+                    if (stageType.equals("STAGESUG")) {
+                        workData.put("wpTile", "项目建议书评审工作方案");
+                        workData.put("wpCode", " QR-4.3-02-A3");
+                    } else if (stageType.equals("STAGEOTHER")) {
+                        workData.put("wpTile", "其它评审工作方案");
+                        workData.put("wpCode", " QR-4.3-02-A3");
+                    } else if (stageType.equals("STAGESTUDY")) {
+                        workData.put("wpTile", "可行性研究报告评审工作方案");
+                        workData.put("wpCode", " QR-4.4-01-A3");
+                    } else if (stageType.equals("STAGEBUDGET")) {
+                        workData.put("wpTile", "项目概算评审工作方案");
+                        workData.put("wpCode", " QR-4.7-01-A2");
+                    }
+                    file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_SUG_WORKPROGRAM.getKey(), path);
+                } else if (null != stageType && stageType.equals("STAGEREPORT")) {
+                    workData.put("wpTile", "资金申请报告工作方案");
+                    workData.put("wpCode", "QR-4.9-02-A0");
+                    file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_REPORT_WORKPROGRAM.getKey(), path);
+                } else if (null != stageType && stageType.equals("STAGEDEVICE")) {
+                    workData.put("wpTile", "进口设备工作方案");
+                    workData.put("wpCode", "QR-4.9-02-A0");
+                    file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_DEVICE_WORKPROGRAM.getKey(), path);
+                } else if (null != stageType && stageType.equals("STAGEIMPORT")) {
+                    workData.put("wpTile", "设备清单工作方案");
+                    workData.put("wpCode", "QR-4.9-02-A0");
+                    file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_HOMELAND_WORKPROGRAM.getKey(), path);
+                } else if (null != stageType && stageType.equals("INFORMATION")) {
+
+                    file = TemplateUtil.createDoc(workData, Constant.Template.INFORMATION.getKey(), path);
+                }
+//                    file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_SUG_WORKPROGRAM.getKey(), path);
+                break;
+            case "FILERECORD":
+                FileRecordDto fileRecordDto = fileRecordService.initBySignId(businessId);
+                Map<String, Object> fileData = TemplateUtil.entryAddMap(fileRecordDto);
+                if (stageType.equals(RevireStageKey.KEY_SUG.getValue())) {
+                    //建议书
+                    file = TemplateUtil.createDoc(fileData, Template.STAGE_SUG_FILERECORD.getKey(), path);
+                } else if (stageType.equals(RevireStageKey.KEY_STUDY.getValue())) {
+                    //可研
+                    file = TemplateUtil.createDoc(fileData, Template.STAGE_STUDY_FILERECORD.getKey(), path);
+
+                } else if (stageType.equals(RevireStageKey.KEY_BUDGET.getValue())) {
+                    //概算
+                    file = TemplateUtil.createDoc(fileData, Template.STAGE_BUDGET_FILERECORD.getKey(), path);
+
+                } else if ("STAGEBUDGET_XS".equals(stageType)) {
+                    //概算协审
+                    file = TemplateUtil.createDoc(fileData, Template.STAGE_BUDGET_XS_FILERECORD.getKey(), path);
+
+                } else if (stageType.equals(Constant.RevireStageKey.KEY_REPORT.getValue())) {
+                    //资金
+                    file = TemplateUtil.createDoc(fileData, Template.APPLY_REPORT_FILERECORD.getKey(), path);
+
+                } else if (stageType.equals(Constant.RevireStageKey.KEY_DEVICE.getValue())) {
+                    //进口
+                    file = TemplateUtil.createDoc(fileData, Template.IMPORT_DEVICE_FILERECORD.getKey(), path);
+
+                } else if (stageType.equals(Constant.RevireStageKey.KEY_HOMELAND.getValue())
+                        || stageType.equals(Constant.RevireStageKey.KEY_IMPORT.getValue())) {
+                    //设备清单（国产、进口）
+                    AddRegisterFileDto[] registerFileDto = new AddRegisterFileDto[5];
+                    if (fileRecordDto != null && fileRecordDto.getRegisterFileDto() != null && fileRecordDto.getRegisterFileDto().size() > 0) {
+                        for (int i = 0; i < fileRecordDto.getRegisterFileDto().size() && i < 5; i++) {
+                            registerFileDto[i] = fileRecordDto.getRegisterFileDto().get(i);
+                        }
+                    }
+                    fileData.put("registerFileList", registerFileDto);
+                    file = TemplateUtil.createDoc(fileData, Template.DEVICE_BILL_FILERECORD.getKey(), path);
+
+                } else if (stageType.equals(RevireStageKey.KEY_OTHER.getValue())) {
+                    //其他阶段
+                    Sign s = signRepo.getById(businessId);
+                    fileData.put("secrectlevel", s.getSecrectlevel());
+                    file = TemplateUtil.createDoc(fileData, Template.OTHERS_FILERECORD.getKey(), path);
+                }
+                break;
+
+            case "FILERECOED_OTHERFILE":
+                //项目归档的其它资料
+                FileRecordDto FileRecordDto = fileRecordService.initBySignId(businessId);
+                Map<String, Object> otherFileData = new HashMap<>();
+                otherFileData.put("fileNo", FileRecordDto.getFileNo());
+                otherFileData.put("projectName", FileRecordDto.getProjectName());
+                otherFileData.put("projectCompany", FileRecordDto.getProjectCompany());
+                otherFileData.put("projectCode", FileRecordDto.getProjectCode());
+                otherFileData.put("OtherTitle", "归档表");
+                List<AddRegisterFile> addRegisterFileList = new ArrayList<>();
+                //其它资料
+                if ("OTHER_FILE".equals(stageType)) {
+                    otherFileData.put("otherFileType", "其它资料");
+                    addRegisterFileList = addRegisterFileRepo.findByBusIdNoAndBusType(businessId, "FILERECORD");
+                }
+                //图纸资料
+                if ("DRAWING_FILE".equals(stageType)) {
+                    otherFileData.put("otherFileType", "图纸资料");
+                    addRegisterFileList = addRegisterFileService.findByBusIdAndBusType(businessId, 2);
+
+                }
+                otherFileData.put("otherFileList", addRegisterFileList);
+                file = TemplateUtil.createDoc(otherFileData, Template.OTHER_FILE.getKey(), path);
+                break;
+            case "SIGN_OTHERFILE":
+                //项目申报的其它资料
+                Sign signs = signRepo.findById(Sign_.signid.getName(), businessId);
+                    /*List<AddRegisterFile> addRegisterFile=addRegisterFileRepo*/
+
+                Map<String, Object> otherFileDatas = new HashMap<>();
+                otherFileDatas.put("fileNo", signs.getSignNum());
+                otherFileDatas.put("projectName", signs.getProjectname());
+                otherFileDatas.put("projectCompany", signs.getBuiltcompanyName());
+                otherFileDatas.put("projectCode", signs.getProjectcode());
+                otherFileDatas.put("OtherTitle", "报审登记");
+                List<AddRegisterFile> addRegisterFileLists = new ArrayList<>();
+                //其它资料
+                if ("OTHER_FILE".equals(stageType)) {
+                    otherFileDatas.put("otherFileType", "其它资料");
+                    //查询不等于拟补充材料和图纸的其他材料
+                    addRegisterFileLists = addRegisterFileRepo.findByBusIdNoAndBusType(businessId, "SIGN");
+                }
+                otherFileDatas.put("otherFileList", addRegisterFileLists);
+                file = TemplateUtil.createDoc(otherFileDatas, Template.OTHER_FILE.getKey(), path);
+                break;
+
+            case "DISPATCHDOC":
+                DispatchDoc dispatchDoc = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
+                SignDto signDto = signService.findById(dispatchDoc.getSign().getSignid(), true);
+                Map<String, Object> dispatchData = TemplateUtil.entryAddMap(dispatchDoc);
+                String mianChargeSuggest = dispatchDoc.getMianChargeSuggest();
+                String main = null;
+                String second = null;
+                String sugge = null;
+                String vice = null;
+                //项目第一负责人
+                if (Validate.isString(mianChargeSuggest)) {
+                    main = mianChargeSuggest.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", " ");
+                }
+                //第二负责人
+                String secondChargeSuggest = dispatchDoc.getSecondChargeSuggest();
+                if (Validate.isString(secondChargeSuggest)) {
+                    second = secondChargeSuggest.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", " ");
+                }
+                String ministerSuggesttion = dispatchDoc.getMinisterSuggesttion();
+                if (Validate.isString(ministerSuggesttion)) {
+                    sugge = ministerSuggesttion.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", " ")
+                            .replaceAll("<p style='text-align:right;'>", "").replaceAll("</p>", "");
+
+                }
+                String viceDirectorSuggesttion = dispatchDoc.getViceDirectorSuggesttion();
+                if (Validate.isString(viceDirectorSuggesttion)) {
+                    vice = viceDirectorSuggesttion.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", " ")
+                            .replaceAll("<p style='text-align:right;'>", "").replaceAll("</p>", "");
+
+                }
+                dispatchData.put("mianChargeSuggest", main);
+                dispatchData.put("secondChargeSuggest", second);
+                dispatchData.put("ministerSuggesttion", sugge);
+                dispatchData.put("viceDirectorSuggesttion", vice);
+                dispatchData.put("ischangeEstimate", signDto.getIschangeEstimate());//是否调概
+
+                if (stageType.equals(RevireStageKey.KEY_SUG.getValue())) {
+                    //建议书
+                    dispatchData.put("wpTile", "项目建议书发文审批表");
+                    file = TemplateUtil.createDoc(dispatchData, Template.STAGE_SUG_DISPATCHDOC.getKey(), path);
+                } else if (stageType.equals(RevireStageKey.KEY_STUDY.getValue())) {
+                    //可研
+                    List<SignDto> signDtoList = signDto.getAssociateSignDtoList();
+                    List<DispatchDocDto> dispatchList = new ArrayList<DispatchDocDto>();
+                    List<DispatchDocDto> dispatchViewList = new ArrayList<DispatchDocDto>();
+                    if (null != signDtoList) {
+                        for (int i = 0; i < signDtoList.size(); i++) {
+                            if (null != signDtoList.get(i).getDispatchDocDto()) {
+                                dispatchList.add(signDtoList.get(i).getDispatchDocDto());
+                            }
+                        }
+                    }
+                    dispatchViewList.add(getDispatchStage("项目建议书", dispatchList));
+                    dispatchData.put("dispatchList", dispatchViewList);
+                    file = TemplateUtil.createDoc(dispatchData, Template.STAGE_STUDY_DISPATCHDOC.getKey(), path);
+
+                } else if (stageType.equals(RevireStageKey.KEY_BUDGET.getValue())) {
+                    //概算
+                    List<SignDto> signDtoList = signDto.getAssociateSignDtoList();
+                    List<DispatchDocDto> dispatchList = new ArrayList<DispatchDocDto>();
+                    List<DispatchDocDto> dispatchViewList = new ArrayList<DispatchDocDto>();
+                    if (null != signDtoList) {
+                        for (int i = 0; i < signDtoList.size(); i++) {
+                            if (null != signDtoList.get(i).getDispatchDocDto()) {
+                                dispatchList.add(signDtoList.get(i).getDispatchDocDto());
+                            }
+                        }
+                    }
+                    dispatchViewList.add(getDispatchStage("项目建议书", dispatchList));
+                    dispatchViewList.add(getDispatchStage("可行性研究报告", dispatchList));
+                    if (signDto != null && signDto.getIschangeEstimate() != null
+                            && "9".equals(signDto.getIschangeEstimate())) {
+                        dispatchViewList.add(getDispatchStage("项目概算", dispatchList));
+                    }
+                    dispatchData.put("dispatchList", dispatchViewList);
+                    file = TemplateUtil.createDoc(dispatchData, Template.STAGE_BUDGET_DISPATCHDOC.getKey(), path);
+
+                } else if (stageType.equals(Constant.RevireStageKey.KEY_REPORT.getValue())) {
+                    //资金
+                    dispatchData.put("wpTile", "资金申请报告发文审批表");
+                    file = TemplateUtil.createDoc(dispatchData, Template.APPLY_REPORT_DISPATCHDOC.getKey(), path);
+
+                } else if (stageType.equals(Constant.RevireStageKey.KEY_DEVICE.getValue())) {
+                    //进口
+                    dispatchData.put("wpTile", "进口设备发文审批表");
+                    file = TemplateUtil.createDoc(dispatchData, Template.IMPORT_DEVICE_DISPATCHDOC.getKey(), path);
+
+                } else if (stageType.equals(Constant.RevireStageKey.KEY_HOMELAND.getValue())
+                        || stageType.equals(Constant.RevireStageKey.KEY_IMPORT.getValue())) {
+                    //设备清单（国产、进口）
+                    dispatchData.put("wpTile", "设备清单发文审批表");
+                    file = TemplateUtil.createDoc(dispatchData, Template.DEVICE_BILL_DISPATCHDOC.getKey(), path);
+                } else if (stageType.equals(RevireStageKey.KEY_OTHER.getValue())) {
+                    //其他阶段
+                    file = TemplateUtil.createDoc(dispatchData, Template.OTHERS_DISPATCHDOC.getKey(), path);
+                }
+                break;
+
+            case "SIGN_EXPERT":
+                //项目环节的专家评分和专家评审费
+                Map<String, Object> expertData = new HashMap<>();
+                ExpertReview expertReview = expertReviewRepo.findByBusinessId(businessId);
+
+                List<ExpertSelectedDto> expertSelectedList = new ArrayList<>();
+                List<ExpertSelectedDto> expertSelectedList1 = new ArrayList<>();
+                List<ExpertSelectedDto> expertSelectedList2 = new ArrayList<>();
+
+                Boolean isSplit = false;
+
+                //合计 ： 评审费 税额  总计
+                BigDecimal reviewCostSum1 = new BigDecimal(0);
+                BigDecimal reviewTaxesSum1 = new BigDecimal(0);
+                BigDecimal totalCostSum1 = new BigDecimal(0);
+
+                BigDecimal reviewCostSum2 = new BigDecimal(0);
+                BigDecimal reviewTaxesSum2 = new BigDecimal(0);
+                BigDecimal totalCostSum2 = new BigDecimal(0);
+
+                if (Validate.isObject(expertReview)) {
+                    ExpertReviewDto expertReviewDto = expertReviewRepo.formatReview(expertReview);
+                    List<ExpertSelectedDto> expertSelectedDtoList = expertReviewDto.getExpertSelectedDtoList();
+                    if (expertSelectedDtoList != null && expertSelectedDtoList.size() > 0) {
+
+                        for (ExpertSelectedDto expertSelectedDto : expertSelectedDtoList) {
+                            ExpertSelectedDto expertSelected = new ExpertSelectedDto(); //不拆分时
+                            ExpertSelectedDto expertSelected1 = new ExpertSelectedDto(); //第一张表
+                            ExpertSelectedDto expertSelected2 = new ExpertSelectedDto(); //第二张表
+
+                            if (EnumState.YES.getValue().equals(expertSelectedDto.getIsJoin())
+                                    && EnumState.YES.getValue().equals(expertSelectedDto.getIsConfrim())) {
+                                BeanCopierUtils.copyPropertiesIgnoreNull(expertSelectedDto, expertSelected);
+
+                                //是专家评审费才需要计算费用
+                                if ("SIGN_EXPERT_PAY".equals(stageType)) {
+                                    BeanCopierUtils.copyPropertiesIgnoreNull(expertSelectedDto, expertSelected1);
+                                    if (EnumState.YES.getValue().equals(expertSelectedDto.getIsSplit())) {
+                                        isSplit = true;
+
+                                        BeanCopierUtils.copyPropertiesIgnoreNull(expertSelectedDto, expertSelected2);
+                                        //判断第一张表费用是否为空，为空默认为评审费总金额
+                                        expertSelected1.setReviewCost(expertSelectedDto.getOneCost() == null ? expertSelectedDto.getReviewCost() : expertSelectedDto.getOneCost());
+
+                                        //判断缴税金额不为空，并且评审费不为0，则计算缴税金额，否则缴税金额为0
+                                        if (expertSelectedDto.getReviewTaxes() != null && expertSelectedDto.getReviewCost().compareTo(new BigDecimal(0)) != 0) {
+                                            expertSelected1.setReviewTaxes(expertSelectedDto.getReviewTaxes().divide(expertSelectedDto.getReviewCost(), 3, BigDecimal.ROUND_HALF_UP).multiply(expertSelected1.getReviewCost()));
+                                        } else {
+                                            expertSelected1.setReviewTaxes(BigDecimal.ZERO);
+                                        }
+                                        expertSelected1.setTotalCost(Arith.safeAdd(expertSelected1.getReviewCost(), expertSelected1.getReviewTaxes()));
+
+                                        expertSelected2.setReviewCost(expertSelectedDto.getReviewCost().subtract(expertSelected1.getReviewCost()));
+                                        if (expertSelectedDto.getReviewTaxes() != null && expertSelectedDto.getReviewCost().compareTo(BigDecimal.ZERO) != 0) {
+                                            expertSelected2.setReviewTaxes(expertSelectedDto.getReviewTaxes().subtract(expertSelected1.getReviewTaxes()));
+                                        } else {
+                                            expertSelected2.setReviewTaxes(BigDecimal.ZERO);
+                                        }
+                                        expertSelected2.setTotalCost(expertSelected2.getReviewCost().add(expertSelected2.getReviewTaxes()));
+
+                                        reviewCostSum2 = reviewCostSum2.add(expertSelected2.getReviewCost());
+                                        reviewTaxesSum2 = reviewTaxesSum2.add(expertSelected2.getReviewTaxes());
+                                        totalCostSum2 = totalCostSum2.add(Arith.safeAdd(expertSelected2.getReviewCost(), expertSelected2.getReviewTaxes()));
+                                        expertSelectedList2.add(expertSelected2);
+                                    }
+                                    BigDecimal reviewCostCount = expertSelected1.getReviewCost() == null ? BigDecimal.ZERO : expertSelected1.getReviewCost();
+                                    BigDecimal totalTaxesCount = expertSelected1.getReviewTaxes() == null ? BigDecimal.ZERO : expertSelected1.getReviewTaxes();
+                                    reviewCostSum1 = reviewCostSum1.add(reviewCostCount);
+                                    reviewTaxesSum1 = reviewTaxesSum1.add(totalTaxesCount);
+                                    totalCostSum1 = totalCostSum1.add(Arith.safeAdd(reviewCostCount, totalTaxesCount));
+
+                                    expertSelectedList1.add(expertSelected1);
+                                }
+                                expertSelectedList.add(expertSelected);
+                            }
+                        }
+                    }
+
+                    String[] projectNames = expertReview.getReviewTitle().split("》");
+                    expertData.put("projectName", projectNames.length > 0 ? projectNames[0].substring(1, projectNames[0].length()) : expertReview.getReviewTitle());
+
+                    if (isSplit) {
+                        expertData.put("expertList", expertSelectedList1);
+                        expertData.put("expertList2", expertSelectedList2);
+                    } else {
+                        expertData.put("expertList", expertSelectedList);
+                    }
+                }
+                //专家评审费发放表
+                if ("SIGN_EXPERT_PAY".equals(stageType)) {
+                    expertData.put("reviewCostSum", isSplit ? reviewCostSum1 : expertReview.getReviewCost());
+                    expertData.put("reviewTaxesSum", isSplit ? reviewTaxesSum1 : expertReview.getReviewTaxes());
+                    expertData.put("totalCostSum", isSplit ? totalCostSum1 : Arith.safeAdd(expertReview.getReviewCost(), expertReview.getReviewTaxes()));
+
+                    expertData.put("reviewCostSum2", reviewCostSum2);
+                    expertData.put("reviewTaxesSum2", reviewTaxesSum2);
+                    expertData.put("totalCostSum2", totalCostSum2);
+
+                    expertData.put("payDate", expertReview.getReviewDate() == null ? "" : DateUtils.converToString(expertReview.getReviewDate(), "yyyy年MM月dd日"));
+
+                    if (isSplit) {
+                        file = TemplateUtil.createDoc(expertData, Template.EXPERT_PAYMENT.getKey(), path);
+                    } else {
+                        file = TemplateUtil.createDoc(expertData, Template.EXPERT_PAYMENT_one.getKey(), path);
+                    }
+
+
+                }
+                //专家评分
+                if ("SIGN_EXPERT_SCORE".equals(stageType)) {
+                       /* expertData.put("projectName" , expertReview.getReviewTitle().substring(1,expertReview.getReviewTitle().length()-1));*/
+                    file = TemplateUtil.createDoc(expertData, Template.EXPERT_SCORD.getKey(), path);
+                }
+                break;
+            case "ADDSUPPLETER":
+                //拟补充资料函
+                AddSuppLetter addSuppLetter = addSuppLetterRepo.findById(AddSuppLetter_.id.getName(), businessId);
+                Map<String, Object> addsuppletterData = TemplateUtil.entryAddMap(addSuppLetter);
+                if (Validate.isString(addSuppLetter.getLeaderSignIdeaContent())) {
+                    String leaderSignIdea = addSuppLetter.getLeaderSignIdeaContent().replaceAll("<br>", "").replaceAll("&nbsp;", "");
+                    addsuppletterData.put("leaderSignIdea", leaderSignIdea);
+
+                }
+                file = TemplateUtil.createDoc(addsuppletterData, Template.ADDSUPPLETER.getKey(), path);
+                break;
+
+            case "SIGN_UNIT":
+                //单位评分
+                if ("SIGN_UNIT_SCORE".equals(stageType)) {
+                    UnitScore unitScore = unitScoreRepo.findById(UnitScore_.id.getName(), businessId);
+                    Map<String, Object> unitScoerMap = new HashMap<>();
+                    if (Validate.isObject(unitScore)) {
+                        unitScoerMap.put("coName", unitScore.getCompany().getCoName());
+                        unitScoerMap.put("coPhone", unitScore.getCompany().getCoPhone());
+                        unitScoerMap.put("coPC", unitScore.getCompany().getCoPC());
+                        unitScoerMap.put("coAddress", unitScore.getCompany().getCoAddress());
+                        unitScoerMap.put("score", unitScore.getScore());
+                        unitScoerMap.put("describes", unitScore.getDescribes());
+                    }
+                    file = TemplateUtil.createDoc(unitScoerMap, Template.UNIT_SCORE.getKey(), path);
+                }
+                break;
+            case "EXPERT":
+                //专家申请表
+                ExpertDto expertDto = expertService.findById(businessId);
+                Expert expert = new Expert();
+                BeanCopierUtils.copyPropertiesIgnoreNull(expertDto, expert);
+                Map<String, Object> expertDataMap = TemplateUtil.entryAddMap(expert);
+                WorkExpeDto[] workExpes = new WorkExpeDto[4];
+                ProjectExpeDto[] projectExpes = new ProjectExpeDto[4];
+
+                if (expertDto.getWorkDtoList() != null && expertDto.getWorkDtoList().size() > 0) {
+                    for (int i = 0; i < expertDto.getWorkDtoList().size() && i < 4; i++) {
+                        WorkExpeDto workExpeDto = expertDto.getWorkDtoList().get(i);
+                        workExpeDto.setBeginTimeStr(DateUtils.converToString(workExpeDto.getBeginTime(), "yyyyMMdd"));
+                        workExpeDto.setEndTimeStr(DateUtils.converToString(workExpeDto.getEndTime(), "yyyyMmdd"));
+                        workExpes[i] = workExpeDto;
+                    }
+                }
+                if (expertDto.getProjectDtoList() != null && expertDto.getProjectDtoList().size() > 0) {
+                    for (int i = 0; i < expertDto.getProjectDtoList().size() && i < 4; i++) {
+                        projectExpes[i] = expertDto.getProjectDtoList().get(i);
+                    }
+                }
+                expertDataMap.put("workList", workExpes);
+                expertDataMap.put("projectList", projectExpes);
+
+                file = TemplateUtil.createDoc(expertDataMap, Template.EXPERT.getKey(), path);
+
+                break;
+
+            case "EXPERTOFFER":
+                //专家聘书
+                ExpertOffer expertOffer = expertOfferRepo.findById(ExpertOffer_.id.getName(), businessId);
+                Map<String, Object> expertOfferDataMap = new HashMap<>();
+                expertOfferDataMap.put("name", expertOffer.getExpert().getName());
+                expertOfferDataMap.put("sex", expertOffer.getExpert().getSex());
+                expertOfferDataMap.put("birthDay", expertOffer.getExpert().getBirthDay());
+                expertOfferDataMap.put("idCard", expertOffer.getExpert().getIdCard());
+                expertOfferDataMap.put("qualifiCations", expertOffer.getExpert().getQualifiCations());
+                expertOfferDataMap.put("post", expertOffer.getExpert().getPost());
+                expertOfferDataMap.put("sendCcieDate", expertOffer.getSendCcieDate());
+                expertOfferDataMap.put("period", expertOffer.getPeriod());
+                expertOfferDataMap.put("expertNo", expertOffer.getExpert().getExpertNo());
+                expertOfferDataMap.put("fafang", "深圳市政府投资项目评审中心");
+
+                file = TemplateUtil.createDoc(expertOfferDataMap, Template.EXPERTOFFER.getKey(), path);
+                break;
+
+            case "TOPICINFO":
+                //课题研究
+                TopicInfoDto topicInfoDto = topicInfoService.findById(businessId);
+                //归档
+                if ("TOPICINFO_FILERECORD".equals(stageType)) {
+                    if (topicInfoDto != null) {
+                        FilingDto filingDto = topicInfoDto.getFilingDto();
+                        Map<String, Object> filingData = TemplateUtil.entryAddMap(filingDto);
+                        AddRegisterFileDto[] registerFileDto = new AddRegisterFileDto[5];
+                        if (filingDto != null && filingDto.getRegisterFileDto() != null && filingDto.getRegisterFileDto().size() > 0) {
+                            for (int i = 0; i < filingDto.getRegisterFileDto().size() && i < 5; i++) {
+                                registerFileDto[i] = filingDto.getRegisterFileDto().get(i);
+                            }
+                        }
+                        filingData.put("registerFileList", registerFileDto);
+                        file = TemplateUtil.createDoc(filingData, Template.TOPICINFO_FILERECORD.getKey(), path);
+                    }
+                }
+
+                //工作方案
+                if ("TOPICINFO_WORKPROGRAM".equals(stageType)) {
+                    if (topicInfoDto != null) {
+                        WorkPlanDto workPlanDto = topicInfoDto.getWorkPlanDto();
+                        Map<String, Object> workPlanData = TemplateUtil.entryAddMap(workPlanDto);
+                        workPlanData.put("createdDate", DateUtils.converToString(workPlanDto.getCreatedDate(), "yyyy年MM月dd日"));
+                        String rbDateStr = "";
+                        String address = "";
+                        if (workPlanDto != null && workPlanDto.getRoomDtoList() != null && workPlanDto.getRoomDtoList().size() > 0) {
+                            rbDateStr = workPlanDto.getRoomDtoList().get(0).getRbDate();
+                            address = workPlanDto.getRoomDtoList().get(0).getAddressName();
+                        }
+                        workPlanData.put("rbDateStr", rbDateStr);
+                        workPlanData.put("addRess", address);
+                        ExpertDto[] expeDtos = new ExpertDto[10];
+                        if (workPlanDto != null && workPlanDto.getExpertDtoList() != null && workPlanDto.getExpertDtoList().size() > 0) {
+                            for (int i = 0; i < workPlanDto.getExpertDtoList().size() && i < 10; i++) {
+                                expeDtos[i] = workPlanDto.getExpertDtoList().get(i);
+                            }
+                        }
+                        workPlanData.put("expertList", expeDtos);
+                        file = TemplateUtil.createDoc(workPlanData, Template.TOPICINFO_WORKPROGRAM.getKey(), path);
+                    }
+                }
+
+                break;
+
+            case "MONTHLY":
+                //月报简报
+                AddSuppLetterDto addSuppLetterDto = addSuppLetterService.findById(businessId);
+                Map<String, Object> addSuppleterData = TemplateUtil.entryAddMap(addSuppLetterDto);
+                file = TemplateUtil.createDoc(addSuppleterData, Template.MONTHLY.getKey(), path);
+                break;
+
+            case "ARCHIVES":
+                //借阅档案
+                ArchivesLibraryDto archivesLibraryDto = archivesLibraryService.findById(businessId);
+                Map<String, Object> archivesData = TemplateUtil.entryAddMap(archivesLibraryDto);
+                file = TemplateUtil.createDoc(archivesData, Template.ARCHIVES_DETAIL.getKey(), path);
+                break;
+
+            //补充资料清单
+            case "ADDSUPPLEFILE":
+                Sign signss = signRepo.findById(Sign_.signid.getName(), businessId);
+                List<AddRegisterFile> addRegisterFileList2 = addRegisterFileService.findByBusIdAndBusType(businessId, 3);
+                Map<String, Object> addFileData = new HashMap<>();
+                addFileData.put("addFileList", addRegisterFileList2);
+                addFileData.put("signNum", signss.getSignNum());
+                addFileData.put("projectname", signss.getProjectname());
+                addFileData.put("builtcompanyName", signss.getBuiltcompanyName());
+                addFileData.put("projectcode", signss.getProjectcode());
+                addFileData.put("strDate", DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
+                file = TemplateUtil.createDoc(addFileData, Template.ADD_REGISTER_FILE.getKey(), path);
+
+                break;
+
+            default:
+                ;
+        }
+        return file;
+    }
+
+    /**
+     * 导出功能
+     */
+    @RequiresAuthentication
+    @RequestMapping(name = "导出" , path = "exportInfo", method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.OK)
+    public void exportInfo(@RequestParam String businessId, @RequestParam String businessType, @RequestParam String stageType,@RequestParam String fileName , HttpServletResponse response){
+        ServletOutputStream ouputStream= null;
+        InputStream inStream = null;
+        try {
+            String path = SysFileUtil.getUploadPath() + File.separator + Tools.generateRandomFilename() + Template.WORD_SUFFIX.getKey();
+            File file = createFile(businessId , businessType , stageType , path);
+            ResponseUtils.setResponeseHead(Template.WORD_SUFFIX.getKey(), response);
+            response.setHeader("Content-Disposition", "attachment; filename="
+                    + new String(fileName.getBytes("GB2312"), "ISO8859-1"));
+            //获取相对路径
+            int bytesum = 0;
+            int byteread = 0;
+            inStream = new FileInputStream(file); //读入原文件
+             ouputStream = response.getOutputStream();
+            byte[] buffer = new byte[1444];
+            while ( (byteread = inStream.read(buffer)) != -1) {
+                bytesum += byteread; //字节数 文件大小
+                ouputStream.write(buffer, 0, byteread);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (ouputStream != null) {
+                    ouputStream.close();
+                }
+                if (inStream != null) {
+                    inStream.close();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
