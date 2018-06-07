@@ -1,6 +1,7 @@
 package cs.common.utils;
 
 
+import cs.common.constants.Constant;
 import cs.domain.sys.Log;
 import cs.domain.sys.User;
 import cs.service.sys.LogService;
@@ -101,7 +102,7 @@ public class SMSUtils {
             if (!isInteger(phone)) {
                 logger.info("seekSMS: 发送的手机号码不是数字类型. " + user.getUserMPhone());
                 //记录不手机号码不是数字的用户
-                insertLog(user.getDisplayName(), "10001", user.getDisplayName() + "的手机号码不是数字类型", logService);
+                insertLog(user.getDisplayName(), "10001", user.getDisplayName() + "的手机号码不是数字类型", logService,false);
             }
         } else if (receiverList.size() > 1) {
             for (int i = 0, l = receiverList.size(); i < l; i++) {
@@ -110,7 +111,7 @@ public class SMSUtils {
                     if (!isInteger(user.getUserMPhone())) {
                         logger.info("seekSMS: 发送的手机号码不是数字类型. " + user.getUserMPhone());
                         //记录不手机号码不是数字的用户
-                        insertLog(user.getDisplayName(), "10001", user.getDisplayName() + "的手机号码不是数字类型", logService);
+                        insertLog(user.getDisplayName(), "10001", user.getDisplayName() + "的手机号码不是数字类型", logService,false);
                         break;
                     }
                     if (i == receiverList.size() - 1) {
@@ -123,18 +124,18 @@ public class SMSUtils {
                 } else {
                     //记录不手机号码为空的用户
                     logger.info("seekSMS: 发送的手机号码不为空 ");
-                    insertLog(user.getDisplayName(), "10002", user.getDisplayName() + "的手机号码不为空", logService);
+                    insertLog(user.getDisplayName(), "10002", user.getDisplayName() + "的手机号码不为空", logService,false);
                 }
             }
         }
         if (StringUtil.isEmpty(phone)) {
-            insertLog(userName, "10011", userName + " 的手机号码为空", logService);
+            insertLog(userName, "10011", userName + " 的手机号码为空", logService,false);
         }
         //验证短信内容
         TOKEN = getHttpSMS(logService);
 
         if (TOKEN ==null) {
-            insertLog(userName, "10015", userName + ": 获取Token为空 ", logService);
+            insertLog(userName, "10015", userName + ": 获取Token为空 ", logService,false);
             return false;
         }
         CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -158,14 +159,14 @@ public class SMSUtils {
             // 判断返回状态是否为200
             if (response.getStatusLine().getStatusCode() == 200) {
                 String content = EntityUtils.toString(response.getEntity(), "UTF-8");
-                insertLog(userName, "" + response.getStatusLine().getStatusCode(), userName + ": 发送短息成功", logService);
+                insertLog(userName, "" + response.getStatusLine().getStatusCode(), userName + ": 发送短息成功", logService,true);
                 logger.info("seekSMS: 发送成功.手机: " + phone + " 内容: " + seekContent);
                 return true;
             }
 
         } catch (Exception e) {
             logger.info("seekSMS 发送短息服务器异常。" + e.getMessage());
-            insertLog(userName, "10010", userName + ": 发送短息异常: " + e.getMessage(), logService);
+            insertLog(userName, "10010", userName + ": 发送短息异常: " + e.getMessage(), logService,false);
         } finally {
             try {
                 httpClient.close();
@@ -185,7 +186,7 @@ public class SMSUtils {
         return false;
     }
 
-    public static void insertLog(String userName, String reCode, String msg, LogService logService) {
+    public static void insertLog(String userName, String reCode, String msg, LogService logService,boolean success) {
 //        LogService logService = SpringContextUtil.getBean("logService");
         if (logService != null) {
             Log log = new Log();
@@ -193,7 +194,11 @@ public class SMSUtils {
             log.setUserName(userName);
             log.setLogCode(reCode);
             log.setMessage(msg);
-            log.setResult(reCode);
+            if(success){
+                log.setResult(Constant.EnumState.YES.getValue());
+            }else{
+                log.setResult(Constant.EnumState.NO.getValue());
+            }
             log.setBuninessType("SMS_TYPE");
             logService.save(log);
         }
@@ -239,11 +244,11 @@ public class SMSUtils {
             httpClient.close();
         } catch (Exception e) {
             logger.info("getHttpSMS 获取token异常. " + e.getMessage());
-            insertLog("", "10004", "获取短信Token失败: " + e.getMessage(), logService);
+            insertLog("", "10004", "获取短信Token失败: " + e.getMessage(), logService,false);
         } finally {
 
         }
-        insertLog("", tempCode, "获取短信平台数据异常请看返回code", logService);
+        insertLog("", tempCode, "获取短信平台数据异常请看返回code", logService,false);
         return null;
     }
 

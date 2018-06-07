@@ -702,7 +702,7 @@ public class UserServiceImpl implements UserService {
                         //登陆日志
                         Log log = new Log();
                         log.setUserName(user.getDisplayName());
-                        log.setResult("9");
+                        log.setResult(Constant.EnumState.YES.getValue());
                         log.setCreatedDate(date);
                         log.setMessage("登陆成功");
                         logService.save(log);
@@ -714,7 +714,7 @@ public class UserServiceImpl implements UserService {
                         //登陆日志
                         Log log = new Log();
                         log.setUserName(user.getDisplayName());
-                        log.setResult("0");
+                        log.setResult(Constant.EnumState.NO.getValue());
                         log.setCreatedDate(date);
                         log.setMessage("用户名或密码错误");
                         logService.save(log);
@@ -733,7 +733,7 @@ public class UserServiceImpl implements UserService {
             HttpServletRequest req = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
             /*loginLog.setDisplayName("用户不存在");*/
             Log log = new Log();
-            log.setResult("0");
+            log.setResult(Constant.EnumState.NO.getValue());
             log.setCreatedDate(date);
             log.setMessage("用户不存在");
             logService.save(log);
