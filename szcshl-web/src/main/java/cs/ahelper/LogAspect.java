@@ -18,7 +18,10 @@ import org.aspectj.lang.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -144,18 +147,29 @@ public class LogAspect {
             //浏览器信息
             log.setBrowserInfo(UserAgentUtils.getBrowserInfo(request));
             //参数信息
-            String params = "";
+            StringBuffer sf = new StringBuffer();
             //1、处理request中入参，但获取不到注解的bean
             Enumeration em = request.getParameterNames();
             while (em.hasMoreElements()) {
                 String name = (String) em.nextElement();
                 String value = request.getParameter(name);
-                params += name + "=" + value + "，";
+                sf.append(name + "=" + value + "，");
             }
-            params += ";";
+            sf.append(";");
 
-
-            log.setParamsInfo("参数:" + params);
+            //方法参数
+            Object[] args = joinPoint.getArgs();
+            if(args != null && args.length > 0){
+                for (Object object : args) {
+                    if (object != null) {
+                        if (object instanceof MultipartFile || object instanceof ServletRequest || object instanceof ServletResponse) {
+                            continue;
+                        }
+                        sf.append(JSON.toJSONString(object)).append(",");
+                    }
+                }
+            }
+            log.setParamsInfo("参数:" + sf.toString());
             if (Validate.isObject(resultObj)) {
                 if(resultObj instanceof ResultMsg){
                     ResultMsg resultMsg = (ResultMsg) resultObj;
