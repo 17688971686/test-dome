@@ -930,7 +930,7 @@
                     filterable: false,
                     template : function(item){
                         if(!item.aOrgName){
-                            return item.mOrgName;
+                            return item.mOrgName ? item.mOrgName : "";
                         }else{
                             return item.mOrgName + "," + item.aOrgName;
                         }

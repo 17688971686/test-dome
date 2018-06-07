@@ -217,7 +217,8 @@
                     vm.drawingFile = [];//图纸资料
                     vm.otherFile = [];//归档的其他资料
                     vm.model.registerFileDtoDtoList.forEach(function (registerFile, x) {
-                        if (registerFile.businessType == 3) {
+                        if (registerFile.businessType == 3 || registerFile.businessType =="5"
+                            ||registerFile.businessType =="6"||registerFile.businessType =="7") {
                             vm.supply.push(registerFile);
                         } else if (registerFile.businessType == 2) {
                             vm.drawingFile.push(registerFile);
@@ -1139,7 +1140,20 @@
 
         //生成发文模板
         vm.dispatchTemplate = function () {
-            signSvc.createDispatchTemplate(vm);
+            signSvc.createDispatchTemplate(vm , function(data){
+                if (data.flag || data.reCode == 'ok') {
+                    bsWin.success(data.reMsg);
+                    sysfileSvc.findByMianId(vm.model.signid, function (data) {
+                        if (data || data.length > 0) {
+                            vm.showFlag.tabSysFile = true;
+                            vm.sysFileList = data;
+                            sysfileSvc.initZtreeClient(vm, $scope);//树形图
+                        }
+                    });
+                } else {
+                    bsWin.alert(data.reMsg);
+                }
+            });
         }
 
         //监听是否通过

@@ -1,0 +1,397 @@
+<#assign path=request.contextPath />
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+
+<div  class="well well-sm conttent_list" style="background: white;min-height:960px;margin-bottom: 50px;" >
+    <ol class="breadcrumb">
+        <li><a href="#/expertList">党务管理</a></li>
+        <li class="active">{{vm.title}}</li>
+    </ol>
+    <div class="toolbar">
+        <button class="btn btn-sm btn-success"  ng-click="vm.saveParty()" ng-disabled="vm.isSubmit" >
+            <span class="glyphicon glyphicon-ok"></span>保存
+        </button>
+    </div>
+
+    <ul id="myTab" class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" for-div="partyEdit"> 信息采集表</a></li>
+        <li  ><a  data-toggle="tab"  for-div="partyEdit_sup">补充表</a></li>
+    </ul>
+
+    <div class="tab-content" style="background:white;">
+        <div class="tab-pane fade in active" style="background:white;" id="partyEdit">
+            <form id="form" name="form">
+                <table class="" style="width: 70%;text-align: center;">
+                    <caption class="text-center"> <h3><strong>深圳市政府投资项目党员信息采集表</strong></h3></caption>
+
+                    <tr>
+                        <td class="text-center" width="10%">姓名<span class="required">*</span></td>
+                        <td width="20%">
+                            <input type="text"  maxlength="200" class="form-control input-xm"
+                                   name="pmName" id="pmName" ng-model="vm.party.pmName" data-val-required="必填"
+                                   data-val="true"/>
+                            <span data-valmsg-for="pmName" data-valmsg-replace="true" class="errors"></span>
+                        </td>
+                        <td class="text-center" width="10%">性别<span class="required">*</span></td>
+                        <td width="20%">
+                            <select ng-model="vm.party.pmSex" class="form-control select-sm"
+                                    name="pmSex" id="pmSex" data-val-required="必填"
+                                    data-val="true">
+                                <option value="">请选择</option>
+                                <option ng-repeat="x in DICT.SEX.dicts"
+                                        ng-selected="vm.party.pmSex == x.dictName|orderBy:'dictName'" value="{{x.dictName}}">
+                                    {{x.dictName}}
+                                </option>
+                            </select>
+                            <span data-valmsg-for="pmSex" data-valmsg-replace="true" class="errors"></span>
+                        </td>
+                        <td class="text-center"  width="10%">民族<span class="required">*</span></td>
+                        <td width="20%" class="text-left">
+                            <select class="form-control input-xm " style="width: 100%"
+                                    name="pmNation" id="pmNation"ng-model="vm.party.pmNation">
+                                <option value="">请选择</option>
+                                <option ng-repeat="x in DICT.NATION.dicts"
+                                        ng-selected="vm.party.pmNation == x.dictKey" value="{{x.dictKey}}">
+                                    {{x.dictName}}
+                                </option>
+                            </select>
+                            <span data-valmsg-for="pmNation" data-valmsg-replace="true" class="errors"></span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center"   width="10%">身份证号<span class="required">*</span></td>
+                        <td colspan="3">
+                            <input type="text"  maxlength="200" class="form-control input-xm "
+                                   data-val-regex="身份证格式不正确"
+                                   data-val-regex-pattern="[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)"
+                                   data-val="true" data-val-required="必填"
+                                   name="pmIDCard" id="pmIDCard" ng-model="vm.party.pmIDCard"/>
+                            <span data-valmsg-for="pmIDCard" data-valmsg-replace="true" class="errors"></span>
+                        </td>
+                        <td class="text-center"   width="10%">出生年月<span class="required">*</span></td>
+                        <td width="10%"  class="text-left">
+                            <input type="text" name="pmBirthday" id="pmBirthday" style="width:  100%;"
+                                   style="width: 100%;" class="form-control input-xm " kendo-date-picker k-format="'yyyy-MM-dd'"
+                                   ng-model="vm.party.pmBirthday" data-val-date="必须为日期" data-val="true" data-val-required="必填">
+                            <span data-valmsg-for="pmBirthday" data-valmsg-replace="true" class="errors"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-center"   width="10%">家庭住址<br/>（具体到门牌号）<span class="required">*</span></td>
+                        <td colspan="3">
+                            <input type="text"  maxlength="200" class="form-control input-xm "
+                                   name="pmAddress" id="pmAddress" ng-model="vm.party.pmAddress" data-val="true" data-val-required="必填"/>
+                            <span data-valmsg-for="pmAddress" data-valmsg-replace="true" class="errors"></span>
+                        </td>
+                        <td class="text-center"   width="10%">人员类别<span class="required">*</span></td>
+                        <td width="10%" class="text-left">
+                            <select name="pmCategory" id="pmCategory" style="width: 100%"
+                                    ng-model="vm.party.pmCategory" class="form-control input-xm ">
+                                <option value="">请选择</option>
+                                <option value="1">正式党员</option>
+                                <option value="2">预备党员</option>
+                            </select>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td class="text-center" width="15%">手机号</td>
+                        <td width="10%">
+                            <input type="text"  maxlength="200" class="form-control input-xm "
+                                   name="pmPhone" id="pmPhone" ng-model="vm.party.pmPhone"
+                                   data-val-regex="手机号码格式不正确" data-val-regex-pattern="1[34578]\d{9}"/>
+                        </td>
+                        <td class="text-center" width="10%">固定电话</td>
+                        <td width="10%" >
+                            <input type="text"  maxlength="200" class="form-control input-xm "
+                                   name="pmTel" id="pmTel" ng-model="vm.party.pmTel" />
+                        </td>
+                        <td class="text-center"   width="10%">学历</td>
+                        <td width="10%"  class="text-left">
+                            <select class="form-control input-xm " style="width:  100%;"
+                                    name="pmEducation" id="pmEducation" ng-model="vm.party.pmEducation" >
+                                <option vlaue="">请选择</option>
+                                <option value="BSYJS">博士研究生</option>
+                                <option value="SSYJS">硕士研究生</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+
+                        <td class="text-center"   width="10%">党籍状态<span class="required">*</span></td>
+                        <td width="10%" class="text-left">
+                            <select name="pmPartyState" id="pmPartyState" style="width: 100%"
+                                    ng-model="vm.party.pmPartyState" class="form-control input-xm " data-val="true" data-val-required="必填">
+                                <option value="">请选择</option>
+                                <option value="1" ng-selected="vm.party.pmPartyState == '1'">正常</option>
+                                <option value="2" ng-selected="vm.party.pmPartyState == '2'">停用</option>
+                            </select>
+                            <span data-valmsg-for="pmPartyState" data-valmsg-replace="true" class="errors"></span>
+                        </td>
+                        <td  class="text-center"   width="10%"> 入党日期<span class="required">*</span></td>
+                        <td>
+                            <input type="text" name="pmJoinPartyDate" id="pmJoinPartyDate" style="width: 100%;" class="form-control input-xm "
+                                   kendo-date-picker k-format="'yyyy-MM-dd'"
+                                   ng-model="vm.party.pmJoinPartyDate" data-val-date="必须为日期" data-val="true" data-val-required="必填">
+                            <span data-valmsg-for="pmJoinPartyDate" data-valmsg-replace="true" class="errors"></span>
+                        </td>
+                        <td  class="text-center"   width="10%"> 转正日期<span class="required">*</span></td>
+                        <td class="text-left">
+                            <input type="text" name="pmTurnToPatryDate" id="pmTurnToPatryDate" class="form-control input-xm "
+                                   kendo-date-picker k-format="'yyyy-MM-dd'" style="width:  100%;"
+                                   ng-model="vm.party.pmTurnToPatryDate" data-val-date="必须为日期" data-val="true" data-val-required="必填">
+                            <span data-valmsg-for="pmTurnToPatryDate" data-valmsg-replace="true" class="errors"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-center"   width="10%">所在党支部<br/>（填写全称）</td>
+                        <td colspan="5">
+                            <input type="text"  maxlength="200" class="form-control input-xm "
+                                   name="pmPartyBranch" id="pmPartyBranch" ng-model="vm.paty.pmPartyBranch"/>
+                        </td>
+
+                    </tr>
+
+                    <tr>
+                        <td  class="text-center"   width="10%">是否为失联党员</td>
+                        <td>
+                            <input type="checkbox" name="isLossParty" id="isLossParty"
+                                   ng-model="vm.party.isLossParty" value="9" ng-true-value="9"/>
+                        </td>
+                        <td  class="text-center"   width="10%">失联日期</td>
+                        <td>
+                            <input type="text" name="lossDate" id="lossDate" style="width: 100%;" class="form-control input-xm "
+                                   kendo-date-picker k-format="'yyyy-MM-dd'"
+                                   ng-model="vm.party.lossDate" data-val-date="必须为日期" data-val="true" data-val-required="必填">
+                        </td>
+                        <td  class="text-center"   width="10%"></td>
+                        <td  class="text-center"   width="10%"></td>
+                    </tr>
+                    <tr>
+                        <td  class="text-center"   width="10%">是否为流动党员</td>
+                        <td>
+                            <input type="checkbox" name="isMobileParty" id="isMobileParty"
+                                   ng-model="vm.party.isMobileParty" value="9" ng-true-value="9"/>
+                        </td>
+
+                        <td  class="text-center"   width="10%">外出流向</td>
+                        <td>
+                            <input type="text" name="goOutTo" id="goOutTo" ng-model="vm.party.goOutTo" class="form-control input-xm "/>
+                        </td>
+                        <td  class="text-center"   width="10%"></td>
+                        <td  class="text-center"   width="10%"></td>
+                    </tr>
+                    <tr>
+                        <td  class="text-center"   width="10%">党员（签字）</td>
+                        <td colspan="5" style="min-height: 50px;">
+                            <div style="min-height: 50px;">
+                                <p></p>
+                                <p></p>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td  class="text-center"   width="10%">党支部书记（签字）</td>
+                        <td colspan="5" style="min-height: 50px;">
+                            <div style="min-height: 50px;">
+                                <p></p>
+                                <p></p>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td  class="text-center"   width="10%">信息采集员（签字）</td>
+                        <td colspan="5" >
+                            <div style="min-height: 50px;">
+                                <p></p>
+                                <p></p>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td  class="text-center"   width="10%">基层党委（签字）</td>
+                        <td colspan="5" style="min-height: 50px;">
+                            <div style="min-height: 50px;">
+                                <p></p>
+                                <p></p>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+
+        <div class="well well-sm tab-pane fade" style="background:white;" id="partyEdit_sup" >
+            <form id="form" name="form">
+                <table class="" style="width: 70%;text-align: center;">
+                    <caption class="text-center"> <h3><strong>深圳市政府投资项目党员信息采集表补充</strong></h3></caption>
+
+                    <tr>
+                        <td class="text-center" width="15%">姓名</td>
+                        <td width="30%">
+                            <input type="text"  maxlength="200" class="form-control input-xm "
+                                   name="pmName" id="pmName" ng-model="vm.party.pmName"/>
+                        </td>
+                        <td class="text-center"   width="15%">籍贯</td>
+                        <td width="30%">
+                            <input type="text"  maxlength="200" class="form-control input-xm "
+                                   name="nativePlace" id="nativePlace" ng-model="vm.party.nativePlace"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td  class="text-center"   width="10%">是否农民工</td>
+                        <td colspan="3" class="text-left">
+                    <span style="margin-right: 30px;">
+                        <input type="checkbox" name="isPeasantWorker" id="isPeasantWorker"
+                               ng-model="vm.party.isPeasantWorker" value="9" ng-true-value="9"/>
+                    </span>
+                            <span>
+                        (户籍在农村，主要在非农业生产领域，采取受雇或自营的形式，并以生产经营收入为主要收入来源的人群)
+                    </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td  class="text-center"   width="10%">专业技术职务</td>
+                        <td colspan="3">
+                            <input type="text"  maxlength="200" class="form-control input-xm "
+                                   name="technicalPosition" id="technicalPosition" ng-model="vm.party.technicalPosition"/>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td  class="text-center"   width="10%">行政职务</td>
+                        <td>
+                            <select class="form-control input-xm "  style="width: 200px;"
+                                    name="administrativeDuty" id="administrativeDuty" ng-model="vm.party.administrativeDuty">
+                                <option value="">请选择</option>
+                                <option ng-repeat="x in DICT.XZZW.dicts"
+                                        ng-selected="vm.party.administrativeDuty == x.dictKey" value="{{x.dictKey}}">
+                                    {{x.dictName}}
+                                </option>
+                            </select>
+                        </td>
+
+                        <td  class="text-center"   width="10%">其他</td>
+                        <td>
+                            <input type="text"  maxlength="200" class="form-control input-xm "/>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td  class="text-center"   width="10%">行政级别</td>
+                        <td colspan="3" class="text-left">
+                            <select class="form-control input-xm " style="width: 200px;"
+                                    name="administrativeRank" id="administrativeRank" ng-model="vm.party.administrativeRank">
+                                <option value="">请选择</option>
+                                <option ng-repeat="x in DICT.XZJB.dicts"
+                                        ng-selected="vm.party.administrativeRank == x.dictKey" value="{{x.dictKey}}">
+                                    {{x.dictName}}
+                                </option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td  class="text-center"   width="10%">党代表类别</td>
+                        <td colspan="3" class="text-left">
+                            <span style="margin-right: 30px;"> 省（区、市）代表 <input type="checkbox" name="partyDelegateType"/></span>
+                            <span style=" margin-right: 30px;"> 市（州）代表 <input type="checkbox" name="partyDelegateType"/></span>
+                            <span style=" margin-right: 30px;"> 县（市、区）代表 <input type="checkbox" name="partyDelegateType"/></span>
+                            <span> 乡（镇）代表 <input type="checkbox" name="partyDelegateType"/></span>
+
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-center"   width="10%">失去联系情形</td>
+                        <td colspan="3" class="text-left">
+                            <select style="width:200px;"  class="form-control input-xm " name="lossCondition"
+                                    id="lossCondition" ng-model="vm.party.lossCondition">
+                                <option value="">请选择</option>
+                                <option ng-repeat="x in DICT.LXDWLB.dicts"
+                                        ng-selected="vm.party.outflowToUnitType == x.dictKey" value="{{x.dictKey}}">
+                                    {{x.dictName}}
+                                </option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td  class="text-center"   width="10%">流出党员<br/>流向单位类别</td>
+                        <td  class="text-left">
+                            <select style="width: 200px;"  class="form-control input-xm " name="outflowToUnitType" id="outflowToUnitType"
+                            ng-model="vm.party.outflowToUnitType">
+                                <option value="">请选择</option>
+                                <option ng-repeat="x in DICT.LXDWLB.dicts"
+                                        ng-selected="vm.party.outflowToUnitType == x.dictKey" value="{{x.dictKey}}">
+                                    {{x.dictName}}
+                                </option>
+                            </select>
+                        </td>
+                        <td  class="text-center"   width="10%">出国日期</td>
+                        <td class="text-left">
+                            <input type="text" name="goAbroadDate" id="goAbroadDate" style="width: 50%;"
+                                   class="form-control input-xm " kendo-date-picker k-format="'yyyy-MM-dd'"
+                                   ng-model="vm.party.goAbroadDate" data-val-date="必须为日期" >
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-center"   width="10%">出国情况</td>
+                        <td colspan="3" class="text-left" >
+
+                        <textarea rows="2" cols="100" name="goAbroadCondition"
+                                  id="goAbroadCondition" ng-model="vm.party.goAbroadCondition"></textarea>
+                            <p>（目前仍在国（境）外的及本年出国（境）定居的）</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-center"   width="10%">出国原因</td>
+                        <td colspan="3" class="text-left">
+                        <textarea rows="4" cols="100" name="goAbroadCause" id="goAbroadCause"
+                                  vm.model="vm.party.goAbroadCause"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td  class="text-center"   width="10%">党员（签字）</td>
+                        <td colspan="3" style="min-height: 50px;">
+                            <div style="min-height: 50px;">
+                                <p></p>
+                                <p></p>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td  class="text-center"   width="10%">党支部书记（签字）</td>
+                        <td colspan="3" style="min-height: 50px;">
+                            <div style="min-height: 50px;">
+                                <p></p>
+                                <p></p>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td  class="text-center"   width="10%">信息采集员（签字）</td>
+                        <td colspan="3" >
+                            <div style="min-height: 50px;">
+                                <p></p>
+                                <p></p>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td  class="text-center"   width="10%">基层党委（签字）</td>
+                        <td colspan="3" style="min-height: 50px;">
+                            <div style="min-height: 50px;">
+                                <p></p>
+                                <p></p>
+                            </div>
+                        </td>
+                    </tr>
+
+                </table>
+            </form>
+        </div>
+
+    </div>
+
+
+</div>
