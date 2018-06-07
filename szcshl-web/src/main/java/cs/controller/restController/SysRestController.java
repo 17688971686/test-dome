@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import cs.ahelper.HttpClientOperate;
 import cs.ahelper.HttpResult;
 import cs.ahelper.IgnoreAnnotation;
+import cs.ahelper.LogMsg;
 import cs.common.FGWResponse;
 import cs.common.IFResultCode;
 import cs.common.ResultMsg;
@@ -63,6 +64,7 @@ public class SysRestController {
      * @return
      */
     @RequestMapping(name = "项目签收信息", value = "/pushProject", method = RequestMethod.POST)
+    @LogMsg(module = "系统接口【委里推送数据接口】",logLevel = "1")
     public synchronized ResultMsg pushProject(@RequestParam String signDtoJson) {
         ResultMsg resultMsg = null;
         SignDto signDto = JSON.parseObject(signDtoJson, SignDto.class);
@@ -71,12 +73,17 @@ public class SysRestController {
         try{
             //json转出对象
             resultMsg = signRestService.pushProject(signDto,true);
+
         }catch (Exception e){
             resultMsg = new ResultMsg(false,IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(),e.getMessage());
             e.printStackTrace();
         }
+        if(resultMsg.isFlag()){
+            // AAAGAN 收文失败，发送短信（但龙，郭东东）项目名称（委里收文编号）
+            SMSUtils.seekSMSThread(signRestService.getListUser("收文失败"),"\n"+"项目:"+signDto.getProjectname()+"("+signDto.getFilecode()+")收文失败。\n"+"  【评审中心项目管理系统】",  logService);
+        }
 
-        //添加日记记录
+        /*//添加日记记录
         Log log = new Log();
         log.setCreatedDate(new Date());
         log.setUserName(SUPER_ACCOUNT);
@@ -85,15 +92,11 @@ public class SysRestController {
         log.setMessage(msg+resultMsg.getReMsg());
         log.setBuninessId(Validate.isObject(resultMsg.getReObj()) ? resultMsg.getReObj().toString() : "");
         log.setBuninessType(Constant.BusinessType.SIGN.getValue());
-        if(resultMsg.isFlag()){
-            // AAAGAN 收文失败，发送短信（但龙，郭东东）项目名称（委里收文编号）
-            SMSUtils.seekSMSThread(signRestService.getListUser("收文失败"),"\n"+"项目:"+signDto.getProjectname()+"("+signDto.getFilecode()+")收文失败。\n"+"  【评审中心项目管理系统】",  logService);
-        }
         log.setResult(resultMsg.isFlag() ? Constant.EnumState.YES.getValue() : Constant.EnumState.NO.getValue());
         log.setLogger(this.getClass().getName() + ".pushProject");
         //优先级别高
         log.setLogLevel(Constant.EnumState.PROCESS.getValue());
-        logService.save(log);
+        logService.save(log);*/
 
         resultMsg.setReObj(null);
         return resultMsg;
@@ -103,7 +106,7 @@ public class SysRestController {
         String str= null;
         /*
         * 收文失败，发送短信（但龙，郭东东）项目名称（委里收文编号）
-发文失败，发送短信（但龙，陈春燕）项目名称（发文号）
+          发文失败，发送短信（但龙，陈春燕）项目名称（发文号）
         * */
         if ("收文失败".equals(type)){
             type = type+",项目名称: "+numInfo;
@@ -120,6 +123,7 @@ public class SysRestController {
      */
     @RequestMapping(name = "项目预签收信息", value = "/getPreSign", method = RequestMethod.GET)
     @ResponseBody
+    @LogMsg(module = "系统接口【通过收文编号获取项目信息】",logLevel = "1")
     public synchronized ResultMsg findPreSignByfileCode(@RequestParam String fileCode,@RequestParam String signType){
         String signPreInfo = "";
         ResultMsg resultMsg = null;
@@ -144,7 +148,7 @@ public class SysRestController {
                 msg = "该项目信息不存在请核查！";
                 resultMsg = new ResultMsg(false,IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(),msg);
             }
-            //添加日记记录
+            /*//添加日记记录
             Log log = new Log();
             log.setCreatedDate(new Date());
             log.setUserName(SUPER_ACCOUNT);
@@ -157,7 +161,7 @@ public class SysRestController {
             log.setLogger(this.getClass().getName() + ".pushProject");
             //优先级别高
             log.setLogLevel(Constant.EnumState.PROCESS.getValue());
-            logService.save(log);
+            logService.save(log);*/
         }catch (Exception e){
             resultMsg = new ResultMsg(false,IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(),e.getMessage());
             e.printStackTrace();
