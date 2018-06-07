@@ -72,21 +72,6 @@
                         }
                      },
                 }, {
-                    field: "message",
-                    title: "日志内容",
-                    filterable: false,
-                    width: 400,
-                }, {
-                    field: "module",
-                    title: "所属模块",
-                    filterable: false,
-                    width: 200,
-                }, {
-                    field: "logger",
-                    title: "所在方法",
-                    filterable: false,
-                    width: 350,
-                }, {
                     field: "userName",
                     title: "操作者",
                     width: 80,
@@ -97,6 +82,43 @@
                     width: 170,
                     filterable: false,
                     format: "{0:yyyy/MM/dd HH:mm:ss}"
+                } ,{
+                    field: "ipAdd",
+                    title: "IP地址",
+                    filterable: false,
+                    width: 130,
+                }, {
+                    field: "browserInfo",
+                    title: "浏览器",
+                    filterable: false,
+                    width: 120,
+                }, {
+                    field: "module",
+                    title: "操作描述",
+                    filterable: false,
+                    width: 200,
+                }, {
+                    field: "",
+                    title: "结果",
+                    filterable: false,
+                    width: 80,
+                    template:function(item){
+                        if(item.result){
+                            if(item.result == "9"){
+                                return '<span class="label label-success">成功</span>';
+                            }else {
+                                return '<span class="label label-danger">失败</span>';
+                            }
+                        }else{
+                            return "";
+                        }
+                    },
+                },{
+                    field: "message",
+                    title: "日志内容",
+                    filterable: false,
+                    width: 400,
+                    attributes: {style: "white-space:nowrap;text-overflow:ellipsis;"},
                 }
             ];
             // End:column

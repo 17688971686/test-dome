@@ -1,5 +1,6 @@
 package cs.controller.flow;
 
+import cs.ahelper.LogMsg;
 import cs.ahelper.MudoleAnnotation;
 import cs.common.constants.Constant;
 import cs.common.constants.Constant.MsgCode;
@@ -447,8 +448,9 @@ public class FlowController {
 
     @RequiresAuthentication
     @RequestMapping(name = "流程提交", path = "commit", method = RequestMethod.POST)
-    public @ResponseBody
-    ResultMsg flowCommit(@RequestBody FlowDto flowDto){
+    @LogMsg(module = "流程提交",logLevel = "1")
+    @ResponseBody
+    public ResultMsg flowCommit(@RequestBody FlowDto flowDto){
         ResultMsg resultMsg = null;
         String errorMsg = "";
         String module="";
@@ -524,7 +526,7 @@ public class FlowController {
             log.info("流程提交异常："+errorMsg);
             resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"操作异常，错误信息已记录，请联系管理员查看！");
         }
-        //添加日记记录
+        /*//添加日记记录
         Log log = new Log();
         log.setCreatedDate(new Date());
         log.setUserName(SessionUtil.getDisplayName());
@@ -536,7 +538,7 @@ public class FlowController {
         log.setLogger(this.getClass().getName()+".flowCommit");
         //优先级别高
         log.setLogLevel(Constant.EnumState.PROCESS.getValue());
-        logService.save(log);
+        logService.save(log);*/
         //腾讯通消息处理
         rtxService.dealPoolRTXMsg(flowDto.getTaskId(),resultMsg,processInstance,smsContent.get(projectOrTask,processInstance.getName()));
         return resultMsg;

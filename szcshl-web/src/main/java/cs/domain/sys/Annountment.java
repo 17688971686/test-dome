@@ -104,6 +104,11 @@ public class Annountment extends DomainBase {
     @Column(columnDefinition="date")
     private Date deptSleaderDate;
 
+    /**
+     * 是否需要流程
+     */
+    @Column(columnDefinition = "varchar(2)")
+    private String needFlow;
 
     /**
      * 主任ID
@@ -134,6 +139,15 @@ public class Annountment extends DomainBase {
      */
     @Column(columnDefinition = "VARCHAR(2)")
     private String appoveStatus;
+
+
+    public String getNeedFlow() {
+        return needFlow;
+    }
+
+    public void setNeedFlow(String needFlow) {
+        this.needFlow = needFlow;
+    }
 
     public String getAnId() {
         return anId;

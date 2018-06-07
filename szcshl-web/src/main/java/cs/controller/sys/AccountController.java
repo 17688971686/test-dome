@@ -1,6 +1,7 @@
 package cs.controller.sys;
 
 import cs.ahelper.IgnoreAnnotation;
+import cs.ahelper.LogMsg;
 import cs.common.constants.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.Validate;
@@ -43,6 +44,7 @@ public class AccountController {
      * @throws Exception
      */
     @RequestMapping(name = "登录", path = "login")
+    @LogMsg(module = "用户登录")
     public String login(HttpServletRequest request, Model model) throws Exception {
         Subject subject = SecurityUtils.getSubject();
         if (subject != null && subject.isAuthenticated()) {

@@ -1,5 +1,6 @@
 package cs.controller.project;
 
+import cs.ahelper.LogMsg;
 import cs.ahelper.MudoleAnnotation;
 import cs.common.constants.Constant;
 import cs.common.constants.FlowConstant;
@@ -174,15 +175,16 @@ public class SignController {
     //@RequiresPermissions("sign##post")
     @RequiresAuthentication
     @RequestMapping(name = "创建收文", path = "", method = RequestMethod.POST)
-    public @ResponseBody
-    ResultMsg post(@RequestBody SignDto signDto) {
+    @LogMsg(module = "保存收文")
+    @ResponseBody
+    public ResultMsg post(@RequestBody SignDto signDto) {
         return signService.createSign(signDto);
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "项目预签收", path = "html/reserveAddPost", method = RequestMethod.POST)
-    public @ResponseBody
-    ResultMsg reserveAddPost(@RequestBody SignDto signDto) {
+    @ResponseBody
+    public ResultMsg reserveAddPost(@RequestBody SignDto signDto) {
         return signService.reserveAddSign(signDto);
     }
 

@@ -111,6 +111,8 @@
 	<!-- 开启shiro注解 AOP代理-->
 	<aop:config proxy-target-class="true"/>
 
+	<!--Aop切面编程的配置-->
+	<aop:aspectj-autoproxy proxy-target-class="true" />
 
     <!-- 定时器配置 The quartz scheduler configuration -->
 	<bean id="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">

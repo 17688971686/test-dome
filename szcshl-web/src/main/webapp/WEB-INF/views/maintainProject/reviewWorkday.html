@@ -6,7 +6,8 @@
     <div class="toolbar">
         <a class="btn btn-sm btn-primary" href="javascript:void(0);" ng-click="back();">
         <span class="glyphicon glyphicon-chevron-left"></span>返回</a>
-        <button class="btn btn-sm btn-success" ng-click="vm.saveReview()">保存</button>
+        <button class="btn btn-sm btn-success" ng-click="vm.saveReview()">
+            <span class="glyphicon glyphicon-ok"></span>保存</button>
     </div>
     <form name="form" id="form">
     <table class="table table-bordered  dataTable">
@@ -33,7 +34,7 @@
             <td>
                 <input type="number" name="lengthenDays" ng-model="vm.sign.lengthenDays" ng-blur="vm.changeLengthenDays()"/>
             </td>
-            <td class="text-right">收文日期:</td>
+            <td class="text-right">签收日期:</td>
             <td>
                 <input type="text" name="signdate" ng-model="vm.sign.signdate"  kendo-date-picker k-format="'yyyy-MM-dd'"
                        ng-blur="vm.changeSignDate()"/>

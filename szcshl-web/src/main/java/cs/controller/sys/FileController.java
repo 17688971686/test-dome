@@ -403,8 +403,9 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     + new String(sysFile.getShowName().getBytes("GB2312"), "ISO8859-1"));
             //获取相对路径
             String fileUrl = sysFile.getFileUrl();
-            String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
-            String fileName = fileUrl.substring(fileUrl.lastIndexOf(File.separator) + 1, fileUrl.length());
+            int seParatorIndex = fileUrl.lastIndexOf(File.separator);
+            String removeRelativeUrl = fileUrl.substring(0, seParatorIndex);
+            String fileName = fileUrl.substring(seParatorIndex + 1, fileUrl.length());
             //连接ftp
             Ftp f = sysFile.getFtp();
             FtpUtils ftpUtils = new FtpUtils();

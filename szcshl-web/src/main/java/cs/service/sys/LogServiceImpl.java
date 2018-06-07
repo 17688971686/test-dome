@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import cs.common.RandomGUID;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.Validate;
 import org.apache.log4j.Logger;
@@ -24,9 +25,6 @@ public class LogServiceImpl implements LogService {
     @Autowired
     private LogRepo logRepo;
 
-    /* (non-Javadoc)
-     * @see cs.service.LogService#get(cs.repository.odata.ODataObj)
-     */
     @Override
     @Transactional
     public PageModelDto<LogDto> get(ODataObj odataObj) {
@@ -49,6 +47,9 @@ public class LogServiceImpl implements LogService {
 
     @Override
     public void save(Log log) {
+        /*if(!Validate.isString(log.getId())){
+            log.setId((new RandomGUID().valueAfterMD5));
+        }*/
         logRepo.save(log);
     }
 }

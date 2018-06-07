@@ -49,6 +49,25 @@ public class LogDto {
 	private String buninessType;
 
 	/**
+	 * IP地址
+	 */
+	private String ipAdd;
+
+	/**
+	 * 浏览器版本
+	 */
+	private String browserInfo;
+
+    /**
+     * 方法名
+     */
+    private String logMethod;
+
+    /**
+     * 参数信息
+     */
+    private String paramsInfo;
+	/**
 	 * 结果（9：表示成功。0：表示失败）
 	 */
 	private String result;
@@ -139,5 +158,37 @@ public class LogDto {
 
     public void setModule(String module) {
         this.module = module;
+    }
+
+    public String getIpAdd() {
+        return ipAdd;
+    }
+
+    public void setIpAdd(String ipAdd) {
+        this.ipAdd = ipAdd;
+    }
+
+    public String getBrowserInfo() {
+        return browserInfo;
+    }
+
+    public void setBrowserInfo(String browserInfo) {
+        this.browserInfo = browserInfo;
+    }
+
+    public String getLogMethod() {
+        return logMethod;
+    }
+
+    public void setLogMethod(String logMethod) {
+        this.logMethod = logMethod;
+    }
+
+    public String getParamsInfo() {
+        return paramsInfo;
+    }
+
+    public void setParamsInfo(String paramsInfo) {
+        this.paramsInfo = paramsInfo;
     }
 }

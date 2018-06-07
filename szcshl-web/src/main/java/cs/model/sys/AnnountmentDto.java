@@ -70,7 +70,10 @@ public class AnnountmentDto extends BaseDto {
      * 审批状态：0部长审批,1副主任审批,2主任审批,9审批完成
      */
     private String appoveStatus;
-
+    /**
+     * 是否需要审批
+     */
+    private String needFlow;
     /**
      * 附件列表
      */
@@ -282,5 +285,13 @@ public class AnnountmentDto extends BaseDto {
 
     public void setAppoveStatus(String appoveStatus) {
         this.appoveStatus = appoveStatus;
+    }
+
+    public String getNeedFlow() {
+        return needFlow;
+    }
+
+    public void setNeedFlow(String needFlow) {
+        this.needFlow = needFlow;
     }
 }

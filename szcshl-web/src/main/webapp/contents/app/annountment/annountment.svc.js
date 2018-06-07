@@ -113,6 +113,7 @@
 
             var httpSuccess = function success(response) {
                 if (callBack != undefined && typeof callBack == 'function') {
+                    vm.isSubmit = false;
                     callBack(response.data);
                 }
             }

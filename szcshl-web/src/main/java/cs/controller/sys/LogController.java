@@ -1,5 +1,6 @@
 package cs.controller.sys;
 
+import cs.ahelper.LogMsg;
 import cs.ahelper.MudoleAnnotation;
 import cs.model.PageModelDto;
 import cs.model.sys.LogDto;
@@ -27,11 +28,10 @@ public class LogController {
     //@RequiresPermissions("log#fingByOData#post")
     @RequiresAuthentication
     @RequestMapping(name = "获取日志数据", path = "fingByOData", method = RequestMethod.POST)
-    public @ResponseBody
-    PageModelDto<LogDto> get(HttpServletRequest request) throws ParseException {
+    @ResponseBody
+    public PageModelDto<LogDto> get(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<LogDto> logDtos = logService.get(odataObj);
-
         return logDtos;
     }
 
