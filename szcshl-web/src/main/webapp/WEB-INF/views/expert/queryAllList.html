@@ -47,7 +47,7 @@
 			<tr>
 				<td class="text-right" style="width:80px;">专家范围</td>
 				<td style="min-width: 220px;">
-					<select name="state" operator="eq">
+					<select name="state" operator="eq" ng-model="vm.searchmodel.state">
 						<option value="">所有专家（已删的除外）</option>
 						<option value="2">正式专家</option>
 						<option value="3">备选专家</option>
@@ -57,18 +57,18 @@
 
 				<td class="text-right" style="width:80px;">专家姓名</td>
 				<td>
-					<input name="name" type="text"  operator="like" />
+					<input name="name" type="text"  operator="like" ng-model="vm.searchmodel.name"/>
 				</td>
 				<td class="text-right" style="width:80px;">工作单位</td>
 				<td>
-					<input name="comPany"  type="text" operator="like" />
+					<input name="comPany"  type="text" operator="like" ng-model="vm.searchmodel.comPany"/>
 				</td>
 
 			</tr>
 			<tr>
 				<td class="text-right" >专业大类</td>
 				<td>
-                    <select name="maJorBigParam" ng-model="vm.expert.maJorBig" ng-change="vm.majobSmallDicts = topSelectChange(vm.expert.maJorBig,DICT.MAJOR.dicts)">
+                    <select name="maJorBigParam" ng-model="vm.searchmodel.maJorBig" ng-change="vm.majobSmallDicts = topSelectChange(vm.expert.maJorBig,DICT.MAJOR.dicts)">
                         <option value="">请选择</option>
                         <option ng-repeat="d in DICT.MAJOR.dicts" value="{{d.dictName}}">{{d.dictName}}</option>
                     </select>
@@ -76,14 +76,14 @@
 
 				<td class="text-right" >专业小类</td>
 				<td>
-                    <select name="maJorSamllParam" ng-model="vm.expert.maJorSmall">
+                    <select name="maJorSamllParam" ng-model="vm.searchmodel.maJorSmall">
                         <option value="">请选择</option>
                         <option ng-repeat="ds in vm.majobSmallDicts" value="{{ds.dictName}}">{{ds.dictName}}</option>
                     </select>
 				</td>
                 <td class="text-right" >专家类别</td>
                 <td>
-                    <select name="expertTypeParam" operator="eq" ng-model="vm.expert.expertTypeParam">
+                    <select name="expertTypeParam" operator="eq" ng-model="vm.searchmodel.expertTypeParam">
                         <option value="">请选择</option>
                         <option ng-repeat="dt in DICT.EXPERT_TYPE.dicts" value="{{dt.dictName}}">{{dt.dictName}}</option>
                     </select>
@@ -93,16 +93,16 @@
 			<tr>
 				<td class="text-right" >专家区域</td>
 				<td>
-					<select name="expertField" operator="eq">
+					<select name="expertField" operator="eq" ng-model="vm.searchmodel.expertField">
 						<option value="">请选择</option>
 						<option ng-repeat="x in DICT.EXPERT_FIELD.dicts"  value="{{x.dictKey}}">{{x.dictName}}</option>
 					</select>
 				</td>
 				<td class="text-right" >申请日期</td>
 				<td>
-					<input name="applyDate" operator="ge" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.expert.applyDate" value="" />
+					<input name="applyDate" operator="ge" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.searchmodel.applyDate" value="" />
 				至
-                    <input name="applyDate" operator="le" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'"  value="" />
+                    <input name="applyDate" operator="le" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.searchmodel.applyEndDate" value="" />
 				</td>
 
 
