@@ -44,7 +44,15 @@ public interface ExpertService {
 
     int findMaxNumber();
 
-    ResultMsg autoExpertReview(String minBusinessId, String reviewId, ExpertSelConditionDto[] paramArrary);
+    /**
+     * 专家 抽取
+     * @param isAllExtract 是否整体专家抽取
+     * @param minBusinessId
+     * @param reviewId
+     * @param paramArrary
+     * @return
+     */
+    ResultMsg autoExpertReview(boolean isAllExtract,String minBusinessId, String reviewId, ExpertSelConditionDto[] paramArrary);
 
     /**
      * 专家统计信息

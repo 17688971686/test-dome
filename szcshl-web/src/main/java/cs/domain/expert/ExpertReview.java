@@ -85,10 +85,23 @@ public class ExpertReview extends DomainBase {
     private String businessType;
 
     /**
-     * 抽取信息，抽取条件ID，收取次数
+     * 当前抽取信息，ALL表示整体抽取，其它的表示抽取条件ID
      */
-    @Column(columnDefinition = "VARCHAR(2)")
+    @Column(columnDefinition = "VARCHAR(64)")
     private String extractInfo;
+
+    /**
+     * 当前抽取未确认的次数，当extractInfo未抽取条件ID时有效
+     */
+    @Column(columnDefinition = "integer default 0")
+    private Integer selectIndex;    //抽取次数
+
+    /**
+     * 是否完成整体专家抽取
+     * 0表示未完成整体抽取，1表示已完成整体抽取
+     */
+    @Column(columnDefinition = "integer default 0")
+    private Integer finishExtract;
     /**
      * 抽取条件（一对多）
      */
@@ -215,9 +228,23 @@ public class ExpertReview extends DomainBase {
         this.extractInfo = extractInfo;
     }
 
+    public Integer getSelectIndex() {
+        return selectIndex;
+    }
+
+    public void setSelectIndex(Integer selectIndex) {
+        this.selectIndex = selectIndex;
+    }
+
+    public Integer getFinishExtract() {
+        return finishExtract;
+    }
+
+    public void setFinishExtract(Integer finishExtract) {
+        this.finishExtract = finishExtract;
+    }
+
     public ExpertReview() {
 
     }
-
-
 }

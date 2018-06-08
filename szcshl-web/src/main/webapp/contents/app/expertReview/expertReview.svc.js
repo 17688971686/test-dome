@@ -373,7 +373,7 @@
         }//end##getReviewList
 
         //S_queryAutoExpert
-        function queryAutoExpert(conditionArr,minBusinessId,expertReviewId,callBack) {
+        function queryAutoExpert(isAllExtract,conditionArr,minBusinessId,expertReviewId,callBack) {
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/expert/autoExpertReview",
@@ -384,6 +384,7 @@
                 dataType: "json",
                 data: angular.toJson(conditionArr),//将Json对象序列化成Json字符串，JSON.stringify()原生态方法
                 params: {
+                    isAllExtract : isAllExtract,
                     minBusinessId: minBusinessId,
                     reviewId: expertReviewId
                 }
@@ -454,11 +455,12 @@
         }//E_updateJoinState
 
         //S_affirmAutoExpert(确认抽取专家)
-        function affirmAutoExpert(minBusinessId,businessType,seletedIds,joinState,callBack) {
+        function affirmAutoExpert(reviewId,minBusinessId,businessType,seletedIds,joinState,callBack) {
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/expertReview/affirmAutoExpert",
                 params: {
+                    reviewId : reviewId,
                     minBusinessId: minBusinessId,
                     businessType: businessType,
                     expertSelId:seletedIds,

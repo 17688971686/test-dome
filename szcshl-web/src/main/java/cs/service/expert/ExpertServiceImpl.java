@@ -499,9 +499,8 @@ public class ExpertServiceImpl implements ExpertService {
      * @return
      */
     @Override
-    public ResultMsg autoExpertReview(String minBusinessId, String reviewId, ExpertSelConditionDto[] paramArrary) {
+    public ResultMsg autoExpertReview(boolean isAllExtract,String minBusinessId, String reviewId, ExpertSelConditionDto[] paramArrary) {
         String conditionIds = "";       //条件ID，用于更新抽取次数
-        boolean notFirstTime = false;
         boolean isLetterRw = false;     //是否专家函评，默认是否
         int selectedEPCount = -1;       //符合条件的专家
         List<ExpertDto> officialEPList = new ArrayList<>(), alternativeEPList = new ArrayList<>(), allEPList = new ArrayList<>();
@@ -510,21 +509,27 @@ public class ExpertServiceImpl implements ExpertService {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"已发送专家评审费，不能对方案再修改！");
         }
 
+        if(isAllExtract){
+            if(Validate.isObject(expertReview.getFinishExtract()) && expertReview.getFinishExtract() > 0){
+                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"该项目已进行整体专家方案抽取，不能再次执行此操作！");
+            }
+        }
+
         //如果是项目，则判断是否是专家函评
         if (Constant.BusinessType.SIGN.getValue().equals(expertReview.getBusinessType())) {
             isLetterRw = workProgramRepo.checkReviewType(Constant.MergeType.REVIEW_LEETER.getValue(), minBusinessId);
         }
 
         //如果是再次抽取(再次抽取是单个条件抽取)，要判断选定的专家是否已经满足条件，如已经满足，则不允许再次抽取
-        if (paramArrary.length == 1 && Validate.isString(paramArrary[0].getId())) {
+        if (!isAllExtract) {
             ExpertSelCondition expertSelCondition = expertSelConditionRepo.findById(ExpertSelCondition_.id.getName(), paramArrary[0].getId());
             if (expertSelCondition != null && expertSelCondition.getSelectIndex() > 0) {
                 if (!SUPER_ACCOUNT.equals(SessionUtil.getLoginName()) && (expertSelCondition.getSelectIndex() > 2)) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "该条件已经进行3次专家抽取，不能再进行专家抽取！");
                 }
-                notFirstTime = true;
             }
         }
+
         List<ExpertSelected> saveList = new ArrayList<>();
 
         //2、遍历所有抽取条件，每个条件单独抽取
@@ -541,13 +546,15 @@ public class ExpertServiceImpl implements ExpertService {
             }
             int chooseCount = epConditon.getOfficialNum();
             //如果是再次抽取，则要计算已经确认的专家数
-            if (notFirstTime) {
+            if (!isAllExtract) {
                 selectedEPCount = expertSelectedRepo.findConfirmSeletedEP(reviewId, epConditon.getMaJorBig(), epConditon.getMaJorSmall(), epConditon.getExpeRttype(), epConditon.getCompositeScore(), epConditon.getCompositeScoreEnd());
-                chooseCount = (selectedEPCount > -1) ? (chooseCount - selectedEPCount) : chooseCount;
+                chooseCount = (selectedEPCount > 1) ? (chooseCount - selectedEPCount) : chooseCount;
                 if (chooseCount < 1) {
                     resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "该条件抽取的专家已经达到设定人数，不能再次抽取！");
                     return resultMsg;
                 }
+                expertReview.setExtractInfo(epConditon.getId());
+                expertReview.setSelectIndex(Validate.isObject(epConditon.getSelectIndex())?(epConditon.getSelectIndex()+ 1):1);
             }
 
             //2、获取所有符合条件的专家
@@ -603,6 +610,11 @@ public class ExpertServiceImpl implements ExpertService {
             resultMap.put("alternativeEPList", alternativeEPList);
             //更新专家抽取条件的抽取次数
             expertSelConditionRepo.updateSelectIndexById(conditionIds);
+            if(isAllExtract){
+                expertReview.setExtractInfo("ALL");
+                expertReview.setFinishExtract(1);
+            }
+            expertReviewRepo.save(expertReview);
             resultMsg.setReObj(resultMap);
         }
         return resultMsg;

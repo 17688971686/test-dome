@@ -16,8 +16,8 @@
     </ol>
 
     <div class="toolbar">
-        <button class="btn btn-sm btn-primary" ng-click="vm.expertBack();" ng-disabled="vm.isCommit"><span
-                class="glyphicon glyphicon-chevron-left"></span>返回
+        <button class="btn btn-sm btn-primary" ng-click="vm.expertBack();" ng-disabled="vm.isCommit">
+            <span class="glyphicon glyphicon-chevron-left"></span>返回
         </button>
         <!-- 已经发放评审费的专家，不能再修改 -->
         <button ng-show="(vm.confirmEPList && vm.confirmEPList.length>=1)" class="btn btn-sm btn-success" ng-click="vm.affirmJoinExpert();" ng-disabled="vm.isCommit">
@@ -41,7 +41,7 @@
             |
             <!--整体抽取方案只能抽取一次-->
             <button class="btn btn-xs btn-primary" ng-click="vm.startAutoExpertWin()"
-                    ng-disabled="vm.isCommit || (vm.expertReview.state == 9 || vm.expertReview.state == '9')">
+                    ng-disabled="vm.isCommit || (vm.expertReview.finishExtract > 0) ||(vm.expertReview.state == 9 || vm.expertReview.state == '9')">
                 <span class="glyphicon glyphicon-asterisk"></span>开始随机抽取
             </button>
             <button class="btn btn-xs btn-primary" ng-click="vm.showAutoExpertWin()">
@@ -73,7 +73,8 @@
             <tr ng-repeat="x in vm.expertReview.expertSelConditionDtoList">
                 <td align="center">
                     <input ng-disabled="('${CURRENT_USER.loginName}' !=  'admin') && (vm.expertReview.state == 9 || vm.expertReview.state == '9')"
-                           type='checkbox' name="epConditionSort" ng-checked="epCondtion" value="{{x.id}}"/></td>
+                           type='checkbox' name="epConditionSort" ng-checked="epCondtion" value="{{x.id}}"/>
+                </td>
                 <td align="center">{{$index+1}}</td>
                 <td align="center" style="width:20%;max-width: 200px;">
                     <select ng-disabled="('${CURRENT_USER.loginName}' !=  'admin') && (vm.expertReview.state == 9 || vm.expertReview.state == '9')"
@@ -81,9 +82,7 @@
                             ng-model="vm.expertReview.expertSelConditionDtoList[$index].maJorBig"
                             style="width: 90%"  id="maJorBig{{x.id}}" data-val-required="必填" data-val="true">
                         <option value="">请选择</option>
-                        <option ng-repeat="d in DICT.MAJOR.dicts" value="{{d.dictName}}"
-                                ng-selected="x.maJorBig == d.dictName">{{d.dictName}}
-                        </option>
+                        <option ng-repeat="d in DICT.MAJOR.dicts" value="{{d.dictName}}" ng-selected="x.maJorBig == d.dictName">{{d.dictName}}</option>
                     </select>
                 </td>
                 <td align="center" style="width:22%;max-width: 220px;">
@@ -202,7 +201,7 @@
                                 <td width="20%" align="center">专家类型</td>
                                 <td width="25%" align="center">综合评分</td>
                             </tr>
-                            <tr ng-repeat="x in  vm.autoSelectedEPList|filter:{isConfrim:'0',show:true,official:false} track by $index">
+                            <tr ng-repeat="x in vm.autoSelectedEPList|filter:{isConfrim:'0',show:true,official:false} track by $index">
                                 <td align="center">
                                     <input type="checkbox" name="autoEPCheck" ng-checked="vm.checkAutoAntiExpert" value="{{x.id}}"/>
                                 </td>

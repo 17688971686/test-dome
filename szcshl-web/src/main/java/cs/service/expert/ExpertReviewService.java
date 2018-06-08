@@ -47,7 +47,7 @@ public interface ExpertReviewService {
      * @param expertSelId
      * @param state
      */
-    void updateConfirmState(String minBusinessId, String businessType, String expertSelId, String state);
+    void updateConfirmState(String reviewId,String minBusinessId, String businessType, String expertSelId, String state);
     /**
      * 根据专家ID和月份，获取对应月份的评审费
      * @param expertIds
