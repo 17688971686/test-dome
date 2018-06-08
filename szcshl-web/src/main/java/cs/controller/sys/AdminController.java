@@ -236,14 +236,24 @@ public class AdminController {
                         existList.add(rpt.getBusinessKey());
                         lineList.add(rpt);
                         //如果有所属部门 ， 则根据所在的部门进行统计
-                        if(Validate.isList(orgIdList)){
-                            for(String orgName : orgIdList){
-                                if (orgName.equals(rpt.getmOrgId())){
+                        if(Validate.isList(orgIdList) ){
+                            //如果不是部长，则通过部门获取
+                            if(authFlag != 3){
+                                for(String orgName : orgIdList){
+                                    if (orgName.equals(rpt.getmOrgId())){
+                                        doingNum ++ ;
+                                    }
+                                }
+                            }else{
+                                //如果是部长或者组长，通过所管下的人员获取
+                                OrgDept orgDpet = orgDeptService.findOrgDeptById(orgIdList.get(0));
+                                if(userService.checkIsMainSigUser(orgDpet.getType(), orgIdList.get(0), rpt.getMainUserId())){
                                     doingNum ++ ;
                                 }
                             }
                         }else{
-                            doingNum = authRuSignTask.size();
+
+                                doingNum = authRuSignTask.size();
                         }
                         switch (rpt.getLightState()){
                             case "6":
