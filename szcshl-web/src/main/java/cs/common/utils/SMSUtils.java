@@ -75,6 +75,7 @@ public class SMSUtils {
                 public HashMap<String, String> call() throws Exception {
 //                    异步任务 不需要直接反应结果，通过日志记录发信状况信息
                     boolean   boo = seekSMS(receiverList, projectName, filecode, type, infoType,seekContent, smsLogService);
+                    Thread.sleep(2000);
                     logger.info("seekSMS: 返回调用结果. " + boo);
                     return
                            new HashMap<String, String>() {
@@ -163,10 +164,14 @@ public class SMSUtils {
                 if ("0000000".equals(resultCode)) {
                     insertLog(userName,phone,projectName,filecode,resultCode, type, infoType,seekContent,smsLogService,true);
                     return true;
+                }else{
+                    insertLog(userName,phone,projectName,filecode,resultCode, type, infoType,seekContent,smsLogService,false);
                 }
             }
         } catch (Exception e) {
+            seekContent="\n 通信异常";
             insertLog(userName,phone,projectName,filecode,"10002", type, infoType,seekContent,smsLogService,false);
+            return  false;
         } finally {
             try {
                 httpClient.close();
@@ -174,7 +179,7 @@ public class SMSUtils {
                 e.printStackTrace();
             }
         }
-        insertLog(userName,phone,projectName,filecode,resultCode, type, infoType,seekContent,smsLogService,false);
+
         return false;
     }
 
@@ -296,7 +301,7 @@ public class SMSUtils {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return true;
+        return false;
     }
 
     public static void main(String[] args) {
