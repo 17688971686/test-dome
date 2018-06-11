@@ -3,8 +3,10 @@ package cs.controller.sys;
 import cs.ahelper.MudoleAnnotation;
 import cs.model.PageModelDto;
 import cs.model.sys.LogDto;
+import cs.model.sys.SMSLogDto;
 import cs.repository.odata.ODataObj;
 import cs.service.sys.LogService;
+import cs.service.sys.SMSLogService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,15 +24,18 @@ import java.text.ParseException;
 public class SMSLogController {
     private String ctrlName = "smslog";
     @Autowired
-    private LogService logService;
+    private SMSLogService smsLogService;
+
+
+
 
     //@RequiresPermissions("log#fingByOData#post")
     @RequiresAuthentication
     @RequestMapping(name = "获取短信日志数据", path = "fingByOData", method = RequestMethod.POST)
     @ResponseBody
-    public PageModelDto<LogDto> get(HttpServletRequest request) throws ParseException {
+    public PageModelDto<SMSLogDto> get(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        PageModelDto<LogDto> logDtos = logService.get(odataObj);
+        PageModelDto<SMSLogDto> logDtos = smsLogService.get(odataObj);
         return logDtos;
     }
 

@@ -370,6 +370,7 @@ public class SignRestServiceImpl implements SignRestService {
             for(SysConfigDto sysConfigDto: sysConfigDtoList){
                 user = new User();
                 user.setUserMPhone(sysConfigDto.getConfigValue());
+                user.setDisplayName(sysConfigDto.getConfigName());
                 list.add(user);
             }
         }
@@ -378,6 +379,7 @@ public class SignRestServiceImpl implements SignRestService {
             for(SysConfigDto sysConfigDto: sysConfigDtoList){
                 user = new User();
                 user.setUserMPhone(sysConfigDto.getConfigValue());
+                user.setDisplayName(sysConfigDto.getConfigName());
                 list.add(user);
             }
         }

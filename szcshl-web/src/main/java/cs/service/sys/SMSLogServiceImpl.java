@@ -2,12 +2,10 @@ package cs.service.sys;
 
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.Validate;
-import cs.domain.sys.Log;
 import cs.domain.sys.SMSLog;
 import cs.model.PageModelDto;
-import cs.model.sys.LogDto;
+import cs.model.sys.SMSLogDto;
 import cs.repository.odata.ODataObj;
-import cs.repository.repositoryImpl.sys.LogRepo;
 import cs.repository.repositoryImpl.sys.SMSLogRepo;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,19 +24,19 @@ public class SMSLogServiceImpl implements SMSLogService {
 
     @Override
     @Transactional
-    public PageModelDto<LogDto> get(ODataObj odataObj) {
+    public PageModelDto<SMSLogDto> get(ODataObj odataObj) {
         List<SMSLog> logList = smslogRepo.findByOdata(odataObj);
-        List<LogDto> logDtoList = new ArrayList<>();
+        List<SMSLogDto> smslogDtoList = new ArrayList<>();
         if (Validate.isList(logList)) {
             logList.forEach(ll -> {
-                LogDto logDto = new LogDto();
-                BeanCopierUtils.copyProperties(ll, logDto);
-                logDtoList.add(logDto);
+                SMSLogDto smsLogDto = new SMSLogDto();
+                BeanCopierUtils.copyProperties(ll, smsLogDto);
+                smslogDtoList.add(smsLogDto);
             });
         }
-        PageModelDto<LogDto> pageModelDto = new PageModelDto<>();
+        PageModelDto<SMSLogDto> pageModelDto = new PageModelDto<>();
         pageModelDto.setCount(odataObj.getCount());
-        pageModelDto.setValue(logDtoList);
+        pageModelDto.setValue(smslogDtoList);
 
         logger.info("查询日志数据");
         return pageModelDto;

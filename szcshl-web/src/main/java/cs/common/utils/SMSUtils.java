@@ -68,7 +68,6 @@ public class SMSUtils {
      * @return
      */
     public static void seekSMSThread(List<User> receiverList,String projectName,String filecode,String type,String infoType,String seekContent, SMSLogService smsLogService) {
-
             ExecutorService threadPool = Executors.newCachedThreadPool();
             //线程池提交一个异步任务
             Future<HashMap<String, String>> future = threadPool.submit(new Callable<HashMap<String, String>>() {
@@ -133,7 +132,7 @@ public class SMSUtils {
         //验证短信内容
         TOKEN = getHttpSMS(smsLogService);
         if (TOKEN ==null) {
-            insertLog(projectName,filecode,"10001", type, "获取短信平台Token异常",seekContent,smsLogService,false);
+            insertLog(userName,phone,projectName,filecode,"10001", type, "获取短信平台Token异常",seekContent,smsLogService,false);
             return false;
         }
         CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -162,12 +161,12 @@ public class SMSUtils {
                 resCode = resCode[0].split("\"");
                 resultCode = resCode[2];
                 if ("0000000".equals(resultCode)) {
-                    insertLog(projectName,filecode,resultCode, type, infoType,seekContent,smsLogService,true);
+                    insertLog(userName,phone,projectName,filecode,resultCode, type, infoType,seekContent,smsLogService,true);
                     return true;
                 }
             }
         } catch (Exception e) {
-            insertLog(projectName,filecode,"10002", type, infoType,seekContent,smsLogService,false);
+            insertLog(userName,phone,projectName,filecode,"10002", type, infoType,seekContent,smsLogService,false);
         } finally {
             try {
                 httpClient.close();
@@ -175,7 +174,7 @@ public class SMSUtils {
                 e.printStackTrace();
             }
         }
-        insertLog(projectName,filecode,resultCode, type, infoType,seekContent,smsLogService,false);
+        insertLog(userName,phone,projectName,filecode,resultCode, type, infoType,seekContent,smsLogService,false);
         return false;
     }
 
@@ -188,22 +187,10 @@ public class SMSUtils {
         return false;
     }
 
-    public static void insertLog(String projectName,String filecode,String resultCode,String type,String infoType,String seekContent, SMSLogService smsLogService,boolean success) {
+    public static void insertLog(String userName,String smsUserPhone,String projectName,String filecode,String resultCode,String type,String infoType,String seekContent, SMSLogService smsLogService,boolean success) {
         if (smsLogService != null) {
             SMSLog smsLog = new SMSLog();
-            smsLog.setId(UUID.randomUUID().toString());
-            smsLog.setCreatedDate(new Date());
-            smsLog.setProjectName(projectName);
-            smsLog.setFileCode(filecode);
-            smsLog.setResultCode(resultCode);
-            smsLog.setSmsLogType(type);
-            smsLog.setCustomMessage(infoType);
-            smsLog.setMessage(seekContent);
-            if(success){
-                smsLog.setResult(Constant.EnumState.YES.getValue());
-            }else{
-                smsLog.setResult(Constant.EnumState.NO.getValue());
-            }
+            smsLog.setObject(userName,smsUserPhone,projectName, filecode, resultCode, type, infoType, seekContent,  success);
             smsLogService.save(smsLog);
         }
     }

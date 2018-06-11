@@ -10,15 +10,6 @@
     </ol>
     <div class="well well-sm">
         <form id="logform" name="logform">
-            <!---
-            <span class="help-inline">级别：</span>
-            <select name="logLevel">
-                <option value="">请选择</option>
-                <option value="1">高</option>
-                <option value="2">中</option>
-                <option value="3">低</option>
-            </select>
-            -->
             <span class="help-inline">所属模块：</span>
             <input type="text"  operator="like" name="module" id="module" >
             <span class="help-inline">操作类型(发文/收文/代办)：</span>
@@ -28,9 +19,9 @@
             至
             <input type="text" style="width: 120px;" kendo-date-picker k-format="'yyyy-MM-dd'" operator="le" name="createdDate">
 
-            <button class="btn btn-sm btn-primary" ng-click="vm.queryLog()"><span class="glyphicon glyphicon-search"></span>查询</button>
-            <button class="btn btn-sm btn-primary" ng-click="vm.formReset()"><span class="glyphicon glyphicon-repeat"></span>重置</button>
-            <button class="btn btn-sm btn-primary" ng-click="vm.smsInfo()"><span class="glyphicon glyphicon-repeat"></span>发送短信</button>
+            <button class="btn btn-sm btn-primary" ng-click="vm.querySMSLog()"><span class="glyphicon glyphicon-search"></span>查询</button>
+            <button class="btn btn-sm btn-primary" ng-click="vm.formSMSReset()"><span class="glyphicon glyphicon-repeat"></span>重置</button>
+            <button class="btn btn-sm btn-primary" ng-click="vm.seenSMSInfo()"><span class="glyphicon glyphicon-repeat"></span>发送短信</button>
         </form>
     </div>
 
