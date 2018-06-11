@@ -7,6 +7,8 @@ import cs.domain.sys.User;
 import cs.model.sys.SysConfigDto;
 import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.service.sys.LogService;
+import cs.service.sys.SMSContent;
+import cs.service.sys.SMSLogService;
 import cs.service.sys.SysConfigService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.Date;
 import java.util.List;
 
 import static cs.common.constants.Constant.RevireStageKey.RTX_ENABLED;
@@ -37,6 +40,11 @@ public class RTXService {
 
     @Autowired
     private LogService logService;
+
+    @Autowired
+    private SMSLogService smsLogService;
+    @Autowired
+    private SMSContent smsContent;
     /**
      * 获取腾讯通的sessionKey
      *
@@ -104,8 +112,18 @@ public class RTXService {
             List<User> receiverList = userRepo.getCacheUserListById(receiverIds);
             //短息开关  rtxSMSEnabled()&&
             if( rtxSMSEnabled()&&resultMsg.isFlag()){
-                //发送短息
-                SMSUtils.seekSMSThread(receiverList, content,logService);
+                boolean boo = SMSUtils.getWeek(new Date(),sysConfigService);
+                if(boo){
+                    //查询短信日志表是否已发送短信 commission_type:代办类型  发送短信不收次数限制,暂时注销
+//                    if (!smsContent.orNotsendSMS(processInstance.getName(),"","commission_type","代办")){
+                        //代办发送短息
+                        if (content.contains("任务")){//任务类型
+                            SMSUtils.seekSMSThread(receiverList,processInstance.getName(),"","task_type","代办", content,smsLogService);
+                        }else{//项目类型
+                            SMSUtils.seekSMSThread(receiverList,processInstance.getName(),"","project_type","代办", content,smsLogService);
+                        }
+//                    }
+                }
             }
             //如果使用腾讯通，并处理成功！
             if (rtxEnabled() && resultMsg.isFlag() && RTXSendMsgPool.getInstance().getReceiver(taskId) != null) {
