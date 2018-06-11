@@ -2934,7 +2934,7 @@ public class SignServiceImpl implements SignService {
         List<Sign> listSign = signRepo.findUnSendFGWList();
         if (Validate.isList(listSign)) {
             for (int i = 0, l = listSign.size(); i < l; i++) {
-                Sign sign = listSign.get(i);
+                Sign sign = listSign.get(0);
                 if (EnumState.STOP.getValue().equals(sign.getIsSendFGW()) || sign.getFilecode().endsWith("0000")) {
                     continue;
                 } else {

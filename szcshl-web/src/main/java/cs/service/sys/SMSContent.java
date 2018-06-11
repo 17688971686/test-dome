@@ -18,4 +18,13 @@ public interface SMSContent {
      * @param type
      * */
     public String seekSMSSuccee(String projectOrTask,String name,String type);
+
+
+    /**
+     * 判断是否已经已发送过短信.规则是发送过短信就不再发送短信
+     * @param projectName
+     * @param fileCode
+     * @param type
+     * */
+    public boolean orNotsendSMS(String projectName,String fileCode,String type,String infoType);
 }

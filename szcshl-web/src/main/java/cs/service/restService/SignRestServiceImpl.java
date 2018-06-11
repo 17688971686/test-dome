@@ -25,16 +25,14 @@ import cs.model.sys.UserDto;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
 import cs.service.project.SignService;
+import cs.service.rtx.RTXService;
 import cs.service.sys.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static cs.common.constants.Constant.RevireStageKey.FGW_PRE_PROJECT_IFS;
 import static cs.common.constants.Constant.RevireStageKey.RETURN_FGW_URL;
@@ -67,6 +65,21 @@ public class SignRestServiceImpl implements SignRestService {
     private UserService userService;
     @Autowired
     private LogService logService;
+
+    @Autowired
+    private RTXService rtxService;
+
+
+    @Autowired
+    private SMSLogService smsLogService;
+
+
+
+    @Autowired
+    private SMSContent smsContent;
+
+
+
     /**
      * 项目推送
      *
@@ -265,7 +278,7 @@ public class SignRestServiceImpl implements SignRestService {
                 psgcMap.put("blsj", mainWP.getLeaderDate().getTime());// 办理时间
                 dataList.add(psgcMap);
             } else {
-                // 不做工作方案，评审方式属于自评
+                // 不做工作方案，评审方式属于自
                 dataMap.put("psfs", "2");
             }
 
@@ -313,14 +326,38 @@ public class SignRestServiceImpl implements SignRestService {
             FGWResponse fGWResponse = JSON.toJavaObject(JSON.parseObject(hst.getContent()), FGWResponse.class);
             //成功
             if (Constant.EnumState.PROCESS.getValue().equals(fGWResponse.getRestate())) {
+                if (rtxService.rtxSMSEnabled()){
+                    boolean boo = SMSUtils.getWeek(new Date(),sysConfigService);
+                    if(boo){
+                        if(! smsContent.orNotsendSMS(sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文成功")){
+                            SMSUtils.seekSMSThread(getListUser("发文成功"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文成功",smsContent.seekSMSSuccee(sign.getProjectname(),sign.getFilecode(),"发文成功"),  smsLogService);
+                        }
+                    }
+                }
                 return new ResultMsg(true, IFResultCode.IFMsgCode.SZEC_SEND_OK.getCode(), "项目【" + sign.getProjectname() + "(" + sign.getFilecode() + ")】回传数据给发改委成功！");
             } else {
+                if (rtxService.rtxSMSEnabled()){
+                    boolean boo = SMSUtils.getWeek(new Date(),sysConfigService);
+                    if(boo){
+                        if(! smsContent.orNotsendSMS(sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文失败")){
+                            SMSUtils.seekSMSThread(getListUser("发文失败"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文失败",smsContent.seekSMSSuccee(sign.getProjectname(),sign.getFilecode(),"发文失败"),  smsLogService);
+                        }
+                    }
+                }
                 return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SEND_ERROR.getCode(),
                         "项目【" + sign.getProjectname() + "(" + sign.getFilecode() + ")】回传数据给发改委失败！" + fGWResponse.getRedes() + "<br>");
             }
         } catch (Exception e) {
-            //AAAGAN 发送个发改委 ：发文失败，发送短信（但龙，陈春燕）项目名称（发文号）  fileCode
-            SMSUtils.seekSMSThread(getListUser("发文失败"),"\n"+"项目 "+sign.getProjectname()+"【"+sign.getDocnum()+"】回传委里失败。\n"+"  【评审中心项目管理系统】",  logService);
+            if (rtxService.rtxSMSEnabled()){
+                //如果当天是周末将不发送短信
+                boolean boo = SMSUtils.getWeek(new Date(),sysConfigService);
+                if (boo){
+                    if(! smsContent.orNotsendSMS(sign.getProjectname(),sign.getFilecode(),"dispatch_type","发文失败")){
+                        //AAAGAN 发送个发改委 ：发文失败，发送短信（但龙，陈春燕）项目名称（发文号）  fileCode
+                        SMSUtils.seekSMSThread(getListUser("发文失败"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文失败.通信异常 ",smsContent.seekSMSSuccee(sign.getProjectname(),sign.getFilecode(),"发文失败。通信异常"),  smsLogService);
+                    }
+                }
+            }
             return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_DEAL_ERROR.getCode(),
                     "项目【" + sign.getProjectname() + "(" + sign.getFilecode() + ")】回传数据给发改委异常！" + e.getMessage());
         }
@@ -328,7 +365,7 @@ public class SignRestServiceImpl implements SignRestService {
     public  List<User>  getListUser(String type){
         List<User> list = new ArrayList<>();
         User user = null;
-        if ("收文失败".equals(type)){
+        if ("收文失败".equals(type)|| "收文成功".equals(type)){
             List<SysConfigDto>  sysConfigDtoList = sysConfigService.findListBykey("SMS_SYS_USER_TYPE");
             for(SysConfigDto sysConfigDto: sysConfigDtoList){
                 user = new User();
@@ -336,7 +373,7 @@ public class SignRestServiceImpl implements SignRestService {
                 list.add(user);
             }
         }
-        if ("发文失败".equals(type)){
+        if ("发文失败".equals(type)|| "发文成功".equals(type)){
             List<SysConfigDto>  sysConfigDtoList = sysConfigService.findListBykey("SMS_SYS_USER_POST_FAILURE");
             for(SysConfigDto sysConfigDto: sysConfigDtoList){
                 user = new User();

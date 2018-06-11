@@ -119,6 +119,7 @@ public class HttpClientOperate implements BeanFactoryAware{
      * @throws IOException
      */
     public HttpResult doPost(String url , Map<String, String> params) throws ClientProtocolException, IOException{
+
         // 创建http POST请求
         HttpPost httpPost = new HttpPost(url);
         httpPost.setConfig(requestConfig);

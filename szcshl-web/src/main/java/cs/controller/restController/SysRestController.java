@@ -20,9 +20,8 @@ import cs.model.sys.SysFileDto;
 import cs.model.sys.UserDto;
 import cs.service.project.SignService;
 import cs.service.restService.SignRestService;
-import cs.service.sys.LogService;
-import cs.service.sys.UserService;
-import cs.service.sys.UserServiceImpl;
+import cs.service.rtx.RTXService;
+import cs.service.sys.*;
 import cs.service.topic.TopicInfoService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +56,19 @@ public class SysRestController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private RTXService rtxService;
+
+    @Autowired
+    private SMSLogService smsLogService;
+
+    @Autowired
+    private SMSContent smsContent;
+
+    @Autowired
+    private SysConfigService sysConfigService;
+
     /**
      * 项目签收信息
      *
@@ -73,16 +85,29 @@ public class SysRestController {
         try{
             //json转出对象
             resultMsg = signRestService.pushProject(signDto,true);
-
         }catch (Exception e){
             resultMsg = new ResultMsg(false,IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(),e.getMessage());
             e.printStackTrace();
         }
-        if(resultMsg.isFlag()){
-            // AAAGAN 收文失败，发送短信（但龙，郭东东）项目名称（委里收文编号）
-            SMSUtils.seekSMSThread(signRestService.getListUser("收文失败"),"\n"+"项目:"+signDto.getProjectname()+"("+signDto.getFilecode()+")收文失败。\n"+"  【评审中心项目管理系统】",  logService);
-        }
-
+        // 判断短信日志表中是否已经发送短信 收文类型: incoming_type
+       if(resultMsg.isFlag()&& rtxService.rtxSMSEnabled()){
+           boolean boo = SMSUtils.getWeek(new Date(),sysConfigService);
+           if (boo){
+               if(! smsContent.orNotsendSMS(signDto.getProjectname(),signDto.getFilecode(),"incoming_type","收文成功")){
+                   // AAAGAN 收文失败，发送短信（但龙，郭东东）项目名称（委里收文编号）
+                   SMSUtils.seekSMSThread(signRestService.getListUser("收文成功"),signDto.getProjectname(),signDto.getFilecode(),"incoming_type","收文成功",smsContent.seekSMSSuccee(signDto.getProjectname(),signDto.getFilecode(),"收文成功"),  smsLogService);
+               }
+           }
+       }else {
+           if (rtxService.rtxSMSEnabled()) {
+               boolean boo = SMSUtils.getWeek(new Date(), sysConfigService);
+               if (boo) {
+                   if (!smsContent.orNotsendSMS(signDto.getProjectname(), signDto.getFilecode(), "incoming_type", "收文失败")) {
+                       SMSUtils.seekSMSThread(signRestService.getListUser("收文失败"), signDto.getProjectname(), signDto.getFilecode(), "incoming_type", "收文失败", smsContent.seekSMSSuccee(signDto.getProjectname(), signDto.getFilecode(), "收文失败"), smsLogService);
+                   }
+               }
+           }
+       }
         /*//添加日记记录
         Log log = new Log();
         log.setCreatedDate(new Date());
@@ -97,7 +122,6 @@ public class SysRestController {
         //优先级别高
         log.setLogLevel(Constant.EnumState.PROCESS.getValue());
         logService.save(log);*/
-
         resultMsg.setReObj(null);
         return resultMsg;
     }
