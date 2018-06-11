@@ -59,7 +59,8 @@ public class SMSContentImp implements SMSContent{
         //验证fileCode是否已经在短信日志表中
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append("select " + SMSLog_.userName.getName() + "," + SMSLog_.projectName.getName() + "," + SMSLog_.fileCode.getName() + " from cs_sms_log ");
-        if ("代办".equals(infoType)){
+        if (("" +
+                "").equals(infoType)){
             hqlBuilder.append(" where " + SMSLog_.projectName.getName()  + " = '"+projectName+"' and  "+ SMSLog_.smsLogType.getName()  + " = "+"'"+type+"'");
         }else {
             hqlBuilder.append(" where " + SMSLog_.fileCode.getName()  + " = '"+fileCode+"' and  "+ SMSLog_.smsLogType.getName()  + " = "+"'"+type+"'");

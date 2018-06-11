@@ -186,7 +186,7 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
 
         List<Sign> signList = criteria.list();
         //过滤掉手工签收的项目，即收文编号为0000结尾的项目
-        List<Sign> resultList = signList.stream().filter(s -> (!s.getFilecode().endsWith("0000"))).collect(Collectors.toList());
+//        List<Sign> resultList = signList.stream().filter(s -> (!s.getFilecode().endsWith("0000"))).collect(Collectors.toList());
         return signList;
     }
 
