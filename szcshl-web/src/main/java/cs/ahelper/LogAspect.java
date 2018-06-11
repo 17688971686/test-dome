@@ -29,6 +29,8 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 
+import static cs.common.IFResultCode.IFMsgCode.SZEC_SIGN_05;
+
 /**
  * Created by ldm on 2018/6/6 0006.
  */
@@ -177,6 +179,9 @@ public class LogAspect {
                         resultState = Constant.EnumState.YES.getValue();
                     }else {
                         resultState = Constant.EnumState.NO.getValue();
+                        if(SZEC_SIGN_05.equals(resultMsg.getReCode())){
+                            resultState = Constant.EnumState.YES.getValue();
+                        }
                     }
                     log.setLogCode(resultMsg.getReCode());
                 }

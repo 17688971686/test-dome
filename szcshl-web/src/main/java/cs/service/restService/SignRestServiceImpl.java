@@ -138,7 +138,7 @@ public class SignRestServiceImpl implements SignRestService {
                 resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getCode());
                 resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getValue());
             } else {
-                resultMsg.setFlag(false);
+                resultMsg.setFlag(true);
                 resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_SIGN_05.getCode());
                 resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SIGN_05.getValue());
             }
