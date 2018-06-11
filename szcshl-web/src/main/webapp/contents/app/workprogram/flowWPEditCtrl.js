@@ -5,9 +5,9 @@
     'use strict';
     angular.module('app').controller('flowWPEditCtrl', flowWPEdit);
 
-    flowWPEdit.$inject = ['workprogramSvc', '$state', 'bsWin', 'sysfileSvc', '$scope'];
+    flowWPEdit.$inject = ['workprogramSvc', '$state', 'bsWin', 'sysfileSvc', '$scope','$rootScope'];
 
-    function flowWPEdit(workprogramSvc, $state, bsWin, sysfileSvc, $scope) {
+    function flowWPEdit(workprogramSvc, $state, bsWin, sysfileSvc, $scope,$rootScope) {
         var vm = this;
         vm.work = {};						//创建一个form对象
         vm.model = {};                      //项目对象

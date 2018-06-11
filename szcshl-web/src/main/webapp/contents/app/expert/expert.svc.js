@@ -37,7 +37,7 @@
 		//begin formReset
 		function formReset(vm){
 			$("#searchform")[0].reset();
-			vm.gridOptions.dataSource.read();
+			//vm.gridOptions.dataSource.read();
 		}
 		//end formReset
 		
@@ -150,7 +150,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#searchform"),{$filter: "state ne 0"}),
+                transport: common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#searchform"),vm.gridParams),
                 schema: common.kendoGridConfig().schema({
                     id: "expertID",
                     fields: {
@@ -162,7 +162,8 @@
                 serverPaging: true,
                 serverSorting: true,
                 serverFiltering: true,
-                pageSize: 10,
+                pageSize: vm.queryParams.pageSize || 10,
+                page: vm.queryParams.page || 1,
                 sort: {
                     field: "applyDate",
                     dir: "desc"
@@ -170,7 +171,7 @@
             });
             // End:dataSource
 
-			var  dataBound = function () {  
+			/*var  dataBound = function () {
                 var rows = this.items();  
                 var page = this.pager.page() - 1;  
                 var pagesize = this.pager.pageSize();  
@@ -179,16 +180,16 @@
                     var rowLabel = $(this).find(".row-number");  
                     $(rowLabel).html(index);  
                 });  
-            } 
+            } */
 						
 			// End:column
 			vm.gridOptions = {
 				dataSource : common.gridDataSource(dataSource),
 				filterable : common.kendoGridConfig().filterable,
-				pageable : common.kendoGridConfig().pageable,
 				noRecords : common.kendoGridConfig().noRecordMessage,
 				columns : getExpertColumns(vm),
-				dataBound:dataBound,
+                pageable: common.kendoGridConfig(vm.queryParams).pageable,
+                dataBound: common.kendoGridConfig(vm.queryParams).dataBound,
 				resizable : true
 			};
 		}// end fun grid

@@ -41,15 +41,10 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
     private ExpertRepo expertRepo;
     @Autowired
     private ExpertSelectedRepo expertSelectedRepo;
-
-    @Autowired
-    private WorkProgramRepo workProgramRepo;
     @Autowired
     private ExpertNewInfoRepo expertNewInfoRepo;
-
     @Autowired
     private ExpertNewTypeRepo expertNewTypeRepo;
-
     @Autowired
     private SignRepo signRepo;
 
@@ -153,7 +148,8 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
                 for (ExpertSelected epSelted : expertSelectedList) {
                     if (isFilter) {
                         if (minBusinessId.equals(epSelted.getBusinessId())) {
-                            selDtoList.add(initSelExpert(epSelted));//设置抽取专家Dto
+                            //设置抽取专家Dto
+                            selDtoList.add(initSelExpert(epSelted));
                             //如果有抽取类型的专家，则说明已经已经整体专家的抽取
                             if (Constant.EnumExpertSelectType.AUTO.getValue().equals(epSelted.getSelectType())) {
                                 expertReviewDto.setState(Constant.EnumState.YES.getValue());  //表示专家已经进行整体抽取方案的抽取
@@ -214,6 +210,8 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             expertReview.setCreatedDate(now);
             expertReview.setModifiedDate(now);
             expertReview.setBusinessType(businessType);
+            //设置未完成整体工作方案抽取
+            expertReview.setFinishExtract(0);
             //评审费发放标题
             expertReviewRepo.initReviewTitle(expertReview, businessId, businessType);
             expertReviewRepo.save(expertReview);
@@ -224,13 +222,20 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             }
         }
         Sign sign = signRepo.findById(Sign_.signid.getName() , businessId);
+        Map<String,Object> resultMap = new HashMap<String,Object>();
+        boolean isMoreExpert = Constant.EnumState.YES.getValue().equals(sign.getIsMoreExpert());
         List<ExpertSelectedDto> resultList = new ArrayList<>();
         //保存抽取专家
         List<String> expertIdArr = StringUtil.getSplit(expertIds, ",");
         int totalLength = expertIdArr.size();
         boolean isSuper = SUPER_ACCOUNT.equals(SessionUtil.getLoginName()),isSelf = Constant.EnumExpertSelectType.SELF.getValue().equals(selectType);
+        String resultString = Constant.EnumState.NO.getValue();
+        if(isSuper || isMoreExpert){
+            resultString = Constant.EnumState.YES.getValue();
+        }
+        resultMap.put("moreExpert",resultString);
         //如果是专家自选，系统管理员可以添加多个自选专家，其他人员则要删除之前选择的专家信息 ,补充：如果不是可以自选多个专家
-        if(!isSuper && isSelf && !Constant.EnumState.YES.getValue().equals(sign.getIsMoreExpert())){
+        if(!isSuper && isSelf && !isMoreExpert){
             if(totalLength > 1){
                 return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), expertReview.getId(), "操作失败，只能选一个自选专家！");
             }
@@ -242,7 +247,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
                     for (ExpertSelected epSelected : expertReview.getExpertSelectedList()) {
                         boolean isSelfType = Constant.EnumExpertSelectType.SELF.getValue().equals(epSelected.getSelectType());
                         boolean isSuperCreate = SUPER_ACCOUNT.equals(epSelected.getCreateBy());
-                        if (isSelfType && !isSuperCreate && !Constant.EnumState.YES.getValue().equals(sign.getIsMoreExpert())) {
+                        if (isSelfType && !isSuperCreate && !isMoreExpert) {
                             expertSelectedRepo.deleteById(ExpertSelected_.id.getName(), epSelected.getId());
                         }
                     }
@@ -265,9 +270,9 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             }else if( Constant.EnumExpertSelectType.OUTSIDE.getValue().equals(expertSelected.getSelectType())){
                 expertSelected.setIsConfrim(Constant.EnumState.YES.getValue());
                 //设定备注信息，优先 （境外专家<-市外专家<-新专家）
-                if(expert.getExpertField() == "2"){
+                if("2".equals(expert.getExpertField())){
                     expertSelected.setRemark(Constant.ExpertSelectType.境外专家.name());
-                }else if(expert.getExpertField() == "1"){
+                }else if("1".equals(expert.getExpertField())){
                     expertSelected.setRemark(Constant.ExpertSelectType.市外专家.name());
                 }else{
                     expertSelected.setRemark(Constant.ExpertSelectType.新专家.name());
@@ -299,8 +304,8 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             dto.setExpertDto(expertDto);//设置专家信息Dto
             resultList.add(dto);
         }
-
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), expertReview.getId(), "操作成功！", resultList);
+        resultMap.put("selectedDtoList",resultList);
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), expertReview.getId(), "操作成功！", resultMap);
     }
 
 
@@ -376,13 +381,20 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateConfirmState(String minBusinessId, String businessType, String expertSelId, String state) {
+    public void updateConfirmState(String reviewId,String minBusinessId, String businessType, String expertSelId, String state) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append(" update cs_expert_selected ");
         sqlBuilder.append("set " + ExpertSelected_.isConfrim.getName() + " =:state ");
         sqlBuilder.setParam("state", state);
         sqlBuilder.bulidPropotyString("where", ExpertSelected_.id.getName(), expertSelId);
         expertReviewRepo.executeSql(sqlBuilder);
+
+        //修改评审方案的抽取专家信息
+        HqlBuilder sqlBuilder2 = HqlBuilder.create();
+        sqlBuilder2.append(" update CS_EXPERT_REVIEW ");
+        sqlBuilder2.append("set " + ExpertReview_.extractInfo.getName() + " = null ,  "+ ExpertReview_.selectIndex.getName()+" = null ");
+        sqlBuilder2.append(" where "+ ExpertReview_.id.getName()+" = :reviewId ").setParam("reviewId",reviewId);
+        expertReviewRepo.executeSql(sqlBuilder2);
     }
 
     /**
@@ -688,7 +700,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
     }
 
     /**
-     * 后去新专家信息
+     * 获取新专家信息
      *
      * @param businessId
      * @return

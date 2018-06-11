@@ -128,27 +128,18 @@
 
         //beign appraisingProjectGrid
         function appraisingProjectGrid(vm) {
-
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/reviewProjectAppraise/findAppraisingProject"),
+                transport: common.kendoGridConfig().transport(rootPath + "/reviewProjectAppraise/findAppraisingProject", $("#searchform"), vm.gridParams),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
-                    fields: {
-                        // createdDate: {
-                        //     type: "date"
-                        // }
-                    }
                 }),
                 serverPaging: true,
                 serverSorting: true,
                 serverFiltering: true,
-                pageSize: 10,
-                // sort: {
-                //     field: "createdDate",
-                //     dir: "desc"
-                // }
+                pageSize: vm.queryParams.pageSize || 10,
+                page: vm.queryParams.page || 1,
             });
             // End:dataSource
             // Begin:column
@@ -269,26 +260,14 @@
             vm.gridOptions = {
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
+                pageable: common.kendoGridConfig(vm.queryParams).pageable,
+                dataBound: common.kendoGridConfig(vm.queryParams).dataBound,
                 columns: columns,
                 resizable: true,
-                dataBound: function () {
-                    var rows = this.items();
-                    var page = this.pager.page() - 1;
-                    var pagesize = this.pager.pageSize();
-                    $(rows).each(function () {
-                        var index = $(this).index() + 1 + page * pagesize;
-                        var rowLabel = $(this).find(".row-number");
-                        $(rowLabel).html(index);
-                    });
-                }
             };
-
         }
-
         //end appraisingProjectGrid
-
 
         //begin approveListGrid
         function approveListGrid(vm) {

@@ -88,8 +88,9 @@ public class ExpertReviewController {
     //@RequiresPermissions("expertReview#affirmAutoExpert#post")
     @RequestMapping(name = "确认抽取专家", path = "affirmAutoExpert", method = RequestMethod.POST)
     @ResponseBody
-    public ResultMsg affirmAutoExpert(@RequestParam(required = true) String minBusinessId, @RequestParam(required = true) String businessType,
-                                      @RequestParam(required = true) String expertSelId, @RequestParam(required = true) String state) {
+    public ResultMsg affirmAutoExpert(@RequestParam(required = true) String reviewId, @RequestParam(required = true) String minBusinessId,
+                                      @RequestParam(required = true) String businessType, @RequestParam(required = true) String expertSelId,
+                                      @RequestParam(required = true) String state) {
         //判断已经确认的专家，和设定的专家人数对比
         int totalCount = expertSelConditionService.getExtractEPCount(minBusinessId);
         int selectCount = expertSelectedService.getSelectEPCount(minBusinessId);
@@ -97,7 +98,7 @@ public class ExpertReviewController {
         if (selectCount + (Validate.isList(ids) ? ids.size() : 0) > totalCount) {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，选择专家人数已经超过了抽取设定人数！");
         }
-        expertReviewService.updateConfirmState(minBusinessId, businessType, expertSelId, state);
+        expertReviewService.updateConfirmState(reviewId,minBusinessId, businessType, expertSelId, state);
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
     }
 

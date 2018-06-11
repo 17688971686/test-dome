@@ -2,6 +2,8 @@ package cs.model.expert;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import cs.model.BaseDto;
+
+import javax.persistence.Column;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -64,6 +66,17 @@ public class ExpertReviewDto extends BaseDto {
      * 抽取信息，抽取条件ID，收取次数
      */
     private String extractInfo;
+
+    /**
+     * 当前抽取未确认的次数，当extractInfo未抽取条件ID时有效
+     */
+    private Integer selectIndex;    //抽取次数
+
+    /**
+     * 是否完成整体专家抽取
+     * 0表示未完成整体抽取，1表示已完成整体抽取
+     */
+    private Integer finishExtract;
 
     /**
      * 抽取条件
@@ -188,5 +201,21 @@ public class ExpertReviewDto extends BaseDto {
 
     public void setExtractInfo(String extractInfo) {
         this.extractInfo = extractInfo;
+    }
+
+    public Integer getSelectIndex() {
+        return selectIndex;
+    }
+
+    public void setSelectIndex(Integer selectIndex) {
+        this.selectIndex = selectIndex;
+    }
+
+    public Integer getFinishExtract() {
+        return finishExtract;
+    }
+
+    public void setFinishExtract(Integer finishExtract) {
+        this.finishExtract = finishExtract;
     }
 }

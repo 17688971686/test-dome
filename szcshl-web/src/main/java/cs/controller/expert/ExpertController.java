@@ -143,8 +143,8 @@ public class ExpertController {
     @RequiresAuthentication
     @RequestMapping(name = "专家抽取", path = "autoExpertReview", method = RequestMethod.POST)
     @ResponseBody
-    public ResultMsg findReviewExpert(@RequestParam String minBusinessId, @RequestParam String reviewId, @RequestBody ExpertSelConditionDto[] paramArrary) {
-        return expertService.autoExpertReview(minBusinessId, reviewId, paramArrary);
+    public ResultMsg findReviewExpert(@RequestParam boolean isAllExtract,@RequestParam String minBusinessId, @RequestParam String reviewId, @RequestBody ExpertSelConditionDto[] paramArrary) {
+        return expertService.autoExpertReview(isAllExtract,minBusinessId, reviewId, paramArrary);
     }
 
     @RequiresAuthentication

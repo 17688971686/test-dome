@@ -7,6 +7,48 @@
     <ol class="breadcrumb">
         <li><a href="#/reviewProjectAppraiseList">优秀评审报告列表</a></li>
     </ol>
-        <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
+    <div class="toolbar">
+        <button class="btn btn-sm btn-primary" ng-click="vm.searchSignList()" ng-disabled="vm.isSubmit">
+            <span class="glyphicon glyphicon-search"></span>查询
+        </button>
+        <button class="btn btn-sm btn-primary" ng-click="vm.formReset()">
+            <span class="glyphicon glyphicon-repeat"></span>重置
+        </button>
+    </div>
+
+    <div class="well well-sm">
+        <form id="searchform" name="searchform">
+            <table style="width:100%" id="searchTable">
+                <tr>
+                    <td class="text-right" style="width:10%;min-width: 80px;max-width-width:120px;">项目名称</td>
+                    <td >
+                        <input name="projectname" type="text" operator="like" ng-model="vm.model.projectname"
+                               class="form-control input-sm "/>
+                    </td>
+                    <td class="text-right" style="width:10%;min-width: 80px;min-width:120px;">评审阶段</td>
+                    <td>
+                        <select name="reviewstage" operator="eq" class="form-control select "
+                                ng-model="vm.model.reviewstage">
+                            <option value="">请选择</option>
+                            <option ng-repeat="x in DICT.PRO_STAGE.dicts" value="{{x.dictName}}" ng-selected="vm.model.reviewstage==x.dictName">{{x.dictName}}</option>
+                        </select>
+                    </td>
+                    <td class="text-right" style="width:10%;min-width: 80px;min-width:120px;">评审部门</td>
+                    <td >
+                        <select name="reviewOrgName" class="form-control select-sm " operator="like"
+                                ng-model="vm.model.reviewOrgName">
+                            <option value="">请选择</option>
+                            <option ng-repeat="x in vm.orgDeptList" value="{{x.name}}" ng-selected="vm.model.reviewOrgName==x.name" >{{x.name}}</option>
+                        </select>
+                    </td>
+                    <td class="text-right" style="width:10%;min-width: 80px;max-width-width:120px;">项目负责人</td>
+                    <td >
+                        <input name="allPriUser" type="text" operator="like" ng-model="vm.model.allPriUser" class="form-control input-sm "/>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
 </div>
 
