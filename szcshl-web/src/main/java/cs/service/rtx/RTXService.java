@@ -114,15 +114,15 @@ public class RTXService {
             if( rtxSMSEnabled()&&resultMsg.isFlag()){
                 boolean boo = SMSUtils.getWeek(new Date(),sysConfigService);
                 if(boo){
-                    //查询短信日志表是否已发送短信 commission_type:代办类型
-                    if (!smsContent.orNotsendSMS(processInstance.getName(),"","commission_type","代办")){
+                    //查询短信日志表是否已发送短信 commission_type:代办类型  发送短信不收次数限制,暂时注销
+//                    if (!smsContent.orNotsendSMS(processInstance.getName(),"","commission_type","代办")){
                         //代办发送短息
                         if (content.contains("任务")){//任务类型
                             SMSUtils.seekSMSThread(receiverList,processInstance.getName(),"","task_type","代办", content,smsLogService);
                         }else{//项目类型
                             SMSUtils.seekSMSThread(receiverList,processInstance.getName(),"","project_type","代办", content,smsLogService);
                         }
-                    }
+//                    }
                 }
             }
             //如果使用腾讯通，并处理成功！

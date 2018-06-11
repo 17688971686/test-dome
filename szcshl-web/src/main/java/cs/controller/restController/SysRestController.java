@@ -93,18 +93,19 @@ public class SysRestController {
        if(resultMsg.isFlag()&& rtxService.rtxSMSEnabled()){
            boolean boo = SMSUtils.getWeek(new Date(),sysConfigService);
            if (boo){
-               if(! smsContent.orNotsendSMS(signDto.getProjectname(),signDto.getFilecode(),"incoming_type","收文成功")){
+               //发送短信不收次数限制,暂时注销
+//               if(! smsContent.orNotsendSMS(signDto.getProjectname(),signDto.getFilecode(),"incoming_type","收文成功")){
                    // AAAGAN 收文失败，发送短信（但龙，郭东东）项目名称（委里收文编号）
                    SMSUtils.seekSMSThread(signRestService.getListUser("收文成功"),signDto.getProjectname(),signDto.getFilecode(),"incoming_type","收文成功",smsContent.seekSMSSuccee(signDto.getProjectname(),signDto.getFilecode(),"收文成功"),  smsLogService);
-               }
+//               }
            }
        }else {
            if (rtxService.rtxSMSEnabled()) {
                boolean boo = SMSUtils.getWeek(new Date(), sysConfigService);
                if (boo) {
-                   if (!smsContent.orNotsendSMS(signDto.getProjectname(), signDto.getFilecode(), "incoming_type", "收文失败")) {
+//                   if (!smsContent.orNotsendSMS(signDto.getProjectname(), signDto.getFilecode(), "incoming_type", "收文失败")) {
                        SMSUtils.seekSMSThread(signRestService.getListUser("收文失败"), signDto.getProjectname(), signDto.getFilecode(), "incoming_type", "收文失败", smsContent.seekSMSSuccee(signDto.getProjectname(), signDto.getFilecode(), "收文失败"), smsLogService);
-                   }
+//                   }
                }
            }
        }
