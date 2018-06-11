@@ -330,7 +330,7 @@ public class SignRestServiceImpl implements SignRestService {
                     boolean boo = SMSUtils.getWeek(new Date(),sysConfigService);
                     if(boo){
 //                        if(! smsContent.orNotsendSMS(sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文成功")){
-                            SMSUtils.seekSMSThread(getListUser("发文成功"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文成功",smsContent.seekSMSSuccee(sign.getProjectname(),sign.getFilecode(),"发文成功"),  smsLogService);
+                            SMSUtils.seekSMSThread(getListUser("发文成功"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文成功",smsContent.seekSMSSuccee(sign.getProjectname(),sign.getFilecode(),"发文成功(回传委里)"),  smsLogService);
 //                        }
                     }
                 }
@@ -340,7 +340,7 @@ public class SignRestServiceImpl implements SignRestService {
                     boolean boo = SMSUtils.getWeek(new Date(),sysConfigService);
                     if(boo){
 //                        if(! smsContent.orNotsendSMS(sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文失败")){
-                            SMSUtils.seekSMSThread(getListUser("发文失败"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文失败",smsContent.seekSMSSuccee(sign.getProjectname(),sign.getFilecode(),"发文失败"),  smsLogService);
+                            SMSUtils.seekSMSThread(getListUser("发文失败"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文失败",smsContent.seekSMSSuccee(sign.getProjectname(),sign.getFilecode(),"发文失败(回传委里)"),  smsLogService);
 //                        }
                     }
                 }
@@ -354,7 +354,7 @@ public class SignRestServiceImpl implements SignRestService {
                 if (boo){
 //                    if(! smsContent.orNotsendSMS(sign.getProjectname(),sign.getFilecode(),"dispatch_type","发文失败")){
                         //AAAGAN 发送个发改委 ：发文失败，发送短信（但龙，陈春燕）项目名称（发文号）  fileCode
-                        SMSUtils.seekSMSThread(getListUser("发文失败"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文失败.通信异常 ",smsContent.seekSMSSuccee(sign.getProjectname(),sign.getFilecode(),"发文失败。通信异常"),  smsLogService);
+                        SMSUtils.seekSMSThread(getListUser("发文失败"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文失败.通信异常 ",smsContent.seekSMSSuccee(sign.getProjectname(),sign.getFilecode(),"发文失败(回传委里,通信异常)"),  smsLogService);
 //                    }
                 }
             }
