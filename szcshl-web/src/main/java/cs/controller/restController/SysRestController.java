@@ -94,18 +94,25 @@ public class SysRestController {
            boolean boo = SMSUtils.getWeek(new Date(),sysConfigService);
            if (boo){
                //发送短信不收次数限制,暂时注销
-//               if(! smsContent.orNotsendSMS(signDto.getProjectname(),signDto.getFilecode(),"incoming_type","收文成功")){
+               if(! smsContent.orNotsendSMS(signRestService.getListUser("收文成功"),signDto.getProjectname(),signDto.getFilecode(),"incoming_type","收文成功")){
                    // AAAGAN 收文失败，发送短信（但龙，郭东东）项目名称（委里收文编号）
-                   SMSUtils.seekSMSThread(signRestService.getListUser("收文成功"),signDto.getProjectname(),signDto.getFilecode(),"incoming_type","收文成功",smsContent.seekSMSSuccee(signDto.getProjectname(),signDto.getFilecode(),"收文成功(项目签收信息)"),  smsLogService);
-//               }
+                   SMSUtils.seekSMSThread(null,signRestService.getListUser("收文成功"),signDto.getProjectname(),signDto.getFilecode(),"incoming_type","收文成功",smsContent.seekSMSSuccee(signDto.getProjectname(),signDto.getFilecode(),"收文成功(项目签收信息)"),  smsLogService);
+               }
            }
        }else {
            if (rtxService.rtxSMSEnabled()) {
                boolean boo = SMSUtils.getWeek(new Date(), sysConfigService);
                if (boo) {
-//                   if (!smsContent.orNotsendSMS(signDto.getProjectname(), signDto.getFilecode(), "incoming_type", "收文失败")) {
-                       SMSUtils.seekSMSThread(signRestService.getListUser("收文失败"), signDto.getProjectname(), signDto.getFilecode(), "incoming_type", "收文失败", smsContent.seekSMSSuccee(signDto.getProjectname(), signDto.getFilecode(), "收文失败(项目签收信息)"), smsLogService);
-//                   }
+                   if ("SIGN_05".equals(resultMsg.getReCode())){
+                       if (!smsContent.orNotsendSMS(signRestService.getListUser("收文成功"),signDto.getProjectname(), signDto.getFilecode(), "incoming_type", "收文失败")) {
+                           SMSUtils.seekSMSThread(null,signRestService.getListUser("收文成功"), signDto.getProjectname(), signDto.getFilecode(), "incoming_type", "收文失败", smsContent.seekSMSSuccee(signDto.getProjectname(), signDto.getFilecode(), "收文成功(项目签收信息)"), smsLogService);
+                       }
+                   }else{
+                       if (!smsContent.orNotsendSMS(signRestService.getListUser("收文失败"),signDto.getProjectname(), signDto.getFilecode(), "incoming_type", "收文失败")) {
+                           SMSUtils.seekSMSThread(null,signRestService.getListUser("收文失败"), signDto.getProjectname(), signDto.getFilecode(), "incoming_type", "收文失败", smsContent.seekSMSSuccee(signDto.getProjectname(), signDto.getFilecode(), "收文失败(项目签收信息)"), smsLogService);
+                       }
+                   }
+
                }
            }
        }
@@ -327,47 +334,49 @@ public class SysRestController {
 
     @RequestMapping(name = "项目签收信息", value = "/testJson")
     public void testJson() throws IOException {
-        String REST_SERVICE_URI = "http://localhost:8080/szcshl-web/intfc/pushProject";
-        SignDto signDto = new SignDto();
-        //委里收文编号
-        signDto.setFilecode("D201800117");
-        signDto.setIschangeEstimate(null);
-        signDto.setDeclaration(null);
-        signDto.setMaindeptName("投资处");
-        signDto.setAssistDeptUserName("罗松");
-        signDto.setCountryCode("2018-440300-65-01-502631");
-        signDto.setReviewstage("STAGEBUDGET");
-        signDto.setProjectcode("Z-2018-I65-502631-03-01");
-        signDto.setProjectname("深圳市投资项目在线审批 监管平台升级拓展项目");
-        signDto.setUrgencydegree("一般");
-        signDto.setBuiltCompUserName("田云");
-        signDto.setAssistdeptName("高技术产业处");
-        signDto.setDesigncompanyName("深圳市艾泰克工程咨询监理有限公司");
-        signDto.setYearplantype("C类");
-        signDto.setAcceptDate(DateUtils.converToDate("2018-05-17 00:00:00","yyyy-MM-dd HH:mm:ss"));
-        signDto.setSecrectlevel("公开");
-        signDto.setMainDeptContactPhone("13510285489");
-        signDto.setMainDeptUserName("李斌");
-        signDto.setBuiltcompanyName("深圳市政务服务管理办公室");
-        signDto.setMaindeptOpinion("请李斌同志主办。[投资处]2018-05-17;\n项目单位申报项目总概算1656.75万元，主要功能模块包括业务应用平台升级拓展、数据补充登记系统、数据分析与监管、业务梳理交叉设计、协同审批业务实施等。建议将有关资料转请评审中心评审，妥否，请领导审定。[李斌]2018-05-17;\n同意转请评审中心评审。[吴江]2018-05-18;\n转请评审中心进行评审。[李斌]2018-05-18");
-        //附件列表
-        List<SysFileDto> fileDtoList = new ArrayList<>();
-        SysFileDto sysFileDto = new SysFileDto();
-        //显示名称，后缀名也要
-        sysFileDto.setShowName("空白.docx.docx");
-        //附件大小，Long类型
-        sysFileDto.setFileSize(11213L);
-        //附件下载地址
-        sysFileDto.setFileUrl("http://172.18.225.56:8089/FGWPM/LEAP/Download/default/2018/5/17/20180517143816590.docx");
-        fileDtoList.add(sysFileDto);
-        //项目添加附件列表
-        signDto.setSysFileDtoList(fileDtoList);
 
-        Map<String, String> params = new HashMap<>();
-        params.put("signDtoJson", JSON.toJSONString(signDto));
-        HttpResult hst = httpClientOperate.doPost(REST_SERVICE_URI, params);
-        //System.out.println(params.get("signDtoJson"));
-        System.out.println(hst.toString());
+        signRestService.getListUser("收文成功");
+//        String REST_SERVICE_URI = "http://localhost:8080/szcshl-web/intfc/pushProject";
+//        SignDto signDto = new SignDto();
+//        //委里收文编号
+//        signDto.setFilecode("D201800117");
+//        signDto.setIschangeEstimate(null);
+//        signDto.setDeclaration(null);
+//        signDto.setMaindeptName("投资处");
+//        signDto.setAssistDeptUserName("罗松");
+//        signDto.setCountryCode("2018-440300-65-01-502631");
+//        signDto.setReviewstage("STAGEBUDGET");
+//        signDto.setProjectcode("Z-2018-I65-502631-03-01");
+//        signDto.setProjectname("深圳市投资项目在线审批 监管平台升级拓展项目");
+//        signDto.setUrgencydegree("一般");
+//        signDto.setBuiltCompUserName("田云");
+//        signDto.setAssistdeptName("高技术产业处");
+//        signDto.setDesigncompanyName("深圳市艾泰克工程咨询监理有限公司");
+//        signDto.setYearplantype("C类");
+//        signDto.setAcceptDate(DateUtils.converToDate("2018-05-17 00:00:00","yyyy-MM-dd HH:mm:ss"));
+//        signDto.setSecrectlevel("公开");
+//        signDto.setMainDeptContactPhone("13510285489");
+//        signDto.setMainDeptUserName("李斌");
+//        signDto.setBuiltcompanyName("深圳市政务服务管理办公室");
+//        signDto.setMaindeptOpinion("请李斌同志主办。[投资处]2018-05-17;\n项目单位申报项目总概算1656.75万元，主要功能模块包括业务应用平台升级拓展、数据补充登记系统、数据分析与监管、业务梳理交叉设计、协同审批业务实施等。建议将有关资料转请评审中心评审，妥否，请领导审定。[李斌]2018-05-17;\n同意转请评审中心评审。[吴江]2018-05-18;\n转请评审中心进行评审。[李斌]2018-05-18");
+//        //附件列表
+//        List<SysFileDto> fileDtoList = new ArrayList<>();
+//        SysFileDto sysFileDto = new SysFileDto();
+//        //显示名称，后缀名也要
+//        sysFileDto.setShowName("空白.docx.docx");
+//        //附件大小，Long类型
+//        sysFileDto.setFileSize(11213L);
+//        //附件下载地址
+//        sysFileDto.setFileUrl("http://172.18.225.56:8089/FGWPM/LEAP/Download/default/2018/5/17/20180517143816590.docx");
+//        fileDtoList.add(sysFileDto);
+//        //项目添加附件列表
+//        signDto.setSysFileDtoList(fileDtoList);
+//
+//        Map<String, String> params = new HashMap<>();
+//        params.put("signDtoJson", JSON.toJSONString(signDto));
+//        HttpResult hst = httpClientOperate.doPost(REST_SERVICE_URI, params);
+//        //System.out.println(params.get("signDtoJson"));
+//        System.out.println(hst.toString());
     }
 
 

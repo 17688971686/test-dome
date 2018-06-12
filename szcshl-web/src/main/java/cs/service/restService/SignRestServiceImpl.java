@@ -33,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static cs.common.constants.Constant.RevireStageKey.FGW_PRE_PROJECT_IFS;
 import static cs.common.constants.Constant.RevireStageKey.RETURN_FGW_URL;
@@ -151,7 +152,7 @@ public class SignRestServiceImpl implements SignRestService {
                 resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getCode());
                 resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getValue());
             } else {
-                resultMsg.setFlag(false);
+                resultMsg.setFlag(true);
                 resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_SIGN_05.getCode());
                 resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SIGN_05.getValue());
             }
@@ -321,7 +322,10 @@ public class SignRestServiceImpl implements SignRestService {
             }
             params.put("dataMap", JSON.toJSONString(dataMap));
             params.put("dataList", JSON.toJSONString(dataList));
-
+            Date date = new Date();
+            if ((date.getTime()-timeL)>( 60 * 1000) ){
+                gameChannelMap.clear();
+            }
             HttpResult hst = httpClientOperate.doPost(fgwUrl, params);
             FGWResponse fGWResponse = JSON.toJavaObject(JSON.parseObject(hst.getContent()), FGWResponse.class);
             //成功
@@ -329,9 +333,14 @@ public class SignRestServiceImpl implements SignRestService {
                 if (rtxService.rtxSMSEnabled()){
                     boolean boo = SMSUtils.getWeek(new Date(),sysConfigService);
                     if(boo){
-//                        if(! smsContent.orNotsendSMS(sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文成功")){
-                            SMSUtils.seekSMSThread(getListUser("发文成功"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文成功",smsContent.seekSMSSuccee(sign.getProjectname(),sign.getFilecode(),"发文成功(回传委里)"),  smsLogService);
-//                        }
+                        if (!gameChannelMap.get("fileCode").equals(sign.getFilecode())){
+                            if(! smsContent.orNotsendSMS(getListUser("发文成功"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文成功")){
+                                //AAAGAN 发送个发改委 ：发文失败，发送短信（但龙，陈春燕）项目名称（发文号）  fileCode
+                                gameChannelMap.put("fileCode",sign.getFilecode());
+                                timeL = new Date().getTime();
+                                SMSUtils.seekSMSThread(smsContent,getListUser("发文成功"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文成功",smsContent.seekSMSSuccee(sign.getProjectname(),sign.getFilecode(),"发文成功(回传委里)"),  smsLogService);
+                            }
+                        }
                     }
                 }
                 return new ResultMsg(true, IFResultCode.IFMsgCode.SZEC_SEND_OK.getCode(), "项目【" + sign.getProjectname() + "(" + sign.getFilecode() + ")】回传数据给发改委成功！");
@@ -339,9 +348,19 @@ public class SignRestServiceImpl implements SignRestService {
                 if (rtxService.rtxSMSEnabled()){
                     boolean boo = SMSUtils.getWeek(new Date(),sysConfigService);
                     if(boo){
-//                        if(! smsContent.orNotsendSMS(sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文失败")){
-                            SMSUtils.seekSMSThread(getListUser("发文失败"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文失败",smsContent.seekSMSSuccee(sign.getProjectname(),sign.getFilecode(),"发文失败(回传委里)"),  smsLogService);
-//                        }
+                        String fileCode = "1";
+                        if (gameChannelMap.size()>0){
+                            fileCode = gameChannelMap.get("fileCode");
+                        }
+
+                        if (!fileCode.equals(sign.getFilecode())){
+                            if(!smsContent.orNotsendSMS(getListUser("发文失败"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文失败")){
+                                //AAAGAN 发送个发改委 ：发文失败，发送短信（但龙，陈春燕）项目名称（发文号）  fileCode
+                                gameChannelMap.put("fileCode",sign.getFilecode());
+                                timeL = new Date().getTime();
+                                SMSUtils.seekSMSThread(smsContent,getListUser("发文失败"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文失败",smsContent.seekSMSSuccee(sign.getProjectname(),sign.getFilecode(),"发文失败(回传委里)"),  smsLogService);
+                            }
+                        }
                     }
                 }
                 return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SEND_ERROR.getCode(),
@@ -352,15 +371,33 @@ public class SignRestServiceImpl implements SignRestService {
                 //如果当天是周末将不发送短信
                 boolean boo = SMSUtils.getWeek(new Date(),sysConfigService);
                 if (boo){
-//                    if(! smsContent.orNotsendSMS(sign.getProjectname(),sign.getFilecode(),"dispatch_type","发文失败")){
-                        //AAAGAN 发送个发改委 ：发文失败，发送短信（但龙，陈春燕）项目名称（发文号）  fileCode
-                        SMSUtils.seekSMSThread(getListUser("发文失败"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文失败.通信异常 ",smsContent.seekSMSSuccee(sign.getProjectname(),sign.getFilecode(),"发文失败(回传委里,通信异常)"),  smsLogService);
-//                    }
+                    String fileCode = "1";
+                    if (gameChannelMap.size()>0){
+                        fileCode = gameChannelMap.get("fileCode");
+                    }
+
+                    if (!fileCode.equals(sign.getFilecode())){
+                        if(! smsContent.orNotsendSMS(getListUser("发文失败"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","发文失败")){
+                            //AAAGAN 发送个发改委 ：发文失败，发送短信（但龙，陈春燕）项目名称（发文号）  fileCode
+                            gameChannelMap.put("fileCode",sign.getFilecode());
+                            timeL = new Date().getTime();
+                            SMSUtils.seekSMSThread(smsContent,getListUser("发文失败"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文失败.通信异常 ",smsContent.seekSMSSuccee(sign.getProjectname(),sign.getFilecode(),"发文失败(回传委里,通信异常)"),  smsLogService);
+                        }
+                    }
+
                 }
             }
             return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_DEAL_ERROR.getCode(),
                     "项目【" + sign.getProjectname() + "(" + sign.getFilecode() + ")】回传数据给发改委异常！" + e.getMessage());
         }
+    }
+
+    public static  Map<String,String> gameChannelMap = new ConcurrentHashMap<>();
+    public static long timeL =0l;
+    public static  boolean getTimeCode(){
+
+
+        return false;
     }
     public  List<User>  getListUser(String type){
         List<User> list = new ArrayList<>();
