@@ -305,7 +305,6 @@ public class SysFileServiceImpl implements SysFileService {
     public ResultMsg downRemoteFile(String businessId, List<SysFileDto> sysFileDtoList,String userId,String mainType,String busiType) {
         ResultMsg resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"没有附件信息！");
         if (Validate.isList(sysFileDtoList)) {
-            StringBuffer fileBuffer = new StringBuffer();
             List<SysFile> saveFileList = new ArrayList<>();
             int totalFileCount = sysFileDtoList.size();
             int sucessCount = 0,errorCount = 0;
@@ -377,7 +376,6 @@ public class SysFileServiceImpl implements SysFileService {
                         sucessCount ++;
                     } else {
                         errorCount++;
-                        sysFile = null;
                     }
                 }catch (Exception e){
                     errorCount++;
@@ -400,6 +398,10 @@ public class SysFileServiceImpl implements SysFileService {
                     resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_FILE_NOT_ALL.getValue());
                 }
             }
+        }else{
+            resultMsg.setFlag(true);
+            resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getCode());
+            resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getValue());
         }
         return resultMsg;
 
