@@ -1223,7 +1223,7 @@
                 })
             // begin 党务管理
                 .state('partyEdit', {//党员信息录入
-                    url: '/partyEdit',
+                    url: '/partyEdit/:id',
                     templateUrl: rootPath + "/partyManager/html/partyEdit.html",
                     controller: 'partyEditCtrl',
                     controllerAs: 'vm'
@@ -1234,9 +1234,21 @@
                     controller: 'partyListCtrl',
                     controllerAs: 'vm'
                 })
-                .state('partyMeeting', {//党员会议添加编辑页
-                    url: '/partyMeeting',
-                    templateUrl: rootPath + "/partyManager/html/addPartyMeeting.html",
+                .state('partyMeetList', {//党员会议列表
+                    url: '/partyMeetList',
+                    templateUrl: rootPath + "/partyMeet/html/partyMeetList.html",
+                    controller: 'partyMeetingCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('addPartyMeet', {//党员会议添加编辑页
+                    url: '/addPartyMeet/:id',
+                    templateUrl: rootPath + "/partyMeet/html/addPartyMeeting.html",
+                    controller: 'partyMeetingCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('partyMeetDetail', {//党员会议添加编辑页
+                    url: '/partyMeetDetail/:id',
+                    templateUrl: rootPath + "/partyMeet/html/partyMeetDetail.html",
                     controller: 'partyMeetingCtrl',
                     controllerAs: 'vm'
                 })
@@ -1648,270 +1660,6 @@
                 success: httpSuccess
             });
         }//E_专家评审费用统计
-
-    }
-})();
-(function () {
-    'use strict';
-
-    angular.module('app').controller('addRegisterFileCtrl', addRegisterFile);
-
-    addRegisterFile.$inject = ['bsWin', 'addRegisterFileSvc', '$state'];
-
-    function addRegisterFile(bsWin, addRegisterFileSvc, $state) {
-        var vm = this;
-        vm.title = '登记补充资料';
-        vm.sign = {};//收文对象
-        vm.addRegisters = [];//登记补充材料集合
-        vm.businessId = $state.params.businessId;
-
-        //新建登记补充材料
-        vm.addRegisterFile = function () {
-            vm.addRegister = {};
-            vm.addRegister.businessId = vm.businessId;
-            vm.addRegister.id = common.uuid();
-            vm.addRegisters.push(vm.addRegister);
-        }
-
-        //保存登记补充材料
-        vm.saveRegisterFile = function () {
-            addRegisterFileSvc.saveRegisterFile(vm.addRegisters,function(data){
-                if(data.flag || data.reCode=='ok'){
-                    bsWin.alert("操作成功");
-                    vm.addRegisters = data.reObj;
-                }else{
-                    bsWin.alert(data.reMsg);
-                }
-            });
-        }
-        //删除登记补充资料
-        vm.deleteRegisterFile = function () {
-            var isCheked = $("#addRegistersTable input[name='addRegistersCheck']:checked")
-            if (isCheked.length < 1) {
-                bsWin.alert("请选择要删除的记录！");
-            } else {
-                var ids = [];
-                for (var i = 0; i < isCheked.length; i++) {
-                    vm.addRegisters.forEach(function (f, number) {
-                        if (f.id && isCheked[i].value == f.id) {
-                            ids.push(isCheked[i].value);
-                            vm.addRegisters.splice(number, 1);
-                        }
-                    });
-                }
-                if(ids.length > 0){
-                    addRegisterFileSvc.deleteByIds(ids.join(","), function (data) {
-                        bsWin.alert("删除成功！");
-                    });
-                }
-            }
-        }
-
-        //份数数字校验
-        vm.inputIntegerValue = function (checkValue, idSort) {
-            if (addRegisterFileSvc.isUnsignedInteger(checkValue)) {
-                $("#errorsUnmber" + idSort).html("");
-            } else {
-                $("#errorsUnmber" + idSort).html("只能输入数字");
-            }
-        }
-
-        activate();
-        function activate() {
-            if($state.params.businessId){
-                addRegisterFileSvc.initAddRegisterFile($state.params.businessId,function(data){
-                    if(data && data.length > 0){
-                        vm.addRegisters = data;
-                    }
-                });
-            }
-
-        }
-
-        /**
-         * 重写打印预览
-         */
-        vm.printFile = function(businessId){
-
-            var isCheck = $("input[name='addRegistersCheck']:checked");
-            console.log(isCheck);
-            if(isCheck.length == 0){
-                bsWin.alert("请选择数据！");
-            }else{
-                var ids = [];
-                for(var i = 0 ; i < isCheck.length ; i++){
-                    ids.push(isCheck[i].value);
-                }
-                var ids = ids.join(",");
-
-                var url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?version=" + (new Date()).getTime() + "&file=" + rootPath + "/addRegisterFile/printAddRegisterFile/" + businessId + "/" + ids ;
-                $("#iframePreview").attr("src", url);
-                $("#previewModal").kendoWindow({
-                    width: "80%",
-                    height: "730px",
-                    title: "",
-                    visible: false,
-                    modal: true,
-                    closable: true,
-                    actions: ["Pin", "Minimize", "Maximize", "Close"]
-                }).data("kendoWindow").center().open();
-            }
-
-
-
-        }
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').controller('addRegisterFileEditCtrl', addRegisterFile);
-
-    addRegisterFile.$inject = ['$location', 'addRegisterFileSvc', '$state'];
-
-    function addRegisterFile($location, addRegisterFileSvc, $state) {
-        /* jshint validthis:true */
-        var vm = this;
-        vm.title = '添加登记补充资料';
-        vm.isuserExist = false;
-        vm.id = $state.params.id;
-        if (vm.id) {
-            vm.isUpdate = true;
-            vm.title = '更新登记补充资料';
-        }
-
-        vm.create = function () {
-            addRegisterFileSvc.createAddRegisterFile(vm);
-        };
-        vm.update = function () {
-            addRegisterFileSvc.updateAddRegisterFile(vm);
-        };
-
-        activate();
-        function activate() {
-            if (vm.isUpdate) {
-                addRegisterFileSvc.getAddRegisterFileById(vm);
-            }
-        }
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').factory('addRegisterFileSvc', addRegisterFile);
-
-    addRegisterFile.$inject = ['$http'];
-
-    function addRegisterFile($http) {
-        var url_addRegisterFile = rootPath + "/addRegisterFile", url_back = '#/addRegisterFileList';
-        var service = {
-            initAddRegisterFile: initAddRegisterFile,		//初始化登记补充资料
-            saveRegisterFile: saveRegisterFile,				//保存登记补充材料
-            isUnsignedInteger: isUnsignedInteger,			//数字校验
-            initRegisterWinDow: initRegisterWinDow,			//初始化登记补充资料页面
-            deleteByIds: deleteByIds,                      // 根据ID删除补充资料函
-        };
-
-        return service;
-
-        function initRegisterWinDow(vm, opation) {
-            $("#addRegister").kendoWindow({
-                width: "70%",
-                height: "660px",
-                title: "意见选择",
-                visible: false,
-                modal: true,
-                closable: true,
-                actions: ["Pin", "Minimize", "Maximize", "close"]
-            }).data("kendoWindow").center().open();
-        }
-
-        //检查是否为正整数
-        function isUnsignedInteger(value) {
-            if ((/^(\+|-)?\d+$/.test(value)) && value > 0) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        //S 保存登记补充材料
-        function saveRegisterFile(addRegisters, callBack) {
-            var httpOptions = {
-                method: 'post',
-                url: rootPath + "/addRegisterFile/save",
-                headers: {
-                    "contentType": "application/json;charset=utf-8"  //设置请求头信息
-                },
-                traditional: true,
-                dataType: "json",
-                data: angular.toJson(addRegisters),//将Json对象序列化成Json字符串，JSON.stringify()原生态方法
-            }
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            }
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-
-        //E 保存登记补充材料
-
-        //刷新页面
-        function myrefresh() {
-            window.location.reload();
-        }
-
-        //S 初始化登记补充资料
-        function initAddRegisterFile(businessId, callBack) {
-            var httpOptions = {
-                method: 'post',
-                url: rootPath + "/addRegisterFile/findByBusinessId",
-                params: {
-                    businessId: businessId
-                }
-            };
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            };
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-
-        // E 初始化登记补充资料
-
-        //S_根据ID删除补充资料函
-        function deleteByIds(ids, callBack) {
-            var httpOptions = {
-                method: 'delete',
-                url: url_addRegisterFile + "/deleteFile",
-                params: {
-                    ids: ids
-                }
-            };
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            };
-
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
 
     }
 })();
@@ -3177,7 +2925,12 @@
             };
             sysfileSvc.initUploadOptions({
                 inputId: "sysfileinput",
-                vm: vm
+                vm: vm,
+                uploadSuccess: function () {
+                    sysfileSvc.findByBusinessId(vm.suppletter.id, function (data) {
+                        vm.sysFilelists = data;
+                    });
+                }
             });
         }
         //拟补充资料函查看附件
@@ -3194,7 +2947,11 @@
                 closable: true,
                 actions: ["Pin", "Minimize", "Maximize", "close"]
             }).data("kendoWindow").center().open();
-            addSuppLetterSvc.findByBusinessId(vm);
+                sysfileSvc.findByBusinessId(vm.suppletter.id , function(data){
+                    vm.sysFilelists = data;
+                });
+
+
         	}else{
         		bsWin.alert("请先保存业务数据");
         	}
@@ -3234,6 +2991,270 @@
     }
 })();
 
+(function () {
+    'use strict';
+
+    angular.module('app').controller('addRegisterFileCtrl', addRegisterFile);
+
+    addRegisterFile.$inject = ['bsWin', 'addRegisterFileSvc', '$state'];
+
+    function addRegisterFile(bsWin, addRegisterFileSvc, $state) {
+        var vm = this;
+        vm.title = '登记补充资料';
+        vm.sign = {};//收文对象
+        vm.addRegisters = [];//登记补充材料集合
+        vm.businessId = $state.params.businessId;
+
+        //新建登记补充材料
+        vm.addRegisterFile = function () {
+            vm.addRegister = {};
+            vm.addRegister.businessId = vm.businessId;
+            vm.addRegister.id = common.uuid();
+            vm.addRegisters.push(vm.addRegister);
+        }
+
+        //保存登记补充材料
+        vm.saveRegisterFile = function () {
+            addRegisterFileSvc.saveRegisterFile(vm.addRegisters,function(data){
+                if(data.flag || data.reCode=='ok'){
+                    bsWin.alert("操作成功");
+                    vm.addRegisters = data.reObj;
+                }else{
+                    bsWin.alert(data.reMsg);
+                }
+            });
+        }
+        //删除登记补充资料
+        vm.deleteRegisterFile = function () {
+            var isCheked = $("#addRegistersTable input[name='addRegistersCheck']:checked")
+            if (isCheked.length < 1) {
+                bsWin.alert("请选择要删除的记录！");
+            } else {
+                var ids = [];
+                for (var i = 0; i < isCheked.length; i++) {
+                    vm.addRegisters.forEach(function (f, number) {
+                        if (f.id && isCheked[i].value == f.id) {
+                            ids.push(isCheked[i].value);
+                            vm.addRegisters.splice(number, 1);
+                        }
+                    });
+                }
+                if(ids.length > 0){
+                    addRegisterFileSvc.deleteByIds(ids.join(","), function (data) {
+                        bsWin.alert("删除成功！");
+                    });
+                }
+            }
+        }
+
+        //份数数字校验
+        vm.inputIntegerValue = function (checkValue, idSort) {
+            if (addRegisterFileSvc.isUnsignedInteger(checkValue)) {
+                $("#errorsUnmber" + idSort).html("");
+            } else {
+                $("#errorsUnmber" + idSort).html("只能输入数字");
+            }
+        }
+
+        activate();
+        function activate() {
+            if($state.params.businessId){
+                addRegisterFileSvc.initAddRegisterFile($state.params.businessId,function(data){
+                    if(data && data.length > 0){
+                        vm.addRegisters = data;
+                    }
+                });
+            }
+
+        }
+
+        /**
+         * 重写打印预览
+         */
+        vm.printFile = function(businessId){
+
+            var isCheck = $("input[name='addRegistersCheck']:checked");
+            console.log(isCheck);
+            if(isCheck.length == 0){
+                bsWin.alert("请选择数据！");
+            }else{
+                var ids = [];
+                for(var i = 0 ; i < isCheck.length ; i++){
+                    ids.push(isCheck[i].value);
+                }
+                var ids = ids.join(",");
+
+                var url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?version=" + (new Date()).getTime() + "&file=" + rootPath + "/addRegisterFile/printAddRegisterFile/" + businessId + "/" + ids ;
+                $("#iframePreview").attr("src", url);
+                $("#previewModal").kendoWindow({
+                    width: "80%",
+                    height: "730px",
+                    title: "",
+                    visible: false,
+                    modal: true,
+                    closable: true,
+                    actions: ["Pin", "Minimize", "Maximize", "Close"]
+                }).data("kendoWindow").center().open();
+            }
+
+
+
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').controller('addRegisterFileEditCtrl', addRegisterFile);
+
+    addRegisterFile.$inject = ['$location', 'addRegisterFileSvc', '$state'];
+
+    function addRegisterFile($location, addRegisterFileSvc, $state) {
+        /* jshint validthis:true */
+        var vm = this;
+        vm.title = '添加登记补充资料';
+        vm.isuserExist = false;
+        vm.id = $state.params.id;
+        if (vm.id) {
+            vm.isUpdate = true;
+            vm.title = '更新登记补充资料';
+        }
+
+        vm.create = function () {
+            addRegisterFileSvc.createAddRegisterFile(vm);
+        };
+        vm.update = function () {
+            addRegisterFileSvc.updateAddRegisterFile(vm);
+        };
+
+        activate();
+        function activate() {
+            if (vm.isUpdate) {
+                addRegisterFileSvc.getAddRegisterFileById(vm);
+            }
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').factory('addRegisterFileSvc', addRegisterFile);
+
+    addRegisterFile.$inject = ['$http'];
+
+    function addRegisterFile($http) {
+        var url_addRegisterFile = rootPath + "/addRegisterFile", url_back = '#/addRegisterFileList';
+        var service = {
+            initAddRegisterFile: initAddRegisterFile,		//初始化登记补充资料
+            saveRegisterFile: saveRegisterFile,				//保存登记补充材料
+            isUnsignedInteger: isUnsignedInteger,			//数字校验
+            initRegisterWinDow: initRegisterWinDow,			//初始化登记补充资料页面
+            deleteByIds: deleteByIds,                      // 根据ID删除补充资料函
+        };
+
+        return service;
+
+        function initRegisterWinDow(vm, opation) {
+            $("#addRegister").kendoWindow({
+                width: "70%",
+                height: "660px",
+                title: "意见选择",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "close"]
+            }).data("kendoWindow").center().open();
+        }
+
+        //检查是否为正整数
+        function isUnsignedInteger(value) {
+            if ((/^(\+|-)?\d+$/.test(value)) && value > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        //S 保存登记补充材料
+        function saveRegisterFile(addRegisters, callBack) {
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/addRegisterFile/save",
+                headers: {
+                    "contentType": "application/json;charset=utf-8"  //设置请求头信息
+                },
+                traditional: true,
+                dataType: "json",
+                data: angular.toJson(addRegisters),//将Json对象序列化成Json字符串，JSON.stringify()原生态方法
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
+        //E 保存登记补充材料
+
+        //刷新页面
+        function myrefresh() {
+            window.location.reload();
+        }
+
+        //S 初始化登记补充资料
+        function initAddRegisterFile(businessId, callBack) {
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/addRegisterFile/findByBusinessId",
+                params: {
+                    businessId: businessId
+                }
+            };
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
+        // E 初始化登记补充资料
+
+        //S_根据ID删除补充资料函
+        function deleteByIds(ids, callBack) {
+            var httpOptions = {
+                method: 'delete',
+                url: url_addRegisterFile + "/deleteFile",
+                params: {
+                    ids: ids
+                }
+            };
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
+    }
+})();
 (function () {
     'use strict';
 
@@ -30595,10 +30616,85 @@
             createParty : createParty,  //保存党员信息
             partyGrid : partyGrid, //查询党员列表
             findById : findById , //通过id查询
+            updateParty : updateParty , //更新党员信息
+            exportPartyWord : exportPartyWord , //导出党务信息-word模板
+            deleteParty : deleteParty , //删除党员信息
+            exportSignInSheet : exportSignInSheet , //导出签到表
             
         }
         
         return service;
+
+        //begin exportSignInSheet
+        function exportSignInSheet(pmIds){
+            /*var downForm = $("#partyform");
+            downForm.attr("target", "");
+            downForm.attr("method", "post");
+            downForm.attr("action", rootPath + "/partyManager/exportSignInSheet");
+            downForm.find("input[name='pmIds']").val(pmIds);
+            downForm.submit();//表单提交*/
+
+            var httpOptions = {
+                method : "post",
+                url : rootPath + "/partyManager/exportSignInSheet",
+                params : {pmIds : pmIds}
+            }
+
+            var httpSuccess = function success(response){
+                var fileName =  "签到表.doc";
+                var fileType ="msword";
+                common.downloadReport(response.data , fileName , fileType);
+            }
+
+            common.http({
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+        }
+        //end exportSignInSheet
+
+        //begin deleteParty
+        function deleteParty(pmId , callBack){
+            var httpOptions = {
+                method : "put",
+                url : rootPath + "/partyManager/deleteParty",
+                params : {pmId : pmId}
+            }
+
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof  callBack == "function"){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http : $http ,
+                httpOptions : httpOptions,
+                success : httpSuccess
+            });
+        }
+        //end deleteParty
+
+        //begin exportPatryWord
+        function exportPartyWord(vm , pmId){
+            var httpOptions = {
+                method : 'post',
+                url : rootPath + "/partyManager/exportPartyWord",
+                params : {pmId : pmId}
+            }
+            var httpSuccess = function success(response){
+                var fileName =  "党员基本信息采集表.doc";
+                var fileType ="msword";
+                common.downloadReport(response.data , fileName , fileType);
+            }
+            common.http({
+                $http : $http,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+        }
+        //end exportPatryWord
 
         //begin createParty
         function createParty(vm , cellBack){
@@ -30643,6 +30739,28 @@
 
         }
         //end findById
+
+        //begin updateParty
+        function updateParty(vm , callBack){
+            var httpOptions = {
+                method : 'put',
+                url : rootPath + "/partyManager/updateParty",
+                data : vm.party
+            }
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof callBack == "function"){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+        }
+        //end updateParty
+
         //begin partyGrid
         function partyGrid(vm){
             // Begin:dataSource
@@ -30682,6 +30800,14 @@
             // Begin:column
             var columns = [
                 {
+                    template: function (item) {
+                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />", item.pmId)
+                    },
+                    filterable: false,
+                    width: 40,
+                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox' />"
+                },
+                {
                     field: "rowNumber",
                     title: "序号",
                     width: 50,
@@ -30706,15 +30832,15 @@
                 {
                     field: "pmIDCard",
                     title: "身份证号",
-                    width: 200,
+                    width: 160,
                     filterable: false,
                 },
                 {
-                    field: "",
+                    field: "pmNation",
                     title: "民族",
                     width: 50,
                     filterable: false,
-                    template :function(item){
+                    /*template :function(item){
                         var pmNation = "";
                         for(var i =0 ; i < $rootScope.DICT.NATION.dicts.length ; i++){
                             var v = $rootScope.DICT.NATION.dicts[i];
@@ -30724,18 +30850,18 @@
                             }
                         }
                         return pmNation;
-                    }
+                    }*/
                 },
                 {
                     field: "pmEducation",
                     title: "学历",
-                    width: 100,
+                    width: 80,
                     filterable: false
                 },
                 {
                     field: "pmPhone",
                     title: "手机号",
-                    width: 100,
+                    width: 80,
                     filterable: false
                 },
                 {
@@ -30773,6 +30899,19 @@
                 },
                 {
                     field: "",
+                    title: "在编情况",
+                    width: 60,
+                    filterable: false,
+                    template : function(item){
+                        if(item.isEnrolled && item.isEnrolled == '9'){
+                            return "是";
+                        }else{
+                            return "否";
+                        }
+                    }
+                },
+                {
+                    field: "",
                     title: "操作",
                     width: 120,
                     template: function (item) {
@@ -30780,7 +30919,7 @@
                         if(item.curState == 9){
                             canExecute = true;
                         }
-                        return common.format($('#columnBtns').html(),  "vm.partyDetail('" + item.pmId + "')");
+                        return common.format($('#columnBtns').html(),  "vm.partyDetail('" + item.pmId + "')" , item.pmId , "vm.deleteParty('" + item.pmId + "')");
                     }
                 }
             ];
@@ -30805,36 +30944,60 @@
 
     angular.module('app').controller('partyEditCtrl', partyEdit);
 
-    partyEdit.$inject = ['partySvc' , 'bsWin'];
+    partyEdit.$inject = ['partySvc' , 'bsWin' , '$state'];
 
-    function partyEdit(partySvc , bsWin) {
+    function partyEdit(partySvc , bsWin , $state) {
         var vm = this;
         vm.title = '党员信息录入';        		//标题
         vm.party = {};
+        vm.patryId = $state.params.id;
 
         active();
         function active(){
-            $('#myTab li').click(function (e) {
+            /*$('#myTab li').click(function (e) {
                 var aObj = $("a",this);
                 e.preventDefault();
                 aObj.tab('show');
                 var showDiv = aObj.attr("for-div");
                 $(".tab-pane").removeClass("active").removeClass("in");
                 $("#"+showDiv).addClass("active").addClass("in").show(500);
-            })
+            })*/
+            if(vm.patryId){
+                vm.isShow = true;
+                partySvc.findById(vm.patryId , function(data){
+                    if(data.flag || data.reCode == 'ok'){
+                        vm.party = data.reObj;
+                    }
+
+                });
+            }
         }
 
         /**
          * 保存党员信息
          */
         vm.saveParty = function(){
-
             common.initJqValidation();
             var isValid = $('form').valid();
             if (isValid) {
                 partySvc.createParty(vm , function(data){
                     if(data.flag || data.reCode == 'ok'){
-                        console.log(data);
+                        bsWin.alert("保存成功！");
+                    }
+                });
+            }
+
+        }
+
+        /**
+         * 更新党员信息
+         */
+        vm.updateParty = function(){
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                partySvc.updateParty(vm , function(data){
+                    if(data.flag || data.reCode == 'ok'){
                         bsWin.alert("保存成功！");
                     }
                 });
@@ -30856,7 +31019,6 @@
     function partyList(partySvc , bsWin) {
         var vm = this;
         vm.title = '党员信息查询';        		//标题
-        vm.party = {};
 
         active();
         function active(){
@@ -30869,14 +31031,14 @@
          * @param pmId
          */
         vm.partyDetail = function(pmId){
-            $('#myTab li').click(function (e) {
+           /* $('#myTab li').click(function (e) {
                 var aObj = $("a",this);
                 e.preventDefault();
                 aObj.tab('show');
                 var showDiv = aObj.attr("for-div");
                 $(".tab-pane").removeClass("active").removeClass("in");
                 $("#"+showDiv).addClass("active").addClass("in").show(500);
-            })
+            })*/
 
             $("#partyDetail").kendoWindow({
                 width: "1000px",
@@ -30895,6 +31057,11 @@
 
         }
 
+        vm.formReset = function(){
+            vm.party = {};
+        }
+
+
         /**
          * 模糊查询
          */
@@ -30902,25 +31069,351 @@
             vm.gridOptions.dataSource.read();
         }
 
+        /**
+         * 党务信息导出-word
+         */
+        vm.exportPartyWord = function(pmId){
+            partySvc.exportPartyWord(vm , pmId)
+        }
+
+        /**
+         * 删除党员信息
+         * @param pmId
+         */
+        vm.deleteParty = function(pmId){
+            bsWin.confirm("确认停用该党员？", function(){
+                partySvc.deleteParty(pmId , function(data){
+
+                    bsWin.alert("操作成功！");
+                });
+            })
+        }
+
+        /**
+         * 导出签到表
+         */
+        vm.exportSignInSheet = function(){
+            var selectIds = common.getKendoCheckId('.grid');
+            if (selectIds.length == 0) {
+                bsWin.alert("请选择要删除数据！");
+            } else {
+                var ids = [];
+                for (var i = 0; i < selectIds.length; i++) {
+                    ids.push(selectIds[i].value);
+                }
+                var idStr = ids.join(',');
+                partySvc.exportSignInSheet(idStr);
+            }
+        }
 
     }
 })();
 
+(function(){
+    'use strict';
+    angular.module('app').factory('partyMeetSvc', partyMeet);
+    partyMeet.$inject = ['$http', '$state' , 'bsWin' ];
+
+    function partyMeet($http , $state , bsWin ){
+        var service = {
+            partyMeetGrid : partyMeetGrid ,
+            createPartyMeet : createPartyMeet , //保存党务会议
+            findMeetById : findMeetById , //通过ID获取会议信息
+            updatePartyMeet : updatePartyMeet , //更新会议信息
+            deletePartyMeet : deletePartyMeet  , //删除会议信息
+
+        }
+
+        return service;
+
+        function deletePartyMeet(id , callBack){
+            var httpOptions = {
+                method : "delete",
+                url : rootPath + "/partyMeet/deletePartyMeet",
+                params : {"mId" : id}
+            }
+
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof  callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+        }
+
+        function updatePartyMeet(vm , callBack){
+            var httpOptions = {
+                method : "put",
+                url : rootPath + "/partyMeet/updatePartyMeet",
+                data : vm.partyMeet
+            }
+
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof  callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+        }
+
+        function findMeetById(id , callBack){
+            var httpOptions = {
+                method : "post",
+                url : rootPath + "/partyMeet/findMeetById",
+                params : {"mId" : id}
+            }
+
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof callBack =="function"){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+        }
+
+        function createPartyMeet(vm , callBack){
+            var httpOptions = {
+                method : "post",
+                url : rootPath + "/partyMeet/createPartyMeet",
+                data : vm.partyMeet
+            }
+
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof  callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+        }
+
+        function partyMeetGrid(vm){
+            // Begin:dataSource
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(rootPath + "/partyMeet/findByDataList" ),
+                schema: common.kendoGridConfig().schema({
+                    id: "id",
+                    fields: {
+                        createdDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
+            });
+            // End:dataSource
+            //S_序号
+            var dataBound = function () {
+                var rows = this.items();
+                var page = this.pager.page() - 1;
+                var pagesize = this.pager.pageSize();
+                $(rows).each(function () {
+                    var index = $(this).index() + 1 + page * pagesize;
+                    var rowLabel = $(this).find(".row-number");
+                    $(rowLabel).html(index);
+                });
+            }
+            //S_序号
+            // Begin:column
+            var columns = [
+                {
+                    template: function (item) {
+                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />", item.mId)
+                    },
+                    filterable: false,
+                    width: 40,
+                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox' />"
+                },
+                {
+                    field: "rowNumber",
+                    title: "序号",
+                    width: 20,
+                    filterable: false,
+                    template: "<span class='row-number'></span>"
+                },
+                {
+                    field: "",
+                    title: "会议标题",
+                    width: 100,
+                    filterable: false,
+                    template: function (item) {
+                        return '<a  href="#/partyMeetDetail/' + item.mId + '">'+item.mTitle+'</a>'
+                    }
+                },
+                {
+                    field: "mDate",
+                    title: "会议时间",
+                    width: 50,
+                    filterable: false,
+                },
+                {
+                    field: "mAddress",
+                    title: "会议地点",
+                    width: 160,
+                    filterable: false,
+                },
+                {
+                    field: "",
+                    title: "操作",
+                    width: 120,
+                    template: function (item) {
+                        var canExecute = false;
+                        if(item.curState == 9){
+                            canExecute = true;
+                        }
+                        return common.format($('#columnBtns').html(),   item.mId , "vm.deletePartyMeet('" + item.mId + "')");
+                    }
+                }
+            ];
+            // End:column
+
+            vm.gridOptions = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                dataBound: dataBound,
+                resizable: true
+            };
+        }
+
+    }
+})();
 (function () {
     'use strict';
 
     angular.module('app').controller('partyMeetingCtrl', partyMeeting);
 
-    partyMeeting.$inject = ['partySvc' , 'bsWin' , 'sharingPlatlformSvc'];
+    partyMeeting.$inject = ['partyMeetSvc' , 'bsWin' , '$scope' , "$state" , 'sysfileSvc'];
 
-    function partyMeeting(partySvc , bsWin , sharingPlatlformSvc) {
+    function partyMeeting(partyMeetSvc , bsWin , $scope , $state , sysfileSvc) {
         var vm = this;
-        vm.title = '党员会议添加';        		//标题
+        vm.title = '党员会议管理';        		//标题
         vm.party = {};
+        vm.businessFlag = {};
+        vm.id = $state.params.id;
+
+        //初始化附件上传控件
+        vm.initFileUpload = function () {
+            if (!vm.id) {
+                //监听ID，如果有新值，则自动初始化上传控件
+                $scope.$watch("vm.id", function (newValue, oldValue) {
+                    if (newValue && newValue != oldValue && !vm.initUploadOptionSuccess) {
+                        vm.initFileUpload();
+                    }
+                });
+            }
+
+            //创建附件对象
+            vm.sysFile = {
+                businessId: vm.id,
+                mainId: vm.id,
+                mainType: "党务会议附件",
+                sysBusiType: "",
+                showBusiType: false,
+            };
+            sysfileSvc.initUploadOptions({
+                inputId: "sysfileinput",
+                vm: vm,
+                uploadSuccess: function () {
+                    sysfileSvc.findByBusinessId(vm.id, function (data) {
+                        vm.sysFilelists = data;
+                    });
+                }
+            });
+        }
 
         active();
         function active(){
-            sharingPlatlformSvc.initOrgAndUser(vm);
+            partyMeetSvc.partyMeetGrid(vm);
+            // sharingPlatlformSvc.initOrgAndUser(vm);
+            if(vm.id){
+                vm.isShowUpdate = true;
+                partyMeetSvc.findMeetById(vm.id , function(data){
+                    vm.partyMeet = data;
+                });
+                //初始化附件
+                sysfileSvc.findByBusinessId(vm.id , function(data){
+                    vm.sysFilelists = data;
+                });
+            }
+
+            vm.initFileUpload();
+        }
+
+        /**
+         * 保存党务会议
+         */
+        vm.savePartyMeet = function(){
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                partyMeetSvc.createPartyMeet(vm, function (data) {
+                    if (data.flag || data.reCode == 'ok') {
+                        vm.id = data.reObj;
+                        vm.isShowUpdate = true;
+                        bsWin.alert("保存成功！");
+                    }
+                });
+            }
+        }
+
+        /**
+         * 更新会议信息
+         * @constructor
+         */
+        vm.UpdatePartyMeet = function(){
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                partyMeetSvc.updatePartyMeet(vm, function (data) {
+                    bsWin.alert("保存成功！");
+                });
+            }
+        }
+
+        /**
+         * 删除会议信息
+         * @param id
+         */
+        vm.deletePartyMeet = function(id){
+            bsWin.confirm("确定删除？" , function(){
+                partyMeetSvc.deletePartyMeet(id , function(data){
+                    if(data.flag || data.reCode == 'ok'){
+                        bsWin.alert("删除成功！");
+                        vm.gridOptions.dataSource.read();
+                    }
+                });
+            });
+
         }
 
     }
