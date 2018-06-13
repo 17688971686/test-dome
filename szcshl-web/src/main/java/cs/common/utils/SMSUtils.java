@@ -5,6 +5,7 @@ import cs.common.constants.Constant;
 import cs.domain.sys.SMSLog;
 import cs.domain.sys.User;
 import cs.model.sys.SysConfigDto;
+import cs.service.sys.SMSContent;
 import cs.service.sys.SMSLogService;
 import cs.service.sys.SysConfigService;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -61,28 +62,32 @@ public class SMSUtils {
     private static String content = "content";
 
     private static Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
+
+    private static Map<String, String> smsMap = new ConcurrentHashMap<>();
     /**
      * 异步发送短信
      *
      * @param
      * @return
      */
-    public static void seekSMSThread(List<User> receiverList,String projectName,String filecode,String type,String infoType,String seekContent, SMSLogService smsLogService) {
+    public static void seekSMSThread(SMSContent smsContent, List<User> receiverList, String projectName, String filecode, String type, String infoType, String seekContent, SMSLogService smsLogService) {
             ExecutorService threadPool = Executors.newCachedThreadPool();
             //线程池提交一个异步任务
             Future<HashMap<String, String>> future = threadPool.submit(new Callable<HashMap<String, String>>() {
                 @Override
                 public HashMap<String, String> call() throws Exception {
 //                    异步任务 不需要直接反应结果，通过日志记录发信状况信息
+                    logger.info("进入发送短信异步:  "+smsContent);
                     boolean   boo = seekSMS(receiverList, projectName, filecode, type, infoType,seekContent, smsLogService);
+                    Thread.sleep(2000);
                     logger.info("seekSMS: 返回调用结果. " + boo);
                     return
-                           new HashMap<String, String>() {
-                       {
-                           this.put("success", String.valueOf(boo));
-                       }
-                   };
-               }
+                            new HashMap<String, String>() {
+                                {
+                                    this.put(""+projectName, String.valueOf(boo));
+                                }
+                            };
+                }
             });
             //关闭线程池
             if (!threadPool.isShutdown()) {
@@ -117,11 +122,11 @@ public class SMSUtils {
                         return false;
                     }
                     if (i == receiverList.size() - 1) {
-                        phone += user.getUserMPhone();
-                        userName += user.getDisplayName();
+                        phone += user.getUserMPhone().trim();
+                        userName += user.getDisplayName().trim();
                     } else {
-                        phone += user.getUserMPhone() + ",";
-                        userName += user.getDisplayName() + ",";
+                        phone += user.getUserMPhone().trim() + ",";
+                        userName += user.getDisplayName().trim() + ",";
                     }
                 }
             }
@@ -130,9 +135,8 @@ public class SMSUtils {
             return false;
         }
         //验证短信内容
-        TOKEN = getHttpSMS(smsLogService);
+        TOKEN = getHttpSMS(userName,phone,projectName,filecode,seekContent,smsLogService);
         if (TOKEN ==null) {
-            insertLog(userName,phone,projectName,filecode,"10001", type, "获取短信平台Token异常",seekContent,smsLogService,false);
             return false;
         }
         CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -163,10 +167,15 @@ public class SMSUtils {
                 if ("0000000".equals(resultCode)) {
                     insertLog(userName,phone,projectName,filecode,resultCode, type, infoType,seekContent,smsLogService,true);
                     return true;
+                }else{
+                    insertLog(userName,phone,projectName,filecode,resultCode, type, infoType,seekContent,smsLogService,false);
+                    return false;
                 }
             }
         } catch (Exception e) {
-            insertLog(userName,phone,projectName,filecode,"10002", type, infoType,seekContent,smsLogService,false);
+            seekContent="\n 通信异常";
+            insertLog(userName,phone,projectName,filecode,"10002", "custom_type", "通信异常",seekContent,smsLogService,false);
+            return  false;
         } finally {
             try {
                 httpClient.close();
@@ -174,7 +183,7 @@ public class SMSUtils {
                 e.printStackTrace();
             }
         }
-        insertLog(userName,phone,projectName,filecode,resultCode, type, infoType,seekContent,smsLogService,false);
+        insertLog(userName,phone,projectName,filecode,"10003", "custom_type", "网络访问异常",seekContent,smsLogService,false);
         return false;
     }
 
@@ -199,7 +208,7 @@ public class SMSUtils {
     /**
      * 获取token服务
      */
-    public static String getHttpSMS(SMSLogService smsLogService) {
+    public static String getHttpSMS(String userName,String phone,String projectName,String filecode,String seekContent,SMSLogService smsLogService) {
         //是否超时
         if (isOrTimeout()) {
             return TOKEN;
@@ -234,8 +243,9 @@ public class SMSUtils {
             }
             httpClient.close();
         } catch (Exception e) {
-            logger.info("getHttpSMS 获取token异常. " + e.getMessage());
+            logger.info("getHttpSMS 获取token异常. " + e.getMessage()+" tempCode："+tempCode );
         }
+        insertLog(userName,phone,projectName,filecode,tempCode, "custom_type", "获取短信平台Token异常",seekContent,smsLogService,false);
         return null;
     }
 
@@ -296,7 +306,7 @@ public class SMSUtils {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return true;
+        return false;
     }
 
     public static void main(String[] args) {
@@ -307,19 +317,21 @@ public class SMSUtils {
 //    SMSUtils.seekSMSThread(getListUser("发文失败"),"发文失败,发送短信。项目名称: "+sign.getFilecode()+"\n"+"  【评审中心项目管理系统】",  logService);
         List<User> list = new ArrayList<>();
         User user = new User();
-        user.setDisplayName("道花");
+        user.setDisplayName("郭冬冬");
         ;
-        user.setUserMPhone("18038078167");
+        user.setUserMPhone("13640950289");
         list.add(user);
 
         User user3 = new User();
-        user3.setDisplayName("道花2");
+        user3.setDisplayName("开发者");
         ;
         user3.setUserMPhone("18038078167");
         list.add(user3);
-//        seekSMSThread(list, "测试项目", "A001","发文成功","发文成功", "\n"+"发文失败。"+"\n"+"项目名称:A1001DFD1 "+"\n"+"  【评审中心项目管理系统】", null);
-
-        boolean boo = SMSUtils.getWeek(new Date(),null);
+//
+//        for (int i =0 ;i<10;i++){
+             SMSUtils.seekSMSThread(null,list, "测试项目", "A001","发文成功","发文成功", "\n"+"发文失败。"+"\n"+"项目名称:A1001DFD1 "+"\n"+"  【评审中心项目管理系统】", null);
+//            System.out.println("boo=   ");
+//        }
 
     }
 }

@@ -272,6 +272,22 @@
                     controller: 'logCtrl',
                     controllerAs: 'vm'
                 })
+                //begin#smslog  需要替换的注销2018
+                // .state('smslog', {
+                //     url: '/smslog',
+                //     templateUrl: rootPath + '/smslog/html/list.html',
+                //     controller: 'smslogCtrl',
+                //     controllerAs: 'vm'
+                // })
+
+                // .state('maintainExpertConfirm', {//确定修改文件
+                //     url: '/maintainExpertConfirm/:signid',
+                //     templateUrl: rootPath + "/maintainProject/html/maintainExpertConfirm.html",
+                //     controller: 'maintainExpertConfirmCtrl',
+                //     controllerAs: 'vm'
+                // })
+
+
                 //end#log
 
                 //begin#config
@@ -1205,7 +1221,6 @@
                     controller: 'maintainExpertConfirmCtrl',
                     controllerAs: 'vm'
                 })
-
             // begin 党务管理
                 .state('partyEdit', {//党员信息录入
                     url: '/partyEdit',

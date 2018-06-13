@@ -1,5 +1,9 @@
 package cs.service.sys;
 
+import cs.domain.sys.User;
+
+import java.util.List;
+
 /**
  * Created by Administrator on 2018/5/31.
  */
@@ -26,5 +30,5 @@ public interface SMSContent {
      * @param fileCode
      * @param type
      * */
-    public boolean orNotsendSMS(String projectName,String fileCode,String type,String infoType);
+    public boolean orNotsendSMS(List<User> list, String projectName, String fileCode, String type, String infoType);
 }
