@@ -263,23 +263,24 @@ public class UserServiceImpl implements UserService {
     public UserDto findUserByName(String userName) {
         User user = userRepo.findUserByName(userName);
         UserDto userDto = new UserDto();
-        BeanCopierUtils.copyProperties(user, userDto);
+        if(Validate.isObject(user)){
+            BeanCopierUtils.copyProperties(user, userDto);
+            List<Role> roleList = user.getRoles();
+            if (roleList != null && roleList.size() > 0) {
+                List<RoleDto> roleDtoList = new ArrayList<RoleDto>(roleList.size());
+                roleList.forEach(r -> {
+                    RoleDto roleDto = new RoleDto();
+                    BeanCopierUtils.copyProperties(r, roleDto);
+                    roleDtoList.add(roleDto);
+                });
+                userDto.setRoleDtoList(roleDtoList);
+            }
 
-        List<Role> roleList = user.getRoles();
-        if (roleList != null && roleList.size() > 0) {
-            List<RoleDto> roleDtoList = new ArrayList<RoleDto>(roleList.size());
-            roleList.forEach(r -> {
-                RoleDto roleDto = new RoleDto();
-                BeanCopierUtils.copyProperties(r, roleDto);
-                roleDtoList.add(roleDto);
-            });
-            userDto.setRoleDtoList(roleDtoList);
-        }
-
-        if (user.getOrg() != null) {
-            OrgDto orgDto = new OrgDto();
-            BeanCopierUtils.copyProperties(user.getOrg(), orgDto);
-            userDto.setOrgDto(orgDto);
+            if (user.getOrg() != null) {
+                OrgDto orgDto = new OrgDto();
+                BeanCopierUtils.copyProperties(user.getOrg(), orgDto);
+                userDto.setOrgDto(orgDto);
+            }
         }
         return userDto;
     }
