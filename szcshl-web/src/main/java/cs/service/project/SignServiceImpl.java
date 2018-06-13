@@ -2935,9 +2935,9 @@ public class SignServiceImpl implements SignService {
         if (Validate.isList(listSign)) {
             for (int i = 0, l = listSign.size(); i < l; i++) {
                 Sign sign = listSign.get(0);
-//                if (EnumState.STOP.getValue().equals(sign.getIsSendFGW()) || sign.getFilecode().endsWith("0000")) {
-//                    continue;
-//                } else {
+                if (EnumState.STOP.getValue().equals(sign.getIsSendFGW()) || sign.getFilecode().endsWith("0000")) {
+                    continue;
+                } else {
                     SignDto signDto = new SignDto();
                     BeanCopierUtils.copyProperties(sign, signDto);
                     //只获取主工作方案
@@ -2963,7 +2963,7 @@ public class SignServiceImpl implements SignService {
                     listSignDto.add(signDto);
                 }
 
-//            }
+            }
         }
         return listSignDto;
     }

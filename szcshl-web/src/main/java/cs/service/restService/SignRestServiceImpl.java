@@ -352,7 +352,6 @@ public class SignRestServiceImpl implements SignRestService {
                         if (gameChannelMap.size()>0){
                             fileCode = gameChannelMap.get("fileCode");
                         }
-
                         if (!fileCode.equals(sign.getFilecode())){
                             if(!smsContent.orNotsendSMS(getListUser("发文失败"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文失败")){
                                 //AAAGAN 发送个发改委 ：发文失败，发送短信（但龙，陈春燕）项目名称（发文号）  fileCode
@@ -403,11 +402,11 @@ public class SignRestServiceImpl implements SignRestService {
         List<User> list = new ArrayList<>();
         User user = null;
         if ("收文失败".equals(type)|| "收文成功".equals(type)){
-            List<SysConfigDto>  sysConfigDtoList = sysConfigService.findListBykey("SMS_SYS_USER_TYPE");
+            List<SysConfigDto>  sysConfigDtoList = sysConfigService.findListBykey("SYS_USER_TYPE");
             for(SysConfigDto sysConfigDto: sysConfigDtoList){
                 user = new User();
-                user.setUserMPhone(sysConfigDto.getConfigValue());
-                user.setDisplayName(sysConfigDto.getConfigName());
+                user.setUserMPhone( sysConfigDto.getConfigValue().trim());
+                user.setDisplayName(sysConfigDto.getConfigName().trim());
                 list.add(user);
             }
         }
@@ -415,8 +414,8 @@ public class SignRestServiceImpl implements SignRestService {
             List<SysConfigDto>  sysConfigDtoList = sysConfigService.findListBykey("SMS_SYS_USER_POST_FAILURE");
             for(SysConfigDto sysConfigDto: sysConfigDtoList){
                 user = new User();
-                user.setUserMPhone(sysConfigDto.getConfigValue());
-                user.setDisplayName(sysConfigDto.getConfigName());
+                user.setUserMPhone(sysConfigDto.getConfigValue().trim());
+                user.setDisplayName(sysConfigDto.getConfigName().trim());
                 list.add(user);
             }
         }

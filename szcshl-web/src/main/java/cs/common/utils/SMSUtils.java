@@ -138,7 +138,7 @@ public class SMSUtils {
         //验证短信内容
         TOKEN = getHttpSMS(smsLogService);
         if (TOKEN ==null) {
-            insertLog(userName,phone,projectName,filecode,"10001", type, "获取短信平台Token异常",seekContent,smsLogService,false);
+            insertLog(userName,phone,projectName,filecode,"10001", "custom_type", "获取短信平台Token异常",seekContent,smsLogService,false);
             return false;
         }
         CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -171,11 +171,12 @@ public class SMSUtils {
                     return true;
                 }else{
                     insertLog(userName,phone,projectName,filecode,resultCode, type, infoType,seekContent,smsLogService,false);
+                    return false;
                 }
             }
         } catch (Exception e) {
             seekContent="\n 通信异常";
-            insertLog(userName,phone,projectName,filecode,"10002", type, infoType,seekContent,smsLogService,false);
+            insertLog(userName,phone,projectName,filecode,"10002", "custom_type", "通信异常",seekContent,smsLogService,false);
             return  false;
         } finally {
             try {
@@ -184,7 +185,7 @@ public class SMSUtils {
                 e.printStackTrace();
             }
         }
-
+        insertLog(userName,phone,projectName,filecode,"10003", "custom_type", "网络访问异常",seekContent,smsLogService,false);
         return false;
     }
 
