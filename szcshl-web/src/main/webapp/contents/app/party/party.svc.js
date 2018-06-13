@@ -11,10 +11,85 @@
             createParty : createParty,  //保存党员信息
             partyGrid : partyGrid, //查询党员列表
             findById : findById , //通过id查询
+            updateParty : updateParty , //更新党员信息
+            exportPartyWord : exportPartyWord , //导出党务信息-word模板
+            deleteParty : deleteParty , //删除党员信息
+            exportSignInSheet : exportSignInSheet , //导出签到表
             
         }
         
         return service;
+
+        //begin exportSignInSheet
+        function exportSignInSheet(pmIds){
+            /*var downForm = $("#partyform");
+            downForm.attr("target", "");
+            downForm.attr("method", "post");
+            downForm.attr("action", rootPath + "/partyManager/exportSignInSheet");
+            downForm.find("input[name='pmIds']").val(pmIds);
+            downForm.submit();//表单提交*/
+
+            var httpOptions = {
+                method : "post",
+                url : rootPath + "/partyManager/exportSignInSheet",
+                params : {pmIds : pmIds}
+            }
+
+            var httpSuccess = function success(response){
+                var fileName =  "签到表.doc";
+                var fileType ="msword";
+                common.downloadReport(response.data , fileName , fileType);
+            }
+
+            common.http({
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+        }
+        //end exportSignInSheet
+
+        //begin deleteParty
+        function deleteParty(pmId , callBack){
+            var httpOptions = {
+                method : "put",
+                url : rootPath + "/partyManager/deleteParty",
+                params : {pmId : pmId}
+            }
+
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof  callBack == "function"){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http : $http ,
+                httpOptions : httpOptions,
+                success : httpSuccess
+            });
+        }
+        //end deleteParty
+
+        //begin exportPatryWord
+        function exportPartyWord(vm , pmId){
+            var httpOptions = {
+                method : 'post',
+                url : rootPath + "/partyManager/exportPartyWord",
+                params : {pmId : pmId}
+            }
+            var httpSuccess = function success(response){
+                var fileName =  "党员基本信息采集表.doc";
+                var fileType ="msword";
+                common.downloadReport(response.data , fileName , fileType);
+            }
+            common.http({
+                $http : $http,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+        }
+        //end exportPatryWord
 
         //begin createParty
         function createParty(vm , cellBack){
@@ -59,6 +134,28 @@
 
         }
         //end findById
+
+        //begin updateParty
+        function updateParty(vm , callBack){
+            var httpOptions = {
+                method : 'put',
+                url : rootPath + "/partyManager/updateParty",
+                data : vm.party
+            }
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof callBack == "function"){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+        }
+        //end updateParty
+
         //begin partyGrid
         function partyGrid(vm){
             // Begin:dataSource
@@ -98,6 +195,14 @@
             // Begin:column
             var columns = [
                 {
+                    template: function (item) {
+                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />", item.pmId)
+                    },
+                    filterable: false,
+                    width: 40,
+                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox' />"
+                },
+                {
                     field: "rowNumber",
                     title: "序号",
                     width: 50,
@@ -122,15 +227,15 @@
                 {
                     field: "pmIDCard",
                     title: "身份证号",
-                    width: 200,
+                    width: 160,
                     filterable: false,
                 },
                 {
-                    field: "",
+                    field: "pmNation",
                     title: "民族",
                     width: 50,
                     filterable: false,
-                    template :function(item){
+                    /*template :function(item){
                         var pmNation = "";
                         for(var i =0 ; i < $rootScope.DICT.NATION.dicts.length ; i++){
                             var v = $rootScope.DICT.NATION.dicts[i];
@@ -140,18 +245,18 @@
                             }
                         }
                         return pmNation;
-                    }
+                    }*/
                 },
                 {
                     field: "pmEducation",
                     title: "学历",
-                    width: 100,
+                    width: 80,
                     filterable: false
                 },
                 {
                     field: "pmPhone",
                     title: "手机号",
-                    width: 100,
+                    width: 80,
                     filterable: false
                 },
                 {
@@ -189,6 +294,19 @@
                 },
                 {
                     field: "",
+                    title: "在编情况",
+                    width: 60,
+                    filterable: false,
+                    template : function(item){
+                        if(item.isEnrolled && item.isEnrolled == '9'){
+                            return "是";
+                        }else{
+                            return "否";
+                        }
+                    }
+                },
+                {
+                    field: "",
                     title: "操作",
                     width: 120,
                     template: function (item) {
@@ -196,7 +314,7 @@
                         if(item.curState == 9){
                             canExecute = true;
                         }
-                        return common.format($('#columnBtns').html(),  "vm.partyDetail('" + item.pmId + "')");
+                        return common.format($('#columnBtns').html(),  "vm.partyDetail('" + item.pmId + "')" , item.pmId , "vm.deleteParty('" + item.pmId + "')");
                     }
                 }
             ];

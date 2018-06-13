@@ -496,7 +496,11 @@ public class Constant {
         EXPERT_PAYTAXES("print/expert_paytaxes", "专家缴费"),
         EXPERT_PAYTAXESDETAIL("print/expert_paytaxesDetail", "专家缴费详细页"),
 
-        ADD_REGISTER_FILE("print/registerFile", "拟补充资料清单");
+        ADD_REGISTER_FILE("print/registerFile", "拟补充资料清单"),
+
+        PARTYDETAIL("party/partyDetail" , "党员基本信息采集表"),
+        SIGN_IN_SHEET("party/signInSheet" , "党员签到表")
+        ;
 
         private String key;
         private String value;

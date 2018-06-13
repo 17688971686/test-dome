@@ -1208,7 +1208,7 @@
 
             // begin 党务管理
                 .state('partyEdit', {//党员信息录入
-                    url: '/partyEdit',
+                    url: '/partyEdit/:id',
                     templateUrl: rootPath + "/partyManager/html/partyEdit.html",
                     controller: 'partyEditCtrl',
                     controllerAs: 'vm'
@@ -1219,9 +1219,21 @@
                     controller: 'partyListCtrl',
                     controllerAs: 'vm'
                 })
-                .state('partyMeeting', {//党员会议添加编辑页
-                    url: '/partyMeeting',
-                    templateUrl: rootPath + "/partyManager/html/addPartyMeeting.html",
+                .state('partyMeetList', {//党员会议列表
+                    url: '/partyMeetList',
+                    templateUrl: rootPath + "/partyMeet/html/partyMeetList.html",
+                    controller: 'partyMeetingCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('addPartyMeet', {//党员会议添加编辑页
+                    url: '/addPartyMeet/:id',
+                    templateUrl: rootPath + "/partyMeet/html/addPartyMeeting.html",
+                    controller: 'partyMeetingCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('partyMeetDetail', {//党员会议添加编辑页
+                    url: '/partyMeetDetail/:id',
+                    templateUrl: rootPath + "/partyMeet/html/partyMeetDetail.html",
                     controller: 'partyMeetingCtrl',
                     controllerAs: 'vm'
                 })

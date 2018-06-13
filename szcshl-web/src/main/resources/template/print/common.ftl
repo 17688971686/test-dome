@@ -874,17 +874,7 @@
                                             <w:sz w:val="24"/>
                                             <w:szCs w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">                      </w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:cs="宋体"/>
-                                            <w:kern w:val="0"/>
-                                            <w:sz w:val="24"/>
-                                            <w:szCs w:val="24"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                        <w:t xml:space="preserve">               </w:t>
+                                        <w:t xml:space="preserve">                                     </w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -893,7 +883,7 @@
                                             <w:sz w:val="24"/>
                                             <w:szCs w:val="24"/>
                                         </w:rPr>
-                                        <w:t>签名：</w:t>
+                                        <w:t>签名：${deptMinisterName!}</w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p>
@@ -915,17 +905,7 @@
                                             <w:sz w:val="24"/>
                                             <w:szCs w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">                                  </w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:cs="宋体"/>
-                                            <w:kern w:val="0"/>
-                                            <w:sz w:val="24"/>
-                                            <w:szCs w:val="24"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                        <w:t xml:space="preserve">     </w:t>
+                                        <w:t xml:space="preserve">                                     </w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -934,7 +914,7 @@
                                             <w:sz w:val="24"/>
                                             <w:szCs w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">  ${deptSleaderDate!}</w:t>
+                                        <w:t xml:space="preserve">${deptMinisterDate!}</w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p>
@@ -1170,7 +1150,7 @@
                                             <w:sz w:val="24"/>
                                             <w:szCs w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">                      签名：</w:t>
+                                        <w:t xml:space="preserve">                                签名：${deptSLeaderName!}</w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p>
@@ -1192,19 +1172,10 @@
                                             <w:sz w:val="24"/>
                                             <w:szCs w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">                                   </w:t>
+                                        <w:t xml:space="preserve">                               </w:t>
                                     </w:r>
                                     <w:bookmarkStart w:id="0" w:name="_GoBack"/>
                                     <w:bookmarkEnd w:id="0"/>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:cs="宋体"/>
-                                            <w:kern w:val="0"/>
-                                            <w:sz w:val="24"/>
-                                            <w:szCs w:val="24"/>
-                                        </w:rPr>
-                                        <w:t xml:space="preserve"> </w:t>
-                                    </w:r>
                                     <w:r>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:cs="宋体"/>

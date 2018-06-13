@@ -1,0 +1,21 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a href="#/quartz">党务会议管理</a></li>
+        <li class="active">{{vm.title}}</li>
+    </ol>
+    <div class="toolbar">
+        <a class="btn btn-sm btn-success" style="margin-left:10px;" href="#/addPartyMeet/">
+            <span class="glyphicon glyphicon-plus"></span>新增</a>
+    </div>
+    <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
+</div>
+<script type="text/template" id="columnBtns">
+    <a class="btn btn-xs btn-primary" href="#/addPartyMeet/{0}" ><span class="glyphicon glyphicon-pencil"></span>编辑</a>
+    <a class="btn btn-xs btn-primary" href="#/partyMeetDetail/{0}"  ><span class="glyphicon glyphicon-pencil"></span>查看</a>
+   <button class="btn btn-xs btn-warning" ng-click="{1}" ><span class="glyphicon glyphicon-warning-sign"></span>删除</button>
+</script>

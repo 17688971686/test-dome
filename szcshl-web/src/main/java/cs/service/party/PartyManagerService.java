@@ -30,4 +30,17 @@ public interface PartyManagerService {
      * @return
      */
     ResultMsg findPartyById(String pmId);
+
+    /**
+     * 更新党员信息
+     * @param partyManagerDto
+     * @return
+     */
+    ResultMsg updateParty(PartyManagerDto partyManagerDto);
+
+    /**
+     * 删除党员信息
+     * @param pmId
+     */
+    void deleteParty(String pmId);
 }
