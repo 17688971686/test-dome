@@ -201,6 +201,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
     @Transactional
     public ResultMsg save(String businessId, String minBusinessId, String businessType, String reviewId, String expertIds, String selectType) {
         ExpertReview expertReview = null;
+        boolean isSuper = SUPER_ACCOUNT.equals(SessionUtil.getLoginName()),isSelf = Constant.EnumExpertSelectType.SELF.getValue().equals(selectType);
         if (!Validate.isString(reviewId)) {
             Date now = new Date();
             expertReview = new ExpertReview();
@@ -217,7 +218,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             expertReviewRepo.save(expertReview);
         } else {
             expertReview = expertReviewRepo.findById(ExpertReview_.id.getName(), reviewId);
-            if( null != expertReview.getPayDate() && null != expertReview.getReviewDate() && (new Date()).after(expertReview.getReviewDate())){
+            if(!isSuper && null != expertReview.getPayDate() && null != expertReview.getReviewDate() && (new Date()).after(expertReview.getReviewDate())){
                 return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"已发送专家评审费，不能对方案再修改！");
             }
         }
@@ -228,7 +229,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
         //保存抽取专家
         List<String> expertIdArr = StringUtil.getSplit(expertIds, ",");
         int totalLength = expertIdArr.size();
-        boolean isSuper = SUPER_ACCOUNT.equals(SessionUtil.getLoginName()),isSelf = Constant.EnumExpertSelectType.SELF.getValue().equals(selectType);
+
         String resultString = Constant.EnumState.NO.getValue();
         if(isSuper || isMoreExpert){
             resultString = Constant.EnumState.YES.getValue();
