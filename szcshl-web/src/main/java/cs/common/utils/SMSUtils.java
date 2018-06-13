@@ -72,7 +72,6 @@ public class SMSUtils {
      */
     public static void seekSMSThread(SMSContent smsContent, List<User> receiverList, String projectName, String filecode, String type, String infoType, String seekContent, SMSLogService smsLogService) {
             ExecutorService threadPool = Executors.newCachedThreadPool();
-
             //线程池提交一个异步任务
             Future<HashMap<String, String>> future = threadPool.submit(new Callable<HashMap<String, String>>() {
                 @Override
@@ -123,11 +122,11 @@ public class SMSUtils {
                         return false;
                     }
                     if (i == receiverList.size() - 1) {
-                        phone += user.getUserMPhone();
-                        userName += user.getDisplayName();
+                        phone += user.getUserMPhone().trim();
+                        userName += user.getDisplayName().trim();
                     } else {
-                        phone += user.getUserMPhone() + ",";
-                        userName += user.getDisplayName() + ",";
+                        phone += user.getUserMPhone().trim() + ",";
+                        userName += user.getDisplayName().trim() + ",";
                     }
                 }
             }
@@ -136,9 +135,8 @@ public class SMSUtils {
             return false;
         }
         //验证短信内容
-        TOKEN = getHttpSMS(smsLogService);
+        TOKEN = getHttpSMS(userName,phone,projectName,filecode,seekContent,smsLogService);
         if (TOKEN ==null) {
-            insertLog(userName,phone,projectName,filecode,"10001", "custom_type", "获取短信平台Token异常",seekContent,smsLogService,false);
             return false;
         }
         CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -210,7 +208,7 @@ public class SMSUtils {
     /**
      * 获取token服务
      */
-    public static String getHttpSMS(SMSLogService smsLogService) {
+    public static String getHttpSMS(String userName,String phone,String projectName,String filecode,String seekContent,SMSLogService smsLogService) {
         //是否超时
         if (isOrTimeout()) {
             return TOKEN;
@@ -245,8 +243,9 @@ public class SMSUtils {
             }
             httpClient.close();
         } catch (Exception e) {
-            logger.info("getHttpSMS 获取token异常. " + e.getMessage());
+            logger.info("getHttpSMS 获取token异常. " + e.getMessage()+" tempCode："+tempCode );
         }
+        insertLog(userName,phone,projectName,filecode,tempCode, "custom_type", "获取短信平台Token异常",seekContent,smsLogService,false);
         return null;
     }
 

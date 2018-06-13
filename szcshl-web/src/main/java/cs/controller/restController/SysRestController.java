@@ -134,21 +134,6 @@ public class SysRestController {
         return resultMsg;
     }
 
-    public String getContent(String type,String numInfo){
-        String str= null;
-        /*
-        * 收文失败，发送短信（但龙，郭东东）项目名称（委里收文编号）
-          发文失败，发送短信（但龙，陈春燕）项目名称（发文号）
-        * */
-        if ("收文失败".equals(type)){
-            type = type+",项目名称: "+numInfo;
-        }
-        if ("发文失败".equals(type)){
-            type = type+",项目名称: "+numInfo;
-        }
-        return  null;
-    }
-
     /**
      * 根据收文编号查询签收/预签收
      * @return
@@ -200,7 +185,57 @@ public class SysRestController {
         }
         return resultMsg;
     }
-
+    /**
+     * 根据收文编号查询签收/预签收
+     * @return
+     */
+    @RequestMapping(name = "项目预签收信息", value = "/getPreSign", method = RequestMethod.GET)
+    @ResponseBody
+    @LogMsg(module = "系统接口【通过收文编号存储批复金额下载pdf文件】",logLevel = "1")
+    public synchronized ResultMsg downRemoteFile(@RequestParam String fileCode,@RequestParam String signType){
+        String signPreInfo = "";
+        ResultMsg resultMsg = null;
+        try{
+            String preUrl = signRestService.getPreReturnUrl();
+            preUrl = preUrl + "?swbh="+fileCode;
+            signPreInfo =  httpClientOperate.doGet(preUrl);
+            //  JSON.
+            String msg = "";
+            Map resultMap = (Map)JSON.parse(signPreInfo);
+            if(resultMap.get("data") != null && !resultMap.get("data").equals("null")){
+                SignPreDto signPreDto = JSON.parseObject(signPreInfo, SignPreDto.class);
+                msg = "项目【"+signPreDto.getData().getProjectname()+"("+signPreDto.getData().getFilecode()+")】，";
+                //json转出对象
+                if(Validate.isString(signType) && signType.equals("1")){
+                    //获取项目预签收信息
+                    resultMsg = signRestService.pushPreProject(signPreDto.getData(),false);
+                }else{
+                    resultMsg = signRestService.pushProject(signPreDto.getData(),false);
+                }
+            }else{
+                msg = "该项目信息不存在请核查！";
+                resultMsg = new ResultMsg(false,IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(),msg);
+            }
+            /*//添加日记记录
+            Log log = new Log();
+            log.setCreatedDate(new Date());
+            log.setUserName(SUPER_ACCOUNT);
+            log.setLogCode(resultMsg.getReCode());
+            log.setModule(Constant.LOG_MODULE.INTERFACE.getValue() + "【获取项目预签收信息接口】");
+            log.setMessage(msg+resultMsg.getReMsg());
+            log.setBuninessId(Validate.isObject(resultMsg.getReObj()) ? resultMsg.getReObj().toString() : "");
+            log.setBuninessType(Constant.BusinessType.SIGN.getValue());
+            log.setResult(resultMsg.isFlag() ? Constant.EnumState.YES.getValue() : Constant.EnumState.NO.getValue());
+            log.setLogger(this.getClass().getName() + ".pushProject");
+            //优先级别高
+            log.setLogLevel(Constant.EnumState.PROCESS.getValue());
+            logService.save(log);*/
+        }catch (Exception e){
+            resultMsg = new ResultMsg(false,IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(),e.getMessage());
+            e.printStackTrace();
+        }
+        return resultMsg;
+    }
     /**
      * 项目信息返回委里接口
      *
