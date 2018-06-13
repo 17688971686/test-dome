@@ -520,8 +520,6 @@ public class FlowServiceImpl implements FlowService {
                     for (String orgId : orgIdList) {
                         dis2.add(Restrictions.or(Restrictions.eq(RuProcessTask_.mOrgId.getName(), orgId), Restrictions.like(RuProcessTask_.aOrgId.getName(), "%" + orgId + "%")));
                     }
-                    //分管领导id等于当前人
-                    //dis2.add(Restrictions.sqlRestriction(" (select count(cs.signid) from cs_sign cs where cs.signid = this_.businessKey and cs.leaderId = '"+curUserId+"') > 0 "));
                 } else if (leaderFlag == 3 && Validate.isList(orgIdList)) {
                     //部长
                     String orgId = orgIdList.get(0);

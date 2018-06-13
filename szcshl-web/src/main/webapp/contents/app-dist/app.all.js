@@ -272,6 +272,22 @@
                     controller: 'logCtrl',
                     controllerAs: 'vm'
                 })
+                //begin#smslog  需要替换的注销2018
+                // .state('smslog', {
+                //     url: '/smslog',
+                //     templateUrl: rootPath + '/smslog/html/list.html',
+                //     controller: 'smslogCtrl',
+                //     controllerAs: 'vm'
+                // })
+
+                // .state('maintainExpertConfirm', {//确定修改文件
+                //     url: '/maintainExpertConfirm/:signid',
+                //     templateUrl: rootPath + "/maintainProject/html/maintainExpertConfirm.html",
+                //     controller: 'maintainExpertConfirmCtrl',
+                //     controllerAs: 'vm'
+                // })
+
+
                 //end#log
 
                 //begin#config
@@ -1205,7 +1221,6 @@
                     controller: 'maintainExpertConfirmCtrl',
                     controllerAs: 'vm'
                 })
-
             // begin 党务管理
                 .state('partyEdit', {//党员信息录入
                     url: '/partyEdit',
@@ -4058,8 +4073,10 @@
             getSignList: getSignList,   //项目查询统计
             initSignList: initSignList, //初始化項目查詢統計
             // <!-- 以下是首页方法-->
-            initWelComePage: initWelComePage,           //初始化首页方法
-            /* initAnnountment: initAnnountment,	    //初始化通知公告栏
+            getHomeInfo: getHomeInfo,                   //初始化首页待办任务和通知公告方法
+            getHomeProjInfo:getHomeProjInfo,            //获取首页统计信息
+            getHomeMeetInfo:getHomeMeetInfo,            //获取首页会议和调研时间统计信息
+        /* initAnnountment: initAnnountment,	    //初始化通知公告栏
              findendTasks: findendTasks,                //已办项目列表
              findtasks: findtasks,                      //待办项目列表
              findHomePluginFile :findHomePluginFile,    //获取首页安装文件*/
@@ -4125,10 +4142,10 @@
         //end excelExport
 
         //S_初始化首页方法
-        function initWelComePage(callBack) {
+        function getHomeInfo(callBack) {
             var httpOptions = {
                 method: "post",
-                url: rootPath + "/admin/initWelComePage"
+                url: rootPath + "/admin/getHomeInfo"
             }
             var httpSuccess = function success(response) {
                 if (callBack != undefined && typeof callBack == 'function') {
@@ -4140,7 +4157,43 @@
                 httpOptions: httpOptions,
                 success: httpSuccess
             });
-        }//E_initWelComePage
+        }//E_getHomeInfo
+
+        //S_首页项目统计信息
+        function getHomeProjInfo(callBack) {
+            var httpOptions = {
+                method: "post",
+                url: rootPath + "/admin/getHomeProjInfo"
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//E_getHomeProjInfo
+
+        //S_首页会议和调研时间统计
+        function getHomeMeetInfo(callBack) {
+            var httpOptions = {
+                method: "post",
+                url: rootPath + "/admin/getHomeMeetInfo"
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//E_getHomeProjInfo
 
         //begin countWorakday
         function countWorakday(vm) {
@@ -5820,27 +5873,26 @@
 
         function activate() {
             initProMeetDate();
-            adminSvc.initWelComePage(function (data) {
+            //获取首页待办任务和通知公告方法
+            adminSvc.getHomeInfo(function (data) {
+                if (data.annountmentList) {
+                    vm.annountmentList = data.annountmentList;
+                }
+                if (data.comTaskList) {
+                    vm.agendaTaskList = data.comTaskList;
+                }
+            });
+
+            //获取首页项目统计信息
+            adminSvc.getHomeProjInfo(function (data) {
                 vm.hidePreTable = true;
                 vm.isdisplays = true;
                 if (data) {
                     if (data.proTaskList) {
                         vm.tasksList = data.proTaskList;
                     }
-                    if (data.comTaskList) {
-                        vm.agendaTaskList = data.comTaskList;
-                    }
                     if (data.endTaskList) {
                         vm.endTasksList = data.endTaskList;
-                    }
-                    if (data.annountmentList) {
-                        vm.annountmentList = data.annountmentList;
-                    }
-                    if(data.proMeetInfo.proAmMeetDtoList){
-                        vm.proAmMeetDtoList = data.proMeetInfo.proAmMeetDtoList;
-                    }
-                    if(data.proMeetInfo.proPmMeetDtoList){
-                        vm.proPmMeetDtoList = data.proMeetInfo.proPmMeetDtoList;
                     }
                     if(data.DOINGNUM){
                         vm.doingNum = data.DOINGNUM;
@@ -5913,6 +5965,13 @@
                         }
                     }
                     //显示柱状图信息
+                }
+            });
+
+            //获取首页会议和调研信息
+            adminSvc.getHomeMeetInfo(function (data) {
+                if(data.proMeetInfo.proAmMeetDtoList){
+                    vm.proAmMeetDtoList = data.proMeetInfo.proAmMeetDtoList;
                 }
             });
         }

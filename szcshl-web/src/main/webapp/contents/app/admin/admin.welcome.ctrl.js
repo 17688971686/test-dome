@@ -193,27 +193,26 @@
 
         function activate() {
             initProMeetDate();
-            adminSvc.initWelComePage(function (data) {
+            //获取首页待办任务和通知公告方法
+            adminSvc.getHomeInfo(function (data) {
+                if (data.annountmentList) {
+                    vm.annountmentList = data.annountmentList;
+                }
+                if (data.comTaskList) {
+                    vm.agendaTaskList = data.comTaskList;
+                }
+            });
+
+            //获取首页项目统计信息
+            adminSvc.getHomeProjInfo(function (data) {
                 vm.hidePreTable = true;
                 vm.isdisplays = true;
                 if (data) {
                     if (data.proTaskList) {
                         vm.tasksList = data.proTaskList;
                     }
-                    if (data.comTaskList) {
-                        vm.agendaTaskList = data.comTaskList;
-                    }
                     if (data.endTaskList) {
                         vm.endTasksList = data.endTaskList;
-                    }
-                    if (data.annountmentList) {
-                        vm.annountmentList = data.annountmentList;
-                    }
-                    if(data.proMeetInfo.proAmMeetDtoList){
-                        vm.proAmMeetDtoList = data.proMeetInfo.proAmMeetDtoList;
-                    }
-                    if(data.proMeetInfo.proPmMeetDtoList){
-                        vm.proPmMeetDtoList = data.proMeetInfo.proPmMeetDtoList;
                     }
                     if(data.DOINGNUM){
                         vm.doingNum = data.DOINGNUM;
@@ -286,6 +285,13 @@
                         }
                     }
                     //显示柱状图信息
+                }
+            });
+
+            //获取首页会议和调研信息
+            adminSvc.getHomeMeetInfo(function (data) {
+                if(data.proMeetInfo.proAmMeetDtoList){
+                    vm.proAmMeetDtoList = data.proMeetInfo.proAmMeetDtoList;
                 }
             });
         }

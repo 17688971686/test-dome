@@ -83,7 +83,6 @@ public class SignRestServiceImpl implements SignRestService {
 
     /**
      * 项目推送
-     *
      * @param signDto
      * @return
      */
@@ -136,15 +135,14 @@ public class SignRestServiceImpl implements SignRestService {
             }
         } catch (Exception e) {
             resultMsg = new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(), IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getValue() + e.getMessage());
-        } finally {
-
         }
+
         return resultMsg;
     }
 
     public void checkDownLoadFile(ResultMsg resultMsg, boolean isGetFiles, String businessId, List<SysFileDto> sysFileDtoList, String userId, String mainType, String busiType) {
         //如果获取附件
-        if (isGetFiles) {
+        if (isGetFiles && Validate.isList(sysFileDtoList)) {
             //获取传送过来的附件
             ResultMsg fileResult = sysFileService.downRemoteFile(businessId, sysFileDtoList, userId, mainType, busiType);
             if (fileResult.isFlag()) {
@@ -152,7 +150,7 @@ public class SignRestServiceImpl implements SignRestService {
                 resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getCode());
                 resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getValue());
             } else {
-                resultMsg.setFlag(true);
+                resultMsg.setFlag(false);
                 resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_SIGN_05.getCode());
                 resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SIGN_05.getValue());
             }

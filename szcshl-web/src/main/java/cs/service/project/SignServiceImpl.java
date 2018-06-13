@@ -61,8 +61,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
 import static cs.common.constants.Constant.*;
-import static cs.common.constants.Constant.RevireStageKey.KEY_CHECKFILE;
 import static cs.common.constants.FlowConstant.FLOW_SIGN_FW;
+import static cs.common.constants.IgnoreProps.PUSH_SIGN_IGNORE_PROPS;
 import static cs.common.constants.SysConstants.SEPARATE_COMMA;
 
 @Service
@@ -181,9 +181,7 @@ public class SignServiceImpl implements SignService {
             sign = initNewSignInfo(signDto, false, now, isSignUser);
         } else {
             //【如果之前已经有送件人签名，则不能覆盖（因为委里过来的值不是评审中心要的值）】
-            String signName = sign.getSendusersign();
-            BeanCopierUtils.copyPropertiesIgnoreNull(signDto, sign);
-            sign.setSendusersign(signName);
+            BeanCopierUtils.copyPropertiesIgnoreProps(signDto, sign,PUSH_SIGN_IGNORE_PROPS);
         }
         sign.setModifiedDate(now);
         sign.setModifiedBy(isSignUser?SessionUtil.getDisplayName(): SysConstants.SUPER_ACCOUNT);
@@ -220,6 +218,8 @@ public class SignServiceImpl implements SignService {
                 Date expectdispatchdate = DispathUnit.dispathDate(workdayList, sign.getSigndate(), totalDays);
                 sign.setExpectdispatchdate(expectdispatchdate);
             }
+        }else{
+
         }
         //如果是自己的项目,则不用回传给委里(2表示不用回传给委里)
         if (isSelfProj) {

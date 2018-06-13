@@ -2,6 +2,7 @@ package cs.common.utils;
 
 import cs.domain.project.Sign;
 import cs.model.project.SignDto;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -58,7 +59,8 @@ public class BeanCopierUtils {
      * @param ignoreProperties
      */
     public static void copyPropertiesIgnoreProps(Object source, Object target, String... ignoreProperties) {
-        BeanUtils.copyProperties(source, target, ignoreProperties);
+        String[] ignoreProps = ArrayUtils.addAll(getNullPropertyNames(source),ignoreProperties);
+        BeanUtils.copyProperties(source, target, ignoreProps);
     }
 
     public static void main(String[] args){
