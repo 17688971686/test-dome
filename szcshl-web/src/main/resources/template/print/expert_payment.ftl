@@ -115,15 +115,6 @@
                             </w:rPr>
                             <w:t>${projectName!}</w:t>
                         </w:r>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:hint="eastAsia"/>
-                                <w:spacing w:val="0"/>
-                                <w:sz w:val="44"/>
-                                <w:szCs w:val="44"/>
-                            </w:rPr>
-                            <w:t>项目</w:t>
-                        </w:r>
                         <w:bookmarkStart w:id="0" w:name="_Toc199925865"/>
                         <w:r>
                             <w:rPr>
@@ -1275,7 +1266,7 @@
                                 <w:spacing w:val="0"/>
                                 <w:sz w:val="44"/>
                             </w:rPr>
-                            <w:t>项目》外地专家评审费发放表</w:t>
+                            <w:t>》外地专家评审费发放表</w:t>
                         </w:r>
                     </w:p>
                     <w:p>
