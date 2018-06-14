@@ -70,10 +70,10 @@
          * @param pmId
          */
         vm.deleteParty = function(pmId){
-            bsWin.confirm("确认停用该党员？", function(){
+            bsWin.confirm("删除的数据无法恢复，确定删除？", function(){
                 partySvc.deleteParty(pmId , function(data){
-
-                    bsWin.alert("操作成功！");
+                    bsWin.alert("删除成功！");
+                    vm.gridOptions.dataSource.read();
                 });
             })
         }
@@ -84,7 +84,7 @@
         vm.exportSignInSheet = function(){
             var selectIds = common.getKendoCheckId('.grid');
             if (selectIds.length == 0) {
-                bsWin.alert("请选择要删除数据！");
+                bsWin.alert("请选择要导出数据！");
             } else {
                 var ids = [];
                 for (var i = 0; i < selectIds.length; i++) {
@@ -94,6 +94,24 @@
                 partySvc.exportSignInSheet(idStr);
             }
         }
+
+        /**
+         * 批量导入
+         */
+        vm.importExcel = function(){
+
+        }
+
+        /**
+         * 重置按钮
+         */
+        vm.formReset = function(){
+            var tab = $("#partyform").find('input,select');
+            $.each(tab, function(i, obj) {
+                obj.value = "";
+            });
+        }
+
 
     }
 })();

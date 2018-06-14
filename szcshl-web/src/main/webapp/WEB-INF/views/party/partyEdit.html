@@ -44,11 +44,10 @@
                     </td>
                     <td class="text-center"  width="10%">民族<span class="required">*</span></td>
                     <td width="30%" class="text-left">
-                        <select class="form-control input-xm " style="width: 90%"
-                                name="pmNation" id="pmNation"ng-model="vm.party.pmNation">
-                            <option value="">请选择</option>
-                            <option value="汉族">汉族</option>
-                            <option value="壮族">壮族</option>
+                        <select ng-model="vm.party.pmNation" name="pmNation" id="pmNation" class="form-control select-sm">
+                            <option ng-repeat="x in DICT.NATION.dicts" value="{{x.dictKey}}"
+                                    ng-selected="x.dictKey == vm.party.pmNation">{{x.dictName}}
+                            </option>
                         </select>
                         <span data-valmsg-for="pmNation" data-valmsg-replace="true" class="errors"></span>
                     </td>
@@ -77,11 +76,10 @@
                     </td>
                     <td class="text-center"   width="10%">学历</td>
                     <td width="10%"  class="text-left">
-                        <select class="form-control input-xm " style="width:  90%;"
-                                name="pmEducation" id="pmEducation" ng-model="vm.party.pmEducation" >
-                            <option vlaue="">请选择</option>
-                            <option value="BSYJS">博士研究生</option>
-                            <option value="SSYJS">硕士研究生</option>
+                        <select ng-model="vm.party.pmEducation" name="pmEducation" id="pmEducation" class="form-control select-sm">
+                            <option ng-repeat="x in DICT.ADUCATION.dicts" value="{{x.dictKey}}"
+                                    ng-selected="x.dictKey == vm.party.pmEducation">{{x.dictName}}
+                            </option>
                         </select>
                     </td>
                 </tr>

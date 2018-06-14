@@ -136,15 +136,11 @@ public class PartyManagerRepoImpl extends AbstractRepository<PartyManager, Strin
     }
 
     /**
-     * 删除党员信息（即停用）
+     * 删除党员信息
      * @param pmId
      */
     @Override
     public void deleteParty(String pmId) {
-        HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("update " + PartyManager.class.getSimpleName() + "  set " + PartyManager_.isEnrolled.getName() + "=:isEnrolled where " + PartyManager_.pmId.getName() + "=:pmId");
-        hqlBuilder.setParam("pmId" , pmId);
-        hqlBuilder.setParam("isEnrolled" , Constant.EnumState.NO.getValue());
-        executeHql(hqlBuilder);
+        deleteById(PartyManager_.pmId.getName() , pmId);
     }
 }

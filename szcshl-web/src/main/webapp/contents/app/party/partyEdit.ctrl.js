@@ -41,7 +41,10 @@
             if (isValid) {
                 partySvc.createParty(vm , function(data){
                     if(data.flag || data.reCode == 'ok'){
-                        bsWin.alert("保存成功！");
+                        bsWin.alert("保存成功！" , function(){
+                            location.href = "#/partyList";
+                        });
+
                     }
                 });
             }

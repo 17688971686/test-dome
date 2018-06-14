@@ -235,6 +235,12 @@ public class PartyManagerDto extends DomainBase{
      */
     private String isEnrolled;
 
+    /**
+     * 转出党组织日期
+     */
+    @JSONField(format = "yyyy-MM-dd")
+    private Date outOrgDate;
+
     public String getPmId() {
         return pmId;
     }
@@ -568,5 +574,13 @@ public class PartyManagerDto extends DomainBase{
 
     public void setIsEnrolled(String isEnrolled) {
         this.isEnrolled = isEnrolled;
+    }
+
+    public Date getOutOrgDate() {
+        return outOrgDate;
+    }
+
+    public void setOutOrgDate(Date outOrgDate) {
+        this.outOrgDate = outOrgDate;
     }
 }

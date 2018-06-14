@@ -18,6 +18,9 @@
         <button class="btn btn-sm btn-success" ng-click="vm.exportSignInSheet()">
             导出
         </button>
+      <button class="btn btn-sm btn-primary" ng-click="vm.importExcel()">
+            批量导入
+        </button>
     </div>
     <div class="well well-sm">
         <form id="partyform" name="partyform" class="well well-sm">
@@ -51,11 +54,12 @@
                         <span class="help-inline" >学历：</span>
                     </td>
                     <td width="10%">
-                        <select  class="form-control select-sm"
-                                 name="pmEducation" id="pmEducation" operator="like" placeholder="请选择">
+                        <select class="form-control select-sm" name="pmEducation" id="pmEducation" operator="like" placeholder="请选择"
+                                class="form-control select-sm">
                             <option value="">请选择</option>
-                            <option value="BSYJS">博士研究生</option>
-                            <option value="SSYJS">硕士研究生</option>
+                            <option ng-repeat="x in DICT.ADUCATION.dicts" value="{{x.dictKey}}"
+                                    ng-selected="x.dictKey == vm.party.pmEducation">{{x.dictName}}
+                            </option>
                         </select>
                     </td>
 
@@ -82,10 +86,17 @@
 </div>
 <script type="text/template" id="columnBtns">
     <a class="btn btn-xs btn-primary" href="#/partyEdit/{1}" ><span class="glyphicon glyphicon-pencil"></span>编辑</a>
-    <button class="btn btn-xs btn-primary" ng-click="{0}"  ><span class="glyphicon glyphicon-pencil"></span>查看</button>
-    <#--<button class="btn btn-xs btn-warning" ng-click="{2}" ><span class="glyphicon glyphicon-warning-sign"></span>删除</button>-->
+    <button class="btn btn-xs btn-primary" ng-click="{0}"  ><span class="glyphicon glyphicon-search"></span>查看</button>
+    <button class="btn btn-xs btn-warning" ng-click="{2}" ><span class="glyphicon glyphicon-warning-sign"></span>删除</button>
 </script>
 
 <div style="display: none" id="partyDetail">
 <#include "/party/partyDetail.html">
+</div>
+
+
+<!--批量导入选择导入文件弹框页-->
+<div style="display: none" id="importDiv">
+
+
 </div>
