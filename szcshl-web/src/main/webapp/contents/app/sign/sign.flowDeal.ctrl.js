@@ -767,13 +767,14 @@
         }
         //end 保存项目关联
 
-        // S_财务办理
+        // S_财务办理(目前全部是评审费)
         vm.addFinancialApply = function (id) {
-            if ("9" == vm.model.isassistflow || 9 == vm.model.isassistflow) {
+            vm.costType = "REVIEW";
+            /*if ("9" == vm.model.isassistflow || 9 == vm.model.isassistflow) {
                 vm.costType = "ASSIST";
             } else {
                 vm.costType = "REVIEW";
-            }
+            }*/
             /**
              * 初始化费用录入
              */
