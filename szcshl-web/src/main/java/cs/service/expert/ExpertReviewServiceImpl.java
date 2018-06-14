@@ -127,6 +127,11 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
                     }
                 }
                 expertReviewDto.setExpertSelConditionDtoList(conditionDtoList); //设置抽取条件列表Dto
+            }else{
+                expertReviewDto.setState(null);
+                expertReviewDto.setSelectIndex(null);
+                expertReviewDto.setExtractInfo(null);
+                expertReviewDto.setFinishExtract(null);
             }
             List<ExpertSelected> expertSelectedList = expertReview.getExpertSelectedList();
             //3、抽取专家

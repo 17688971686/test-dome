@@ -440,7 +440,7 @@
                                 })
                             }
                             if (ids.length > 0) {
-                                expertConditionSvc.deleteSelConditions(ids.join(","), vm.isCommit, function (data) {
+                                expertConditionSvc.deleteSelConditions(vm.expertReview.id,ids.join(","), vm.isCommit, function (data) {
                                     if (data.flag || data.reCode == 'ok') {
                                         //更新专家评审费用
                                         if(vm.businessType == "SIGN"){

@@ -53,13 +53,14 @@
         }
 
         //S_deleteSelConditions
-        function deleteSelConditions(delIds,isCommit,callBack){
+        function deleteSelConditions(reviewId,delIds,isCommit,callBack){
             isCommit = true;
             var httpOptions = {
                 method : 'delete',
                 url : rootPath + "/expertSelCondition",
                 params:{
-                    ids : delIds
+                    ids : delIds,
+                    reviewId : reviewId
                 }
             }
             var httpSuccess = function success(response) {
