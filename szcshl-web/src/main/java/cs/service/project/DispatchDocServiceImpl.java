@@ -667,4 +667,11 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         }
     }
 
+    @Override
+    public void updateDispatchByDocDto(DispatchDocDto dispatchDocDto,String isMain) {
+            dispatchDocRepo.updateDispatchDoc(dispatchDocDto,isMain);
+
+    }
+
+
 }

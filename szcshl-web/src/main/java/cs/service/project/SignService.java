@@ -295,4 +295,10 @@ public interface SignService {
      * @return
      */
     ResultMsg saveMoreExpert(String signId , String isMoreExpert);
+
+    /**
+     * 通过fileCode查找signDto
+     * @return
+     */
+    SignDto findSignByFileCode(SignDto signDto);
 }

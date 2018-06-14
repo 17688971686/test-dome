@@ -273,12 +273,12 @@
                     controllerAs: 'vm'
                 })
                 //begin#smslog  需要替换的注销2018
-                // .state('smslog', {
-                //     url: '/smslog',
-                //     templateUrl: rootPath + '/smslog/html/list.html',
-                //     controller: 'smslogCtrl',
-                //     controllerAs: 'vm'
-                // })
+                .state('smslog', {
+                    url: '/smslog',
+                    templateUrl: rootPath + '/smslog/html/list.html',
+                    controller: 'smslogCtrl',
+                    controllerAs: 'vm'
+                })
 
                 // .state('maintainExpertConfirm', {//确定修改文件
                 //     url: '/maintainExpertConfirm/:signid',

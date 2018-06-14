@@ -2545,6 +2545,7 @@ public class SignServiceImpl implements SignService {
         return signRepo.saveMoreExpert(signId, isMoreExpert);
     }
 
+
     /**
      * 查询项目预签收信息
      *
@@ -3072,5 +3073,10 @@ public class SignServiceImpl implements SignService {
     @Override
     public ResultMsg saveReview(SignDto signDto) {
         return signRepo.saveReview(signDto);
+    }
+
+    @Override
+    public SignDto findSignByFileCode(SignDto signDto) {
+        return signRepo.findSignByFileCode(signDto);
     }
 }
