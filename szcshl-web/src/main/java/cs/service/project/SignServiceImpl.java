@@ -196,7 +196,7 @@ public class SignServiceImpl implements SignService {
         }
 
         //7、正式签收
-        if (Validate.isString(sign.getIssign()) || !EnumState.YES.getValue().equals(sign.getIssign())) {
+        if (!Validate.isString(sign.getIssign()) || !EnumState.YES.getValue().equals(sign.getIssign())) {
             sign.setSigndate(now);
             //预签收状态也要改
             sign.setIspresign(Constant.EnumState.YES.getValue());
