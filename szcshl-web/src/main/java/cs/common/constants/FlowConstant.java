@@ -177,6 +177,7 @@ public class FlowConstant {
     public static final String TOPIC_BZSH_JH = "TOPIC_BZSH_JH";          //部长审核
     public static final String TOPIC_FGLD_JH = "TOPIC_FGLD_JH";          //副主任审核
     public static final String TOPIC_ZRSH_JH = "TOPIC_ZRSH_JH";          //主任审定
+    public static final String TOPIC_KTFZR = "TOPIC_KTFZR";              //课题负责人
     public static final String TOPIC_BFGW = "TOPIC_BFGW";                //报发改委审批
     public static final String TOPIC_LXDW = "TOPIC_LXDW";                //联系合作单位
     public static final String TOPIC_QDHT = "TOPIC_QDHT";                //签订合同
@@ -198,8 +199,8 @@ public class FlowConstant {
     public static final String TOPIC_YFZL = "TOPIC_YFZL";                //印发资料
     public static final String TOPIC_ZLGD = "TOPIC_ZLGD";                //资料归档
     public static final String TOPIC_BZSH_GD = "TOPIC_BZSH_GD";          //部长审核归档
+    public static final String TOPIC_KTFZR_QR = "TOPIC_KTFZR_QR";        //课题负责人确认
     public static final String TOPIC_GDY_QR = "TOPIC_GDY_QR";            //归档员确认
-
 
     /*************** E 课题研究流程 环节名称  ****************/
 

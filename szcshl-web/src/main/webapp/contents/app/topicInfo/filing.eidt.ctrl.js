@@ -94,7 +94,7 @@
         }//E_delZL
 
         //S_初始化input框的值
-        vm.initInputValue = function($event,defaultValue){
+ /*       vm.initInputValue = function($event,defaultValue){
             var checkbox = $event.target;
             var checked = checkbox.checked;
             if (checked && !defaultValue) {
@@ -102,6 +102,6 @@
             }else{
                 return defaultValue;
             }
-        }//E_initInputValue
+        }*///E_initInputValue
     }
 })();

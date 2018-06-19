@@ -1,9 +1,9 @@
 package cs.service.topic;
 
 import cs.common.ResultMsg;
-import cs.domain.topic.TopicInfo;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
+import cs.model.topic.ContractDto;
 import cs.model.topic.TopicInfoDto;
 import cs.repository.odata.ODataObj;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -24,9 +24,13 @@ public interface TopicInfoService {
 
 	void update(TopicInfoDto record);
 
+    ResultMsg updateTopic(TopicInfoDto record);
+
 	TopicInfoDto findById(String deptId);
 
 	ResultMsg delete(String id);
+
+    ResultMsg deleteContract(String ids);
 
     TopicInfoDto findDetailById(String id);
 
@@ -39,4 +43,11 @@ public interface TopicInfoService {
      * @return
      */
     ResultMsg dealReturnAudit(ResultMsg resultMsg,TopicInfoDto topicInfoDto);
+
+    /***
+     * 保存合同信息
+     * @param contractDtoList
+     * @return
+     */
+    ResultMsg saveContractDetailList(ContractDto[] contractDtoList);
 }

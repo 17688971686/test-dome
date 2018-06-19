@@ -37,13 +37,31 @@
             if(vm.taskId){
                 vm.picture = rootPath + "/flow/processInstance/img/"+ vm.instanceId;
             }
-
-            //1、历史处理记录
+            //2、历史处理记录
             flowSvc.historyData(vm);
 
             //2、各自显示模块
             switch (vm.processKey){
                 case flowcommon.getFlowDefinedKey().TOPIC_FLOW:     //课题研究流程
+                    //3、查询当前环节信息
+                    flowSvc.getFlowInfo(vm.taskId, vm.instanceId, function (data) {
+                        vm.flow = data;
+                        //有任务ID，说明任务还没办理
+                        if(vm.flow.taskId){
+                            vm.currentFlow = data;
+                            //如果是结束环节，则不显示下一环节信息
+                            if (vm.flow.end) {
+                                vm.showFlag.nodeNext = false;
+                            } else {
+                                //初始化环节信息
+                                switch (vm.processKey) {
+                                    case flowcommon.getFlowDefinedKey().TOPIC_FLOW:
+                                        topicSvc.initFlowNode(vm.flow, vm.showFlag, vm);
+                                        break;
+                                }
+                            }
+                        }
+                    });
                     topicSvc.initFlowDeal(vm);
                     break;
                 case flowcommon.getFlowDefinedKey().BOOKS_BUY_FLOW:     //图书采购流程
