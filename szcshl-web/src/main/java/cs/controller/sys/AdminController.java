@@ -38,6 +38,7 @@ import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static cs.common.constants.FlowConstant.*;
 import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
 @Controller
@@ -233,7 +234,6 @@ public class AdminController {
                         existList = new ArrayList<>();
                     }
                 }
-
                 //过滤掉已发文的项目
                 authRuSignTask = authRuSignTask.stream().filter(x -> (x.getSignDate() != null && x.getSignprocessState() < Constant.SignProcessState.END_DIS_NUM.getValue())).collect(Collectors.toList());
                 int totalLength = authRuSignTask.size();
@@ -257,27 +257,28 @@ public class AdminController {
                 //(在办项目 ， 发文超期 ， 暂停 ， 少于3个工作日)
                 int doingNum = 0 , dipathOverNum = 0  , stopNum = 0 , weekNum = 0 ;
                 Map<String,Object> countTaskMap = histogramMap.get("COUNT_TASK_MAP");
-                for (Map.Entry<String, Object> entry : countTaskMap.entrySet()) {
-                    RuProcessTask countRT = (RuProcessTask) entry.getValue();
-                    doingNum ++ ;
-                    switch (countRT.getLightState()){
-                        case "6":
-                            dipathOverNum ++ ;
-                            break;
-                        case "4" :
-                            stopNum ++ ;
-                            break;
-                        case "5" :
-                            weekNum ++;
-                            break;
-                        default: break;
+                if(Validate.isMap(countTaskMap)){
+                    for (Map.Entry<String, Object> entry : countTaskMap.entrySet()) {
+                        RuProcessTask countRT = (RuProcessTask) entry.getValue();
+                        doingNum ++ ;
+                        switch (countRT.getLightState()){
+                            case "6":
+                                dipathOverNum ++ ;
+                                break;
+                            case "4" :
+                                stopNum ++ ;
+                                break;
+                            case "5" :
+                                weekNum ++;
+                                break;
+                            default: break;
+                        }
                     }
+                    resultMap.put("DOINGNUM" ,doingNum );
+                    resultMap.put("DISPATHOVERNUM" , dipathOverNum);
+                    resultMap.put("STOPNUM" , stopNum);
+                    resultMap.put("WEEKNUM" , weekNum);
                 }
-                resultMap.put("DOINGNUM" ,doingNum );
-                resultMap.put("DISPATHOVERNUM" , dipathOverNum);
-                resultMap.put("STOPNUM" , stopNum);
-                resultMap.put("WEEKNUM" , weekNum);
-
                 //把统计的去掉
                 histogramMap.remove("COUNT_TASK_MAP");
             } else {
@@ -342,30 +343,33 @@ public class AdminController {
         } else if (authFlag == 3) {
             String userId = SessionUtil.getUserId();
             String orgId = orgIdList.get(0);
-            /*OrgDept orgDpet = orgDeptService.findOrgDeptById(orgId);
-            List<RuProcessTask> resultList = new ArrayList<>();
-            //如果是部长，还要筛选出当前待办人是否是他管辖部门的人
-            for (RuProcessTask rt : authRuSignTask) {
-                if (userService.checkIsMainSigUser(orgDpet.getType(), orgId, rt.getMainUserId())) {
-                    resultList.add(rt);
-                }
-            }
-            //筛选出第一负责人的任务
-            if (Validate.isList(resultList)) {
-                for (RuProcessTask rpt : resultList) {
-                    setMapValue(dataMap, rpt.getMainUserId(), rpt, existList, orgId);
-                }
-            }*/
             //如果是部长，主办协办都要显示
             for(RuProcessTask rt : authRuSignTask){
                 //如果还没分办，则要显示自己
                 List<User> userList = signPrincipalRepo.getPrinUserList(rt.getBusinessKey(), orgId);
                 if(Validate.isList(userList)){
-                    for(User rtUser : userList){
-                        setMapValue(dataMap, rtUser.getId(), rt, existList, orgId);
+                    boolean isMainUser = false;
+                    String mainUserId = rt.getMainUserId();
+                    if(Validate.isString(mainUserId)){
+                        for(User user : userList){
+                            if(mainUserId.equals(user.getId())){
+                                isMainUser = true;
+                                break;
+                            }
+                        }
+                    }
+                    if(isMainUser){
+                        setMapValue(dataMap, mainUserId, rt, existList, orgId);
+                    }else{
+                        setMapValue(dataMap, "部门协办", rt, existList, orgId);
                     }
                 }else{
-                    setMapValue(dataMap, userId, rt, existList, orgId);
+                    if(FLOW_SIGN_BMFB1.equals(rt.getNodeDefineKey()) ||FLOW_SIGN_BMFB2.equals(rt.getNodeDefineKey())
+                            ||FLOW_SIGN_BMFB3.equals(rt.getNodeDefineKey()) ||FLOW_SIGN_BMFB4.equals(rt.getNodeDefineKey())){
+                        setMapValue(dataMap, "未分办", rt, existList, orgId);
+                    }else{
+                        setMapValue(dataMap, userId, rt, existList, orgId);
+                    }
                 }
             }
 
@@ -379,10 +383,17 @@ public class AdminController {
             for (Map.Entry<String, Map<String, Object>> entry : dataMap.entrySet()) {
                 //如果是人才显示人名，统计数量的不显示
                 if(!"COUNT_TASK_MAP".equals(entry.getKey())){
-                    User user = userService.getCacheUserById(entry.getKey());
-                    Map<String, Object> runTaskInfoMap = entry.getValue();
-                    runTaskInfoMap.put("HISTOGRAM_NAME", user.getDisplayName());
-                    histogramMap.put(user.getDisplayName(), runTaskInfoMap);
+                    if("部门协办".equals(entry.getKey()) || "未分办".equals(entry.getKey())){
+                        Map<String, Object> runTaskInfoMap = entry.getValue();
+                        runTaskInfoMap.put("HISTOGRAM_NAME", entry.getKey());
+                        histogramMap.put(entry.getKey(), runTaskInfoMap);
+                    }else{
+                        User user = userService.getCacheUserById(entry.getKey());
+                        Map<String, Object> runTaskInfoMap = entry.getValue();
+                        runTaskInfoMap.put("HISTOGRAM_NAME", user.getDisplayName());
+                        histogramMap.put(user.getDisplayName(), runTaskInfoMap);
+                    }
+
                 }
             }
         } else {

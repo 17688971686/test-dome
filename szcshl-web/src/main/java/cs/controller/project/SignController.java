@@ -389,7 +389,6 @@ public class SignController {
             ProcessInstance processInstance = (ProcessInstance) resultMsg.getReObj();
             rtxService.dealPoolRTXMsg(resultMsg.getIdCode(),resultMsg,processInstance,smsContent.get(projectOrTask,processInstance.getName()));
         }
-
         return resultMsg;
     }
 

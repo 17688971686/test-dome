@@ -230,7 +230,10 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
         if (!Validate.isString(expertCostDto.getMonth())) {
             expertCostDto.setMonth(String.valueOf(DateUtils.getCurMonth()));
         }
-        String monthValue = String.format("%02d", Integer.parseInt(expertCostDto.getMonth()));
+        int year = Integer.parseInt(expertCostDto.getYear());
+        int month = Integer.parseInt(expertCostDto.getMonth());
+        String monthValue = String.format("%02d", month);
+        int maxDate = DateUtils.getMaxDayOfMonth(year,month);
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append(" SELECT e.name, e.idcard, e.userphone, me.reviewcost AS reviewcost, me.reviewtaxes AS reviewtaxes, ye.reviewcost AS yreviewcost, ye.reviewtaxes AS yreviewtaxes ");
         sqlBuilder.append(" FROM (  SELECT s.EXPERTID, SUM (s.reviewcost) reviewcost, SUM (s.reviewtaxes) reviewtaxes ");
@@ -242,8 +245,8 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
         sqlBuilder.append(" (  SELECT s.EXPERTID, SUM (s.reviewcost) reviewcost, SUM (s.reviewtaxes) reviewtaxes ");
         sqlBuilder.append(" FROM cs_expert_selected s, cs_expert_review r ");
         sqlBuilder.append(" WHERE s.expertreviewid = r.id AND s.isconfrim = '9' AND s.isjoin = '9' AND r.paydate IS NOT NULL ");
-        sqlBuilder.append(" AND TO_CHAR (r.paydate, 'yyyy') = :yearValue GROUP BY s.expertid) ye ");
-        sqlBuilder.setParam("yearValue", expertCostDto.getYear());
+        sqlBuilder.append(" AND TO_CHAR (r.paydate, 'yyyy') = :yearValue AND r.paydate <= to_date(:yearDate,'yyyy-mm-dd') GROUP BY s.expertid) ye ");
+        sqlBuilder.setParam("yearValue", expertCostDto.getYear()).setParam("yearDate",expertCostDto.getYear() + "-" + monthValue+"-"+maxDate);
         sqlBuilder.append(" where me.EXPERTID = e.EXPERTID and me.EXPERTID = ye.EXPERTID order by E.EXPERTNO ");
 
         List<Object[]> expertCostCountDtoList = expertCostCountRepo.getObjectArray(sqlBuilder);
