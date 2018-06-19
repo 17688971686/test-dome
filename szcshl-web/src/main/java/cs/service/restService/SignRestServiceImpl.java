@@ -91,7 +91,7 @@ public class SignRestServiceImpl implements SignRestService {
      */
     @Override
     @Transactional
-    public ResultMsg pushProject(SignDto signDto, boolean isGetFiles) {
+    public ResultMsg pushProject(SignDto signDto, boolean isGetFiles,String channel) {
         if (signDto == null) {
             return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_01.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_01.getValue());
         }
@@ -193,6 +193,7 @@ public class SignRestServiceImpl implements SignRestService {
             resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getValue());
         }
     }
+
 
     /**
      * 预签收项目
