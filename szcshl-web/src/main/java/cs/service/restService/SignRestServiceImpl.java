@@ -376,13 +376,13 @@ public class SignRestServiceImpl implements SignRestService {
             }
         } catch (Exception e) {
             //因发文成功，却发生通信异常。暂时注销通信异常发送短信
-            if (rtxService.rtxSMSEnabled()){
-//                 发送通信异常短信
-                boolean boo = SMSUtils.getWeek(workdayService,new Date(),sysConfigService);
-                if (boo){
-                         SMSUtils.seekSMSThread(smsContent,getListUser("发文失败"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文失败.通信异常 ",smsContent.seekSMSSuccee(sign.getProjectname(),sign.getFilecode(),"发文失败(回传委里,通信异常)"),  smsLogService);
-                    }
-                }
+//            if (rtxService.rtxSMSEnabled()){
+////                 发送通信异常短信
+//                boolean boo = SMSUtils.getWeek(workdayService,new Date(),sysConfigService);
+//                if (boo){
+//                         SMSUtils.seekSMSThread(smsContent,getListUser("发文失败"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文失败.通信异常 ",smsContent.seekSMSSuccee(sign.getProjectname(),sign.getFilecode(),"发文失败(回传委里,通信异常)"),  smsLogService);
+//                    }
+//                }
             return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_DEAL_ERROR.getCode(),
                     "项目【" + sign.getProjectname() + "(" + sign.getFilecode() + ")】回传数据给发改委异常！" + e.getMessage());
         }
