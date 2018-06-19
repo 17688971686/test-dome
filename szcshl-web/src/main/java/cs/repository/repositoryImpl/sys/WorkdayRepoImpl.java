@@ -61,4 +61,13 @@ public class WorkdayRepoImpl extends AbstractRepository<Workday, String> impleme
         return workdayList;
     }
 
+	@Override
+	public boolean isExistWorkDay(Date days, String temp) {
+		Criteria criteria=this.getSession().createCriteria(Workday.class);
+		criteria.add(Restrictions.eq(Workday_.dates.getName(), days));
+		criteria.add(Restrictions.eq(Workday_.status.getName(), temp));
+		List<Workday> workdayList=criteria.list();
+		return Validate.isList(workdayList);
+	}
+
 }

@@ -2,6 +2,7 @@ package cs.service.project;
 
 import cs.common.ResultMsg;
 import cs.model.project.DispatchDocDto;
+import cs.model.project.SignDto;
 
 import java.util.Map;
 
@@ -27,5 +28,11 @@ public interface DispatchDocService {
      * @return
      */
     ResultMsg createDisPatchTemplate (String signId);
+    /**
+     * 修改批复金额
+     * @param dispatchDocDto
+     * @return
+     */
+    void updateDispatchByDocDto(DispatchDocDto dispatchDocDto,String isMain);
 
 }

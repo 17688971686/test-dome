@@ -186,7 +186,7 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
 
         List<Sign> signList = criteria.list();
         //过滤掉手工签收的项目，即收文编号为0000结尾的项目
-        List<Sign> resultList = signList.stream().filter(s -> (!s.getFilecode().endsWith("0000"))).collect(Collectors.toList());
+//        List<Sign> resultList = signList.stream().filter(s -> (!s.getFilecode().endsWith("0000"))).collect(Collectors.toList());
         return signList;
     }
 
@@ -254,6 +254,21 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
             signDto.setTotalReviewdays(objects[6] == null ? 0 : Float.valueOf(objects[6].toString()));
         }
 
+        return signDto;
+    }
+
+    @Override
+    public SignDto findSignByFileCode(SignDto signDto) {
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append("select signId  , surplusdays , signdate  , receivedate ,lengthenDays , lengthenExp , totalReviewdays  from cs_sign  where " + Sign_.filecode.getName() + "=:filecode");
+        hqlBuilder.setParam("filecode", signDto.getFilecode());
+        List<Object[]> signList = this.getObjectArray(hqlBuilder);
+        if (signList != null && signList.size() > 0) {
+            Object[] objects = signList.get(0);
+            if (Validate.isObject(objects[0])){
+                signDto.setSignid((String) objects[0]);
+            }
+        }
         return signDto;
     }
 

@@ -24,6 +24,7 @@ import cs.model.sys.SysFileDto;
 import cs.model.sys.UserDto;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
+import cs.service.project.DispatchDocService;
 import cs.service.project.SignService;
 import cs.service.rtx.RTXService;
 import cs.service.sys.*;
@@ -79,7 +80,8 @@ public class SignRestServiceImpl implements SignRestService {
     @Autowired
     private SMSContent smsContent;
 
-
+    @Autowired
+    private DispatchDocService dispatchDocService;
 
     /**
      * 项目推送
@@ -89,7 +91,7 @@ public class SignRestServiceImpl implements SignRestService {
      */
     @Override
     @Transactional
-    public ResultMsg pushProject(SignDto signDto, boolean isGetFiles) {
+    public ResultMsg pushProject(SignDto signDto, boolean isGetFiles,String channel) {
         if (signDto == null) {
             return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_01.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_01.getValue());
         }
@@ -97,47 +99,75 @@ public class SignRestServiceImpl implements SignRestService {
             return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_02.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_02.getValue());
         }
         ResultMsg resultMsg = null;
-        try {
-            String stageCode = "";
-            //1、判断项目阶段是否正确
-            if (Validate.isString(signDto.getReviewstage())) {
-                stageCode = signDto.getReviewstage();
-                String stageCHName = Constant.RevireStageKey.getZHCNName(stageCode);
-                if (!Validate.isString(stageCHName)) {
-                    StringBuffer msgBuffer = new StringBuffer("各阶段对应的标识如下：");
-                    msgBuffer.append("(" + Constant.RevireStageKey.KEY_SUG.getValue() + ":" + Constant.STAGE_SUG);
-                    msgBuffer.append("|" + Constant.RevireStageKey.KEY_STUDY.getValue() + ":" + Constant.STAGE_STUDY);
-                    msgBuffer.append("|" + Constant.RevireStageKey.KEY_BUDGET.getValue() + ":" + Constant.STAGE_BUDGET);
-                    msgBuffer.append("|" + Constant.RevireStageKey.KEY_REPORT.getValue() + ":" + Constant.APPLY_REPORT);
-                    msgBuffer.append("|" + Constant.RevireStageKey.KEY_HOMELAND.getValue() + ":" + Constant.DEVICE_BILL_HOMELAND);
-                    msgBuffer.append("|" + Constant.RevireStageKey.KEY_IMPORT.getValue() + ":" + Constant.DEVICE_BILL_IMPORT);
-                    msgBuffer.append("|" + Constant.RevireStageKey.KEY_DEVICE.getValue() + ":" + Constant.IMPORT_DEVICE);
-                    msgBuffer.append("|" + Constant.RevireStageKey.KEY_OTHER.getValue() + ":" + Constant.OTHERS + ")");
-                    return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_04.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_04.getValue() + msgBuffer.toString());
-                }
-                //对应系统的阶段名称
-                signDto.setReviewstage(stageCHName);
-                //是否是项目概算流程
-                if (Constant.RevireStageKey.KEY_BUDGET.getValue().equals(stageCode)
-                        || Validate.isString(signDto.getIschangeEstimate())) {
-                    signDto.setIsassistflow(Constant.EnumState.YES.getValue());
+        /*
+        * 1、需求：一个是委项目批复文件的pdf以及批复金额，二是评审中心的评审或审核意见的pdf。通过接口文件 主动推送评审中心项目管理。
+        * 修改批复金额与下载pdf文件
+        * */
+        if ("downRemoteFile_channel".equals(channel)){
+            resultMsg = new ResultMsg();
+            //通过fileCode找signId =bussessId
+            SignDto signDto1 = null;
+            signDto1 = signService.findSignByFileCode(signDto);
+            String pifuMoney = "";//signDto;
+            //发文跟收文是1V1
+            DispatchDocDto dispatchDocDto= dispatchDocService.initDispatchBySignId(signDto1.getSignid());
+            dispatchDocDto.setApproveValue(signDto.getDeclaration());
+            dispatchDocDto.setSignId(signDto1.getSignid());
+            dispatchDocService.updateDispatchByDocDto(dispatchDocDto,Constant.SysFileType.SIGN.getValue());
+            //开始下载pdf
+            boolean isLoginUser = Validate.isString(SessionUtil.getUserId());
+            List<SysFileDto> fileDtoList2 = signDto.getSysFileDtoList();
+            if (fileDtoList2.size() ==0){
+                resultMsg.setFlag(true);
+                resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getCode());
+                resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getValue());
+                return resultMsg;
+            }
+            checkDownLoadFile(resultMsg, isGetFiles, dispatchDocDto.getSignId(), signDto.getSysFileDtoList(), isLoginUser ? SessionUtil.getUserId() : SUPER_ACCOUNT, Constant.SysFileType.SIGN.getValue(), Constant.SysFileType.FGW_FILE.getValue());
+            return resultMsg;
+        }else{
+            try {
+                String stageCode = "";
+                //1、判断项目阶段是否正确
+                if (Validate.isString(signDto.getReviewstage())) {
+                    stageCode = signDto.getReviewstage();
+                    String stageCHName = Constant.RevireStageKey.getZHCNName(stageCode);
+                    if (!Validate.isString(stageCHName)) {
+                        StringBuffer msgBuffer = new StringBuffer("各阶段对应的标识如下：");
+                        msgBuffer.append("(" + Constant.RevireStageKey.KEY_SUG.getValue() + ":" + Constant.STAGE_SUG);
+                        msgBuffer.append("|" + Constant.RevireStageKey.KEY_STUDY.getValue() + ":" + Constant.STAGE_STUDY);
+                        msgBuffer.append("|" + Constant.RevireStageKey.KEY_BUDGET.getValue() + ":" + Constant.STAGE_BUDGET);
+                        msgBuffer.append("|" + Constant.RevireStageKey.KEY_REPORT.getValue() + ":" + Constant.APPLY_REPORT);
+                        msgBuffer.append("|" + Constant.RevireStageKey.KEY_HOMELAND.getValue() + ":" + Constant.DEVICE_BILL_HOMELAND);
+                        msgBuffer.append("|" + Constant.RevireStageKey.KEY_IMPORT.getValue() + ":" + Constant.DEVICE_BILL_IMPORT);
+                        msgBuffer.append("|" + Constant.RevireStageKey.KEY_DEVICE.getValue() + ":" + Constant.IMPORT_DEVICE);
+                        msgBuffer.append("|" + Constant.RevireStageKey.KEY_OTHER.getValue() + ":" + Constant.OTHERS + ")");
+                        return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_04.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_04.getValue() + msgBuffer.toString());
+                    }
+                    //对应系统的阶段名称
+                    signDto.setReviewstage(stageCHName);
+                    //是否是项目概算流程
+                    if (Constant.RevireStageKey.KEY_BUDGET.getValue().equals(stageCode)
+                            || Validate.isString(signDto.getIschangeEstimate())) {
+                        signDto.setIsassistflow(Constant.EnumState.YES.getValue());
+                    } else {
+                        signDto.setIsassistflow(Constant.EnumState.NO.getValue());
+                    }
                 } else {
-                    signDto.setIsassistflow(Constant.EnumState.NO.getValue());
+                    return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_03.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_03.getValue());
                 }
-            } else {
-                return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_03.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_03.getValue());
-            }
-            resultMsg = signService.createSign(signDto);
+                resultMsg = signService.createSign(signDto);
 
-            if(resultMsg.isFlag()){
-                boolean isLoginUser = Validate.isString(SessionUtil.getUserId());
-                Sign sign = (Sign) resultMsg.getReObj();
-                checkDownLoadFile(resultMsg, isGetFiles, sign.getSignid(), signDto.getSysFileDtoList(), isLoginUser ? SessionUtil.getUserId() : SUPER_ACCOUNT, Constant.SysFileType.SIGN.getValue(), Constant.SysFileType.FGW_FILE.getValue());
-            }
-        } catch (Exception e) {
-            resultMsg = new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(), IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getValue() + e.getMessage());
-        } finally {
+                if(resultMsg.isFlag()){
+                    boolean isLoginUser = Validate.isString(SessionUtil.getUserId());
+                    Sign sign = (Sign) resultMsg.getReObj();
+                    checkDownLoadFile(resultMsg, isGetFiles, sign.getSignid(), signDto.getSysFileDtoList(), isLoginUser ? SessionUtil.getUserId() : SUPER_ACCOUNT, Constant.SysFileType.SIGN.getValue(), Constant.SysFileType.FGW_FILE.getValue());
+                }
+            } catch (Exception e) {
+                resultMsg = new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(), IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getValue() + e.getMessage());
+            } finally {
 
+            }
         }
         return resultMsg;
     }
@@ -322,70 +352,37 @@ public class SignRestServiceImpl implements SignRestService {
             }
             params.put("dataMap", JSON.toJSONString(dataMap));
             params.put("dataList", JSON.toJSONString(dataList));
-            Date date = new Date();
-            if ((date.getTime()-timeL)>( 60 * 1000) ){
-                gameChannelMap.clear();
-            }
             HttpResult hst = httpClientOperate.doPost(fgwUrl, params);
             FGWResponse fGWResponse = JSON.toJavaObject(JSON.parseObject(hst.getContent()), FGWResponse.class);
             //成功
             if (Constant.EnumState.PROCESS.getValue().equals(fGWResponse.getRestate())) {
                 if (rtxService.rtxSMSEnabled()){
-                    boolean boo = SMSUtils.getWeek(new Date(),sysConfigService);
+                    boolean boo = SMSUtils.getWeek(workdayService,new Date(),sysConfigService);
                     if(boo){
-                        if (!gameChannelMap.get("fileCode").equals(sign.getFilecode())){
-                            if(! smsContent.orNotsendSMS(getListUser("发文成功"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文成功")){
-                                //AAAGAN 发送个发改委 ：发文失败，发送短信（但龙，陈春燕）项目名称（发文号）  fileCode
-                                gameChannelMap.put("fileCode",sign.getFilecode());
-                                timeL = new Date().getTime();
-                                SMSUtils.seekSMSThread(smsContent,getListUser("发文成功"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文成功",smsContent.seekSMSSuccee(sign.getProjectname(),sign.getFilecode(),"发文成功(回传委里)"),  smsLogService);
-                            }
-                        }
+                             SMSUtils.seekSMSThread(smsContent,getListUser("发文成功"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文成功",smsContent.seekSMSSuccee(sign.getProjectname(),sign.getFilecode(),"发文成功(回传委里)"),  smsLogService);
                     }
                 }
                 return new ResultMsg(true, IFResultCode.IFMsgCode.SZEC_SEND_OK.getCode(), "项目【" + sign.getProjectname() + "(" + sign.getFilecode() + ")】回传数据给发改委成功！");
             } else {
+                //发送失败短信
                 if (rtxService.rtxSMSEnabled()){
-                    boolean boo = SMSUtils.getWeek(new Date(),sysConfigService);
+                    boolean boo = SMSUtils.getWeek(workdayService,new Date(),sysConfigService);
                     if(boo){
-                        String fileCode = "1";
-                        if (gameChannelMap.size()>0){
-                            fileCode = gameChannelMap.get("fileCode");
-                        }
-                        if (!fileCode.equals(sign.getFilecode())){
-                            if(!smsContent.orNotsendSMS(getListUser("发文失败"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文失败")){
-                                //AAAGAN 发送个发改委 ：发文失败，发送短信（但龙，陈春燕）项目名称（发文号）  fileCode
-                                gameChannelMap.put("fileCode",sign.getFilecode());
-                                timeL = new Date().getTime();
-                                SMSUtils.seekSMSThread(smsContent,getListUser("发文失败"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文失败",smsContent.seekSMSSuccee(sign.getProjectname(),sign.getFilecode(),"发文失败(回传委里)"),  smsLogService);
-                            }
-                        }
+                         SMSUtils.seekSMSThread(smsContent,getListUser("发文失败"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文失败",smsContent.seekSMSSuccee(sign.getProjectname(),sign.getFilecode(),"发文失败(回传委里)"),  smsLogService);
                     }
                 }
                 return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SEND_ERROR.getCode(),
                         "项目【" + sign.getProjectname() + "(" + sign.getFilecode() + ")】回传数据给发改委失败！" + fGWResponse.getRedes() + "<br>");
             }
         } catch (Exception e) {
+            //因发文成功，却发生通信异常。暂时注销通信异常发送短信
             if (rtxService.rtxSMSEnabled()){
-                //如果当天是周末将不发送短信
-                boolean boo = SMSUtils.getWeek(new Date(),sysConfigService);
+//                 发送通信异常短信
+                boolean boo = SMSUtils.getWeek(workdayService,new Date(),sysConfigService);
                 if (boo){
-                    String fileCode = "1";
-                    if (gameChannelMap.size()>0){
-                        fileCode = gameChannelMap.get("fileCode");
+                         SMSUtils.seekSMSThread(smsContent,getListUser("发文失败"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文失败.通信异常 ",smsContent.seekSMSSuccee(sign.getProjectname(),sign.getFilecode(),"发文失败(回传委里,通信异常)"),  smsLogService);
                     }
-
-                    if (!fileCode.equals(sign.getFilecode())){
-                        if(! smsContent.orNotsendSMS(getListUser("发文失败"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","发文失败")){
-                            //AAAGAN 发送个发改委 ：发文失败，发送短信（但龙，陈春燕）项目名称（发文号）  fileCode
-                            gameChannelMap.put("fileCode",sign.getFilecode());
-                            timeL = new Date().getTime();
-                            SMSUtils.seekSMSThread(smsContent,getListUser("发文失败"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文失败.通信异常 ",smsContent.seekSMSSuccee(sign.getProjectname(),sign.getFilecode(),"发文失败(回传委里,通信异常)"),  smsLogService);
-                        }
-                    }
-
                 }
-            }
             return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_DEAL_ERROR.getCode(),
                     "项目【" + sign.getProjectname() + "(" + sign.getFilecode() + ")】回传数据给发改委异常！" + e.getMessage());
         }
