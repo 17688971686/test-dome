@@ -30,5 +30,14 @@ public interface SMSContent {
      * @param fileCode
      * @param type
      * */
-    public boolean orNotsendSMS(List<User> list, String projectName, String fileCode, String type, String infoType);
+    public String orNotsendSMS(List<User> list, String projectName, String fileCode, String type, String infoType,String xianzhiNumber);
+
+    /**
+     * 判断是否已经已发送过短信.规则是发送过短信就不再发送短信
+     * @param projectName
+     * @param fileCode
+     * @param type
+     * */
+    public String querySmsNumber(List<User> list, String projectName, String fileCode, String type, String infoType,String xianzhiNumber);
+
 }

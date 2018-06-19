@@ -233,7 +233,8 @@
                     templateUrl: rootPath + '/org/html/list.html',
                     controller: 'orgCtrl',
                     controllerAs: 'vm'
-                }).state('orgEdit', {
+                })
+                .state('orgEdit', {
                 url: '/orgEdit/:id',
                 templateUrl: rootPath + '/org/html/edit.html',
                 controller: 'orgEditCtrl',
@@ -279,7 +280,7 @@
                     controller: 'smslogCtrl',
                     controllerAs: 'vm'
                 })
-
+                    //smslogSendCtrl
                 // .state('maintainExpertConfirm', {//确定修改文件
                 //     url: '/maintainExpertConfirm/:signid',
                 //     templateUrl: rootPath + "/maintainProject/html/maintainExpertConfirm.html",

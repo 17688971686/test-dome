@@ -5,95 +5,82 @@ import javax.persistence.Id;
 import java.util.Date;
 
 public class SMSLogDto {
-	@Id
-	@Column(columnDefinition = "VARCHAR(64)")
 	private String id;
-
-	/**
-	 * 用户名
-	 */
-	@Column(columnDefinition = "varchar(64)")
 	private String userName;
-	/**
-	 * 短信用户名
-	 */
-	@Column(columnDefinition = "varchar(64)")
+
 	private String smsUserName;
 
-	/**
-	 * 发送短信手机号码
-	 */
-	@Column(columnDefinition = "varchar(255)")
+
 	private String smsUserPhone;
 
-	/**
-	 * 是:单个发送还是多个发送
-	 */
-	@Column(columnDefinition = "varchar(64)")
+
 	private String manyOrOne;
 
-	/**
-	 * 创建日期
-	 */
-	@Column(columnDefinition = "date NOT NULL")
+
 	private Date createdDate;
 
 
-	/**
-	 * 短信结果编码
-	 */
-	@Column(columnDefinition = "varchar(10)")
+
 	private String resultCode;
 
 	/**
 	 * 短信提心类型:
 	 * 收文:MSS_SYS_USER_TYPE  发文: SMS_SYS_USER_POST_FAILURE
 	 */
-	@Column(columnDefinition = "varchar(64)")
 	private String smsLogType;
-
+	//类型显示名称
+	private String smsLogTypeName;
 	/**
 	 * 返回码
 	 */
-	@Column(columnDefinition = "varchar(32)")
 	private String logCode;
 
 	/**
 	 * 信息内容
 	 */
-	@Column(columnDefinition = "varchar(255)")
 	private String message;
 	/**
 	 * 自定义信息内容
 	 */
-	@Column(columnDefinition = "varchar(255)")
 	private String customMessage;
 	/**
 	 * 业务ID
 	 */
-	@Column(columnDefinition = "varchar(64)")
 	private String buninessId;
 	/**
 	 *
 	 */
-	@Column(columnDefinition = "varchar(64)")
 	private String fileCode;
 
 	/**
 	 */
-	@Column(columnDefinition = "varchar(64)")
 	private String projectName;
 	/**
 	 * IP地址
 	 */
-	@Column(columnDefinition = "varchar(64)")
 	private String ipAdd;
 
 	/**
 	 * 暂时界面使用:结果（9：表示成功。0：表示失败）
 	 */
-	@Column(columnDefinition = "varchar(2)")
 	private String result;
+	private String createdBy;
+
+	public String getSmsLogTypeName() {
+		return smsLogTypeName;
+	}
+
+	public void setSmsLogTypeName(String smsLogTypeName) {
+		this.smsLogTypeName = smsLogTypeName;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
 
 	public String getId() {
 		return id;

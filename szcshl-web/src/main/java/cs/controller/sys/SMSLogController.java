@@ -1,6 +1,7 @@
 package cs.controller.sys;
 
 import cs.ahelper.MudoleAnnotation;
+import cs.common.ResultMsg;
 import cs.model.PageModelDto;
 import cs.model.sys.LogDto;
 import cs.model.sys.SMSLogDto;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping(name = "短信日志", path = "smslog")
@@ -35,18 +38,50 @@ public class SMSLogController {
         return logDtos;
     }
     @RequiresAuthentication
-    @RequestMapping(name = "发送短信", path = "html/sendSMS", method = RequestMethod.POST)
+    @RequestMapping(name = "发送短信", path = "sendSMS", method = RequestMethod.POST)
     @ResponseBody
-    public String sendSMSContent(HttpServletRequest request)throws ParseException {
-        ODataObj odataObj = new ODataObj(request);
-        PageModelDto<SMSLogDto> logDtos = smsLogService.get(odataObj);
-        return null;
+    public ResultMsg sendSMSContent(@RequestBody SMSLogDto smsLogDto)throws ParseException {
+        return smsLogService.sendSMSContent(smsLogDto);
     }
     @RequiresAuthentication
-    @RequestMapping(name = "删除短信", path = "", method = RequestMethod.DELETE)
+    @RequestMapping(name = "获取短信类型", path = "querySMSLogType", method = RequestMethod.GET)
+    @ResponseBody
+    public List<SMSLogDto> querySMSLogType(@RequestParam(required = false) String type)throws ParseException {
+        List<SMSLogDto> list = new ArrayList<>();
+        SMSLogDto smsLogDto =  new SMSLogDto();
+        smsLogDto.setSmsLogType("dispatch_type");
+        smsLogDto.setSmsLogTypeName("收文类型");
+        list.add(smsLogDto);
+        smsLogDto =  new SMSLogDto();
+        smsLogDto.setSmsLogType("incoming_type");
+        smsLogDto.setSmsLogTypeName("发文类型");
+        list.add(smsLogDto);
+        smsLogDto =  new SMSLogDto();
+        smsLogDto.setSmsLogType("task_type");
+        smsLogDto.setSmsLogTypeName("任务类型");
+        list.add(smsLogDto);
+        smsLogDto =  new SMSLogDto();
+        smsLogDto.setSmsLogType("project_type");
+        smsLogDto.setSmsLogTypeName("项目类型");
+        list.add(smsLogDto);
+        smsLogDto =  new SMSLogDto();
+        smsLogDto.setSmsLogType("custom_type");
+        smsLogDto.setSmsLogTypeName("定义类型");
+        list.add(smsLogDto);
+        if ("all".equals(type)){
+            smsLogDto =  new SMSLogDto();
+            smsLogDto.setSmsLogType("custom_type");
+            smsLogDto.setSmsLogTypeName("通信类型");
+            list.add(smsLogDto);
+        }
+        return list;
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "删除短信", path = "delete", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@RequestBody String id) {
-//        orgService.deleteOrg(id);
+        smsLogService.deleteSMSLog(id);
     }
     @RequiresPermissions("smslog#html/list#get")
     @RequestMapping(name = "短信日志查询", path = "html/list", method = RequestMethod.GET)

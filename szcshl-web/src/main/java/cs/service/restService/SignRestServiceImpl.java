@@ -352,70 +352,37 @@ public class SignRestServiceImpl implements SignRestService {
             }
             params.put("dataMap", JSON.toJSONString(dataMap));
             params.put("dataList", JSON.toJSONString(dataList));
-            Date date = new Date();
-            if ((date.getTime()-timeL)>( 60 * 1000) ){
-                gameChannelMap.clear();
-            }
             HttpResult hst = httpClientOperate.doPost(fgwUrl, params);
             FGWResponse fGWResponse = JSON.toJavaObject(JSON.parseObject(hst.getContent()), FGWResponse.class);
             //成功
             if (Constant.EnumState.PROCESS.getValue().equals(fGWResponse.getRestate())) {
                 if (rtxService.rtxSMSEnabled()){
-                    boolean boo = SMSUtils.getWeek(new Date(),sysConfigService);
+                    boolean boo = SMSUtils.getWeek(workdayService,new Date(),sysConfigService);
                     if(boo){
-                        if (!gameChannelMap.get("fileCode").equals(sign.getFilecode())){
-                            if(! smsContent.orNotsendSMS(getListUser("发文成功"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文成功")){
-                                //AAAGAN 发送个发改委 ：发文失败，发送短信（但龙，陈春燕）项目名称（发文号）  fileCode
-                                gameChannelMap.put("fileCode",sign.getFilecode());
-                                timeL = new Date().getTime();
-                                SMSUtils.seekSMSThread(smsContent,getListUser("发文成功"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文成功",smsContent.seekSMSSuccee(sign.getProjectname(),sign.getFilecode(),"发文成功(回传委里)"),  smsLogService);
-                            }
-                        }
+                             SMSUtils.seekSMSThread(smsContent,getListUser("发文成功"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文成功",smsContent.seekSMSSuccee(sign.getProjectname(),sign.getFilecode(),"发文成功(回传委里)"),  smsLogService);
                     }
                 }
                 return new ResultMsg(true, IFResultCode.IFMsgCode.SZEC_SEND_OK.getCode(), "项目【" + sign.getProjectname() + "(" + sign.getFilecode() + ")】回传数据给发改委成功！");
             } else {
+                //发送失败短信
                 if (rtxService.rtxSMSEnabled()){
-                    boolean boo = SMSUtils.getWeek(new Date(),sysConfigService);
+                    boolean boo = SMSUtils.getWeek(workdayService,new Date(),sysConfigService);
                     if(boo){
-                        String fileCode = "1";
-                        if (gameChannelMap.size()>0){
-                            fileCode = gameChannelMap.get("fileCode");
-                        }
-                        if (!fileCode.equals(sign.getFilecode())){
-                            if(!smsContent.orNotsendSMS(getListUser("发文失败"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文失败")){
-                                //AAAGAN 发送个发改委 ：发文失败，发送短信（但龙，陈春燕）项目名称（发文号）  fileCode
-                                gameChannelMap.put("fileCode",sign.getFilecode());
-                                timeL = new Date().getTime();
-                                SMSUtils.seekSMSThread(smsContent,getListUser("发文失败"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文失败",smsContent.seekSMSSuccee(sign.getProjectname(),sign.getFilecode(),"发文失败(回传委里)"),  smsLogService);
-                            }
-                        }
+                         SMSUtils.seekSMSThread(smsContent,getListUser("发文失败"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文失败",smsContent.seekSMSSuccee(sign.getProjectname(),sign.getFilecode(),"发文失败(回传委里)"),  smsLogService);
                     }
                 }
                 return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SEND_ERROR.getCode(),
                         "项目【" + sign.getProjectname() + "(" + sign.getFilecode() + ")】回传数据给发改委失败！" + fGWResponse.getRedes() + "<br>");
             }
         } catch (Exception e) {
-            if (rtxService.rtxSMSEnabled()){
-                //如果当天是周末将不发送短信
-                boolean boo = SMSUtils.getWeek(new Date(),sysConfigService);
-                if (boo){
-                    String fileCode = "1";
-                    if (gameChannelMap.size()>0){
-                        fileCode = gameChannelMap.get("fileCode");
-                    }
-
-                    if (!fileCode.equals(sign.getFilecode())){
-                        if(! smsContent.orNotsendSMS(getListUser("发文失败"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","发文失败")){
-                            //AAAGAN 发送个发改委 ：发文失败，发送短信（但龙，陈春燕）项目名称（发文号）  fileCode
-                            gameChannelMap.put("fileCode",sign.getFilecode());
-                            timeL = new Date().getTime();
-                            SMSUtils.seekSMSThread(smsContent,getListUser("发文失败"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文失败.通信异常 ",smsContent.seekSMSSuccee(sign.getProjectname(),sign.getFilecode(),"发文失败(回传委里,通信异常)"),  smsLogService);
-                        }
-                    }
-
-                }
-            }
+            //因发文成功，却发生通信异常。暂时注销通信异常发送短信
+//            if (rtxService.rtxSMSEnabled()){
+////                 发送通信异常短信
+//                boolean boo = SMSUtils.getWeek(workdayService,new Date(),sysConfigService);
+//                if (boo){
+//                         SMSUtils.seekSMSThread(smsContent,getListUser("发文失败"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文失败.通信异常 ",smsContent.seekSMSSuccee(sign.getProjectname(),sign.getFilecode(),"发文失败(回传委里,通信异常)"),  smsLogService);
+//                    }
+//                }
             return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_DEAL_ERROR.getCode(),
                     "项目【" + sign.getProjectname() + "(" + sign.getFilecode() + ")】回传数据给发改委异常！" + e.getMessage());
         }
