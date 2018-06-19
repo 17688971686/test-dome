@@ -257,6 +257,21 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
         return signDto;
     }
 
+    @Override
+    public SignDto findSignByFileCode(SignDto signDto) {
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append("select signId  , surplusdays , signdate  , receivedate ,lengthenDays , lengthenExp , totalReviewdays  from cs_sign  where " + Sign_.filecode.getName() + "=:filecode");
+        hqlBuilder.setParam("filecode", signDto.getFilecode());
+        List<Object[]> signList = this.getObjectArray(hqlBuilder);
+        if (signList != null && signList.size() > 0) {
+            Object[] objects = signList.get(0);
+            if (Validate.isObject(objects[0])){
+                signDto.setSignid((String) objects[0]);
+            }
+        }
+        return signDto;
+    }
+
     /**
      * 保存评审工作日维护的信息
      *

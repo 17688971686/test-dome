@@ -22,4 +22,7 @@ public interface WorkdayRepo extends IRepository<Workday, String>{
      * @return
      */
     List<Workday> getBetweenTimeDay(Date startDate   , Date endDate);
+
+
+    boolean isExistWorkDay(Date days,String temp);
 }

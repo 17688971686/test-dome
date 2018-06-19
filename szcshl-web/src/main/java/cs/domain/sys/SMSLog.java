@@ -41,6 +41,7 @@ public class SMSLog {
     /**
      * 创建日期
      */
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(columnDefinition = "date NOT NULL")
 	private Date createdDate;
 
@@ -67,7 +68,7 @@ public class SMSLog {
     /**
      * 信息内容
      */
-    @Column(columnDefinition = "varchar(255)")
+    @Column(columnDefinition = "varchar(4000)")
 	private String message;
     /**
      * 自定义信息内容
@@ -101,6 +102,34 @@ public class SMSLog {
     @Column(columnDefinition = "varchar(2)")
     private String result;
 
+
+    /**
+     * 修改时间
+     */
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(columnDefinition = "date")
+    private Date modifiedDate;
+    /**
+     * 创建人
+     */
+    @Column(columnDefinition = "varchar(64)")
+    private String createdBy;
+
+    public Date getModifiedDate() {
+        return modifiedDate;
+    }
+
+    public void setModifiedDate(Date modifiedDate) {
+        this.modifiedDate = modifiedDate;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
 
     public String getSmsUserName() {
         return smsUserName;

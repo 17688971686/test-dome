@@ -25,7 +25,7 @@ public interface SignRestService {
      * @param isGetFiles 是否接受附件
      * @return
      */
-    ResultMsg pushProject(SignDto signDto,boolean isGetFiles);
+    ResultMsg pushProject(SignDto signDto,boolean isGetFiles,String channel);
 
     /**
      * 接收委里传输过来的预签收数据

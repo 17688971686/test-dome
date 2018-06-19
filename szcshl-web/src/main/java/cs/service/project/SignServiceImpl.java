@@ -2545,6 +2545,7 @@ public class SignServiceImpl implements SignService {
         return signRepo.saveMoreExpert(signId, isMoreExpert);
     }
 
+
     /**
      * 查询项目预签收信息
      *
@@ -2934,7 +2935,7 @@ public class SignServiceImpl implements SignService {
         List<Sign> listSign = signRepo.findUnSendFGWList();
         if (Validate.isList(listSign)) {
             for (int i = 0, l = listSign.size(); i < l; i++) {
-                Sign sign = listSign.get(0);
+                Sign sign = listSign.get(i);
                 if (EnumState.STOP.getValue().equals(sign.getIsSendFGW()) || sign.getFilecode().endsWith("0000")) {
                     continue;
                 } else {
@@ -3072,5 +3073,10 @@ public class SignServiceImpl implements SignService {
     @Override
     public ResultMsg saveReview(SignDto signDto) {
         return signRepo.saveReview(signDto);
+    }
+
+    @Override
+    public SignDto findSignByFileCode(SignDto signDto) {
+        return signRepo.findSignByFileCode(signDto);
     }
 }

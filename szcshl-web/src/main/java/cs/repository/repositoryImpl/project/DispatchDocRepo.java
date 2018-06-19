@@ -3,6 +3,7 @@ package cs.repository.repositoryImpl.project;
 import java.util.List;
 
 import cs.domain.project.DispatchDoc;
+import cs.model.project.DispatchDocDto;
 import cs.repository.IRepository;
 
 public interface DispatchDocRepo extends IRepository<DispatchDoc,String>{
@@ -20,4 +21,8 @@ public interface DispatchDocRepo extends IRepository<DispatchDoc,String>{
      * @return
      */
     int getMaxSeq(String yearName, String seqType);
+
+
+
+    void updateDispatchDoc(DispatchDocDto dispatchDocDto,String isMain);
 }
