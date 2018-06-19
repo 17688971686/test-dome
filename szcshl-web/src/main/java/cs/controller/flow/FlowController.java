@@ -526,19 +526,6 @@ public class FlowController {
             log.info("流程提交异常："+errorMsg);
             resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"操作异常，错误信息已记录，请联系管理员查看！");
         }
-        /*//添加日记记录
-        Log log = new Log();
-        log.setCreatedDate(new Date());
-        log.setUserName(SessionUtil.getDisplayName());
-        log.setLogCode(resultMsg.getReCode());
-        log.setBuninessId(businessKey);
-        log.setMessage(resultMsg.getReMsg()+errorMsg);
-        log.setModule(Constant.LOG_MODULE.FLOWCOMMIT.getValue()+FlowConstant.getFLowNameByFlowKey(module) );
-        log.setResult(resultMsg.isFlag()? Constant.EnumState.YES.getValue(): Constant.EnumState.NO.getValue());
-        log.setLogger(this.getClass().getName()+".flowCommit");
-        //优先级别高
-        log.setLogLevel(Constant.EnumState.PROCESS.getValue());
-        logService.save(log);*/
         //腾讯通消息处理
         rtxService.dealPoolRTXMsg(flowDto.getTaskId(),resultMsg,processInstance,smsContent.get(projectOrTask,processInstance.getName()));
         return resultMsg;

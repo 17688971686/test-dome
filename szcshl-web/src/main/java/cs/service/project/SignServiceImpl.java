@@ -757,7 +757,7 @@ public class SignServiceImpl implements SignService {
             }
             //放入腾讯通消息缓冲池
             RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
-            return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！");
+            return new ResultMsg(true, MsgCode.OK.getValue(),task.getId(), "操作成功！",processInstance);
         } catch (Exception e) {
             log.error("发起项目签收流程异常：" + e.getMessage());
             return new ResultMsg(true, MsgCode.OK.getValue(), "操作异常，错误信息已记录，请刷新重试或联系管理员处理！");
