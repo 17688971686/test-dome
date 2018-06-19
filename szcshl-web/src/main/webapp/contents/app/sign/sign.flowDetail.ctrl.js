@@ -80,6 +80,7 @@
                 //通过评估部门的个数来控制总投资字段  修改于（2018-01-16）
                 if(vm.model.workProgramDtoList && vm.model.workProgramDtoList.length >0){
                     var orgStr;
+                    debugger;
                     if(vm.model.workProgramDtoList[0].branchId == '1' ||vm.model.workProgramDtoList[0].branchId == '1' ){
                         orgStr = vm.model.workProgramDtoList[0].reviewOrgName;
                     }else{
@@ -122,6 +123,7 @@
                     vm.registerFile=[];//其他资料
                     vm.drawingFile=[];//图纸资料
                     vm.otherFile=[];//归档的其他资料
+                    debugger;
                     vm.model.registerFileDtoDtoList.forEach(function(registerFile  , x){
                         if(registerFile.businessType =="3" || registerFile.businessType =="5"
                             ||registerFile.businessType =="6"||registerFile.businessType =="7"){
@@ -139,6 +141,7 @@
 
             // 初始化上传附件
             sysfileSvc.findByMianId(vm.model.signid,function(data){
+                debugger;
                 if(data && data.length > 0){
                     vm.showFlag.tabSysFile = true;
                     vm.sysFileList = data;
@@ -149,6 +152,7 @@
 
         //附件下载
         vm.commonDownloadSysFile = function(sysFileId){
+            debugger;
             sysfileSvc.downloadFile(sysFileId);
         }
 
