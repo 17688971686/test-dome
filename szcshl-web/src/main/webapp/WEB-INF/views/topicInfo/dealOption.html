@@ -4,9 +4,7 @@
             class="glyphicon glyphicon-ok"></span>提交
     </button>
     <button class="btn btn-sm btn-warning" ng-click="vm.backFlow()" ng-disabled="vm.isCommit"
-            ng-show="vm.flow.curNode.activitiId != 'TOPIC_GZFA' && vm.flow.curNode.activitiId != 'TOPIC_BFGW'&&
-            vm.flow.curNode.activitiId != 'TOPIC_JHTC'&& vm.flow.curNode.activitiId != 'TOPIC_KTJT' && vm.flow.curNode.activitiId != 'TOPIC_ZLGD' &&
-              vm.flow.curNode.activitiId != 'TOPIC_KTBG'        ">
+            ng-show="vm.flow.curNode.activitiId != 'TOPIC_KTFZR_QR'&& vm.flow.curNode.activitiId != 'TOPIC_KTFZR'">
         <span class="glyphicon glyphicon-step-backward"></span>回退
     </button>
     <button class="btn btn-sm btn-success" ng-click="vm.ideaEdit({targetId:'dealOption'})">管理个人常用意见</button>
@@ -54,28 +52,17 @@
             </td>
         </tr>
 
-        <tr ng-if="vm.showFlag.businessTr || (vm.flow.curNode.activitiId == 'TOPIC_KTBG' && vm.model.expertReviewDto && !vm.model.expertReviewDto.payDate)">
+        <tr ng-if="vm.showFlag.businessTr || (vm.flow.curNode.activitiId == 'TOPIC_KTFZR'
+                                          || vm.flow.curNode.activitiId == 'TOPIC_KTFZR_QR'
+                                          || vm.flow.curNode.activitiId == 'TOPIC_ZLGD')">
             <td width="10%" class="text-center">
                 业务处理
             </td>
             <td>
-                <div ng-if="vm.flow.curNode.activitiId == 'TOPIC_JHTC'">
-                    <a class="btn btn-xs btn-primary" href="#/topicInfo/{{vm.model.id}}"><span
-                            class="glyphicon glyphicon-pencil"></span>编辑课题计划</a>
-                </div>
-                <div ng-if="vm.flow.curNode.activitiId == 'TOPIC_GZFA'">
-                    <a class="btn btn-xs btn-primary" href="#/editWorkPlan/{{vm.model.id}}"><span
-                            class="glyphicon glyphicon-pencil"></span>编辑工作方案</a>
-                </div>
-                <div ng-show="(vm.flow.curNode.activitiId == 'TOPIC_KTBG') && vm.showFlag.isMainPrinUser && vm.model.expertReviewDto && vm.model.expertReviewDto.expertSelectedDtoList">
-                    <button ng-hide="vm.model.expertReviewDto.payDate" class="btn btn-xs btn-success"
-                            ng-click="vm.affirmJoinExpert();" ng-disabled="vm.isCommit">确认实际参加评审的专家名称
-                    </button>
-                </div>
-                <div ng-if="vm.flow.curNode.activitiId == 'TOPIC_ZLGD'">
-                    <a class="btn btn-xs btn-primary" href="#/editFiling/{{vm.model.id}}"><span
-                            class="glyphicon glyphicon-pencil"></span>资料归档</a>
-                </div>
+                <a ng-if="vm.flow.curNode.activitiId == 'TOPIC_KTFZR' ||vm.flow.curNode.activitiId == 'TOPIC_KTFZR_QR'" class="btn btn-xs btn-primary" href="#/topicEditInfo/{{vm.model.id}}/{{vm.flow.curNode.activitiId}}"><span
+                        class="glyphicon glyphicon-pencil"></span>编辑课题计划</a>
+                <a ng-if="vm.flow.curNode.activitiId == 'TOPIC_KTFZR_QR' || vm.flow.curNode.activitiId == 'TOPIC_ZLGD'" class="btn btn-xs btn-primary" href="#/editFiling/{{vm.model.id}}"><span
+                        class="glyphicon glyphicon-pencil"></span>资料归档</a>
             </td>
         </tr>
         </tbody>

@@ -77,12 +77,11 @@ public class HomeController {
 	public @ResponseBody String initTopicFlow(){
 		//部署下一个版本
 		logger.info("开始部署课题研究流程...");
-		InputStream in=this.getClass().getClassLoader().getResourceAsStream("activiti/topic.zip");
+		InputStream in=this.getClass().getClassLoader().getResourceAsStream("activiti/newtopic.zip");
 		ZipInputStream zipIn=new ZipInputStream(in);
 		Deployment  deployment = repositoryService.createDeployment().addZipInputStream(zipIn).name("课题研究流程").deploy();
 		ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().deploymentId(deployment.getId()).singleResult();
 		logger.info("课题研究程部署成功,流程名称-"+processDefinition.getName()+",流程ID-"+processDefinition.getId());
-
 		return "init Topic Flow success";
 	}
 

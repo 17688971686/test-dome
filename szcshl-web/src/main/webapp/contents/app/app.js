@@ -1057,6 +1057,13 @@
                     controller: 'topicAddCtrl',
                     controllerAs: 'vm'
                 })
+                //课题结题
+                .state('editTopic', {
+                    url: '/topicEditInfo/:id/:curNodeId',
+                    templateUrl: rootPath + '/topicInfo/html/edit.html',
+                    controller: 'topicAddCtrl',
+                    controllerAs: 'vm'
+                })
                 .state('myTopic', {
                     url: '/myTopic',
                     templateUrl: rootPath + '/topicInfo/html/myList.html',
