@@ -9,22 +9,23 @@
 
                 <tr>
                     <td class="text-center" width="10%">姓名</td>
-                    <td width="20%">
+                    <td width="20%" class="text-left">
                         {{vm.party.pmName}}
                     </td>
                     <td class="text-center" width="10%">性别</td>
-                    <td width="10%">
+                    <td width="10%" class="text-left">
                         {{vm.party.pmSex}}
                     </td>
                     <td class="text-center"  width="10%">民族</td>
                     <td width="30%" class="text-left">
-                        {{vm.party.pmNation}}
+                        <span ng-repeat="x in DICT.NATION.dicts"
+                              ng-if="x.dictKey == vm.party.pmNation">{{x.dictName}}</span>
                     </td>
                 </tr>
 
                 <tr>
                     <td class="text-center"   width="10%">身份证号</td>
-                    <td colspan="5">
+                    <td colspan="5" class="text-left">
                         {{vm.party.pmIDCard}}
                     </td>
 
@@ -37,7 +38,8 @@
                     </td>
                     <td class="text-center"   width="10%">学历</td>
                     <td width="10%"  class="text-left">
-                        {{vm.party.pmEducation}}
+                        <span ng-repeat="x in DICT.ADUCATION.dicts"
+                              ng-if="x.dictKey == vm.party.pmEducation">{{x.dictName}}</span>
                     </td>
                 </tr>
 

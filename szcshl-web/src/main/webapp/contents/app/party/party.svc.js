@@ -231,11 +231,11 @@
                     filterable: false,
                 },
                 {
-                    field: "pmNation",
+                    field: "",
                     title: "民族",
                     width: 50,
                     filterable: false,
-                    /*template :function(item){
+                    template :function(item){
                         var pmNation = "";
                         for(var i =0 ; i < $rootScope.DICT.NATION.dicts.length ; i++){
                             var v = $rootScope.DICT.NATION.dicts[i];
@@ -245,13 +245,24 @@
                             }
                         }
                         return pmNation;
-                    }*/
+                    }
                 },
                 {
-                    field: "pmEducation",
+                    field: "",
                     title: "学历",
                     width: 80,
-                    filterable: false
+                    filterable: false,
+                    template :function(item){
+                        var pmEducation = "";
+                        for(var i =0 ; i < $rootScope.DICT.ADUCATION.dicts.length ; i++){
+                            var v = $rootScope.DICT.ADUCATION.dicts[i];
+                            if(item.pmEducation == v.dictKey){
+                                pmEducation =  v.dictName;
+                                break;
+                            }
+                        }
+                        return pmEducation;
+                    }
                 },
                 {
                     field: "pmPhone",

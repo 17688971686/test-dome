@@ -1,6 +1,7 @@
 package cs.domain.party;
 
 import cs.domain.DomainBase;
+import org.springframework.stereotype.Controller;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -274,6 +275,12 @@ public class PartyManager extends DomainBase {
      */
     @Column(columnDefinition = "VARCHAR(2)")
     private String isEnrolled;
+
+    /**
+     * 转出党组织日期
+     */
+    @Column(columnDefinition = "date")
+    private Date outOrgDate;
 
     public String getPmId() {
         return pmId;
@@ -609,5 +616,13 @@ public class PartyManager extends DomainBase {
 
     public void setIsEnrolled(String isEnrolled) {
         this.isEnrolled = isEnrolled;
+    }
+
+    public Date getOutOrgDate() {
+        return outOrgDate;
+    }
+
+    public void setOutOrgDate(Date outOrgDate) {
+        this.outOrgDate = outOrgDate;
     }
 }
