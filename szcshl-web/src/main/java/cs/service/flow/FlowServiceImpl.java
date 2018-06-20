@@ -203,7 +203,7 @@ public class FlowServiceImpl implements FlowService {
                     //如果是回退到工作方案环节，还要修改预定会议室状态和重置分支工作方案状态
                     if (FlowConstant.FLOW_SIGN_XMFZR1.equals(backActivitiId) || FlowConstant.FLOW_SIGN_XMFZR2.equals(backActivitiId)
                             || FlowConstant.FLOW_SIGN_XMFZR3.equals(backActivitiId) || FlowConstant.FLOW_SIGN_XMFZR4.equals(backActivitiId)) {
-                        WorkProgram wk = workProgramRepo.findBySignIdAndBranchId(businessKey, backActivitiId.substring(backActivitiId.length() - 1, backActivitiId.length()));
+                        WorkProgram wk = workProgramRepo.findBySignIdAndBranchId(businessKey, backActivitiId.substring(backActivitiId.length() - 1, backActivitiId.length()), false);
                         if (Validate.isObject(wk) && Validate.isString(wk.getId())) {
                             roomBookingRepo.updateStateByBusinessId(wk.getId(), Constant.EnumState.NO.getValue());
                             signService.updateSignProcessState(businessKey, Constant.SignProcessState.DO_WP.getValue());

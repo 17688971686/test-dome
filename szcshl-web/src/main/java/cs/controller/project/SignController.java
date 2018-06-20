@@ -53,10 +53,7 @@ public class SignController {
     private SignBranchService signBranchService;
     @Autowired
     private OrgDeptRepo orgDeptRepo;
-    @Autowired
-    private RTXService rtxService;
-    @Autowired
-    private SMSContent smsContent;
+
     //@RequiresPermissions("sign#fingByOData#post")
     @RequiresAuthentication
     @RequestMapping(name = "获取收文数据", path = "fingByOData", method = RequestMethod.POST)
@@ -382,13 +379,9 @@ public class SignController {
     @RequestMapping(name = "发起流程", path = "startNewFlow", method = RequestMethod.POST)
     @ResponseBody
     @LogMsg(module = "发起项目签收流程",logLevel = "2")
+    @Transactional
     public ResultMsg startNewFlow(@RequestParam(required = true) String signid) {
         ResultMsg resultMsg = signService.startNewFlow(signid);
-        if(resultMsg.isFlag()){
-            String projectOrTask = "项目";
-            ProcessInstance processInstance = (ProcessInstance) resultMsg.getReObj();
-            rtxService.dealPoolRTXMsg(resultMsg.getIdCode(),resultMsg,processInstance,smsContent.get(projectOrTask,processInstance.getName()));
-        }
         return resultMsg;
     }
 

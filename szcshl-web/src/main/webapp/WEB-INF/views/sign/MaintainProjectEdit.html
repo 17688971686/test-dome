@@ -8,7 +8,6 @@
         margin: 0;
         padding: 0;
     }
-
     li {
         list-style: none;
     }
@@ -35,13 +34,17 @@
     }
 
     .item-list li {
-        min-width: 20%;
         background: #337ab7;
         margin: 10px;
         line-height: 40px;
         border-radius: 5px;
     }
-
+    .W20{
+        min-width: 20%;
+    }
+    .W15{
+        min-width: 16%;
+    }
     .item-list li a {
         color: #fff;
     }
@@ -129,29 +132,30 @@
         <div class="panel-body" style="padding:10px 15px">
             <div class="well well-sm">
                 <ul class="item-list">
-                    <li><a href="#/fillSign/{{vm.model.signid}}/true ">报审登记表</a></li>
-                    <li><a href="" ng-click="vm.addWorkProgram()">拟工作方案</a></li>
-                    <li><a href="" ng-click="vm.addDisPatch()">拟评审报告</a></li>
-                    <li><a href="" ng-click="vm.addDoFile()">项目资料存档</a></li>
+                    <li ng-class="{ W15: (vm.isHaveBaseInfo || vm.isHaveNoWP),W20: (!vm.isHaveBaseInfo && !vm.isHaveNoWP) }"><a href="#/fillSign/{{vm.model.signid}}/true ">报审登记表</a></li>
+                    <li ng-class="{ W15: (vm.isHaveBaseInfo || vm.isHaveNoWP),W20: (!vm.isHaveBaseInfo && !vm.isHaveNoWP) }"><a href="" ng-click="vm.addWorkProgram()">拟工作方案</a></li>
+                    <li ng-class="{ W15: (vm.isHaveBaseInfo || vm.isHaveNoWP),W20: (!vm.isHaveBaseInfo && !vm.isHaveNoWP) }" ng-if="vm.isHaveBaseInfo || vm.isHaveNoWP"><a href="" ng-click="vm.addBaseInfo()">项目基本信息</a></li>
+                    <li ng-class="{ W15: (vm.isHaveBaseInfo || vm.isHaveNoWP),W20: (!vm.isHaveBaseInfo && !vm.isHaveNoWP) }"><a href="" ng-click="vm.addDisPatch()">拟评审报告</a></li>
+                    <li ng-class="{ W15: (vm.isHaveBaseInfo || vm.isHaveNoWP),W20: (!vm.isHaveBaseInfo && !vm.isHaveNoWP) }"><a href="" ng-click="vm.addDoFile()">项目资料存档</a></li>
                 </ul>
                 <ul class="item-list">
-                    <li><a href="" ng-click="vm.addRegisterFile()">登记补充材料</a></li>
-                    <li><a href="" ng-click="vm.addSuppLetter()">拟补充材料函</a></li>
-                    <li><a href="" ng-click="vm.relation()">关联项目其他阶段</a></li>
-                    <li><a href="#/reviewWorkday/{{vm.model.signid}}">评审工作日维护</a></li>
+                    <li class="W20"><a href="" ng-click="vm.addRegisterFile()">登记补充材料</a></li>
+                    <li class="W20"><a href="" ng-click="vm.addSuppLetter()">拟补充材料函</a></li>
+                    <li class="W20"><a href="" ng-click="vm.relation()">关联项目其他阶段</a></li>
+                    <li class="W20"><a href="#/reviewWorkday/{{vm.model.signid}}">评审工作日维护</a></li>
                 </ul>
                 <!-- 如果没有专家评审方案，则不显示 -->
                 <ul class="item-list" ng-if="vm.model.expertReviewDto && vm.model.expertReviewDto.id">
-                    <li><a href="" ng-click="vm.findExpertReview(vm.model.signid,vm.model.signState);">专家抽取方案维护</a></li>
-                    <li><a href="#/maintainExpertConfirm/{{vm.model.signid}}">修改确定的专家</a></li>
-                    <li><a href="#/maintainExpertPayment/{{vm.model.signid}}">评审费发放表</a></li>
-                    <li><a href="#/maintainExpertScore/{{vm.model.signid}}">评分</a></li>
+                    <li class="W20"><a href="" ng-click="vm.findExpertReview(vm.model.signid,vm.model.signState);">专家抽取方案维护</a></li>
+                    <li class="W20"><a href="#/maintainExpertConfirm/{{vm.model.signid}}">修改确定的专家</a></li>
+                    <li class="W20"><a href="#/maintainExpertPayment/{{vm.model.signid}}">评审费发放表</a></li>
+                    <li class="W20"><a href="#/maintainExpertScore/{{vm.model.signid}}">评分</a></li>
                 </ul>
                 <ul class="item-list">
-                    <li><a href="" ng-click="vm.scrap(vm.model.signid)">作废项目</a></li>
-                    <li><a href="" ng-click="vm.pauseProject()">项目暂停管理</a></li>
-                    <li><a href="" ng-click="vm.clickUploadBt();">附件上传</a></li>
-                    <li><a href="#/MaintainProjectList">返回列表</a></li>
+                    <li class="W20"><a href="" ng-click="vm.scrap(vm.model.signid)">作废项目</a></li>
+                    <li class="W20"><a href="" ng-click="vm.pauseProject()">项目暂停管理</a></li>
+                    <li class="W20"><a href="" ng-click="vm.clickUploadBt();">附件上传</a></li>
+                    <li class="W20"><a href="#/MaintainProjectList">返回列表</a></li>
                 </ul>
             </div>
             <ul id="myTab" class="nav nav-tabs">

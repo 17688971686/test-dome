@@ -2,6 +2,8 @@ package cs.controller.project;
 
 import cs.ahelper.IgnoreAnnotation;
 import cs.common.ResultMsg;
+import cs.common.utils.Validate;
+import cs.domain.project.WorkProgram;
 import cs.model.project.WorkProgramDto;
 import cs.service.project.WorkProgramService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
@@ -30,7 +32,13 @@ public class WorkProgramController {
         return workProgramService.save(workProgramDto, isNeedWorkProgram);
     }
 
-
+    @RequiresAuthentication
+    //@RequiresPermissions("workprogram#saveBaseInfo#post")
+    @RequestMapping(name = "保存项目基本信息", path = "saveBaseInfo", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg saveBaseInfo(@RequestBody WorkProgramDto workProgramDto) {
+        return workProgramService.saveBaseInfo(workProgramDto);
+    }
     @RequiresAuthentication
     //@RequiresPermissions("workprogram#initWorkProgram#post")
     @RequestMapping(name = "初始化工作方案", path = "initFlowWP", method = RequestMethod.POST)
@@ -41,9 +49,17 @@ public class WorkProgramController {
 
     @RequiresAuthentication
     //@RequiresPermissions("workprogram#initWorkProgram#post")
+    @RequestMapping(name = "初始化项目基本信息", path = "initBaseInfo", method = RequestMethod.POST)
+    @ResponseBody
+    public WorkProgramDto initBaseInfo(@RequestParam(required = true) String signId) {
+        return workProgramService.initBaseInfo(signId);
+    }
+
+    @RequiresAuthentication
+    //@RequiresPermissions("workprogram#html/workMaintainList#post")
     @RequestMapping(name = "查询工作方案", path = "html/workMaintainList", method = RequestMethod.POST)
-    public @ResponseBody
-    Map<String,Object> workMaintainList(@RequestParam(required = true) String signId) {
+    @ResponseBody
+    public Map<String,Object> workMaintainList(@RequestParam(required = true) String signId) {
         return workProgramService.workMaintainList(signId);
     }
 

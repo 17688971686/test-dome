@@ -20,52 +20,47 @@
         vm.searchSign = {};                 //用于过滤
 
         vm.businessFlag = {
-            isSelfReview: false,          //是否自评
-            isSingleReview: true,         //是否单个评审
-            isMainWorkProj: false,         //是否是合并评审主项目
-            isLoadMeetRoom: false,         //是否已经加载了会议室
+            isSelfReview: false,            //是否自评
+            isSingleReview: true,           //是否单个评审
+            isMainWorkProj: false,          //是否是合并评审主项目
+            isLoadMeetRoom: false,          //是否已经加载了会议室
             isReveiwAWP: false,             //是否是合并评审次项目，如果是，则不允许修改，由主项目控制
         }
-        vm.expertList =  new Array(15); //用于打印页面的专家列表，控制行数
+        vm.expertList =  new Array(15);     //用于打印页面的专家列表，控制行数
         //页面初始化
         activate();
         function activate() {
             vm.showAll = true;
-            workprogramSvc.workMaintainList(vm);
+            workprogramSvc.workMaintainList(vm,function(data){
+                vm.work = data.eidtWP;//主办
+                vm.assistant = data.WPList;//协办
+                console.log(vm.assistant);
+                //初始化部门，得到数组
+                if (vm.work.reviewOrgName) {
+                    vm.reviewOrgName = vm.work.reviewOrgName.split(",");
+                    vm.work.orgName = vm.reviewOrgName[0];
+                }
+                vm.model.workProgramDtoList = {};
+                if (vm.assistant && vm.assistant.length > 0) {
+                    vm.model.workProgramDtoList = data.WPList;
+                }
 
-            $('#wpTab li').click(function (e) {
-                var aObj = $("a", this);
-                e.preventDefault();
-                aObj.tab('show');
-                var showDiv = aObj.attr("for-div");
-                $(".tab-pane").removeClass("active").removeClass("in");
-                $("#" + showDiv).addClass("active").addClass("in").show(500);
-            })
-            //查询会议列表
-        }
+                //如果存在多个分支的情况，则显示项目总投资
+                if (data.showTotalInvestment == '9' || data.showTotalInvestment == 9){
+                    vm.showTotalInvestment = true;
+                }else{
+                    vm.showTotalInvestment = false;
+                }
 
-        //初始化附件上传控件
-        vm.initFileUpload = function () {
-            if (!vm.work.id) {
-                //监听ID，如果有新值，则自动初始化上传控件
-                $scope.$watch("vm.work.id", function (newValue, oldValue) {
-                    if (newValue && newValue != oldValue && !vm.initUploadOptionSuccess) {
-                        vm.initFileUpload();
-                    }
-                });
-            }
+                vm.work.signId = $state.params.signid;		//收文ID(重新赋值)
+                if (vm.work.projectType) {
+                    vm.work.projectTypeDicts = $rootScope.topSelectChange(vm.work.projectType, $rootScope.DICT.PROJECTTYPE.dicts)
+                }
 
-            //创建附件对象
-            vm.sysFile = {
-                businessId: vm.work.id,
-                mainId: vm.work.signId,
-                mainType: sysfileSvc.mainTypeValue().SIGN,
-                sysfileType: sysfileSvc.mainTypeValue().WORKPROGRAM,
-                sysBusiType: sysfileSvc.mainTypeValue().WORKPROGRAM,
-            };
-            sysfileSvc.initUploadOptions({
-                inputId: "sysfileinput",
-                vm: vm
+                //如果是合并评审次项目，则不允许修改
+                if (vm.work.isSigle == "合并评审" && (vm.work.isMainProject == "0" || vm.work.isMainProject == 0)) {
+                    vm.businessFlag.isReveiwAWP = true;
+                }
             });
         }
 
@@ -348,7 +343,7 @@
         }
 
       //维护项目时的工作方案的保存
-        vm.createMaintain=function () {
+        vm.createMaintain = function () {
             common.initJqValidation($("#work_program_form"));
             var isValid = $("#work_program_form").valid();
             if (isValid) {

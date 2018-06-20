@@ -102,4 +102,18 @@ public interface WorkProgramService {
      * @return
      */
     Map<String,Object> findProMeetInfo();
+
+    /**
+     * 初始化项目基本信息
+     * @param signId
+     * @return
+     */
+    WorkProgramDto initBaseInfo(String signId);
+
+    /**
+     * 保存项目基本信息
+     * @param workProgramDto
+     * @return
+     */
+    ResultMsg saveBaseInfo(WorkProgramDto workProgramDto);
 }

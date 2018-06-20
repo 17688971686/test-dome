@@ -118,7 +118,7 @@ public class SignFlowAppImpl implements IFlowApp {
                 if(!Validate.isString(branchIndex)){
                     branchIndex =  FlowConstant.SignFlowParams.BRANCH_INDEX4.getValue();
                 }
-                WorkProgram wp = workProgramRepo.findBySignIdAndBranchId(businessKey,branchIndex);
+                WorkProgram wp = workProgramRepo.findBySignIdAndBranchId(businessKey,branchIndex, false);
                 boolean isFinishWP = false;
                 if(Validate.isObject(wp) && Validate.isString(wp.getId())){
                     isFinishWP = true;

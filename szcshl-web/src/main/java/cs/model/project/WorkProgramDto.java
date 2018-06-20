@@ -172,6 +172,11 @@ public class WorkProgramDto extends BaseDto {
     //邀请单位及领导
     private String inviteUnitLeader;
 
+    /**
+     * 项目基本信息
+     */
+    private String baseInfo;
+
     private List<RoomBookingDto> roomBookingDtos;
 
     //拟聘请专家
@@ -639,6 +644,14 @@ public class WorkProgramDto extends BaseDto {
 
     public BigDecimal getTotalInvestment(){
         return totalInvestment;
+    }
+
+    public String getBaseInfo() {
+        return baseInfo;
+    }
+
+    public void setBaseInfo(String baseInfo) {
+        this.baseInfo = baseInfo;
     }
 
     public WorkProgramDto getMainWorkProgramDto() {

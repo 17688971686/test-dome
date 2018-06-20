@@ -219,9 +219,9 @@
                 <!-- 工作方案 -->
                 <div ng-if="vm.showFlag.nodeWorkProgram">
                     <p>
-                        是否做工作方案：<input class="formAlignRight" type="checkbox" style="width:20px;"
-                                      ng-checked="vm.businessFlag.isNeedWP == 9" ng-true-value="9" ng-false-value="0"
-                                      ng-click="vm.checkNeedWP($event)">
+                        是否做工作方案：
+                        <input class="formAlignRight" type="checkbox" style="width:20px;"  ng-click="vm.checkNeedWP($event)"
+                               ng-checked="vm.businessFlag.isNeedWP == 9" ng-true-value="9" ng-false-value="0">
                     </p>
                     <p  style="color: #FF6700;font-size:12px;"
                         ng-show="vm.flow.curNode.activitiId == 'SIGN_XMFZR1' || vm.flow.curNode.activitiId == 'SIGN_XMFZR2'||vm.flow.curNode.activitiId == 'SIGN_XMFZR3' || vm.flow.curNode.activitiId == 'SIGN_XMFZR4'">
@@ -231,9 +231,9 @@
                     <button class="btn btn-xs btn-primary" ng-click="vm.addWorkProgram()" ng-disabled="vm.isCommit"
                             ng-show="vm.businessFlag.isNeedWP == 9 "><span class="glyphicon glyphicon-edit"></span>工作方案
                     </button>
-                   <!-- <button class="btn btn-xs btn-primary" ng-click="vm.meetingDoc()" ng-disabled="vm.isCommit"
-                            ng-show="vm.businessFlag.isNeedWP == 9 "><span class="glyphicon glyphicon-edit"></span>会前准备材料
-                    </button>-->
+                    <button class="btn btn-xs btn-primary" ng-click="vm.addBaseInfo()" ng-disabled="vm.isCommit"
+                            ng-show="vm.businessFlag.isNeedWP == 0 && vm.flow.curNode.activitiId == 'SIGN_XMFZR1'"><span class="glyphicon glyphicon-edit"></span>项目基本信息
+                    </button>
                     <button class="btn btn-xs btn-primary" ng-click="vm.addSuppLetter()" ng-disabled="vm.isCommit"><span
                             class="glyphicon glyphicon-edit"></span>拟补充资料函
                     </button>

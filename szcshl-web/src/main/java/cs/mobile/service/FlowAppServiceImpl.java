@@ -338,7 +338,7 @@ public class FlowAppServiceImpl implements FlowAppService {
                 //是否需要做工作方案
                 businessId = flowDto.getBusinessMap().get("IS_NEED_WP").toString();
                 if (Constant.EnumState.YES.getValue().equals(businessId)) {
-                    wk = workProgramRepo.findBySignIdAndBranchId(signid, branchIndex);
+                    wk = workProgramRepo.findBySignIdAndBranchId(signid, branchIndex, false);
                     //如果做工作方案，则要判断该分支工作方案是否完成
                     if (!Validate.isObject(wk) || !Validate.isString(wk.getId())) {
                         return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "您还没有完成工作方案，不能进行下一步操作！");
@@ -469,7 +469,7 @@ public class FlowAppServiceImpl implements FlowAppService {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先设置该部门的分管领导！");
                 }
                 //更改工作方案信息
-                wk = workProgramRepo.findBySignIdAndBranchId(signid, branchIndex);
+                wk = workProgramRepo.findBySignIdAndBranchId(signid, branchIndex, false);
                 wk.setMinisterSuggesttion(flowDto.getDealOption());
                 wk.setMinisterDate(new Date());
                 wk.setMinisterName(userDto.getDisplayName());
@@ -546,7 +546,7 @@ public class FlowAppServiceImpl implements FlowAppService {
                 variables.put(FlowConstant.SignFlowParams.USER_FZR1.getValue(), assigneeValue);
 
                 //更改工作方案审核信息
-                wk = workProgramRepo.findBySignIdAndBranchId(signid, branchIndex);
+                wk = workProgramRepo.findBySignIdAndBranchId(signid, branchIndex, false);
 
                 //如果是主办流程，要判断是否有合并评审方案，有则跟着主项目一起办理
                 if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)) {

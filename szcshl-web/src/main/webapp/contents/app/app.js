@@ -410,6 +410,7 @@
                     controller: 'expertEditCtrl',
                     controllerAs: 'vm'
                 })
+
                 .state('expertReviewEdit', {
                     url: '/expertReview/:businessId/:minBusinessId/:businessType/:reviewType/:isback/:processInstanceId/:taskId',
                     templateUrl: rootPath + '/expertReview/html/selectExpert.html',
@@ -423,6 +424,7 @@
                     controller: 'expertScoreCtrl',
                     controllerAs: 'vm'
                 })
+
                 .state('expertSelectHis', {
                     url: '/expertSelectHis',
                     templateUrl: rootPath + '/expert/html/selectHisList.html',
@@ -545,6 +547,12 @@
                     url: '/flowWPEdit/:signid/:taskid',
                     templateUrl: rootPath + '/workprogram/html/edit.html',
                     controller: 'flowWPEditCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('initProjBase', {
+                    url: '/initProjBase/:signid/:isadmin',
+                    templateUrl: rootPath + '/workprogram/html/baseEdit.html',
+                    controller: 'wpBaseCtrl',
                     controllerAs: 'vm'
                 })
                 //end#workprogram

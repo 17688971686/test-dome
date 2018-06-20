@@ -1,7 +1,6 @@
 package cs.repository.repositoryImpl.project;
 
 import cs.domain.project.WorkProgram;
-import cs.domain.sys.Org;
 import cs.model.project.ProMeetDto;
 import cs.model.project.WorkProgramDto;
 import cs.repository.IRepository;
@@ -13,7 +12,14 @@ public interface WorkProgramRepo extends IRepository<WorkProgram, String> {
 
     WorkProgram findByPrincipalUser(String signId);
 
-    WorkProgram findBySignIdAndBranchId(String signId, String branchId);
+    /**
+     * 根据项目ID和分支查询工作方案信息
+     * @param signId        项目ID
+     * @param branchId      分支
+     * @param isBaseInfo    是否项目基本信息
+     * @return
+     */
+    WorkProgram findBySignIdAndBranchId(String signId, String branchId, boolean isBaseInfo);
 
     void initExpertCost(String id);
 

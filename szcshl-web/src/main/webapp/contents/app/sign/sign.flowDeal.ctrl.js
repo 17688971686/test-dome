@@ -140,12 +140,6 @@
                         vm.showFlag.buttDisFileNum = true;
                     }
                 }
-                //完成工作方案时到发文环节，默认评审发放日期为当天
-                /*if( vm.model.processState == 3 || vm.model.processState == 4){
-                 if( vm.model.expertReviewDto){
-                 vm.model.expertReviewDto.payDate = new Date().Format("yyyy-MM-dd");
-                 }
-                 }*/
 
                 //归档
                 if (vm.model.fileRecordDto) {
@@ -157,13 +151,13 @@
                 //通过评估部门的个数来控制总投资字段  修改于（2018-01-16）
                 if (vm.model.workProgramDtoList && vm.model.workProgramDtoList.length > 0) {
                     var orgStr;
-                    if (vm.model.workProgramDtoList[0].branchId == '1' || vm.model.workProgramDtoList[0].branchId == '1') {
+                    if (vm.model.workProgramDtoList[0].branchId == '1') {
                         orgStr = vm.model.workProgramDtoList[0].reviewOrgName;
                     } else {
                         orgStr = vm.model.workProgramDtoList[0].mainWorkProgramDto.reviewOrgName;
                     }
-                    if (orgStr != '' && orgStr.split(',').length > 1) {
 
+                    if (orgStr && orgStr.split(',').length > 1) {
                         vm.showTotalInvestment = true;
                     }
 
@@ -630,6 +624,11 @@
             $state.go('flowWPEdit', {signid: vm.model.signid,taskid:vm.flow.taskId});
         }// E_跳转到 工作方案 编辑页面
 
+        // S_跳转到 项目基本信息 编辑页面
+        vm.addBaseInfo = function(){
+            $state.go('initProjBase', {signid: vm.model.signid,isadmin:false});
+        }// E_跳转到 项目基本信息 编辑页面
+
         //S_链接到拟补充资料函
         vm.addSuppLetter = function () {
             addSuppLetterQuerySvc.checkIsApprove(vm.model.signid,"1",function(data){
@@ -705,11 +704,7 @@
                                         }else{
                                             vm.noassociateSign = true;
                                         }
-
                                     });
-                                    //alert("当前页："+o.number+"，从数据库的位置1"+o.skip+"起，查"+o.size+"条数据");
-                                    //需在这里发起ajax请求查询数据，请求成功后需调用callback方法重新计算分页
-
                                 }
                             });
                             vm.ss = true;
