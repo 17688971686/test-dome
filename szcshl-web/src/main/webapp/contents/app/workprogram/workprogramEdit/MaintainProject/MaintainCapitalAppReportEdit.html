@@ -1,41 +1,44 @@
 <meta charset="UTF-8">
 <!--  协审流程编辑的工作方案  -->
 <!-- S 资金申请报告 -->
-<!--  s table-->
-<div>
+<from id="wp_cap_form">
     <table class="table table-bordered" style="min-width: 900px;min-height: 1200px;">
         <caption class="text-center">
             <p style="float:left;">
                 <span>QR-4.11-02-A0</span>
             </p>
             <p class="h3">
-                <strong>{{vm.work.titleName}}</strong>
+                <strong>{{wp.titleName}}</strong>
             </p>
-            <p style="margin-top: 50px;"">
+            <p style="margin-top: 50px;">
             <span style="float: left;padding: 0px 20px;">
                 评审方式：
-                <select ng-model="vm.work.reviewType" name="reviewType" ng-change="vm.reviewTypeChange(vm.work.id)" id="reviewType" ng-disabled="vm.businessFlag.isReveiwAWP">
-                    <option ng-repeat="x in DICT.REVIEW_TYPE.dicts" ng-selected="x.dictName == vm.work.reviewType"
+                <select ng-model="wp.reviewType" name="reviewType" ng-change="vm.reviewTypeChange(wp)" id="reviewType"
+                        ng-disabled="vm.businessFlag.isReveiwAWP">
+                    <option ng-repeat="x in DICT.REVIEW_TYPE.dicts" ng-selected="x.dictName == wp.reviewType"
                             value="{{x.dictName}}">{{x.dictName}}</option>
                 </select>
-
-                 <select ng-show="vm.work.reviewType!='自评'"  ng-model="vm.work.isSigle" name="isSigle" ng-change="vm.reviewTypeChange(vm.work.id)" ng-disabled="vm.businessFlag.isReveiwAWP">
-                         <option ng-repeat="x in DICT.REVIEW_TYPE_SUB.dicts" ng-selected="x.dictName == vm.work.isSigle"
+                 <select ng-show="wp.reviewType!='自评'" ng-model="wp.isSigle" name="isSigle"
+                         ng-change="vm.reviewTypeChange(wp)" ng-disabled="vm.businessFlag.isReveiwAWP">
+                         <option ng-repeat="x in DICT.REVIEW_TYPE_SUB.dicts" ng-selected="x.dictName == wp.isSigle"
                                  value="{{x.dictName}}">{{x.dictName}}</option>
                   </select>
-                  <select ng-show="vm.work.reviewType=='自评'"  ng-model="vm.work.isSigle" name="isSigle" ng-change="vm.reviewTypeChange(vm.work.id)" ng-disabled="vm.businessFlag.isReveiwAWP">
+                  <select ng-show="wp.reviewType=='自评'" ng-model="wp.isSigle" name="isSigle"
+                          ng-change="vm.reviewTypeChange(wp)" ng-disabled="vm.businessFlag.isReveiwAWP">
                          <option value="单个评审">单个评审</option>
                   </select>
             </span>
-            <span ng-show="vm.work.isSigle=='合并评审'" style="float: left;">
-                <input type="checkbox" name="isMainProject" ng-model="vm.work.isMainProject" ng-true-value="9" ng-false-value="0"
-                       ng-checked="vm.work.isMainProject == '9'" ng-disabled="vm.businessFlag.isReveiwAWP">主项目
-                <input type="checkbox" name="isMainProject" ng-model="vm.work.isMainProject" ng-true-value="0" ng-false-value="9"
-                       ng-checked="vm.work.isMainProject == '0'" ng-disabled="vm.businessFlag.isReveiwAWP">次项目
+                <span ng-show="wp.isSigle=='合并评审'" style="float: left;">
+                <input type="checkbox" name="isMainProject" ng-model="wp.isMainProject" ng-true-value="9"
+                       ng-false-value="0"
+                       ng-checked="wp.isMainProject == '9'" ng-disabled="vm.businessFlag.isReveiwAWP">主项目
+                <input type="checkbox" name="isMainProject" ng-model="wp.isMainProject" ng-true-value="0"
+                       ng-false-value="9"
+                       ng-checked="wp.isMainProject == '0'" ng-disabled="vm.businessFlag.isReveiwAWP">次项目
                 <button class="btn btn-xs btn-default" ng-click="vm.initMergeWP()"
-                        ng-show="(vm.work.isMainProject==9 || vm.work.isMainProject=='9') && vm.work.isSigle=='合并评审'">关联项目</button>
+                        ng-show="(wp.isMainProject==9 || wp.isMainProject=='9') && wp.isSigle=='合并评审'">关联项目</button>
             </span>
-            <span style="float: right;padding: 0px 20px;">{{vm.work.titleDate | date:'yyyy年MM月dd日'}}</span>
+                <span style="float: right;padding: 0px 20px;">{{wp.titleDate | date:'yyyy年MM月dd日'}}</span>
             </p>
         </caption>
 
@@ -43,14 +46,14 @@
         <tr>
             <td style="width:10%;" class="text-center">项目名称</td>
             <td colspan="3" ng-show="vm.showTotalInvestment">
-                {{vm.work.projectName}}
+                {{wp.projectName}}
             </td>
             <td colspan="8" ng-hide="vm.showTotalInvestment">
-                {{vm.work.projectName}}
+                {{wp.projectName}}
             </td>
             <td class="text-center" ng-show="vm.showTotalInvestment">总投资<span class="required">*</span></td>
             <td colspan="4" ng-show="vm.showTotalInvestment">
-                <input type="text" ng-model="vm.work.totalInvestment" name="totalInvestment"
+                <input type="text" ng-model="wp.totalInvestment" name="totalInvestment"
                        id="totalInvestment" data-val-number="只能为数字" data-val="true" data-val-required="必填">
                 万元
                 <span data-valmsg-for="totalInvestment" data-valmsg-replace="true" class="errors"></span>
@@ -59,66 +62,73 @@
         <tr>
             <td class="text-center">来文单位</td>
             <td colspan="3">
-                <input type="text" maxlength="200" class="form-control input-sm " value="{{vm.work.sendFileUnit}}"
-                       ng-model="vm.work.sendFileUnit" id="sendFileUnit" name="sendFileUnit" data-val="true"
+                <input type="text" maxlength="200" class="form-control input-sm " value="{{wp.sendFileUnit}}"
+                       ng-model="wp.sendFileUnit" id="sendFileUnit" name="sendFileUnit" data-val="true"
                        data-val-required="必填">
             </td>
             <td style="width:10%;" class="text-center">来文单位联系人</td>
             <td colspan="4">
-                <input type="text" maxlength="100" class="form-control input-sm " value="{{vm.work.sendFileUser}}"
-                       ng-model="vm.work.sendFileUser" id="sendFileUser" name="sendFileUser">
+                <input type="text" maxlength="100" class="form-control input-sm " value="{{wp.sendFileUser}}"
+                       ng-model="wp.sendFileUser" id="sendFileUser" name="sendFileUser">
             </td>
         </tr>
         <tr>
             <td class="text-center">建设单位</td>
             <td colspan="3">
-                {{vm.work.buildCompany}}
+                {{wp.buildCompany}}
             </td>
             <td class="text-center">编制单位</td>
             <td colspan="4">
-                {{vm.work.designCompany}}
+                {{wp.designCompany}}
             </td>
         </tr>
 
         <tr>
             <td class="text-center">主管部门</td>
             <td colspan="3">
-                <select ng-model="vm.work.mainDeptName" name="mainDeptName" style="width:220px;height:26px;">
-                    <option ng-repeat="x in DICT.MAIN_DEPT.dicts" ng-selected="vm.work.mainDeptName == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
+                <select ng-model="wp.mainDeptName" name="mainDeptName" style="width:220px;height:26px;">
+                    <option ng-repeat="x in DICT.MAIN_DEPT.dicts" ng-selected="wp.mainDeptName == x.dictName"
+                            value="{{x.dictName}}">{{x.dictName}}
+                    </option>
                 </select>
-                <input type="text" ng-model="vm.work.mainDeptName" name="mainDeptName" id="mainDeptName" style="width:200px;height:26px;margin-left:-224px;">
+                <input type="text" ng-model="wp.mainDeptName" name="mainDeptName" id="mainDeptName"
+                       style="width:200px;height:26px;margin-left:-224px;">
             </td>
             <td class="text-center">是否有环评</td>
             <td colspan="4">
-                <input type="checkbox" ng-true-value="9" ng-model="vm.work.isHaveEIA"  name="isHaveEIA" ng-checked="vm.work.isHaveEIA == 9 || vm.work.isHaveEIA == '9'">是
-                <input type="checkbox" ng-true-value="0" ng-model="vm.work.isHaveEIA"  name="isHaveEIA" ng-checked="!vm.work.isHaveEIA || vm.work.isHaveEIA == 0 || vm.work.isHaveEIA == '0'">否
+                <input type="checkbox" ng-true-value="9" ng-model="wp.isHaveEIA" name="isHaveEIA"
+                       ng-checked="wp.isHaveEIA == 9 || wp.isHaveEIA == '9'">是
+                <input type="checkbox" ng-true-value="0" ng-model="wp.isHaveEIA" name="isHaveEIA"
+                       ng-checked="!wp.isHaveEIA || wp.isHaveEIA == 0 || wp.isHaveEIA == '0'">否
             </td>
         </tr>
         <tr>
             <td style="width:10%;" class="text-center">项目类别<span class="required">*</span></td>
             <td style="width:15%;">
-                <select ng-model="vm.work.projectType"  ng-change="vm.work.projectTypeDicts = topSelectChange(vm.work.projectType,DICT.PROJECTTYPE.dicts)"
+                <select ng-model="wp.projectType"
+                        ng-change="wp.projectTypeDicts = topSelectChange(wp.projectType,DICT.PROJECTTYPE.dicts)"
                         name="projectType" id="projectType" data-val-required="必选项" data-val="true">
                     <option ng-repeat="x in DICT.PROJECTTYPE.dicts" value="{{x.dictName}}"
-                            ng-selected="vm.work.projectType == x.dictName">{{x.dictName}}
+                            ng-selected="wp.projectType == x.dictName">{{x.dictName}}
                     </option>
                 </select>
                 <span data-valmsg-for="projectType" data-valmsg-replace="true" class="errors"></span>
             </td>
             <td style="width:10%;" class="text-center">小类<span class="required">*</span></td>
             <td style="width:15%;">
-                <select ng-model="vm.work.projectSubType" name="projectSubType" data-val="true" id="projectSubType">
-                    <option ng-repeat="x in vm.work.projectTypeDicts" value="{{x.dictName}}"
-                            ng-selected="vm.work.projectSubType == x.dictName">{{x.dictName}}
+                <select ng-model="wp.projectSubType" name="projectSubType" data-val="true" id="projectSubType">
+                    <option ng-repeat="x in wp.projectTypeDicts" value="{{x.dictName}}"
+                            ng-selected="wp.projectSubType == x.dictName">{{x.dictName}}
                     </option>
                 </select>
                 <span data-valmsg-for="projectSubType" data-valmsg-replace="true" class="errors"></span>
             </td>
             <td class="text-center">行业类别<span class="required">*</span></td>
             <td colspan="4">
-                <select ng-model="vm.work.industryType" name="industryType" id="industryType" data-val="true" data-val-required="必填">
+                <select ng-model="wp.industryType" name="industryType" id="industryType" data-val="true"
+                        data-val-required="必填">
                     <option ng-repeat="x in DICT.INDUSTRYTYPE.dicts" value="{{x.dictKey}}"
-                            ng-selected="vm.work.industryType == x.dictKey">{{x.dictName}}
+                            ng-selected="wp.industryType == x.dictKey">{{x.dictName}}
                     </option>
                 </select>
                 <span data-valmsg-for="industryType" data-valmsg-replace="true" class="errors"></span>
@@ -127,38 +137,40 @@
         <tr>
             <td class="text-center">联系人<span class="required">*</span></td>
             <td colspan="3">
-                <input type="text" class="form-control input-sm " maxlength="16" ng-model="vm.work.contactPerson"
+                <input type="text" class="form-control input-sm " maxlength="16" ng-model="wp.contactPerson"
                        id="contactPerson" name="contactPerson" data-val="true" data-val-length-max="16"
                        data-val-required="必填" style="max-width: 200px;">
                 <span data-valmsg-for="contactPerson" data-valmsg-replace="true" class="errors"></span>
             </td>
             <td class="text-center">手机<span class="required">*</span></td>
             <td colspan="4">
-                <input maxlength="11"  type="text" class="form-control input-sm" ng-model="vm.work.contactPersonPhone" name="contactPersonPhone"
-                       data-val="true" data-val-digits="手机号码只能为数字" data-val-required="必填" style="max-width: 200px;" id="contactPersonPhone">
+                <input maxlength="11" type="text" class="form-control input-sm" ng-model="wp.contactPersonPhone"
+                       name="contactPersonPhone"
+                       data-val="true" data-val-digits="手机号码只能为数字" data-val-required="必填" style="max-width: 200px;"
+                       id="contactPersonPhone">
                 <span data-valmsg-for="contactPersonPhone" data-valmsg-replace="true" class="errors"></span>
             </td>
         </tr>
         <tr>
             <td class="text-center">电话<span class="required">*</span></td>
             <td colspan="3">
-                <input maxlength="50" type="text"  class="form-control input-sm " style="max-width: 200px;"
-                       ng-model="vm.work.contactPersonTel" id="contactPersonTel" name="contactPersonTel"
+                <input maxlength="50" type="text" class="form-control input-sm " style="max-width: 200px;"
+                       ng-model="wp.contactPersonTel" id="contactPersonTel" name="contactPersonTel"
                        data-val="true" data-val-required="必填">
                 <span data-valmsg-for="contactPersonTel" data-valmsg-replace="true" class="errors"></span>
             </td>
             <td class="text-center">传真</td>
             <td colspan="4">
                 <input maxlength="32" type="text" class="form-control input-sm " style="max-width: 200px;"
-                       ng-model="vm.work.contactPersonFax" name="contactPersonFax" id="contactPersonFax">
+                       ng-model="wp.contactPersonFax" name="contactPersonFax" id="contactPersonFax">
 
             </td>
         </tr>
         <tr>
             <td rowspan="4" style="width:5%;" class="text-center" style="vertical-align:middle;">项目概况</td>
             <td class="text-center">申报投资<span class="required">*</span></td>
-            <td colspan="8" >
-                <input type="text" ng-model="vm.work.appalyInvestment" name="appalyInvestment"
+            <td colspan="8">
+                <input type="text" ng-model="wp.appalyInvestment" name="appalyInvestment"
                        id="appalyInvestment" data-val-number="只能为数字" data-val="true" data-val-required="必填">
                 万元
                 <span data-valmsg-for="appalyInvestment" data-valmsg-replace="true" class="errors"></span>
@@ -167,7 +179,10 @@
         <tr>
             <td class="text-center">申报建设规模<span class="required">*</span></td>
             <td colspan="8">
-                <textarea  maxlength="750"  data-val-length-max="750" ng-change="vm.work.buildSize=countCharacter(vm.work.buildSize,750,'buildSizeCountzz')"  rows="3" ng-model="vm.work.buildSize" name="buildSize" cols="" style="width:98%;" data-val="true" data-val-required="必填"></textarea>
+                <textarea maxlength="750" data-val-length-max="750"
+                          ng-change="wp.buildSize=countCharacter(wp.buildSize,750,'buildSizeCountzz')" rows="3"
+                          ng-model="wp.buildSize" name="buildSize" cols="" style="width:98%;" data-val="true"
+                          data-val-required="必填"></textarea>
                 <span data-valmsg-for="buildSize" data-valmsg-replace="true" class="errors"></span>
                 <p id="buildSizeCountzz" style="text-align: right;"></p>
             </td>
@@ -175,7 +190,9 @@
         <tr>
             <td class="text-center">申报建设内容</td>
             <td colspan="8">
-                <textarea  maxlength="1000"  data-val-length-max="1000" ng-change="vm.work.buildContent=countCharacter(vm.work.buildContent,1000,'buildContentCountzz')" rows="3" ng-model="vm.work.buildContent" name="buildContent" cols="" style="width:98%;"></textarea>
+                <textarea maxlength="1000" data-val-length-max="1000"
+                          ng-change="wp.buildContent=countCharacter(wp.buildContent,1000,'buildContentCountzz')"
+                          rows="3" ng-model="wp.buildContent" name="buildContent" cols="" style="width:98%;"></textarea>
                 <span data-valmsg-for="buildContent" data-valmsg-replace="true" class="errors"></span>
                 <p id="buildContentCountzz" style="text-align: right;"></p>
             </td>
@@ -183,84 +200,97 @@
         <tr>
             <td class="text-center">项目背景</td>
             <td colspan="8">
-                <textarea maxlength="1000"  data-val-length-max="1000" ng-change="vm.work.projectBackGround=countCharacter(vm.work.projectBackGround,1000,'projectBackGroundCountzz')" rows="3" ng-model="vm.work.projectBackGround" name="projectBackGround" cols="" style="width:98%;"></textarea>
+                <textarea maxlength="1000" data-val-length-max="1000"
+                          ng-change="wp.projectBackGround=countCharacter(wp.projectBackGround,1000,'projectBackGroundCountzz')"
+                          rows="3" ng-model="wp.projectBackGround" name="projectBackGround" cols=""
+                          style="width:98%;"></textarea>
                 <span data-valmsg-for="projectBackGround" data-valmsg-replace="true" class="errors"></span>
                 <p id="projectBackGroundCountzz" style="text-align: right;"></p>
             </td>
         </tr>
         <tr>
-            <td rowspan="2"  class="text-center">评审部门</td>
+            <td rowspan="2" class="text-center">评审部门</td>
             <td rowspan="2" colspan="3">
-                {{vm.work.reviewOrgName}}
+                {{wp.reviewOrgName}}
             </td>
             <td class="text-center">第一负责人</td>
             <td colspan="4">
-                {{vm.work.mianChargeUserName}}
+                {{wp.mianChargeUserName}}
             </td>
         </tr>
         <tr>
             <td class="text-center">第二负责人</td>
             <td colspan="4">
-                {{vm.work.secondChargeUserName}}
+                {{wp.secondChargeUserName}}
             </td>
         </tr>
         <tr>
             <td class="text-center">是否有补充资料函</td>
             <td colspan="3">
                 <label>
-                    <input type="checkbox" style="width:50px;" ng-model="vm.work.isHaveSuppLetter" name="isHaveSuppLetter" ng-checked="vm.work.isHaveSuppLetter==9" ng-true-value="9" >是
+                    <input type="checkbox" style="width:50px;" ng-model="wp.isHaveSuppLetter" name="isHaveSuppLetter"
+                           ng-checked="wp.isHaveSuppLetter==9" ng-true-value="9">是
                 </label>
                 <label>
-                    <input type="checkbox" style="width:50px;" ng-model="vm.work.isHaveSuppLetter" name="isHaveSuppLetter" ng-checked="vm.work.isHaveSuppLetter==0"  ng-true-value="0">否
+                    <input type="checkbox" style="width:50px;" ng-model="wp.isHaveSuppLetter" name="isHaveSuppLetter"
+                           ng-checked="wp.isHaveSuppLetter==0" ng-true-value="0">否
                 </label>
             </td>
             <td class="text-center">补充资料函发文日期</td>
             <td colspan="4">
-                <input name="suppLetterDate" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.work.suppLetterDate" value="" type="text"/>
+                <input name="suppLetterDate" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="wp.suppLetterDate"
+                       value="" type="text"/>
             </td>
         </tr>
         <tr>
-            <td class="text-center" >调研时间</td>
+            <td class="text-center">调研时间</td>
             <td colspan="8">
-                <input name="studyAllDay" kendo-date-picker k-format="'yyyy-MM-dd'" style="width:140px;" ng-model="vm.work.studyAllDay"  id="studyAllDay"value="" type="text"/>
-                <select name="studyQuantum" ng-model ="vm.work.studyQuantum" style="width: 70px;height:30px">
-                    <option value="上午" ng-selected="(vm.work.studyQuantum == '上午' || !vm.work.studyQuantum)">上午</option>   <!--默认选中上午-->
-                    <option value="下午" ng-selected="vm.work.studyQuantum == '下午'">下午</option>
-                    <option value="全天" ng-selected="vm.work.studyQuantum == '全天'">全天</option>
+                <input name="studyAllDay" kendo-date-picker k-format="'yyyy-MM-dd'" style="width:140px;"
+                       ng-model="wp.studyAllDay" id="studyAllDay" value="" type="text"/>
+                <select name="studyQuantum" ng-model="wp.studyQuantum" style="width: 70px;height:30px">
+                    <option value="上午" ng-selected="(wp.studyQuantum == '上午' || !wp.studyQuantum)">上午</option>
+                    <!--默认选中上午-->
+                    <option value="下午" ng-selected="wp.studyQuantum == '下午'">下午</option>
+                    <option value="全天" ng-selected="wp.studyQuantum == '全天'">全天</option>
                 </select>
-                <input ng-show="vm.work.studyQuantum!='全天'" kendo-time-picker k-formatt="'HH:mm'" min="vm.startDateTime" style="width:100px;" max="vm.endDateTime"
+                <input ng-show="wp.studyQuantum!='全天'" kendo-time-picker k-formatt="'HH:mm'" min="vm.startDateTime"
+                       style="width:100px;" max="vm.endDateTime"
                        data-bind="value:start,invisible:isAllDay" name="studyBeginTime"
-                       id="studyBeginTime" ng-change="vm.compare(vm.work.studyBeginTimeStr,vm.work.studyEndTimeStr)" ng-model="vm.work.studyBeginTimeStr" />
-                <span ng-show="vm.work.studyQuantum!='全天'" > 至 </span>
-                <input ng-show="vm.work.studyQuantum!='全天'" kendo-time-picker k-formatt="'HH:mm'" min="vm.startDateTime" style="width:100px;" max="vm.endDateTime"
+                       id="studyBeginTime" ng-change="vm.compare(wp.studyBeginTimeStr,wp.studyEndTimeStr)"
+                       ng-model="wp.studyBeginTimeStr"/>
+                <span ng-show="wp.studyQuantum!='全天'"> 至 </span>
+                <input ng-show="wp.studyQuantum!='全天'" kendo-time-picker k-formatt="'HH:mm'" min="vm.startDateTime"
+                       style="width:100px;" max="vm.endDateTime"
                        data-bind="value:end,invisible:isAllDay" name="studyEndTime" id="studyEndTime"
-                       ng-model="vm.work.studyEndTimeStr" ng-change="vm.compare(vm.work.studyBeginTimeStr,vm.work.studyEndTimeStr)" data-datecompare-msg="结束时间必须大于开始时间！"/>
+                       ng-model="wp.studyEndTimeStr" ng-change="vm.compare(wp.studyBeginTimeStr,wp.studyEndTimeStr)"
+                       data-datecompare-msg="结束时间必须大于开始时间！"/>
                 <span ng-show="vm.isTime" style="color: red">结束时间必须大于开始时间！</span>
             </td>
         </tr>
-        <tr ng-if="!vm.businessFlag.isReveiwAWP" ng-hide="vm.work.reviewType == '自评' ">
+        <tr ng-if="!vm.businessFlag.isReveiwAWP" ng-hide="wp.reviewType == '自评' ">
             <td class="text-center">专家费用（元）</td>
             <td colspan="8">
-                <input type="text"  ng-model="vm.work.expertCost" ng-value="0" name="expertCost" data-val-number="只能为数字">
+                <input type="text" ng-model="wp.expertCost" ng-value="0" name="expertCost" data-val-number="只能为数字">
                 <span data-valmsg-for="expertCost" data-valmsg-replace="true" class="errors"></span>
             </td>
         </tr>
-        <tr ng-if="!vm.businessFlag.isReveiwAWP" ng-hide="vm.work.reviewType == '自评' ">
-            <td class="text-center" >
-                <span ng-if="vm.work.reviewType == '专家评审会'">评审会时间</span>
-                <span ng-if="vm.work.reviewType == '专家函评'">函评日期</span></td>
+        <tr ng-if="!vm.businessFlag.isReveiwAWP" ng-hide="wp.reviewType == '自评' ">
+            <td class="text-center">
+                <span ng-if="wp.reviewType == '专家评审会'">评审会时间</span>
+                <span ng-if="wp.reviewType == '专家函评'">函评日期</span></td>
             <td colspan="8">
-        <span ng-if="vm.work.reviewType == '专家评审会'">
-            <button class="btn btn-xs btn-primary" ng-click="vm.addTimeStage(vm.work.id);" ng-hide="vm.work.isMainProject == 0 && vm.work.isSigle=='合并评审'">
+        <span ng-if="wp.reviewType == '专家评审会'">
+            <button class="btn btn-xs btn-primary" ng-click="vm.addTimeStage(wp.id);"
+                    ng-hide="wp.isMainProject == 0 && wp.isSigle=='合并评审'">
                 <span class="glyphicon glyphicon-pencil"></span>编辑
             </button>
         </span>
-                <span ng-if="vm.work.reviewType == '专家函评'  ">
-              <input name="letterDate" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.work.letterDate" type="text"/>
+                <span ng-if="wp.reviewType == '专家函评'  ">
+              <input name="letterDate" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="wp.letterDate" type="text"/>
             </span>
             </td>
         </tr>
-        <tr ng-show="vm.work.roomBookingDtos && vm.work.roomBookingDtos.length > 0" >
+        <tr ng-show="wp.roomBookingDtos && wp.roomBookingDtos.length > 0">
             <td class="text-center" style="width:15%;">评审会日期</td>
             <td class="text-center" style="width:20%;">会议名称</td>
             <td class="text-center" style="width:10%;">会议地点</td>
@@ -269,7 +299,8 @@
             <td class="text-center" style="width:6%;">主持人</td>
             <td class="text-center" colspan="3">会议内容</td>
         </tr>
-        <tr ng-repeat="r in vm.work.roomBookingDtos track by $index" ng-show="vm.work.roomBookingDtos && vm.work.roomBookingDtos.length > 0">
+        <tr ng-repeat="r in wp.roomBookingDtos track by $index"
+            ng-show="wp.roomBookingDtos && wp.roomBookingDtos.length > 0">
             <td class="text-center">{{r.rbDate}}</td>
             <td class="text-center">{{r.rbName}}</td>
             <td class="text-center">{{r.addressName}}</td>
@@ -278,17 +309,18 @@
             <td class="text-center">{{r.host}}</td>
             <td class="text-center" colspan="3">{{r.content}}</td>
         </tr>
-        <tr ng-if="!vm.businessFlag.isReveiwAWP" ng-hide="vm.work.reviewType == '自评' ">
+        <tr ng-if="!vm.businessFlag.isReveiwAWP" ng-hide="wp.reviewType == '自评' ">
             <td class="text-center">拟聘请专家</td>
             <td colspan="8">
-                <button class="btn btn-xs btn-primary" ng-click="vm.selectExpert(vm.work.id,vm.work.reviewType,vm.work.roomBookingDtos);"
-                        ng-hide="vm.work.reviewType == '自评' || (vm.work.isMainProject == 0 && vm.work.isSigle=='合并评审')"
-                        ng-show="vm.work.reviewType == '专家函评' || vm.work.reviewType == '专家评审会' || (vm.work.isMainProject == 9 && vm.work.isSigle=='合并评审')">
+                <button class="btn btn-xs btn-primary"
+                        ng-click="vm.selectExpert(wp.id,wp.reviewType,wp.roomBookingDtos);"
+                        ng-hide="wp.reviewType == '自评' || (wp.isMainProject == 0 && wp.isSigle=='合并评审')"
+                        ng-show="wp.reviewType == '专家函评' || wp.reviewType == '专家评审会' || (wp.isMainProject == 9 && wp.isSigle=='合并评审')">
                     <span class="glyphicon glyphicon-pencil"></span>编辑
                 </button>
             </td>
         </tr>
-        <tr ng-show="vm.work.expertSelectedDtoList && vm.work.expertSelectedDtoList.length > 0">
+        <tr ng-show="wp.expertSelectedDtoList && wp.expertSelectedDtoList.length > 0">
             <td class="text-center" style="width:10%;">拟聘请专家</td>
             <td class="text-center" style="width:15%;">工作单位</td>
             <td class="text-center" style="width:10%;">职务</td>
@@ -299,7 +331,8 @@
             <td class="text-center" style="width:10%;">专家类别</td>
             <td class="text-center" style="width:15%;">备注</td>
         </tr>
-        <tr ng-repeat="x in vm.work.expertSelectedDtoList track by $index" ng-show="vm.work.expertSelectedDtoList && vm.work.expertSelectedDtoList.length > 0">
+        <tr ng-repeat="x in wp.expertSelectedDtoList track by $index"
+            ng-show="wp.expertSelectedDtoList && wp.expertSelectedDtoList.length > 0">
             <td class="text-center">{{x.expertDto.name}}</td>
             <td class="text-center">{{x.expertDto.comPany}}</td>
             <td class="text-center">{{x.expertDto.job}}</td>
@@ -313,7 +346,9 @@
         <tr>
             <td class="text-center">拟邀请单位及领导</td>
             <td colspan="8">
-                <textarea maxlength="500"  data-val-length-max="500" ng-change="vm.work.inviteUnitLeader=countCharacter(vm.work.inviteUnitLeader,500,'inviteUnitLeaderCountzz')" rows="3" ng-model="vm.work.inviteUnitLeader" name="inviteUnitLeader" style="width:100%">{{vm.work.inviteUnitLeader}}</textarea>
+                <textarea maxlength="500" data-val-length-max="500"
+                          ng-change="wp.inviteUnitLeader=countCharacter(wp.inviteUnitLeader,500,'inviteUnitLeaderCountzz')"
+                          rows="3" ng-model="wp.inviteUnitLeader" name="inviteUnitLeader" style="width:100%">{{wp.inviteUnitLeader}}</textarea>
                 <span data-valmsg-for="inviteUnitLeader" data-valmsg-replace="true" class="errors"></span>
                 <p id="inviteUnitLeaderCountzz" style="text-align: right;"></p>
             </td>
@@ -321,323 +356,25 @@
         <tr>
             <td class="text-center">拟评审重点问题</td>
             <td colspan="8">
-                <textarea maxlength="1000"  data-val-length-max="1000" ng-change="vm.work.mainPoint=countCharacter(vm.work.mainPoint,1000,'mainPointCountzz')" rows="3" ng-model="vm.work.mainPoint" name="mainPoint" style="width:100%">{{vm.work.mainPoint}}</textarea>
+                <textarea maxlength="1000" data-val-length-max="1000"
+                          ng-change="wp.mainPoint=countCharacter(wp.mainPoint,1000,'mainPointCountzz')" rows="3"
+                          ng-model="wp.mainPoint" name="mainPoint" style="width:100%">{{wp.mainPoint}}</textarea>
                 <span data-valmsg-for="mainPoint" data-valmsg-replace="true" class="errors"></span>
                 <p id="mainPointCountzz" style="text-align: right;"></p>
             </td>
         </tr>
+        <tr>
+            <td class="text-center" colspan="9">
+                <button class="btn btn-sm btn-success" ng-click="vm.createMaintain(wp,'wp_cap_form')"
+                        ng-disabled="vm.iscommit">
+                    <span class="glyphicon glyphicon-ok"></span>保存
+                </button>
+                <button class="btn btn-sm btn-primary" ng-click="vm.goBackMain()">
+                    <span class="glyphicon glyphicon-chevron-left"></span>返回
+                </button>
+            </td>
+        </tr>
         </tbody>
     </table>
-</div>
-<!-- start 协审项目（资金申请报告） -->
-<div ng-repeat="w in vm.assistant | toArray:false | orderBy:'branchId'"  style="margin-top:10px;"
-     ng-if="(w.workreviveStage=='资金申请报告'  ) && (w.branchId != '1' && w.branchId != 1)">
-    <a  data-toggle="collapse" data-target="#aswpz_{{$index}}" ng-show="(vm.assistant.length > 1) || vm.showAll">
-        [协办工作方案]
-    </a>
-    <div id="aswpz_{{$index}}" class="collapse in" >
-        <table class="table table-bordered" style="min-width: 900px;min-height: 1200px;">
-            <caption class="text-center">
-                <p class="h3">
-                    <strong>{{vm.work.titleName}}</strong>
-                </p>
-                <p>
-            <span style="float: left">
-                评审方式：
-                <select ng-model="w.reviewType" name="reviewType" ng-change="vm.reviewTypeChange(w.id)"
-                        id="reviewType" ng-disabled="vm.businessFlag.isReveiwAWP">
-                    <option ng-repeat="x in DICT.REVIEW_TYPE.dicts" ng-selected="x.dictName == w.reviewType"
-                            value="{{x.dictName}}">{{x.dictName}}</option>
-                </select>
-            </span>
-                </p>
-            </caption>
-
-            <tbody>
-            <tr>
-                <td style="width:10%;" class="text-center">项目名称</td>
-                <td colspan="3" ng-show="vm.showTotalInvestment">
-                    {{vm.work.projectName}}
-                </td>
-                <td colspan="8" ng-hide="vm.showTotalInvestment">
-                    {{vm.work.projectName}}
-                </td>
-                <td class="text-center" style="width:10%;" ng-show="vm.showTotalInvestment">总投资</td>
-                <td colspan="4" ng-show="vm.showTotalInvestment">
-                    {{vm.work.totalInvestment}} 万元
-                </td>
-            </tr>
-            <tr>
-                <td class="text-center">来文单位</td>
-                <td colspan="3">
-                    {{vm.work.sendFileUnit}}
-                </td>
-                <td style="width:10%;" class="text-center">来文单位联系人</td>
-                <td colspan="4">
-                    {{vm.work.sendFileUser}}
-                </td>
-            </tr>
-            <tr>
-                <td class="text-center">建设单位</td>
-                <td colspan="3">
-                    {{vm.work.buildCompany}}
-                </td>
-                <td class="text-center">编制单位</td>
-                <td colspan="4">
-                    {{vm.work.designCompany}}
-                </td>
-            </tr>
-
-            <tr>
-                <td class="text-center">主管部门</td>
-                <td colspan="3">
-                    {{vm.work.mainDeptName}}
-                </td>
-                <td class="text-center">是否有环评</td>
-                <td colspan="4">
-                    <input type="checkbox" ng-value="9" ng-disabled="true" name="isHaveEIA"
-                           ng-checked="vm.work.isHaveEIA == 9 || vm.work.isHaveEIA == '9'">是
-                    <input type="checkbox" ng-value="0" ng-disabled="true" name="isHaveEIA"
-                           ng-checked="!vm.work.isHaveEIA || vm.work.isHaveEIA == 0 || vm.work.isHaveEIA == '0'">否
-                </td>
-            </tr>
-            <tr>
-                <td style="width:10%;" class="text-center">项目类别</td>
-                <td style="width:15%;">
-                    {{vm.work.projectType}}
-                </td>
-                <td style="width:10%;" class="text-center">小类</td>
-                <td style="width:15%;">
-                    {{vm.work.projectSubType}}
-                </td>
-                <td class="text-center">行业类别</td>
-                <td colspan="4">
-                    {{vm.work.industryType}}
-                </td>
-            </tr>
-            <tr>
-                <td class="text-center">联系人</td>
-                <td colspan="3">
-                    {{vm.work.contactPerson}}
-                </td>
-                <td class="text-center">手机</td>
-                <td colspan="4">
-                    {{vm.work.contactPersonPhone}}
-                </td>
-            </tr>
-            <tr>
-                <td class="text-center">电话</td>
-                <td colspan="3">
-                    {{vm.work.contactPersonTel}}
-                </td>
-                <td class="text-center">传真</td>
-                <td colspan="4">
-                    {{vm.work.contactPersonFax}}
-                </td>
-            </tr>
-            <tr>
-                <td rowspan="4" style="width:5%;ertical-align:middle;" class="text-center">项目概况</td>
-                <td class="text-center">申报投资<span class="required">*</span></td>
-                <td colspan="8">
-                    <input type="text" ng-model="w.appalyInvestment" name="appalyInvestment"
-                           id="appalyInvestment" data-val-number="只能为数字" data-val="true" data-val-required="必填">
-                    万元
-                    <span data-valmsg-for="appalyInvestment" data-valmsg-replace="true" class="errors"></span>
-                </td>
-            </tr>
-            <tr>
-                <td class="text-center">申报建设规模<span class="required">*</span></td>
-                <td colspan="8">
-            <textarea maxlength="750" data-val-length-max="750"
-                      ng-change="w.buildSize=countCharacter(w.buildSize,750,'buildSizeCountz')" rows="3"
-                      ng-model="w.buildSize" name="buildSize" cols="" style="width:98%;" data-val="true"
-                      data-val-required="必填"></textarea>
-                    <span data-valmsg-for="buildSize" data-valmsg-replace="true" class="errors"></span>
-                    <p id="buildSizeCountz" style="text-align: right;"></p>
-                </td>
-            </tr>
-            <tr>
-                <td class="text-center">申报建设内容</td>
-                <td colspan="8">
-            <textarea maxlength="1000" data-val-length-max="1000"
-                      ng-change="w.buildContent=countCharacter(w.buildContent,1000,'buildContentCountz')"
-                      rows="3" ng-model="w.buildContent" name="buildContent" cols=""
-                      style="width:98%;"></textarea>
-                    <span data-valmsg-for="buildContent" data-valmsg-replace="true" class="errors"></span>
-                    <p id="buildContentCountz" style="text-align: right;"></p>
-                </td>
-            </tr>
-            <tr>
-                <td class="text-center">项目背景</td>
-                <td colspan="7">
-            <textarea maxlength="1000" data-val-length-max="1000"
-                      ng-change="w.projectBackGround=countCharacter(w.projectBackGround,1000,'projectBackGroundCountz')"
-                      rows="3" ng-model="w.projectBackGround" name="projectBackGround" cols=""
-                      style="width:98%;"></textarea>
-                    <span data-valmsg-for="projectBackGround" data-valmsg-replace="true" class="errors"></span>
-                    <p id="projectBackGroundCountz" style="text-align: right;"></p>
-                </td>
-            </tr>
-            <tr>
-                <td rowspan="2" class="text-center" style="vertical-align: middle;">评审部门</td>
-                <td rowspan="2" colspan="3" style="vertical-align: middle;">
-                    {{vm.work.reviewOrgName}}
-                </td>
-                <td class="text-center">第一负责人</td>
-                <td colspan="4">
-                    {{vm.work.mianChargeUserName}}
-                </td>
-            </tr>
-            <tr>
-                <td class="text-center">第二负责人</td>
-                <td colspan="4">
-                    {{vm.work.secondChargeUserName}}
-                </td>
-            </tr>
-            <tr>
-                <td class="text-center">是否有补充资料函</td>
-                <td colspan="3">
-                    <label>
-                        <input type="checkbox" style="width:50px;" ng-model="vm.work.isHaveSuppLetter" name="isHaveSuppLetter"
-                               ng-checked="vm.work.isHaveSuppLetter==9" ng-true-value="9">是
-                    </label>
-                    <label>
-                        <input type="checkbox" style="width:50px;" ng-model="vm.work.isHaveSuppLetter" name="isHaveSuppLetter"
-                               ng-checked="vm.work.isHaveSuppLetter==0" ng-true-value="0">否
-                    </label>
-                </td>
-                <td class="text-center">补充资料函发文日期</td>
-                <td colspan="4">
-                    <input name="suppLetterDate" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="w.suppLetterDate"
-                           value="" type="text"/>
-                </td>
-            </tr>
-            <tr>
-                <td class="text-center">调研时间</td>
-                <td colspan="8">
-                    <input name="studyAllDay" kendo-date-picker k-format="'yyyy-MM-dd'" style="width:140px;" ng-model="w.studyAllDay"  id="studyAllDay"value="" type="text"/>
-                    <select name="studyQuantum" ng-model ="w.studyQuantum" style="width: 70px;height:30px">
-                        <option value="上午" ng-selected="(w.studyQuantum == '上午' || !w.studyQuantum)">上午</option>   <!--默认选中上午-->
-                        <option value="下午" ng-selected="w.studyQuantum == '下午'">下午</option>
-                        <option value="全天" ng-selected="w.studyQuantum == '全天'">全天</option>
-                    </select>
-                    <input ng-show="w.studyQuantum!='全天'" kendo-time-picker k-formatt="'HH:mm'" min="vm.startDateTime" style="width:100px;" max="vm.endDateTime"
-                           data-bind="value:start,invisible:isAllDay" name="studyBeginTime"
-                           id="studyBeginTime" ng-change="vm.compare(w.studyBeginTimeStr,w.studyEndTimeStr)" ng-model="w.studyBeginTimeStr" />
-                    <span ng-show="w.studyQuantum!='全天'" > 至 </span>
-                    <input ng-show="w.studyQuantum!='全天'" kendo-time-picker k-formatt="'HH:mm'" min="vm.startDateTime" style="width:100px;" max="vm.endDateTime"
-                           data-bind="value:end,invisible:isAllDay" name="studyEndTime" id="studyEndTime"
-                           ng-model="w.studyEndTimeStr" ng-change="vm.compare(w.studyBeginTimeStr,w.studyEndTimeStr)" data-datecompare-msg="结束时间必须大于开始时间！"/>
-                    <span ng-show="vm.isTime" style="color: red">结束时间必须大于开始时间！</span>
-                </td>
-            </tr>
-            <tr ng-if="!vm.businessFlag.isReveiwAWP" ng-hide="w.reviewType == '自评' ">
-                <td class="text-center">专家费用（元）</td>
-                <td colspan="8">
-                    <input type="text" ng-model="w.expertCost" ng-value="0" name="expertCost" data-val-number="只能为数字">
-                    <span data-valmsg-for="expertCost" data-valmsg-replace="true" class="errors"></span>
-                </td>
-            </tr>
-            <tr ng-if="!vm.businessFlag.isReveiwAWP" ng-hide="w.reviewType == '自评' ">
-                <td class="text-center">
-                    <span ng-if="w.reviewType == '专家评审会'">评审会时间</span>
-                    <span ng-if="w.reviewType == '专家函评'">函评日期</span></td>
-                <td colspan="8">
-        <span ng-if="w.reviewType == '专家评审会'">
-            <button class="btn btn-xs btn-primary" ng-click="vm.addTimeStage(w.id);"
-                    ng-hide="w.isMainProject == 0 && w.isSigle=='合并评审'">
-                <span class="glyphicon glyphicon-pencil"></span>编辑
-            </button>
-        </span>
-                    <span ng-if="w.reviewType == '专家函评' ">
-              <input name="letterDate" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="w.letterDate"
-                     type="text"/>
-            </span>
-                </td>
-            </tr>
-            <tr ng-show="w.roomBookingDtos && w.roomBookingDtos.length > 0">
-                <td class="text-center" style="width:15%;">评审会日期</td>
-                <td class="text-center" style="width:20%;">会议名称</td>
-                <td class="text-center" style="width:10%;">会议地点</td>
-                <td class="text-center" style="width:8%;">开始时间</td>
-                <td class="text-center" style="width:8%;">结束时间</td>
-                <td class="text-center" style="width:6%;">主持人</td>
-                <td class="text-center" colspan="2">会议内容</td>
-            </tr>
-            <tr ng-repeat="r in w.roomBookingDtos track by $index"
-                ng-show="w.roomBookingDtos && w.roomBookingDtos.length > 0">
-                <td class="text-center">{{r.rbDate}}</td>
-                <td class="text-center">{{r.rbName}}</td>
-                <td class="text-center">{{r.addressName}}</td>
-                <td class="text-center">{{r.beginTimeStr}}</td>
-                <td class="text-center">{{r.endTimeStr}}</td>
-                <td class="text-center">{{r.host}}</td>
-                <td class="text-center" colspan="2">{{r.content}}</td>
-            </tr>
-            <tr ng-if="!vm.businessFlag.isReveiwAWP" ng-hide="w.reviewType == '自评' ">
-                <td class="text-center">拟聘请专家</td>
-                <td colspan="8">
-                    <button class="btn btn-xs btn-primary" ng-click="vm.selectExpert(w.id,w.reviewType,w.roomBookingDtos);"
-                            ng-hide="w.reviewType == '自评' || (w.isMainProject == 0 && w.isSigle=='合并评审')"
-                            ng-show="w.reviewType == '专家函评' || w.reviewType == '专家评审会' || (w.isMainProject == 9 && w.isSigle=='合并评审')">
-                        <span class="glyphicon glyphicon-pencil"></span>编辑
-                    </button>
-                </td>
-            </tr>
-            <tr ng-repeat="x in w.expertSelectedDtoList track by $index" ng-show="w.expertSelectedDtoList && w.expertSelectedDtoList.length > 0">
-                <td class="text-center">{{x.expertDto.name}}</td>
-                <td class="text-center">{{x.expertDto.comPany}}</td>
-                <td class="text-center">{{x.expertDto.job}}</td>
-                <td class="text-center">{{x.expertDto.post}}</td>
-                <td align="text-center">{{x.maJorBig}}</td>
-                <td align="text-center">{{x.maJorSmall}}</td>
-                <td class="text-center">{{x.expertDto.userPhone}}</td>
-                <td align="text-center">{{x.expeRttype}}</td>
-                <td class="text-center">{{x.expertDto.remark}}</td>
-            </tr>
-            <tr ng-repeat="x in w.expertDtoList track by $index"
-                ng-show="w.expertDtoList && w.expertDtoList.length > 0">
-                <td class="text-center">{{x.name}}</td>
-                <td class="text-center">{{x.comPany}}</td>
-                <td class="text-center">{{x.job}}</td>
-                <td class="text-center">{{x.post}}</td>
-                <td align="center">
-                    <span ng-repeat="y in x.expertTypeDtoList | unique:'maJorBig'">{{y.maJorBig}}<br></span>
-                </td>
-                <td align="center">
-                    <span ng-repeat="y in x.expertTypeDtoList | unique:'maJorSmall'">{{y.maJorSmall}}<br></span>
-                </td>
-
-                <td class="text-center">{{x.userPhone}}</td>
-                <td align="center">
-                    <span ng-repeat="y in x.expertTypeDtoList | unique:'expertType'">{{y.expertType}}<br></span>
-                </td>
-                <td class="text-center">{{x.remark}}</td>
-            </tr>
-            <tr>
-                <td class="text-center">拟邀请单位及领导</td>
-                <td colspan="8">
-            <textarea maxlength="500" data-val-length-max="500"
-                      ng-change="w.inviteUnitLeader=countCharacter(w.inviteUnitLeader,500,'inviteUnitLeaderCountz')"
-                      rows="3" ng-model="w.inviteUnitLeader" name="inviteUnitLeader" style="width:100%">{{w.inviteUnitLeader}}</textarea>
-                    <span data-valmsg-for="inviteUnitLeader" data-valmsg-replace="true" class="errors"></span>
-                    <p id="inviteUnitLeaderCountz" style="text-align: right;"></p>
-                </td>
-            </tr>
-            <tr>
-                <td class="text-center">拟评审重点问题</td>
-                <td colspan="8">
-            <textarea maxlength="1000" data-val-length-max="1000"
-                      ng-change="w.mainPoint=countCharacter(w.mainPoint,1000,'mainPointCountz')" rows="3"
-                      ng-model="w.mainPoint" name="mainPoint" style="width:100%">{{w.mainPoint}}</textarea>
-                    <span data-valmsg-for="mainPoint" data-valmsg-replace="true" class="errors"></span>
-                    <p id="mainPointCountz" style="text-align: right;"></p>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-
-</div>
-
-<!-- E 资金申请报告 -->
+    <!-- E 资金申请报告 -->
+</from>

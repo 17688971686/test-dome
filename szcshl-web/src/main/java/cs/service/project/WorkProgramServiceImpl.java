@@ -301,7 +301,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 
 
     /**
-     * 根据收文ID查询
+     * 工作方案维护查询
      */
     @Override
     public Map<String, Object> workMaintainList(String signId) {
@@ -311,7 +311,6 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         criteria.createAlias(WorkProgram_.sign.getName(), WorkProgram_.sign.getName());
         criteria.add(Restrictions.eq(WorkProgram_.sign.getName() + "." + Sign_.signid.getName(), signId));
         List<WorkProgram> wpList = criteria.list();
-        WorkProgramDto workProgramDto = new WorkProgramDto();
 
         //2、是否有当前用户负责的工作方案
         WorkProgram mainW = new WorkProgram();
@@ -340,16 +339,15 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                         BeanCopierUtils.copyProperties(mainW, mainWPDto);
                         wpDto.setMainWorkProgramDto(mainWPDto);
                     } else {
-                        BeanCopierUtils.copyProperties(wp, workProgramDto);
-                        workProgramRepo.initWPMeetingExp(workProgramDto, wp);
+                        BeanCopierUtils.copyProperties(wp, wpDto);
                     }
                     workProgramRepo.initWPMeetingExp(wpDto, wp);
+                    wpDto.setSignId(signId);
                     wpDtoList.add(wpDto);
                 }
                 resultMap.put("WPList", wpDtoList);
             }
         }
-        resultMap.put("eidtWP", workProgramDto);
         return resultMap;
     }
 
