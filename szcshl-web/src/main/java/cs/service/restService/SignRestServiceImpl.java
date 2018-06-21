@@ -297,8 +297,6 @@ public class SignRestServiceImpl implements SignRestService {
              * 送审日期和送审结束时间不用传了。
              * 送审日期我默认为调用你们接口成功的时间，结束时间默认为你调用我们接口成功的时间
              */
-            //dataMap.put("sssj", (new Date()).getTime());// 送审日期
-            //dataMap.put("psjssj", (new Date()).getTime());// 评审结束时间
             boolean isHaveWP = (mainWP == null) ? false : true;
             if (isHaveWP) {
                 dataMap.put("psfs", IFResultCode.PSFS.getCodeByValue(mainWP.getReviewType()));// 评审方式

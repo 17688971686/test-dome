@@ -2972,17 +2972,13 @@ public class SignServiceImpl implements SignService {
                     BeanCopierUtils.copyProperties(sign, signDto);
                     //只获取主工作方案
                     if (Validate.isList(sign.getWorkProgramList())) {
-                        int totalW = sign.getWorkProgramList().size();
                         List<WorkProgramDto> workProgramDtoList = new ArrayList<>();
-                        for (int j = 0; j < totalW; j++) {
-                            WorkProgram workProgram = sign.getWorkProgramList().get(j);
-                            if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(workProgram.getBranchId())) {
-                                WorkProgramDto workProgramDto = new WorkProgramDto();
-                                BeanCopierUtils.copyProperties(workProgram, workProgramDto);
-                                workProgramDtoList.add(workProgramDto);
-                                signDto.setWorkProgramDtoList(workProgramDtoList);
-                                break;
-                            }
+                        WorkProgram mainWP = sign.getWorkProgramList().stream().filter(item->FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(item.getBranchId())).findFirst().get();
+                        if(Validate.isString(mainWP)){
+                            WorkProgramDto workProgramDto = new WorkProgramDto();
+                            BeanCopierUtils.copyProperties(mainWP, workProgramDto);
+                            workProgramDtoList.add(workProgramDto);
+                            signDto.setWorkProgramDtoList(workProgramDtoList);
                         }
                     }
                     if (sign.getDispatchDoc() != null && Validate.isString(sign.getDispatchDoc().getId())) {
@@ -2992,7 +2988,6 @@ public class SignServiceImpl implements SignService {
                     }
                     listSignDto.add(signDto);
                 }
-
             }
         }
         return listSignDto;
@@ -3107,5 +3102,22 @@ public class SignServiceImpl implements SignService {
     @Override
     public SignDto findSignByFileCode(SignDto signDto) {
         return signRepo.findSignByFileCode(signDto);
+    }
+
+    @Override
+    public ResultMsg updateSendFGWState(String signId, String state) {
+        ResultMsg resultMsg = null;
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append(" update "+Sign.class.getSimpleName()+" set "+Sign_.isSendFGW.getName()+" =:state ");
+        hqlBuilder.setParam("state",Validate.isString(state)?state:EnumState.STOP.getValue());
+        hqlBuilder.append(" where "+Sign_.signid.getName()+" = :signid ");
+        hqlBuilder.setParam("signid",signId);
+        int updateCount = signRepo.executeHql(hqlBuilder);
+        if(updateCount > 0){
+            resultMsg = new ResultMsg(true,MsgCode.OK.getValue(),"操作成功！");
+        }else{
+            resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"操作失败！");
+        }
+        return resultMsg;
     }
 }

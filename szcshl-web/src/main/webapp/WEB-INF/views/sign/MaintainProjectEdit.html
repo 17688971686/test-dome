@@ -30,7 +30,7 @@
         display: flex;
         justify-content: center;
         flex-wrap: wrap;
-        border-bottom: 1px solid #bfbfbf;
+
     }
 
     .item-list li {
@@ -58,12 +58,8 @@
     }
 
     .panel-heading {
-        padding: 2px;
         text-align: center;
-    }
-
-    .options {
-        padding: 0;
+        padding:2px;
     }
 
     .options > label {
@@ -125,8 +121,8 @@
 </style>
 
 <div class="container" style="width: 100%">
-    <div class="panel panel-primary" style="margin-bottom:0;">
-        <div class="panel-heading" style="text-align:center;">
+    <div class="panel panel-primary">
+        <div class="toolbar" style="text-align:center;">
             <h3>【{{vm.model.projectname}}】项目维护</h3>
         </div>
         <div class="panel-body" style="padding:10px 15px">
@@ -168,14 +164,24 @@
                     <div class="well well-sm changeInfo" style="overflow:hidden;">
                         <div class="col-md-6">
                             <div class="panel panel-info">
-                                <div class="panel-heading">评审部门
-                                    <button class="btn btn-sm btn-primary" ng-click="vm.addReviewDept()">部门管理</button>
-                                    <span style="margin-left: 100px;">是否能自选多个专家
+                                <div class="panel-heading">其他操作</div>
+                                <div class="panel-body">
+                                    <button class="btn btn-sm btn-primary" ng-click="vm.addReviewDept()">评审部门维护</button>
+                                    <button class="btn btn-sm btn-primary" ng-click="vm.addSecondChargeUser()" style="margin-left: 20px;">项目负责人维护</button>
+                                    <span style="margin-left: 20px;">自选多个专家
                                     <input type="checkbox" ng-click="vm.addMoreExp()"  name="isMoreExpert" id="isMoreExpert"
                                            ng-true-value="9" ng-false-value="0" ng-model="vm.model.isMoreExpert"
                                            ng-checked="vm.model.isMoreExpert == '9' || vm.model.isMoreExpert == 9" />
                                     </span>
+                                    <span style="margin-left: 20px;">已发送委里
+                                    <input type="checkbox" ng-click="vm.updateFGWState()"  name="isSendFGW" id="isSendFGW"
+                                           ng-true-value="9" ng-false-value="0" ng-model="vm.model.isSendFGW"
+                                           ng-checked="vm.model.isSendFGW == '9' || vm.model.isSendFGW == 9" />
+                                    </span>
                                 </div>
+                            </div>
+                            <div class="panel panel-info">
+                                <div class="panel-heading">评审部门</div>
                                 <div class="panel-body">
                                     <div class="input-group">
                                         <span class="input-group-addon" id="basic-addon1">评审部门：</span>
@@ -211,12 +217,11 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="panel panel-info" style="height: 345px;">
+                            <div class="panel panel-info" style="height: 430px;">
                                 <div class="panel-heading">
                                     项目负责人
-                                    <button class="btn btn-sm btn-primary" ng-click="vm.addSecondChargeUser()">负责人管理</button>
                                 </div>
-                                <div class="panel-body" style="padding:0;height:300px;overflow: auto">
+                                <div class="panel-body" style="padding:0;height:380px;overflow: auto">
                                     <table class="table table-hover">
                                         <thead>
                                         <tr>

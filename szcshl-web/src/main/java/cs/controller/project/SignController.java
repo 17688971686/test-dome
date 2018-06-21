@@ -428,6 +428,12 @@ public class SignController {
         return signService.saveMoreExpert(signId , isMoreExpert);
     }
 
+    @RequiresAuthentication
+    @RequestMapping(name = "更新回传发改委状态" , path = "updateSendFGWState" , method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg updateSendFGWState(@RequestParam String signId , @RequestParam String state){
+        return signService.updateSendFGWState(signId , state);
+    }
 
     @RequiresAuthentication
     //@RequiresPermissions("sign#html/flowDeal#get")

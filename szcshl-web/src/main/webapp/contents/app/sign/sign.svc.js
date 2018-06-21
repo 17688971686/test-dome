@@ -38,12 +38,13 @@
             findExpertReview: findExpertReview,         //查询项目在办的专家抽取方案信息
             getSignInfo: getSignInfo ,                  //通过收文编号获取委里信息
             findSignUnitScore : findSignUnitScore,      //获取评分单位信息
-            findAVGDayById : findAVGDayById ,                  //获取平均评审天数和工作日
-            addAOrg : addAOrg ,                                //  添加评审部门（项目维护）
-            deleteAOrg : deleteAOrg ,                           //移除评审部门（项目维护）
-            addSecondUser : addSecondUser ,                     //保存添加负责人（项目维护）
-            deleteSecondUser : deleteSecondUser ,               //删除添加的负责人（项目维护）
-            saveMoreExpert : saveMoreExpert                     //保存是否能多个自选专家
+            findAVGDayById : findAVGDayById ,           //获取平均评审天数和工作日
+            addAOrg : addAOrg ,                         //添加评审部门（项目维护）
+            deleteAOrg : deleteAOrg ,                   //移除评审部门（项目维护）
+            addSecondUser : addSecondUser ,             //保存添加负责人（项目维护）
+            deleteSecondUser : deleteSecondUser ,       //删除添加的负责人（项目维护）
+            saveMoreExpert : saveMoreExpert,            //保存是否能多个自选专家
+            updateFGWState : updateFGWState,            //更改回传委里状态
         };
         return service;
 
@@ -1338,5 +1339,26 @@
             });
         }
         //end saveMoreExpert
+
+        function updateFGWState(signId , state , callBack){
+            var httpOptions = {
+                method : "post",
+                url : rootPath + "/sign/updateSendFGWState",
+                params : {
+                    signId : signId ,
+                    state : state
+                }
+            }
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof  callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+        }
     }
 })();

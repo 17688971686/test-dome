@@ -301,4 +301,12 @@ public interface SignService {
      * @return
      */
     SignDto findSignByFileCode(SignDto signDto);
+
+    /**
+     * 更新回传发改委状态
+     * @param signId
+     * @param state
+     * @return
+     */
+    ResultMsg updateSendFGWState(String signId, String state);
 }

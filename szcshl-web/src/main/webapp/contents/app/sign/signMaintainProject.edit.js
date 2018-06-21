@@ -57,7 +57,6 @@
             // 初始化业务信息
             signSvc.initFlowPageData(vm.model.signid, function (data) {
                 vm.model = data;
-                console.log(vm.model);
                 if(vm.model.dispatchDocDto){
                     vm.dispatchDoc = vm.model.dispatchDocDto;
                     vm.isHaveDis = true;
@@ -363,20 +362,6 @@
          * 保存添加的评审部门
          */
         vm.saveReviewDept = function(orgId , orgName){
-
-            // var isCheck = $("input[selectType='assist']:checked");
-
-            // if(isCheck.length == 0){
-            //     bsWin.alert("请选择添加的部门！");
-            // }else{
-            //     var ids = [];
-            //     var names = [];
-            //     for(var i = 0 ; i < isCheck.length ; i++){
-            //         ids.push(isCheck[i].value);
-            //         names.push(isCheck[i].name)
-            //     }
-            //     var idStr = ids.join(',');
-            //     var nameStr = names.join(',');
             signSvc.addAOrg(  orgId , vm.model.signid  , function(data){
                 if(data.flag || data.reCode == 'ok'){
                     bsWin.alert(data.reMsg);
@@ -485,7 +470,6 @@
          * 是否能自选多个专家
          */
         vm.addMoreExp = function(){
-
             var selected = $("#isMoreExpert").is(':checked');
             if(selected){
                 bsWin.confirm("确认能自选多个专家？" , function(){
@@ -504,7 +488,32 @@
                     });
                 });
             }
+        }
 
+        //是否已经发送委里
+        vm.updateFGWState = function(){
+            var checkedValue = $("#isSendFGW").is(':checked');
+            if(checkedValue){
+                bsWin.confirm("该项目已经回传委里？" , function(){
+                    signSvc.updateFGWState(vm.model.signid , "9" , function(data){
+                        if(data.flag || data.reCode == 'ok'){
+                            bsWin.alert("操作成功");
+                        }else{
+                            bsWin.alert(data.reMsg);
+                        }
+                    });
+                });
+            }else{
+                bsWin.confirm("确定更改？" , function(){
+                    signSvc.updateFGWState(vm.model.signid , "0" , function(data){
+                        if(data.flag || data.reCode == 'ok'){
+                            bsWin.alert("操作成功");
+                        }else{
+                            bsWin.alert(data.reMsg);
+                        }
+                    });
+                });
+            }
         }
     }
 })();

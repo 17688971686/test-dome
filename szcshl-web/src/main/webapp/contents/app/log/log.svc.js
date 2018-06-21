@@ -114,11 +114,13 @@
                         }
                     },
                 },{
-                    field: "message",
+                    field: "",
                     title: "日志内容",
                     filterable: false,
                     width: 400,
-                    attributes: {style: "white-space:nowrap;text-overflow:ellipsis;"},
+                    template:function(item){
+                        return "<textarea rows='4' style='width:100%;'>"+item.message+"</textarea>";
+                    },
                 }
             ];
             // End:column

@@ -84,7 +84,7 @@ public class SendProjectFGWExecute implements Job {
                     List<String> nodeKeyList =  new ArrayList<String>(){{add(FLOW_SIGN_FGLD_FB);add(FLOW_SIGN_BMFB1);add(FLOW_SIGN_BMFB2);add(FLOW_SIGN_BMFB3);add(FLOW_SIGN_BMFB4);}};
                     ResultMsg resultMsg = null;
 
-                    for (int i = 0, l = unSendList.size(); i < l; i++) {
+                    for (int i = 0; i < totalCount; i++) {
                         SignDto signDto = unSendList.get(i);
                         //如果发文时间跟现在时间对比，在8分钟内，则不急回传委里，避免没填写发文编号
                         if (DateUtils.minBetween(signDto.getDispatchdate(),new Date()) < 8) {
@@ -92,11 +92,8 @@ public class SendProjectFGWExecute implements Job {
                         }
                         WorkProgramDto mainWP = null;
                         if (Validate.isList(signDto.getWorkProgramDtoList())) {
-                            for (WorkProgramDto wpd : signDto.getWorkProgramDtoList()) {
-                                if (SignFlowParams.BRANCH_INDEX1.getValue().equals(wpd.getBranchId())) {
-                                    mainWP = wpd;
-                                }
-                            }
+                            mainWP = (signDto.getWorkProgramDtoList().stream()).filter(item ->SignFlowParams.BRANCH_INDEX1.getValue().equals(item.getBranchId())).findFirst().get();
+
                         }
                         //获取分办部门意见
                         commentDtoList = flowService.findCommentByProcInstId(signDto.getProcessInstanceId(),nodeKeyList );
