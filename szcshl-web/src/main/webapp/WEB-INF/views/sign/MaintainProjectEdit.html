@@ -300,20 +300,13 @@
 
     <!--添加评审部门弹框-->
     <div style="display: none" id="addReviewDeptWindow">
-
         <table class="table table-bordered">
-
             <tr>
-               <#-- <td width="10%" align="center"></td>-->
                 <td width="60%" align="center">部门名称</td>
                 <td width="20%" align="center">操作</td>
             </tr>
             <tr ng-repeat="x in vm.orgs">
-               <#-- <td align="center"><input type="checkbox" selectType="assist" name="{{x.name}}" tit="{{x.name}}"
-                                          id="{{x.id}}"  value="{{x.id}}" />
-                </td>-->
                 <td align="center">{{x.name}}</td>
-
                 <td align="center">
                     <button class="btn btn-sm btn-success" ng-click="vm.saveReviewDept(x.id , x.name)">添加</button>
                     <button class="btn btn-sm btn-danger" ng-click="vm.deleteReviewDept(x.id , x.name)">移除</button>

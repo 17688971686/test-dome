@@ -239,10 +239,8 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
                 signDto.setSigndate(DateUtils.converToDate(objects[2].toString(), "yyyy-MM-dd"));
             }
 
-
             //由于目前 送来日期为空，所以需要判断是否为空
             if (objects[3] != null) {
-
                 signDto.setReceivedate(DateUtils.converToDate(objects[3].toString(), "yyyy-MM-dd"));
             }
 //            signDto.setGoneDays(signDto.getTotalReviewdays() < signDto.getSurplusdays() ? 0 : signDto.getTotalReviewdays() - signDto.getSurplusdays()); //已逝工作日
