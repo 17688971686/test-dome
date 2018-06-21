@@ -21,6 +21,7 @@
         vm.queryParams = {};  //返回时。列表数据不变
         vm.work = {};
         vm.isDisplay = true;   //附件显示删除按钮
+        vm.reworkWorkPlan = {};   //发文:重写工作方案
         vm.expertList = new Array(15); //用于打印页面的专家列表，控制行数
         //按钮显示控制，全部归为这个对象控制
         vm.showFlag = {
@@ -53,7 +54,8 @@
             expertpayment: false,        // 专家费用弹窗内容显示
             expertEdit: false,            // 专家评分费用编辑权限
             isMainPrinUser: false,        // 是否是第一负责人
-            showFilecodeBt : false          //显示归档按钮
+            showFilecodeBt : false ,         //显示归档按钮
+            showReworkWorkPlanBt : false          //显示重写工作方案按钮
         };
 
         //业务控制对象
@@ -72,6 +74,7 @@
             passDis: false,              // 发文是否通过
             curBranchId: "",              // 当前流程分支
             editEPReviewId: "",           // 可以编辑的评审方案ID
+            isReworkWorkPlan: false,              // 是否重写工作方案对象
         }
 
         vm.model.signid = $state.params.signid;
@@ -82,9 +85,10 @@
         vm.signId = vm.model.signid;
         vm.expertList = new Array(10); //用于打印页面的专家列表，控制行数
         vm.curDate = "";  //当前日期
-
+        debugger;
         active();
         function active() {
+            debugger;
             $('#myTab li').click(function (e) {
                 var aObj = $("a", this);
                 e.preventDefault();
@@ -152,7 +156,7 @@
                     vm.showFlag.tabFilerecord = true;
                     vm.fileRecord = vm.model.fileRecordDto;
                 }
-
+                debugger;
                 //判断是否有多个分支，用于控制是否显示总投资字段 和 分开获取关联的项目信息（主要用于项目概算阶段）（旧版本）
                 //通过评估部门的个数来控制总投资字段  修改于（2018-01-16）
                 if (vm.model.workProgramDtoList && vm.model.workProgramDtoList.length > 0) {
@@ -299,6 +303,7 @@
         /***************  S_评审意见管理  ***************/
         // begin 管理个人意见
         vm.ideaEdit = function (options) {
+            debugger;
             if (!angular.isObject(options)) {
                 options = {};
             }
@@ -307,6 +312,7 @@
 
         //选择个人常用意见
         vm.selectedIdea = function () {
+            debugger;
             vm.flow.dealOption = vm.chooseIdea;
         }
         /***************  E_评审意见管理  ***************/
@@ -314,6 +320,7 @@
         /***************  S_专家评分，评审费发放  ***************/
         // 编辑专家评分
         vm.editSelectExpert = function (id) {
+            debugger;
             vm.scoreExpert = {};
             $.each(vm.model.expertReviewDto.expertSelectedDtoList, function (i, scopeEP) {
                 if (scopeEP.id == id) {
@@ -657,6 +664,16 @@
 
         //S_工作方案  --链接到  登记表补充资料
         vm.addRegisterFile = function () {
+            debugger;
+            $("#associateWindow").kendoWindow({
+                width: "80%",
+                height: "800px",
+                title: "项目关联",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "close"],
+            }).data("kendoWindow").center().open();
             $state.go('registerFile', {businessId: vm.model.signid});
         }// E_工作方案  --链接到  登记表补充资料
 
@@ -735,6 +752,80 @@
             } else {
                 $state.go('dispatchEdit', {signid: vm.model.signid});
             }
+        }// E_跳转到 发文 编辑页面
+
+        // S_跳转到 发文 重写工作方案
+        vm.reworkWorkPlanViem = function () {
+            debugger;
+            //选中要关联的项目
+            // $("#associateWindow").kendoWindow({
+            //     width: "80%",
+            //     height: "800px",
+            //     title: "项目关联",
+            //     visible: false,
+            //     modal: true,
+            //     closable: true,
+            //     actions: ["Pin", "Minimize", "Maximize", "close"],
+            // }).data("kendoWindow").center().open();
+
+            //开始展现需要回退的工作方案
+            // //如果是未关联，并且是可研或者概算阶段，提醒是否要关联
+            // if ((!vm.model.isAssociate || vm.model.isAssociate == 0) &&
+            //     (signcommon.getReviewStage().STAGE_STUDY == vm.model.reviewstage
+            //     || signcommon.getReviewStage().STAGE_BUDGET == vm.model.reviewstage)) {
+            //     bsWin.confirm({
+            //         title: "询问提示",
+            //         message: "该项目还没进行项目关联，是否需要进行关联设置？",
+            //         onOk: function () {
+            //             if (!vm.ss) {
+            //                 vm.page = lgx.page.init({
+            //                     id: "demo5", get: function (o) {
+            //                         //根据项目名称，查询要关联阶段的项目
+            //                         if (!vm.price) {
+            //                             vm.price = {
+            //                                 signid: vm.model.signid,
+            //                                 mUserName: vm.model.mUserName,
+            //                             };
+            //                         }
+            //                         vm.price.reviewstage = vm.model.reviewstage; //设置评审阶段
+            //                         var skip;
+            //                         //oracle的分页不一样。
+            //                         if (o.skip != 0) {
+            //                             skip = o.skip + 1
+            //                         } else {
+            //                             skip = o.skip
+            //                         }
+            //                         vm.price.skip = skip;//页码
+            //                         vm.price.size = o.size + o.skip;//页数
+            //                         signSvc.getAssociateSignGrid(vm, function (data) {
+            //                             vm.associateSignList = [];
+            //                             if (data) {
+            //                                 vm.noassociateSign = false;
+            //                                 vm.associateSignList = data.value;
+            //                                 vm.page.callback(data.count);//请求回调时传入总记录数
+            //                             }else{
+            //                                 vm.noassociateSign = true;
+            //                             }
+            //
+            //                         });
+            //                         //alert("当前页："+o.number+"，从数据库的位置1"+o.skip+"起，查"+o.size+"条数据");
+            //                         //需在这里发起ajax请求查询数据，请求成功后需调用callback方法重新计算分页
+            //
+            //                     }
+            //                 });
+            //                 vm.ss = true;
+            //             } else {
+            //                 vm.page.selPage(1);
+            //             }
+            //
+            //         },
+            //         onCancel: function () {
+            //             $state.go('dispatchEdit', {signid: vm.model.signid});
+            //         }
+            //     });
+            // } else {
+            //     $state.go('dispatchEdit', {signid: vm.model.signid});
+            // }
         }// E_跳转到 发文 编辑页面
 
         //关联项目条件查询

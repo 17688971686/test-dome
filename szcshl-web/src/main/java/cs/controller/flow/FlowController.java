@@ -480,6 +480,10 @@ public class FlowController {
                     projectOrTask="项目";
                     resultMsg = signService.dealFlow(processInstance, task,flowDto);
                     break;
+                case FlowConstant.ROLL_BACK_SEND_FLOW:
+                    projectOrTask="项目";
+                    resultMsg = signService.dealFlow(processInstance, task,flowDto);
+                    break;
                 case FlowConstant.TOPIC_FLOW:
                     projectOrTask="任务";
                     resultMsg = topicInfoService.dealFlow(processInstance, task,flowDto);
@@ -528,6 +532,12 @@ public class FlowController {
         }
         //腾讯通消息处理
         rtxService.dealPoolRTXMsg(flowDto.getTaskId(),resultMsg,processInstance,smsContent.get(projectOrTask,processInstance.getName()));
+        return resultMsg;
+    }
+    @RequiresAuthentication
+    @RequestMapping(name = "获取重写工作方案分支", path = "getBranchInfo", method = RequestMethod.GET)
+    public @ResponseBody ResultMsg getBranchInfo(@RequestBody FlowDto flowDto) {
+        ResultMsg resultMsg = flowService.getBranchInfo(flowDto);
         return resultMsg;
     }
 
@@ -692,7 +702,8 @@ public class FlowController {
                 resultPage = "reviewProjectAppraise/flowEnd";
                 break;
             case FlowConstant.FLOW_SUPP_LETTER:
-                resultPage = "addSuppLetter/letterFlowEnd";
+                resultPage = "" +
+                        "";
                 break;
             case FlowConstant.MONTHLY_BULLETIN_FLOW:
                 resultPage = "monthlyNewsletter/flow/flowDeal";
@@ -713,5 +724,22 @@ public class FlowController {
     @ResponseBody
     public List<Map<String, Object>> getProc(){
         return  flowService.getProc();
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "重写工作方案", path = "rollbackSend/{processKey}", method = RequestMethod.GET)
+    public String rollbackSend(@PathVariable("processKey") String processKey) {
+        String resultPage = "";
+        switch (processKey){
+            case FlowConstant.ROLL_BACK_SEND_FLOW:
+                resultPage = "rollbackSend/rollbackSend";
+                break;
+            case FlowConstant.QUERY_BRANCH_INFO:
+                resultPage = "rollbackSend/getBranchInfo";
+                break;
+            default:
+                ;
+        }
+        return resultPage;
     }
 }

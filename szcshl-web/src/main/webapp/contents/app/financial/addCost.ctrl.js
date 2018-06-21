@@ -36,6 +36,8 @@
          * 费用录入弹出框
          */
         vm.addCostWindow = function(object){
+
+
             vm.signAssistCostCounList = {};
             vm.expertSelectedDtoList = {};
             vm.signAssistCost = {};
@@ -51,6 +53,7 @@
                 vm.projectName =  object.projectName;
             }
             financialManagerSvc.initFinancialProject(vm.businessId ,  function(data){
+                debugger;
                 vm.financial = {};
                 vm.financial.businessId = vm.businessId;
                 vm.financial.projectName = vm.projectName;
@@ -76,6 +79,7 @@
 
                 vm.financials = data.financiallist;
                 vm.countCost();
+                debugger;
                 $("#addCostWindow").kendoWindow({
                     width: "70%",
                     height: "600px;",

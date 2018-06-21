@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.activiti.org/testm1529482958558" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" expressionLanguage="http://www.w3.org/1999/XPath" id="m1529482958558" name="" targetNamespace="http://www.activiti.org/testm1529482958558" typeLanguage="http://www.w3.org/2001/XMLSchema">
+  <process id="myProcess_1" isClosed="false" isExecutable="true" processType="None">
+    <startEvent id="START" name="开始"/>
+    <userTask activiti:assignee="${user_zrr}" activiti:candidateUsers="${user_many}" activiti:exclusive="true" id="ROLL_BACK_SEND_FZR" name="负责人填报"/>
+    <userTask activiti:assignee="${user_bz}" activiti:exclusive="true" id="ROLL_BACK_SEND_BZ_SP" name="部长审批"/>
+    <endEvent id="END" name="结束"/>
+    <userTask activiti:assignee="${user_zr}" activiti:exclusive="true" id="ROLL_BACK_SEND_FGZR_SP" name="分管主任审批"/>
+    <sequenceFlow id="_7" sourceRef="START" targetRef="ROLL_BACK_SEND_FZR"/>
+    <sequenceFlow id="_8" sourceRef="ROLL_BACK_SEND_FZR" targetRef="ROLL_BACK_SEND_BZ_SP"/>
+    <sequenceFlow id="_9" sourceRef="ROLL_BACK_SEND_BZ_SP" targetRef="ROLL_BACK_SEND_FGZR_SP"/>
+    <sequenceFlow id="_10" sourceRef="ROLL_BACK_SEND_FGZR_SP" targetRef="END"/>
+  </process>
+  <bpmndi:BPMNDiagram documentation="background=#FFFFFF;count=1;horizontalcount=1;orientation=0;width=842.4;height=1195.2;imageableWidth=832.4;imageableHeight=1185.2;imageableX=5.0;imageableY=5.0" id="Diagram-_1" name="New Diagram">
+    <bpmndi:BPMNPlane bpmnElement="myProcess_1">
+      <bpmndi:BPMNShape bpmnElement="START" id="Shape-START">
+        <dc:Bounds height="32.0" width="32.0" x="120.0" y="235.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ROLL_BACK_SEND_FZR" id="Shape-ROLL_BACK_SEND_FZR">
+        <dc:Bounds height="55.0" width="85.0" x="300.0" y="225.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="55.0" width="85.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ROLL_BACK_SEND_BZ_SP" id="Shape-ROLL_BACK_SEND_BZ_SP">
+        <dc:Bounds height="55.0" width="85.0" x="515.0" y="225.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="55.0" width="85.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="END" id="Shape-END">
+        <dc:Bounds height="32.0" width="32.0" x="855.0" y="240.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ROLL_BACK_SEND_FGZR_SP" id="Shape-ROLL_BACK_SEND_FGZR_SP">
+        <dc:Bounds height="55.0" width="85.0" x="680.0" y="230.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="55.0" width="85.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_7" id="BPMNEdge__7" sourceElement="START" targetElement="ROLL_BACK_SEND_FZR">
+        <di:waypoint x="151.9687194226713" y="250.0"/>
+        <di:waypoint x="225.0" y="250.0"/>
+        <di:waypoint x="300.0" y="250.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_8" id="BPMNEdge__8" sourceElement="ROLL_BACK_SEND_FZR" targetElement="ROLL_BACK_SEND_BZ_SP">
+        <di:waypoint x="385.0" y="252.5"/>
+        <di:waypoint x="515.0" y="252.5"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_9" id="BPMNEdge__9" sourceElement="ROLL_BACK_SEND_BZ_SP" targetElement="ROLL_BACK_SEND_FGZR_SP">
+        <di:waypoint x="600.0" y="250.0"/>
+        <di:waypoint x="650.0" y="250.0"/>
+        <di:waypoint x="680.0" y="250.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_10" id="BPMNEdge__10" sourceElement="ROLL_BACK_SEND_FGZR_SP" targetElement="END">
+        <di:waypoint x="765.0" y="255.0"/>
+        <di:waypoint x="805.0" y="255.0"/>
+        <di:waypoint x="855.0312805773287" y="255.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
