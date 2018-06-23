@@ -355,21 +355,21 @@ public class SignRestServiceImpl implements SignRestService {
             FGWResponse fGWResponse = JSON.toJavaObject(JSON.parseObject(hst.getContent()), FGWResponse.class);
             //成功
             if (Constant.EnumState.PROCESS.getValue().equals(fGWResponse.getRestate())) {
-                if (rtxService.rtxSMSEnabled()){
+                /*if (rtxService.rtxSMSEnabled()){
                     boolean boo = SMSUtils.getWeek(workdayService,new Date(),sysConfigService);
                     if(boo){
                              SMSUtils.seekSMSThread(smsContent,getListUser("发文成功"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文成功",smsContent.seekSMSSuccee(sign.getProjectname(),sign.getFilecode(),"发文成功(回传委里)"),  smsLogService);
                     }
-                }
+                }*/
                 return new ResultMsg(true, IFResultCode.IFMsgCode.SZEC_SEND_OK.getCode(), "项目【" + sign.getProjectname() + "(" + sign.getFilecode() + ")】回传数据给发改委成功！");
             } else {
                 //发送失败短信
-                if (rtxService.rtxSMSEnabled()){
+                /*if (rtxService.rtxSMSEnabled()){
                     boolean boo = SMSUtils.getWeek(workdayService,new Date(),sysConfigService);
                     if(boo){
                          SMSUtils.seekSMSThread(smsContent,getListUser("发文失败"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文失败",smsContent.seekSMSSuccee(sign.getProjectname(),sign.getFilecode(),"发文失败(回传委里)"),  smsLogService);
                     }
-                }
+                }*/
                 return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SEND_ERROR.getCode(),
                         "项目【" + sign.getProjectname() + "(" + sign.getFilecode() + ")】回传数据给发改委失败！" + fGWResponse.getRedes() + "<br>");
             }
