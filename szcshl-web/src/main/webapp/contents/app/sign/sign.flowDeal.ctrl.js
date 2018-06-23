@@ -626,7 +626,7 @@
 
         // S_跳转到 项目基本信息 编辑页面
         vm.addBaseInfo = function(){
-            $state.go('initProjBase', {signid: vm.model.signid,isadmin:false});
+            $state.go('initProjBase', {signid: vm.model.signid,isadmin:null});
         }// E_跳转到 项目基本信息 编辑页面
 
         //S_链接到拟补充资料函
