@@ -40,18 +40,15 @@
 			<go-back></go-back>
 		</div>
 		<div>
-			<table id="expertCostTable" border="1px" style="width: 90%;">
+			<table class="table table-bordered">
 				<caption class="text-center h3">
 					<strong>深圳市政府投资项目评审中心<br>
 						{{vm.model.year}}年{{vm.model.month}}月缴税统计汇总详细表
 					</strong>
 				</caption>
-				<tr id="expertCostHead" >
+				<tr id="expertCostHead" class="active">
 					<td  style="width:10%"  class="text-center">姓名</td>
 					<td  style="width:20%"  class="text-center">专家代码</td>
-
-					<#--<td  style="width:15%"  class="text-center">评审会时间</td>
-					<td  style="width:15%"  class="text-center">函评时间</td>-->
 					<td  style="width:15%"  class="text-center">评审费</td>
 					<td  style="width:15%"  class="text-center">应缴税</td>
                     <td  style="width:10%"  class="text-center">合计</td>
