@@ -537,6 +537,14 @@ public class FlowController {
     @RequiresAuthentication
     @RequestMapping(name = "获取重写工作方案分支", path = "getBranchInfo", method = RequestMethod.GET)
     public @ResponseBody ResultMsg getBranchInfo(@RequestBody FlowDto flowDto) {
+        /*
+项目signID:
+ 41f13169-cf7c-4273-b7a0-841921d467ae
+        *
+        * */
+
+
+
         ResultMsg resultMsg = flowService.getBranchInfo(flowDto);
         return resultMsg;
     }
