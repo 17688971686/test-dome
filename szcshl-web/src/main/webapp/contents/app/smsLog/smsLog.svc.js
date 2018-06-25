@@ -17,12 +17,14 @@
         // begin#deleteUser
         //获取下拉框 数据
         function select(vm) {
+            debugger;
             var httpOptions = {
                 method: 'get',
                 url: '/szcshl-web/smslog/querySMSLogType',
                 params: {type: "all"}
             }
             var httpSuccess = function success(response) {
+                debugger;
                 vm.select = response.data;
             }
             common.http({
@@ -103,15 +105,6 @@
                     filterable: false,
                     format: "{0:yyyy/MM/dd HH:mm:ss}"
                 }
-<<<<<<< HEAD
-                // , {
-                //     field: "customMessage",
-                //     title: "自定义短信内容",
-                //     filterable: false,
-                //     width: 120,
-                //     attributes: {style: "white-space:nowrap;text-overflow:ellipsis;"},
-                // }
-=======
                 , {
                     field: "resultCode",
                     title: "短信Code",
@@ -119,7 +112,6 @@
                     width: 120,
                     attributes: {style: "white-space:nowrap;text-overflow:ellipsis;"},
                 }
->>>>>>> feature/gs20180619-2
                 , {
                     field: "",
                     title: "结果",
