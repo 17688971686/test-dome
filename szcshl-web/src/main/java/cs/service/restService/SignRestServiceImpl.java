@@ -110,7 +110,7 @@ public class SignRestServiceImpl implements SignRestService {
             signDto1 = signService.findSignByFileCode(signDto);
             String pifuMoney = "";//signDto;
             //发文跟收文是1V1
-            DispatchDocDto dispatchDocDto= dispatchDocService.initDispatchBySignId(signDto1.getSignid());
+            DispatchDocDto dispatchDocDto = dispatchDocService.initDispatchBySignId(signDto1.getSignid());
             dispatchDocDto.setApproveValue(signDto.getDeclaration());
             dispatchDocDto.setSignId(signDto1.getSignid());
             dispatchDocService.updateDispatchByDocDto(dispatchDocDto,Constant.SysFileType.SIGN.getValue());

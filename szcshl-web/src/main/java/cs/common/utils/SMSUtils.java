@@ -81,7 +81,6 @@ public class SMSUtils {
                     synchronized(projectName){
                         boolean  boo = seekSMS(smsContent,receiverList, projectName, filecode, type, infoType,seekContent, smsLogService);
                         logger.info("seekSMS: 返回调用结果. " + boo);
-                        Thread.sleep(2000);
                         return
                                 new HashMap<String, String>() {
                                     {
@@ -105,6 +104,11 @@ public class SMSUtils {
      * 将限制短信次数放到短信发送之前
      */
     public  static boolean seekSMS(SMSContent smsContent,List<User> receiverList,String projectName,String filecode,String type,String infoType,String seekContent,SMSLogService smsLogService) {
+        //如果是待办不短信次数
+        if("待办".equals(infoType)){
+            return sureSendSMS(smsContent,receiverList,projectName,filecode,type,infoType,seekContent,smsLogService);
+        }
+
         //获取打开限制次数
         if("打开限制次数".equals(smsContent.orNotsendSMS(receiverList,projectName,filecode,type,infoType,"打开限制次数"))){
             //限制次数开始

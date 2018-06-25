@@ -156,12 +156,11 @@ public class SysRestController {
      * 通过收文编号存储批复金额下载pdf文件
      * @return
      */
-    @RequestMapping(name = "项目批复金额与pdf文件下载", value = "/downRemoteFile", method = RequestMethod.POST)
+    @RequestMapping(name = "项目批复金额与pdf文件下载", value = "/downRemoteFile",method = RequestMethod.POST)
     @LogMsg(module = "系统接口【通过收文编号存储批复金额下载pdf文件】",logLevel = "1")
     public synchronized ResultMsg downRemoteFile(@RequestParam String signDtoJson) {
         ResultMsg resultMsg = null;
         SignDto signDto = JSON.parseObject(signDtoJson, SignDto.class);
-        //项目signDto.getFilecode() 委里收文编号
         String msg = "项目收文编码【("+signDto.getFilecode()+")json="+signDtoJson+"】";
         try{
             //json转出对象
@@ -306,47 +305,46 @@ public class SysRestController {
 
     @RequestMapping(name = "项目签收信息", value = "/testJson")
     public void testJson() throws IOException {
-        List<User> receiverList = new ArrayList<>();
-        User user = new User();
-        user.setDisplayName("郭冬冬");
-        ;
-        user.setUserMPhone("13640950289");
-        receiverList.add(user);
-
-        User user3 = new User();
-        user3.setDisplayName("开发者");
-        ;
-        user3.setUserMPhone("18038078167");
-        receiverList.add(user3);
-        if(smsContent.querySmsNumber(receiverList,"测试项目","4324D","t","34","开始查询")== null){
-            System.out.println("能查询");
-
-        }
-
-
-        //批复金额pdf下载案例
-//        String REST_SERVICE_URI2 = "http://localhost:8080/szcshl-web/intfc/downRemoteFile";
-//        SignDto signDto2 = new SignDto();
-//        //委里收文编号
-//        signDto2.setFilecode("B20110451");
-//        signDto2.setDeclaration(new BigDecimal(11.11));
-//        //附件列表
-//        List<SysFileDto> fileDtoList2 = new ArrayList<>();
-//        SysFileDto sysFileDto2 = new SysFileDto();
-//        //显示名称，后缀名也要
-//        sysFileDto2.setShowName("空白.docx.docx");
-//        //附件大小，Long类型
-//        sysFileDto2.setFileSize(11213L);
-//        //附件下载地址
-//        sysFileDto2.setFileUrl("http://172.18.225.56:8089/FGWPM/LEAP/Download/default/2018/5/17/20180517143816590.docx");
-//        fileDtoList2.add(sysFileDto2);
-//        //项目添加附件列表
-//        signDto2.setSysFileDtoList(fileDtoList2);
-//        Map<String, String> params = new HashMap<>();
-//        params.put("signDtoJson", JSON.toJSONString(signDto2));
-//        HttpResult hst2 = httpClientOperate.doPost(REST_SERVICE_URI2, params);
-//        //System.out.println(params.get("signDtoJson"));
-//        System.out.println(hst2.toString());
+//        List<User> receiverList = new ArrayList<>();
+//        User user = new User();
+//        user.setDisplayName("郭冬冬");
+//        ;
+//        user.setUserMPhone("13640950289");
+//        receiverList.add(user);
+//
+//        User user3 = new User();
+//        user3.setDisplayName("开发者");
+//        ;
+//        user3.setUserMPhone("18038078167");
+//        receiverList.add(user3);
+//        if(smsContent.querySmsNumber(receiverList,"测试项目","4324D","t","34","开始查询")== null){
+//            System.out.println("能查询");
+//
+//        }
+//        批复金额pdf下载案例
+        String REST_SERVICE_URI2 = "http://localhost:8080/szcshl-web/intfc/downRemoteFile";
+        SignDto signDto2 = new SignDto();
+        //委里收文编号
+        signDto2.setFilecode("B20110451");
+        signDto2.setDeclaration(new BigDecimal(11.11));
+        //附件列表
+        List<SysFileDto> fileDtoList2 = new ArrayList<>();
+        SysFileDto sysFileDto2 = new SysFileDto();
+        //显示名称，后缀名也要
+        sysFileDto2.setShowName("空白.docx.docx");
+        //附件大小，Long类型
+        sysFileDto2.setFileSize(11213L);
+        //附件下载地址
+        sysFileDto2.setFileUrl("http://172.18.225.56:8089/FGWPM/LEAP/Download/default/2018/5/17/20180517143816590.docx");
+        fileDtoList2.add(sysFileDto2);
+        //项目添加附件列表
+        signDto2.setSysFileDtoList(fileDtoList2);
+        Map<String, String> params = new HashMap<>();
+        System.out.println("批复金额:  "+JSON.toJSONString(signDto2));
+        params.put("signDtoJson", JSON.toJSONString(signDto2));
+        HttpResult hst2 = httpClientOperate.doPost(REST_SERVICE_URI2, params);
+        //System.out.println(params.get("signDtoJson"));
+        System.out.println(hst2.toString());
 
 
 //        signRestService.getListUser("收文成功");
