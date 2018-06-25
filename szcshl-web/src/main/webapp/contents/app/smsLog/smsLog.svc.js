@@ -82,7 +82,8 @@
                 //     filterable: false,
                 //     template: "<span class='row-number'></span>"
                 // },
-                 {
+                {
+
                     field: "userName",
                     title: "短信接收者",
                     width: 100,
@@ -102,6 +103,7 @@
                     filterable: false,
                     format: "{0:yyyy/MM/dd HH:mm:ss}"
                 }
+<<<<<<< HEAD
                 // , {
                 //     field: "customMessage",
                 //     title: "自定义短信内容",
@@ -109,6 +111,15 @@
                 //     width: 120,
                 //     attributes: {style: "white-space:nowrap;text-overflow:ellipsis;"},
                 // }
+=======
+                , {
+                    field: "resultCode",
+                    title: "短信Code",
+                    filterable: false,
+                    width: 120,
+                    attributes: {style: "white-space:nowrap;text-overflow:ellipsis;"},
+                }
+>>>>>>> feature/gs20180619-2
                 , {
                     field: "",
                     title: "结果",

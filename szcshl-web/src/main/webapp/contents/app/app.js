@@ -288,6 +288,13 @@
                 //     controllerAs: 'vm'
                 // })
 
+                //begin#flow  发文:重做工作方案
+                // .state('flow', {
+                //     url: '/flow',
+                //     templateUrl: rootPath + '/ReworkWorkPlan/html/getBranchInfo.html',
+                //     controller: 'reworkWorkPlanCtrl',
+                //     controllerAs: 'vm'
+                // })
 
                 //end#log
 

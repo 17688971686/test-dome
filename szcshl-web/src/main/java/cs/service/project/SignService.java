@@ -54,6 +54,15 @@ public interface SignService {
      * @return
      */
     ResultMsg dealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto);
+    /**
+     * 重写工作方案
+     * @param processInstance
+     * @param task
+     * @param flowDto
+     * @return
+     */
+    ResultMsg rewriteWorkFlow(ProcessInstance processInstance, Task task, FlowDto flowDto);
+
     //流程处理end
 
     /**
