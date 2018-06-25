@@ -461,7 +461,7 @@ public class TopicInfoServiceImpl implements TopicInfoService {
                 topicInfoRepo.save(topicInfo);
                 variables = findMainPrinUser(businessId, assigneeValue);
                 break;
-                //课题负责人确认
+            //课题负责人确认
             case FlowConstant.TOPIC_KTFZR_QR:
                 dealUserList = userRepo.findUserByRoleName(Constant.EnumFlowNodeGroupName.FILER.getValue());
                 if (!Validate.isList(dealUserList)) {
@@ -484,24 +484,23 @@ public class TopicInfoServiceImpl implements TopicInfoService {
                 break;
             //归档员确认
             case FlowConstant.TOPIC_ZLGD:
-                filing = filingRepo.findById("topId", businessId);
-                filing.setFilingUser(SessionUtil.getDisplayName());
-                filingRepo.save(filing);
+            /*    filing = filingRepo.findById("topId", businessId);
+                filingRepo.save(filing);*/
                 topicInfo = topicInfoRepo.findById(TopicInfo_.id.getName(), businessId);
                 topicInfo.setState(Constant.EnumState.YES.getValue());
                 topicInfoRepo.save(topicInfo);
                 break;
             default:
                 ;
-            //完成课题报告
+                //完成课题报告
       /*      case FlowConstant.TOPIC_KTBG:
                 variables = findOrgLeader(businessId, false, assigneeValue);
                 break;*/
-            //部长审核
+                //部长审核
           /*  case FlowConstant.TOPIC_BZSH_BG:
                 variables = findOrgLeader(businessId, true, assigneeValue);
                 break;*/
-            //分管副主任审核
+                //分管副主任审核
          /*   case FlowConstant.TOPIC_FGLD_BG:
                 dealUserList = userRepo.findUserByRoleName(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue());
                 if (!Validate.isList(dealUserList)) {
@@ -554,7 +553,7 @@ public class TopicInfoServiceImpl implements TopicInfoService {
             case FlowConstant.TOPIC_YFZL :
                 variables = findMainPrinUser(businessId,assigneeValue);
                 break;*/
-            //资料归档
+                //资料归档
             /*case FlowConstant.TOPIC_ZLGD:
                 filing = filingRepo.findById("topId", businessId);
                 if (filing == null || !Validate.isString(filing.getId())) {
@@ -739,43 +738,43 @@ public class TopicInfoServiceImpl implements TopicInfoService {
      * @param contractDtoList
      * @return
      */
-   @Override
-   public ResultMsg saveContractDetailList(ContractDto[] contractDtoList) {
-       List<Contract> contractList = new ArrayList<Contract>();
-       TopicInfo topicInfo = null;
-       if (Validate.isString(contractDtoList[0].getTopicId())) {
-           topicInfo = topicInfoRepo.findById(TopicInfo_.id.getName(), contractDtoList[0].getTopicId());
-       }
-       for (int i = 0, l = contractDtoList.length; i < l; i++) {
-           Contract contract = new Contract();
-           ContractDto contractDto = contractDtoList[i];
-           BeanCopierUtils.copyProperties(contractDto, contract);
-           contract.setContractId(UUID.randomUUID().toString());
-           contract.setCreatedBy(SessionUtil.getDisplayName());
-           contract.setCreatedDate(new Date());
-           contract.setModifiedBy(SessionUtil.getDisplayName());
-           contract.setModifiedDate(new Date());
-           if (Validate.isString(contractDto.getTopicId())) {
-               if (Validate.isObject(topicInfo)) {
-                   contract.setTopicInfo(topicInfo);
-               }
-           }
-           contractList.add(contract);
-       }
-       if (contractList.size() > 0) {
-           if (null != topicInfo.getContractList()){
-               topicInfo.getContractList().clear();
-               topicInfo.getContractList().addAll(contractList);
-           }else{
-               topicInfo.setContractList(contractList);
-           }
-           topicInfoRepo.save(topicInfo);
-           return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "保存成功！", topicInfo);
-       }else{
-           return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"没有分录数据，无法保存！");
-       }
+    @Override
+    public ResultMsg saveContractDetailList(ContractDto[] contractDtoList) {
+        List<Contract> contractList = new ArrayList<Contract>();
+        TopicInfo topicInfo = null;
+        if (Validate.isString(contractDtoList[0].getTopicId())) {
+            topicInfo = topicInfoRepo.findById(TopicInfo_.id.getName(), contractDtoList[0].getTopicId());
+        }
+        for (int i = 0, l = contractDtoList.length; i < l; i++) {
+            Contract contract = new Contract();
+            ContractDto contractDto = contractDtoList[i];
+            BeanCopierUtils.copyProperties(contractDto, contract);
+            contract.setContractId(UUID.randomUUID().toString());
+            contract.setCreatedBy(SessionUtil.getDisplayName());
+            contract.setCreatedDate(new Date());
+            contract.setModifiedBy(SessionUtil.getDisplayName());
+            contract.setModifiedDate(new Date());
+            if (Validate.isString(contractDto.getTopicId())) {
+                if (Validate.isObject(topicInfo)) {
+                    contract.setTopicInfo(topicInfo);
+                }
+            }
+            contractList.add(contract);
+        }
+        if (contractList.size() > 0) {
+            if (null != topicInfo.getContractList()){
+                topicInfo.getContractList().clear();
+                topicInfo.getContractList().addAll(contractList);
+            }else{
+                topicInfo.setContractList(contractList);
+            }
+            topicInfoRepo.save(topicInfo);
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "保存成功！", topicInfo);
+        }else{
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"没有分录数据，无法保存！");
+        }
 
-   }
+    }
 
     /**
      * 删除合同

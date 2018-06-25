@@ -74,7 +74,6 @@ public class FilingServiceImpl implements FilingService {
             domain.setTopicInfo(topicInfo);
             domain.setCreatedBy(SessionUtil.getUserId());
             domain.setCreatedDate(now);
-            domain.setFilingDate(now);
         } else {
             domain = filingRepo.findById(record.getId());
             BeanCopierUtils.copyPropertiesIgnoreNull(record, domain);
@@ -82,8 +81,14 @@ public class FilingServiceImpl implements FilingService {
             addRegisterFileRepo.deleteById(AddRegisterFile_.businessId.getName(), record.getId());
         }
         //2、设置归档编号
+        String year = "";
         if (!Validate.isString(domain.getFileNo())) {
-            String year = DateUtils.converToString(domain.getFilingDate(), "yyyy");
+            if(null != domain.getFilingDate()){
+                 year = DateUtils.converToString(domain.getFilingDate(), "yyyy");
+            }else{
+                 year = DateUtils.converToString(new Date(), "yyyy");
+            }
+
             String fileNumValue;
             int maxSeq = filingRepo.findCurMaxSeq(year)+1;
             /*if (maxSeq < 1000) {
@@ -100,11 +105,20 @@ public class FilingServiceImpl implements FilingService {
         //4、设置其他一些属性
         domain.setModifiedBy(SessionUtil.getUserId());
         domain.setModifiedDate(now);
+        if(!Validate.isBlank(record.getIsGdy()) && "1".equals(record.getIsGdy())){
+            if(Validate.isBlank(record.getFilingUser())){
+                domain.setFilingUser(SessionUtil.getDisplayName());
+            }
+            if(record.getFilingDate()== null){
+                domain.setFilingDate(new Date());
+            }
+        }
         //5、项目第一负责人签名
-        domain.setPrincipal(SessionUtil.getDisplayName());
+        if(Validate.isBlank(record.getIsGdy())){
+            domain.setPrincipal(SessionUtil.getDisplayName());
+        }
 
         filingRepo.save(domain);
-
         BeanCopierUtils.copyProperties(domain, record);
         //5、添加拟补充资料函
         if (Validate.isList(record.getRegisterFileDto())) {
@@ -123,7 +137,7 @@ public class FilingServiceImpl implements FilingService {
             addRegisterFileRepo.bathUpdate(registerFileList);
         }
 
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", record);
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", record.getTopicId());
     }
 
     @Override
