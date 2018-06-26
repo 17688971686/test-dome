@@ -109,15 +109,21 @@ public class SignRestServiceImpl implements SignRestService {
             SignDto signDto1 = null;
             signDto1 = signService.findSignByFileCode(signDto);
             if (signDto1 == null){
-                resultMsg.setFlag(true);
-                resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getCode());
-                resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getValue());
+                resultMsg.setFlag(false);
+                resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_SIGN_01.getCode());
+                resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SFGW_02.getValue());
                 return resultMsg;
             }
             String pifuMoney = "";
             //发文跟收文是1V1
 //          DispatchDocDto dispatchDocDto= new DispatchDocDto();
             DispatchDocDto dispatchDocDto=dispatchDocService.initDispatchBySignId(signDto1.getSignid());
+            if (dispatchDocDto == null){
+                resultMsg.setFlag(false);
+                resultMsg.setReCode(IFResultCode.IFMsgCode.DISPATHCH_DOC_DTO_1.getCode());
+                resultMsg.setReMsg(IFResultCode.IFMsgCode.DISPATHCH_DOC_DTO_2.getValue());
+                return resultMsg;
+            }
             dispatchDocDto.setApproveValue(signDto.getDeclaration());
             dispatchDocDto.setSignId(signDto1.getSignid());
             dispatchDocService.updateDispatchByDocDto(dispatchDocDto,Constant.SysFileType.SIGN.getValue());
