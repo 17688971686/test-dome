@@ -108,16 +108,17 @@ public class SignRestServiceImpl implements SignRestService {
             //通过fileCode找signId =bussessId
             SignDto signDto1 = null;
             signDto1 = signService.findSignByFileCode(signDto);
-            String pifuMoney = "";//signDto;
+            String pifuMoney = "";
             //发文跟收文是1V1
-            DispatchDocDto dispatchDocDto = new DispatchDocDto();
+//            DispatchDocDto dispatchDocDto = new DispatchDocDto();
+            DispatchDocDto dispatchDocDto = dispatchDocService.initDispatchBySignId(signDto1.getSignid());
             if (dispatchDocDto == null){
                 return new ResultMsg(false, IFResultCode.IFMsgCode.DISPATHCH_DOC_1.getCode(), signDto.getFilecode() + " 找不到发文对象");
             }
             dispatchDocDto.setApproveValue(signDto.getDeclaration());
             dispatchDocDto.setSignId(signDto1.getSignid());
             dispatchDocService.updateDispatchByDocDto(dispatchDocDto,Constant.SysFileType.SIGN.getValue());
-            //开始下载pdf
+            //开始下载pdfpushProject
             boolean isLoginUser = Validate.isString(SessionUtil.getUserId());
 //            List<SysFileDto> fileDtoList2 = signDto.getSysFileDtoList();
 //            if (fileDtoList2.size() ==0){
