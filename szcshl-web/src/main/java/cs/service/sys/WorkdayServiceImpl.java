@@ -129,5 +129,9 @@ public class WorkdayServiceImpl implements WorkdayService {
     public List<Workday> getBetweenTimeDay(Date startDate, Date endDate) {
         return workdayRepo.getBetweenTimeDay(startDate , endDate);
     }
-
+    @Override
+    @Transactional
+    public  Boolean isRepeat(Date dates,String temp){
+        return workdayRepo.isExistWorkDay(dates,temp);
+    }
 }

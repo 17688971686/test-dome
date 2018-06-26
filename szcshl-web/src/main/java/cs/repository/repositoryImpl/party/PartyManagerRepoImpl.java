@@ -1,5 +1,6 @@
 package cs.repository.repositoryImpl.party;
 
+import cs.common.HqlBuilder;
 import cs.common.constants.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
@@ -114,5 +115,32 @@ public class PartyManagerRepoImpl extends AbstractRepository<PartyManager, Strin
        PartyManagerDto partyManagerDto = new PartyManagerDto();
        BeanCopierUtils.copyPropertiesIgnoreNull(partyManager , partyManagerDto);
         return new ResultMsg(true , Constant.MsgCode.OK.getValue()  , "查询成功" , partyManagerDto);
+    }
+
+    /**
+     * 更新党员信息
+     * @param partyManagerDto
+     * @return
+     */
+    @Override
+    public ResultMsg updateParty(PartyManagerDto partyManagerDto) {
+
+        PartyManager partyManager = findById(PartyManager_.pmId.getName() , partyManagerDto.getPmId());
+        BeanCopierUtils.copyPropertiesIgnoreNull(partyManagerDto , partyManager);
+        partyManager.setModifiedDate(new Date());
+        partyManager.setModifiedBy(SessionUtil.getDisplayName());
+
+        save(partyManager);
+
+        return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "更新成功" , null);
+    }
+
+    /**
+     * 删除党员信息
+     * @param pmId
+     */
+    @Override
+    public void deleteParty(String pmId) {
+        deleteById(PartyManager_.pmId.getName() , pmId);
     }
 }

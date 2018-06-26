@@ -1,289 +1,132 @@
 
-<div  class="well well-sm conttent_list" style="background: white;margin-bottom: 50px;" >
-    <ul id="myTab" class="nav nav-tabs">
-        <li class="active"><a data-toggle="tab" for-div="partyEdit"> 信息采集表</a></li>
-        <li  ><a  data-toggle="tab"  for-div="partyEdit_sup">补充表</a></li>
-    </ul>
+<div  class="well well-sm conttent_list" style="background: white;min-height:960px;margin-bottom: 50px;"  id="partyDetail">
 
+    <button class="btn btn-sm btn-success" ng-click="vm.exportPartyWord(vm.party.pmId)">导出</button>
     <div class="tab-content" style="background:white;">
-        <div class="tab-pane fade in active" style="background:white;" id="partyEdit">
-            <form id="form" name="form">
-                <table class="" style="width: 92%;text-align: center;">
-                    <caption class="text-center"> <h3><strong>深圳市政府投资项目党员信息采集表</strong></h3></caption>
+        <form id="form" name="form">
+            <table class="" style="width: 70%;text-align: center;">
+                <caption class="text-center"> <h3><strong>深圳市政府投资项目党员信息采集表</strong></h3></caption>
 
-                    <tr>
-                        <td class="text-center" width="10%">姓名</td>
-                        <td width="20%">
-                            {{vm.party.pmName}}
-                        </td>
-                        <td class="text-center" width="10%">性别</td>
-                        <td width="20%">
-                            {{vm.party.pmSex}}
-                        </td>
-                        <td class="text-center"  width="10%">民族</td>
-                        <td width="20%" class="text-left">
-                            {{vm.party.pmNation}}
-                        </td>
-                    </tr>
+                <tr>
+                    <td class="text-center" width="10%">姓名</td>
+                    <td width="20%" class="text-left">
+                        {{vm.party.pmName}}
+                    </td>
+                    <td class="text-center" width="10%">性别</td>
+                    <td width="10%" class="text-left">
+                        {{vm.party.pmSex}}
+                    </td>
+                    <td class="text-center"  width="10%">民族</td>
+                    <td width="30%" class="text-left">
+                        <span ng-repeat="x in DICT.NATION.dicts"
+                              ng-if="x.dictKey == vm.party.pmNation">{{x.dictName}}</span>
+                    </td>
+                </tr>
 
-                    <tr>
-                        <td class="text-center"   width="10%">身份证号</td>
-                        <td colspan="3">
-                            {{vm.party.pmIDCard}}
-                        </td>
-                        <td class="text-center"   width="10%">出生年月</td>
-                        <td width="10%"  class="text-left">
-                            {{vm.party.pmBirthday}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="text-center"   width="10%">家庭住址<br/>（具体到门牌号）</td>
-                        <td colspan="3">
-                            {{vm.party.pmAddress}}
-                        </td>
-                        <td class="text-center"   width="10%">人员类别</td>
-                        <td width="10%" class="text-left">
-                            {{vm.party.pmCategory}}
-                        </td>
+                <tr>
+                    <td class="text-center"   width="10%">身份证号</td>
+                    <td colspan="5" class="text-left">
+                        {{vm.party.pmIDCard}}
+                    </td>
 
-                    </tr>
-                    <tr>
-                        <td class="text-center" width="15%">手机号</td>
-                        <td width="10%">
-                            {{vm.party.pmPhone}}
-                        </td>
-                        <td class="text-center" width="10%">固定电话</td>
-                        <td width="10%" >
-                            {{vm.party.pmTel}}
-                        </td>
-                        <td class="text-center"   width="10%">学历</td>
-                        <td width="10%"  class="text-left">
-                            {{vm.party.pmEducation}}
-                        </td>
-                    </tr>
-                    <tr>
+                </tr>
 
-                        <td class="text-center"   width="10%">党籍状态</td>
-                        <td width="10%" class="text-left">
-                            {{vm.party.pmPartyState}}
-                        </td>
-                        <td  class="text-center"   width="10%"> 入党日期</td>
-                        <td>
-                            {{vm.party.pmJoinPartyDate}}
-                        </td>
-                        <td  class="text-center"   width="10%"> 转正日期</td>
-                        <td class="text-left">
-                            {{vm.party.pmTurnToPatryDate}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="text-center"   width="10%">所在党支部<br/>（填写全称）</td>
-                        <td colspan="5">
-                            {{vm.paty.pmPartyBranch}}
-                        </td>
+                <tr>
+                    <td class="text-center"   width="10%">出生年月</td>
+                    <td width="10%"  class="text-left" colspan="3">
+                        {{vm.party.pmBirthday}}
+                    </td>
+                    <td class="text-center"   width="10%">学历</td>
+                    <td width="10%"  class="text-left">
+                        <span ng-repeat="x in DICT.ADUCATION.dicts"
+                              ng-if="x.dictKey == vm.party.pmEducation">{{x.dictName}}</span>
+                    </td>
+                </tr>
 
-                    </tr>
+                <tr>
+                    <td class="text-center"   width="10%">人员类别</td>
+                    <td colspan="5" class="text-left">
+                        {{vm.party.pmCategory}}
+                    </td>
+                </tr>
 
-                    <tr>
-                        <td  class="text-center"   width="10%">是否为失联党员</td>
-                        <td>
+                <tr>
+                    <td  class="text-center"   width="10%">入党时间</td>
+                    <td colspan="3" class="text-left">
+                        {{vm.party.pmJoinPartyDate}}
+                    </td>
+                    <td  class="text-center"   width="10%">转正时间</td>
+                    <td class="text-left">
+                        {{vm.party.pmTurnToPatryDate}}
+                    </td>
+                </tr>
 
-                            <input type="checkbox" name="isLossParty" id="isLossParty"
-                                   ng-model="vm.party.isLossParty" value="9"
-                                   ng-checked="vm.party.isLossParty == '9'" disabled="disabled"/>
-                        </td>
-                        <td  class="text-center"   width="10%">失联日期</td>
-                        <td>
-                            {{vm.party.lossDate}}
-                        </td>
-                        <td  class="text-center"   width="10%"></td>
-                        <td  class="text-center"   width="10%"></td>
-                    </tr>
-                    <tr>
-                        <td  class="text-center"   width="10%">是否为流动党员</td>
-                        <td>
-                            <input type="checkbox" name="isMobileParty" id="isMobileParty"
-                                   ng-model="vm.party.isMobileParty"
-                                   ng-checked="vm.party.isMobileParty == '9'" value="9" disabled="disabled"/>
-                        </td>
+                <tr>
+                    <td class="text-center"   width="10%">入党介绍人<br/>（2人）</td>
+                    <td colspan="5" class="text-left">
+                        {{vm.party.introducer}}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-center"   width="10%">组织关系<br/>是否在我委</td>
+                    <td colspan="5" class="text-left">
+                        <input type="checkbox"  id="isInOrg" name="isInOrg" ng-model="vm.party.isInOrg"
+                               ng-true-value="9" ng-false-value="0"  ng-checked="vm.party.isInOrg==9" disabled="disabled"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-center"   width="10%">转入党组织时间</td>
+                    <td colspan="5" class="text-left">
+                        {{vm.party.joinOrgDate}}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-center"   width="10%">现所在党组织</td>
+                    <td colspan="5" class="text-left">
+                        {{vm.paty.pmPartyBranch}}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-center"   width="10%">参加工作时间</td>
+                    <td colspan="5" class="text-left">
+                        {{vm.party.joinWorkDate}}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-center"   width="10%">工作岗位</td>
+                    <td colspan="5" class="text-left">
+                        {{vm.party.pmWorkPost}}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-center"   width="10%">是否在编</td>
+                    <td colspan="5" class="text-left">
+                        <input type="checkbox"  id="isEnrolled" name="isEnrolled" ng-model="vm.party.isEnrolled"
+                               ng-true-value="9" ng-false-value="0"  ng-checked="vm.party.isEnrolled==9" disabled="disabled"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-center"   width="10%">联系电话<br/>（手机号）</td>
+                    <td colspan="5" class="text-left">
+                        {{vm.party.pmPhone}}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-center"   width="10%">固定电话</td>
+                    <td colspan="5" class="text-left">
+                        {{vm.party.pmTel}}
+                    </td>
+                </tr>
 
-                        <td  class="text-center"   width="10%">外出流向</td>
-                        <td>
-                            {{vm.party.goOutTo}}
-                        </td>
-                        <td  class="text-center"   width="10%"></td>
-                        <td  class="text-center"   width="10%"></td>
-                    </tr>
-                    <tr>
-                        <td  class="text-center"   width="10%">党员（签字）</td>
-                        <td colspan="5" style="min-height: 50px;">
-                            <div style="min-height: 50px;">
-                                <p></p>
-                                <p></p>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td  class="text-center"   width="10%">党支部书记（签字）</td>
-                        <td colspan="5" style="min-height: 50px;">
-                            <div style="min-height: 50px;">
-                                <p></p>
-                                <p></p>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td  class="text-center"   width="10%">信息采集员（签字）</td>
-                        <td colspan="5" >
-                            <div style="min-height: 50px;">
-                                <p></p>
-                                <p></p>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td  class="text-center"   width="10%">基层党委（签字）</td>
-                        <td colspan="5" style="min-height: 50px;">
-                            <div style="min-height: 50px;">
-                                <p></p>
-                                <p></p>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-            </form>
-        </div>
+                <tr>
+                    <td class="text-center"   width="10%">家庭住址<br/>（具体到门牌号）</td>
+                    <td colspan="5" class="text-left">
+                        {{vm.party.pmAddress}}
+                    </td>
+                </tr>
+            </table>
+        </form>
 
-        <div class="well well-sm tab-pane fade" style="background:white;" id="partyEdit_sup" >
-            <form id="form" name="form">
-                <table class="" style="width: 92%;text-align: center;">
-                    <caption class="text-center"> <h3><strong>深圳市政府投资项目党员信息采集表补充</strong></h3></caption>
-
-                    <tr>
-                        <td class="text-center" width="15%">姓名</td>
-                        <td width="30%">
-                            {{vm.party.pmName}}
-                        </td>
-                        <td class="text-center"   width="15%">籍贯</td>
-                        <td width="30%">
-                            {{vm.party.nativePlace}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td  class="text-center"   width="10%">是否农民工</td>
-                        <td colspan="3" class="text-left">
-                    <span style="margin-right: 30px;">
-                        <input type="checkbox" name="isPeasantWorker" id="isPeasantWorker"
-                               ng-model="vm.party.isPeasantWorker"
-                               ng-checked="vm.party.isPeasantWorker == '9'" value="9" disabled="disabled"/>
-                    </span>
-                            <span>
-                        (户籍在农村，主要在非农业生产领域，采取受雇或自营的形式，并以生产经营收入为主要收入来源的人群)
-                    </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td  class="text-center"   width="10%">专业技术职务</td>
-                        <td colspan="3">
-                            {{vm.party.technicalPosition}}
-                        </td>
-
-                    </tr>
-                    <tr>
-                        <td  class="text-center"   width="10%">行政职务</td>
-                        <td>
-                            {{vm.party.administrativeDuty}}
-                        </td>
-
-                        <td  class="text-center"   width="10%"></td>
-                        <td  class="text-center"   width="10%"></td>
-
-                    </tr>
-                    <tr>
-                        <td  class="text-center"   width="10%">行政级别</td>
-                        <td colspan="3" class="text-left">
-                            {{vm.party.administrativeRank}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td  class="text-center"   width="10%">党代表类别</td>
-                        <td colspan="3" class="text-left">
-                            <span style="margin-right: 30px;"> 省（区、市）代表 <input type="checkbox" name="partyDelegateType"  disabled="disabled"/></span>
-                            <span style=" margin-right: 30px;"> 市（州）代表 <input type="checkbox" name="partyDelegateType" disabled="disabled"/></span>
-                            <span style=" margin-right: 30px;"> 县（市、区）代表 <input type="checkbox" name="partyDelegateType" disabled="disabled"/></span>
-                            <span> 乡（镇）代表 <input type="checkbox" name="partyDelegateType" disabled="disabled"/></span>
-
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td class="text-center"   width="10%">失去联系情形</td>
-                        <td colspan="3" class="text-left">
-                            {{vm.party.lossCondition}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td  class="text-center"   width="10%">流出党员<br/>流向单位类别</td>
-                        <td  class="text-left">
-                            {{vm.party.outflowToUnitType}}
-                        </td>
-                        <td  class="text-center"   width="10%">出国日期</td>
-                        <td class="text-left">
-                            {{vm.party.goAbroadDate}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="text-center"   width="10%">出国情况</td>
-                        <td colspan="3" class="text-left" >
-                            {{vm.party.goAbroadCondition}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="text-center"   width="10%">出国原因</td>
-                        <td colspan="3" class="text-left">
-                            {{vm.party.goAbroadCause}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td  class="text-center"   width="10%">党员（签字）</td>
-                        <td colspan="3" style="min-height: 50px;">
-                            <div style="min-height: 50px;">
-                                <p></p>
-                                <p></p>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td  class="text-center"   width="10%">党支部书记（签字）</td>
-                        <td colspan="3" style="min-height: 50px;">
-                            <div style="min-height: 50px;">
-                                <p></p>
-                                <p></p>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td  class="text-center"   width="10%">信息采集员（签字）</td>
-                        <td colspan="3" >
-                            <div style="min-height: 50px;">
-                                <p></p>
-                                <p></p>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td  class="text-center"   width="10%">基层党委（签字）</td>
-                        <td colspan="3" style="min-height: 50px;">
-                            <div style="min-height: 50px;">
-                                <p></p>
-                                <p></p>
-                            </div>
-                        </td>
-                    </tr>
-
-                </table>
-            </form>
-        </div>
 
     </div>
 

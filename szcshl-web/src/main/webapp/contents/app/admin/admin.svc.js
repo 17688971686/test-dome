@@ -20,8 +20,10 @@
             getSignList: getSignList,   //项目查询统计
             initSignList: initSignList, //初始化項目查詢統計
             // <!-- 以下是首页方法-->
-            initWelComePage: initWelComePage,           //初始化首页方法
-            /* initAnnountment: initAnnountment,	    //初始化通知公告栏
+            getHomeInfo: getHomeInfo,                   //初始化首页待办任务和通知公告方法
+            getHomeProjInfo:getHomeProjInfo,            //获取首页统计信息
+            getHomeMeetInfo:getHomeMeetInfo,            //获取首页会议和调研时间统计信息
+        /* initAnnountment: initAnnountment,	    //初始化通知公告栏
              findendTasks: findendTasks,                //已办项目列表
              findtasks: findtasks,                      //待办项目列表
              findHomePluginFile :findHomePluginFile,    //获取首页安装文件*/
@@ -87,10 +89,10 @@
         //end excelExport
 
         //S_初始化首页方法
-        function initWelComePage(callBack) {
+        function getHomeInfo(callBack) {
             var httpOptions = {
                 method: "post",
-                url: rootPath + "/admin/initWelComePage"
+                url: rootPath + "/admin/getHomeInfo"
             }
             var httpSuccess = function success(response) {
                 if (callBack != undefined && typeof callBack == 'function') {
@@ -102,7 +104,43 @@
                 httpOptions: httpOptions,
                 success: httpSuccess
             });
-        }//E_initWelComePage
+        }//E_getHomeInfo
+
+        //S_首页项目统计信息
+        function getHomeProjInfo(callBack) {
+            var httpOptions = {
+                method: "post",
+                url: rootPath + "/admin/getHomeProjInfo"
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//E_getHomeProjInfo
+
+        //S_首页会议和调研时间统计
+        function getHomeMeetInfo(callBack) {
+            var httpOptions = {
+                method: "post",
+                url: rootPath + "/admin/getHomeMeetInfo"
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//E_getHomeProjInfo
 
         //begin countWorakday
         function countWorakday(vm) {

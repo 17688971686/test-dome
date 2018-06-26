@@ -1,18 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef">
-  <process id="ANNOUNT_MENT_FLOW" name="通知公告流程" isExecutable="true">
-    <startEvent id="MONTH_START" name="开始"></startEvent>
-    <userTask id="ANNOUNT_BZ" name="部长审批" activiti:assignee="${user_bz}"></userTask>
-    <userTask id="ANNOUNT_FZ" name="副主任审批" activiti:assignee="${user_fz}"></userTask>
-    <userTask id="ANNOUNT_ZR" name="主任审批" activiti:assignee="${user_zr}"></userTask>
-    <endEvent id="ANNOUNT_END" name="流程结束"></endEvent>
-    <sequenceFlow id="sid-B71A1CF1-0F3C-4BE4-B10F-32C1B1C4755E" sourceRef="ANNOUNT_BZ" targetRef="ANNOUNT_FZ"></sequenceFlow>
-    <sequenceFlow id="sid-D353B9A0-7EF4-4117-A44E-90EEC3BC47D0" sourceRef="ANNOUNT_FZ" targetRef="ANNOUNT_ZR"></sequenceFlow>
-    <sequenceFlow id="sid-79DE3BCC-C742-4EED-9017-2C56E3410254" sourceRef="ANNOUNT_ZR" targetRef="ANNOUNT_END"></sequenceFlow>
-    <userTask id="ANNOUNT_TZ" name="通知公告填报" activiti:assignee="${user}"></userTask>
-    <sequenceFlow id="sid-623E93EA-E1FF-45FF-B5CB-51CFA43374D0" sourceRef="MONTH_START" targetRef="ANNOUNT_TZ"></sequenceFlow>
-    <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
-    <sequenceFlow id="flow1" sourceRef="ANNOUNT_TZ" targetRef="exclusivegateway1"></sequenceFlow>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.activiti.org/processdef" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" expressionLanguage="http://www.w3.org/1999/XPath" id="m1529486200075" name="" targetNamespace="http://www.activiti.org/processdef" typeLanguage="http://www.w3.org/2001/XMLSchema">
+  <process id="ANNOUNT_MENT_FLOW" isClosed="false" isExecutable="true" name="通知公告流程" processType="None">
+    <startEvent id="MONTH_START" name="开始"/>
+    <userTask activiti:assignee="${user_bz}" activiti:exclusive="true" id="ANNOUNT_BZ" name="部长审批"/>
+    <userTask activiti:assignee="${user_fz}" activiti:exclusive="true" id="ANNOUNT_FZ" name="副主任审批"/>
+    <userTask activiti:assignee="${user_zr}" activiti:exclusive="true" id="ANNOUNT_ZR" name="主任审批"/>
+    <endEvent id="ANNOUNT_END" name="流程结束"/>
+    <sequenceFlow id="sid-B71A1CF1-0F3C-4BE4-B10F-32C1B1C4755E" sourceRef="ANNOUNT_BZ" targetRef="ANNOUNT_FZ"/>
+    <sequenceFlow id="sid-D353B9A0-7EF4-4117-A44E-90EEC3BC47D0" sourceRef="ANNOUNT_FZ" targetRef="ANNOUNT_ZR"/>
+    <sequenceFlow id="sid-79DE3BCC-C742-4EED-9017-2C56E3410254" sourceRef="ANNOUNT_ZR" targetRef="ANNOUNT_END"/>
+    <userTask activiti:assignee="${user}" activiti:exclusive="true" id="ANNOUNT_TZ" name="通知公告填报"/>
+    <sequenceFlow id="sid-623E93EA-E1FF-45FF-B5CB-51CFA43374D0" sourceRef="MONTH_START" targetRef="ANNOUNT_TZ"/>
+    <exclusiveGateway gatewayDirection="Unspecified" id="exclusivegateway1" name="Exclusive Gateway"/>
+    <sequenceFlow id="flow1" sourceRef="ANNOUNT_TZ" targetRef="exclusivegateway1"/>
     <sequenceFlow id="flow2" sourceRef="exclusivegateway1" targetRef="ANNOUNT_BZ">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${annount_user==false}]]></conditionExpression>
     </sequenceFlow>
@@ -20,58 +20,100 @@
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${annount_user==true}]]></conditionExpression>
     </sequenceFlow>
   </process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_ANNOUNT_MENT_FLOW">
-    <bpmndi:BPMNPlane bpmnElement="ANNOUNT_MENT_FLOW" id="BPMNPlane_ANNOUNT_MENT_FLOW">
-      <bpmndi:BPMNShape bpmnElement="MONTH_START" id="BPMNShape_MONTH_START">
-        <omgdc:Bounds height="35.0" width="35.0" x="30.0" y="227.0"></omgdc:Bounds>
+  <bpmndi:BPMNDiagram documentation="background=#FFFFFF;count=1;horizontalcount=1;orientation=0;width=842.4;height=1195.2;imageableWidth=832.4;imageableHeight=1185.2;imageableX=5.0;imageableY=5.0" id="Diagram-_1" name="New Diagram">
+    <bpmndi:BPMNPlane bpmnElement="ANNOUNT_MENT_FLOW">
+      <bpmndi:BPMNShape bpmnElement="MONTH_START" id="Shape-MONTH_START">
+        <omgdc:Bounds height="32.0" width="32.0" x="30.0" y="227.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="ANNOUNT_BZ" id="BPMNShape_ANNOUNT_BZ">
-        <omgdc:Bounds height="80.0" width="100.0" x="360.0" y="205.0"></omgdc:Bounds>
+      <bpmndi:BPMNShape bpmnElement="ANNOUNT_BZ" id="Shape-ANNOUNT_BZ">
+        <omgdc:Bounds height="80.0" width="100.0" x="360.0" y="205.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="80.0" width="100.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="ANNOUNT_FZ" id="BPMNShape_ANNOUNT_FZ">
-        <omgdc:Bounds height="80.0" width="100.0" x="510.0" y="206.0"></omgdc:Bounds>
+      <bpmndi:BPMNShape bpmnElement="ANNOUNT_FZ" id="Shape-ANNOUNT_FZ">
+        <omgdc:Bounds height="80.0" width="100.0" x="510.0" y="206.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="80.0" width="100.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="ANNOUNT_ZR" id="BPMNShape_ANNOUNT_ZR">
-        <omgdc:Bounds height="80.0" width="100.0" x="670.0" y="205.0"></omgdc:Bounds>
+      <bpmndi:BPMNShape bpmnElement="ANNOUNT_ZR" id="Shape-ANNOUNT_ZR">
+        <omgdc:Bounds height="80.0" width="100.0" x="670.0" y="205.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="80.0" width="100.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="ANNOUNT_END" id="BPMNShape_ANNOUNT_END">
-        <omgdc:Bounds height="35.0" width="35.0" x="830.0" y="228.0"></omgdc:Bounds>
+      <bpmndi:BPMNShape bpmnElement="ANNOUNT_END" id="Shape-ANNOUNT_END">
+        <omgdc:Bounds height="32.0" width="32.0" x="830.0" y="228.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="ANNOUNT_TZ" id="BPMNShape_ANNOUNT_TZ">
-        <omgdc:Bounds height="80.0" width="100.0" x="105.0" y="205.0"></omgdc:Bounds>
+      <bpmndi:BPMNShape bpmnElement="ANNOUNT_TZ" id="Shape-ANNOUNT_TZ">
+        <omgdc:Bounds height="80.0" width="100.0" x="105.0" y="205.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="80.0" width="100.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
-        <omgdc:Bounds height="40.0" width="40.0" x="260.0" y="225.0"></omgdc:Bounds>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="Shape-exclusivegateway1" isMarkerVisible="false">
+        <omgdc:Bounds height="32.0" width="32.0" x="260.0" y="225.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge bpmnElement="sid-B71A1CF1-0F3C-4BE4-B10F-32C1B1C4755E" id="BPMNEdge_sid-B71A1CF1-0F3C-4BE4-B10F-32C1B1C4755E">
-        <omgdi:waypoint x="460.0" y="245.0"></omgdi:waypoint>
-        <omgdi:waypoint x="510.0" y="246.0"></omgdi:waypoint>
+      <bpmndi:BPMNEdge bpmnElement="sid-B71A1CF1-0F3C-4BE4-B10F-32C1B1C4755E" id="BPMNEdge_sid-B71A1CF1-0F3C-4BE4-B10F-32C1B1C4755E" sourceElement="ANNOUNT_BZ" targetElement="ANNOUNT_FZ">
+        <omgdi:waypoint x="460.0" y="245.0"/>
+        <omgdi:waypoint x="510.0" y="246.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="sid-D353B9A0-7EF4-4117-A44E-90EEC3BC47D0" id="BPMNEdge_sid-D353B9A0-7EF4-4117-A44E-90EEC3BC47D0">
-        <omgdi:waypoint x="610.0" y="246.0"></omgdi:waypoint>
-        <omgdi:waypoint x="670.0" y="245.0"></omgdi:waypoint>
+      <bpmndi:BPMNEdge bpmnElement="sid-D353B9A0-7EF4-4117-A44E-90EEC3BC47D0" id="BPMNEdge_sid-D353B9A0-7EF4-4117-A44E-90EEC3BC47D0" sourceElement="ANNOUNT_FZ" targetElement="ANNOUNT_ZR">
+        <omgdi:waypoint x="610.0" y="246.0"/>
+        <omgdi:waypoint x="670.0" y="245.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="sid-79DE3BCC-C742-4EED-9017-2C56E3410254" id="BPMNEdge_sid-79DE3BCC-C742-4EED-9017-2C56E3410254">
-        <omgdi:waypoint x="770.0" y="245.0"></omgdi:waypoint>
-        <omgdi:waypoint x="830.0" y="245.0"></omgdi:waypoint>
+      <bpmndi:BPMNEdge bpmnElement="sid-623E93EA-E1FF-45FF-B5CB-51CFA43374D0" id="BPMNEdge_sid-623E93EA-E1FF-45FF-B5CB-51CFA43374D0" sourceElement="MONTH_START" targetElement="ANNOUNT_TZ">
+        <omgdi:waypoint x="62.0" y="243.0"/>
+        <omgdi:waypoint x="105.0" y="245.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="sid-623E93EA-E1FF-45FF-B5CB-51CFA43374D0" id="BPMNEdge_sid-623E93EA-E1FF-45FF-B5CB-51CFA43374D0">
-        <omgdi:waypoint x="65.0" y="244.0"></omgdi:waypoint>
-        <omgdi:waypoint x="105.0" y="245.0"></omgdi:waypoint>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1" sourceElement="ANNOUNT_TZ" targetElement="exclusivegateway1">
+        <omgdi:waypoint x="205.0" y="245.0"/>
+        <omgdi:waypoint x="260.0" y="241.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
-        <omgdi:waypoint x="205.0" y="245.0"></omgdi:waypoint>
-        <omgdi:waypoint x="260.0" y="245.0"></omgdi:waypoint>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2" sourceElement="exclusivegateway1" targetElement="ANNOUNT_BZ">
+        <omgdi:waypoint x="292.0" y="241.0"/>
+        <omgdi:waypoint x="360.0" y="245.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
-        <omgdi:waypoint x="300.0" y="245.0"></omgdi:waypoint>
-        <omgdi:waypoint x="360.0" y="245.0"></omgdi:waypoint>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3" sourceElement="exclusivegateway1" targetElement="ANNOUNT_FZ">
+        <omgdi:waypoint x="280.0" y="229.0"/>
+        <omgdi:waypoint x="280.0" y="165.0"/>
+        <omgdi:waypoint x="559.0" y="165.0"/>
+        <omgdi:waypoint x="560.0" y="206.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
-        <omgdi:waypoint x="280.0" y="225.0"></omgdi:waypoint>
-        <omgdi:waypoint x="280.0" y="165.0"></omgdi:waypoint>
-        <omgdi:waypoint x="559.0" y="165.0"></omgdi:waypoint>
-        <omgdi:waypoint x="560.0" y="206.0"></omgdi:waypoint>
+      <bpmndi:BPMNEdge bpmnElement="sid-79DE3BCC-C742-4EED-9017-2C56E3410254" id="BPMNEdge_sid-79DE3BCC-C742-4EED-9017-2C56E3410254" sourceElement="ANNOUNT_ZR" targetElement="ANNOUNT_END">
+        <omgdi:waypoint x="770.0" y="245.0"/>
+        <omgdi:waypoint x="830.0" y="244.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

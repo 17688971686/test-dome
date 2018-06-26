@@ -230,6 +230,12 @@ public class WorkProgram extends DomainBase {
     @Column(columnDefinition = "varchar(2)")
     private String branchId;
 
+    /**
+     * 是否是项目基本信息（9：是，0或者空否）
+     */
+    @Column(columnDefinition = "varchar(2)")
+    private String baseInfo;
+
     //收文，一对一（只做级联删除）
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "signId")
@@ -659,5 +665,13 @@ public class WorkProgram extends DomainBase {
 
     public BigDecimal getTotalInvestment(){
 	    return totalInvestment;
+    }
+
+    public String getBaseInfo() {
+        return baseInfo;
+    }
+
+    public void setBaseInfo(String baseInfo) {
+        this.baseInfo = baseInfo;
     }
 }

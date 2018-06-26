@@ -24,8 +24,23 @@ public interface ExpertSelConditionService {
 
 	ExpertSelConditionDto findById(String deptId);
 
-	ResultMsg delete(String ids);
+	/**
+	 * 删除专家抽取条件
+	 * @param reviewId
+	 * @param ids
+	 * @return
+	 */
+	ResultMsg delete(String reviewId,String ids);
 
+    /**
+     * 保存专家抽取条件
+     * @param businessId
+     * @param minBusinessId
+     * @param businessType
+     * @param reviewId
+     * @param recordList
+     * @return
+     */
 	ResultMsg saveConditionList(String businessId,String minBusinessId,String businessType,String reviewId,ExpertSelConditionDto[] recordList);
 
 	/**

@@ -10,11 +10,15 @@
         vm.title = '课题研究存档表';
         vm.filing = {};
         vm.zlList = [];     //新增的资料列表
+        if($state.params.curNodeId){
+            vm.curNodeId = $state.params.curNodeId;
 
+        }
         activate();
         function activate() {
             filingSvc.findByTopicId($state.params.topicId,function(data){
-                vm.filing = data;
+                vm.filing = data.file_record;
+                vm.topicUserList = data.topic_user_List;
                 vm.filing.topicId = $state.params.topicId;
                 vm.initFileUpload();
             })
@@ -47,9 +51,12 @@
 
         //S_保存存档信息
         vm.saveFiling = function(){
+            if(vm.curNodeId == 'TOPIC_ZLGD'){
+                vm.filing.isGdy = '1';
+            }
             filingSvc.save(vm.filing,function (data) {
                 if(data.flag || data.reCode == 'ok'){
-                    vm.filing = data.reObj;
+                   // vm.filing = data.reObj;
                     vm.filing.topicId = $state.params.topicId;
                     bsWin.alert("保存成功！");
                 }else{
@@ -94,14 +101,14 @@
         }//E_delZL
 
         //S_初始化input框的值
-        vm.initInputValue = function($event,defaultValue){
-            var checkbox = $event.target;
-            var checked = checkbox.checked;
-            if (checked && !defaultValue) {
-                return 1;
-            }else{
-                return defaultValue;
-            }
-        }//E_initInputValue
+        /*       vm.initInputValue = function($event,defaultValue){
+         var checkbox = $event.target;
+         var checked = checkbox.checked;
+         if (checked && !defaultValue) {
+         return 1;
+         }else{
+         return defaultValue;
+         }
+         }*///E_initInputValue
     }
 })();

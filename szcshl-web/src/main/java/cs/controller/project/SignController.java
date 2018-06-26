@@ -21,6 +21,9 @@ import cs.repository.repositoryImpl.sys.OrgDeptRepo;
 import cs.service.flow.FlowService;
 import cs.service.project.SignBranchService;
 import cs.service.project.SignService;
+import cs.service.rtx.RTXService;
+import cs.service.sys.SMSContent;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -50,6 +53,10 @@ public class SignController {
     private SignBranchService signBranchService;
     @Autowired
     private OrgDeptRepo orgDeptRepo;
+    @Autowired
+    private RTXService rtxService;
+    @Autowired
+    private SMSContent smsContent;
 
     //@RequiresPermissions("sign#fingByOData#post")
     @RequiresAuthentication
@@ -375,8 +382,17 @@ public class SignController {
     //@RequiresPermissions("sign#startNewFlow#post")
     @RequestMapping(name = "发起流程", path = "startNewFlow", method = RequestMethod.POST)
     @ResponseBody
+    @LogMsg(module = "发起项目签收流程",logLevel = "2")
+    @Transactional
     public ResultMsg startNewFlow(@RequestParam(required = true) String signid) {
-        return signService.startNewFlow(signid);
+        ResultMsg resultMsg = signService.startNewFlow(signid);
+        if(resultMsg.isFlag()){
+            ProcessInstance processInstance = (ProcessInstance) resultMsg.getReObj();
+            rtxService.dealPoolRTXMsg(resultMsg.getIdCode(),resultMsg,processInstance,smsContent.get("项目",processInstance.getName()));
+            resultMsg.setIdCode(null);
+            resultMsg.setReObj(null);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
@@ -422,6 +438,12 @@ public class SignController {
         return signService.saveMoreExpert(signId , isMoreExpert);
     }
 
+    @RequiresAuthentication
+    @RequestMapping(name = "更新回传发改委状态" , path = "updateSendFGWState" , method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg updateSendFGWState(@RequestParam String signId , @RequestParam String state){
+        return signService.updateSendFGWState(signId , state);
+    }
 
     @RequiresAuthentication
     //@RequiresPermissions("sign#html/flowDeal#get")

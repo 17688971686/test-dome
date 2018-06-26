@@ -47,4 +47,23 @@ public class PartyManagerServiceImpl implements  PartyManagerService {
     public ResultMsg findPartyById(String pmId) {
         return partyManagerRepo.findPartyById(pmId);
     }
+
+    /**
+     * 更新党员信息
+     * @param partyManagerDto
+     * @return
+     */
+    @Override
+    public ResultMsg updateParty(PartyManagerDto partyManagerDto) {
+        return partyManagerRepo.updateParty(partyManagerDto);
+    }
+
+    /**
+     * 删除党员信息
+     * @param pmId
+     */
+    @Override
+    public void deleteParty(String pmId) {
+        partyManagerRepo.deleteParty(pmId);
+    }
 }

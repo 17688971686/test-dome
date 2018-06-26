@@ -480,6 +480,10 @@ public class FlowController {
                     projectOrTask="项目";
                     resultMsg = signService.dealFlow(processInstance, task,flowDto);
                     break;
+                case FlowConstant.ROLL_BACK_SEND_FLOW:
+                    projectOrTask="项目";
+                    resultMsg = signService.dealFlow(processInstance, task,flowDto);
+                    break;
                 case FlowConstant.TOPIC_FLOW:
                     projectOrTask="任务";
                     resultMsg = topicInfoService.dealFlow(processInstance, task,flowDto);
@@ -526,21 +530,22 @@ public class FlowController {
             log.info("流程提交异常："+errorMsg);
             resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"操作异常，错误信息已记录，请联系管理员查看！");
         }
-        /*//添加日记记录
-        Log log = new Log();
-        log.setCreatedDate(new Date());
-        log.setUserName(SessionUtil.getDisplayName());
-        log.setLogCode(resultMsg.getReCode());
-        log.setBuninessId(businessKey);
-        log.setMessage(resultMsg.getReMsg()+errorMsg);
-        log.setModule(Constant.LOG_MODULE.FLOWCOMMIT.getValue()+FlowConstant.getFLowNameByFlowKey(module) );
-        log.setResult(resultMsg.isFlag()? Constant.EnumState.YES.getValue(): Constant.EnumState.NO.getValue());
-        log.setLogger(this.getClass().getName()+".flowCommit");
-        //优先级别高
-        log.setLogLevel(Constant.EnumState.PROCESS.getValue());
-        logService.save(log);*/
         //腾讯通消息处理
         rtxService.dealPoolRTXMsg(flowDto.getTaskId(),resultMsg,processInstance,smsContent.get(projectOrTask,processInstance.getName()));
+        return resultMsg;
+    }
+    @RequiresAuthentication
+    @RequestMapping(name = "获取重写工作方案分支", path = "getBranchInfo", method = RequestMethod.GET)
+    public @ResponseBody ResultMsg getBranchInfo(@RequestBody FlowDto flowDto) {
+        /*
+项目signID:
+ 41f13169-cf7c-4273-b7a0-841921d467ae
+        *
+        * */
+
+
+
+        ResultMsg resultMsg = flowService.getBranchInfo(flowDto);
         return resultMsg;
     }
 
@@ -705,7 +710,8 @@ public class FlowController {
                 resultPage = "reviewProjectAppraise/flowEnd";
                 break;
             case FlowConstant.FLOW_SUPP_LETTER:
-                resultPage = "addSuppLetter/letterFlowEnd";
+                resultPage = "" +
+                        "";
                 break;
             case FlowConstant.MONTHLY_BULLETIN_FLOW:
                 resultPage = "monthlyNewsletter/flow/flowDeal";
@@ -726,5 +732,22 @@ public class FlowController {
     @ResponseBody
     public List<Map<String, Object>> getProc(){
         return  flowService.getProc();
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "重写工作方案", path = "rollbackSend/{processKey}", method = RequestMethod.GET)
+    public String rollbackSend(@PathVariable("processKey") String processKey) {
+        String resultPage = "";
+        switch (processKey){
+            case FlowConstant.ROLL_BACK_SEND_FLOW:
+                resultPage = "rollbackSend/rollbackSend";
+                break;
+            case FlowConstant.QUERY_BRANCH_INFO:
+                resultPage = "rollbackSend/getBranchInfo";
+                break;
+            default:
+                ;
+        }
+        return resultPage;
     }
 }

@@ -9,6 +9,7 @@
 
     function sign(sysfileSvc, signSvc, workprogramSvc, $state, flowSvc, signFlowSvc, ideaSvc, addRegisterFileSvc,
                   expertReviewSvc, $scope, bsWin, financialManagerSvc, addSuppLetterQuerySvc, addCostSvc, templatePrintSvc, companySvc) {
+
         var vm = this;
         vm.title = "项目流程处理";
         vm.model = {};          //收文对象
@@ -21,6 +22,7 @@
         vm.queryParams = {};  //返回时。列表数据不变
         vm.work = {};
         vm.isDisplay = true;   //附件显示删除按钮
+        vm.reworkWorkPlanObject = {};   //发文:重写工作方案
         vm.expertList = new Array(15); //用于打印页面的专家列表，控制行数
         //按钮显示控制，全部归为这个对象控制
         vm.showFlag = {
@@ -53,7 +55,8 @@
             expertpayment: false,        // 专家费用弹窗内容显示
             expertEdit: false,            // 专家评分费用编辑权限
             isMainPrinUser: false,        // 是否是第一负责人
-            showFilecodeBt : false          //显示归档按钮
+            showFilecodeBt : false ,         //显示归档按钮
+            showReworkWorkPlanBt : false          //显示重写工作方案按钮
         };
 
         //业务控制对象
@@ -72,8 +75,9 @@
             passDis: false,              // 发文是否通过
             curBranchId: "",              // 当前流程分支
             editEPReviewId: "",           // 可以编辑的评审方案ID
+            isReworkWorkPlan: false,              // 是否重写工作方案对象
         }
-
+        debugger;
         vm.model.signid = $state.params.signid;
         vm.work.id = $state.params.id;
         vm.flow.taskId = $state.params.taskId; // 流程任务ID
@@ -82,9 +86,10 @@
         vm.signId = vm.model.signid;
         vm.expertList = new Array(10); //用于打印页面的专家列表，控制行数
         vm.curDate = "";  //当前日期
-
+        debugger;
         active();
         function active() {
+            debugger;
             $('#myTab li').click(function (e) {
                 var aObj = $("a", this);
                 e.preventDefault();
@@ -117,6 +122,7 @@
             });
             // 初始化业务信息
             signSvc.initFlowPageData(vm.model.signid, function (data) {
+                debugger;
                 vm.model = data;
                 vm.curDate = data.curDate;
                 var deActive = $("#myTab .active");
@@ -140,30 +146,24 @@
                         vm.showFlag.buttDisFileNum = true;
                     }
                 }
-                //完成工作方案时到发文环节，默认评审发放日期为当天
-                /*if( vm.model.processState == 3 || vm.model.processState == 4){
-                 if( vm.model.expertReviewDto){
-                 vm.model.expertReviewDto.payDate = new Date().Format("yyyy-MM-dd");
-                 }
-                 }*/
 
                 //归档
                 if (vm.model.fileRecordDto) {
                     vm.showFlag.tabFilerecord = true;
                     vm.fileRecord = vm.model.fileRecordDto;
                 }
-
+                debugger;
                 //判断是否有多个分支，用于控制是否显示总投资字段 和 分开获取关联的项目信息（主要用于项目概算阶段）（旧版本）
                 //通过评估部门的个数来控制总投资字段  修改于（2018-01-16）
                 if (vm.model.workProgramDtoList && vm.model.workProgramDtoList.length > 0) {
                     var orgStr;
-                    if (vm.model.workProgramDtoList[0].branchId == '1' || vm.model.workProgramDtoList[0].branchId == '1') {
+                    if (vm.model.workProgramDtoList[0].branchId == '1') {
                         orgStr = vm.model.workProgramDtoList[0].reviewOrgName;
                     } else {
                         orgStr = vm.model.workProgramDtoList[0].mainWorkProgramDto.reviewOrgName;
                     }
-                    if (orgStr != '' && orgStr.split(',').length > 1) {
 
+                    if (orgStr && orgStr.split(',').length > 1) {
                         vm.showTotalInvestment = true;
                     }
 
@@ -299,6 +299,7 @@
         /***************  S_评审意见管理  ***************/
         // begin 管理个人意见
         vm.ideaEdit = function (options) {
+            debugger;
             if (!angular.isObject(options)) {
                 options = {};
             }
@@ -307,6 +308,7 @@
 
         //选择个人常用意见
         vm.selectedIdea = function () {
+            debugger;
             vm.flow.dealOption = vm.chooseIdea;
         }
         /***************  E_评审意见管理  ***************/
@@ -314,6 +316,7 @@
         /***************  S_专家评分，评审费发放  ***************/
         // 编辑专家评分
         vm.editSelectExpert = function (id) {
+            debugger;
             vm.scoreExpert = {};
             $.each(vm.model.expertReviewDto.expertSelectedDtoList, function (i, scopeEP) {
                 if (scopeEP.id == id) {
@@ -630,6 +633,11 @@
             $state.go('flowWPEdit', {signid: vm.model.signid,taskid:vm.flow.taskId});
         }// E_跳转到 工作方案 编辑页面
 
+        // S_跳转到 项目基本信息 编辑页面
+        vm.addBaseInfo = function(){
+            $state.go('initProjBase', {signid: vm.model.signid,isadmin:null});
+        }// E_跳转到 项目基本信息 编辑页面
+
         //S_链接到拟补充资料函
         vm.addSuppLetter = function () {
             addSuppLetterQuerySvc.checkIsApprove(vm.model.signid,"1",function(data){
@@ -657,6 +665,16 @@
 
         //S_工作方案  --链接到  登记表补充资料
         vm.addRegisterFile = function () {
+            debugger;
+            $("#associateWindow").kendoWindow({
+                width: "80%",
+                height: "800px",
+                title: "项目关联",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "close"],
+            }).data("kendoWindow").center().open();
             $state.go('registerFile', {businessId: vm.model.signid});
         }// E_工作方案  --链接到  登记表补充资料
 
@@ -705,11 +723,7 @@
                                         }else{
                                             vm.noassociateSign = true;
                                         }
-
                                     });
-                                    //alert("当前页："+o.number+"，从数据库的位置1"+o.skip+"起，查"+o.size+"条数据");
-                                    //需在这里发起ajax请求查询数据，请求成功后需调用callback方法重新计算分页
-
                                 }
                             });
                             vm.ss = true;
@@ -735,6 +749,25 @@
             } else {
                 $state.go('dispatchEdit', {signid: vm.model.signid});
             }
+        }// E_跳转到 发文 编辑页面
+
+        // S_跳转到 发文 重写工作方案
+        vm.reworkWorkPlanViem = function () {
+            debugger;
+            /**
+             * 1、获取需要重写的工作方案
+             * 2、
+             * */
+            //选中要关联的项目
+            $("#reworkWorkPlanWindow").kendoWindow({
+                width: "50%",
+                height: "400px",
+                title: "重写工作方案",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "close"],
+            }).data("kendoWindow").center().open();
         }// E_跳转到 发文 编辑页面
 
         //关联项目条件查询
@@ -767,13 +800,14 @@
         }
         //end 保存项目关联
 
-        // S_财务办理
+        // S_财务办理(目前全部是评审费)
         vm.addFinancialApply = function (id) {
-            if ("9" == vm.model.isassistflow || 9 == vm.model.isassistflow) {
+            vm.costType = "REVIEW";
+            /*if ("9" == vm.model.isassistflow || 9 == vm.model.isassistflow) {
                 vm.costType = "ASSIST";
             } else {
                 vm.costType = "REVIEW";
-            }
+            }*/
             /**
              * 初始化费用录入
              */

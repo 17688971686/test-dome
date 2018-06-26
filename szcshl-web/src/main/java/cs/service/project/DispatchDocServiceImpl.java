@@ -209,6 +209,11 @@ public class DispatchDocServiceImpl implements DispatchDocService {
             sign.setAuthorizeValue(dispatchDocDto.getAuthorizeValue());
             sign.setWorkProgramList(workProgrmList);
             dispatchDoc.setSign(sign);
+            //重新设置发文里的金额
+            dispatchDoc.setDeclareValue(dispatchDocDto.getDeclareValue()); //申报
+            dispatchDoc.setAuthorizeValue(dispatchDocDto.getAuthorizeValue());//审定
+            dispatchDoc.setApproveValue(dispatchDocDto.getApproveValue());//批复金额
+
             dispatchDocRepo.save(dispatchDoc);
 
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", dispatchDocDto);
@@ -666,5 +671,12 @@ public class DispatchDocServiceImpl implements DispatchDocService {
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "评审报告文件生成成功！", null);
         }
     }
+
+    @Override
+    public void updateDispatchByDocDto(DispatchDocDto dispatchDocDto,String isMain) {
+            dispatchDocRepo.updateDispatchDoc(dispatchDocDto,isMain);
+
+    }
+
 
 }

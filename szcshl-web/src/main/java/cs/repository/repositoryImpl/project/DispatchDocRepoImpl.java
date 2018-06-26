@@ -5,6 +5,7 @@ import java.util.List;
 import cs.common.constants.Constant;
 import cs.common.HqlBuilder;
 import cs.common.utils.Validate;
+import cs.model.project.DispatchDocDto;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,5 +94,14 @@ public class DispatchDocRepoImpl extends AbstractRepository<DispatchDoc, String>
             sqlBuilder.setParam("dispatchStage1",DEVICE_BILL_HOMELAND).setParam("dispatchStage2",DEVICE_BILL_IMPORT);
         }
         return returnIntBySql(sqlBuilder);
+    }
+
+    @Override
+    public void updateDispatchDoc(DispatchDocDto dispatchDocDto,String isMain ) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" update cs_dispatch_doc set " + DispatchDoc_.approveValue.getName() + " =:approveValue " );
+        sqlBuilder.setParam("approveValue", dispatchDocDto.getApproveValue());
+        sqlBuilder.bulidPropotyString("where", "signid", dispatchDocDto.getSignId());
+        executeSql(sqlBuilder);
     }
 }

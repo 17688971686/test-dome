@@ -9,12 +9,15 @@
         var service = {
             findOrgUser: findOrgUser,                   //查询当前用户所在部门的所有用户信息
             createTopic : createTopic,                  //创建课题研究信息
+            updateTopic : updateTopic,                  //更新课题研究信息
             startFlow : startFlow,                      //发起课题研究流程
             initFlowDeal : initFlowDeal,                //初始化课题研究流程信息
             initFlowNode : initFlowNode,                //初始化流程环节信息
             initMyGird : initMyGird,                    //初始化我的课题列表
             initDetail : initDetail,                    //初始化详情信息
             queryGrid : queryGrid ,                     //初始化课题查询列表
+            saveContractDetailList : saveContractDetailList, //保存合同信息
+            deleteContractConditions: deleteContractConditions  //删除合同信息
         };
 
         return service;
@@ -58,6 +61,28 @@
                 onError : function(){isCommit = false;}
             });
         }//E_createTopic
+
+        //S_更新课题研究信息
+        function updateTopic(topicModel,isCommit,callBack){
+            isCommit = true;
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/topicInfo/updateTopic",
+                data : topicModel
+            };
+            var httpSuccess = function success(response) {
+                isCommit = false;
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess,
+                onError : function(){isCommit = false;}
+            });
+        }//
 
         //S_启动流程
         function startFlow(topicModel,isCommit,callBack){
@@ -222,6 +247,57 @@
                 httpOptions: httpOptions,
                 success: httpSuccess,
                 onError : function(){}
+            });
+        }
+
+        //S_保存合同信息
+        function saveContractDetailList(conditions,callBack){
+            var httpOptions = {
+                method : 'post',
+                url : rootPath + "/topicInfo/saveContractDetailList",
+                headers:{
+                    "contentType":"application/json;charset=utf-8"  //设置请求头信息
+                },
+                traditional: true,
+                dataType : "json",
+                data : angular.toJson(conditions)//将Json对象序列化成Json字符串，JSON.stringify()原生态方法
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http : $http,
+                httpOptions : httpOptions,
+                success : httpSuccess
+            });
+        }
+
+        /**
+         * 删除合同信息
+         * @param delIds
+         * @param isCommit
+         * @param callBack
+         */
+        function deleteContractConditions(delIds,callBack){
+            console.log(delIds);
+            var httpOptions = {
+                method : 'delete',
+                url: rootPath + "/topicInfo/contractDel",
+                params:{
+                    ids : delIds
+                }
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http : $http,
+                httpOptions : httpOptions,
+                success : httpSuccess,
             });
         }
 

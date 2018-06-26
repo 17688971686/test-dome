@@ -35,8 +35,6 @@ public class SignFlowImpl implements IFlow {
     @Autowired
     private SignPrincipalService signPrincipalService;
     @Autowired
-    private SignBranchRepo signBranchRepo;
-    @Autowired
     private SignMergeRepo signMergeRepo;
     @Autowired
     private OrgDeptService orgDeptService;
@@ -52,6 +50,8 @@ public class SignFlowImpl implements IFlow {
     private ExpertReviewRepo expertReviewRepo;
     @Autowired
     private AssistUnitRepo assistUnitRepo;
+    @Autowired
+    private SignBranchRepo signBranchRepo;
     /**
      * 获取流程参数
      * @param businessKey
@@ -119,11 +119,19 @@ public class SignFlowImpl implements IFlow {
                 if(!Validate.isString(branchIndex)){
                     branchIndex =  FlowConstant.SignFlowParams.BRANCH_INDEX4.getValue();
                 }
-                WorkProgram wp = workProgramRepo.findBySignIdAndBranchId(businessKey,branchIndex);
+                String isNeedWP =  Constant.EnumState.YES.getValue();
+
+                WorkProgram wp = workProgramRepo.findBySignIdAndBranchId(businessKey,branchIndex, false);
                 boolean isFinishWP = false;
-                if(Validate.isObject(wp) && Validate.isString(wp.getId())){
-                    isFinishWP = true;
+                if(Validate.isObject(wp)){
+                    if(Validate.isString(wp.getBaseInfo()) && Constant.EnumState.YES.getValue().equals(wp.getBaseInfo())){
+                        isFinishWP = false;
+                        isNeedWP =  Constant.EnumState.NO.getValue();
+                    }else{
+                        isFinishWP = true;
+                    }
                 }
+                businessMap.put("isNeedWP", isNeedWP);
                 //能查询出工作方案，代表已经完成工作填写
                 businessMap.put("isFinishWP", isFinishWP);
                 break;

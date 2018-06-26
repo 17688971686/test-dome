@@ -343,7 +343,6 @@
         }
 
         vm.create = function () {
-            /* var id = $("#work_program_form").find('div[class="ng-scope"]').attr("id");*/
             common.initJqValidation($("#work_program_form"));
             var isValid = $("#work_program_form").valid();
             if (isValid) {

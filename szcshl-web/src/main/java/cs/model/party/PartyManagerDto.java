@@ -208,6 +208,39 @@ public class PartyManagerDto extends DomainBase{
      */
     private String outflowToUnitType;
 
+    /**
+     * 入党介绍人
+     */
+    private String introducer;
+
+    /**
+     * 组织关系是否在我委
+     */
+    private String isInOrg;
+
+    /**
+     * 转入党组织日期
+     */
+    @JSONField(format = "yyyy-MM-dd")
+    private Date joinOrgDate;
+
+    /**
+     * 参加工作时间
+     */
+    @JSONField(format = "yyyy-MM-dd")
+    private Date joinWorkDate;
+
+    /**
+     * 是否在编
+     */
+    private String isEnrolled;
+
+    /**
+     * 转出党组织日期
+     */
+    @JSONField(format = "yyyy-MM-dd")
+    private Date outOrgDate;
+
     public String getPmId() {
         return pmId;
     }
@@ -501,5 +534,53 @@ public class PartyManagerDto extends DomainBase{
 
     public void setOutflowToUnitType(String outflowToUnitType) {
         this.outflowToUnitType = outflowToUnitType;
+    }
+
+    public String getIntroducer() {
+        return introducer;
+    }
+
+    public void setIntroducer(String introducer) {
+        this.introducer = introducer;
+    }
+
+    public String getIsInOrg() {
+        return isInOrg;
+    }
+
+    public void setIsInOrg(String isInOrg) {
+        this.isInOrg = isInOrg;
+    }
+
+    public Date getJoinOrgDate() {
+        return joinOrgDate;
+    }
+
+    public void setJoinOrgDate(Date joinOrgDate) {
+        this.joinOrgDate = joinOrgDate;
+    }
+
+    public Date getJoinWorkDate() {
+        return joinWorkDate;
+    }
+
+    public void setJoinWorkDate(Date joinWorkDate) {
+        this.joinWorkDate = joinWorkDate;
+    }
+
+    public String getIsEnrolled() {
+        return isEnrolled;
+    }
+
+    public void setIsEnrolled(String isEnrolled) {
+        this.isEnrolled = isEnrolled;
+    }
+
+    public Date getOutOrgDate() {
+        return outOrgDate;
+    }
+
+    public void setOutOrgDate(Date outOrgDate) {
+        this.outOrgDate = outOrgDate;
     }
 }

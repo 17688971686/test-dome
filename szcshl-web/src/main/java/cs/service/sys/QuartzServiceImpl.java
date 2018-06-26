@@ -61,6 +61,14 @@ public class QuartzServiceImpl implements QuartzService {
     @Autowired
     private RuntimeService runtimeService;
 
+
+    @Autowired
+    private SysConfigService sysConfigService;
+    @Autowired
+    private SMSContent smsContent;
+    @Autowired
+    private SMSLogService smsLogService;
+
     @Override
     public PageModelDto<QuartzDto> get(ODataObj odataObj) {
         PageModelDto<QuartzDto> pageModelDto = new PageModelDto<QuartzDto>();
@@ -200,6 +208,9 @@ public class QuartzServiceImpl implements QuartzService {
             params.put("signRestService",signRestService);
             params.put("projectStopRepo",projectStopRepo);
             params.put("runtimeService",runtimeService);
+            params.put("sysConfigService",sysConfigService);
+            params.put("smsContent",smsContent);
+            params.put("smsLogService",smsLogService);
 
             if (Job.class.isAssignableFrom(Class.forName(cls))) {
                 QuartzManager.addJob(sched, jobName, Class.forName(cls), time,params);

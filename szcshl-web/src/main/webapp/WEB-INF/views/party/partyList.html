@@ -8,59 +8,95 @@
         <li><a href="#/quartz">党务管理</a></li>
         <li class="active">{{vm.title}}</li>
     </ol>
-    <form id="partyform" name="partyform" class="well well-sm">
-        <table style="width:100%" id="searchTable">
-            <tr>
-                <td class="text-right">
-                    <span class="help-inline">姓名：</span>
-                </td>
-                <td>
-                    <input type="text" ng-model="vm.party.pmName" operator="like" name="pmName" id="pmName"
-                           placeholder="请输入" class="form-control input-xm " style="width: 200px;">
-                </td>
-                <td class="text-right">
-                    <span class="help-inline" >人员类别：</span>
-                </td>
-                <td>
-                     <span>
-                        <select name="pmCategory" id="pmCategory"  operator="like"
-                                ng-model="vm.party.pmCategory" class="form-control input-xm ">
+
+    <div class="toolbar">
+        <button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.queryParty()">
+            <span class="glyphicon glyphicon-search"></span>查询</button>
+        <button class="btn btn-sm btn-primary" ng-click="vm.formReset()">
+            <span class="glyphicon glyphicon-repeat"></span>重置
+        </button>
+        <button class="btn btn-sm btn-success" ng-click="vm.exportSignInSheet()">
+            导出
+        </button>
+      <button class="btn btn-sm btn-primary" ng-click="vm.importExcel()">
+            批量导入
+        </button>
+    </div>
+    <div class="well well-sm">
+        <form id="partyform" name="partyform" class="well well-sm">
+            <table style="width:100%" id="searchTable">
+                <tr>
+                    <td class="text-right" width="5%">
+                        <span class="help-inline">入党时间：</span>
+                    </td>
+                    <td width="25%">
+                        <input type="text"  operator="ge" name="pmJoinPartyDate" id="pmJoinPartyDate"
+                               placeholder="请输入" class="form-control input-xm "
+                               kendo-date-picker k-format="'yyyy-MM-dd'" />
+                        至
+                        <input type="text"  operator="le" name="pmJoinPartyDate" id="pmJoinPartyDate"
+                               placeholder="请输入" class="form-control input-xm "
+                               kendo-date-picker k-format="'yyyy-MM-dd'" />
+
+                    </td>
+                    <td class="text-right" width="5%">
+                        <span class="help-inline" >性别：</span>
+                    </td>
+                    <td width="10%">
+                        <select  class="form-control select-sm"
+                                 name="pmSex" id="pmSex" operator="like" placeholder="请选择">
                             <option value="">请选择</option>
-                            <option value="1">正式党员</option>
-                            <option value="2">预备党员</option>
+                            <option value="男">男</option>
+                            <option value="女">女</option>
                         </select>
-                    </span>
-                </td>
-                <td class="text-right">
-                    <span class="help-inline">身份证号：</span>
-                </td>
-                <td>
-                    <input type="text" ng-model="vm.party.pmIDCard" operator="like" name="pmIDCard" id="pmIDCard"
-                           placeholder="请输入" class="form-control input-xm " style="width: 200px;">
-                </td>
-                <td class="text-right">
-                    <span class="help-inline">手机号：</span>
-                </td>
-                <td>
-                    <input type="text" ng-model="vm.party.pmPhone" operator="like" name="pmPhone" id="pmPhone"
-                           placeholder="请输入" class="form-control input-xm " style="width: 200px;">
-                </td>
-                <td>
-                    <button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.queryParty()">
-                        <span class="glyphicon glyphicon-search"></span>查询</button>
-                </td>
-            </tr>
-        </table>
-    </form>
+                    </td>
+                    <td class="text-right" width="5%">
+                        <span class="help-inline" >学历：</span>
+                    </td>
+                    <td width="10%">
+                        <select class="form-control select-sm" name="pmEducation" id="pmEducation" operator="like" placeholder="请选择"
+                                class="form-control select-sm">
+                            <option value="">请选择</option>
+                            <option ng-repeat="x in DICT.ADUCATION.dicts" value="{{x.dictKey}}"
+                                    ng-selected="x.dictKey == vm.party.pmEducation">{{x.dictName}}
+                            </option>
+                        </select>
+                    </td>
+
+                    <td class="text-right" width="5%">
+                        <span class="help-inline">转入时间：</span>
+                    </td>
+                    <td width="30%">
+                        <input type="text"  operator="ge" name="pmTurnToPatryDate" id="pmTurnToPatryDate"
+                               placeholder="请输入" class="form-control input-xm "
+                               kendo-date-picker k-format="'yyyy-MM-dd'" />
+                        至
+                        <input type="text"  operator="le" name="pmTurnToPatryDate" id="pmTurnToPatryDate"
+                               placeholder="请输入" class="form-control input-xm "
+                               kendo-date-picker k-format="'yyyy-MM-dd'" />
+
+                    </td>
+                </tr>
+
+            </table>
+        </form>
+    </div>
 
     <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
 </div>
 <script type="text/template" id="columnBtns">
-    <#-- <button class="btn btn-xs btn-primary" ng-click="{0}" ><span class="glyphicon glyphicon-pencil"></span>编辑</button>-->
-    <button class="btn btn-xs btn-primary" ng-click="{0}"  ><span class="glyphicon glyphicon-pencil"></span>查看</button>
-    <#--  <button class="btn btn-xs btn-warning" ng-click="{2}" ><span class="glyphicon glyphicon-warning-sign"></span>删除</button>-->
+    <a class="btn btn-xs btn-primary" href="#/partyEdit/{1}" ><span class="glyphicon glyphicon-pencil"></span>编辑</a>
+    <button class="btn btn-xs btn-primary" ng-click="{0}"  ><span class="glyphicon glyphicon-search"></span>查看</button>
+    <button class="btn btn-xs btn-warning" ng-click="{2}" ><span class="glyphicon glyphicon-warning-sign"></span>删除</button>
 </script>
 
 <div style="display: none" id="partyDetail">
 <#include "/party/partyDetail.html">
+</div>
+
+
+<!--批量导入选择导入文件弹框页-->
+<div style="display: none" id="importDiv">
+
+
 </div>

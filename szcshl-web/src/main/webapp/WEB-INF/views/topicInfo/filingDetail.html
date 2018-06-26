@@ -17,9 +17,9 @@
 </style>
 <div class="well well-sm" style="background:white;">
     <table class="table table-bordered" id="filingtable">
-        <caption>QR-4.1-11-A2</caption>
+        <caption>QR-4.1-11-A2555</caption>
         <caption class="text-center">
-            <h3><strong>深圳市政府投资项目评审中心<br>课题研究存档表</strong></h3>
+            <h3><strong>深圳市政府投资项目评审中心99<br>课题研究存档表</strong></h3>
         </caption>
         <caption class="text-right" style="padding-right:100px;">归档编号：{{vm.model.filingDto.fileNo}}</span></caption>
         <tr>
@@ -59,10 +59,10 @@
                                        ng-model="vm.model.filingDto.planCount" name="planCount" id="planCount" >
                             </span>
                         <span>
-                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.planOrig" name="planOrig" ng-true-value="9" ng-false-value="0" />
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.planOrig" name="planOrig" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.filingDto.planOrig==9" />
                             </span>
                         <span>
-                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.planCopy" name="planCopy" ng-true-value="9" ng-false-value="0" />
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.planCopy" name="planCopy" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.filingDto.planCopy==9"/>
                             </span>
                     </li>
                 </ul>
@@ -76,10 +76,10 @@
                                        ng-model="vm.model.filingDto.eleDocCount" name="eleDocCount" id="eleDocCount" >
                             </span>
                         <span>
-                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.eleDocOrig" name="eleDocOrig" ng-true-value="9" ng-false-value="0" />
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.eleDocOrig" name="eleDocOrig" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.filingDto.eleDocOrig==9" />
                             </span>
                         <span>
-                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.eleDocCopy" name="eleDocCopy" ng-true-value="9" ng-false-value="0" />
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.eleDocCopy" name="eleDocCopy" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.filingDto.eleDocCopy==9"/>
                             </span>
                     </li>
                 </ul>
@@ -95,10 +95,10 @@
                                        ng-model="vm.model.filingDto.contract" name="contract" id="contract" >
                             </span>
                         <span>
-                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.contractOrig" name="contractOrig" ng-true-value="9" ng-false-value="0" />
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.contractOrig" name="contractOrig" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.filingDto.contractOrig==9"/>
                             </span>
                         <span>
-                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.contractCopy" name="contractCopy" ng-true-value="9" ng-false-value="0" />
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.contractCopy" name="contractCopy" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.filingDto.contractCopy==9"/>
                             </span>
                     </li>
                 </ul>
@@ -134,10 +134,10 @@
                                        ng-model="vm.model.filingDto.wplanCount" name="wplanCount" id="wplanCount" >
                             </span>
                         <span>
-                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.wplanOrig" name="wplanOrig" ng-true-value="9" ng-false-value="0" />
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.wplanOrig" name="wplanOrig" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.filingDto.wplanOrig==9"/>
                             </span>
                         <span>
-                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.wplanCopy" name="wplanCopy" ng-true-value="9" ng-false-value="0" />
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.wplanCopy" name="wplanCopy" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.filingDto.wplanCopy==9"/>
                             </span>
                     </li>
                 </ul>
@@ -151,10 +151,10 @@
                                        ng-model="vm.model.filingDto.studyCount" name="studyCount" id="studyCount" >
                             </span>
                         <span>
-                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.studyOrig" name="studyOrig" ng-true-value="9" ng-false-value="0" />
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.studyOrig" name="studyOrig" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.filingDto.studyOrig==9"/>
                             </span>
                         <span>
-                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.studyCopy" name="studyCopy" ng-true-value="9" ng-false-value="0" />
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.studyCopy" name="studyCopy" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.filingDto.studyCopy==9" />
                             </span>
                     </li>
                 </ul>
@@ -170,10 +170,10 @@
                                        ng-model="vm.model.filingDto.studyIdeaCount" name="studyIdeaCount" id="studyIdeaCount" >
                             </span>
                         <span>
-                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.studyIdeaOrig" name="studyIdeaOrig" ng-true-value="9" ng-false-value="0" />
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.studyIdeaOrig" name="studyIdeaOrig" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.filingDto.studyIdeaOrig==9"/>
                             </span>
                         <span>
-                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.studyIdeaCopy" name="studyIdeaCopy" ng-true-value="9" ng-false-value="0" />
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.studyIdeaCopy" name="studyIdeaCopy" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.filingDto.studyIdeaCopy==9"/>
                             </span>
                     </li>
                 </ul>
@@ -187,10 +187,10 @@
                                        ng-model="vm.model.filingDto.studyEleCount" name="studyEleCount" id="studyEleCount" >
                             </span>
                         <span>
-                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.studyEleOrig" name="studyEleOrig" ng-true-value="9" ng-false-value="0" />
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.studyEleOrig" name="studyEleOrig" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.filingDto.studyEleOrig==9"/>
                             </span>
                         <span>
-                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.studyEleCopy" name="studyEleCopy" ng-true-value="9" ng-false-value="0" />
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.studyEleCopy" name="studyEleCopy" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.filingDto.studyEleCopy==9"/>
                             </span>
                     </li>
                 </ul>
@@ -206,10 +206,10 @@
                                        ng-model="vm.model.filingDto.signinCount" name="signinCount" id="signinCount" >
                             </span>
                         <span>
-                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.signinOrig" name="signinOrig" ng-true-value="9" ng-false-value="0" />
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.signinOrig" name="signinOrig" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.filingDto.signinOrig==9"/>
                             </span>
                         <span>
-                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.signinCopy" name="signinCopy" ng-true-value="9" ng-false-value="0" />
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.signinCopy" name="signinCopy" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.filingDto.signinCopy==9"/>
                             </span>
                     </li>
                 </ul>
@@ -223,10 +223,10 @@
                                        ng-model="vm.model.filingDto.reportCount" name="reportCount" id="reportCount" >
                             </span>
                         <span>
-                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.reportOrig" name="reportOrig" ng-true-value="9" ng-false-value="0" />
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.reportOrig" name="reportOrig" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.filingDto.reportOrig==9"/>
                             </span>
                         <span>
-                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.reportCopy" name="reportCopy" ng-true-value="9" ng-false-value="0" />
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.reportCopy" name="reportCopy" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.filingDto.reportCopy==9"/>
                             </span>
                     </li>
                 </ul>
@@ -234,7 +234,6 @@
         </tr>
         <tr>
             <td colspan="2">
-
             </td>
             <td colspan="2">
                 <ul>
@@ -245,10 +244,10 @@
                                        ng-model="vm.model.filingDto.epCostCount" name="epCostCount" id="epCostCount" >
                             </span>
                         <span>
-                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.epCostOrig" name="epCostOrig" ng-true-value="9" ng-false-value="0" />
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.epCostOrig" name="epCostOrig" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.filingDto.epCostOrig==9" />
                             </span>
                         <span>
-                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.epCostCopy" name="epCostCopy" ng-true-value="9" ng-false-value="0" />
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.epCostCopy" name="epCostCopy" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.filingDto.epCostCopy==9"/>
                             </span>
                     </li>
                 </ul>
@@ -257,8 +256,8 @@
         <tr>
             <td class="text-center">项目负责人签名</td>
             <td>{{vm.model.filingDto.principal}}</td>
-            <td class="text-center">负责部门部长审核</td>
-            <td>{{vm.model.filingDto.director}}</td>
+            <td class="text-center"></td>
+            <td></td>
         </tr>
         <tr>
             <td class="text-center">档案员签收</td>
@@ -298,10 +297,10 @@
                                        ng-model="vm.model.filingDto.registerFileDto[$index].totalNum" >
                             </span>
                         <span>
-                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.registerFileDto[$index].isHasOriginfile" ng-true-value="9" ng-false-value="0" />
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.registerFileDto[$index].isHasOriginfile" ng-true-value="9" ng-false-value="0" ng-checked="f.isHasOriginfile==9"/>
                             </span>
                         <span>
-                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.registerFileDto[$index].isHasCopyfile"  ng-true-value="9" ng-false-value="0" />
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.filingDto.registerFileDto[$index].isHasCopyfile"  ng-true-value="9" ng-false-value="0" ng-checked="f.isHasCopyfile==9"/>
                             </span>
                     </li>
                 </ul>

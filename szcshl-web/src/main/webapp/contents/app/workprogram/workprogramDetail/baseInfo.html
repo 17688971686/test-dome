@@ -1,0 +1,68 @@
+<meta charset="UTF-8">
+<div class="well well-sm" style="background:white;">
+    <!-- s table -->
+    <table class="table table-bordered">
+        <tbody>
+        <tr>
+            <td style="width:150px;" class="text-center">建设单位</td>
+            <td colspan="3">
+                {{vm.model.projBaseInfoDto.buildCompany}}
+            </td>
+        </tr>
+        <tr>
+            <td style="width:150px;" class="text-center">行业类别</td>
+            <td style="width: 30%;">
+                {{vm.model.projBaseInfoDto.industryType}}
+            </td>
+            <td style="width:150px;" class="text-center">项目类别</td>
+            <td>
+                {{vm.model.projBaseInfoDto.projectType}}
+                <span style="margin-left:15px;"></span>
+                {{vm.model.projBaseInfoDto.projectSubType}}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-center" >来文单位</td>
+            <td >
+                {{vm.model.projBaseInfoDto.sendFileUnit}}
+            </td>
+            <td class="text-center">来文单位联系人</td>
+            <td >
+                {{vm.model.projBaseInfoDto.sendFileUser}}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-center" >主管部门</td>
+            <td colspan="3">
+                {{vm.model.projBaseInfoDto.mainDeptName}}
+            </td>
+        </tr>
+        <tr>
+            <td style="width:150px;" class="text-center">联系人</td>
+            <td>
+                {{vm.model.projBaseInfoDto.contactPerson}}
+            </td>
+            <td style="width:150px;" class="text-center">电话</td>
+            <td>
+                {{vm.model.projBaseInfoDto.contactPersonTel}}
+
+            </td>
+        </tr>
+        <tr>
+            <td style="width:150px;" class="text-center">传真</td>
+            <td>
+                {{vm.model.projBaseInfoDto.contactPersonFax}}
+            </td>
+            <td style="width:150px;" class="text-center">手机</td>
+            <td>
+                {{vm.model.projBaseInfoDto.contactPersonPhone}}
+
+            </td>
+        </tr>
+        </tbody>
+    </table>    <!-- end table -->
+</div>
+
+
+
+

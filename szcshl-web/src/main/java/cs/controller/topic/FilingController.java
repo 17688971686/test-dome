@@ -2,22 +2,21 @@ package cs.controller.topic;
 
 import cs.ahelper.IgnoreAnnotation;
 import cs.common.ResultMsg;
+import cs.common.constants.Constant;
 import cs.model.PageModelDto;
 import cs.model.topic.FilingDto;
-import cs.model.topic.WorkPlanDto;
 import cs.repository.odata.ODataObj;
+import cs.service.sys.UserService;
 import cs.service.topic.FilingService;
-
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
-import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Description: 课题归档 控制层
@@ -29,9 +28,11 @@ import java.util.Date;
 @IgnoreAnnotation
 public class FilingController {
 
-	String ctrlName = "filing";
+    String ctrlName = "filing";
     @Autowired
     private FilingService filingService;
+    @Autowired
+    private UserService userService;
 
     @RequiresAuthentication
     //@RequiresPermissions("filing#findByOData#post")
@@ -39,7 +40,7 @@ public class FilingController {
     @ResponseBody
     public PageModelDto<FilingDto> get(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        PageModelDto<FilingDto> filingDtos = filingService.get(odataObj);	
+        PageModelDto<FilingDto> filingDtos = filingService.get(odataObj);
         return filingDtos;
     }
 
@@ -53,16 +54,19 @@ public class FilingController {
     }
 
     @RequiresAuthentication
-	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)
-	public @ResponseBody FilingDto findById(@RequestParam(required = true)String id){		
-		return filingService.findById(id);
-	}
+    @RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)
+    public @ResponseBody FilingDto findById(@RequestParam(required = true)String id){
+        return filingService.findById(id);
+    }
 
     @RequiresAuthentication
     @RequestMapping(name = "根据课题ID查询", path = "initByTopicId",method=RequestMethod.POST)
     public @ResponseBody
-    FilingDto initByTopicId(@RequestParam(required = true)String topicId){
-        return filingService.initByTopicId(topicId);
+    Map<String,Object>  initByTopicId(@RequestParam(required = true)String topicId){
+        Map<String,Object> resultMap = new HashMap<String,Object>();
+        resultMap.put("file_record", filingService.initByTopicId(topicId));
+        resultMap.put("topic_user_List", userService.findUserByRoleName(Constant.EnumFlowNodeGroupName.FILER.getValue()));
+        return resultMap;
     }
 
     @RequiresAuthentication
@@ -70,7 +74,7 @@ public class FilingController {
     @RequestMapping(name = "删除记录", path = "", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@RequestBody String id) {
-    	filingService.delete(id);      
+        filingService.delete(id);
     }
 
     @RequiresAuthentication
@@ -86,7 +90,7 @@ public class FilingController {
     //@RequiresPermissions("filing#html/list#get")
     @RequestMapping(name = "列表页面", path = "html/list", method = RequestMethod.GET)
     public String list() {
-        return ctrlName+"/list"; 
+        return ctrlName+"/list";
     }
 
     @RequiresAuthentication

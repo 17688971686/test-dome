@@ -34,4 +34,17 @@ public interface PartyManageRepo extends IRepository<PartyManager, String> {
      * @return
      */
    ResultMsg findPartyById(String pmId);
+
+    /**
+     * 更新党员信息
+     * @param partyManagerDto
+     * @return
+     */
+   ResultMsg updateParty(PartyManagerDto partyManagerDto);
+
+    /**
+     * 删除党员信息（即停用）
+     * @param pmId
+     */
+   void deleteParty(String pmId);
 }

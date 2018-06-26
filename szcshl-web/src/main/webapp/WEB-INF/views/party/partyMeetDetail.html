@@ -1,0 +1,47 @@
+<div  class="well well-sm conttent_list" style="background: white;min-height:960px;margin-bottom: 50px;" >
+    <div class="toolbar">
+        <button class="btn btn-sm btn-danger" ng-click="back();">
+            <span class="glyphicon glyphicon-chevron-left"></span>返回
+        </button>
+    </div>
+
+    <table class="table table-bordered">
+        <tr>
+            <td class="text-right" width="15%">会议标题：</td>
+            <td>
+                {{vm.partyMeet.mTitle}}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-right">会议时间：</td>
+            <td>
+                {{vm.partyMeet.mDate}}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-right">会议地点：</td>
+            <td>
+                {{vm.partyMeet.mAddress}}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-right">附件：</td>
+            <td colspan="2">
+
+                <div ng-repeat="x in vm.sysFilelists">
+                    <p>
+                        <i class="fa fa-file-image-o" aria-hidden="true"
+                           ng-show="x.fileType =='.png' || x.fileType =='.jpg' || x.fileType =='.gif'"></i>
+                        <i class="fa fa-file-word-o" aria-hidden="true"
+                           ng-show="x.fileType =='.docx' || x.fileType =='.doc'"></i>
+                        <i class="fa fa-file-excel-o" aria-hidden="true"
+                           ng-show="x.fileType =='.xlsx' || x.fileType =='.xls'"></i>
+                        <i class="fa fa-file-pdf-o" aria-hidden="true" ng-show="x.fileType =='.pdf'"></i>
+                        <a ng-click="vm.downloadSysFile(x.sysFileId)">{{ x.showName }}</a>
+                    </p>
+                </div>
+            </td>
+        </tr>
+
+    </table>
+</div>

@@ -54,6 +54,15 @@ public interface SignService {
      * @return
      */
     ResultMsg dealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto);
+    /**
+     * 重写工作方案
+     * @param processInstance
+     * @param task
+     * @param flowDto
+     * @return
+     */
+    ResultMsg rewriteWorkFlow(ProcessInstance processInstance, Task task, FlowDto flowDto);
+
     //流程处理end
 
     /**
@@ -295,4 +304,18 @@ public interface SignService {
      * @return
      */
     ResultMsg saveMoreExpert(String signId , String isMoreExpert);
+
+    /**
+     * 通过fileCode查找signDto
+     * @return
+     */
+    SignDto findSignByFileCode(SignDto signDto);
+
+    /**
+     * 更新回传发改委状态
+     * @param signId
+     * @param state
+     * @return
+     */
+    ResultMsg updateSendFGWState(String signId, String state);
 }

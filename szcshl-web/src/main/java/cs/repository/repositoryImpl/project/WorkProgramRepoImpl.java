@@ -62,14 +62,18 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram,String> 
      *
      * @param signId
      * @param branchId
+     * @param isBaseInfo
      * @return
      */
     @Override
-    public WorkProgram findBySignIdAndBranchId(String signId, String branchId) {
+    public WorkProgram findBySignIdAndBranchId(String signId, String branchId, boolean isBaseInfo) {
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" from " + WorkProgram.class.getSimpleName() + " where " + WorkProgram_.sign.getName() + "." + Sign_.signid.getName() + " =:signId ");
         hqlBuilder.setParam("signId", signId);
         hqlBuilder.append(" and " + WorkProgram_.branchId.getName() + " =:branchId ").setParam("branchId", branchId);
+        if(isBaseInfo){
+            hqlBuilder.append(" and " + WorkProgram_.baseInfo.getName() + " =:wpstate ").setParam("wpstate", Constant.EnumState.YES.getValue());
+        }
         List<WorkProgram> wpList = findByHql(hqlBuilder);
         if (Validate.isList(wpList)) {
             return wpList.get(0);

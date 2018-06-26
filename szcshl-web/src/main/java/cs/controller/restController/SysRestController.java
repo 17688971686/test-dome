@@ -14,6 +14,7 @@ import cs.common.utils.SMSUtils;
 import cs.common.utils.Validate;
 import cs.domain.sys.Log;
 import cs.domain.sys.User;
+import cs.model.project.DispatchDocDto;
 import cs.model.project.SignDto;
 import cs.model.project.SignPreDto;
 import cs.model.sys.SysFileDto;
@@ -28,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.*;
 
 import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
@@ -69,9 +71,11 @@ public class SysRestController {
     @Autowired
     private SysConfigService sysConfigService;
 
+    @Autowired
+    private WorkdayService workdayService;
+
     /**
      * 项目签收信息
-     *
      * @param signDtoJson
      * @return
      */
@@ -84,66 +88,38 @@ public class SysRestController {
         String msg = "项目【"+signDto.getProjectname()+"("+signDto.getFilecode()+")json="+signDtoJson+"】";
         try{
             //json转出对象
-            resultMsg = signRestService.pushProject(signDto,true);
+            resultMsg = signRestService.pushProject(signDto,true,null);
         }catch (Exception e){
             resultMsg = new ResultMsg(false,IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(),e.getMessage());
             e.printStackTrace();
         }
         // 判断短信日志表中是否已经发送短信 收文类型: incoming_type
        if(resultMsg.isFlag()&& rtxService.rtxSMSEnabled()){
-           boolean boo = SMSUtils.getWeek(new Date(),sysConfigService);
+           boolean boo = SMSUtils.getWeek(workdayService,new Date(),sysConfigService);
            if (boo){
-               //发送短信不收次数限制,暂时注销
-//               if(! smsContent.orNotsendSMS(signDto.getProjectname(),signDto.getFilecode(),"incoming_type","收文成功")){
-                   // AAAGAN 收文失败，发送短信（但龙，郭东东）项目名称（委里收文编号）
-                   SMSUtils.seekSMSThread(signRestService.getListUser("收文成功"),signDto.getProjectname(),signDto.getFilecode(),"incoming_type","收文成功",smsContent.seekSMSSuccee(signDto.getProjectname(),signDto.getFilecode(),"收文成功"),  smsLogService);
-//               }
+               SMSUtils.seekSMSThread(null,signRestService.getListUser("收文成功"),signDto.getProjectname(),signDto.getFilecode(),"incoming_type","收文成功",smsContent.seekSMSSuccee(signDto.getProjectname(),signDto.getFilecode(),"收文成功(项目签收信息)"),  smsLogService);
            }
        }else {
            if (rtxService.rtxSMSEnabled()) {
-               boolean boo = SMSUtils.getWeek(new Date(), sysConfigService);
+               boolean boo = SMSUtils.getWeek(workdayService,new Date(), sysConfigService);
                if (boo) {
-//                   if (!smsContent.orNotsendSMS(signDto.getProjectname(), signDto.getFilecode(), "incoming_type", "收文失败")) {
-                       SMSUtils.seekSMSThread(signRestService.getListUser("收文失败"), signDto.getProjectname(), signDto.getFilecode(), "incoming_type", "收文失败", smsContent.seekSMSSuccee(signDto.getProjectname(), signDto.getFilecode(), "收文失败"), smsLogService);
-//                   }
+                   if ("SIGN_05".equals(resultMsg.getReCode())){
+                           SMSUtils.seekSMSThread(null,signRestService.getListUser("收文成功"), signDto.getProjectname(), signDto.getFilecode(), "incoming_type", "收文成功", smsContent.seekSMSSuccee(signDto.getProjectname(), signDto.getFilecode(), "收文成功(项目签收信息)"), smsLogService);
+                       }
+                   }else{
+                        SMSUtils.seekSMSThread(null,signRestService.getListUser("收文失败"), signDto.getProjectname(), signDto.getFilecode(), "incoming_type", "收文失败", smsContent.seekSMSSuccee(signDto.getProjectname(), signDto.getFilecode(), "收文失败(项目签收信息)"), smsLogService);
+                   }
                }
            }
-       }
-        /*//添加日记记录
-        Log log = new Log();
-        log.setCreatedDate(new Date());
-        log.setUserName(SUPER_ACCOUNT);
-        log.setLogCode(resultMsg.getReCode());
-        log.setModule(Constant.LOG_MODULE.INTERFACE.getValue() + "【获取项目信息接口】");
-        log.setMessage(msg+resultMsg.getReMsg());
-        log.setBuninessId(Validate.isObject(resultMsg.getReObj()) ? resultMsg.getReObj().toString() : "");
-        log.setBuninessType(Constant.BusinessType.SIGN.getValue());
-        log.setResult(resultMsg.isFlag() ? Constant.EnumState.YES.getValue() : Constant.EnumState.NO.getValue());
-        log.setLogger(this.getClass().getName() + ".pushProject");
-        //优先级别高
-        log.setLogLevel(Constant.EnumState.PROCESS.getValue());
-        logService.save(log);*/
+
         resultMsg.setReObj(null);
         return resultMsg;
     }
 
-    public String getContent(String type,String numInfo){
-        String str= null;
-        /*
-        * 收文失败，发送短信（但龙，郭东东）项目名称（委里收文编号）
-          发文失败，发送短信（但龙，陈春燕）项目名称（发文号）
-        * */
-        if ("收文失败".equals(type)){
-            type = type+",项目名称: "+numInfo;
-        }
-        if ("发文失败".equals(type)){
-            type = type+",项目名称: "+numInfo;
-        }
-        return  null;
-    }
-
     /**
-     * 根据收文编号查询签收/预签收
+     * 根据委里收文编号获取项目信息
+     * @param fileCode      委里收文编号
+     * @param signType      签收类型（1为预签收，其它为正式签收）
      * @return
      */
     @RequestMapping(name = "项目预签收信息", value = "/getPreSign", method = RequestMethod.GET)
@@ -156,37 +132,19 @@ public class SysRestController {
             String preUrl = signRestService.getPreReturnUrl();
             preUrl = preUrl + "?swbh="+fileCode;
             signPreInfo =  httpClientOperate.doGet(preUrl);
-          //  JSON.
-            String msg = "";
+
             Map resultMap = (Map)JSON.parse(signPreInfo);
             if(resultMap.get("data") != null && !resultMap.get("data").equals("null")){
                 SignPreDto signPreDto = JSON.parseObject(signPreInfo, SignPreDto.class);
-                 msg = "项目【"+signPreDto.getData().getProjectname()+"("+signPreDto.getData().getFilecode()+")】，";
-                //json转出对象
-                if(Validate.isString(signType) && signType.equals("1")){
-                    //获取项目预签收信息
+                //获取项目预签收信息
+                if(Validate.isString(signType) && "1".equals(signType)){
                     resultMsg = signRestService.pushPreProject(signPreDto.getData(),false);
                 }else{
-                    resultMsg = signRestService.pushProject(signPreDto.getData(),false);
+                    resultMsg = signRestService.pushProject(signPreDto.getData(),false,null);
                 }
             }else{
-                msg = "该项目信息不存在请核查！";
-                resultMsg = new ResultMsg(false,IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(),msg);
+                resultMsg = new ResultMsg(false,IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(),"获取不到相应的项目信息！");
             }
-            /*//添加日记记录
-            Log log = new Log();
-            log.setCreatedDate(new Date());
-            log.setUserName(SUPER_ACCOUNT);
-            log.setLogCode(resultMsg.getReCode());
-            log.setModule(Constant.LOG_MODULE.INTERFACE.getValue() + "【获取项目预签收信息接口】");
-            log.setMessage(msg+resultMsg.getReMsg());
-            log.setBuninessId(Validate.isObject(resultMsg.getReObj()) ? resultMsg.getReObj().toString() : "");
-            log.setBuninessType(Constant.BusinessType.SIGN.getValue());
-            log.setResult(resultMsg.isFlag() ? Constant.EnumState.YES.getValue() : Constant.EnumState.NO.getValue());
-            log.setLogger(this.getClass().getName() + ".pushProject");
-            //优先级别高
-            log.setLogLevel(Constant.EnumState.PROCESS.getValue());
-            logService.save(log);*/
         }catch (Exception e){
             resultMsg = new ResultMsg(false,IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(),e.getMessage());
             e.printStackTrace();
@@ -194,6 +152,26 @@ public class SysRestController {
         return resultMsg;
     }
 
+    /**
+     * 通过收文编号存储批复金额下载pdf文件
+     * @return
+     */
+    @RequestMapping(name = "项目批复金额与pdf文件下载", value = "/downRemoteFile",method = RequestMethod.POST)
+    @LogMsg(module = "系统接口【通过收文编号存储批复金额下载pdf文件】",logLevel = "1")
+    public synchronized ResultMsg downRemoteFile(@RequestParam String signDtoJson) {
+        ResultMsg resultMsg = null;
+        SignDto signDto = JSON.parseObject(signDtoJson, SignDto.class);
+        String msg = "项目收文编码【("+signDto.getFilecode()+")json="+signDtoJson+"】";
+        try{
+            //json转出对象
+            resultMsg = signRestService.pushProject(signDto,true,"downRemoteFile_channel");
+        }catch (Exception e){
+            resultMsg = new ResultMsg(false,IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(),e.getMessage());
+            e.printStackTrace();
+        }
+        resultMsg.setReObj(null);
+        return resultMsg;
+    }
     /**
      * 项目信息返回委里接口
      *
@@ -327,7 +305,51 @@ public class SysRestController {
 
     @RequestMapping(name = "项目签收信息", value = "/testJson")
     public void testJson() throws IOException {
-        String REST_SERVICE_URI = "http://localhost:8080/szcshl-web/intfc/pushProject";
+//        List<User> receiverList = new ArrayList<>();
+//        User user = new User();
+//        user.setDisplayName("郭冬冬");
+//        ;
+//        user.setUserMPhone("13640950289");
+//        receiverList.add(user);
+//
+//        User user3 = new User();
+//        user3.setDisplayName("开发者");
+//        ;
+//        user3.setUserMPhone("18038078167");
+//        receiverList.add(user3);
+//        if(smsContent.querySmsNumber(receiverList,"测试项目","4324D","t","34","开始查询")== null){
+//            System.out.println("能查询");
+//
+//        }
+//        批复金额pdf下载案例
+        String REST_SERVICE_URI2 = "http://localhost:8080/szcshl-web/intfc/downRemoteFile";
+        SignDto signDto2 = new SignDto();
+        //委里收文编号
+        signDto2.setFilecode("B20110451");
+        signDto2.setDeclaration(new BigDecimal(11.11));
+        //附件列表
+        List<SysFileDto> fileDtoList2 = new ArrayList<>();
+        SysFileDto sysFileDto2 = new SysFileDto();
+        //显示名称，后缀名也要
+        sysFileDto2.setShowName("空白.docx.docx");
+        //附件大小，Long类型
+        sysFileDto2.setFileSize(11213L);
+        //附件下载地址
+        sysFileDto2.setFileUrl("http://172.18.225.56:8089/FGWPM/LEAP/Download/default/2018/5/17/20180517143816590.docx");
+        fileDtoList2.add(sysFileDto2);
+        //项目添加附件列表
+        signDto2.setSysFileDtoList(fileDtoList2);
+        Map<String, String> params = new HashMap<>();
+        System.out.println("批复金额:  "+JSON.toJSONString(signDto2));
+        params.put("signDtoJson", JSON.toJSONString(signDto2));
+        HttpResult hst2 = httpClientOperate.doPost(REST_SERVICE_URI2, params);
+        //System.out.println(params.get("signDtoJson"));
+        System.out.println(hst2.toString());
+
+
+//        signRestService.getListUser("收文成功");
+        //项目签收案例
+       /* String REST_SERVICE_URI = "http://localhost:8080/szcshl-web/intfc/pushProject";
         SignDto signDto = new SignDto();
         //委里收文编号
         signDto.setFilecode("D201800117");
@@ -367,7 +389,7 @@ public class SysRestController {
         params.put("signDtoJson", JSON.toJSONString(signDto));
         HttpResult hst = httpClientOperate.doPost(REST_SERVICE_URI, params);
         //System.out.println(params.get("signDtoJson"));
-        System.out.println(hst.toString());
+        System.out.println(hst.toString());*/
     }
 
 

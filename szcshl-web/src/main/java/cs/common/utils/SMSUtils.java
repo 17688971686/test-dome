@@ -5,8 +5,10 @@ import cs.common.constants.Constant;
 import cs.domain.sys.SMSLog;
 import cs.domain.sys.User;
 import cs.model.sys.SysConfigDto;
+import cs.service.sys.SMSContent;
 import cs.service.sys.SMSLogService;
 import cs.service.sys.SysConfigService;
+import cs.service.sys.WorkdayService;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
@@ -61,28 +63,30 @@ public class SMSUtils {
     private static String content = "content";
 
     private static Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
+
+    private static Map<String, String> smsMap = new ConcurrentHashMap<>();
     /**
      * 异步发送短信
-     *
      * @param
      * @return
      */
-    public static void seekSMSThread(List<User> receiverList,String projectName,String filecode,String type,String infoType,String seekContent, SMSLogService smsLogService) {
+    public static void seekSMSThread(SMSContent smsContent, List<User> receiverList, String projectName, String filecode, String type, String infoType, String seekContent, SMSLogService smsLogService) {
             ExecutorService threadPool = Executors.newCachedThreadPool();
             //线程池提交一个异步任务
             Future<HashMap<String, String>> future = threadPool.submit(new Callable<HashMap<String, String>>() {
                 @Override
                 public HashMap<String, String> call() throws Exception {
 //                    异步任务 不需要直接反应结果，通过日志记录发信状况信息
-                    boolean   boo = seekSMS(receiverList, projectName, filecode, type, infoType,seekContent, smsLogService);
+                    logger.info("进入发送短信异步:  "+smsContent);
+                    boolean  boo = seekSMS(smsContent,receiverList, projectName, filecode, type, infoType,seekContent, smsLogService);
                     logger.info("seekSMS: 返回调用结果. " + boo);
                     return
-                           new HashMap<String, String>() {
-                       {
-                           this.put("success", String.valueOf(boo));
-                       }
-                   };
-               }
+                            new HashMap<String, String>() {
+                                {
+                                    this.put(""+projectName, String.valueOf(boo));
+                                }
+                            };
+                }
             });
             //关闭线程池
             if (!threadPool.isShutdown()) {
@@ -94,45 +98,43 @@ public class SMSUtils {
     public static boolean isInteger(String str) {
         return pattern.matcher(str).matches();
     }
+    /**
+     * 将限制短信次数放到短信发送之前
+     */
+    public  static boolean seekSMS(SMSContent smsContent,List<User> receiverList,String projectName,String filecode,String type,String infoType,String seekContent,SMSLogService smsLogService) {
 
-    //发送短信
-    public synchronized static boolean seekSMS(List<User> receiverList,String projectName,String filecode,String type,String infoType,String seekContent,SMSLogService smsLogService) {
-        User user = null;
-        String phone = "";
-        String userName = "";
-        String resultCode="";
-        if (receiverList.size() == 1) {
-            user = receiverList.get(0);
-            phone = user.getUserMPhone();
-            userName = user.getDisplayName();
-            if (!isInteger(phone)) {
-                return false;
+        synchronized(projectName){
+            //如果是待办不短信次数
+            if("待办".equals(infoType)){
+                return sureSendSMS(smsContent,receiverList,projectName,filecode,type,infoType,seekContent,smsLogService);
             }
-        } else if (receiverList.size() > 1) {
-            for (int i = 0, l = receiverList.size(); i < l; i++) {
-                user = receiverList.get(i);
-                if (StringUtil.isNotEmpty(user.getUserMPhone())) {
-                    if (!isInteger(user.getUserMPhone())) {
-                        //记录不手机号码不是数字的用户
-                        return false;
-                    }
-                    if (i == receiverList.size() - 1) {
-                        phone += user.getUserMPhone();
-                        userName += user.getDisplayName();
-                    } else {
-                        phone += user.getUserMPhone() + ",";
-                        userName += user.getDisplayName() + ",";
-                    }
+
+            //获取打开限制次数
+            if("打开限制次数".equals(smsContent.orNotsendSMS(receiverList,projectName,filecode,type,infoType,"打开限制次数"))){
+                //限制次数开始
+                if(smsContent.querySmsNumber(receiverList,projectName,filecode,type,infoType,null)== null){
+                    logger.info("seekSMS:进入限制次数判断" );
+                    return sureSendSMS(smsContent,receiverList,projectName,filecode,type,infoType,seekContent,smsLogService);
+
                 }
             }
+            if("关闭限制次数".equals(smsContent.orNotsendSMS(receiverList,projectName,filecode,type,infoType,"关闭限制次数"))){
+                logger.info("seekSMS:进入关闭限制次数判断" );
+                return sureSendSMS(smsContent,receiverList,projectName,filecode,type,infoType,seekContent,smsLogService);
+            }
         }
-        if (StringUtil.isEmpty(phone)) {
-            return false;
-        }
+        return  false;
+    }
+    public static boolean sureSendSMS(SMSContent smsContent,List<User> receiverList,String projectName,String filecode,String type,String infoType,String seekContent,SMSLogService smsLogService){
+        //组装接收短信用户信息
+        User user = null;
+        String resultCode="";//phone = "",userName = "",
+        //获取电话号码
+        packList(receiverList);
         //验证短信内容
-        TOKEN = getHttpSMS(smsLogService);
+        TOKEN = getHttpSMS(userName,phone,projectName,filecode,seekContent,smsLogService);
         if (TOKEN ==null) {
-            insertLog(userName,phone,projectName,filecode,"10001", type, "获取短信平台Token异常",seekContent,smsLogService,false);
+            logger.info("sureSendSMS: TOKEN为空" );
             return false;
         }
         CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -161,12 +163,20 @@ public class SMSUtils {
                 resCode = resCode[0].split("\"");
                 resultCode = resCode[2];
                 if ("0000000".equals(resultCode)) {
+                    logger.info("sureSendSMS: 成功: "+resultCode );
                     insertLog(userName,phone,projectName,filecode,resultCode, type, infoType,seekContent,smsLogService,true);
                     return true;
+                }else{
+                    logger.info("sureSendSMS: 失败: "+resultCode );
+                    insertLog(userName,phone,projectName,filecode,resultCode, type, infoType,seekContent,smsLogService,false);
+                    return false;
                 }
             }
         } catch (Exception e) {
-            insertLog(userName,phone,projectName,filecode,"10002", type, infoType,seekContent,smsLogService,false);
+            seekContent="\n 通信异常";
+            logger.info("sureSendSMS: 通信异常: " );
+            insertLog(userName,phone,projectName,filecode,resultCode, "custom_type", "通信异常",seekContent,smsLogService,false);
+            return  false;
         } finally {
             try {
                 httpClient.close();
@@ -174,8 +184,31 @@ public class SMSUtils {
                 e.printStackTrace();
             }
         }
-        insertLog(userName,phone,projectName,filecode,resultCode, type, infoType,seekContent,smsLogService,false);
         return false;
+    }
+    public static String phone ="";
+    public static String userName ="";
+    public static void packList(List<User> receiverList){
+        phone = "";
+        userName ="";
+        User user = null;
+       if (receiverList.size() > 1) {
+            for (int i = 0, l = receiverList.size(); i < l; i++) {
+                user = receiverList.get(i);
+                if (StringUtil.isNotEmpty(user.getUserMPhone())) {
+                    if (i == receiverList.size() - 1) {
+                        phone += user.getUserMPhone().trim();
+                        userName += user.getDisplayName().trim();
+                    } else {
+                        phone += user.getUserMPhone().trim() + ",";
+                        userName += user.getDisplayName().trim() + ",";
+                    }
+                }
+            }
+        }else {
+           phone =null;
+           userName =null;
+       }
     }
 
     public static boolean isOrTimeout() {
@@ -187,19 +220,27 @@ public class SMSUtils {
         return false;
     }
 
-    public static void insertLog(String userName,String smsUserPhone,String projectName,String filecode,String resultCode,String type,String infoType,String seekContent, SMSLogService smsLogService,boolean success) {
+    public static void insertLog( String userName,String smsUserPhone,String projectName,String filecode,String resultCode,String type,String infoType,String seekContent, SMSLogService smsLogService,boolean success) {
+        //写入短信日志表
         if (smsLogService != null) {
-            SMSLog smsLog = new SMSLog();
-            smsLog.setObject(userName,smsUserPhone,projectName, filecode, resultCode, type, infoType, seekContent,  success);
-            smsLogService.save(smsLog);
+            //查看当前信息是否存在
+            SMSLog smsLog = smsLogService.querySMSLog(userName,smsUserPhone,projectName, filecode, resultCode, type, infoType, seekContent,smsLogService,success);
+            if (smsLog != null){
+                smsLog.setModifiedDate(new Date());
+                List<SMSLog> list = new ArrayList<>();
+                list.add(smsLog);
+                smsLogService.update(list);
+            }else{
+                smsLog = new SMSLog();
+                smsLog.setObject(userName,smsUserPhone,projectName, filecode, resultCode, type, infoType, seekContent,  success);
+                smsLogService.save(smsLog);
+            }
         }
     }
-
-
     /**
      * 获取token服务
      */
-    public static String getHttpSMS(SMSLogService smsLogService) {
+    public static String getHttpSMS(String userName,String phone,String projectName,String filecode,String seekContent,SMSLogService smsLogService) {
         //是否超时
         if (isOrTimeout()) {
             return TOKEN;
@@ -234,8 +275,9 @@ public class SMSUtils {
             }
             httpClient.close();
         } catch (Exception e) {
-            logger.info("getHttpSMS 获取token异常. " + e.getMessage());
+            logger.info("getHttpSMS 获取token异常. " + e.getMessage()+" tempCode："+tempCode );
         }
+        insertLog(userName,phone,projectName,filecode,tempCode, "custom_type", "获取短信平台Token异常",seekContent,smsLogService,false);
         return null;
     }
 
@@ -258,10 +300,22 @@ public class SMSUtils {
 
     /**
      * 判断日期是周不是周末
+     * 默认周六、日为休息日
+     * 其他通过工作管理获取判断
      * @param date
      * @return 0-星期日
      */
-    public static boolean getWeek(Date date, SysConfigService sysConfigService) {
+    public static boolean getWeek(WorkdayService workdayService, Date date, SysConfigService sysConfigService) {
+        boolean boo =  workdayService.isRepeat(new Date());
+        //如果不存在将默认采取周末机制
+        if (boo){
+            boo =  workdayService.isRepeat(new Date());
+            if (boo){
+                return calculateTime(sysConfigService,date);
+            }else {
+                return false;
+            }
+        }
         Calendar calendarTemp = Calendar.getInstance();
         try {
             calendarTemp.setTime(date);
@@ -273,21 +327,17 @@ public class SMSUtils {
         if (value==6||value==0) {//周六，周日
             return false;
         }
+        return calculateTime(sysConfigService,date);
+    }
+    public static boolean calculateTime(SysConfigService sysConfigService,Date date){
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
             Date nowTime = simpleDateFormat.parse(new SimpleDateFormat("yyyy-MM-dd").format(date));
             //如果工作日时间是8点到晚上12点; 在配置系统中配置时间
             //WORK_START_TIME  WORK_END_TIME
             List<SysConfigDto>  sysConfigDtoList = sysConfigService.findListBykey("WORK_START_TIME");
-            String startTime = "";
-            for(SysConfigDto sysConfigDto: sysConfigDtoList){
-                startTime = sysConfigDto.getConfigValue();
-            }
-            String endTime = "";
-            List<SysConfigDto>  sysConfigDtoList2 = sysConfigService.findListBykey("WORK_END_TIME");
-            for(SysConfigDto sysConfigDto: sysConfigDtoList2){
-                endTime  = sysConfigDto.getConfigValue();
-            }
+            String startTime =  workDayStartTime(sysConfigService);
+            String endTime = workDayEndTime(sysConfigService);
             long times = nowTime.getTime()+(Integer.valueOf(startTime) * 60 * 60 * 1000);
             long times1 = nowTime.getTime()+(Integer.valueOf(endTime) * 60 * 60 * 1000);
             if ( date.getTime()>times && date.getTime()<times1){
@@ -296,30 +346,53 @@ public class SMSUtils {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return true;
+        return false;
     }
 
+
+    public static String workDayStartTime(SysConfigService sysConfigService){
+        //如果工作日时间是8点到晚上12点; 在配置系统中配置时间
+        List<SysConfigDto>  sysConfigDtoList = sysConfigService.findListBykey("WORK_START_TIME");
+        String startTime = "";
+        for(SysConfigDto sysConfigDto: sysConfigDtoList){
+            startTime = sysConfigDto.getConfigValue();
+        }
+        return  startTime;
+    }
+    public static  String workDayEndTime(SysConfigService sysConfigService){
+        //如果工作日时间是8点到晚上12点; 在配置系统中配置时间
+        List<SysConfigDto>  sysConfigDtoList = sysConfigService.findListBykey("WORK_END_TIME");
+        String endTime = "";
+        for(SysConfigDto sysConfigDto: sysConfigDtoList){
+            endTime = sysConfigDto.getConfigValue();
+        }
+        return  endTime;
+    }
     public static void main(String[] args) {
 
         String d = "{\"data\":{\"accessToken\":\"ED920981FE92F35EB04ACC30CE8840326DE0209A0EFD7E6BCE8F5135C61E9E0DD7B0F42E63075E37\",\"expiredValue\":\"7200\"},\"resultCode\":\"0000000\",\"resultMessage\":\"成功\"}";
 
-//        getHttpSMS();
-//    SMSUtils.seekSMSThread(getListUser("发文失败"),"发文失败,发送短信。项目名称: "+sign.getFilecode()+"\n"+"  【评审中心项目管理系统】",  logService);
+//      getHttpSMS();
         List<User> list = new ArrayList<>();
         User user = new User();
-        user.setDisplayName("道花");
+        user.setDisplayName("郭冬冬");
         ;
-        user.setUserMPhone("18038078167");
+        user.setUserMPhone("13640950289");
         list.add(user);
 
         User user3 = new User();
-        user3.setDisplayName("道花2");
+        user3.setDisplayName("开发者");
         ;
         user3.setUserMPhone("18038078167");
         list.add(user3);
-//        seekSMSThread(list, "测试项目", "A001","发文成功","发文成功", "\n"+"发文失败。"+"\n"+"项目名称:A1001DFD1 "+"\n"+"  【评审中心项目管理系统】", null);
+//
+//        for (int i =0 ;i<10;i++){
+        //此测试需要自己在获取 接收短信用户
+//             SMSUtils.seekSMSThread(null,null,"发文失败",list, "测试项目", "A001","发文成功","发文成功", "\n"+"发文失败。"+"\n"+"项目名称:A1001DFD1 "+"\n"+"  【评审中心项目管理系统】", null);
+//   SMSContent smsContent,SysConfigService sysConfigService,String sysConfiType, List<User> receiverList, String projectName, String filecode, String type, String infoType, String seekContent, SMSLogService smsLogService
 
-        boolean boo = SMSUtils.getWeek(new Date(),null);
+//            System.out.println("boo=   ");
+//        }
 
     }
 }

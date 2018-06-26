@@ -134,7 +134,8 @@
                         var isNeedUpdate = false;
                         if(vm.work.roomBookingDtos && vm.work.roomBookingDtos.length > 0){
                             isNeedUpdate = true;
-                        }else if(vm.work.expertDtoList &&vm.work.expertDtoList.length > 0){
+                        }
+                        if(vm.work.expertDtoList &&vm.work.expertDtoList.length > 0){
                             isNeedUpdate = true;
                         }
                         if(isNeedUpdate){

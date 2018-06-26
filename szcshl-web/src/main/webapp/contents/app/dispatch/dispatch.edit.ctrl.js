@@ -302,13 +302,14 @@
             if(isDeclare && isAuthorize){
                 $("span[data-valmsg-for='declareValue']").html("");
                 $("span[data-valmsg-for='authorizeValue']").html("");
+                //审定金额大于报审金额为核增，小于为核减
                 if(parseFloat(vm.dispatchDoc.authorizeValue) > parseFloat(vm.dispatchDoc.declareValue)){
-                    bsWin.error("审定金额不能大于申报金额！");
+                    dvalue= (parseFloat(vm.dispatchDoc.authorizeValue) - parseFloat(vm.dispatchDoc.declareValue)).toFixed(2);
                 }else{
                     dvalue= (parseFloat(vm.dispatchDoc.declareValue) - parseFloat(vm.dispatchDoc.authorizeValue)).toFixed(2);
-                    if( vm.dispatchDoc.declareValue > 0){
-                        extraRate = parseFloat((dvalue/vm.dispatchDoc.declareValue * 10000)/100.00).toFixed(2);
-                    }
+                }
+                if( vm.dispatchDoc.declareValue > 0){
+                    extraRate = parseFloat((dvalue/vm.dispatchDoc.declareValue * 10000)/100.00).toFixed(2);
                 }
             }
             vm.dispatchDoc.extraRate = extraRate;

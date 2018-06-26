@@ -134,6 +134,7 @@
 
         //S_初始化项目暂停信息
         function initFlowDeal(vm){
+            debugger;
             getProjectStopByStopId(vm.businessKey,function(data){
                 vm.model = data;
                 vm.sign = vm.model.signDispaWork;
@@ -142,6 +143,7 @@
 
         //begin getProjectStopByStopId
         function getProjectStopByStopId(stopId , callBack){
+            debugger;
             var httpOptions={
                 method : "post",
                 url : rootPath + "/projectStop/getProjectStopByStopId",

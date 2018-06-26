@@ -3,20 +3,19 @@ package cs.controller.topic;
 import cs.ahelper.MudoleAnnotation;
 import cs.common.ResultMsg;
 import cs.model.PageModelDto;
+import cs.model.topic.ContractDto;
 import cs.model.topic.TopicInfoDto;
 import cs.repository.odata.ODataObj;
 import cs.service.topic.TopicInfoService;
-
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
-import java.util.Date;
+
 
 /**
  * Description: 课题研究 控制层
@@ -51,6 +50,13 @@ public class TopicInfoController {
     }
 
     @RequiresAuthentication
+    @RequestMapping(name = "更新记录", path = "updateTopic", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg updateTopic(@RequestBody TopicInfoDto record) {
+        return topicInfoService.updateTopic(record);
+    }
+
+    @RequiresAuthentication
     // @RequiresPermissions("topicInfo#startFlow#post")
     @RequestMapping(name = "发起流程", path = "startFlow", method = RequestMethod.POST)
     @ResponseBody
@@ -69,6 +75,20 @@ public class TopicInfoController {
     @RequestMapping(name = "查询详情", path = "findDetailById", method = RequestMethod.POST)
     public @ResponseBody TopicInfoDto findDetailById(@RequestParam(required = true) String id) {
         return topicInfoService.findDetailById(id);
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "合同录入", path = "saveContractDetailList", method = RequestMethod.POST)
+    public @ResponseBody
+    ResultMsg saveContractDetailList(@RequestBody ContractDto[] contractDtoArrary){
+        return topicInfoService.saveContractDetailList(contractDtoArrary);
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "删除记录", path = "contractDel", method = RequestMethod.DELETE)
+    @ResponseBody
+    public ResultMsg deleteContract(@RequestParam(required = true) String ids) {
+        return topicInfoService.deleteContract(ids);
     }
 
     @RequiresAuthentication

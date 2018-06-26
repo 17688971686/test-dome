@@ -203,7 +203,7 @@ public class FlowServiceImpl implements FlowService {
                     //如果是回退到工作方案环节，还要修改预定会议室状态和重置分支工作方案状态
                     if (FlowConstant.FLOW_SIGN_XMFZR1.equals(backActivitiId) || FlowConstant.FLOW_SIGN_XMFZR2.equals(backActivitiId)
                             || FlowConstant.FLOW_SIGN_XMFZR3.equals(backActivitiId) || FlowConstant.FLOW_SIGN_XMFZR4.equals(backActivitiId)) {
-                        WorkProgram wk = workProgramRepo.findBySignIdAndBranchId(businessKey, backActivitiId.substring(backActivitiId.length() - 1, backActivitiId.length()));
+                        WorkProgram wk = workProgramRepo.findBySignIdAndBranchId(businessKey, backActivitiId.substring(backActivitiId.length() - 1, backActivitiId.length()), false);
                         if (Validate.isObject(wk) && Validate.isString(wk.getId())) {
                             roomBookingRepo.updateStateByBusinessId(wk.getId(), Constant.EnumState.NO.getValue());
                             signService.updateSignProcessState(businessKey, Constant.SignProcessState.DO_WP.getValue());
@@ -520,8 +520,6 @@ public class FlowServiceImpl implements FlowService {
                     for (String orgId : orgIdList) {
                         dis2.add(Restrictions.or(Restrictions.eq(RuProcessTask_.mOrgId.getName(), orgId), Restrictions.like(RuProcessTask_.aOrgId.getName(), "%" + orgId + "%")));
                     }
-                    //分管领导id等于当前人
-                    //dis2.add(Restrictions.sqlRestriction(" (select count(cs.signid) from cs_sign cs where cs.signid = this_.businessKey and cs.leaderId = '"+curUserId+"') > 0 "));
                 } else if (leaderFlag == 3 && Validate.isList(orgIdList)) {
                     //部长
                     String orgId = orgIdList.get(0);
@@ -1331,6 +1329,11 @@ public class FlowServiceImpl implements FlowService {
         resultMsg.setReCode(Constant.MsgCode.OK.getValue());
         resultMsg.setReMsg("操作成功！");
         return resultMsg;
+    }
+
+    @Override
+    public ResultMsg getBranchInfo(FlowDto flowDto) {
+        return null;
     }
 
 }

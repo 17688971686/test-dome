@@ -765,6 +765,11 @@ public class SignDto extends BaseDto {
      */
     private String isMoreExpert;
 
+    /**
+     * 项目基本信息
+     */
+    private ProjBaseInfoDto projBaseInfoDto;
+
     public String getIsMoreExpert() {
         return isMoreExpert;
     }
@@ -2652,5 +2657,13 @@ public class SignDto extends BaseDto {
 
     public void setMainDeptContactPhone(String mainDeptContactPhone) {
         this.mainDeptContactPhone = mainDeptContactPhone;
+    }
+
+    public ProjBaseInfoDto getProjBaseInfoDto() {
+        return projBaseInfoDto;
+    }
+
+    public void setProjBaseInfoDto(ProjBaseInfoDto projBaseInfoDto) {
+        this.projBaseInfoDto = projBaseInfoDto;
     }
 }

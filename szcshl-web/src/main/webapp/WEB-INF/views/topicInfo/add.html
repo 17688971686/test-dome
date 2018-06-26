@@ -19,7 +19,7 @@
     </div>
     <form id="topicform" name="topicform">
         <table class="table table-bordered">
-            <caption class="text-center"><h3><strong>课题研究计划书</strong></h3></caption>
+            <caption class="text-center"><h3><strong>课题</strong></h3></caption>
             <tr>
                 <td class="text-right" style="width:15%;max-width:180px;">课题名称： <span class="required">*</span></td>
                 <td>
@@ -43,28 +43,7 @@
                     <input  type="text" class="form-control input-sm " ng-disabled="true" ng-model="vm.model.orgName" ng-init="vm.model.orgName = '${CURRENT_USER.org.name}'" >
                 </td>
             </tr>
-            <tr>
-                <td class="text-right">是否报发改委审批：<span class="required">*</span></td>
-                <td >
-                    <label>
-                        <input type="radio" ng-disabled="true" ng-value="9" ng-model="vm.model.sendFgw" ng-checked="vm.model.sendFgw == 9 || vm.model.sendFgw == '9'" name="sendFgw" />是
-                    </label>
-                    <label>
-                        <input type="radio" ng-disabled="true" ng-value="0" ng-model="vm.model.sendFgw" ng-checked="vm.model.sendFgw == 0 || vm.model.sendFgw == '0'" name="sendFgw" />否
-                    </label>
-                </td>
-            </tr>
-            <tr>
-                <td class="text-right">是否委里立项：<span class="required">*</span></td>
-                <td >
-                    <label>
-                        <input type="radio" ng-value="9" ng-model="vm.model.fgwlx" ng-checked="vm.model.fgwlx == 9 || vm.model.fgwlx == '9'" name="fgwlx" />是
-                    </label>
-                    <label>
-                        <input type="radio" ng-value="0" ng-model="vm.model.fgwlx" ng-checked="vm.model.fgwlx == 0 || vm.model.fgwlx == '0'" name="fgwlx" />否
-                    </label>
-                </td>
-            </tr>
+
             <tr>
                 <td class="text-right">主要负责人：<span class="required">*</span></td>
                 <td >
@@ -90,12 +69,114 @@
                     </ul>
                 </td>
             </tr>
+            <tr>
+                <td class="text-right">类别： <span class="required">*</span></td>
+                <td>
+                    <select ng-model="vm.model.topicType"  name="topicType" id="topicType"  data-val="true" data-val-required="请选择类别">
+                        <option value="">请选择</option>
+                        <option ng-repeat="x in DICT.TOPIC_TYPE.dicts" value="{{x.dictKey}}">{{x.dictName}}</option>
+                    </select>
+                    <span data-valmsg-for="topicType" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right">预计完成时间：</td>
+                <td>
+                    <input type="text" kendo-date-picker k-format="'yyyy-MM-dd'" class="form-control input-sm "
+                           ng-model="vm.model.planFinishTime" name="planFinishTime">
+                </td>
+            </tr>
 
             <tr>
                 <td class="text-right">备注信息：</td>
                 <td >
                     <textarea cols="100" rows="5"  name="remark" id="remark" ng-model="vm.model.remark" maxlength="512"
                               class="form-control input-sm " ></textarea>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <form id="contractform" name="contractform">
+        <div class="toolbar">
+            <button class="btn btn-sm btn-success" ng-click="vm.addContract()"><span
+                    class="glyphicon glyphicon-ok"></span>添加
+            </button>
+            <button class="btn btn-sm btn-danger" ng-click="vm.removeContract()"><span
+                    class="glyphicon glyphicon-remove"></span>删除
+            </button>
+            <button class="btn btn-sm btn-success" ng-click="vm.saveContract()"><span class="glyphicon glyphicon-ok"></span>保存</button>
+        </div>
+        <table class="table table-bordered" id="contractTable">
+            <caption class="text-center"><h3><strong>合同</strong></h3></caption>
+            <tr>
+                <td style="width:5%;min-width:30px;" class="text-center"></td>
+                <td class="text-center" style="width:20%;">合作单位</td>
+                <td class="text-center" style="width:20%;">委托金额</td>
+                <td class="text-center" style="width:20%;">采购方式</td>
+                <td class="text-center" style="width:20%;">联系人</td>
+                <td class="text-center" style="width:15%;">联系电话</td>
+            </tr>
+            <tr id="conTr{{x.sort}}"  ng-repeat="x in vm.conditions">
+                <td align="center">
+                    <input type='checkbox' name="contractInfo"  value="{{x.sort}}"/></td>
+                <td align="center">
+                    <input type="text" maxlength="200" class="form-control input-sm "
+                           id="cooperator{{x.sort}}"  value="{{x.cooperator}}"/>
+                </td>
+
+                <td align="center">
+                    <input type="text" maxlength="200" class="form-control input-sm "
+                           id="entrustValue{{x.sort}}"  value="{{x.entrustValue}}"/>
+                </td>
+                <td align="center">
+                    <select  name="purchaseType" id="purchaseType{{x.sort}}"  data-val="true" data-val-required="请选择采购方式">
+                        <option value="">请选择</option>
+                        <option ng-repeat="y in DICT.TOPIC_BUY_TYPE.dicts"  ng-selected="x.purchaseType ==y.dictKey" value="{{y.dictKey}}">{{y.dictName}}</option>
+                    </select>
+                </td>
+                <td align="center">
+                    <input type="text" maxlength="200" class="form-control input-sm "
+                           id="contractPerson{{x.sort}}"  value="{{x.contractPerson}}" />
+                </td>
+                <td align="center">
+                    <input type="text" maxlength="200" class="form-control input-sm "
+                           id="contractTel{{x.sort}}"  value="{{x.contractTel}}" />
+                </td>
+            </tr>
+        </table>
+    </form>
+    <form ng-if="vm.curNodeId=='TOPIC_KTFZR'|| vm.curNodeId=='TOPIC_KTFZR_QR'||vm.curNodeId=='TOPIC_ZLGD'" id="endTopicform" name="endTopicform">
+        <div class="toolbar">
+            <button class="btn btn-sm btn-success" ng-click="vm.saveEndTopic()"><span class="glyphicon glyphicon-ok"></span>保存</button>
+        </div>
+        <table class="table table-bordered">
+            <caption class="text-center"><h3><strong>结题</strong></h3></caption>
+            <tr>
+                <td class="text-right" style="width:15%;max-width:180px;">结题方式： <span class="required">*</span></td>
+                <td >
+                    <input type="radio" name="endTopicFlag" value="1"  ng-model="vm.model.endTopicFlag" ng-checked="vm.model.endTopicFlag == '1'"/> 提出成果鉴定会(方案/报告)
+                    <input type="radio" name="endTopicFlag" value="2"  ng-model="vm.model.endTopicFlag" ng-checked="vm.model.endTopicFlag == '2'"/>合同审批
+                    <input type="radio" name="endTopicFlag" value="3"  ng-model="vm.model.endTopicFlag" ng-checked="vm.model.endTopicFlag == '3'"/> 课题结题会议
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right" style="width:15%;max-width:180px;">是否报委务会审定： <span class="required">*</span></td>
+                <td>
+                    <label>
+                        <input type="radio" name="sendFgw" ng-checked="vm.model.sendFgw == '9' "  value="9"  ng-model="vm.model.sendFgw"/>
+                    </label>
+                    是
+                    <label>
+                        <input type="radio" name="sendFgw"  ng-checked="vm.model.sendFgw == '1'" value="1" ng-model="vm.model.sendFgw" />
+                    </label>
+                    否
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right" style="width:15%;max-width:180px;">审定时间：</td>
+                <td>
+                    <input ng-disabled="true" type="text" kendo-date-picker k-format="'yyyy-MM-dd'" class="form-control input-sm "
+                           ng-model="vm.model.approvedDate" name="approvedDate">
                 </td>
             </tr>
         </table>

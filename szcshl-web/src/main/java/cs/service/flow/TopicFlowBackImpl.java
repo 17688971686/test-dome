@@ -27,11 +27,11 @@ public class TopicFlowBackImpl implements IFlowBack {
             case FlowConstant.TOPIC_ZRSH_JH:
                 backActivitiId = FlowConstant.TOPIC_FGLD_JH;
                 break;
-            case FlowConstant.TOPIC_GZFA:
+            case FlowConstant.TOPIC_KTFZR:
                 backActivitiId = FlowConstant.TOPIC_ZRSH_JH;
                 break;
             case FlowConstant.TOPIC_BZSH_FA:
-                backActivitiId = FlowConstant.TOPIC_GZFA;
+                backActivitiId = FlowConstant.TOPIC_KTFZR;
                 break;
             case FlowConstant.TOPIC_FGLD_FA:
                 backActivitiId = FlowConstant.TOPIC_BZSH_FA;
@@ -40,35 +40,11 @@ public class TopicFlowBackImpl implements IFlowBack {
                 backActivitiId = FlowConstant.TOPIC_FGLD_FA;
                 break;
 
-            case FlowConstant.TOPIC_BZSH_BG:
-                backActivitiId = FlowConstant.TOPIC_KTBG;
-                break;
-            case FlowConstant.TOPIC_FGLD_BG:
-                backActivitiId = FlowConstant.TOPIC_BZSH_BG;
-                break;
-            case FlowConstant.TOPIC_ZRSH_BG:
-                backActivitiId = FlowConstant.TOPIC_FGLD_BG;
-                break;
-
-            case FlowConstant.TOPIC_BZSH_JT:
-                backActivitiId = FlowConstant.TOPIC_KTJT;
-                break;
-            case FlowConstant.TOPIC_FGLD_JT:
-                backActivitiId = FlowConstant.TOPIC_BZSH_JT;
-                break;
-            case FlowConstant.TOPIC_ZRSH_JT:
-                backActivitiId = FlowConstant.TOPIC_FGLD_JT;
-                break;
-
-            case FlowConstant.TOPIC_BZSH_GD:
-                backActivitiId = FlowConstant.TOPIC_ZLGD;
-                break;
-            case FlowConstant.TOPIC_GDY_QR:
-                backActivitiId = FlowConstant.TOPIC_BZSH_GD;
+            case FlowConstant.TOPIC_ZLGD:
+                backActivitiId = FlowConstant.TOPIC_KTFZR_QR;
                 break;
            default:
                break;
-
         }
         return backActivitiId;
     }
