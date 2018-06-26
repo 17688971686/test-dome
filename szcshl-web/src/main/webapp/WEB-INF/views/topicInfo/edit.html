@@ -20,7 +20,7 @@
                 <td class="text-right" style="width:15%;max-width:180px;">课题名称： <span class="required">*</span></td>
                 <td>
                     <input ng-disabled="true" type="text" maxlength="128" class="form-control input-sm " ng-model="vm.model.topicName"
-                            id="topicName" name="topicName" data-val="true"  data-val-required="必填" data-val-length-max="128">
+                           id="topicName" name="topicName" data-val="true"  data-val-required="必填" data-val-length-max="128">
                     <span data-valmsg-for="topicName" data-valmsg-replace="true" class="errors"></span>
                 </td>
             </tr>
@@ -28,7 +28,7 @@
                 <td class="text-right">合作研究单位： <span class="required">*</span></td>
                 <td>
                     <input ng-disabled="true" type="text" maxlength="256" class="form-control input-sm "  ng-model="vm.model.cooperator"
-                            id="cooperator" name="cooperator" data-val="true" data-val-required="必填" data-val-length-max="256">
+                           id="cooperator" name="cooperator" data-val="true" data-val-required="必填" data-val-length-max="256">
                     <span data-valmsg-for="cooperator" data-valmsg-replace="true" class="errors"></span>
                 </td>
             </tr>
@@ -44,7 +44,7 @@
                 <td class="text-right">主要负责人：<span class="required">*</span></td>
                 <td >
                     <select  ng-disabled="true" ng-model="vm.model.mainPrinUserId" name="mainPrinUserId" id="mainPrinUserId"
-                            ng-change="vm.checkPrincipal();" data-val="true" data-val-required="请选择项目负责人">
+                             ng-change="vm.checkPrincipal();" data-val="true" data-val-required="请选择项目负责人">
                         <option value="">请选择</option>
                         <option ng-repeat="x in vm.principalUsers" value="{{x.id}}" ng-selected="x.id == vm.model.mainPrinUserId ">{{x.displayName}}</option>
                     </select>
@@ -58,9 +58,9 @@
                     <ul id="principalUser_ul">
                         <li ng-repeat="u in vm.principalUsers" id="principalUser" style="float: left;width: 80px;">
                             <input  ng-disabled="true" type="checkbox" selectType="assistUser" tit="{{u.displayName}}" value="{{u.id}}"
-                                   ng-checked="vm.model.prinUserIds && (vm.model.prinUserIds).indexOf(u.id)>-1"
-                                   ng-disabled="vm.model.mainPrinUserId == u.id"
-                                   ng-click="vm.initUserOption()"/>{{u.displayName}}
+                                    ng-checked="vm.model.prinUserIds && (vm.model.prinUserIds).indexOf(u.id)>-1"
+                                    ng-disabled="vm.model.mainPrinUserId == u.id"
+                                    ng-click="vm.initUserOption()"/>{{u.displayName}}
                         </li>
                     </ul>
                 </td>
@@ -110,8 +110,8 @@
 
                 <td align="center">
                     <input  ng-disabled="true" type="text" maxlength="200" class="form-control input-sm "
-                           id="entrustValue{{x.sort}}"  value="{{x.entrustValue}}"
-                           ng-blur="vm.checkPrice(x.sort)" data-val-required="请输入委托金额" />
+                            id="entrustValue{{x.sort}}"  value="{{x.entrustValue}}"
+                            ng-blur="vm.checkPrice(x.sort)" data-val-required="请输入委托金额" />
                     <span data-valmsg-for="entrustValue{{x.sort}}" data-valmsg-replace="true" class="errors"></span>
                 </td>
 
@@ -142,20 +142,20 @@
             <tr>
                 <td class="text-right" style="width:15%;max-width:180px;">结题方式： <span class="required">*</span></td>
                 <td >
-                        <input type="radio" name="endTopicFlag" value="1"  ng-model="vm.model.endTopicFlag" ng-checked="vm.model.endTopicFlag == '1'"/> 提出成果鉴定会(方案/报告)
-                        <input type="radio" name="endTopicFlag" value="2"  ng-model="vm.model.endTopicFlag" ng-checked="vm.model.endTopicFlag == '2'"/>合同审批
-                        <input type="radio" name="endTopicFlag" value="3"  ng-model="vm.model.endTopicFlag" ng-checked="vm.model.endTopicFlag == '3'"/> 课题结题会议
+                    <input ng-disabled="vm.endTopic"  type="radio" name="endTopicFlag" value="1"  ng-model="vm.model.endTopicFlag" ng-checked="vm.model.endTopicFlag == '1'"/> 提出成果鉴定会(方案/报告)
+                    <input ng-disabled="vm.endTopic"  type="radio" name="endTopicFlag" value="2"  ng-model="vm.model.endTopicFlag" ng-checked="vm.model.endTopicFlag == '2'"/>合同审批
+                    <input ng-disabled="vm.endTopic"  type="radio" name="endTopicFlag" value="3"  ng-model="vm.model.endTopicFlag" ng-checked="vm.model.endTopicFlag == '3'"/> 课题结题会议
                 </td>
             </tr>
             <tr>
                 <td class="text-right" style="width:15%;max-width:180px;">是否报委务会审定： <span class="required">*</span></td>
                 <td>
                     <label>
-                        <input type="radio" name="sendFgw" ng-checked="vm.model.sendFgw == '9' "  value="9"  ng-model="vm.model.sendFgw"/>
+                        <input ng-disabled="vm.endTopic" type="radio" name="sendFgw" ng-checked="vm.model.sendFgw == '9' "  value="9"  ng-model="vm.model.sendFgw"/>
                     </label>
                     是
                     <label>
-                        <input type="radio" name="sendFgw"  ng-checked="vm.model.sendFgw == '1'" value="1" ng-model="vm.model.sendFgw" />
+                        <input ng-disabled="vm.endTopic" type="radio" name="sendFgw"  ng-checked="vm.model.sendFgw == '1'" value="1" ng-model="vm.model.sendFgw" />
                     </label>
                     否
                 </td>

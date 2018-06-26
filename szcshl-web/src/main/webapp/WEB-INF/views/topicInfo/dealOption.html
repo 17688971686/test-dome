@@ -61,7 +61,7 @@
             <td>
                 <a ng-if="vm.flow.curNode.activitiId == 'TOPIC_KTFZR' ||vm.flow.curNode.activitiId == 'TOPIC_KTFZR_QR'" class="btn btn-xs btn-primary" href="#/topicEditInfo/{{vm.model.id}}/{{vm.flow.curNode.activitiId}}"><span
                         class="glyphicon glyphicon-pencil"></span>编辑课题计划</a>
-                <a ng-if="vm.flow.curNode.activitiId == 'TOPIC_KTFZR_QR' || vm.flow.curNode.activitiId == 'TOPIC_ZLGD'" class="btn btn-xs btn-primary" href="#/editFiling/{{vm.model.id}}"><span
+                <a ng-if="vm.flow.curNode.activitiId == 'TOPIC_KTFZR_QR' || vm.flow.curNode.activitiId == 'TOPIC_ZLGD'" class="btn btn-xs btn-primary" href="#/editFiling/{{vm.model.id}}/{{vm.flow.curNode.activitiId}}"><span
                         class="glyphicon glyphicon-pencil"></span>资料归档</a>
             </td>
         </tr>

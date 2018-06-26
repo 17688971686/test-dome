@@ -1,15 +1,15 @@
 <meta charset="UTF-8">
 <#assign path=request.contextPath/>
 <style>
-   #filingform ul li{
+    #filingform ul li{
         width: 48%;
         float: left;
         list-style:none;
         display:inline;
-       word-wrap: break-word;
-       word-break: normal;
+        word-wrap: break-word;
+        word-break: normal;
     }
-   #filingform ul li span{
+    #filingform ul li span{
         float:left;
         width: 30%;
         min-width: 50px;
@@ -65,57 +65,57 @@
                 </tr>
                 <tr>
                     <td colspan="2">
-                    <ul>
-                        <li class="text-center">课题研究计划书</li>
-                        <li>
+                        <ul>
+                            <li class="text-center">课题研究计划书</li>
+                            <li>
                             <span >
                                 <input type="text" style="width:50px;" class="form-control input-sm "  data-val="true" data-val-digits="只能输入数字"
                                        ng-model="vm.filing.planCount" name="planCount" id="planCount" >
                             </span>
-                            <span>
-                                <input type="checkbox" ng-click="vm.filing.planCount = initInputValue($event,vm.filing.planCount)" ng-model="vm.filing.planOrig" name="planOrig" ng-true-value="9" ng-false-value="0" ng-checked="vm.filing.planOrig==9" />
+                                <span>
+                                <input type="checkbox" class="newcheckbox" ng-click="vm.filing.planCount = initInputValue($event,vm.filing.planCount)" ng-model="vm.filing.planOrig" name="planOrig" ng-true-value="9" ng-false-value="0" ng-checked="vm.filing.planOrig==9" />
                             </span>
-                            <span>
-                                <input type="checkbox" ng-click="vm.filing.planCount = initInputValue($event,vm.filing.planCount)" ng-model="vm.filing.planCopy" name="planCopy" ng-true-value="9" ng-false-value="0" ng-checked="vm.filing.planCopy==9" />
+                                <span>
+                                <input type="checkbox" class="newcheckbox" ng-click="vm.filing.planCount = initInputValue($event,vm.filing.planCount)" ng-model="vm.filing.planCopy" name="planCopy" ng-true-value="9" ng-false-value="0" ng-checked="vm.filing.planCopy==9" />
                             </span>
-                        </li>
-                    </ul>
+                            </li>
+                        </ul>
                     </td>
                     <td colspan="2">
-                    <ul>
-                        <li class="text-center">电子文档</li>
-                        <li>
+                        <ul>
+                            <li class="text-center">电子文档</li>
+                            <li>
                             <span >
                                 <input type="text" style="width:50px;" class="form-control input-sm "  data-val="true" data-val-digits="只能输入数字"
                                        ng-model="vm.filing.eleDocCount" name="eleDocCount" id="eleDocCount" >
                             </span>
-                            <span>
-                                <input type="checkbox" ng-click="vm.filing.eleDocCount = initInputValue($event,vm.filing.eleDocCount)" ng-model="vm.filing.eleDocOrig" name="eleDocOrig" ng-true-value="9" ng-false-value="0" ng-checked="vm.filing.eleDocOrig==9"/>
+                                <span>
+                                <input type="checkbox" class="newcheckbox" ng-click="vm.filing.eleDocCount = initInputValue($event,vm.filing.eleDocCount)" ng-model="vm.filing.eleDocOrig" name="eleDocOrig" ng-true-value="9" ng-false-value="0" ng-checked="vm.filing.eleDocOrig==9"/>
                             </span>
-                            <span>
-                                <input type="checkbox" ng-click="vm.filing.eleDocCount = initInputValue($event,vm.filing.eleDocCount)" ng-model="vm.filing.eleDocCopy" name="eleDocCopy" ng-true-value="9" ng-false-value="0" ng-checked="vm.filing.eleDocCopy==9"/>
+                                <span>
+                                <input type="checkbox" class="newcheckbox" ng-click="vm.filing.eleDocCount = initInputValue($event,vm.filing.eleDocCount)" ng-model="vm.filing.eleDocCopy" name="eleDocCopy" ng-true-value="9" ng-false-value="0" ng-checked="vm.filing.eleDocCopy==9"/>
                             </span>
-                        </li>
-                    </ul>
+                            </li>
+                        </ul>
                     </td>
                 </tr>
                 <tr>
                     <td colspan="2">
-                    <ul>
-                        <li class="text-center">课题合作研究合同</li>
-                        <li>
+                        <ul>
+                            <li class="text-center">课题合作研究合同</li>
+                            <li>
                             <span >
                                 <input type="text" style="width:50px;" class="form-control input-sm "  data-val="true" data-val-digits="只能输入数字"
                                        ng-model="vm.filing.contract" name="contract" id="contract" >
                             </span>
-                        <span>
-                                <input type="checkbox" ng-click="vm.filing.contract = initInputValue($event,vm.filing.contract)" ng-model="vm.filing.contractOrig" ng-checked="vm.filing.contractOrig==9" name="contractOrig" ng-true-value="9" ng-false-value="0"  />
+                                <span>
+                                <input type="checkbox" class="newcheckbox" ng-click="vm.filing.contract = initInputValue($event,vm.filing.contract)" ng-model="vm.filing.contractOrig" ng-true-value="9" ng-false-value="0" ng-checked="vm.filing.contractOrig==9"  name="contractOrig" />
                             </span>
-                        <span>
-                                <input type="checkbox" ng-click="vm.filing.contract = initInputValue($event,vm.filing.contract)" ng-model="vm.filing.contractCopy" ng-checked="vm.filing.contractCopy==9" name="contractCopy" ng-true-value="9" ng-false-value="0"  />
+                                <span>
+                                <input type="checkbox" class="newcheckbox" ng-click="vm.filing.contract = initInputValue($event,vm.filing.contract)" ng-model="vm.filing.contractCopy" ng-true-value="9" ng-false-value="0" ng-checked="vm.filing.contractCopy" name="contractCopy"  />
                             </span>
-                        </li>
-                    </ul>
+                            </li>
+                        </ul>
                     </td>
                     <td colspan="2">
 
@@ -148,10 +148,10 @@
                                        ng-model="vm.filing.wplanCount" name="wplanCount" id="wplanCount" >
                             </span>
                                 <span>
-                                <input type="checkbox" ng-click="vm.filing.wplanCount = initInputValue($event,vm.filing.wplanCount)" ng-model="vm.filing.wplanOrig" name="wplanOrig" ng-true-value="9" ng-false-value="0" ng-checked="vm.filing.wplanOrig==9"/>
+                                <input type="checkbox" class="newcheckbox" ng-click="vm.filing.wplanCount = initInputValue($event,vm.filing.wplanCount)" ng-model="vm.filing.wplanOrig" name="wplanOrig" ng-true-value="9" ng-false-value="0" ng-checked="vm.filing.wplanOrig==9"/>
                             </span>
                                 <span>
-                                <input type="checkbox" ng-click="vm.filing.wplanCount = initInputValue($event,vm.filing.wplanCount)" ng-model="vm.filing.wplanCopy" name="wplanCopy" ng-true-value="9" ng-false-value="0" ng-checked="vm.filing.wplanCopy==9"/>
+                                <input type="checkbox" class="newcheckbox" ng-click="vm.filing.wplanCount = initInputValue($event,vm.filing.wplanCount)" ng-model="vm.filing.wplanCopy" name="wplanCopy" ng-true-value="9" ng-false-value="0" ng-checked="vm.filing.wplanCopy==9"/>
                             </span>
                             </li>
                         </ul>
@@ -165,10 +165,10 @@
                                        ng-model="vm.filing.studyCount" name="studyCount" id="studyCount" >
                             </span>
                                 <span>
-                                <input type="checkbox" ng-click="vm.filing.studyCount = initInputValue($event,vm.filing.studyCount)" ng-model="vm.filing.studyOrig" name="studyOrig" ng-true-value="9" ng-false-value="0" ng-checked="vm.filing.studyOrig==9"/>
+                                <input type="checkbox" class="newcheckbox" ng-click="vm.filing.studyCount = initInputValue($event,vm.filing.studyCount)" ng-model="vm.filing.studyOrig" name="studyOrig" ng-true-value="9" ng-false-value="0" ng-checked="vm.filing.studyOrig==9"/>
                             </span>
                                 <span>
-                                <input type="checkbox" ng-click="vm.filing.studyCount = initInputValue($event,vm.filing.studyCount)" ng-model="vm.filing.studyCopy" name="studyCopy" ng-true-value="9" ng-false-value="0" ng-checked="vm.filing.studyCopy==9"/>
+                                <input type="checkbox" class="newcheckbox" ng-click="vm.filing.studyCount = initInputValue($event,vm.filing.studyCount)" ng-model="vm.filing.studyCopy" name="studyCopy" ng-true-value="9" ng-false-value="0" ng-checked="vm.filing.studyCopy==9"/>
                             </span>
                             </li>
                         </ul>
@@ -184,10 +184,10 @@
                                        ng-model="vm.filing.studyIdeaCount" name="studyIdeaCount" id="studyIdeaCount" >
                             </span>
                                 <span>
-                                <input type="checkbox" ng-click="vm.filing.studyIdeaCount = initInputValue($event,vm.filing.studyIdeaCount)" ng-model="vm.filing.studyIdeaOrig" name="studyIdeaOrig" ng-true-value="9" ng-false-value="0" ng-checked="vm.filing.studyIdeaOrig==9"/>
+                                <input type="checkbox" class="newcheckbox" ng-click="vm.filing.studyIdeaCount = initInputValue($event,vm.filing.studyIdeaCount)" ng-model="vm.filing.studyIdeaOrig" name="studyIdeaOrig" ng-true-value="9" ng-false-value="0" ng-checked="vm.filing.studyIdeaOrig==9"/>
                             </span>
                                 <span>
-                                <input type="checkbox" ng-click="vm.filing.studyIdeaCount = initInputValue($event,vm.filing.studyIdeaCount)" ng-model="vm.filing.studyIdeaCopy" name="studyIdeaCopy" ng-true-value="9" ng-false-value="0" ng-checked="vm.filing.studyIdeaCopy==9"/>
+                                <input type="checkbox" class="newcheckbox" ng-click="vm.filing.studyIdeaCount = initInputValue($event,vm.filing.studyIdeaCount)" ng-model="vm.filing.studyIdeaCopy" name="studyIdeaCopy" ng-true-value="9" ng-false-value="0" ng-checked="vm.filing.studyIdeaCopy==9"/>
                             </span>
                             </li>
                         </ul>
@@ -201,10 +201,10 @@
                                        ng-model="vm.filing.studyEleCount" name="studyEleCount" id="studyEleCount" >
                             </span>
                                 <span>
-                                <input type="checkbox" ng-click="vm.filing.studyEleCount = initInputValue($event,vm.filing.studyEleCount)" ng-model="vm.filing.studyEleOrig" name="studyEleOrig" ng-true-value="9" ng-false-value="0" ng-checked="vm.filing.studyEleOrig==9"/>
+                                <input type="checkbox" class="newcheckbox" ng-click="vm.filing.studyEleCount = initInputValue($event,vm.filing.studyEleCount)" ng-model="vm.filing.studyEleOrig" name="studyEleOrig" ng-true-value="9" ng-false-value="0" ng-checked="vm.filing.studyEleOrig==9"/>
                             </span>
                                 <span>
-                                <input type="checkbox" ng-click="vm.filing.studyEleCount = initInputValue($event,vm.filing.studyEleCount)" ng-model="vm.filing.studyEleCopy" name="studyEleCopy" ng-true-value="9" ng-false-value="0" ng-checked="vm.filing.studyEleCopy==9"/>
+                                <input type="checkbox" class="newcheckbox" ng-click="vm.filing.studyEleCount = initInputValue($event,vm.filing.studyEleCount)" ng-model="vm.filing.studyEleCopy" name="studyEleCopy" ng-true-value="9" ng-false-value="0" ng-checked="vm.filing.studyEleCopy==9"/>
                             </span>
                             </li>
                         </ul>
@@ -220,10 +220,10 @@
                                        ng-model="vm.filing.signinCount" name="signinCount" id="signinCount" >
                             </span>
                                 <span>
-                                <input type="checkbox" ng-click="vm.filing.signinCount = initInputValue($event,vm.filing.signinCount)" ng-model="vm.filing.signinOrig" name="signinOrig" ng-true-value="9" ng-false-value="0" ng-checked="vm.filing.signinOrig==9"/>
+                                <input type="checkbox" class="newcheckbox" ng-click="vm.filing.signinCount = initInputValue($event,vm.filing.signinCount)" ng-model="vm.filing.signinOrig" name="signinOrig" ng-true-value="9" ng-false-value="0" ng-checked="vm.filing.signinOrig==9"/>
                             </span>
                                 <span>
-                                <input type="checkbox" ng-click="vm.filing.signinCount = initInputValue($event,vm.filing.signinCount)" ng-model="vm.filing.signinCopy" name="signinCopy" ng-true-value="9" ng-false-value="0" ng-checked="vm.filing.signinCopy==9"/>
+                                <input type="checkbox" class="newcheckbox" ng-click="vm.filing.signinCount = initInputValue($event,vm.filing.signinCount)" ng-model="vm.filing.signinCopy" name="signinCopy" ng-true-value="9" ng-false-value="0" ng-checked="vm.filing.signinCopy==9"/>
                             </span>
                             </li>
                         </ul>
@@ -237,10 +237,10 @@
                                        ng-model="vm.filing.reportCount" name="reportCount" id="reportCount" >
                             </span>
                                 <span>
-                                <input type="checkbox" ng-click="vm.filing.reportCount = initInputValue($event,vm.filing.reportCount)" ng-model="vm.filing.reportOrig" name="reportOrig" ng-true-value="9" ng-false-value="0" ng-checked="vm.filing.reportOrig==9"/>
+                                <input type="checkbox" class="newcheckbox" ng-click="vm.filing.reportCount = initInputValue($event,vm.filing.reportCount)" ng-model="vm.filing.reportOrig" name="reportOrig" ng-true-value="9" ng-false-value="0" ng-checked="vm.filing.reportOrig==9"/>
                             </span>
                                 <span>
-                                <input type="checkbox" ng-click="vm.filing.reportCount = initInputValue($event,vm.filing.reportCount)" ng-model="vm.filing.reportCopy" name="reportCopy" ng-true-value="9" ng-false-value="0" ng-checked="vm.filing.reportCopy==9"/>
+                                <input type="checkbox" class="newcheckbox" ng-click="vm.filing.reportCount = initInputValue($event,vm.filing.reportCount)" ng-model="vm.filing.reportCopy" name="reportCopy" ng-true-value="9" ng-false-value="0" ng-checked="vm.filing.reportCopy==9"/>
                             </span>
                             </li>
                         </ul>
@@ -258,10 +258,10 @@
                                        ng-model="vm.filing.epCostCount" name="epCostCount" id="epCostCount" >
                             </span>
                                 <span>
-                                <input type="checkbox" ng-click="vm.filing.epCostCount = initInputValue($event,vm.filing.epCostCount)" ng-model="vm.filing.epCostOrig" name="epCostOrig" ng-true-value="9" ng-false-value="0" ng-checked="vm.filing.epCostOrig==9"/>
+                                <input type="checkbox" class="newcheckbox" ng-click="vm.filing.epCostCount = initInputValue($event,vm.filing.epCostCount)" ng-model="vm.filing.epCostOrig" name="epCostOrig" ng-true-value="9" ng-false-value="0" ng-checked="vm.filing.epCostOrig==9"/>
                             </span>
                                 <span>
-                                <input type="checkbox" ng-click="vm.filing.epCostCount = initInputValue($event,vm.filing.epCostCount)" ng-model="vm.filing.epCostCopy" name="epCostCopy" ng-true-value="9" ng-false-value="0" ng-checked="vm.filing.epCostCopy==9"/>
+                                <input type="checkbox" class="newcheckbox" ng-click="vm.filing.epCostCount = initInputValue($event,vm.filing.epCostCount)" ng-model="vm.filing.epCostCopy" name="epCostCopy" ng-true-value="9" ng-false-value="0" ng-checked="vm.filing.epCostCopy==9"/>
                             </span>
                             </li>
                         </ul>
@@ -275,9 +275,19 @@
                 </tr>
                 <tr>
                     <td class="text-center">档案员签收</td>
-                    <td>{{vm.filing.filingUser}}</td>
+                    <td>
+                        <select ng-model="vm.filing.filingUser" id="filingUser" ng-if="vm.curNodeId == 'TOPIC_ZLGD'">
+                            <option ng-repeat="x in vm.topicUserList" value="{{x.displayName}}"
+                                    ng-selected="vm.filing.filingUser == x.displayName">{{x.displayName}}
+                            </option>
+                        </select>
+                    </td>
                     <td class="text-center">归档日期</td>
-                    <td>{{vm.filing.filingDate}}</td>
+                    <!--    <td><span ng-if="vm.curNodeId == 'TOPIC_ZLGD'">{{vm.filing.filingDate}}</span></td>-->
+                    <td>
+                        <input ng-if="vm.curNodeId == 'TOPIC_ZLGD'" type="text" style="width:220px;" kendo-date-picker k-format="'yyyy-MM-dd'" class="form-control input-sm " ng-model="vm.filing.filingDate"
+                               name="filingDate" id="filingDate">
+                    </td>
                 </tr>
                 <tr>
                     <td colspan="4">三、其他资料
@@ -320,11 +330,11 @@
                                 <input type="text" style="width:50px;" class="form-control input-sm "  data-val="true" data-val-digits="只能输入数字"
                                        ng-model="vm.filing.registerFileDto[$index].totalNum" id="{{f.id}}">
                             </span>
-                            <span>
-                                <input type="checkbox" ng-click="vm.filing.registerFileDto[$index].totalNum = initInputValue($event,vm.filing.registerFileDto[$index].totalNum)" name="{{f.id}}" ng-model="vm.filing.registerFileDto[$index].isHasOriginfile" ng-true-value="9" ng-false-value="0" ng-checked="f.isHasOriginfile==9" />
+                                <span>
+                                <input type="checkbox" class="newcheckbox" ng-click="vm.filing.registerFileDto[$index].totalNum = initInputValue($event,vm.filing.registerFileDto[$index].totalNum)" name="{{f.id}}" ng-model="vm.filing.registerFileDto[$index].isHasOriginfile" ng-true-value="9" ng-false-value="0" ng-checked="f.isHasOriginfile==9" />
                             </span>
-                            <span>
-                                <input type="checkbox" ng-click="vm.filing.registerFileDto[$index].totalNum = initInputValue($event,vm.filing.registerFileDto[$index].totalNum)" name="{{f.id}}" ng-model="vm.filing.registerFileDto[$index].isHasCopyfile"  ng-true-value="9" ng-false-value="0" ng-checked="f.isHasCopyfile==9"/>
+                                <span>
+                                <input type="checkbox" class="newcheckbox" ng-click="vm.filing.registerFileDto[$index].totalNum = initInputValue($event,vm.filing.registerFileDto[$index].totalNum)" name="{{f.id}}" ng-model="vm.filing.registerFileDto[$index].isHasCopyfile"  ng-true-value="9" ng-false-value="0" ng-checked="f.isHasCopyfile==9"/>
                             </span>
                             </li>
                         </ul>
