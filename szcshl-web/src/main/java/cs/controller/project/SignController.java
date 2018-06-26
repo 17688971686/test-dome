@@ -53,6 +53,10 @@ public class SignController {
     private SignBranchService signBranchService;
     @Autowired
     private OrgDeptRepo orgDeptRepo;
+    @Autowired
+    private RTXService rtxService;
+    @Autowired
+    private SMSContent smsContent;
 
     //@RequiresPermissions("sign#fingByOData#post")
     @RequiresAuthentication
@@ -382,6 +386,12 @@ public class SignController {
     @Transactional
     public ResultMsg startNewFlow(@RequestParam(required = true) String signid) {
         ResultMsg resultMsg = signService.startNewFlow(signid);
+        if(resultMsg.isFlag()){
+            ProcessInstance processInstance = (ProcessInstance) resultMsg.getReObj();
+            rtxService.dealPoolRTXMsg(resultMsg.getIdCode(),resultMsg,processInstance,smsContent.get("项目",processInstance.getName()));
+            resultMsg.setIdCode(null);
+            resultMsg.setReObj(null);
+        }
         return resultMsg;
     }
 

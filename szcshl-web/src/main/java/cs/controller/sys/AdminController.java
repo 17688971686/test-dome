@@ -380,13 +380,14 @@ public class AdminController {
         //遍历map,如果是部长则查人员，否则查部门
         Map<String, Map<String, Object>> histogramMap = new LinkedHashMap<>();
         if (authFlag == 3) {
+            Map<String, Object> deptMap = null,notDealMap = null;
             for (Map.Entry<String, Map<String, Object>> entry : dataMap.entrySet()) {
                 //如果是人才显示人名，统计数量的不显示
                 if(!"COUNT_TASK_MAP".equals(entry.getKey())){
-                    if("部门协办".equals(entry.getKey()) || "未分办".equals(entry.getKey())){
-                        Map<String, Object> runTaskInfoMap = entry.getValue();
-                        runTaskInfoMap.put("HISTOGRAM_NAME", entry.getKey());
-                        histogramMap.put(entry.getKey(), runTaskInfoMap);
+                    if("部门协办".equals(entry.getKey())){
+                        deptMap = entry.getValue();
+                    }else if("未分办".equals(entry.getKey())){
+                        notDealMap = entry.getValue();
                     }else{
                         User user = userService.getCacheUserById(entry.getKey());
                         Map<String, Object> runTaskInfoMap = entry.getValue();
@@ -395,6 +396,14 @@ public class AdminController {
                     }
 
                 }
+            }
+            if(Validate.isMap(deptMap)){
+                deptMap.put("HISTOGRAM_NAME", "部门协办");
+                histogramMap.put("部门协办", deptMap);
+            }
+            if(Validate.isMap(notDealMap)){
+                notDealMap.put("HISTOGRAM_NAME", "未分办");
+                histogramMap.put("未分办", notDealMap);
             }
         } else {
             List<OrgDept> allOrgDept = authMap.get("allOrgDeptList") == null ? orgDeptService.queryAll() : (List<OrgDept>) authMap.get("allOrgDeptList");

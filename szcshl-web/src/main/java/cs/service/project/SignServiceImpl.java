@@ -145,10 +145,6 @@ public class SignServiceImpl implements SignService {
     @Autowired
     private UnitScoreService unitScoreService;
     @Autowired
-    private RTXService rtxService;
-    @Autowired
-    private SMSContent smsContent;
-    @Autowired
     private AgentTaskService agentTaskService;
     @Autowired
     private AssistUnitRepo assistUnitRepo;
@@ -769,12 +765,11 @@ public class SignServiceImpl implements SignService {
             //放入腾讯通消息缓冲池
             RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
             //发送短信消息
-            ResultMsg resultMsg = new ResultMsg(true, MsgCode.OK.getValue(),"操作成功！");
-            rtxService.dealPoolRTXMsg(task.getId(),resultMsg,processInstance,smsContent.get("项目",processInstance.getName()));
+            ResultMsg resultMsg = new ResultMsg(true, MsgCode.OK.getValue(),task.getId(),"操作成功！",processInstance);
             return resultMsg;
         } catch (Exception e) {
             log.error("发起项目签收流程异常：" + e.getMessage());
-            return new ResultMsg(true, MsgCode.OK.getValue(), "操作异常，错误信息已记录，请刷新重试或联系管理员处理！");
+            return new ResultMsg(false, MsgCode.ERROR.getValue(), "操作异常，错误信息已记录，请刷新重试或联系管理员处理！");
         }
     }
 
