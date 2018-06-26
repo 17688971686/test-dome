@@ -1130,7 +1130,7 @@
                     controllerAs: 'vm'
                 })
                 .state('editFiling', {
-                    url: '/editFiling/:topicId',
+                    url: '/editFiling/:topicId/:curNodeId',
                     templateUrl: rootPath + '/filing/html/edit.html',
                     controller: 'filingEditCtrl',
                     controllerAs: 'vm'

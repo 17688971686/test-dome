@@ -14,11 +14,16 @@
         vm.conMaxIndex = 0;                   //条件号
         vm.conditions = [];         //条件列表
         vm.isCreate = false;      //是否已经创建课题
+        vm.endTopic = false;      //结题标志
         if($state.params.id){
             vm.model.id = $state.params.id;
         }
         if($state.params.curNodeId){
             vm.curNodeId = $state.params.curNodeId;
+            if(vm.curNodeId == 'TOPIC_KTFZR_QR'||vm.curNodeId == 'TOPIC_ZLGD'){
+                vm.endTopic = true;
+            }
+
         }
 
         if(vm.model.id){

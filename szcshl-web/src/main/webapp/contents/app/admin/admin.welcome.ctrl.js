@@ -293,6 +293,9 @@
                 if(data.proMeetInfo.proAmMeetDtoList){
                     vm.proAmMeetDtoList = data.proMeetInfo.proAmMeetDtoList;
                 }
+                if(data.proMeetInfo.proPmMeetDtoList){
+                    vm.proPmMeetDtoList = data.proMeetInfo.proPmMeetDtoList;
+                }
             });
         }
 
