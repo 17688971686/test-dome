@@ -76,11 +76,13 @@
                     </td>
                     <td class="text-center"   width="10%">学历</td>
                     <td width="10%"  class="text-left">
-                        <select ng-model="vm.party.pmEducation" name="pmEducation" id="pmEducation" class="form-control select-sm">
+                        <input type="text"  maxlength="200" class="form-control input-xm"
+                               name="pmEducation" id="pmEducation" ng-model="vm.party.pmEducation" />
+                       <#-- <select ng-model="vm.party.pmEducation" name="pmEducation" id="pmEducation" class="form-control select-sm">
                             <option ng-repeat="x in DICT.ADUCATION.dicts" value="{{x.dictKey}}"
                                     ng-selected="x.dictKey == vm.party.pmEducation">{{x.dictName}}
                             </option>
-                        </select>
+                        </select>-->
                     </td>
                 </tr>
 

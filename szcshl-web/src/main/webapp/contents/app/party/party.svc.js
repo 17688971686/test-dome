@@ -15,7 +15,7 @@
             exportPartyWord : exportPartyWord , //导出党务信息-word模板
             deleteParty : deleteParty , //删除党员信息
             exportSignInSheet : exportSignInSheet , //导出签到表
-            
+
         }
         
         return service;
@@ -248,11 +248,11 @@
                     }
                 },
                 {
-                    field: "",
+                    field: "pmEducation",
                     title: "学历",
                     width: 80,
                     filterable: false,
-                    template :function(item){
+                   /* template :function(item){
                         var pmEducation = "";
                         for(var i =0 ; i < $rootScope.DICT.ADUCATION.dicts.length ; i++){
                             var v = $rootScope.DICT.ADUCATION.dicts[i];
@@ -262,7 +262,7 @@
                             }
                         }
                         return pmEducation;
-                    }
+                    }*/
                 },
                 {
                     field: "pmPhone",

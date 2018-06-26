@@ -216,7 +216,7 @@
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="2595" w:type="dxa"/>
+                                    <w:tcW w:w="2115" w:type="dxa"/>
                                     <w:vAlign w:val="top"/>
                                 </w:tcPr>
                                 <w:p>
@@ -244,7 +244,7 @@
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="2115" w:type="dxa"/>
+                                    <w:tcW w:w="2595" w:type="dxa"/>
                                     <w:vAlign w:val="top"/>
                                 </w:tcPr>
                                 <w:p>
@@ -294,7 +294,7 @@
                                             <w:vertAlign w:val="baseline"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>备注</w:t>
+                                        <w:t>签名</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -403,7 +403,7 @@
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="2595" w:type="dxa"/>
+                                    <w:tcW w:w="2115" w:type="dxa"/>
                                     <w:vAlign w:val="top"/>
                                 </w:tcPr>
                                 <w:p>
@@ -427,9 +427,9 @@
                                         </w:rPr>
 
                             <#if ((party.pmCategory)!"defaultValue") == "1">
-                            <w:t>正式 </w:t>
+                            <w:t>正式党员 </w:t>
                             <#elseif ((party.pmCategory)!"defaultValue") == "2">
-                            <w:t>预备</w:t>
+                            <w:t>预备党员</w:t>
 
                                 </#if>
 
@@ -439,7 +439,7 @@
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="2115" w:type="dxa"/>
+                                    <w:tcW w:w="2595" w:type="dxa"/>
                                     <w:vAlign w:val="top"/>
                                 </w:tcPr>
                                 <w:p>
