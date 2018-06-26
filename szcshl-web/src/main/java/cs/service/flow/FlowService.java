@@ -176,4 +176,7 @@ public interface FlowService {
      * @return
      */
     ResultMsg taskTransferAssignee(String taskId,String oldUserId,String newUserId);
+
+
+    ResultMsg getBranchInfo(FlowDto flowDto);
 }

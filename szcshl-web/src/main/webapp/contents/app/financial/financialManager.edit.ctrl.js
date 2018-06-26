@@ -49,6 +49,7 @@
          * @param object
          */
         vm.showCostWindow = function(object,id){
+            debugger;
             addCostSvc.initAddCost(vm,vm.costType,object,id);
         }
 

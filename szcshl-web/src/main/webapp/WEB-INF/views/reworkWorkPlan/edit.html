@@ -1,0 +1,61 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a >短信管理</a></li>
+        <li class="active" >发送短信</li>
+    </ol>
+    <div class="toolbar">
+        <button class="btn btn-sm btn-success" ng-click="vm.create()"
+                ng-disabled="vm.isSubmit" ng-hide="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>保存
+        </button>
+    </div>
+
+    <form id="form" name="form">
+        <table class="table table-bordered">
+            <tr ng-hide="vm.model.isNoPermission == 9">otherDealInfo
+                <td class="text-right">接收用户：</td>
+                <td>
+                    <table class="table">
+                        <tr>
+                            <td style="width: 85px;">
+                                中心领导
+                            </td>
+                            <td>
+                                <li ng-repeat="u in vm.noOrgUsetList" style="width: 80px;float: left;">
+                                    <input type="checkbox" name="shareUser" value="{{u.id}}" ng-checked="{{u.isChecked}}"/>{{u.displayName}}</li>
+                                </li>
+                            </td>
+                        </tr>
+                        <tr ng-repeat="o in vm.shareOrgList">
+                            <td>{{o.name}}</td>
+                            <td>
+                                <li ng-repeat="u in o.userDtos" style="width: 80px;float: left;">
+                                    <input type="checkbox" tit="{{o.id}}" name="shareUser" value="{{u.id}}" ng-checked="{{u.isChecked}}" ng-disabled="{{u.isDisabled}}"/>{{u.displayName}}</li>
+                                </li>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right" style="width:160px;">标题： <span class="required">*</span></td>
+                <td>
+                    <input  type="text" maxlength="200" class="form-control input-sm "   ng-model="vm.annountment.anTitle" id="anTitle" name="anTitle"
+                            data-val="true" data-val-required="必填" data-val-length-max="100">
+                    <span data-valmsg-for="anTitle" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right">内容：</td>
+                <td >
+                     <textarea id="content" name="content" rows="5" cols="30" maxlength="1000"
+                               class="form-control input-sm " ng-model="vm.model.content" data-val-length-max="1000"></textarea>
+                    <span data-valmsg-for="content" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+

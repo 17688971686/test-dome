@@ -8,6 +8,19 @@ public class FlowConstant {
 
     /***************  流程名称  ****************/
     /**
+     * 回退：项目回退流程
+     */
+    public final static String ROLL_BACK_SEND_FLOW = "ROLL_BACK_SEND_FLOW";           //项目回退流程:重写工作方案
+    /**
+     * 项目回退流程环节名称
+     */
+    public static final String ROLL_BACK_SEND_FZR = "ROLL_BACK_SEND_FZR";                //负责人填报
+    public static final String ROLL_BACK_SEND_BZ_SP = "ROLL_BACK_SEND_BZ_SP";                 //部长审批
+    public static final String ROLL_BACK_SEND_FGLD_SP = "ROLL_BACK_SEND_FGLD_SP";              //分管领导审批
+
+    public static final String QUERY_BRANCH_INFO = "QUERY_BRANCH_INFO";                //负责人填报
+
+    /**
      * 项目签收流程
      */
     public final static String SIGN_FLOW = "FINAL_SIGN_FLOW";           //项目签收流程
@@ -397,6 +410,9 @@ public class FlowConstant {
                 break;
             case ANNOUNT_MENT_FLOW:
                 resultValue = "【通知公告流程】";
+                break;
+            case ROLL_BACK_SEND_FLOW:
+                resultValue = "【重写工作方案流程】";
                 break;
             default:
                     ;

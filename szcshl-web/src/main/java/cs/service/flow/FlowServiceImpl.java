@@ -1331,4 +1331,9 @@ public class FlowServiceImpl implements FlowService {
         return resultMsg;
     }
 
+    @Override
+    public ResultMsg getBranchInfo(FlowDto flowDto) {
+        return null;
+    }
+
 }

@@ -78,17 +78,14 @@ public class SMSUtils {
                 public HashMap<String, String> call() throws Exception {
 //                    异步任务 不需要直接反应结果，通过日志记录发信状况信息
                     logger.info("进入发送短信异步:  "+smsContent);
-                    synchronized(projectName){
-                        boolean  boo = seekSMS(smsContent,receiverList, projectName, filecode, type, infoType,seekContent, smsLogService);
-                        logger.info("seekSMS: 返回调用结果. " + boo);
-                        Thread.sleep(2000);
-                        return
-                                new HashMap<String, String>() {
-                                    {
-                                        this.put(""+projectName, String.valueOf(boo));
-                                    }
-                                };
-                    }
+                    boolean  boo = seekSMS(smsContent,receiverList, projectName, filecode, type, infoType,seekContent, smsLogService);
+                    logger.info("seekSMS: 返回调用结果. " + boo);
+                    return
+                            new HashMap<String, String>() {
+                                {
+                                    this.put(""+projectName, String.valueOf(boo));
+                                }
+                            };
                 }
             });
             //关闭线程池
@@ -105,18 +102,26 @@ public class SMSUtils {
      * 将限制短信次数放到短信发送之前
      */
     public  static boolean seekSMS(SMSContent smsContent,List<User> receiverList,String projectName,String filecode,String type,String infoType,String seekContent,SMSLogService smsLogService) {
-        //获取打开限制次数
-        if("打开限制次数".equals(smsContent.orNotsendSMS(receiverList,projectName,filecode,type,infoType,"打开限制次数"))){
-            //限制次数开始
-            if(smsContent.querySmsNumber(receiverList,projectName,filecode,type,infoType,null)== null){
-                logger.info("seekSMS:进入限制次数判断" );
-                return sureSendSMS(smsContent,receiverList,projectName,filecode,type,infoType,seekContent,smsLogService);
 
+        synchronized(projectName){
+            //如果是待办不短信次数
+            if("待办".equals(infoType)){
+                return sureSendSMS(smsContent,receiverList,projectName,filecode,type,infoType,seekContent,smsLogService);
             }
-        }
-        if("关闭限制次数".equals(smsContent.orNotsendSMS(receiverList,projectName,filecode,type,infoType,"关闭限制次数"))){
-            logger.info("seekSMS:进入关闭限制次数判断" );
-            return sureSendSMS(smsContent,receiverList,projectName,filecode,type,infoType,seekContent,smsLogService);
+
+            //获取打开限制次数
+            if("打开限制次数".equals(smsContent.orNotsendSMS(receiverList,projectName,filecode,type,infoType,"打开限制次数"))){
+                //限制次数开始
+                if(smsContent.querySmsNumber(receiverList,projectName,filecode,type,infoType,null)== null){
+                    logger.info("seekSMS:进入限制次数判断" );
+                    return sureSendSMS(smsContent,receiverList,projectName,filecode,type,infoType,seekContent,smsLogService);
+
+                }
+            }
+            if("关闭限制次数".equals(smsContent.orNotsendSMS(receiverList,projectName,filecode,type,infoType,"关闭限制次数"))){
+                logger.info("seekSMS:进入关闭限制次数判断" );
+                return sureSendSMS(smsContent,receiverList,projectName,filecode,type,infoType,seekContent,smsLogService);
+            }
         }
         return  false;
     }

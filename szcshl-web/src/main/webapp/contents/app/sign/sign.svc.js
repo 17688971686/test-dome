@@ -492,6 +492,7 @@
 
         //S_初始化流程页面
         function initFlowPageData(signId, callBack) {
+            debugger;
             var httpOptions = {
                 method: 'get',
                 url: rootPath + "/sign/initFlowPageData",

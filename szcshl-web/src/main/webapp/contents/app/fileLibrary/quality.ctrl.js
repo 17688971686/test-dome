@@ -408,7 +408,7 @@
          */
 
         vm.commonDownloadSysFile = function(sysFileId){
-            sysfileSvc.downloadFile(sysFileId);
+            sysfileSvc.downloadFile(sysFileId);g
         }
         /**
          * 重写 删除附件

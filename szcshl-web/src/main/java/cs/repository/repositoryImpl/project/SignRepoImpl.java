@@ -185,7 +185,7 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
         criteria.add(Restrictions.ge(Sign_.processState.getName(), Constant.SignProcessState.END_DIS_NUM.getValue()));
 
         List<Sign> signList = criteria.list();
-        //过滤掉手工签收的项目，即收文编号为0000结尾的项目
+        //过滤掉手工签收的项目，即收文编号为0000结尾的项目  //
         List<Sign> resultList = signList.stream().filter(s -> (!s.getFilecode().endsWith("0000"))).collect(Collectors.toList());
         return resultList;
     }

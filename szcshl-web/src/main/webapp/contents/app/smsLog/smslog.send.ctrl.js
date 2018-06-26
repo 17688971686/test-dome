@@ -6,6 +6,7 @@
     smslogSend.$inject = ['$location','smslogSendSvc','smslogSvc','$http','$state','bsWin'];
 
     function smslogSend($location, smslogSendSvc,smslogSvc,$http,$state,bsWin) {
+        debugger;
         var vm = this;
         vm.model = {};
         vm.title = '发送短信';
@@ -17,6 +18,7 @@
         }
         activate();
         vm.selectsend = function activate() {
+            debugger;
             var httpOptions = {
                 method: 'get',
                 url: '/szcshl-web/smslog/querySMSLogType',
@@ -32,16 +34,16 @@
                 httpOptions: httpOptions,
                 success: httpSuccess
             });
-            // smslogSendSvc.initRoleUsers(function(data){
-            //     vm.orgMLeaderUsers = data.DIRECTOR;
-            //     vm.orgSLeaderUser = data.VICE_DIRECTOR;
-            //     vm.OrgDirectorUsers = data.DEPT_LEADER;
-            // });
-            // if (vm.isUpdate) {
-            //     orgSvc.getOrgById(vm.model.id,function(data){
-            //         vm.model = data;
-            //     });
-            // }
+            smslogSendSvc.initRoleUsers(function(data){
+                vm.orgMLeaderUsers = data.DIRECTOR;
+                vm.orgSLeaderUser = data.VICE_DIRECTOR;
+                vm.OrgDirectorUsers = data.DEPT_LEADER;
+            });
+            if (vm.isUpdate) {
+                orgSvc.getOrgById(vm.model.id,function(data){
+                    vm.model = data;
+                });
+            }
         }
 
         // vm.create = function () {
