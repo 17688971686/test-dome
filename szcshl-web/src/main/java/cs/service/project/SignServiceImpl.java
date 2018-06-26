@@ -2933,13 +2933,13 @@ public class SignServiceImpl implements SignService {
     public List<SignDto> findUnSendFGWList() {
         List<SignDto> listSignDto = new ArrayList<>();
         List<Sign> listSign = signRepo.findUnSendFGWList();
-        if (Validate.isList(listSign)) {
-            for (int i = 0, l = listSign.size(); i < l; i++) {
-                Sign sign = listSign.get(i);
-                if (EnumState.STOP.getValue().equals(sign.getIsSendFGW()) || sign.getFilecode().endsWith("0000")) {
-                    continue;
-                } else {
-                    SignDto signDto = new SignDto();
+                if (Validate.isList(listSign)) {
+                    for (int i = 0, l = listSign.size(); i < l; i++) {
+                        Sign sign = listSign.get(i);
+//                if (EnumState.STOP.getValue().equals(sign.getIsSendFGW()) || sign.getFilecode().endsWith("0000")) {
+//                    continue;
+//                } else {
+                        SignDto signDto = new SignDto();
                     BeanCopierUtils.copyProperties(sign, signDto);
                     //只获取主工作方案
                     if (Validate.isList(sign.getWorkProgramList())) {
@@ -2964,7 +2964,7 @@ public class SignServiceImpl implements SignService {
                     listSignDto.add(signDto);
                 }
 
-            }
+//            }
         }
         return listSignDto;
     }

@@ -108,21 +108,28 @@ public class SignRestServiceImpl implements SignRestService {
             //通过fileCode找signId =bussessId
             SignDto signDto1 = null;
             signDto1 = signService.findSignByFileCode(signDto);
-            String pifuMoney = "";//signDto;
-            //发文跟收文是1V1
-            DispatchDocDto dispatchDocDto= dispatchDocService.initDispatchBySignId(signDto1.getSignid());
-            dispatchDocDto.setApproveValue(signDto.getDeclaration());
-            dispatchDocDto.setSignId(signDto1.getSignid());
-            dispatchDocService.updateDispatchByDocDto(dispatchDocDto,Constant.SysFileType.SIGN.getValue());
-            //开始下载pdf
-            boolean isLoginUser = Validate.isString(SessionUtil.getUserId());
-            List<SysFileDto> fileDtoList2 = signDto.getSysFileDtoList();
-            if (fileDtoList2.size() ==0){
+            if (signDto1 == null){
                 resultMsg.setFlag(true);
                 resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getCode());
                 resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getValue());
                 return resultMsg;
             }
+            String pifuMoney = "";
+            //发文跟收文是1V1
+//          DispatchDocDto dispatchDocDto= new DispatchDocDto();
+            DispatchDocDto dispatchDocDto=dispatchDocService.initDispatchBySignId(signDto1.getSignid());
+            dispatchDocDto.setApproveValue(signDto.getDeclaration());
+            dispatchDocDto.setSignId(signDto1.getSignid());
+            dispatchDocService.updateDispatchByDocDto(dispatchDocDto,Constant.SysFileType.SIGN.getValue());
+            boolean isLoginUser = Validate.isString(SessionUtil.getUserId());
+//            List<SysFileDto> fileDtoList2 = signDto.getSysFileDtoList();
+//            if (fileDtoList2.size() ==0){
+//                resultMsg.setFlag(true);
+//                resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getCode());
+//                resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getValue());
+//                return resultMsg;
+//            }
+            //开始下载pdf
             checkDownLoadFile(resultMsg, isGetFiles, dispatchDocDto.getSignId(), signDto.getSysFileDtoList(), isLoginUser ? SessionUtil.getUserId() : SUPER_ACCOUNT, Constant.SysFileType.SIGN.getValue(), Constant.SysFileType.FGW_FILE.getValue());
             return resultMsg;
         }else{
@@ -356,28 +363,28 @@ public class SignRestServiceImpl implements SignRestService {
             FGWResponse fGWResponse = JSON.toJavaObject(JSON.parseObject(hst.getContent()), FGWResponse.class);
             //成功
             if (Constant.EnumState.PROCESS.getValue().equals(fGWResponse.getRestate())) {
-                if (rtxService.rtxSMSEnabled()){
-                    boolean boo = SMSUtils.getWeek(workdayService,new Date(),sysConfigService);
-                    if(boo){
-                             SMSUtils.seekSMSThread(smsContent,getListUser("发文成功"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文成功",smsContent.seekSMSSuccee(sign.getProjectname(),sign.getFilecode(),"发文成功(回传委里)"),  smsLogService);
-                    }
-                }
+//                if (rtxService.rtxSMSEnabled()){
+//                    boolean boo = SMSUtils.getWeek(workdayService,new Date(),sysConfigService);
+//                    if(boo){
+//                             SMSUtils.seekSMSThread(smsContent,getListUser("发文成功"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文成功",smsContent.seekSMSSuccee(sign.getProjectname(),sign.getFilecode(),"发文成功(回传委里)"),  smsLogService);
+//                    }
+//                }
                 return new ResultMsg(true, IFResultCode.IFMsgCode.SZEC_SEND_OK.getCode(), "项目【" + sign.getProjectname() + "(" + sign.getFilecode() + ")】回传数据给发改委成功！");
             } else {
                 //发送失败短信
-                if (rtxService.rtxSMSEnabled()){
-                    boolean boo = SMSUtils.getWeek(workdayService,new Date(),sysConfigService);
-                    if(boo){
-                         SMSUtils.seekSMSThread(smsContent,getListUser("发文失败"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文失败",smsContent.seekSMSSuccee(sign.getProjectname(),sign.getFilecode(),"发文失败(回传委里)"),  smsLogService);
-                    }
-                }
+//                if (rtxService.rtxSMSEnabled()){
+//                    boolean boo = SMSUtils.getWeek(workdayService,new Date(),sysConfigService);
+//                    if(boo){
+//                         SMSUtils.seekSMSThread(smsContent,getListUser("发文失败"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文失败",smsContent.seekSMSSuccee(sign.getProjectname(),sign.getFilecode(),"发文失败(回传委里)"),  smsLogService);
+//                    }
+//                }
                 return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SEND_ERROR.getCode(),
                         "项目【" + sign.getProjectname() + "(" + sign.getFilecode() + ")】回传数据给发改委失败！" + fGWResponse.getRedes() + "<br>");
             }
         } catch (Exception e) {
             //因发文成功，却发生通信异常。暂时注销通信异常发送短信
 //            if (rtxService.rtxSMSEnabled()){
-////                 发送通信异常短信
+//                 发送通信异常短信
 //                boolean boo = SMSUtils.getWeek(workdayService,new Date(),sysConfigService);
 //                if (boo){
 //                         SMSUtils.seekSMSThread(smsContent,getListUser("发文失败"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文失败.通信异常 ",smsContent.seekSMSSuccee(sign.getProjectname(),sign.getFilecode(),"发文失败(回传委里,通信异常)"),  smsLogService);
@@ -388,8 +395,6 @@ public class SignRestServiceImpl implements SignRestService {
         }
     }
 
-    public static  Map<String,String> gameChannelMap = new ConcurrentHashMap<>();
-    public static long timeL =0l;
     public static  boolean getTimeCode(){
 
 

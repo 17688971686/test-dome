@@ -3,6 +3,7 @@ package cs.quartz.execute;
 import cs.common.constants.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.DateUtils;
+import cs.common.utils.SMSUtils;
 import cs.common.utils.Validate;
 import cs.domain.project.Sign_;
 import cs.domain.sys.Log;
@@ -13,7 +14,7 @@ import cs.service.expert.ExpertReviewService;
 import cs.service.flow.FlowService;
 import cs.service.project.SignService;
 import cs.service.restService.SignRestService;
-import cs.service.sys.LogService;
+import cs.service.sys.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.quartz.Job;
@@ -58,7 +59,10 @@ public class SendProjectFGWExecute implements Job {
         SignService signService = (SignService) context.getMergedJobDataMap().get("signService");
         SignRestService signRestService = (SignRestService) context.getMergedJobDataMap().get("signRestService");
         FlowService flowService = (FlowService) context.getMergedJobDataMap().get("flowService");
-
+        WorkdayService workdayService = (WorkdayService) context.getMergedJobDataMap().get("workdayService");
+        SysConfigService sysConfigService = (SysConfigService) context.getMergedJobDataMap().get("sysConfigService");
+        SMSLogService smsLogService = (SMSLogService) context.getMergedJobDataMap().get("smsLogService");
+        SMSContent smsContent = (SMSContent) context.getMergedJobDataMap().get("smsContent");
         //添加日记记录
         Log log = new Log();
         log.setCreatedDate(new Date());
@@ -105,7 +109,15 @@ public class SendProjectFGWExecute implements Job {
                         if (resultMsg.isFlag()) {
                             sucessIdList.add(signDto.getSignid());
                             sucessCount++;
+                            boolean boo = SMSUtils.getWeek(workdayService,new Date(),sysConfigService);
+                            if (boo) {
+                                SMSUtils.seekSMSThread(smsContent,signRestService.getListUser("发文成功"),signDto.getProjectname(),signDto.getFilecode(),"dispatch_type","回传委里发文成功",smsContent.seekSMSSuccee(signDto.getProjectname(),signDto.getFilecode(),"发文成功(回传委里)"),  smsLogService);
+                            }
                         } else {
+                            boolean boo = SMSUtils.getWeek(workdayService,new Date(),sysConfigService);
+                            if(boo){
+                                SMSUtils.seekSMSThread(smsContent,signRestService.getListUser("发文失败"),signDto.getProjectname(),signDto.getFilecode(),"dispatch_type","回传委里发文失败",smsContent.seekSMSSuccee(signDto.getProjectname(),signDto.getFilecode(),"发文失败(回传委里)"),  smsLogService);
+                            }
                             errorCount++;
                         }
                         stringBuffer.append(resultMsg.getReMsg() + "\r\n");

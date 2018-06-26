@@ -334,47 +334,60 @@ public class SysRestController {
 
     @RequestMapping(name = "项目签收信息", value = "/testJson")
     public void testJson() throws IOException {
-        List<User> receiverList = new ArrayList<>();
-        User user = new User();
-        user.setDisplayName("郭冬冬");
-        ;
-        user.setUserMPhone("13640950289");
-        receiverList.add(user);
+//        List<User> receiverList = new ArrayList<>();
+//        User user = new User();
+//        user.setDisplayName("郭冬冬");
+//        ;
+//        user.setUserMPhone("13640950289");
+//        receiverList.add(user);
+//
+//        User user3 = new User();
+//        user3.setDisplayName("开发者");
+//        ;
+//        user3.setUserMPhone("18038078167");
+//        receiverList.add(user3);
+//        if(smsContent.querySmsNumber(receiverList,"测试项目","4324D","t","34","开始查询")== null){
+//            System.out.println("能查询");
+//
+//        }
 
-        User user3 = new User();
-        user3.setDisplayName("开发者");
-        ;
-        user3.setUserMPhone("18038078167");
-        receiverList.add(user3);
-        if(smsContent.querySmsNumber(receiverList,"测试项目","4324D","t","34","开始查询")== null){
-            System.out.println("能查询");
-
-        }
-
+        //、、
+        //{"declaration":3,"filecode":"D201800150","isAssociate":0,"sysFileDtoList":[{"fileSize":6,"fileUrl":"
+        // http://172.18.225.38:8089/FGWPM/LEAP/Download/default/2018/6/25/8a74dcc5d89e491595d06a8117c8fe72.txt","showName":"评审报告.txt"},
+        // {"fileSize":363,"fileUrl":"http://172.18.225.38:8089/FGWPM/LEAP/Download/default/2018/6/25/9dd4bd5c85f94e169817526ea29c0065.txt","showName":"新建文本文档.txt"}]}
 
         //批复金额pdf下载案例
-//        String REST_SERVICE_URI2 = "http://localhost:8080/szcshl-web/intfc/downRemoteFile";
-//        SignDto signDto2 = new SignDto();
-//        //委里收文编号
-//        signDto2.setFilecode("B20110451");
-//        signDto2.setDeclaration(new BigDecimal(11.11));
-//        //附件列表
-//        List<SysFileDto> fileDtoList2 = new ArrayList<>();
-//        SysFileDto sysFileDto2 = new SysFileDto();
-//        //显示名称，后缀名也要
-//        sysFileDto2.setShowName("空白.docx.docx");
-//        //附件大小，Long类型
-//        sysFileDto2.setFileSize(11213L);
-//        //附件下载地址
-//        sysFileDto2.setFileUrl("http://172.18.225.56:8089/FGWPM/LEAP/Download/default/2018/5/17/20180517143816590.docx");
-//        fileDtoList2.add(sysFileDto2);
-//        //项目添加附件列表
-//        signDto2.setSysFileDtoList(fileDtoList2);
-//        Map<String, String> params = new HashMap<>();
-//        params.put("signDtoJson", JSON.toJSONString(signDto2));
-//        HttpResult hst2 = httpClientOperate.doPost(REST_SERVICE_URI2, params);
-//        //System.out.println(params.get("signDtoJson"));
-//        System.out.println(hst2.toString());
+        String REST_SERVICE_URI2 = "http://localhost:8080/szcshl-web/intfc/downRemoteFile";
+        SignDto signDto2 = new SignDto();
+        //委里收文编号
+        signDto2.setFilecode("D201800150");
+        signDto2.setDeclaration(new BigDecimal(3));
+        //附件列表
+        List<SysFileDto> fileDtoList2 = new ArrayList<>();
+        SysFileDto sysFileDto2 = new SysFileDto();
+        //显示名称，后缀名也要
+        sysFileDto2.setShowName("评审报告.txt");
+        //附件大小，Long类型
+        sysFileDto2.setFileSize(6L);
+        //附件下载地址
+        sysFileDto2.setFileUrl("http://172.18.225.38:8089/FGWPM/LEAP/Download/default/2018/6/25/8a74dcc5d89e491595d06a8117c8fe72.txt");
+        fileDtoList2.add(sysFileDto2);
+
+        SysFileDto sysFileDto3 = new SysFileDto();
+        //显示名称，后缀名也要
+        sysFileDto3.setShowName("新建文本文档.txt");
+        //附件大小，Long类型
+        sysFileDto3.setFileSize(363L);
+        //附件下载地址
+        sysFileDto3.setFileUrl("http://172.18.225.38:8089/FGWPM/LEAP/Download/default/2018/6/25/9dd4bd5c85f94e169817526ea29c0065.txt");
+        fileDtoList2.add(sysFileDto3);
+        //项目添加附件列表
+        signDto2.setSysFileDtoList(fileDtoList2);
+        Map<String, String> params = new HashMap<>();
+        params.put("signDtoJson", JSON.toJSONString(signDto2));
+        HttpResult hst2 = httpClientOperate.doPost(REST_SERVICE_URI2, params);
+        //System.out.println(params.get("signDtoJson"));
+        System.out.println(hst2.toString());
 
 
 //        signRestService.getListUser("收文成功");
