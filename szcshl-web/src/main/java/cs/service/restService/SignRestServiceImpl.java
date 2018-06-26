@@ -110,19 +110,22 @@ public class SignRestServiceImpl implements SignRestService {
             signDto1 = signService.findSignByFileCode(signDto);
             String pifuMoney = "";//signDto;
             //发文跟收文是1V1
-            DispatchDocDto dispatchDocDto = dispatchDocService.initDispatchBySignId(signDto1.getSignid());
+            DispatchDocDto dispatchDocDto = new DispatchDocDto();
+            if (dispatchDocDto == null){
+                return new ResultMsg(false, IFResultCode.IFMsgCode.DISPATHCH_DOC_1.getCode(), signDto.getFilecode() + " 找不到发文对象");
+            }
             dispatchDocDto.setApproveValue(signDto.getDeclaration());
             dispatchDocDto.setSignId(signDto1.getSignid());
             dispatchDocService.updateDispatchByDocDto(dispatchDocDto,Constant.SysFileType.SIGN.getValue());
             //开始下载pdf
             boolean isLoginUser = Validate.isString(SessionUtil.getUserId());
-            List<SysFileDto> fileDtoList2 = signDto.getSysFileDtoList();
-            if (fileDtoList2.size() ==0){
-                resultMsg.setFlag(true);
-                resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getCode());
-                resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getValue());
-                return resultMsg;
-            }
+//            List<SysFileDto> fileDtoList2 = signDto.getSysFileDtoList();
+//            if (fileDtoList2.size() ==0){
+//                resultMsg.setFlag(true);
+//                resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getCode());
+//                resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getValue());
+//                return resultMsg;
+//            }
             checkDownLoadFile(resultMsg, isGetFiles, dispatchDocDto.getSignId(), signDto.getSysFileDtoList(), isLoginUser ? SessionUtil.getUserId() : SUPER_ACCOUNT, Constant.SysFileType.SIGN.getValue(), Constant.SysFileType.FGW_FILE.getValue());
             return resultMsg;
         }else{
