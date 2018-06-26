@@ -132,18 +132,22 @@ public class SysRestController {
             String preUrl = signRestService.getPreReturnUrl();
             preUrl = preUrl + "?swbh="+fileCode;
             signPreInfo =  httpClientOperate.doGet(preUrl);
-
+          //  JSON.
+            String msg = "";
             Map resultMap = (Map)JSON.parse(signPreInfo);
             if(resultMap.get("data") != null && !resultMap.get("data").equals("null")){
                 SignPreDto signPreDto = JSON.parseObject(signPreInfo, SignPreDto.class);
-                //获取项目预签收信息
-                if(Validate.isString(signType) && "1".equals(signType)){
+                 msg = "项目【"+signPreDto.getData().getProjectname()+"("+signPreDto.getData().getFilecode()+")】，";
+                //json转出对象
+                if(Validate.isString(signType) && signType.equals("1")){
+                    //获取项目预签收信息
                     resultMsg = signRestService.pushPreProject(signPreDto.getData(),false);
                 }else{
                     resultMsg = signRestService.pushProject(signPreDto.getData(),false,null);
                 }
             }else{
-                resultMsg = new ResultMsg(false,IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(),"获取不到相应的项目信息！");
+                msg = "该项目信息不存在请核查！";
+                resultMsg = new ResultMsg(false,IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(),msg);
             }
         }catch (Exception e){
             resultMsg = new ResultMsg(false,IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(),e.getMessage());
@@ -156,11 +160,12 @@ public class SysRestController {
      * 通过收文编号存储批复金额下载pdf文件
      * @return
      */
-    @RequestMapping(name = "项目批复金额与pdf文件下载", value = "/downRemoteFile",method = RequestMethod.POST)
+    @RequestMapping(name = "项目批复金额与pdf文件下载", value = "/downRemoteFile", method = RequestMethod.POST)
     @LogMsg(module = "系统接口【通过收文编号存储批复金额下载pdf文件】",logLevel = "1")
     public synchronized ResultMsg downRemoteFile(@RequestParam String signDtoJson) {
         ResultMsg resultMsg = null;
         SignDto signDto = JSON.parseObject(signDtoJson, SignDto.class);
+        //项目signDto.getFilecode() 委里收文编号
         String msg = "项目收文编码【("+signDto.getFilecode()+")json="+signDtoJson+"】";
         try{
             //json转出对象
@@ -321,26 +326,40 @@ public class SysRestController {
 //            System.out.println("能查询");
 //
 //        }
-//        批复金额pdf下载案例
+
+        //、、
+        //{"declaration":3,"filecode":"D201800150","isAssociate":0,"sysFileDtoList":[{"fileSize":6,"fileUrl":"
+        // http://172.18.225.38:8089/FGWPM/LEAP/Download/default/2018/6/25/8a74dcc5d89e491595d06a8117c8fe72.txt","showName":"评审报告.txt"},
+        // {"fileSize":363,"fileUrl":"http://172.18.225.38:8089/FGWPM/LEAP/Download/default/2018/6/25/9dd4bd5c85f94e169817526ea29c0065.txt","showName":"新建文本文档.txt"}]}
+
+        //批复金额pdf下载案例
         String REST_SERVICE_URI2 = "http://localhost:8080/szcshl-web/intfc/downRemoteFile";
         SignDto signDto2 = new SignDto();
         //委里收文编号
-        signDto2.setFilecode("B20110451");
-        signDto2.setDeclaration(new BigDecimal(11.11));
+        signDto2.setFilecode("D201800150");
+        signDto2.setDeclaration(new BigDecimal(3));
         //附件列表
         List<SysFileDto> fileDtoList2 = new ArrayList<>();
         SysFileDto sysFileDto2 = new SysFileDto();
         //显示名称，后缀名也要
-        sysFileDto2.setShowName("空白.docx.docx");
+        sysFileDto2.setShowName("评审报告.txt");
         //附件大小，Long类型
-        sysFileDto2.setFileSize(11213L);
+        sysFileDto2.setFileSize(6L);
         //附件下载地址
-        sysFileDto2.setFileUrl("http://172.18.225.56:8089/FGWPM/LEAP/Download/default/2018/5/17/20180517143816590.docx");
+        sysFileDto2.setFileUrl("http://172.18.225.38:8089/FGWPM/LEAP/Download/default/2018/6/25/8a74dcc5d89e491595d06a8117c8fe72.txt");
         fileDtoList2.add(sysFileDto2);
+
+        SysFileDto sysFileDto3 = new SysFileDto();
+        //显示名称，后缀名也要
+        sysFileDto3.setShowName("新建文本文档.txt");
+        //附件大小，Long类型
+        sysFileDto3.setFileSize(363L);
+        //附件下载地址
+        sysFileDto3.setFileUrl("http://172.18.225.38:8089/FGWPM/LEAP/Download/default/2018/6/25/9dd4bd5c85f94e169817526ea29c0065.txt");
+        fileDtoList2.add(sysFileDto3);
         //项目添加附件列表
         signDto2.setSysFileDtoList(fileDtoList2);
         Map<String, String> params = new HashMap<>();
-        System.out.println("批复金额:  "+JSON.toJSONString(signDto2));
         params.put("signDtoJson", JSON.toJSONString(signDto2));
         HttpResult hst2 = httpClientOperate.doPost(REST_SERVICE_URI2, params);
         //System.out.println(params.get("signDtoJson"));

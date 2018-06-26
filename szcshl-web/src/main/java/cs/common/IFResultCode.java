@@ -40,9 +40,8 @@ public class IFResultCode {
         SZEC_FILE_NOT_ALL("FILE_03","附件获取不全"),
 
 
-        //批复金额 发文对象为空
-
-        DISPATHCH_DOC_1("DISPATHCH_DOC_1","发文对象查不到！");
+        DISPATHCH_DOC_DTO_1("DISPATHCH_DOC_DTO_1","项目编号评审中心差不到数据!"),
+        DISPATHCH_DOC_DTO_2("DISPATHCH_DOC_DTO_2","发文对象为空");
         private String code;
         private String value;
 
