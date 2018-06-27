@@ -80,7 +80,6 @@
                 //通过评估部门的个数来控制总投资字段  修改于（2018-01-16）
                 if(vm.model.workProgramDtoList && vm.model.workProgramDtoList.length >0){
                     var orgStr;
-                    debugger;
                     if(vm.model.workProgramDtoList[0].branchId == '1' ||vm.model.workProgramDtoList[0].branchId == '1' ){
                         orgStr = vm.model.workProgramDtoList[0].reviewOrgName;
                     }else{

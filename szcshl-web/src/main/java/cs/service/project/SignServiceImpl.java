@@ -1728,7 +1728,8 @@ public class SignServiceImpl implements SignService {
             case FlowConstant.FLOW_SIGN_CWBL:
                 sign = signRepo.findById(Sign_.signid.getName(), signid);
                 sign.setIsSendFileRecord(EnumState.YES.getValue());
-                sign.setProcessState(Constant.SignProcessState.SEND_FILE.getValue());
+                //确认归档环节，才是已发送存档
+                //sign.setProcessState(Constant.SignProcessState.SEND_FILE.getValue());
                 signRepo.save(sign);
                 variables = buildMainPriUser(variables, signid, agentTaskList,FlowConstant.FLOW_SIGN_GD);
                 break;

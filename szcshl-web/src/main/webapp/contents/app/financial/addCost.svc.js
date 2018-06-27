@@ -9,7 +9,6 @@
         return service;
 
         function initAddCost(vm, costType, object, id) {
-            debugger;
             vm.financial = {};
             //该判断用于项目签收流程中的财务办理
             if (object.businessId == undefined) {

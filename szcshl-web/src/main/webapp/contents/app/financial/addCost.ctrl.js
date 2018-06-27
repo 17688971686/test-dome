@@ -53,7 +53,6 @@
                 vm.projectName =  object.projectName;
             }
             financialManagerSvc.initFinancialProject(vm.businessId ,  function(data){
-                debugger;
                 vm.financial = {};
                 vm.financial.businessId = vm.businessId;
                 vm.financial.projectName = vm.projectName;

@@ -17,7 +17,6 @@
         // begin#deleteUser
         //获取下拉框 数据
         function select(vm) {
-            debugger;
             var httpOptions = {
                 method: 'get',
                 url: '/szcshl-web/smslog/querySMSLogType',

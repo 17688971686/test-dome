@@ -46,7 +46,6 @@
         // S_初始化流程数据
         function initFlowData(vm) {
             var dataSource={};
-            debugger;
             if(vm.flow != undefined){
                 var processInstanceId = vm.flow.processInstanceId;
                 if (angular.isUndefined(vm.flow.hideFlowImg)|| vm.flow.hideFlowImg == false) {

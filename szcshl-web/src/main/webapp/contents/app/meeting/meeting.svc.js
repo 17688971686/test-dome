@@ -84,7 +84,6 @@
 
         // begin#createUser
         function createMeeting(model,iscommit,callBack) {
-            debugger;
             iscommit = true;
             var httpOptions = {
                 method: 'post',

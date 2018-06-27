@@ -35,7 +35,6 @@
             //共用方法
             //1、显示流程图
             if(vm.taskId){
-                debugger;
                 vm.picture = rootPath + "/flow/processInstance/img/"+ vm.instanceId;
             }
             //2、历史处理记录

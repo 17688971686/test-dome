@@ -6,7 +6,6 @@
     smslogSend.$inject = ['$location','smslogSendSvc','smslogSvc','$http','$state','bsWin'];
 
     function smslogSend($location, smslogSendSvc,smslogSvc,$http,$state,bsWin) {
-        debugger;
         var vm = this;
         vm.model = {};
         vm.title = '发送短信';

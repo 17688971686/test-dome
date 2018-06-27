@@ -77,7 +77,6 @@
             editEPReviewId: "",           // 可以编辑的评审方案ID
             isReworkWorkPlan: false,              // 是否重写工作方案对象
         }
-        debugger;
         vm.model.signid = $state.params.signid;
         vm.work.id = $state.params.id;
         vm.flow.taskId = $state.params.taskId; // 流程任务ID

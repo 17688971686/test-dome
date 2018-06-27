@@ -22,6 +22,7 @@
                 vm.projectReviewCostDtoList = data.reObj.projectReviewCostDtoList;
             });
         }
+
         //查看项目的专家详细信息
         vm.queyCostWindow=function (data) {
             expertReviewSvc.initReview(data.businessId, "", function (data) {
