@@ -143,6 +143,7 @@ public class SendProjectFGWExecute implements Job {
                     log.setResult(Constant.EnumState.YES.getValue());
                 }
             } catch (Exception e) {
+                logger.error("异常信息: ", e);
                 log.setLogCode(Constant.MsgCode.ERROR.getValue());
                 log.setMessage("异常：" + e.getMessage());
                 log.setResult(Constant.EnumState.NO.getValue());

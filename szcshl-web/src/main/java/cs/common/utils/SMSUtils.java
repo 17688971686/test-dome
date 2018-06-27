@@ -80,7 +80,6 @@ public class SMSUtils {
                     logger.info("进入发送短信异步:  "+smsContent);
                     boolean  boo = seekSMS(smsContent,receiverList, projectName, filecode, type, infoType,seekContent, smsLogService);
                     logger.info("seekSMS: 返回调用结果. " + boo);
-                    Thread.sleep(2000);
                     return
                             new HashMap<String, String>() {
                                 {
@@ -126,9 +125,24 @@ public class SMSUtils {
     public static boolean sureSendSMS(SMSContent smsContent,List<User> receiverList,String projectName,String filecode,String type,String infoType,String seekContent,SMSLogService smsLogService){
         //组装接收短信用户信息
         User user = null;
-        String resultCode="";//phone = "",userName = "",
+        String resultCode="",phone = "",userName = "";
         //获取电话号码
-        packList(receiverList);
+        phone = "";
+        userName ="";
+        if (receiverList.size() > 1) {
+            for (int i = 0, l = receiverList.size(); i < l; i++) {
+                user = receiverList.get(i);
+                if (StringUtil.isNotEmpty(user.getUserMPhone())) {
+                    if (i == receiverList.size() - 1) {
+                        phone += user.getUserMPhone().trim();
+                        userName += user.getDisplayName().trim();
+                    } else {
+                        phone += user.getUserMPhone().trim() + ",";
+                        userName += user.getDisplayName().trim() + ",";
+                    }
+                }
+            }
+        }
         //验证短信内容
         TOKEN = getHttpSMS(userName,phone,projectName,filecode,seekContent,smsLogService);
         if (TOKEN ==null) {
@@ -184,30 +198,7 @@ public class SMSUtils {
         }
         return false;
     }
-    public static String phone ="";
-    public static String userName ="";
-    public static void packList(List<User> receiverList){
-        phone = "";
-        userName ="";
-        User user = null;
-       if (receiverList.size() > 1) {
-            for (int i = 0, l = receiverList.size(); i < l; i++) {
-                user = receiverList.get(i);
-                if (StringUtil.isNotEmpty(user.getUserMPhone())) {
-                    if (i == receiverList.size() - 1) {
-                        phone += user.getUserMPhone().trim();
-                        userName += user.getDisplayName().trim();
-                    } else {
-                        phone += user.getUserMPhone().trim() + ",";
-                        userName += user.getDisplayName().trim() + ",";
-                    }
-                }
-            }
-        }else {
-           phone =null;
-           userName =null;
-       }
-    }
+
 
     public static boolean isOrTimeout() {
         Date date = new Date();

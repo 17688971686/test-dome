@@ -14,7 +14,8 @@ import java.util.List;
  */
 public interface SMSLogRepo extends IRepository<SMSLog, String> {
     boolean isSMSlogExist(String smsLogType , String projectName,String smsUserPhone,
-    String smsUserName,String fileCode);
+    String smsUserName,String fileCode,String infoType);
+
 
 
 }
