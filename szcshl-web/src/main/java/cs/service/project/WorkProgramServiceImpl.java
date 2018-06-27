@@ -812,7 +812,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 workProgram.setCreatedDate(new Date());
             }
 
-            if(!SUPER_ACCOUNT.equals(SessionUtil.getLoginName())){
+            if(!SUPER_ACCOUNT.equals(SessionUtil.getLoginName()) && sign.getProcessState() < 3){
                 workProgram.setBaseInfo(EnumState.YES.getValue());
             }
             workProgram.setModifiedBy(SessionUtil.getDisplayName());
