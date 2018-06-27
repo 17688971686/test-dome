@@ -811,10 +811,11 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 workProgram.setCreatedBy(SessionUtil.getUserId());
                 workProgram.setCreatedDate(new Date());
             }
-
-            if(!SUPER_ACCOUNT.equals(SessionUtil.getLoginName()) && sign.getProcessState() < 3){
+            //如果是项目负责人，则修改状态
+            if(SessionUtil.getUserId().equals(sign.getmUserId()) || (Validate.isString(sign.getaUserID()) && sign.getaUserID().contains(SessionUtil.getUserId()))){
                 workProgram.setBaseInfo(EnumState.YES.getValue());
             }
+
             workProgram.setModifiedBy(SessionUtil.getDisplayName());
             workProgram.setModifiedDate(new Date());
             workProgramRepo.save(workProgram);
