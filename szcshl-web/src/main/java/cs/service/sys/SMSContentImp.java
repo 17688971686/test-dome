@@ -84,23 +84,27 @@ public class SMSContentImp implements SMSContent{
 
     @Override
     @Transactional
-    public String querySmsNumber(List<User> userList, String projectName, String fileCode, String type, String infoType,String xianzhiNumber) {
-        SMSUtils.packList(userList);
-        //验证fileCode是否已经在短信日志表中
-        HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("select " + SMSLog_.userName.getName() + "," + SMSLog_.projectName.getName() + "," + SMSLog_.fileCode.getName() + " from cs_sms_log  ");
-        if (("待办").equals(infoType)){//暂时没开通待办: 代码限制
-            hqlBuilder.append(" where " + SMSLog_.projectName.getName()  + " = '"+projectName+"' and  "+ SMSLog_.smsLogType.getName()  + " = "+"'"+type+"' " +
-                    " and "+SMSLog_.smsUserPhone.getName()+" = '"+SMSUtils.phone+"' and "+SMSLog_.userName.getName()+"= '"+SMSUtils.userName+"'" );
-        }else {
-            hqlBuilder.append(" where " + SMSLog_.fileCode.getName()  + " = '"+fileCode+"' and  "+ SMSLog_.smsLogType.getName()  + " = "+"'"+type+"' " +
-                    " and "+SMSLog_.smsUserPhone.getName()+" = '"+SMSUtils.phone+"' and "+SMSLog_.userName.getName()+"= '"+SMSUtils.userName+"'" );
-        }
-        List<Object[]> list = smsLogRepo.getObjectArray(hqlBuilder);
-        if (Validate.isList(list)) {
-            if (list.size()>0){
-                return "已记录在短信日志中";
+    public String querySmsNumber(List<User> receiverList, String projectName, String fileCode, String type, String infoType,String xianzhiNumber) {
+        User user = null;
+        String phone = "",userName = "";
+        //获取电话号码
+        if (receiverList.size() > 1) {
+            for (int i = 0, l = receiverList.size(); i < l; i++) {
+                user = receiverList.get(i);
+                if (StringUtil.isNotEmpty(user.getUserMPhone())) {
+                    if (i == receiverList.size() - 1) {
+                        phone += user.getUserMPhone().trim();
+                        userName += user.getDisplayName().trim();
+                    } else {
+                        phone += user.getUserMPhone().trim() + ",";
+                        userName += user.getDisplayName().trim() + ",";
+                    }
+                }
             }
+        }
+        boolean booleans = smsLogRepo.isSMSlogExist(type, projectName, phone,  userName,  fileCode,infoType);
+        if (!booleans) {
+            return "已记录在短信日志中";
         }
         return null;
     }
