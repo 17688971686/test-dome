@@ -128,11 +128,11 @@
         <div class="panel-body" style="padding:10px 15px">
             <div class="well well-sm">
                 <ul class="item-list">
-                    <li ng-class="{ W15: (vm.isHaveBaseInfo || vm.isHaveNoWP),W20: (!vm.isHaveBaseInfo && !vm.isHaveNoWP) }"><a href="#/fillSign/{{vm.model.signid}}/true ">报审登记表</a></li>
-                    <li ng-class="{ W15: (vm.isHaveBaseInfo || vm.isHaveNoWP),W20: (!vm.isHaveBaseInfo && !vm.isHaveNoWP) }"><a href="" ng-click="vm.addWorkProgram()">拟工作方案</a></li>
-                    <li ng-class="{ W15: (vm.isHaveBaseInfo || vm.isHaveNoWP),W20: (!vm.isHaveBaseInfo && !vm.isHaveNoWP) }" ng-if="vm.isHaveBaseInfo || vm.isHaveNoWP"><a href="" ng-click="vm.addBaseInfo()">项目基本信息</a></li>
-                    <li ng-class="{ W15: (vm.isHaveBaseInfo || vm.isHaveNoWP),W20: (!vm.isHaveBaseInfo && !vm.isHaveNoWP) }"><a href="" ng-click="vm.addDisPatch()">拟评审报告</a></li>
-                    <li ng-class="{ W15: (vm.isHaveBaseInfo || vm.isHaveNoWP),W20: (!vm.isHaveBaseInfo && !vm.isHaveNoWP) }"><a href="" ng-click="vm.addDoFile()">项目资料存档</a></li>
+                    <li class="W15"><a href="#/fillSign/{{vm.model.signid}}/true ">报审登记表</a></li>
+                    <li class="W15"><a href="" ng-click="vm.addWorkProgram()">拟工作方案</a></li>
+                    <li class="W15"><a href="" ng-click="vm.addBaseInfo()">项目基本信息</a></li>
+                    <li class="W15"><a href="" ng-click="vm.addDisPatch()">拟评审报告</a></li>
+                    <li class="W15"><a href="" ng-click="vm.addDoFile()">项目资料存档</a></li>
                 </ul>
                 <ul class="item-list">
                     <li class="W20"><a href="" ng-click="vm.addRegisterFile()">登记补充材料</a></li>

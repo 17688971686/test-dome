@@ -43,6 +43,9 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
+import static cs.common.constants.SysConstants.SUPER_NAME;
+
 @Service
 public class WorkProgramServiceImpl implements WorkProgramService {
     private static Logger log = Logger.getLogger(WorkProgramServiceImpl.class);
@@ -764,10 +767,9 @@ public class WorkProgramServiceImpl implements WorkProgramService {
     @Override
     public WorkProgramDto initBaseInfo(String signId) {
         WorkProgramDto workProgramDto = new WorkProgramDto();
-        WorkProgram wk = workProgramRepo.findBySignIdAndBranchId(signId, FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue(),true);
+        WorkProgram wk = workProgramRepo.findBySignIdAndBranchId(signId, FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue(),false);
         if(!Validate.isObject(wk)){
             Sign sign = signRepo.findById(Sign_.signid.getName(), signId);
-
             workProgramDto.setSignId(signId);
             copySignCommonInfo(workProgramDto, sign);
             workProgramDto.setProjectName(sign.getProjectname());
@@ -809,7 +811,10 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 workProgram.setCreatedBy(SessionUtil.getUserId());
                 workProgram.setCreatedDate(new Date());
             }
-            workProgram.setBaseInfo(EnumState.YES.getValue());
+
+            if(!SUPER_ACCOUNT.equals(SessionUtil.getLoginName())){
+                workProgram.setBaseInfo(EnumState.YES.getValue());
+            }
             workProgram.setModifiedBy(SessionUtil.getDisplayName());
             workProgram.setModifiedDate(new Date());
             workProgramRepo.save(workProgram);
@@ -985,9 +990,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 
             }
         }
-
         return proMeetShowList;
-
     }
 
     /***

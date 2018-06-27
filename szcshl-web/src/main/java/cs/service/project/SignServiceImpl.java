@@ -39,10 +39,8 @@ import cs.repository.repositoryImpl.sys.*;
 import cs.service.external.OfficeUserService;
 import cs.service.flow.FlowService;
 import cs.service.rtx.RTXSendMsgPool;
-import cs.service.sys.CompanyService;
-import cs.service.sys.SysConfigService;
-import cs.service.sys.UserService;
-import cs.service.sys.WorkdayService;
+import cs.service.rtx.RTXService;
+import cs.service.sys.*;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -61,8 +59,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
 import static cs.common.constants.Constant.*;
-import static cs.common.constants.Constant.RevireStageKey.KEY_CHECKFILE;
 import static cs.common.constants.FlowConstant.FLOW_SIGN_FW;
+import static cs.common.constants.IgnoreProps.PUSH_SIGN_IGNORE_PROPS;
 import static cs.common.constants.SysConstants.SEPARATE_COMMA;
 
 @Service
@@ -147,7 +145,9 @@ public class SignServiceImpl implements SignService {
     @Autowired
     private UnitScoreService unitScoreService;
     @Autowired
-    private AgentTaskRepo agentTaskRepo;
+    private RTXService rtxService;
+    @Autowired
+    private SMSContent smsContent;
     @Autowired
     private AgentTaskService agentTaskService;
     @Autowired
@@ -181,9 +181,7 @@ public class SignServiceImpl implements SignService {
             sign = initNewSignInfo(signDto, false, now, isSignUser);
         } else {
             //【如果之前已经有送件人签名，则不能覆盖（因为委里过来的值不是评审中心要的值）】
-            String signName = sign.getSendusersign();
-            BeanCopierUtils.copyPropertiesIgnoreNull(signDto, sign);
-            sign.setSendusersign(signName);
+            BeanCopierUtils.copyPropertiesIgnoreProps(signDto, sign,PUSH_SIGN_IGNORE_PROPS);
         }
         sign.setModifiedDate(now);
         sign.setModifiedBy(isSignUser?SessionUtil.getDisplayName(): SysConstants.SUPER_ACCOUNT);
@@ -198,7 +196,7 @@ public class SignServiceImpl implements SignService {
         }
 
         //7、正式签收
-        if (Validate.isString(sign.getIssign()) || !EnumState.YES.getValue().equals(sign.getIssign())) {
+        if (!Validate.isString(sign.getIssign()) || !EnumState.YES.getValue().equals(sign.getIssign())) {
             sign.setSigndate(now);
             //预签收状态也要改
             sign.setIspresign(Constant.EnumState.YES.getValue());
@@ -220,6 +218,8 @@ public class SignServiceImpl implements SignService {
                 Date expectdispatchdate = DispathUnit.dispathDate(workdayList, sign.getSigndate(), totalDays);
                 sign.setExpectdispatchdate(expectdispatchdate);
             }
+        }else{
+
         }
         //如果是自己的项目,则不用回传给委里(2表示不用回传给委里)
         if (isSelfProj) {
@@ -491,45 +491,48 @@ public class SignServiceImpl implements SignService {
         BeanCopierUtils.copyProperties(sign, signDto);
         //查询所有的属性
         if (queryAll) {
-            if (sign.getWorkProgramList() != null && sign.getWorkProgramList().size() > 0) {
+            if (Validate.isList(sign.getWorkProgramList())) {
                 boolean isMergeReview = false;
+                int totalL = sign.getWorkProgramList().size();
+                WorkProgram workProgram = null;
                 //判断是否是合并评审项目，如果是，则要获取合并评审信息
-                if (sign.getWorkProgramList().size() == 1) {
-                    WorkProgram workProgram = sign.getWorkProgramList().get(0);
-                    // 合并评审
-                    if (Constant.MergeType.REVIEW_MERGE.getValue().equals(workProgram.getIsSigle())) {
-                        isMergeReview = true;
-                        //主项目
-                        if (EnumState.YES.getValue().equals(workProgram.getIsMainProject())) {
-                            List<WorkProgramDto> workProgramDtoList = new ArrayList<>();
-                            WorkProgramDto workProgramDto = new WorkProgramDto();
-                            BeanCopierUtils.copyProperties(workProgram, workProgramDto);
-                            workProgramRepo.initWPMeetingExp(workProgramDto, workProgram);
-                            workProgramDto.setSignId(signid);
-                            workProgramDtoList.add(workProgramDto);
-                            //还得查找合并评审次项目
-                            List<WorkProgramDto> wpDtoList = workProgramService.findMergeWP(signid);
-                            if (Validate.isList(wpDtoList)) {
-                                workProgramDtoList.addAll(wpDtoList);
+                if (totalL == 1) {
+                    workProgram = sign.getWorkProgramList().get(0);
+                    if(!EnumState.YES.getValue().equals(workProgram.getBaseInfo()) ){
+                        // 合并评审
+                        if (Constant.MergeType.REVIEW_MERGE.getValue().equals(workProgram.getIsSigle())) {
+                            isMergeReview = true;
+                            //主项目
+                            if (EnumState.YES.getValue().equals(workProgram.getIsMainProject())) {
+                                List<WorkProgramDto> workProgramDtoList = new ArrayList<>();
+                                WorkProgramDto workProgramDto = new WorkProgramDto();
+                                BeanCopierUtils.copyProperties(workProgram, workProgramDto);
+                                workProgramRepo.initWPMeetingExp(workProgramDto, workProgram);
+                                workProgramDto.setSignId(signid);
+                                workProgramDtoList.add(workProgramDto);
+                                //还得查找合并评审次项目
+                                List<WorkProgramDto> wpDtoList = workProgramService.findMergeWP(signid);
+                                if (Validate.isList(wpDtoList)) {
+                                    workProgramDtoList.addAll(wpDtoList);
+                                }
+                                signDto.setWorkProgramDtoList(workProgramDtoList);
+                                //次项目
+                            } else {
+                                List<WorkProgramDto> workProgramDtoList = new ArrayList<>(sign.getWorkProgramList().size());
+                                //查找主项目信息，并且获取主项目的会议室信息和专家信息
+                                WorkProgram wp = workProgramRepo.findMainReviewWP(signid);
+                                WorkProgramDto workProgramDto = new WorkProgramDto();
+                                BeanCopierUtils.copyProperties(workProgram, workProgramDto);
+                                workProgramRepo.initWPMeetingExp(workProgramDto, wp);
+                                workProgramDto.setSignId(signid);
+                                workProgramDtoList.add(workProgramDto);
+                                signDto.setWorkProgramDtoList(workProgramDtoList);
                             }
-                            signDto.setWorkProgramDtoList(workProgramDtoList);
-                            //次项目
-                        } else {
-                            List<WorkProgramDto> workProgramDtoList = new ArrayList<>(sign.getWorkProgramList().size());
-                            //查找主项目信息，并且获取主项目的会议室信息和专家信息
-                            WorkProgram wp = workProgramRepo.findMainReviewWP(signid);
-                            WorkProgramDto workProgramDto = new WorkProgramDto();
-                            BeanCopierUtils.copyProperties(workProgram, workProgramDto);
-                            workProgramRepo.initWPMeetingExp(workProgramDto, wp);
-                            workProgramDto.setSignId(signid);
-                            workProgramDtoList.add(workProgramDto);
-                            signDto.setWorkProgramDtoList(workProgramDtoList);
                         }
                     }
                 }
 
                 if (!isMergeReview) {
-                    int totalL = sign.getWorkProgramList().size();
                     List<WorkProgramDto> workProgramDtoList = new ArrayList<>(totalL);
                     //由于工作方案不是按主次顺便排序，则遍历工作方案，获取主工作方案
                     WorkProgram mainW = new WorkProgram();
@@ -545,23 +548,31 @@ public class SignServiceImpl implements SignService {
                     }
 
                     for (int i = 0; i < totalL; i++) {
-                        WorkProgram workProgram = sign.getWorkProgramList().get(i);
-                        WorkProgramDto workProgramDto = new WorkProgramDto();
-                        BeanCopierUtils.copyProperties(workProgram, workProgramDto);
-                        workProgramRepo.initWPMeetingExp(workProgramDto, workProgram);
-                        workProgramDto.setSignId(signid);
-                        if (!FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(workProgram.getBranchId())) {
-                            WorkProgramDto mainWPDto = new WorkProgramDto();
-                            //如果已经填报了主工作方案，则从主工作方案中获取
-                            if (Validate.isString(mainW.getId())) {
-                                BeanCopierUtils.copyProperties(mainW, mainWPDto);
-                                //否则从项目中初始化
-                            } else {
-                                workProgramService.copySignCommonInfo(mainWPDto, sign);
+                        workProgram = sign.getWorkProgramList().get(i);
+                        //判断是否是项目基本信息
+                        if(EnumState.YES.getValue().equals(workProgram.getBaseInfo())){
+                            ProjBaseInfoDto projBaseInfoDto = new ProjBaseInfoDto();
+                            BeanCopierUtils.copyProperties(workProgram, projBaseInfoDto);
+                            signDto.setProjBaseInfoDto(projBaseInfoDto);
+                        }else{
+                            WorkProgramDto workProgramDto = new WorkProgramDto();
+                            BeanCopierUtils.copyProperties(workProgram, workProgramDto);
+                            workProgramRepo.initWPMeetingExp(workProgramDto, workProgram);
+                            workProgramDto.setSignId(signid);
+                            if (!FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(workProgram.getBranchId())) {
+                                WorkProgramDto mainWPDto = new WorkProgramDto();
+                                //如果已经填报了主工作方案，则从主工作方案中获取
+                                if (Validate.isString(mainW.getId())) {
+                                    BeanCopierUtils.copyProperties(mainW, mainWPDto);
+                                    //否则从项目中初始化
+                                } else {
+                                    workProgramService.copySignCommonInfo(mainWPDto, sign);
+                                }
+                                workProgramDto.setMainWorkProgramDto(mainWPDto);
                             }
-                            workProgramDto.setMainWorkProgramDto(mainWPDto);
+                            workProgramDtoList.add(workProgramDto);
                         }
-                        workProgramDtoList.add(workProgramDto);
+
                     }
                     signDto.setWorkProgramDtoList(workProgramDtoList);
                 }
@@ -757,7 +768,10 @@ public class SignServiceImpl implements SignService {
             }
             //放入腾讯通消息缓冲池
             RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
-            return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！");
+            //发送短信消息
+            ResultMsg resultMsg = new ResultMsg(true, MsgCode.OK.getValue(),task.getId(),"操作成功！",processInstance);
+
+            return resultMsg;
         } catch (Exception e) {
             log.error("发起项目签收流程异常：" + e.getMessage());
             return new ResultMsg(true, MsgCode.OK.getValue(), "操作异常，错误信息已记录，请刷新重试或联系管理员处理！");
@@ -1027,6 +1041,13 @@ public class SignServiceImpl implements SignService {
                 }
                 //完成部门分办，表示正在做工作方案
                 sign.setProcessState(Constant.SignProcessState.DO_WP.getValue());
+                //更新工作方案中的项目负责人
+                WorkProgram mainwk2 = workProgramRepo.findBySignIdAndBranchId(signid, FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue(), false);
+                if(Validate.isObject(mainwk2)){
+                    mainwk2.setSecondChargeUserName(sign.getaUserName());
+                    mainwk2.setSign(sign);
+                    workProgramRepo.save(mainwk2);
+                }
                 signRepo.save(sign);
                 break;
 
@@ -1053,7 +1074,8 @@ public class SignServiceImpl implements SignService {
                     nextNodeKey = FlowConstant.FLOW_SIGN_BMLD_SPW4;
                 }
                 sign = signRepo.findById(Sign_.signid.getName(), signid);
-                boolean isMainBranch = FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex);
+                String mianBranch = FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue();
+                boolean isMainBranch = mianBranch.equals(branchIndex);
                 //主流程要第一负责才能进行下一步操作
                 if (isMainBranch) {
                     User mainUser = userRepo.getCacheUserById(sign.getmUserId());
@@ -1065,7 +1087,7 @@ public class SignServiceImpl implements SignService {
                 businessValue = flowDto.getBusinessMap().get("IS_NEED_WP").toString();
                 if (EnumState.YES.getValue().equals(businessValue)) {
                     //查找该分支做的工作方案
-                    wk = workProgramRepo.findBySignIdAndBranchId(signid, branchIndex);
+                    wk = workProgramRepo.findBySignIdAndBranchId(signid, branchIndex, false);
                     //如果做工作方案，则要判断该分支工作方案是否完成
                     if (!Validate.isObject(wk) || !Validate.isString(wk.getId())) {
                         return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还没有完成工作方案，不能进行下一步操作！");
@@ -1097,9 +1119,9 @@ public class SignServiceImpl implements SignService {
                             return new ResultMsg(false, MsgCode.ERROR.getValue(), "合并评审次项目还未提交审批，主项目不能提交审批！");
                         }
                     } else {
-                        //协办分支要等主办提交之后才能提交，要不然工作方案的基本信息为可，无法打印
-                        if (!signBranchRepo.checkFinishWP(signid, FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue())) {
-                            return new ResultMsg(false, MsgCode.ERROR.getValue(), "主办工作方案审批提交之后，协办分支的工作方案才能提交审批！");
+                        WorkProgram mainwk = workProgramRepo.findBySignIdAndBranchId(signid, mianBranch, false);
+                        if(!Validate.isObject(mainwk)){
+                            return new ResultMsg(false, MsgCode.ERROR.getValue(), "主流程还没进行工作方案信息填写，不能提交下一步操作！");
                         }
                     }
 
@@ -1118,6 +1140,13 @@ public class SignServiceImpl implements SignService {
 
                 } else {
                     //不做工作方案
+                    //1、如果是主分支，则要填写项目基本信息
+                    if(isMainBranch){
+                        wk = workProgramRepo.findBySignIdAndBranchId(signid, branchIndex,true);
+                        if(!Validate.isObject(wk)){
+                            return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先填写项目基本信息！");
+                        }
+                    }
                     dealUser = signPrincipalService.getMainPriUser(signid);
                     if (dealUser == null) {
                         return new ResultMsg(false, MsgCode.ERROR.getValue(), "项目还没分配主负责人，不能进行下一步操作！请联系主办部门进行负责人分配！");
@@ -1177,7 +1206,7 @@ public class SignServiceImpl implements SignService {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先设置该部门的分管副主任！");
                 }
                 //更改工作方案信息
-                wk = workProgramRepo.findBySignIdAndBranchId(signid, branchIndex);
+                wk = workProgramRepo.findBySignIdAndBranchId(signid, branchIndex, false);
                 wk.setMinisterSuggesttion(flowDto.getDealOption());
                 wk.setMinisterDate(new Date());
                 wk.setMinisterName(ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask));
@@ -1255,7 +1284,7 @@ public class SignServiceImpl implements SignService {
                 variables.put(FlowConstant.SignFlowParams.USER_FZR1.getValue(), assigneeValue);
 
                 //更改工作方案审核信息
-                wk = workProgramRepo.findBySignIdAndBranchId(signid, branchIndex);
+                wk = workProgramRepo.findBySignIdAndBranchId(signid, branchIndex, false);
 
                 //如果是主办流程，要判断是否有合并评审方案，有则跟着主项目一起办理
                 if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)) {
@@ -2933,9 +2962,9 @@ public class SignServiceImpl implements SignService {
     public List<SignDto> findUnSendFGWList() {
         List<SignDto> listSignDto = new ArrayList<>();
         List<Sign> listSign = signRepo.findUnSendFGWList();
-                if (Validate.isList(listSign)) {
-                    for (int i = 0, l = listSign.size(); i < l; i++) {
-                        Sign sign = listSign.get(i);
+        if (Validate.isList(listSign)) {
+            for (int i = 0, l = listSign.size(); i < l; i++) {
+                Sign sign = listSign.get(i);
                 if (EnumState.STOP.getValue().equals(sign.getIsSendFGW()) || sign.getFilecode().endsWith("0000")) {
                     continue;
                 } else {
@@ -2943,17 +2972,13 @@ public class SignServiceImpl implements SignService {
                     BeanCopierUtils.copyProperties(sign, signDto);
                     //只获取主工作方案
                     if (Validate.isList(sign.getWorkProgramList())) {
-                        int totalW = sign.getWorkProgramList().size();
                         List<WorkProgramDto> workProgramDtoList = new ArrayList<>();
-                        for (int j = 0; j < totalW; j++) {
-                            WorkProgram workProgram = sign.getWorkProgramList().get(j);
-                            if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(workProgram.getBranchId())) {
-                                WorkProgramDto workProgramDto = new WorkProgramDto();
-                                BeanCopierUtils.copyProperties(workProgram, workProgramDto);
-                                workProgramDtoList.add(workProgramDto);
-                                signDto.setWorkProgramDtoList(workProgramDtoList);
-                                break;
-                            }
+                        WorkProgram mainWP = sign.getWorkProgramList().stream().filter(item->FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(item.getBranchId())).findFirst().get();
+                        if(Validate.isString(mainWP)){
+                            WorkProgramDto workProgramDto = new WorkProgramDto();
+                            BeanCopierUtils.copyProperties(mainWP, workProgramDto);
+                            workProgramDtoList.add(workProgramDto);
+                            signDto.setWorkProgramDtoList(workProgramDtoList);
                         }
                     }
                     if (sign.getDispatchDoc() != null && Validate.isString(sign.getDispatchDoc().getId())) {
@@ -2963,7 +2988,6 @@ public class SignServiceImpl implements SignService {
                     }
                     listSignDto.add(signDto);
                 }
-
             }
         }
         return listSignDto;
@@ -3078,5 +3102,22 @@ public class SignServiceImpl implements SignService {
     @Override
     public SignDto findSignByFileCode(SignDto signDto) {
         return signRepo.findSignByFileCode(signDto);
+    }
+
+    @Override
+    public ResultMsg updateSendFGWState(String signId, String state) {
+        ResultMsg resultMsg = null;
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append(" update "+Sign.class.getSimpleName()+" set "+Sign_.isSendFGW.getName()+" =:state ");
+        hqlBuilder.setParam("state",Validate.isString(state)?state:EnumState.STOP.getValue());
+        hqlBuilder.append(" where "+Sign_.signid.getName()+" = :signid ");
+        hqlBuilder.setParam("signid",signId);
+        int updateCount = signRepo.executeHql(hqlBuilder);
+        if(updateCount > 0){
+            resultMsg = new ResultMsg(true,MsgCode.OK.getValue(),"操作成功！");
+        }else{
+            resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"操作失败！");
+        }
+        return resultMsg;
     }
 }
