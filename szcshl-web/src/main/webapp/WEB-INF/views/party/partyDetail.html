@@ -38,8 +38,9 @@
                     </td>
                     <td class="text-center"   width="10%">学历</td>
                     <td width="10%"  class="text-left">
-                        <span ng-repeat="x in DICT.ADUCATION.dicts"
-                              ng-if="x.dictKey == vm.party.pmEducation">{{x.dictName}}</span>
+                        {{vm.party.pmEducation}}
+                        <#--<span ng-repeat="x in DICT.ADUCATION.dicts"
+                              ng-if="x.dictKey == vm.party.pmEducation">{{x.dictName}}</span>-->
                     </td>
                 </tr>
 

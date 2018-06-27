@@ -47,4 +47,11 @@ public interface PartyManageRepo extends IRepository<PartyManager, String> {
      * @param pmId
      */
    void deleteParty(String pmId);
+
+    /**
+     * 通过身份证号判断该党员是否已经存在
+     * @param pmIdCard
+     * @return
+     */
+   Boolean existByIdCar(String pmIdCard);
 }

@@ -81,7 +81,10 @@
 
         <td class="text-center">紧密程度</td>
         <td>
-            {{vm.dispatchDoc.urgentLevel}}
+            <select ng-model="vm.dispatchDoc.urgentLevel" name="urgentLevel" id="urgentLevel" class="form-control input-xm ">
+                <option ng-repeat="x in DICT.BAOMI.dicts"  ng-selected="vm.model.urgencydegree == x.dictName"
+                        value="{{x.dictName}}">{{x.dictName}}</option>
+            </select>
         </td>
     </tr>
 

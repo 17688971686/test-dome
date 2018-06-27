@@ -17,6 +17,7 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Property;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -142,5 +143,24 @@ public class PartyManagerRepoImpl extends AbstractRepository<PartyManager, Strin
     @Override
     public void deleteParty(String pmId) {
         deleteById(PartyManager_.pmId.getName() , pmId);
+    }
+
+
+    /**
+     * 通过身份证号判断该党员是否已经存在
+     * @param pmIdCard
+     * @return
+     */
+    @Override
+    @Transactional
+    public Boolean existByIdCar(String pmIdCard) {
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append("select pmId from cs_party_manager where pmIDCard = '" + pmIdCard + "'");
+        int index = this.executeSql(hqlBuilder);
+        if(index > 0){
+            return true ;
+        }else{
+            return false;
+        }
     }
 }

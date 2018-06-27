@@ -50,9 +50,19 @@
     </tr>
     <tr>
         <td class="text-center">秘密等级</td>
-        <td >{{vm.dispatchDoc.secretLevel}}</td>
+        <td >
+            <select ng-model="vm.dispatchDoc.secretLevel" name="secretLevel" id="secretLevel" class="form-control input-xm ">
+                <option ng-repeat="x in DICT.SECRECTLEVEL.dicts"  ng-selected="vm.model.secrectlevel == x.dictName"
+                        value="{{x.dictName}}">{{x.dictName}}</option>
+            </select>
+        </td>
         <td class="text-center">急缓程度</td>
-        <td>{{vm.dispatchDoc.urgentLevel}}</td>
+        <td>
+            <select ng-model="vm.dispatchDoc.urgentLevel" name="urgentLevel" id="urgentLevel" class="form-control input-xm ">
+                <option ng-repeat="x in DICT.BAOMI.dicts"  ng-selected="vm.model.urgencydegree == x.dictName"
+                        value="{{x.dictName}}">{{x.dictName}}</option>
+            </select>
+        </td>
         <td class="text-center">是否与其它<br/>阶段关联</td>
         <td>
             <span>
