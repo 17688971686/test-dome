@@ -23,6 +23,7 @@ import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -167,5 +168,16 @@ public class RTXService {
         }
     }
 
+    public static void main(String[] args) {
+        List<User> receiverList = new ArrayList<>();
+        User user = new User();
+        user.setUserMPhone("18038078167");
+        user.setDisplayName("2131");
+        receiverList.add(user);
+        for (int i = 0;i<10;i++){
+
+            SMSUtils.seekSMSThreadToDo(null,receiverList,"测试项目","","task_type","待办", "ceshi",null);
+        }
+    }
 
 }

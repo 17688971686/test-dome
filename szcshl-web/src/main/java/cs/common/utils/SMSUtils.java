@@ -134,8 +134,8 @@ public class SMSUtils {
             //获取电话号码
             String userphoneList = "";
             String userNameList ="";
-            if (receiverList.size() > 1) {
-                for (int i = 0, l = receiverList.size(); i < l; i++) {
+            if (receiverList.size() > 0) {
+                for (int i = 0; i < receiverList.size(); i++) {
                     user = receiverList.get(i);
                     if (StringUtil.isNotEmpty(user.getUserMPhone())) {
                         if (i == receiverList.size() - 1) {
@@ -212,7 +212,7 @@ public class SMSUtils {
             //获取电话号码
             String phone = "";
             String userName ="";
-            if (receiverList.size() > 1) {
+            if (receiverList.size() > 0) {
                 for (int i = 0, l = receiverList.size(); i < l; i++) {
                     user = receiverList.get(i);
                     if (StringUtil.isNotEmpty(user.getUserMPhone())) {
@@ -458,30 +458,22 @@ public class SMSUtils {
         return  endTime;
     }
     public static void main(String[] args) {
-
         String d = "{\"data\":{\"accessToken\":\"ED920981FE92F35EB04ACC30CE8840326DE0209A0EFD7E6BCE8F5135C61E9E0DD7B0F42E63075E37\",\"expiredValue\":\"7200\"},\"resultCode\":\"0000000\",\"resultMessage\":\"成功\"}";
-
-//      getHttpSMS();
         List<User> list = new ArrayList<>();
         User user = new User();
         user.setDisplayName("郭冬冬");
         ;
-        user.setUserMPhone("13640950289");
+        user.setUserMPhone("13640950281");
         list.add(user);
 
         User user3 = new User();
         user3.setDisplayName("开发者");
-        ;
         user3.setUserMPhone("18038078167");
         list.add(user3);
-//
-//        for (int i =0 ;i<10;i++){
-        //此测试需要自己在获取 接收短信用户
-//             SMSUtils.seekSMSThread(null,null,"发文失败",list, "测试项目", "A001","发文成功","发文成功", "\n"+"发文失败。"+"\n"+"项目名称:A1001DFD1 "+"\n"+"  【评审中心项目管理系统】", null);
-//   SMSContent smsContent,SysConfigService sysConfigService,String sysConfiType, List<User> receiverList, String projectName, String filecode, String type, String infoType, String seekContent, SMSLogService smsLogService
-
-//            System.out.println("boo=   ");
-//        }
+        for (int i =0 ;i<10;i++){
+            SMSUtils.seekSMSThread(null,list,"发文失败","fileCode"+i, "ttt", "4342","发文成功",  null);
+            System.out.println("boo=   ");
+        }
 
     }
 }
