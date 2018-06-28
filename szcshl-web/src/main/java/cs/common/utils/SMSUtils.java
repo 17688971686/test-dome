@@ -79,6 +79,7 @@ public class SMSUtils {
 //                    异步任务 不需要直接反应结果，通过日志记录发信状况信息
                     logger.info("进入发送短信异步:  "+smsContent);
                     boolean  boo = seekSMS(smsContent,receiverList, projectName, filecode, type, infoType,seekContent, smsLogService);
+                    Thread.sleep(1000);
                     logger.info("seekSMS: 返回调用结果. " + boo);
                     return
                             new HashMap<String, String>() {

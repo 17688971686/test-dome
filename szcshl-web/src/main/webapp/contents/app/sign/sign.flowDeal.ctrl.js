@@ -752,7 +752,11 @@
 
         // S_跳转到 发文 重写工作方案
         vm.reworkWorkPlanViem = function () {
-            debugger;
+            // debugger;
+            // var signid = vm.model.signid;
+            // var workId = $state.params.id;
+            // var taskId = $state.params.taskId; // 流程任务ID
+            // var processInstanceId = $state.params.processInstanceId; // 流程实例ID
             /**
              * 1、获取需要重写的工作方案
              * 2、
