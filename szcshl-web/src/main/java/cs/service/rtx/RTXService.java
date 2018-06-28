@@ -12,6 +12,7 @@ import cs.service.sys.SMSContent;
 import cs.service.sys.SMSLogService;
 import cs.service.sys.SysConfigService;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +32,7 @@ import static cs.common.constants.Constant.RevireStageKey.SMS_SYS_TYPE;
 
 @Service
 public class RTXService {
+    private static Logger logger = Logger.getLogger(RTXService.class);
     private final static String RTX_GETSESSION = "/GetSession.cgi?";
     private final static String RTX_GETSTATUS = "/getstatus.php?";
 
@@ -116,18 +118,17 @@ public class RTXService {
             List<User> receiverList = userRepo.getCacheUserListById(receiverIds);
             //短息开关  rtxSMSEnabled()&&
             if( rtxSMSEnabled()&&resultMsg.isFlag()){
-//                boolean boo = SMSUtils.getWeek(new Date(),sysConfigService);
-//                if(boo){
-//                    //查询短信日志表是否已发送短信 commission_type:代办类型  发送短信不收次数限制,暂时注销
-//                    if (!smsContent.orNotsendSMS(signRestService.getListUser("代办"),processInstance.getName(),"","commission_type","代办")){
-                        //代办发送短息
-                        if (content.contains("任务")){//任务类型
-                            SMSUtils.seekSMSThread(null,receiverList,processInstance.getName(),"","task_type","待办", content,smsLogService);
-                        }else{//项目类型
-                            SMSUtils.seekSMSThread(null,receiverList,processInstance.getName(),"","project_type","待办", content,smsLogService);
-                        }
-//                    }
-//                }
+                if(receiverList.size()>0){
+                    logger.info("发送联系人信息: "+receiverList.get(0).getUserMPhone());
+                    if (content.contains("任务")){//任务类型
+                        SMSUtils.seekSMSThreadToDo(null,receiverList,processInstance.getName(),"","task_type","待办", content,smsLogService);
+                    }else{//项目类型
+                        SMSUtils.seekSMSThreadToDo(null,receiverList,processInstance.getName(),"","project_type","待办", content,smsLogService);
+                    }
+                }else {
+                    logger.info("待办发送联系人信息为空 ");
+                }
+
             }
             //如果使用腾讯通，并处理成功！
             if (rtxEnabled() && resultMsg.isFlag() && RTXSendMsgPool.getInstance().getReceiver(taskId) != null) {

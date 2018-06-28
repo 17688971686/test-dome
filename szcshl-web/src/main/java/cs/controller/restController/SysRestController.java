@@ -327,6 +327,16 @@ public class SysRestController {
 //
 //        }
 
+        /*
+{declaration=3, filecode=D201800155, sysFileDtoList=[{fileSize=363, showName=新建文本文档.txt,
+fileUrl=http://172.18.225.38:8089/FGWPM/LEAP/Download/default/2018/6/26/f31b20acd6ca4ec8849a6194f40846b7.txt
+
+}, {fileSize=363, showName=新建文本文档.txt,
+fileUrl=http://172.18.225.38:8089/FGWPM/LEAP/Download/default/2018/6/26/236c4c695127434faeb0e86d5a07c835.txt
+
+}]}
+        *
+        * */
         //、、
         //{"declaration":3,"filecode":"D201800150","isAssociate":0,"sysFileDtoList":[{"fileSize":6,"fileUrl":"
         // http://172.18.225.38:8089/FGWPM/LEAP/Download/default/2018/6/25/8a74dcc5d89e491595d06a8117c8fe72.txt","showName":"评审报告.txt"},
@@ -336,17 +346,17 @@ public class SysRestController {
         String REST_SERVICE_URI2 = "http://localhost:8080/szcshl-web/intfc/downRemoteFile";
         SignDto signDto2 = new SignDto();
         //委里收文编号
-        signDto2.setFilecode("D201800150");
+        signDto2.setFilecode("D201800155");
         signDto2.setDeclaration(new BigDecimal(3));
         //附件列表
         List<SysFileDto> fileDtoList2 = new ArrayList<>();
         SysFileDto sysFileDto2 = new SysFileDto();
         //显示名称，后缀名也要
-        sysFileDto2.setShowName("评审报告.txt");
+        sysFileDto2.setShowName("新建文本文档.txt");
         //附件大小，Long类型
-        sysFileDto2.setFileSize(6L);
+        sysFileDto2.setFileSize(363L);
         //附件下载地址
-        sysFileDto2.setFileUrl("http://172.18.225.38:8089/FGWPM/LEAP/Download/default/2018/6/25/8a74dcc5d89e491595d06a8117c8fe72.txt");
+        sysFileDto2.setFileUrl("http://172.18.225.38:8089/FGWPM/LEAP/Download/default/2018/6/26/f31b20acd6ca4ec8849a6194f40846b7.txt");
         fileDtoList2.add(sysFileDto2);
 
         SysFileDto sysFileDto3 = new SysFileDto();
@@ -355,11 +365,12 @@ public class SysRestController {
         //附件大小，Long类型
         sysFileDto3.setFileSize(363L);
         //附件下载地址
-        sysFileDto3.setFileUrl("http://172.18.225.38:8089/FGWPM/LEAP/Download/default/2018/6/25/9dd4bd5c85f94e169817526ea29c0065.txt");
+        sysFileDto3.setFileUrl("http://172.18.225.38:8089/FGWPM/LEAP/Download/default/2018/6/26/236c4c695127434faeb0e86d5a07c835.txt ");
         fileDtoList2.add(sysFileDto3);
         //项目添加附件列表
         signDto2.setSysFileDtoList(fileDtoList2);
         Map<String, String> params = new HashMap<>();
+        logger.info("委里批复数据:   "+JSON.toJSONString(signDto2));
         params.put("signDtoJson", JSON.toJSONString(signDto2));
         HttpResult hst2 = httpClientOperate.doPost(REST_SERVICE_URI2, params);
         //System.out.println(params.get("signDtoJson"));
