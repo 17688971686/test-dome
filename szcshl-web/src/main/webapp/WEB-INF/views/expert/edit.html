@@ -31,11 +31,10 @@
                     </select>
                     <span data-valmsg-for="sex" data-valmsg-replace="true" class="errors"></span>
                 </td>
-                <td align="center"  class="text-center" width="10%">出生年月<span class="required">*</span></td>
+                <td align="center"  class="text-center" width="10%">出生年月</td>
                 <td width="15%">
                     <input type="text" name="birthDay" id="birthDay" style="width: 100%;" class="form-control input-sm "
-                           kendo-date-picker k-format="'yyyy-MM-dd'"
-                           ng-model="vm.model.birthDay" data-val-date="必须为日期" data-val="true" data-val-required="必填">
+                           kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.model.birthDay">
                     <span data-valmsg-for="birthDay" data-valmsg-replace="true" class="errors"></span>
                 </td>
                 <td width="121" colspan="2" rowspan="4" style="text-align: center;">
@@ -54,10 +53,9 @@
                            data-val="true" data-val-required="必填">
                     <span data-valmsg-for="idCard" data-valmsg-replace="true" class="errors"></span>
                 </td>
-                <td  class="text-center">最高学历<span class="required">*</span></td>
+                <td  class="text-center">最高学历</td>
                 <td>
-                    <select ng-model="vm.model.qualifiCations" class="form-control  select-sm" name="qualifiCations"
-                            data-val-required="必填" data-val="true">
+                    <select ng-model="vm.model.qualifiCations" class="form-control  select-sm" name="qualifiCations">
                         <option value="">请选择</option>
                         <option ng-repeat="x in DICT.QUALIFI_CATIONS.dicts"
                                 ng-selected="vm.model.qualifiCations == x.dictName" value="{{x.dictName}}">
@@ -66,10 +64,9 @@
                     </select>
                     <span data-valmsg-for="qualifiCations" data-valmsg-replace="true" class="errors"></span>
                 </td>
-                <td  class="text-center">最高学位<span class="required">*</span></td>
+                <td  class="text-center">最高学位</td>
                 <td>
-                    <select ng-model="vm.model.degRee" class="form-control  select-sm" name="degRee"
-                            data-val-required="必填" data-val="true">
+                    <select ng-model="vm.model.degRee" class="form-control  select-sm" name="degRee">
                         <option value="">请选择</option>
                         <option ng-repeat="x in DICT.DEGREE.dicts" ng-selected="vm.model.degRee == x.dictName"
                                 value="{{x.dictName}}">{{x.dictName}}
@@ -79,32 +76,27 @@
                 </td>
             </tr>
             <tr>
-                <td  class="text-center">毕业院校<span class="required">*</span></td>
+                <td  class="text-center">毕业院校</td>
                 <td colspan="3">
-                    <input type="text" name="acaDemy" id="acaDemy" class="form-control input-sm "
-                           ng-model="vm.model.acaDemy" data-val="true" data-val-required="必填">
+                    <input type="text" name="acaDemy" id="acaDemy" class="form-control input-sm" ng-model="vm.model.acaDemy" >
                     <span data-valmsg-for="acaDemy" data-valmsg-replace="true" class="errors"></span>
                 </td>
-                <td  class="text-center">毕业时间<span class="required">*</span></td>
+                <td  class="text-center">毕业时间</td>
                 <td>
                     <input type="text" ng-model="vm.model.graduateDate" name="graduateDate" id="graduateDate"
-                           style="width: 100%"
-                           kendo-date-picker k-format="'yyyy-MM-dd'" class="form-control input-sm" value=""
-                           data-val-date="必须为日期" data-val="true">
+                           style="width: 100%" kendo-date-picker k-format="'yyyy-MM-dd'" class="form-control input-sm" value="">
                     <span data-valmsg-for=graduateDate" data-valmsg-replace="true" class="errors"></span>
                 </td>
             </tr>
             <tr>
-                <td  class="text-center">工作单位<span class="required">*</span></td>
+                <td  class="text-center">工作单位</td>
                 <td colspan="3">
-                    <input type="text" name="comPany" id="comPany" class="form-control input-sm "
-                           ng-model="vm.model.comPany" data-val="true" data-val-required="必填">
+                    <input type="text" name="comPany" id="comPany" class="form-control input-sm" ng-model="vm.model.comPany" >
                     <span data-valmsg-for="comPany" data-valmsg-replace="true" class="errors"></span>
                 </td>
-                <td  class="text-center">现任职务<span class="required">*</span></td>
+                <td  class="text-center">现任职务</td>
                 <td>
-                    <input ng-model="vm.model.job" class="form-control input-sm " name="job" data-val="true"
-                           data-val-required="必填">
+                    <input ng-model="vm.model.job" class="form-control input-sm " name="job">
                     <span data-valmsg-for="job" data-valmsg-replace="true" class="errors"></span>
                 </td>
             </tr>
@@ -117,10 +109,9 @@
                            class="form-control input-sm ">
                     <span data-valmsg-for="userPhone" data-valmsg-replace="true" class="errors"></span>
                 </td>
-                <td  class="text-center">职称<span class="required">*</span></td>
+                <td  class="text-center">职称</td>
                 <td>
-                    <select ng-model="vm.model.post" class="form-control select-sm" name="post" data-val="true"
-                            data-val-required="必填">
+                    <select ng-model="vm.model.post" class="form-control select-sm" name="post">
                         <option value="">请选择</option>
                         <option ng-repeat="x in DICT.POST.dicts" ng-selected="vm.model.post == x.dictName"
                                 value="{{x.dictName}}">{{x.dictName}}
@@ -130,8 +121,7 @@
                 </td>
                 <td  class="text-center">电子邮箱</td>
                 <td>
-                    <input type="text" name="email" id="email" class="form-control input-sm " ng-model="vm.model.email"
-                           data-val="true" data-val-email="必须为Email格式">
+                    <input type="text" name="email" id="email" class="form-control input-sm " ng-model="vm.model.email">
                     <span data-valmsg-for="email" data-valmsg-replace="true" class="errors"></span>
                 </td>
                 <td  class="text-center">办公电话</td>
@@ -146,25 +136,24 @@
                 <td  class="text-center">通讯地址</td>
                 <td colspan="3">
                     <input type="text" name="addRess" id="addRess" class="form-control input-sm "
-                           ng-model="vm.model.addRess" data-val="true">
+                           ng-model="vm.model.addRess" >
                     <span data-valmsg-for="addRess" data-valmsg-replace="true" class="errors"></span>
                 </td>
                 <td  class="text-center" width="60">传真</td>
                 <td>
                     <input type="text" name="fax" id="fax" class="form-control input-sm " ng-model="vm.model.fax"
-                           ng-maxlength="20" data-val="true">
+                           ng-maxlength="20" >
                     <span data-valmsg-for="fax" data-valmsg-replace="true" class="errors"></span>
                 </td>
                 <td  class="text-center">邮编</td>
                 <td>
                     <input type="text" name="zipCode" id="zipCode" class="form-control input-sm "
-                           ng-model="vm.model.zipCode"
-                           data-val-regex="邮编格式不正确" data-val-regex-pattern="[1-9]\d{5}(?!\d)" data-val="true">
+                           ng-model="vm.model.zipCode">
                     <span data-valmsg-for="zipCode" data-valmsg-replace="true" class="errors"></span>
                 </td>
             </tr>
             <tr>
-                <td  class="text-center">所学专业<span class="required">*</span></td>
+                <td  class="text-center">所学专业</td>
                 <td  class="text-center" colspan="7" style="text-align:left;">
                     <div style="float: left;" ng-show="vm.showSS">
                         <span>专业门类：</span>
@@ -200,7 +189,7 @@
                 </td>
             </tr>
             <tr>
-                <td  class="text-center">从事专业<span class="required">*</span></td>
+                <td  class="text-center">从事专业</td>
                 <td  class="text-center" colspan="7" style="text-align:left;">
                     <div style="float: left;" ng-show="vm.showWS">
                         <span>专业门类：</span>
@@ -269,8 +258,7 @@
                 <td  class="text-center">银行账号<span class="required">*</span></td>
                 <td colspan="3">
                     <input type="text" name="bankAccount" id="bankAccount" class="form-control input-sm "
-                           ng-model="vm.model.bankAccount" data-val="true" data-val-required="必填"
-                           data-val-regex="银行账号格式不正确" data-val-regex-pattern="\d{14,20}">
+                           ng-model="vm.model.bankAccount" data-val="true" data-val-required="必填">
                     <span data-valmsg-for="bankAccount" data-valmsg-replace="true" class="errors"></span>
                 </td>
             </tr>

@@ -302,7 +302,7 @@ public class SignRestServiceImpl implements SignRestService {
              */
             //dataMap.put("sssj", (new Date()).getTime());// 送审日期
             //dataMap.put("psjssj", (new Date()).getTime());// 评审结束时间
-            boolean isHaveWP = (mainWP == null) ? false : true;
+            boolean isHaveWP = Validate.isObject(mainWP) ? true : false;
             if (isHaveWP) {
                 dataMap.put("psfs", IFResultCode.PSFS.getCodeByValue(mainWP.getReviewType()));// 评审方式
                 //2.2工作方案环节处理意见(主工作方案分管领导意见)
@@ -310,7 +310,7 @@ public class SignRestServiceImpl implements SignRestService {
                 psgcMap.put("blhj", "3");// 办理环节
                 psgcMap.put("psblyj", mainWP.getLeaderSuggesttion());// 办理意见
                 psgcMap.put("blr", mainWP.getLeaderName());// 办理人
-                psgcMap.put("blsj", mainWP.getLeaderDate().getTime());// 办理时间
+                psgcMap.put("blsj", Validate.isObject(mainWP.getLeaderDate())?mainWP.getLeaderDate().getTime():"");// 办理时间
                 dataList.add(psgcMap);
             } else {
                 // 不做工作方案，评审方式属于自

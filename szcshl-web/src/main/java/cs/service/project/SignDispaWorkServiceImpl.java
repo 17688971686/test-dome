@@ -25,6 +25,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.*;
 import org.hibernate.type.IntegerType;
+import org.hibernate.type.StringType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -256,7 +257,7 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
     }
 
     /**
-     * 获取待合并发文的项目
+     * 获取待合并发文的项目,正在做发文项目
      * (已完成工作方案，但是没有生成发文编号的项目)
      *
      * @param signId
@@ -267,9 +268,12 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         SignDispaWork mergeSign = signDispaWorkRepo.findById(signId);
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" from " + SignDispaWork.class.getSimpleName() + " where ");
-        hqlBuilder.append(SignDispaWork_.processState.getName() + " > :processState1  and " + SignDispaWork_.processState.getName() + " <= :processState2 ");
-        hqlBuilder.setParam("processState1", Constant.SignProcessState.DO_WP.getValue(), IntegerType.INSTANCE);
-        hqlBuilder.setParam("processState2", Constant.SignProcessState.END_DIS_NUM.getValue(), IntegerType.INSTANCE);
+        //正式签收
+        hqlBuilder.append(SignDispaWork_.issign.getName() + " > :signState");
+        hqlBuilder.setParam("signState", Constant.EnumState.YES.getValue(), StringType.INSTANCE);
+        //正在做发文项目
+        hqlBuilder.append(SignDispaWork_.issign.getName() + " > :signState");
+        hqlBuilder.setParam("signState", Constant.EnumState.YES.getValue(), StringType.INSTANCE);
         //只能关联同部门的项目
         hqlBuilder.append("and " + SignDispaWork_.mOrgId.getName() + " = :mainOrgId ");
         hqlBuilder.setParam("mainOrgId", mergeSign.getmOrgId());

@@ -602,18 +602,14 @@
 
         //再次抽取专家
         vm.repeatAutoExpert = function (id) {
-            var condition = [];
+           /* var condition = [];
             $.each(vm.expertReview.expertSelConditionDtoList, function (i, con) {
                 if (con.id == id) {
                     condition.push(con);
                 }
-            })
-            if (condition[0].selectIndex >= 3) {
-                bsWin.alert("该条件已经进行了3次抽取，不能再继续抽取！");
-                return;
-            }
+            })*/
             //先确认是否已经保存
-            expertReviewSvc.checkCondition(condition[0].id, function (data) {
+            expertReviewSvc.checkCondition(id, function (data) {
                 if (data && data.id) {
                     expertReviewSvc.queryAutoExpert(false,condition, vm.minBusinessId, vm.expertReview.id, function (data) {
                         if (data.flag || data.reCode == 'ok') {

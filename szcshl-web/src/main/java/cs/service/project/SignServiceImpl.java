@@ -1360,67 +1360,6 @@ public class SignServiceImpl implements SignService {
                 if(!isUploadMainFile){
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，您还没上传[评审意见]或者[审核意见]附件信息！");
                 }
-                /*//默认每个类型都没检测
-                String checFileName = "";
-                Map<String, Boolean> checkTypeMap = new HashMap<>();
-                SysConfigDto sysConfigDto = sysConfigService.findByKey(KEY_CHECKFILE.getValue());
-                if (sysConfigDto == null || !Validate.isString(sysConfigDto.getConfigValue())) {
-                    checFileName = DEFAULT_CHECK_FILE;
-                } else {
-                    checFileName = sysConfigDto.getConfigValue();
-                    checFileName = checFileName.replace("；", ";").replace("，", ",");
-                }
-                //需要检测的文件类型
-                List<String> typeFileList = StringUtil.getSplit(checFileName, ";");
-                for (String fileType : typeFileList) {
-                    checkTypeMap.put(fileType, false);
-                }
-
-                if (Validate.isList(fileList)) {
-                    int checkCount = typeFileList.size(), successCount = 0;
-                    for (int i = 0, l = fileList.size(); i < l; i++) {
-                        SysFile sysFile = fileList.get(i);
-                        String showName = sysFile.getShowName().substring(0, sysFile.getShowName().lastIndexOf("."));
-                        for (Map.Entry<String, Boolean> entry : checkTypeMap.entrySet()) {
-                            if (entry.getValue() == false) {
-                                //项目概算不用上传投资匡算表或投资估算表
-                                if (Constant.STAGE_BUDGET.equals(dp.getDispatchStage())) {
-                                    if (DEFAULT_CHECK_FILE.equals(entry.getKey())) {
-                                        entry.setValue(true);
-                                        successCount++;
-                                        break;
-                                    }
-                                } else if (entry.getKey().contains(showName)) {
-                                    entry.setValue(true);
-                                    successCount++;
-                                }
-                            }
-                        }
-                        if (Constant.STAGE_BUDGET.equals(dp.getDispatchStage()) && successCount == 1) {
-                            isUploadMainFile = true;
-                            break;
-                        } else if (successCount == checkCount) {
-                            isUploadMainFile = true;
-                            break;
-                        }
-                    }
-                }
-                if (!isUploadMainFile) {
-                    StringBuffer errorBuffer = new StringBuffer();
-                    for (Map.Entry<String, Boolean> entry : checkTypeMap.entrySet()) {
-                        //项目概算不用上传投资匡算表或投资估算表
-                        if (Constant.STAGE_BUDGET.equals(dp.getDispatchStage())) {
-                            if (DEFAULT_CHECK_FILE.equals(entry.getKey()) && entry.getValue() == false) {
-                                errorBuffer.append(entry.getKey().replaceAll(",", "或者") + ";");
-                            }
-                        } else {
-                            if (entry.getValue() == false) {
-                                errorBuffer.append(entry.getKey().replaceAll(",", "或者") + ";");
-                            }
-                        }
-                    }
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，您还没上传" + errorBuffer.toString() + "附件信息！");
-                }*/
 
                 //修改第一负责人意见
                 dp.setMianChargeSuggest(flowDto.getDealOption() + "  签名：" + ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask) + "  日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
