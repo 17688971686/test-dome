@@ -28,9 +28,6 @@ public class SMSLogRepoImpl extends AbstractRepository<SMSLog, String> implement
         criteria.add(Restrictions.eq(SMSLog_.userName.getName(), smsUserName));
         if (("待办").equals(infoType)){//暂时没开通待办: 代码限制
             criteria.add(Restrictions.eq(SMSLog_.projectName.getName(), projectName));
-            criteria.add(Restrictions.eq(SMSLog_.smsLogType.getName(), smsLogType));
-            criteria.add(Restrictions.eq(SMSLog_.smsUserPhone.getName(), smsUserPhone));
-            criteria.add(Restrictions.eq(SMSLog_.userName.getName(), smsUserName));
         }else {
             criteria.add(Restrictions.eq(SMSLog_.fileCode.getName(), fileCode));
 

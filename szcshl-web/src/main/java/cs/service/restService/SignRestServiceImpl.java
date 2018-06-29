@@ -108,17 +108,15 @@ public class SignRestServiceImpl implements SignRestService {
             //通过fileCode找signId =bussessId
             SignDto signDto1 = null;
             signDto1 = signService.findSignByFileCode(signDto);
-            if (signDto1 == null){
+            if (signDto1.getSignid() == null){
                 resultMsg.setFlag(false);
                 resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_SIGN_01.getCode());
                 resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SFGW_02.getValue());
                 return resultMsg;
             }
-            String pifuMoney = "";
             //发文跟收文是1V1
-//          DispatchDocDto dispatchDocDto= new DispatchDocDto();
             DispatchDocDto dispatchDocDto=dispatchDocService.initDispatchBySignId(signDto1.getSignid());
-            if (dispatchDocDto == null){
+            if (dispatchDocDto.getSignId() == null){
                 resultMsg.setFlag(false);
                 resultMsg.setReCode(IFResultCode.IFMsgCode.DISPATHCH_DOC_DTO_1.getCode());
                 resultMsg.setReMsg(IFResultCode.IFMsgCode.DISPATHCH_DOC_DTO_2.getValue());
@@ -128,13 +126,6 @@ public class SignRestServiceImpl implements SignRestService {
             dispatchDocDto.setSignId(signDto1.getSignid());
             dispatchDocService.updateDispatchByDocDto(dispatchDocDto,Constant.SysFileType.SIGN.getValue());
             boolean isLoginUser = Validate.isString(SessionUtil.getUserId());
-//            List<SysFileDto> fileDtoList2 = signDto.getSysFileDtoList();
-//            if (fileDtoList2.size() ==0){
-//                resultMsg.setFlag(true);
-//                resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getCode());
-//                resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getValue());
-//                return resultMsg;
-//            }
             //开始下载pdf
             checkDownLoadFile(resultMsg, isGetFiles, dispatchDocDto.getSignId(), signDto.getSysFileDtoList(), isLoginUser ? SessionUtil.getUserId() : SUPER_ACCOUNT, Constant.SysFileType.SIGN.getValue(), Constant.SysFileType.FGW_FILE.getValue());
             return resultMsg;
