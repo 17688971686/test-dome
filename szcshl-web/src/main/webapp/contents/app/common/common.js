@@ -242,7 +242,6 @@
                                 if (filterParam) {
                                     if (paramObj && paramObj.$filter) {
                                         var extendFilter = paramObj.$filter;
-                                        paramObj = undefined;
                                         return {"$filter":filterParam+" and "+extendFilter};
                                     } else {
                                         return {

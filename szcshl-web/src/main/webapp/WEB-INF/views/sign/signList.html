@@ -83,8 +83,8 @@
                     </td>
                     <td class="text-right" style="width:10%;min-width: 80px;max-width-width:120px;">建设单位</td>
                     <td colspan="3" style="width: 40%;">
-                        <input name="builtcompanyName" type="text" operator="like"
-                               ng-model="vm.project.builtcompanyName" class="form-control input-sm "/>
+                        <input name="builtcompanyname" type="text" operator="like"
+                               ng-model="vm.project.builtcompanyname" class="form-control input-sm "/>
                     </td>
                     <td style="vertical-align: top;">
                         <div class="more">
@@ -333,12 +333,11 @@
     </div>
     <div id="signGrid" class="grid" kendo-grid="grid" k-options="vm.signListOptions"></div>
 </div>
+
 <script type="text/template" id="columnBtns">
-    <@shiro.hasPermission name="sign##put">
-    <button class="btn btn-xs btn-primary" ng-click="{0}"><span class="glyphicon glyphicon-pencil"></span>查看暂停信息
-    </button>
-    </@shiro.hasPermission>
+    <button class="btn btn-xs btn-primary" ng-click="{0}"><span class="glyphicon glyphicon-pencil"></span>暂停信息</button>
 </script>
+
 <script>
     $(function(){
         $('.more').on('click',function(){
