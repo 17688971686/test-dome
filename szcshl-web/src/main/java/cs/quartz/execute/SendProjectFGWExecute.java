@@ -96,7 +96,7 @@ public class SendProjectFGWExecute implements Job {
                         }
                         WorkProgramDto mainWP = null;
                         if (Validate.isList(signDto.getWorkProgramDtoList())) {
-                            mainWP = (signDto.getWorkProgramDtoList().stream()).filter(item ->(SignFlowParams.BRANCH_INDEX1.getValue().equals(item.getBranchId()) && (!Validate.isString(item.getBaseInfo()) || !Constant.EnumState.YES.equals(item.getBaseInfo())))).findFirst().get();
+                            mainWP = signDto.getWorkProgramDtoList().get(0);
                         }
                         //获取分办部门意见
                         commentDtoList = flowService.findCommentByProcInstId(signDto.getProcessInstanceId(),nodeKeyList );

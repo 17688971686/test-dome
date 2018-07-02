@@ -2914,11 +2914,16 @@ public class SignServiceImpl implements SignService {
                     if (Validate.isList(sign.getWorkProgramList())) {
                         List<WorkProgramDto> workProgramDtoList = new ArrayList<>();
                         WorkProgram mainWP = sign.getWorkProgramList().stream().filter(item->FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(item.getBranchId())).findFirst().get();
-                        if(Validate.isString(mainWP)){
-                            WorkProgramDto workProgramDto = new WorkProgramDto();
-                            BeanCopierUtils.copyProperties(mainWP, workProgramDto);
-                            workProgramDtoList.add(workProgramDto);
-                            signDto.setWorkProgramDtoList(workProgramDtoList);
+                        if(Validate.isObject(mainWP)){
+                            if(EnumState.YES.getValue().equals(mainWP.getBaseInfo())){
+
+                            //不是项目基本信息的才是项目工作方案
+                            }else{
+                                WorkProgramDto workProgramDto = new WorkProgramDto();
+                                BeanCopierUtils.copyProperties(mainWP, workProgramDto);
+                                workProgramDtoList.add(workProgramDto);
+                                signDto.setWorkProgramDtoList(workProgramDtoList);
+                            }
                         }
                     }
                     if (sign.getDispatchDoc() != null && Validate.isString(sign.getDispatchDoc().getId())) {

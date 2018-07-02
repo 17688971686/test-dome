@@ -165,8 +165,6 @@ public class SysRestController {
     public synchronized ResultMsg downRemoteFile(@RequestParam String signDtoJson) {
         ResultMsg resultMsg = null;
         SignDto signDto = JSON.parseObject(signDtoJson, SignDto.class);
-        //项目signDto.getFilecode() 委里收文编号
-        String msg = "项目收文编码【("+signDto.getFilecode()+")json="+signDtoJson+"】";
         try{
             //json转出对象
             resultMsg = signRestService.pushProject(signDto,true,"downRemoteFile_channel");
@@ -182,22 +180,21 @@ public class SysRestController {
      *
      * @return
      */
+    @RequestMapping(name = "项目批复金额与pdf文件下载", value = "/testSendSignMsg", method = {RequestMethod.POST,RequestMethod.GET})
     public ResultMsg sendSignMsg(String nodeNameKey) {
         ResultMsg resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败！");
         try {
             // 接口地址
-            String endpoint = "http://localhost:8089/FGWPM/restservices/FGWPMRest/uploadPszxData/query";
+            String endpoint = "http://203.91.46.83:8032/FGWPM/restservices/FGWPMRest/uploadPszxData/query";
             //1、评审意见对象
             Map<String, Object> dataMap = new HashMap<String, Object>();
             // dataMap.put("xmmc", "HLT备案11201644");// 项目名称
             // dataMap.put("jsdw", "测试建设单位");// 建设单位
             dataMap.put("swbh", "KY201700022");// 收文编号
-            // dataMap.put("swrq", sdf.parse("2017/11/20").getTime());// 收文日期
             dataMap.put("psfs", "1");// 评审方式
-            // dataMap.put("xmbm", "S-2017-A01-500046-11-01");// 项目编码
             dataMap.put("sssj", (new Date()).getTime());// 送审日期
             dataMap.put("psjssj", (new Date()).getTime());// 评审结束时间
-            dataMap.put("xmpsyd", "项目评审要点项目评审要点项目评审要点项目评审要点项目评审要点项目评审要点项目评审要点");// 项目评审要点
+            dataMap.put("xmpsyd", "1、《可研报告》提出的主要改造内容和规模与项目建议书批复一致。由于外挂电梯工程增加了楼栋主体结构荷载，下阶段应根据相关标准与规范，补充结构安全检测鉴定报告，并根据鉴定结果进一步优化完善改造内容和方案。\n2、经审核，本项目建安工程费、医用设施购置费和工程建设其他费均与项目建议书批复一致，本阶段预备费费率按5%计取，则投资估算调整为4848.55万元，其中，建安工程费3114.73万元（综合单价为4822元/m2）、医用设施购置费1221.4万元、工程建设其他费339.7万元、预备费172.72万元。");// 项目评审要点
             dataMap.put("sb", 1.2);// 申报投资额（万元）
             dataMap.put("sd", 2.1);// 审定投资额（万元）
             dataMap.put("hjz", 6.2);// 核减（增）投资额（万元）
@@ -205,7 +202,7 @@ public class SysRestController {
             dataMap.put("psbz", "备注备注备注备注备注备注备注");// 备注
             dataMap.put("xmjsbyx", "项目建设必要性项目建设必要性项目建设必要性项目建设必要性项目建设必要性");// 项目建设必要性
             dataMap.put("jsnrjgm", "建设内容及规模建设内容及规模建设内容及规模建设内容及规模建设内容及规模建设内容及规模建设内容及规模");// 建设内容及规模
-            dataMap.put("tzksjzjly", "投资估算及资金来源投资估算及资金来源投资估算及资金来源投资估算及资金来源投资估算及资金来源投资估算及资金来源投资估算及资金来源");// 投资估算及资金来源
+            dataMap.put("tzksjzjly", "投资估算及资金来源投资估算及资金来源投资估算及资金来源投资估算及资金来源投资估算及资金来源投资估算及资金来源10%投资估算及资金来源,##22");// 投资估算及资金来源
             dataMap.put("xyjdgzyq", "下一阶段工作要求下一阶段工作要求下一阶段工作要求");// 下一阶段工作要求
 
             //2、附件列表
@@ -213,16 +210,16 @@ public class SysRestController {
             HashMap<String, Object> fjMap = new HashMap<String, Object>();
             fjMap.put("url", "http://localhost:8089/FGWPM/LEAP/Download/default/2017/12/10/pdftest.pdf");
             fjMap.put("filename", "评审报告pdf");
-            fjMap.put("tempName", "黄凌涛");
+            fjMap.put("tempName", "欧可宏");
             fjList.add(fjMap);
             fjMap = new HashMap<String, Object>();
             fjMap.put("url", "http://localhost:8089/FGWPM/LEAP/Download/default/2017/12/10/wordtest.docx");
             fjMap.put("filename", "评审报告word");
-            fjMap.put("tempName", "黄凌涛");
+            fjMap.put("tempName", "欧可宏");
             fjList.add(fjMap);
             dataMap.put("psbg", fjList);// 评审报告（需上传pdf和word文档）
 
-            fjList = new ArrayList<HashMap<String, Object>>();
+            /*fjList = new ArrayList<HashMap<String, Object>>();
             fjMap = new HashMap<String, Object>();
             fjMap.put("url", "http://localhost:8089/FGWPM/LEAP/Download/default/2017/12/10/pdftest.pdf");
             fjMap.put("filename", "投资估算审核表pdf");
@@ -239,7 +236,7 @@ public class SysRestController {
             fjList = new ArrayList<HashMap<String, Object>>();
             dataMap.put("zjpsmd", fjList);// 专家评审名单
             fjList = new ArrayList<HashMap<String, Object>>();
-            dataMap.put("qtfj", fjList);// 其它
+            dataMap.put("qtfj", fjList);// 其它*/
 
             //3、办理意见
             ArrayList<HashMap<String, Object>> dataList = new ArrayList<HashMap<String, Object>>();
@@ -248,13 +245,13 @@ public class SysRestController {
             psgcMap.put("psblyj", "办理意见办理意见办理意见办理意见办理意见");// 办理意见
             psgcMap.put("blr", "办理人");// 办理人
             psgcMap.put("blsj", (new Date()).getTime());// 办理时间
-            fjList = new ArrayList<HashMap<String, Object>>();
+            /*fjList = new ArrayList<HashMap<String, Object>>();
             fjMap = new HashMap<String, Object>();
             fjMap.put("url", "http://localhost:8089/FGWPM/LEAP/Download/default/2017/12/10/pdftest.pdf");
             fjMap.put("filename", "投资估算审核表pdf");
             fjMap.put("tempName", "黄凌涛");
             fjList.add(fjMap);
-            psgcMap.put("cl", fjList);// 材料（附件）
+            psgcMap.put("cl", fjList);// 材料（附件）*/
             dataList.add(psgcMap);
 
             Map<String, String> params = new HashMap<>();
@@ -263,10 +260,18 @@ public class SysRestController {
 
             HttpResult hst = httpClientOperate.doPost(endpoint, params);
             System.out.println(hst.toString());
-            FGWResponse fGWResponse = JSON.toJavaObject(JSON.parseObject(hst.getContent()),FGWResponse.class);
-            resultMsg.setReCode(fGWResponse.getRestate());
-            resultMsg.setReMsg(fGWResponse.getRedes());
-            resultMsg.setFlag((IFResultCode.RECODE.OK.getCode()).equals(fGWResponse.getRestate()));
+
+            if(Validate.isObject(hst) && (200 < hst.getStatusCode() && 400 > hst.getStatusCode())){
+                FGWResponse fGWResponse = JSON.toJavaObject(JSON.parseObject(hst.getContent()),FGWResponse.class);
+                resultMsg.setReCode(fGWResponse.getRestate());
+                resultMsg.setReMsg(fGWResponse.getRedes());
+                resultMsg.setFlag((IFResultCode.RECODE.OK.getCode()).equals(fGWResponse.getRestate()));
+            }else{
+                resultMsg.setReCode("ERROR");
+                resultMsg.setReMsg("异常");
+                resultMsg.setFlag(false);
+            }
+
         } catch (Exception e) {
             String errorMsg = e.getMessage();
             logger.info("项目回调接口异常："+errorMsg);

@@ -778,7 +778,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             workProgramDto.setAppalyInvestment(sign.getDeclaration());
             workProgramDto.setWorkreviveStage(sign.getReviewstage());
             workProgramDto.setBaseInfo(EnumState.YES.getValue());
-            workProgramDto.setBranchId( FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue());
+            workProgramDto.setBranchId(FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue());
             workProgramDto.setSendFileUnit(Constant.SEND_FILE_UNIT);
             workProgramDto.setSendFileUser(sign.getMainDeptUserName());
             //默认名称
@@ -811,8 +811,11 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 workProgram.setCreatedBy(SessionUtil.getUserId());
                 workProgram.setCreatedDate(new Date());
             }
-            //如果是项目负责人，则修改状态
-            if(SessionUtil.getUserId().equals(sign.getmUserId()) || (Validate.isString(sign.getaUserID()) && sign.getaUserID().contains(SessionUtil.getUserId()))){
+
+            //如果主分支没有工作方案，则设置为基本信息，有则设置为项目基本信息
+            if(signBranchRepo.checkIsNeedWP(sign.getSignid(),FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue())){
+                workProgram.setBaseInfo(EnumState.NO.getValue());
+            }else{
                 workProgram.setBaseInfo(EnumState.YES.getValue());
             }
 

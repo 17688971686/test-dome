@@ -76,7 +76,6 @@ public class SignRestServiceImpl implements SignRestService {
     private SMSLogService smsLogService;
 
 
-
     @Autowired
     private SMSContent smsContent;
 
@@ -91,7 +90,7 @@ public class SignRestServiceImpl implements SignRestService {
      */
     @Override
     @Transactional
-    public ResultMsg pushProject(SignDto signDto, boolean isGetFiles,String channel) {
+    public ResultMsg pushProject(SignDto signDto, boolean isGetFiles, String channel) {
         if (signDto == null) {
             return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_01.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_01.getValue());
         }
@@ -103,20 +102,20 @@ public class SignRestServiceImpl implements SignRestService {
         * 1、需求：一个是委项目批复文件的pdf以及批复金额，二是评审中心的评审或审核意见的pdf。通过接口文件 主动推送评审中心项目管理。
         * 修改批复金额与下载pdf文件
         * */
-        if ("downRemoteFile_channel".equals(channel)){
+        if ("downRemoteFile_channel".equals(channel)) {
             resultMsg = new ResultMsg();
             //通过fileCode找signId =bussessId
             SignDto signDto1 = null;
             signDto1 = signService.findSignByFileCode(signDto);
-            if (signDto1.getSignid() == null){
+            if (signDto1.getSignid() == null) {
                 resultMsg.setFlag(false);
                 resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_SIGN_01.getCode());
                 resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SFGW_02.getValue());
                 return resultMsg;
             }
             //发文跟收文是1V1
-            DispatchDocDto dispatchDocDto=dispatchDocService.initDispatchBySignId(signDto1.getSignid());
-            if (dispatchDocDto.getSignId() == null){
+            DispatchDocDto dispatchDocDto = dispatchDocService.initDispatchBySignId(signDto1.getSignid());
+            if (dispatchDocDto.getSignId() == null) {
                 resultMsg.setFlag(false);
                 resultMsg.setReCode(IFResultCode.IFMsgCode.DISPATHCH_DOC_DTO_1.getCode());
                 resultMsg.setReMsg(IFResultCode.IFMsgCode.DISPATHCH_DOC_DTO_2.getValue());
@@ -124,12 +123,12 @@ public class SignRestServiceImpl implements SignRestService {
             }
             dispatchDocDto.setApproveValue(signDto.getDeclaration());
             dispatchDocDto.setSignId(signDto1.getSignid());
-            dispatchDocService.updateDispatchByDocDto(dispatchDocDto,Constant.SysFileType.SIGN.getValue());
+            dispatchDocService.updateDispatchByDocDto(dispatchDocDto, Constant.SysFileType.SIGN.getValue());
             boolean isLoginUser = Validate.isString(SessionUtil.getUserId());
             //开始下载pdf
             checkDownLoadFile(resultMsg, isGetFiles, dispatchDocDto.getSignId(), signDto.getSysFileDtoList(), isLoginUser ? SessionUtil.getUserId() : SUPER_ACCOUNT, Constant.SysFileType.SIGN.getValue(), Constant.SysFileType.FGW_FILE.getValue());
             return resultMsg;
-        }else{
+        } else {
             try {
                 String stageCode = "";
                 //1、判断项目阶段是否正确
@@ -162,7 +161,7 @@ public class SignRestServiceImpl implements SignRestService {
                 }
                 resultMsg = signService.createSign(signDto);
 
-                if(resultMsg.isFlag()){
+                if (resultMsg.isFlag()) {
                     boolean isLoginUser = Validate.isString(SessionUtil.getUserId());
                     Sign sign = (Sign) resultMsg.getReObj();
                     checkDownLoadFile(resultMsg, isGetFiles, sign.getSignid(), signDto.getSysFileDtoList(), isLoginUser ? SessionUtil.getUserId() : SUPER_ACCOUNT, Constant.SysFileType.SIGN.getValue(), Constant.SysFileType.FGW_FILE.getValue());
@@ -245,7 +244,7 @@ public class SignRestServiceImpl implements SignRestService {
                 return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_03.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_03.getValue());
             }
             resultMsg = signService.reserveAddSign(signDto);
-            if(resultMsg.isFlag()){
+            if (resultMsg.isFlag()) {
                 boolean isLoginUser = Validate.isString(SessionUtil.getUserId());
                 Sign sign = (Sign) resultMsg.getReObj();
                 checkDownLoadFile(resultMsg, isGetFiles, sign.getSignid(), signDto.getSysFileDtoList(), isLoginUser ? SessionUtil.getUserId() : SUPER_ACCOUNT, Constant.SysFileType.SIGN.getValue(), Constant.SysFileType.FGW_FILE.getValue());
@@ -289,11 +288,11 @@ public class SignRestServiceImpl implements SignRestService {
             dataList.add(psgcMap);
 
             //2.1 分办意见（分管领导分办和部门分办）
-            setBlyj(commentDtoMap,FLOW_SIGN_FGLD_FB,dataList);
-            setBlyj(commentDtoMap,FLOW_SIGN_BMFB1,dataList);
-            setBlyj(commentDtoMap,FLOW_SIGN_BMFB2,dataList);
-            setBlyj(commentDtoMap,FLOW_SIGN_BMFB3,dataList);
-            setBlyj(commentDtoMap,FLOW_SIGN_BMFB4,dataList);
+            setBlyj(commentDtoMap, FLOW_SIGN_FGLD_FB, dataList);
+            setBlyj(commentDtoMap, FLOW_SIGN_BMFB1, dataList);
+            setBlyj(commentDtoMap, FLOW_SIGN_BMFB2, dataList);
+            setBlyj(commentDtoMap, FLOW_SIGN_BMFB3, dataList);
+            setBlyj(commentDtoMap, FLOW_SIGN_BMFB4, dataList);
 
             /**
              * 2018-01-12
@@ -303,14 +302,14 @@ public class SignRestServiceImpl implements SignRestService {
             //dataMap.put("sssj", (new Date()).getTime());// 送审日期
             //dataMap.put("psjssj", (new Date()).getTime());// 评审结束时间
             boolean isHaveWP = Validate.isObject(mainWP) ? true : false;
-            if (isHaveWP) {
+            if (isHaveWP && Validate.isString(mainWP.getLeaderSuggesttion()) && Validate.isString(mainWP.getLeaderName()) && Validate.isObject(mainWP.getLeaderDate())) {
                 dataMap.put("psfs", IFResultCode.PSFS.getCodeByValue(mainWP.getReviewType()));// 评审方式
                 //2.2工作方案环节处理意见(主工作方案分管领导意见)
                 psgcMap = new HashMap<String, Object>();
                 psgcMap.put("blhj", "3");// 办理环节
                 psgcMap.put("psblyj", mainWP.getLeaderSuggesttion());// 办理意见
                 psgcMap.put("blr", mainWP.getLeaderName());// 办理人
-                psgcMap.put("blsj", Validate.isObject(mainWP.getLeaderDate())?mainWP.getLeaderDate().getTime():"");// 办理时间
+                psgcMap.put("blsj", mainWP.getLeaderDate().getTime());// 办理时间
                 dataList.add(psgcMap);
             } else {
                 // 不做工作方案，评审方式属于自
@@ -320,18 +319,18 @@ public class SignRestServiceImpl implements SignRestService {
             if (!Validate.isObject(dispatchDoc)) {
                 return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SFGW_03.getCode(), IFResultCode.IFMsgCode.SZEC_SFGW_03.getValue());
             }
-            dataMap.put("xmpsyd", StringUtil.getDefaultValue(dispatchDoc.getReviewAbstract(),"无"));// 项目评审要点
+            dataMap.put("xmpsyd", StringUtil.getDefaultValue(dispatchDoc.getReviewAbstract(), "无"));// 项目评审要点
             dataMap.put("sb", dispatchDoc.getDeclareValue() == null ? null : (dispatchDoc.getDeclareValue()).setScale(2, BigDecimal.ROUND_HALF_UP));// 申报投资额（万元）
             dataMap.put("sd", dispatchDoc.getAuthorizeValue() == null ? null : (dispatchDoc.getAuthorizeValue()).setScale(2, BigDecimal.ROUND_HALF_UP));// 审定投资额（万元）
             dataMap.put("hjz", dispatchDoc.getExtraValue() == null ? null : (dispatchDoc.getExtraValue()).setScale(2, BigDecimal.ROUND_HALF_UP));// 核减（增）投资额（万元）
             dataMap.put("hjzl", dispatchDoc.getExtraRate() == null ? null : (dispatchDoc.getExtraRate()).setScale(2, BigDecimal.ROUND_HALF_UP));// 核减（增）率
-            dataMap.put("psbz", StringUtil.getDefaultValue(dispatchDoc.getRemark(),"无"));// 备注
-            dataMap.put("xmjsbyx", StringUtil.getDefaultValue(dispatchDoc.getProjectBuildNecess(),"无"));// 项目建设必要性
-            dataMap.put("jsnrjgm", StringUtil.getDefaultValue(dispatchDoc.getBuildSizeContent(),"无"));// 建设内容及规模
-            dataMap.put("tzksjzjly", StringUtil.getDefaultValue(dispatchDoc.getFundTotalOrigin(),"无"));// 投资估算及资金来源
-            dataMap.put("xyjdgzyq", StringUtil.getDefaultValue(dispatchDoc.getNextWorkPlan(),"无"));// 下一阶段工作要求
+            dataMap.put("psbz", StringUtil.getDefaultValue(dispatchDoc.getRemark(), "无"));// 备注
+            dataMap.put("xmjsbyx", StringUtil.getDefaultValue(dispatchDoc.getProjectBuildNecess(), "无"));// 项目建设必要性
+            dataMap.put("jsnrjgm", StringUtil.getDefaultValue(dispatchDoc.getBuildSizeContent(), "无"));// 建设内容及规模
+            dataMap.put("tzksjzjly", StringUtil.getDefaultValue(dispatchDoc.getFundTotalOrigin(), "无"));// 投资估算及资金来源
+            dataMap.put("xyjdgzyq", StringUtil.getDefaultValue(dispatchDoc.getNextWorkPlan(), "无"));// 下一阶段工作要求
             boolean isTw = "项目退文".equals(dispatchDoc.getDispatchType());
-            dataMap.put("istw", isTw?"1":"0");// 是否项目退文
+            dataMap.put("istw", isTw ? "1" : "0");// 是否项目退文
 
             //2.3 发文环节处理意见(主任意见)
             psgcMap = new HashMap<String, Object>();
@@ -357,27 +356,34 @@ public class SignRestServiceImpl implements SignRestService {
             params.put("dataMap", JSON.toJSONString(dataMap));
             params.put("dataList", JSON.toJSONString(dataList));
             HttpResult hst = httpClientOperate.doPost(fgwUrl, params);
-            FGWResponse fGWResponse = JSON.toJavaObject(JSON.parseObject(hst.getContent()), FGWResponse.class);
-            //成功
-            if (Constant.EnumState.PROCESS.getValue().equals(fGWResponse.getRestate())) {
+            //调用接口成功才开始解析
+            if (Validate.isObject(hst) && (200 < hst.getStatusCode() && 400 > hst.getStatusCode())) {
+                FGWResponse fGWResponse = JSON.toJavaObject(JSON.parseObject(hst.getContent()), FGWResponse.class);
+                //成功
+                if (Constant.EnumState.PROCESS.getValue().equals(fGWResponse.getRestate())) {
 //                if (rtxService.rtxSMSEnabled()){
 //                    boolean boo = SMSUtils.getWeek(workdayService,new Date(),sysConfigService);
 //                    if(boo){
 //                             SMSUtils.seekSMSThread(smsContent,getListUser("发文成功"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文成功",smsContent.seekSMSSuccee(sign.getProjectname(),sign.getFilecode(),"发文成功(回传委里)"),  smsLogService);
 //                    }
 //                }
-                return new ResultMsg(true, IFResultCode.IFMsgCode.SZEC_SEND_OK.getCode(), "项目【" + sign.getProjectname() + "(" + sign.getFilecode() + ")】回传数据给发改委成功！");
-            } else {
-                //发送失败短信
+                    return new ResultMsg(true, IFResultCode.IFMsgCode.SZEC_SEND_OK.getCode(), "项目【" + sign.getProjectname() + "(" + sign.getFilecode() + ")】回传数据给发改委成功！");
+                } else {
+                    //发送失败短信
 //                if (rtxService.rtxSMSEnabled()){
 //                    boolean boo = SMSUtils.getWeek(workdayService,new Date(),sysConfigService);
 //                    if(boo){
 //                         SMSUtils.seekSMSThread(smsContent,getListUser("发文失败"),sign.getProjectname(),sign.getFilecode(),"dispatch_type","回传委里发文失败",smsContent.seekSMSSuccee(sign.getProjectname(),sign.getFilecode(),"发文失败(回传委里)"),  smsLogService);
 //                    }
 //                }
+                    return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SEND_ERROR.getCode(),
+                            "项目【" + sign.getProjectname() + "(" + sign.getFilecode() + ")】回传数据给发改委失败！" + fGWResponse.getRedes() + "<br>");
+                }
+            } else {
                 return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SEND_ERROR.getCode(),
-                        "项目【" + sign.getProjectname() + "(" + sign.getFilecode() + ")】回传数据给发改委失败！" + fGWResponse.getRedes() + "<br>");
+                        "项目【" + sign.getProjectname() + "(" + sign.getFilecode() + ")】回传数据给发改委失败！调用接口失败！返回码为：" + hst.getStatusCode() + "!返回内容：" + hst.getContent());
             }
+
         } catch (Exception e) {
             //因发文成功，却发生通信异常。暂时注销通信异常发送短信
 //            if (rtxService.rtxSMSEnabled()){
@@ -392,43 +398,45 @@ public class SignRestServiceImpl implements SignRestService {
         }
     }
 
-    public static  boolean getTimeCode(){
+    public static boolean getTimeCode() {
 
 
         return false;
     }
-    public  List<User>  getListUser(String type){
+
+    public List<User> getListUser(String type) {
         List<User> list = new ArrayList<>();
         User user = null;
-        if ("收文失败".equals(type)|| "收文成功".equals(type)){
-            List<SysConfigDto>  sysConfigDtoList = sysConfigService.findListBykey("SYS_USER_TYPE");
-            for(SysConfigDto sysConfigDto: sysConfigDtoList){
-                user = new User();
-                user.setUserMPhone( sysConfigDto.getConfigValue().trim());
-                user.setDisplayName(sysConfigDto.getConfigName().trim());
-                list.add(user);
-            }
-        }
-        if ("发文失败".equals(type)|| "发文成功".equals(type)){
-            List<SysConfigDto>  sysConfigDtoList = sysConfigService.findListBykey("SMS_SYS_USER_POST_FAILURE");
-            for(SysConfigDto sysConfigDto: sysConfigDtoList){
+        if ("收文失败".equals(type) || "收文成功".equals(type)) {
+            List<SysConfigDto> sysConfigDtoList = sysConfigService.findListBykey("SYS_USER_TYPE");
+            for (SysConfigDto sysConfigDto : sysConfigDtoList) {
                 user = new User();
                 user.setUserMPhone(sysConfigDto.getConfigValue().trim());
                 user.setDisplayName(sysConfigDto.getConfigName().trim());
                 list.add(user);
             }
         }
-        return  list;
+        if ("发文失败".equals(type) || "发文成功".equals(type)) {
+            List<SysConfigDto> sysConfigDtoList = sysConfigService.findListBykey("SMS_SYS_USER_POST_FAILURE");
+            for (SysConfigDto sysConfigDto : sysConfigDtoList) {
+                user = new User();
+                user.setUserMPhone(sysConfigDto.getConfigValue().trim());
+                user.setDisplayName(sysConfigDto.getConfigName().trim());
+                list.add(user);
+            }
+        }
+        return list;
     }
 
     /**
      * 封装办理意见
+     *
      * @param commentDtoMap
      * @param nodeKey
      * @param dataList
      */
     private void setBlyj(Map<String, CommentDto> commentDtoMap, String nodeKey, ArrayList<HashMap<String, Object>> dataList) {
-        if(commentDtoMap.get(nodeKey) != null){
+        if (commentDtoMap.get(nodeKey) != null) {
             CommentDto commentDto = commentDtoMap.get(nodeKey);
             HashMap<String, Object> fgldMap = new HashMap<String, Object>();
             fgldMap.put("blhj", "2");// 办理环节

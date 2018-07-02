@@ -38,6 +38,12 @@ public interface SignBranchRepo extends IRepository<SignBranch, String> {
      */
     void isNeedWP(String signId,String branchId,String state);
 
+    /**
+     * 校验是否需要工作方案
+     * @param signId
+     * @param branchId
+     * @return
+     */
     boolean checkIsNeedWP(String signId,String branchId);
 
     /**
