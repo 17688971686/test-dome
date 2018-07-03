@@ -281,7 +281,6 @@
          * @param callBack
          */
         function deleteContractConditions(delIds,callBack){
-            console.log(delIds);
             var httpOptions = {
                 method : 'delete',
                 url: rootPath + "/topicInfo/contractDel",
@@ -346,8 +345,8 @@
                 case flowcommon.getTopicFlowNode().TOPIC_GZFA:
                     showFlag.businessTr = true;
                     /*if(flow.businessMap) {  //判断是否第一负责人
-                        showFlag.isMainPrinUser = flow.businessMap.MAIN_USER;
-                    }*/
+                     showFlag.isMainPrinUser = flow.businessMap.MAIN_USER;
+                     }*/
                     break;
                 //归档环节
                 case flowcommon.getTopicFlowNode().TOPIC_ZLGD:

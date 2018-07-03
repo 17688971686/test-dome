@@ -29,6 +29,14 @@ public class AchievementSumDto {
 
     private String quarter;
 
+    private String userId;
+
+    private String deptIds;
+
+    private String isMainPro;
+
+    private String initFlag;
+
 
     public BigDecimal getDeclarevalueSum() {
         return declarevalueSum;
@@ -108,5 +116,37 @@ public class AchievementSumDto {
 
     public void setQuarter(String quarter) {
         this.quarter = quarter;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getDeptIds() {
+        return deptIds;
+    }
+
+    public void setDeptIds(String deptIds) {
+        this.deptIds = deptIds;
+    }
+
+    public String getIsMainPro() {
+        return isMainPro;
+    }
+
+    public void setIsMainPro(String isMainPro) {
+        this.isMainPro = isMainPro;
+    }
+
+    public String getInitFlag() {
+        return initFlag;
+    }
+
+    public void setInitFlag(String initFlag) {
+        this.initFlag = initFlag;
     }
 }

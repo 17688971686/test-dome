@@ -499,7 +499,13 @@ public class Constant {
         ADD_REGISTER_FILE("print/registerFile", "拟补充资料清单"),
 
         PARTYDETAIL("party/partyDetail" , "党员基本信息采集表"),
-        SIGN_IN_SHEET("party/signInSheet" , "党员签到表")
+        SIGN_IN_SHEET("party/signInSheet" , "党员签到表"),
+
+        ACHIEVEMENT_DETAIL("achievement/achievementDetail","员工业绩统计表"),
+        ACHIEVEMENT_DEPT_DETAIL("achievement/achievementDeptDetail","部门业绩统计表"),
+        ACHIEVEMENT_TOPIC_MAINTAIN("achievement/topicMaintain","课题研究及其他业务一览表"),
+        ACHIEVEMENT_MAIN_PROREVIEW("achievement/mainProReview","主办人评审项目一览表"),
+        ACHIEVEMENT_ASSIST_PROREVIEW("achievement/assistProReview","协办人评审项目一览表"),
         ;
 
         private String key;

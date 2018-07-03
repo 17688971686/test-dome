@@ -7,6 +7,8 @@ import cs.common.utils.*;
 import cs.domain.expert.*;
 import cs.domain.financial.FinancialManager;
 import cs.domain.financial.FinancialManager_;
+import cs.domain.sys.OrgDept;
+import cs.domain.sys.OrgDept_;
 import cs.domain.sys.User;
 import cs.model.PageModelDto;
 import cs.model.expert.*;
@@ -16,6 +18,8 @@ import cs.repository.odata.ODataObj;
 import cs.repository.odata.ODataObjFilterStrategy;
 import cs.repository.repositoryImpl.expert.*;
 import cs.repository.repositoryImpl.financial.FinancialManagerRepo;
+import cs.repository.repositoryImpl.sys.OrgDeptRepo;
+import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.service.project.SignPrincipalService;
 import cs.service.sys.UserService;
 import org.hibernate.Criteria;
@@ -50,6 +54,10 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
     private UserService userService;
     @Autowired
     private ExpertRepo expertRepo;
+    @Autowired
+    private OrgDeptRepo orgDeptRepo;
+    @Autowired
+    private UserRepo userRepo;
 
 
     @Override
@@ -1085,25 +1093,77 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
     public ResultMsg findAchievementSum(AchievementSumDto achievementSumDto) {
         Map<String, Object> resultMap = new HashMap<>();
         Map<String, Object> levelMap = userService.getUserLevel();
-        resultMap.put("achievementSumList", expertSelectedRepo.findAchievementSum(achievementSumDto, levelMap));
+        Integer level = 0;
+        List<OrgDept> orgDeptList = new ArrayList<OrgDept>();
+        if(null != levelMap && null!= levelMap.get("leaderFlag")){
+            level = (Integer) levelMap.get("leaderFlag");
+            if(level == 0){
+
+            }else if(level == 1){
+                orgDeptList = orgDeptRepo.findAll();
+
+            }else if(level == 2){
+                Criteria criteria = orgDeptRepo.getExecutableCriteria();
+                criteria.add(Restrictions.eq(OrgDept_.sLeaderID.getName(),SessionUtil.getUserId()));
+                orgDeptList = criteria.list();
+            }else if(level == 3){
+                Criteria criteria = orgDeptRepo.getExecutableCriteria();
+                criteria.add(Restrictions.eq(OrgDept_.directorID.getName(),SessionUtil.getUserId()));
+                orgDeptList = criteria.list();
+            }else if(level == 4){
+                Criteria criteria = orgDeptRepo.getExecutableCriteria();
+                criteria.add(Restrictions.eq(OrgDept_.directorID.getName(),SessionUtil.getUserId()));
+                orgDeptList = criteria.list();
+            }
+        }
+        resultMap.put("achievementSumList", expertSelectedRepo.findAchievementSum(achievementSumDto, levelMap,orgDeptList));
         achievementSumDto.setIsmainuser("9");
-        resultMap.put("achievementMainList", expertSelectedRepo.findAchievementDetail(achievementSumDto, levelMap));
+        resultMap.put("achievementMainList", expertSelectedRepo.findAchievementDetail(achievementSumDto, levelMap,orgDeptList));
         achievementSumDto.setIsmainuser("0");
-        resultMap.put("achievementAssistList", expertSelectedRepo.findAchievementDetail(achievementSumDto, levelMap));
+        resultMap.put("achievementAssistList", expertSelectedRepo.findAchievementDetail(achievementSumDto, levelMap,orgDeptList));
+
+        resultMap.put("orgDeptList",orgDeptList);
+        resultMap.put("level", level);
+        if(Validate.isString(achievementSumDto.getUserId())){
+            resultMap.put("userId", achievementSumDto.getUserId());
+            User user = userRepo.findById(achievementSumDto.getUserId());
+            resultMap.put("deptName",user.getOrg().getName());
+        }else{
+            resultMap.put("userId", SessionUtil.getUserId());
+        }
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", resultMap);
 
     }
 
-    /**
+    @Override
+    public ResultMsg findAchievementDetail(AchievementSumDto achievementSumDto, Map<String, Object> levelMap) {
+        return null;
+    }
+
+/*    *//**
      * 业绩明细
+     *
+     * @param achievementSumDto
+     * @return
+     *//*
+    @Override
+    public ResultMsg findAchievementDetail(AchievementSumDto achievementSumDto, Map<String, Object> levelMap) {
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("achievementDetailList", expertSelectedRepo.findAchievementDetail(achievementSumDto, levelMap));
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", resultMap);
+    }*/
+
+    /**
+     * 部门业绩明细
      *
      * @param achievementSumDto
      * @return
      */
     @Override
-    public ResultMsg findAchievementDetail(AchievementSumDto achievementSumDto, Map<String, Object> levelMap) {
+    public ResultMsg findDeptAchievementDetail(AchievementDeptDetailDto achievementSumDto) {
         Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("achievementDetailList", expertSelectedRepo.findAchievementDetail(achievementSumDto, levelMap));
+        Map<String, Object> levelMap = userService.getUserLevel();
+        resultMap.put("achievementDeptDetailList", expertSelectedRepo.findDeptAchievementDetail(achievementSumDto, levelMap));
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", resultMap);
     }
 

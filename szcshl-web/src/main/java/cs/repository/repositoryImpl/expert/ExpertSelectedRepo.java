@@ -2,6 +2,7 @@ package cs.repository.repositoryImpl.expert;
 
 import cs.common.ResultMsg;
 import cs.domain.expert.ExpertSelected;
+import cs.domain.sys.OrgDept;
 import cs.model.expert.*;
 import cs.repository.IRepository;
 
@@ -150,14 +151,23 @@ public interface ExpertSelectedRepo extends IRepository<ExpertSelected, String> 
      * @param achievementSumDto
      * @return
      */
-    List<AchievementSumDto> findAchievementSum(AchievementSumDto achievementSumDto,Map<String,Object> levelMap);
+    List<AchievementSumDto> findAchievementSum(AchievementSumDto achievementSumDto,Map<String,Object> levelMap,List<OrgDept> orgDeptList);
 
     /**
      * 业绩明细
      * @param achievementSumDto
      * @return
      */
-    List<AchievementDetailDto> findAchievementDetail(AchievementSumDto achievementSumDto,Map<String,Object> levelMap);
+    List<AchievementDetailDto> findAchievementDetail(AchievementSumDto achievementSumDto,Map<String,Object> levelMap,List<OrgDept> orgDeptList);
 
     List<ExpertSelectedDto> findByBusinessId(String businessID);
+
+    /**
+     * 查询部门业绩明细
+     * @param achievementSumDto
+     * @param levelMap
+     * @return
+     */
+    List<AchievementDeptDetailDto> findDeptAchievementDetail(AchievementDeptDetailDto achievementSumDto,Map<String,Object> levelMap);
+
 }

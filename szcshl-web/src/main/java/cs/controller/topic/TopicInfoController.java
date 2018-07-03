@@ -5,8 +5,10 @@ import cs.common.ResultMsg;
 import cs.model.PageModelDto;
 import cs.model.topic.ContractDto;
 import cs.model.topic.TopicInfoDto;
+import cs.model.topic.TopicMaintainDto;
 import cs.repository.odata.ODataObj;
 import cs.service.topic.TopicInfoService;
+import cs.service.topic.TopicMaintainService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
+import java.util.List;
 
 
 /**
@@ -30,6 +33,9 @@ public class TopicInfoController {
     String ctrlName = "topicInfo";
     @Autowired
     private TopicInfoService topicInfoService;
+
+    @Autowired
+    private TopicMaintainService topicMaintainService;
 
     @RequiresAuthentication
     //@RequiresPermissions("topicInfo#findByOData#post")
@@ -78,6 +84,14 @@ public class TopicInfoController {
     }
 
     @RequiresAuthentication
+    @RequestMapping(name = "查询课题维护详情", path = "findTopicDetail", method = RequestMethod.POST)
+    public @ResponseBody
+    List<TopicMaintainDto> findTopicDetail(@RequestParam(required = true) String userId) {
+        return topicMaintainService.findTopicAll(userId);
+    }
+
+
+    @RequiresAuthentication
     @RequestMapping(name = "合同录入", path = "saveContractDetailList", method = RequestMethod.POST)
     public @ResponseBody
     ResultMsg saveContractDetailList(@RequestBody ContractDto[] contractDtoArrary){
@@ -85,10 +99,24 @@ public class TopicInfoController {
     }
 
     @RequiresAuthentication
+    @RequestMapping(name = "课题维护", path = "saveTopicDetailList", method = RequestMethod.POST)
+    public @ResponseBody
+    ResultMsg saveTopicDetailList(@RequestBody TopicMaintainDto[] topicMaintainDtoArray){
+        return topicInfoService.saveTopicDetailList(topicMaintainDtoArray);
+    }
+
+    @RequiresAuthentication
     @RequestMapping(name = "删除记录", path = "contractDel", method = RequestMethod.DELETE)
     @ResponseBody
     public ResultMsg deleteContract(@RequestParam(required = true) String ids) {
         return topicInfoService.deleteContract(ids);
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "删除课题维护记录", path = "topicMaintainDel", method = RequestMethod.DELETE)
+    @ResponseBody
+    public ResultMsg deleteTopicMaintain(@RequestParam(required = true) String ids) {
+        return topicInfoService.deleteTopicMaintain(ids);
     }
 
     @RequiresAuthentication
