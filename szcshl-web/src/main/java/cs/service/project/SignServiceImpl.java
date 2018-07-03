@@ -145,14 +145,11 @@ public class SignServiceImpl implements SignService {
     @Autowired
     private UnitScoreService unitScoreService;
     @Autowired
-    private RTXService rtxService;
-    @Autowired
-    private SMSContent smsContent;
-    @Autowired
     private AgentTaskService agentTaskService;
     @Autowired
     private AssistUnitRepo assistUnitRepo;
-
+    @Autowired
+    private DispatchDocService dispatchDocService;
     /**
      * 项目签收保存操作（这里的方法是正式签收）
      *
@@ -1214,7 +1211,7 @@ public class SignServiceImpl implements SignService {
                 //如果是主办流程，要判断是否有合并评审方案，有则跟着主项目一起办理
                 if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)) {
                     if (Constant.MergeType.REVIEW_MERGE.getValue().equals(wk.getIsSigle()) && EnumState.YES.getValue().equals(wk.getIsMainProject())) {
-                        List<SignMerge> mergeList = signMergeRepo.findByIds(SignMerge_.signId.getName(), signid, null);
+                        List<SignMerge> mergeList = signMergeRepo.findByType(signid, MergeType.WORK_PROGRAM.getValue());
                         if (Validate.isList(mergeList)) {
                             ResultMsg resultMsg = null;
                             FlowDto flowDto2 = new FlowDto();
@@ -1338,59 +1335,69 @@ public class SignServiceImpl implements SignService {
                 break;
             //发文申请
             case FLOW_SIGN_FW:
+                //是否是合并发文次项目
+                boolean isMergeProj = Validate.isObject(flowDto.getBusinessMap().get("MERGE_PROJ_A"));
                 businessId = flowDto.getBusinessMap().get("DIS_ID").toString();
                 dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
-                //如果有专家评审费，则要先办理专家评审费
-                if (expertReviewRepo.isHaveEPReviewCost(signid)) {
-                    ExpertReview expertReview2 = expertReviewRepo.findById(ExpertReview_.businessId.getName(), signid);
-                    if (expertReview2.getPayDate() == null || expertReview2.getTotalCost() == null) {
-                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还没完成专家评审费发放，不能进行下一步操作！");
+
+                if(isMergeProj){
+
+                }else{
+                    List<SignMerge> mergeList = null;
+                    //合并发文
+                    if(dispatchDocService.checkIsMegerDis(dp.getDispatchWay())){
+                        if(!checkReviewCost(signid)){
+                            return new ResultMsg(false,MsgCode.ERROR.getValue(),"您还没完成专家评审费发放，不能进行下一步操作！");
+                        }
+                        if(!checkFileUpload(signid)){
+                            return new ResultMsg(false,MsgCode.ERROR.getValue(),"您还没上传[评审意见]或者[审核意见]附件信息！");
+                        }
+                        //合并发文主项目
+                        if(dispatchDocService.checkIsMain(dp.getIsMainProject())){
+                            mergeList = signMergeRepo.findByType(signid,MergeType.DISPATCH.getValue());
+                            if (Validate.isList(mergeList)) {
+                                //1、先检验是否发放评审费和通过校验
+                                for (SignMerge s : mergeList) {
+                                    if(!checkReviewCost(s.getMergeId())){
+                                        return new ResultMsg(false,MsgCode.ERROR.getValue(),"合并发文次项目,还没完成专家评审费发放，不能进行下一步操作！");
+                                    }
+                                    if(!checkFileUpload(s.getMergeId())){
+                                        return new ResultMsg(false,MsgCode.ERROR.getValue(),"合并发文次项目,还没上传[评审意见]或者[审核意见]附件信息！");
+                                    }
+                                }
+                            }
+                        }
+                        //单个发文
+                    }else{
+                        if(!checkReviewCost(signid)){
+                            return new ResultMsg(false,MsgCode.ERROR.getValue(),"您还没完成专家评审费发放，不能进行下一步操作！");
+                        }
+                        if(!checkFileUpload(signid)){
+                            return new ResultMsg(false,MsgCode.ERROR.getValue(),"您还没上传[评审意见]或者[审核意见]附件信息！");
+                        }
+                    }
+                    //有项目负责人，则项目负责人审核
+                    userList = signPrincipalService.getAllSecondPriUser(signid);
+                    if (Validate.isList(userList)) {
+                        variables.put(FlowConstant.SignFlowParams.HAVE_XMFZR.getValue(), true);
+                        for (int i = 0, l = userList.size(); i < l; i++) {
+                            String userId = userService.getTaskDealId(userList.get(i).getId(), agentTaskList,FlowConstant.FLOW_SIGN_QRFW);
+                            assigneeValue = StringUtil.joinString(assigneeValue, SEPARATE_COMMA, userId);
+                        }
+                        variables.put(FlowConstant.SignFlowParams.USER_HQ_LIST.getValue(), StringUtil.getSplit(assigneeValue, ","));
+                        //没有项目负责人，则主办部长审核
+                    } else {
+                        variables.put(FlowConstant.SignFlowParams.HAVE_XMFZR.getValue(), false);
+                        assigneeValue = getMainDirecotr(signid, agentTaskList,FlowConstant.FLOW_SIGN_BMLD_QRFW);
+                        variables.put(FlowConstant.SignFlowParams.USER_BZ1.getValue(), assigneeValue);
                     }
                 }
 
-                //1、附件检验，只要验证评审意见或者审核意见就行
-                boolean isUploadMainFile = false;
-                List<SysFile> fileList = sysFileRepo.findByMainId(signid);
-                for(SysFile sysFile : fileList){
-                    String fileShowName = sysFile.getShowName();
-                    if(fileShowName.contains("评审意见") || fileShowName.contains("审核意见")){
-                        isUploadMainFile = true;
-                    }
-                }
-                if(!isUploadMainFile){
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，您还没上传[评审意见]或者[审核意见]附件信息！");
-                }
 
                 //修改第一负责人意见
                 dp.setMianChargeSuggest(flowDto.getDealOption() + "  签名：" + ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask) + "  日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
-                dp.setSecondChargeSuggest("");
-                //清空部长或者分管领导意见，避免回退的时候，意见重叠
-                dp.setMinisterSuggesttion("");
-                dp.setMinisterDate(null);
-                dp.setMinisterName("");
-                dp.setViceDirectorSuggesttion("");
-                dp.setViceDirectorDate(null);
-                dp.setViceDirectorName("");
-                dp.setDirectorSuggesttion("");
-                dp.setDirectorDate(null);
-                dp.setDirectorName("");
+                resetDisReviewOption(dp);
                 dispatchDocRepo.save(dp);
-
-                //有项目负责人，则项目负责人审核
-                userList = signPrincipalService.getAllSecondPriUser(signid);
-                if (Validate.isList(userList)) {
-                    variables.put(FlowConstant.SignFlowParams.HAVE_XMFZR.getValue(), true);
-                    for (int i = 0, l = userList.size(); i < l; i++) {
-                        String userId = userService.getTaskDealId(userList.get(i).getId(), agentTaskList,FlowConstant.FLOW_SIGN_QRFW);
-                        assigneeValue = StringUtil.joinString(assigneeValue, SEPARATE_COMMA, userId);
-                    }
-                    variables.put(FlowConstant.SignFlowParams.USER_HQ_LIST.getValue(), StringUtil.getSplit(assigneeValue, ","));
-                //没有项目负责人，则主办部长审核
-                } else {
-                    variables.put(FlowConstant.SignFlowParams.HAVE_XMFZR.getValue(), false);
-                    assigneeValue = getMainDirecotr(signid, agentTaskList,FlowConstant.FLOW_SIGN_BMLD_QRFW);
-                    variables.put(FlowConstant.SignFlowParams.USER_BZ1.getValue(), assigneeValue);
-                }
                 //完成发文
                 signRepo.updateSignProcessState(signid, Constant.SignProcessState.END_DIS.getValue());
                 break;
@@ -1821,15 +1828,54 @@ public class SignServiceImpl implements SignService {
     }
 
     /**
-     * 获取主分支的分管领导
-     *
+     * 清空部长或者分管领导意见，避免回退的时候，意见重叠
+     * @param dp
+     */
+    private void resetDisReviewOption(DispatchDoc dp) {
+        dp.setSecondChargeSuggest("");
+        dp.setMinisterSuggesttion("");
+        dp.setMinisterDate(null);
+        dp.setMinisterName("");
+        dp.setViceDirectorSuggesttion("");
+        dp.setViceDirectorDate(null);
+        dp.setViceDirectorName("");
+        dp.setDirectorSuggesttion("");
+        dp.setDirectorDate(null);
+        dp.setDirectorName("");
+    }
+
+    /**
+     * 验证是否有专家评审费发放
      * @param signid
      */
-    private String getMainSLeader(String signid) {
-        OrgDept orgDept = orgDeptRepo.queryBySignBranchId(signid, FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue());
-        User dealUser = userRepo.getCacheUserById(orgDept.getsLeaderID());
-        return Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
+    private boolean checkReviewCost(String signid) {
+        //如果有专家评审费，则要先办理专家评审费
+        if (expertReviewRepo.isHaveEPReviewCost(signid)) {
+            ExpertReview expertReview2 = expertReviewRepo.findById(ExpertReview_.businessId.getName(), signid);
+            if (expertReview2.getPayDate() == null || expertReview2.getTotalCost() == null) {
+                return false;
+            }
+        }
+        return true;
     }
+
+    /**
+     * 验证是否已经上传附件
+     * @param signid
+     * @return
+     */
+    private boolean checkFileUpload(String signid){
+        boolean isUploadMainFile = false;
+        List<SysFile> fileList = sysFileRepo.findByMainId(signid);
+        for(SysFile sysFile : fileList){
+            String fileShowName = sysFile.getShowName();
+            if(fileShowName.contains("评审意见") || fileShowName.contains("审核意见")){
+                isUploadMainFile = true;
+            }
+        }
+        return isUploadMainFile;
+    }
+
 
     /**
      * 获取主分支的部门领导
