@@ -37,6 +37,7 @@ import java.util.Date;
 import java.util.List;
 
 import static cs.common.constants.FlowConstant.FLOW_SIGN_FW;
+import static cs.common.constants.SysConstants.SEPARATE_COMMA;
 
 /**
  * 项目信息视图 Service
@@ -270,20 +271,28 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
     public List<SignDispaWork> unMergeDISSign(String signId) {
         SignDispaWork mergeSign = signDispaWorkRepo.findById(signId);
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("select sd.* from " + SignDispaWork.class.getSimpleName() + " sd,");
+        hqlBuilder.append("select sd from " + SignDispaWork.class.getSimpleName() + " sd , ");
         hqlBuilder.append( RuProcessTask.class.getSimpleName() + " rt where sd.signid = rt.businessKey ");
         //正式签收
-        hqlBuilder.append(" and sd.issign = :signState");
+        hqlBuilder.append(" and sd.issign = :signState ");
         hqlBuilder.setParam("signState", Constant.EnumState.YES.getValue(), StringType.INSTANCE);
+        //排除本身
+        hqlBuilder.append(" and sd.signid != :selfId ");
+        hqlBuilder.setParam("selfId", signId, StringType.INSTANCE);
+        //排除已经合并发文的项目
+        hqlBuilder.append(" and sd.signid not in (select mergeId from "+ SignMerge.class.getSimpleName()+" where mergeType = :mergeType1 ) ");
+        hqlBuilder.setParam("mergeType1", Constant.MergeType.DIS_MERGE.getValue());
+        hqlBuilder.append(" and sd.signid not in (select signId from "+ SignMerge.class.getSimpleName()+" where mergeType = :mergeType2 ) ");
+        hqlBuilder.setParam("mergeType2", Constant.MergeType.DIS_MERGE.getValue());
         //正在做发文项目
-        hqlBuilder.append("and rt.nodeDefineKey = :nodeKey and rt.processState = :processState");
+        hqlBuilder.append(" and rt.nodeDefineKey = :nodeKey and rt.processState = :processState ");
         hqlBuilder.setParam("nodeKey", FLOW_SIGN_FW, StringType.INSTANCE);
         hqlBuilder.setParam("processState", "1", StringType.INSTANCE);
         //只能关联同部门的项目
-        hqlBuilder.append("and sd.mOrgId = :mainOrgId ");
+        hqlBuilder.append(" and sd.mOrgId = :mainOrgId ");
         hqlBuilder.setParam("mainOrgId", mergeSign.getmOrgId());
         //未生成发文编号的项目
-        hqlBuilder.append("and (sd.dfilenum is null or sd.dfilenum = '') ");
+        hqlBuilder.append(" and (sd.dfilenum is null or sd.dfilenum = '') ");
 
         return signDispaWorkRepo.findByHql(hqlBuilder);
     }
@@ -325,8 +334,8 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，参数异常，请联系管理员查看！");
         }
         Date now = new Date();
-        String createUserName = SessionUtil.getDisplayName();
-        List<String> mergeSignIdList = StringUtil.getSplit(mergeIds, ",");
+        String createUserName = SessionUtil.getLoginName();
+        List<String> mergeSignIdList = StringUtil.getSplit(mergeIds, SEPARATE_COMMA);
         List<SignMerge> saveList = new ArrayList<>(mergeSignIdList.size());
         for (String mergeId : mergeSignIdList) {
             SignMerge signMerge = new SignMerge();

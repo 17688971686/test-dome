@@ -678,5 +678,21 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 
     }
 
+    @Override
+    public boolean checkIsMegerDis(String disWay) {
+        if(Validate.isString(disWay) && MergeType.DISPATCH.equals(disWay)){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean checkIsMain(String isMainProj) {
+        if(Validate.isString(isMainProj) && EnumState.YES.getValue().equals(isMainProj)){
+            return true;
+        }
+        return false;
+    }
+
 
 }

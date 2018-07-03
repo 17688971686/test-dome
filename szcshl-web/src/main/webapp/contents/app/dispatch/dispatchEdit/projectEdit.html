@@ -11,19 +11,12 @@
                 深圳市政府投资项目评审中心<br/>项目发文审批表
             </strong>
         </p>
-        <p>
-           <span style="padding: 5px 10px;float: left;">
-            发文方式：
-            <select ng-model="vm.dispatchDoc.dispatchWay" name="dispatchWay" id="dispatchWay"
-                    ng-change="vm.sigleProject()" ng-disabled="vm.showFlag.isReveiwDS">
-                <option value="1">单个发文</option>
-            </select>
-        </span>
+        <p style="text-align: left;">
             <span>
                 发文方式：
                 <select ng-model="vm.dispatchDoc.dispatchWay" name="dispatchWay" id="dispatchWay"
                         ng-change="vm.sigleProject()" ng-disabled="vm.showFlag.isReveiwDS"><!-- 如果是合并发文次项目，则不允许修改 -->
-                    <option value="1" ng-selected="vm.dispatchDoc.dispatchWay==1">独立发文</option>
+                    <option value="1" ng-selected="vm.dispatchDoc.dispatchWay==1">单个发文</option>
                     <option value="2" ng-selected="vm.dispatchDoc.dispatchWay==2">合并发文</option>
                 </select>
             </span>
