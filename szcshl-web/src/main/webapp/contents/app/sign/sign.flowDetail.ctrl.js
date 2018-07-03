@@ -122,7 +122,6 @@
                     vm.registerFile=[];//其他资料
                     vm.drawingFile=[];//图纸资料
                     vm.otherFile=[];//归档的其他资料
-                    debugger;
                     vm.model.registerFileDtoDtoList.forEach(function(registerFile  , x){
                         if(registerFile.businessType =="3" || registerFile.businessType =="5"
                             ||registerFile.businessType =="6"||registerFile.businessType =="7"){

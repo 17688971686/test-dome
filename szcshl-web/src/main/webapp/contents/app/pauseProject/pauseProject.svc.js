@@ -142,7 +142,6 @@
 
         //begin getProjectStopByStopId
         function getProjectStopByStopId(stopId , callBack){
-            debugger;
             var httpOptions={
                 method : "post",
                 url : rootPath + "/projectStop/getProjectStopByStopId",

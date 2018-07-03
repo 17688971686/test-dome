@@ -23,7 +23,6 @@
                 params: {type: "all"}
             }
             var httpSuccess = function success(response) {
-                debugger;
                 vm.select = response.data;
             }
             common.http({
@@ -39,7 +38,6 @@
         function grid(vm) {
             // Begin:dataSource
             var form = $("#smsLogform");
-            debugger;
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
                 transport: common.kendoGridConfig().transport(rootPath +"/smslog/fingByOData",form),

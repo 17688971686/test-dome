@@ -85,7 +85,6 @@
         vm.signId = vm.model.signid;
         vm.expertList = new Array(10); //用于打印页面的专家列表，控制行数
         vm.curDate = "";  //当前日期
-        debugger;
         active();
         function active() {
             debugger;

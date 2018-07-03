@@ -17,7 +17,6 @@
         }
         activate();
         vm.selectsend = function activate() {
-            debugger;
             var httpOptions = {
                 method: 'get',
                 url: '/szcshl-web/smslog/querySMSLogType',

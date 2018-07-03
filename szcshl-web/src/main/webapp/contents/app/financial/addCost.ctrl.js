@@ -78,7 +78,6 @@
 
                 vm.financials = data.financiallist;
                 vm.countCost();
-                debugger;
                 $("#addCostWindow").kendoWindow({
                     width: "70%",
                     height: "600px;",
