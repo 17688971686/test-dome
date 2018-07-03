@@ -6,6 +6,7 @@ import cs.common.ResultMsg;
 import cs.common.utils.*;
 import cs.domain.expert.ExpertReview;
 import cs.domain.expert.ExpertReview_;
+import cs.domain.flow.RuProcessTask;
 import cs.domain.meeting.RoomBooking_;
 import cs.domain.project.*;
 import cs.domain.sys.Workday;
@@ -34,6 +35,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import static cs.common.constants.FlowConstant.FLOW_SIGN_FW;
 
 /**
  * 项目信息视图 Service
@@ -258,7 +261,7 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
 
     /**
      * 获取待合并发文的项目,正在做发文项目
-     * (已完成工作方案，但是没有生成发文编号的项目)
+     * (正在运行，没有生成发文编号的项目)
      *
      * @param signId
      * @return
@@ -267,22 +270,21 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
     public List<SignDispaWork> unMergeDISSign(String signId) {
         SignDispaWork mergeSign = signDispaWorkRepo.findById(signId);
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append(" from " + SignDispaWork.class.getSimpleName() + " where ");
+        hqlBuilder.append("select sd.* from " + SignDispaWork.class.getSimpleName() + " sd,");
+        hqlBuilder.append( RuProcessTask.class.getSimpleName() + " rt where sd.signid = rt.businessKey ");
         //正式签收
-        hqlBuilder.append(SignDispaWork_.issign.getName() + " > :signState");
+        hqlBuilder.append(" and sd.issign = :signState");
         hqlBuilder.setParam("signState", Constant.EnumState.YES.getValue(), StringType.INSTANCE);
         //正在做发文项目
-        hqlBuilder.append(SignDispaWork_.issign.getName() + " > :signState");
-        hqlBuilder.setParam("signState", Constant.EnumState.YES.getValue(), StringType.INSTANCE);
+        hqlBuilder.append("and rt.nodeDefineKey = :nodeKey and rt.processState = :processState");
+        hqlBuilder.setParam("nodeKey", FLOW_SIGN_FW, StringType.INSTANCE);
+        hqlBuilder.setParam("processState", "1", StringType.INSTANCE);
         //只能关联同部门的项目
-        hqlBuilder.append("and " + SignDispaWork_.mOrgId.getName() + " = :mainOrgId ");
+        hqlBuilder.append("and sd.mOrgId = :mainOrgId ");
         hqlBuilder.setParam("mainOrgId", mergeSign.getmOrgId());
-        //发文编号为空
-        hqlBuilder.append(" and (" + SignDispaWork_.dfilenum.getName() + " is null or " + SignDispaWork_.dfilenum.getName() + " = '') ");
-        hqlBuilder.append(" and " + SignDispaWork_.signid.getName() + " != :self ").setParam("self", signId);
-        hqlBuilder.append(" and " + SignDispaWork_.signid.getName() + " not in ( select " + SignMerge_.mergeId.getName() + " from " + SignMerge.class.getSimpleName());
-        hqlBuilder.append(" where " + SignMerge_.signId.getName() + " =:signId and " + SignMerge_.mergeType.getName() + " =:mergeType )");
-        hqlBuilder.setParam("signId", signId).setParam("mergeType", Constant.MergeType.DISPATCH.getValue());
+        //未生成发文编号的项目
+        hqlBuilder.append("and (sd.dfilenum is null or sd.dfilenum = '') ");
+
         return signDispaWorkRepo.findByHql(hqlBuilder);
     }
 
