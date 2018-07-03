@@ -231,11 +231,11 @@
                     filterable: false,
                 },
                 {
-                    field: "",
+                    field: "pmNation",
                     title: "民族",
                     width: 50,
                     filterable: false,
-                    template :function(item){
+                   /* template :function(item){
                         var pmNation = "";
                         for(var i =0 ; i < $rootScope.DICT.NATION.dicts.length ; i++){
                             var v = $rootScope.DICT.NATION.dicts[i];
@@ -245,7 +245,7 @@
                             }
                         }
                         return pmNation;
-                    }
+                    }*/
                 },
                 {
                     field: "pmEducation",

@@ -67,8 +67,11 @@ public class ProjectStopServiceImpl implements ProjectStopService {
     @Transactional
     public List<ProjectStopDto> findProjectStopBySign(String signId) {
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("select ps from " + ProjectStop.class.getSimpleName() + " ps where ps." + ProjectStop_.sign.getName() + "." + Sign_.signid.getName() + "=:signId" + " order by  createdDate desc");
+        hqlBuilder.append("select ps from " + ProjectStop.class.getSimpleName() + " ps where ps." + ProjectStop_.sign.getName() + "." + Sign_.signid.getName() + "=:signId");
+       hqlBuilder.append(" and " + ProjectStop_.approveStatus.getName() +"=:approveStatus ");
+        hqlBuilder.append("  order by  createdDate desc");
         hqlBuilder.setParam("signId", signId);
+        hqlBuilder.setParam("approveStatus" , Constant.EnumState.NO.getValue());
         List<ProjectStop> psList = projectStopRepo.findByHql(hqlBuilder);
         List<ProjectStopDto> projectStopDtoList = new ArrayList<>();
         for (ProjectStop pt : psList) {
@@ -127,15 +130,22 @@ public class ProjectStopServiceImpl implements ProjectStopService {
             if (!Validate.isObject(projectStop.getExpectpausedays())) {
                 return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，没填写预计暂停天数！");
             }
-            Date now = new Date();
-            projectStop.setCreatedBy(SessionUtil.getDisplayName());
-            projectStop.setCreatedDate(now);
-            projectStop.setModifiedBy(SessionUtil.getDisplayName());
-            projectStop.setModifiedDate(now);
-            projectStop.setStopid(UUID.randomUUID().toString());
-            //设置默认值
-            projectStop.setIsactive(Constant.EnumState.NO.getValue());
-            projectStop.setApproveStatus(Constant.EnumState.NO.getValue());//默认处于：未处理环节
+            if (Validate.isString(projectStopDto.getStopid())) {
+                projectStop = projectStopRepo.findById(projectStopDto.getStopid());
+                BeanCopierUtils.copyPropertiesIgnoreNull(projectStopDto, projectStop);
+                projectStopRepo.save(projectStop);
+            }else{
+                Date now = new Date();
+                projectStop.setCreatedBy(SessionUtil.getDisplayName());
+                projectStop.setCreatedDate(now);
+                projectStop.setModifiedBy(SessionUtil.getDisplayName());
+                projectStop.setModifiedDate(now);
+                projectStop.setStopid(UUID.randomUUID().toString());
+                //设置默认值
+                projectStop.setIsactive(Constant.EnumState.NO.getValue());
+                projectStop.setApproveStatus(Constant.EnumState.NO.getValue());//默认处于：未处理环节
+            }
+
 
             //1、启动流程
             ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(FlowConstant.PROJECT_STOP_FLOW, projectStop.getStopid(),

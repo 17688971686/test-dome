@@ -40,6 +40,7 @@
             //2、历史处理记录
             flowSvc.historyData(vm);
 
+            var sysFileLoadType = 0;
             //2、各自显示模块
             switch (vm.processKey){
                 case flowcommon.getFlowDefinedKey().TOPIC_FLOW:     //课题研究流程
@@ -63,45 +64,61 @@
                         }
                     });
                     topicSvc.initFlowDeal(vm);
+                    sysFileLoadType = 1;
                     break;
                 case flowcommon.getFlowDefinedKey().BOOKS_BUY_FLOW:     //图书采购流程
                     bookBuyBusinessSvc.initFlowDeal(vm);
+                    sysFileLoadType = 1;
                     break;
                 case flowcommon.getFlowDefinedKey().ASSERT_STORAGE_FLOW:
                     assertStorageBusinessSvc.initFlowDeal(vm);
                     break;
                 case flowcommon.getFlowDefinedKey().PROJECT_STOP_FLOW:      //项目暂停流程
-                    debugger;
-                    pauseProjectSvc.initFlowDeal(vm);
+                    pauseProjectSvc.initFlowDeal(vm );
+                    sysFileLoadType = 2;
                     break;
                 case flowcommon.getFlowDefinedKey().FLOW_ARCHIVES:          //档案借阅流程
                     archivesLibrarySvc.initFlowDeal(vm);
+                    sysFileLoadType = 1;
                     break;
                 case flowcommon.getFlowDefinedKey().FLOW_APPRAISE_REPORT:   //优秀申请报告流程
                     reviewProjectAppraiseSvc.initFlowDeal(vm);
+                    sysFileLoadType = 1;
                     break;
                 case flowcommon.getFlowDefinedKey().FLOW_SUPP_LETTER:       //拟补充资料函流程
                     addSuppLetterSvc.initFlowDeal(vm);
+                    sysFileLoadType = 2;
                     break;
                 case flowcommon.getFlowDefinedKey().MONTHLY_BULLETIN_FLOW:       //月报简报流程
                     monthlyMultiyearSvc.initFlowDeal(vm);
+                    sysFileLoadType = 1;
                     break;
                 case flowcommon.getFlowDefinedKey().ANNOUNT_MENT_FLOW:       //通知公告
                     annountmentSvc.initFlowDeal(vm);
                     vm.parentLink = "#annountment";
                     vm.parentName="通知公告管理";
                     vm.title = "通知公告审批信息";
+                    sysFileLoadType = 1;
                     break;
             }
             // 初始化上传附件
-            sysfileSvc.findByMianId(vm.businessKey,function(data){
-                if(data && data.length > 0){
-                    vm.showFlag.tabSysFile = true;
-                    vm.sysFileList = data;
-                    vm.urlType="flowDetail";//附件右边的列表显示
-                    sysfileSvc.initZtreeClient(vm,$scope);//树形图
-                }
-            });
+            if(sysFileLoadType == 1){
+                sysfileSvc.findByMianId(vm.businessKey,function(data){
+                    if(data && data.length > 0){
+                        vm.showFlag.tabSysFile = true;
+                        vm.sysFileList = data;
+                        sysfileSvc.initZtreeClient(vm,$scope);//树形图
+                    }
+                });
+            }else if(sysFileLoadType == 2){
+                sysfileSvc.findByBusinessId(vm.businessKey,function(data){
+                    if(data && data.length > 0){
+                        vm.showFlag.tabSysFile = true;
+                        vm.sysFileList = data;
+                        sysfileSvc.initZtreeClient(vm,$scope);//树形图
+                    }
+                });
+            }
         }
 
     }

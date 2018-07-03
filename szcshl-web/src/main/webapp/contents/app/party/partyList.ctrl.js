@@ -150,6 +150,10 @@
                     cache: false,
                     processData: false
                 }).success(function (data) {
+                    var msrg = data.reObj;
+                    if(data.reObj == undefined || data.reObj == ""){
+                        msrg = ""
+                    }
                     bsWin.alert(data.reObj , function(){
                         window.parent.$("#importDiv").data("kendoWindow").close();
                         vm.gridOptions.dataSource.read();

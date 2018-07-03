@@ -18,8 +18,9 @@
                     </td>
                     <td class="text-center"  width="10%">民族</td>
                     <td width="30%" class="text-left">
-                        <span ng-repeat="x in DICT.NATION.dicts"
-                              ng-if="x.dictKey == vm.party.pmNation">{{x.dictName}}</span>
+                        {{vm.party.pmNation}}
+                       <#-- <span ng-repeat="x in DICT.NATION.dicts"
+                              ng-if="x.dictKey == vm.party.pmNation">{{x.dictName}}</span>-->
                     </td>
                 </tr>
 

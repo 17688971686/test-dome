@@ -42,14 +42,16 @@
                         </select>
                         <span data-valmsg-for="pmSex" data-valmsg-replace="true" class="errors"></span>
                     </td>
-                    <td class="text-center"  width="10%">民族<span class="required">*</span></td>
+                    <td class="text-center"  width="10%">民族</td>
                     <td width="30%" class="text-left">
-                        <select ng-model="vm.party.pmNation" name="pmNation" id="pmNation" class="form-control select-sm">
+                        <input type="text"  maxlength="200" class="form-control input-xm"
+                               name="pmNation" id="pmNation" ng-model="vm.party.pmNation" />
+                       <#-- <select ng-model="vm.party.pmNation" name="pmNation" id="pmNation" class="form-control select-sm">
                             <option ng-repeat="x in DICT.NATION.dicts" value="{{x.dictKey}}"
                                     ng-selected="x.dictKey == vm.party.pmNation">{{x.dictName}}
                             </option>
                         </select>
-                        <span data-valmsg-for="pmNation" data-valmsg-replace="true" class="errors"></span>
+                        <span data-valmsg-for="pmNation" data-valmsg-replace="true" class="errors"></span>-->
                     </td>
                 </tr>
 
