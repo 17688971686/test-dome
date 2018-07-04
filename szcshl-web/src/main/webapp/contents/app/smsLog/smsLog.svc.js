@@ -7,7 +7,7 @@
     function smslog($http, $compile) {
 
         var service = {
-            grid: grid,
+            msgGrid: msgGrid,
             select: select,
         };
         return service;
@@ -33,10 +33,7 @@
         }
 
 
-
-
-        function grid(vm) {
-            // Begin:dataSource
+        function msgGrid(vm) {
             var form = $("#smsLogform");
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
@@ -74,40 +71,91 @@
 
             // Begin:column
             var columns = [
-                // {
-                //     field: "",
-                //     title: "序号",
-                //     width: 50,
-                //     filterable: false,
-                //     template: "<span class='row-number'></span>"
-                // },
+                 {
+                     field: "",
+                     title: "序号",
+                     width: 50,
+                     filterable: false,
+                     template: "<span class='row-number'></span>"
+                 },
                 {
 
-                    field: "userName",
-                    title: "短信接收者",
-                    width: 100,
-                    filterable: false
-                }
-                ,
+                    field: "",
+                    title: "应发人",
+                    width: 150,
+                    filterable: false,
+                    template:function(item){
+                        return "<textarea rows='4' style='width:100%;'>"+item.userName+"</textarea>";
+                    },
+                },
                 {
-                    field: "smsUserPhone",
+
+                    field: "smsUserName",
+                    title: "实发人",
+                    width: 150,
+                    filterable: false,
+                    template:function(item){
+                        var nValue = "";
+                        if(item.smsUserName){
+                            nValue = item.smsUserName
+                        }
+                        return "<textarea rows='4' style='width:100%;'>"+nValue+"</textarea>";
+                    },
+                },
+                {
+                    field: "",
                     title: "接收手机号码",
-                    width: 180,
-                    filterable: false
+                    width: 150,
+                    filterable: false,
+                    template:function(item){
+                        var nValue = "";
+                        if(item.item){
+                            nValue = item.item
+                        }
+                        return "<textarea rows='4' style='width:100%;'>"+nValue+"</textarea>";
+                    },
                 }
                 , {
+                    field: "",
+                    title: "是否使用api",
+                    width: 100,
+                    filterable: false,
+                    template:function(item){
+                        if(item.isCallApi){
+                            if(item.isCallApi == "9"){
+                                return '是';
+                            }else {
+                                return '否';
+                            }
+                        }else{
+                            return "";
+                        }
+                    },
+                },
+                {
+                    field: "",
+                    title: "短信内容",
+                    filterable: false,
+                    width: 220,
+                    template:function(item){
+                        return "<textarea rows='4' style='width:100%;'>"+item.message+"</textarea>";
+                    },
+                },
+                {
+                    field: "",
+                    title: "返回信息",
+                    filterable: false,
+                    width: 220,
+                    template:function(item){
+                        return "<textarea rows='4' style='width:100%;'>"+item.resultCode +'['+item.customMessage+']'+"</textarea>";
+                    },
+                },
+                {
                     field: "createdDate",
                     title: "创建时间",
                     width: 100,
                     filterable: false,
                     format: "{0:yyyy/MM/dd HH:mm:ss}"
-                }
-                , {
-                    field: "resultCode",
-                    title: "短信Code",
-                    filterable: false,
-                    width: 120,
-                    attributes: {style: "white-space:nowrap;text-overflow:ellipsis;"},
                 }
                 , {
                     field: "",
@@ -125,12 +173,6 @@
                             return "";
                         }
                     },
-                },{
-                    field: "message",
-                    title: "短信内容",
-                    filterable: false,
-                    width: 600,
-                    attributes: {style: "white-space:nowrap;text-overflow:ellipsis;"},
                 }
             ];
             // End:column

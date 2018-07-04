@@ -6,21 +6,20 @@
     smslog.$inject = ['$location','smslogSvc'];
 
     function smslog($location, smslogSvc) {
-        /* jshint validthis:true */
         var vm = this;
         vm.title = '短信列表';
+
         activate();
         sysConfig();
 
         function sysConfig() {
-            // debugger;
             smslogSvc.select(vm);
         };
 
 
 
         function activate() {
-            smslogSvc.grid(vm);
+            smslogSvc.msgGrid(vm);
         }
 
         vm.querySMSLog = function(){

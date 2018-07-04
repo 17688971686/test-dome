@@ -149,6 +149,7 @@ public class MsgServiceImpl implements MsgService{
                 error ++;
             }
         }
+        smsLog.setIsCallApi(Constant.EnumState.NO.getValue());
 
         if(Validate.isString(phone)){
             boolean isTokenEnable = true;
@@ -158,7 +159,7 @@ public class MsgServiceImpl implements MsgService{
             }
             if(isTokenEnable){
                 resultMsg.setReCode(Constant.MsgCode.ERROR.getValue());
-                resultMsg.setReMsg("发送短信没有返回信息！");
+                resultMsg.setReMsg("发送短信没有返回信息!");
                 try {
                     String msgUrl = "";
                     //发送短信
@@ -177,6 +178,8 @@ public class MsgServiceImpl implements MsgService{
                         msgUrl = SMSUtils.SM_URL_MANY;
                         smsLog.setManyOrOne("2");
                     }
+                    smsLog.setIsCallApi(Constant.EnumState.YES.getValue());
+
                     String sendResult = httpClientOperate.doGet(msgUrl, params);
                     if(Validate.isString(sendResult)){
                         JSONObject json = new JSONObject(sendResult);
@@ -199,7 +202,7 @@ public class MsgServiceImpl implements MsgService{
                 SMSUtils.setTokenExpireValue(0L);
             }
         }else{
-            resultMsg.setReMsg("发送短信用户列表，没有符合条件的手机号码；");
+            resultMsg.setReMsg("发送短信用户列表，没有符合条件的手机号码!");
         }
 
         //保存短信发送记录
@@ -223,7 +226,7 @@ public class MsgServiceImpl implements MsgService{
         smsLog.setIpAdd(Validate.isObject(ipObj)?ipObj.toString():"");
         smsLog.setCustomMessage(resultMsg.getReMsg());
         if(error > 0){
-            smsLog.setCustomMessage(smsLog.getCustomMessage()+"\n其中，"+errorInfo);
+            smsLog.setCustomMessage(smsLog.getCustomMessage()+"("+errorInfo+")");
         }
         if(!Validate.isString(smsLog.getId())){
             smsLog.setId((new RandomGUID()).valueAfterMD5);

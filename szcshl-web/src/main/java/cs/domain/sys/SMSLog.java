@@ -101,10 +101,17 @@ public class SMSLog {
     private String ipAdd;
 
     /**
+     * 是否已经调用发送短信接口:结果（9：表示成功。0：表示失败）
+     */
+    @Column(columnDefinition = "varchar(2)")
+    private String isCallApi;
+
+    /**
      * 暂时界面使用:结果（9：表示成功。0：表示失败）
      */
     @Column(columnDefinition = "varchar(2)")
     private String result;
+
 
     /**
      * 修改时间
@@ -262,9 +269,15 @@ public class SMSLog {
         this.result = result;
     }
 
+    public String getIsCallApi() {
+        return isCallApi;
+    }
 
+    public void setIsCallApi(String isCallApi) {
+        this.isCallApi = isCallApi;
+    }
 
-    public  void setObject(String userName,String smsUserPhone,String projectName, String filecode, String resultCode, String type, String infoType, String seekContent, boolean success){
+    public  void setObject(String userName, String smsUserPhone, String projectName, String filecode, String resultCode, String type, String infoType, String seekContent, boolean success){
         this.setId(UUID.randomUUID().toString());
         this.setCreatedDate(new Date());
         this.setProjectName(projectName);
