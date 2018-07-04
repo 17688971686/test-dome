@@ -877,7 +877,21 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
                 } else if (stageType.equals(Constant.RevireStageKey.KEY_REPORT.getValue())) {
                     //资金
+                    List<SignDto> signDtoList = signDto.getAssociateSignDtoList();
+                    List<DispatchDocDto> dispatchList = new ArrayList<DispatchDocDto>();
+                    List<DispatchDocDto> dispatchViewList = new ArrayList<DispatchDocDto>();
+                    if (null != signDtoList) {
+                        for (int i = 0; i < signDtoList.size(); i++) {
+                            if (null != signDtoList.get(i).getDispatchDocDto()) {
+                                dispatchList.add(signDtoList.get(i).getDispatchDocDto());
+                            }
+                        }
+                    }
                     dispatchData.put("wpTile", "资金申请报告发文审批表");
+
+                    dispatchViewList.add(getDispatchStage("资金申请报告", dispatchList));
+                    dispatchData.put("dispatchList", dispatchViewList);
+
                     file = TemplateUtil.createDoc(dispatchData, Template.APPLY_REPORT_DISPATCHDOC.getKey(), path);
 
                 } else if (stageType.equals(Constant.RevireStageKey.KEY_DEVICE.getValue())) {

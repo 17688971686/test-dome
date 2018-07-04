@@ -352,7 +352,7 @@
                                 </w:tblCellMar>
                             </w:tblPrEx>
                             <w:trPr>
-                                <w:trHeight w:val="850" w:hRule="exact"/>
+                                <w:trHeight w:val="850" w:hRule="atLeast"/>
                             </w:trPr>
                             <w:tc>
                                 <w:tcPr>
