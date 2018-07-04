@@ -44,6 +44,9 @@
                                 vm.mainDoc.extraRateSum = 0;
                             }
                         }
+                    }else{
+                        vm.mainDoc = {};
+                        vm.assistDoc={};
                     }
                     vm.achievementMainList =  data.reObj.achievementMainList;
                     vm.achievementAssistList =  data.reObj.achievementAssistList;
@@ -108,8 +111,31 @@
                 if(data.flag || data.reCode == 'ok'){
                     vm.achievementSumList = data.reObj.achievementSumList;
                     if(vm.achievementSumList.length > 0){
-                        vm.assistDoc = vm.achievementSumList[0];
-                        vm.mainDoc = vm.achievementSumList[1];
+                        if(vm.achievementSumList.length ==2){
+                            vm.assistDoc = vm.achievementSumList[0];
+                            vm.mainDoc = vm.achievementSumList[1];
+                        }else {
+                            if (vm.achievementSumList[0].ismainuser == '9') {
+                                vm.mainDoc = vm.achievementSumList[0];
+                                vm.assistDoc = {};
+                                vm.assistDoc.disSum = 0;
+                                vm.assistDoc.declarevalueSum = 0;
+                                vm.assistDoc.authorizevalueSum = 0;
+                                vm.assistDoc.extravalueSum = 0;
+                                vm.assistDoc.extraRateSum = 0;
+                            } else if (vm.achievementSumList[0].ismainuser == '0') {
+                                vm.assistDoc = vm.achievementSumList[0];
+                                vm.mainDoc = {};
+                                vm.mainDoc.disSum = 0;
+                                vm.mainDoc.declarevalueSum = 0;
+                                vm.mainDoc.authorizevalueSum = 0;
+                                vm.mainDoc.extravalueSum = 0;
+                                vm.mainDoc.extraRateSum = 0;
+                            }
+                        }
+                    }else{
+                        vm.mainDoc = {};
+                        vm.assistDoc={};
                     }
                     vm.achievementMainList =  data.reObj.achievementMainList;
                     vm.achievementAssistList =  data.reObj.achievementAssistList;
@@ -118,7 +144,7 @@
         }
 
         /**
-         * 协办人评审项目一览表
+         * 课题业务
          */
         vm.showTopicDetail = function () {
             $("#topicDetail").kendoWindow({
@@ -140,6 +166,7 @@
             }else{
                 vm.conMaxIndex = vm.conditions.length;
                 vm.condition.sort = vm.conditions.length+1;
+                vm.condition.endTime = new Date();
             }
             vm.conditions.push(vm.condition);
             vm.conMaxIndex++;
@@ -151,6 +178,9 @@
                 achievementSvc.saveTopicDetailList(vm.conditions,function(data){
                     if(data.flag || data.reCode == 'ok'){
                         vm.conditions = data.reObj;
+                        for(var i=0;i<vm.conditions.length;i++){
+                            vm.conditions[i]["sort"]= (i+1);
+                        }
                         bsWin.success("保存成功！");
                     }else{
                         bsWin.error(data.reMsg);
@@ -264,6 +294,9 @@
                                 vm.mainPersonalDoc.extraRateSum = 0;
                             }
                         }
+                    }else{
+                        vm.assistPersonalDoc = {};
+                        vm.mainPersonalDoc = {};
                     }
                     vm.model.userId = "";
                     vm.achievementMainPersonalList =  data.reObj.achievementMainList;
@@ -299,7 +332,7 @@
             var deptNamesArr = [];
             $.each(orgCheck, function (i, obj) {
                 ids.push(obj.value);
-                 var objR = $(obj);
+                var objR = $(obj);
                 deptNamesArr.push(objR.attr("tit"));
             });
             vm.model.deptIds = ids.join(",");

@@ -46,6 +46,8 @@ public class TopicMaintain extends DomainBase {
     @Column(columnDefinition = "varchar(64)")
     private String userId;
 
+    private String topicId;
+
     public String getId() {
         return id;
     }
@@ -84,5 +86,13 @@ public class TopicMaintain extends DomainBase {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getTopicId() {
+        return topicId;
+    }
+
+    public void setTopicId(String topicId) {
+        this.topicId = topicId;
     }
 }

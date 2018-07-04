@@ -788,6 +788,13 @@ public class TopicInfoServiceImpl implements TopicInfoService {
             BeanCopierUtils.copyProperties(topicMaintainDto, topicMaintain);
             if(!Validate.isString(topicMaintain.getId())){
                 topicMaintain.setId(UUID.randomUUID().toString());
+                if(Validate.isString(topicMaintain.getTopicId())){
+                    topicInfo = topicInfoRepo.getById(topicMaintain.getTopicId());
+                    if(Validate.isObject(topicInfo)){
+                        topicInfo.setIsMaintain("9");
+                        topicInfoRepo.save(topicInfo);
+                    }
+                }
             }
             topicMaintain.setUserId(SessionUtil.getUserId());
             topicMaintain.setCreatedBy(SessionUtil.getDisplayName());
@@ -804,6 +811,7 @@ public class TopicInfoServiceImpl implements TopicInfoService {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"没有分录数据，无法保存！");
         }
     }
+
 
     /**
      * 删除合同
@@ -875,6 +883,14 @@ public class TopicInfoServiceImpl implements TopicInfoService {
             topicMaintainRepo.delete(topicMaintain);
             flag = true;
         }
+        if(Validate.isString(topicMaintain.getTopicId())){
+            TopicInfo topicInfo = topicInfoRepo.getById(topicMaintain.getTopicId());
+            if(Validate.isObject(topicInfo)){
+                topicInfo.setIsMaintain("0");
+                topicInfoRepo.save(topicInfo);
+            }
+        }
+
         return  flag;
     }
 
