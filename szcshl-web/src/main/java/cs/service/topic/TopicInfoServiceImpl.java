@@ -15,10 +15,7 @@ import cs.model.PageModelDto;
 import cs.model.expert.ExpertReviewDto;
 import cs.model.flow.FlowDto;
 import cs.model.project.AddRegisterFileDto;
-import cs.model.topic.ContractDto;
-import cs.model.topic.FilingDto;
-import cs.model.topic.TopicInfoDto;
-import cs.model.topic.WorkPlanDto;
+import cs.model.topic.*;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.repository.repositoryImpl.flow.FlowPrincipalRepo;
@@ -26,10 +23,7 @@ import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.project.AddRegisterFileRepo;
 import cs.repository.repositoryImpl.sys.OrgDeptRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
-import cs.repository.repositoryImpl.topic.ContractRepo;
-import cs.repository.repositoryImpl.topic.FilingRepo;
-import cs.repository.repositoryImpl.topic.TopicInfoRepo;
-import cs.repository.repositoryImpl.topic.WorkPlanRepo;
+import cs.repository.repositoryImpl.topic.*;
 import cs.service.flow.FlowService;
 import cs.service.rtx.RTXSendMsgPool;
 import org.activiti.engine.ProcessEngine;
@@ -81,6 +75,8 @@ public class TopicInfoServiceImpl implements TopicInfoService {
     private FlowService flowService;
     @Autowired
     private ContractRepo contractRepo;
+    @Autowired
+    private TopicMaintainRepo topicMaintainRepo;
 
     @Override
     public PageModelDto<TopicInfoDto> get(ODataObj odataObj) {
@@ -777,6 +773,39 @@ public class TopicInfoServiceImpl implements TopicInfoService {
     }
 
     /**
+     * 保存课题维护信息
+     * @param topicMaintainDtoArray
+     * @return
+     */
+    @Override
+    public ResultMsg saveTopicDetailList(TopicMaintainDto[] topicMaintainDtoArray){
+        List<TopicMaintain> topicList = new ArrayList<TopicMaintain>();
+        TopicInfo topicInfo = null;
+
+        for (int i = 0, l = topicMaintainDtoArray.length; i < l; i++) {
+            TopicMaintain topicMaintain = new TopicMaintain();
+            TopicMaintainDto topicMaintainDto = topicMaintainDtoArray[i];
+            BeanCopierUtils.copyProperties(topicMaintainDto, topicMaintain);
+            if(!Validate.isString(topicMaintain.getId())){
+                topicMaintain.setId(UUID.randomUUID().toString());
+            }
+            topicMaintain.setUserId(SessionUtil.getUserId());
+            topicMaintain.setCreatedBy(SessionUtil.getDisplayName());
+            topicMaintain.setCreatedDate(new Date());
+            topicMaintain.setModifiedBy(SessionUtil.getDisplayName());
+            topicMaintain.setModifiedDate(new Date());
+
+            topicList.add(topicMaintain);
+        }
+        if (topicList.size() > 0) {
+            topicMaintainRepo.bathUpdate(topicList);
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "保存成功！", topicList);
+        }else{
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"没有分录数据，无法保存！");
+        }
+    }
+
+    /**
      * 删除合同
      * @param ids
      * @return
@@ -803,11 +832,47 @@ public class TopicInfoServiceImpl implements TopicInfoService {
         return new ResultMsg(false, Constant.MsgCode.OK.getValue(),"操作成功！");
     }
 
+    /**
+     * 删除课题维护信息
+     * @param ids
+     * @return
+     */
+    @Override
+    @Transactional
+    public ResultMsg deleteTopicMaintain(String ids) {
+        try{
+            if(Validate.isString(ids)){
+                if(ids.contains(",")){
+                    String idsArr[] = ids.split(",");
+                    for(String id : idsArr){
+                        delExistTopicInfo(id);
+                    }
+                }else{
+                    delExistTopicInfo(ids);
+                }
+            }
+
+        }catch (Exception e){
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"保存失败，数据异常");
+        }
+        return new ResultMsg(false, Constant.MsgCode.OK.getValue(),"操作成功！");
+    }
+
     private boolean delExistContractInfo(String id){
         boolean flag = false;
         Contract contract = contractRepo.findById(Contract_.contractId.getName(), id);
         if (null != contract){
             contractRepo.delete(contract);
+            flag = true;
+        }
+        return  flag;
+    }
+
+    private boolean delExistTopicInfo(String id){
+        boolean flag = false;
+        TopicMaintain topicMaintain = topicMaintainRepo.findById(TopicMaintain_.id.getName(), id);
+        if (null != topicMaintain){
+            topicMaintainRepo.delete(topicMaintain);
             flag = true;
         }
         return  flag;
