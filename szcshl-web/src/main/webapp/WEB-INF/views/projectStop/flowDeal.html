@@ -16,6 +16,7 @@
 
     <ul id="myTab" class="nav nav-tabs">
         <li class="active"><a data-toggle="tab" for-div="busi_baseinfo">项目暂停申请表</a></li>
+        <li ><a data-toggle="tab" for-div="flow_file">附件列表</a></li>
         <li><a data-toggle="tab" for-div="flow_diagram">流程图</a></li>
         <li><a data-toggle="tab" for-div="flow_history">处理记录</a></li>
     </ul>
@@ -34,6 +35,10 @@
                  k-data-source="vm.historygrid.dataSource"></div>
         </div>
         <!-- end tab -->
+
+        <div class="well well-sm tab-pane fade" style="background:white;" id="flow_file" >
+            <div ng-include src="'${path}/contents/app/sysFile/uploadFilelist.html'"></div>
+        </div><!-- 上传附件列表 -->
 
     </div>
 </div>
