@@ -23,6 +23,7 @@ import cs.model.flow.FlowDto;
 import cs.model.project.*;
 import cs.model.sys.OrgDto;
 import cs.model.sys.SysConfigDto;
+import cs.model.sys.SysFileDto;
 import cs.model.sys.UserDto;
 import cs.quartz.unit.DispathUnit;
 import cs.quartz.unit.QuartzUnit;
@@ -39,8 +40,10 @@ import cs.repository.repositoryImpl.sys.*;
 import cs.service.external.OfficeUserService;
 import cs.service.flow.FlowService;
 import cs.service.rtx.RTXSendMsgPool;
-import cs.service.rtx.RTXService;
-import cs.service.sys.*;
+import cs.service.sys.CompanyService;
+import cs.service.sys.SysConfigService;
+import cs.service.sys.UserService;
+import cs.service.sys.WorkdayService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -2929,6 +2932,18 @@ public class SignServiceImpl implements SignService {
                         BeanCopierUtils.copyProperties(sign.getDispatchDoc(), dispatchDocDto);
                         signDto.setDispatchDocDto(dispatchDocDto);
                     }
+
+                    //封装附件
+                    List<SysFileDto> sysFileDtoList = new ArrayList<>();
+                    List<SysFile> fileList = sysFileRepo.queryFileList(sign.getSignid(), "评审报告");
+                    if(Validate.isList(fileList)){
+                        for(SysFile sysFile : fileList ){
+                            SysFileDto sysFileDto = new SysFileDto();
+                            BeanCopierUtils.copyProperties(sysFile,sysFileDto);
+                            sysFileDtoList.add(sysFileDto);
+                        }
+                    }
+                    signDto.setSysFileDtoList(sysFileDtoList);
                     listSignDto.add(signDto);
                 }
             }

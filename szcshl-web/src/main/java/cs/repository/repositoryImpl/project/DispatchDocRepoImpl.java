@@ -1,5 +1,6 @@
 package cs.repository.repositoryImpl.project;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import cs.common.constants.Constant;
@@ -97,11 +98,12 @@ public class DispatchDocRepoImpl extends AbstractRepository<DispatchDoc, String>
     }
 
     @Override
-    public void updateDispatchDoc(DispatchDocDto dispatchDocDto,String isMain ) {
+    public void updateDisApprValue(String disId, BigDecimal apprValue) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append(" update cs_dispatch_doc set " + DispatchDoc_.approveValue.getName() + " =:approveValue " );
-        sqlBuilder.setParam("approveValue", dispatchDocDto.getApproveValue());
-        sqlBuilder.bulidPropotyString("where", "signid", dispatchDocDto.getSignId());
+        sqlBuilder.setParam("approveValue", apprValue);
+        sqlBuilder.append("where id =:disId");
+        sqlBuilder.setParam("disId",disId);
         executeSql(sqlBuilder);
     }
 }

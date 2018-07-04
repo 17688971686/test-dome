@@ -1,5 +1,6 @@
 package cs.repository.repositoryImpl.project;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import cs.domain.project.DispatchDoc;
@@ -23,6 +24,10 @@ public interface DispatchDocRepo extends IRepository<DispatchDoc,String>{
     int getMaxSeq(String yearName, String seqType);
 
 
-
-    void updateDispatchDoc(DispatchDocDto dispatchDocDto,String isMain);
+    /**
+     * 批复金额
+     * @param disId
+     * @param apprValue
+     */
+    void updateDisApprValue(String disId, BigDecimal apprValue);
 }

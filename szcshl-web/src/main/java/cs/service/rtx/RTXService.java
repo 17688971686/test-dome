@@ -15,6 +15,7 @@ import cs.service.sys.LogService;
 import cs.service.sys.MsgService;
 import cs.service.sys.SMSLogService;
 import cs.service.sys.SysConfigService;
+import cs.threadtask.MsgThread;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -119,8 +120,7 @@ public class RTXService {
         if (Validate.isObject(obj)) {
             String receiverIds = obj.toString();
             List<User> receiverList = userRepo.getCacheUserListById(receiverIds);
-            String msgContent = SMSUtils.buildSendMsgContent(msgType,procInstName);
-
+            String msgContent = SMSUtils.buildSendMsgContent(msgType,procInstName,true);
             //短息开关
             if (rtxSMSEnabled() && resultMsg.isFlag()) {
                 if (Validate.isList(receiverList)) {
@@ -171,29 +171,6 @@ public class RTXService {
             return true;
         } else {
             return false;
-        }
-    }
-
-    class MsgThread implements Runnable{
-
-        private MsgService msgService;
-
-        private List<User> recvUserList;
-
-        private String  msgContent;
-
-        private SMSLog smsLog;
-
-        public MsgThread(MsgService msgService,List<User> recvUserList,String  msgContent,SMSLog smsLog) {
-            this.msgService = msgService;
-            this.recvUserList = recvUserList;
-            this.msgContent = msgContent;
-            this.smsLog = smsLog;
-        }
-
-        @Override
-        public void run() {
-            msgService.sendMsg(recvUserList,msgContent,smsLog);
         }
     }
 

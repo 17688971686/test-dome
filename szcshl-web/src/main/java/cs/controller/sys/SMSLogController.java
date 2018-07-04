@@ -49,31 +49,21 @@ public class SMSLogController {
     public List<SMSLogDto> querySMSLogType(@RequestParam(required = false) String type)throws ParseException {
         List<SMSLogDto> list = new ArrayList<>();
         SMSLogDto smsLogDto =  new SMSLogDto();
-        smsLogDto.setSmsLogType("dispatch_type");
+        smsLogDto.setSmsLogType("sendfgw_type");
         smsLogDto.setSmsLogTypeName("收文类型");
         list.add(smsLogDto);
         smsLogDto =  new SMSLogDto();
         smsLogDto.setSmsLogType("incoming_type");
-        smsLogDto.setSmsLogTypeName("发文类型");
+        smsLogDto.setSmsLogTypeName("项目签收类型");
         list.add(smsLogDto);
         smsLogDto =  new SMSLogDto();
         smsLogDto.setSmsLogType("task_type");
-        smsLogDto.setSmsLogTypeName("任务类型");
+        smsLogDto.setSmsLogTypeName("待办任务类型");
         list.add(smsLogDto);
         smsLogDto =  new SMSLogDto();
         smsLogDto.setSmsLogType("project_type");
-        smsLogDto.setSmsLogTypeName("项目类型");
+        smsLogDto.setSmsLogTypeName("待办项目类型");
         list.add(smsLogDto);
-        smsLogDto =  new SMSLogDto();
-        smsLogDto.setSmsLogType("custom_type");
-        smsLogDto.setSmsLogTypeName("定义类型");
-        list.add(smsLogDto);
-        if ("all".equals(type)){
-            smsLogDto =  new SMSLogDto();
-            smsLogDto.setSmsLogType("custom_type");
-            smsLogDto.setSmsLogTypeName("通信类型");
-            list.add(smsLogDto);
-        }
         return list;
     }
 

@@ -753,11 +753,9 @@ public class Constant {
         RTX_ENABLED("RTX_ENABLED"),     //是否使用腾讯通账号
         RETURN_FGW_URL("RETURN_FGW_URL"),//回传给委里的接口配置
         FGW_PRE_PROJECT_IFS("FGW_PRE_PROJECT_IFS"),//预签收接口配置
-        SMS_SYS_TYPE("SMS_SYS_TYPE"),    //系统参数: 短息开关0:打开，1:关闭
-
-        SMS_SYS_USER_TYPE_1("SMS_SYS_USER_TYPE_1"),    //系统参数: 发文失败
-        SMS_SYS_USER_TYPE_2("SMS_SYS_USER_TYPE_2"),    //系统参数: 报文失败
-
+        SMS_SYS_TYPE("SMS_SYS_TYPE"),               //系统参数: 短息开关0:打开，1:关闭
+        SMS_SING_NOTICE_USER("SMS_SING_NOTICE_USER"),     //委里项目推送短信通知人配置
+        SMS_SENDFGW_FAIL_USER("SMS_SENDFGW_FAIL_USER"),    //回传委里失败推送的短信通知人配置
         LOCAL_URL("LOCAL_URL");         //系统访问地址
         private String value;
 
@@ -871,9 +869,8 @@ public class Constant {
      */
     public enum MsgType {
         task_type,          //任务短信
-        project_type,        //项目短信
-        dispatch_type,
-        incoming_type,
-        custom_type
+        project_type,       //项目短信
+        incoming_type,      //项目签收
+        sendfgw_type        //发送发改委类型
     }
 }

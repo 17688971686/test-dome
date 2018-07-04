@@ -37,6 +37,7 @@ import cs.repository.repositoryImpl.sys.SysFileRepo;
 import cs.service.archives.ArchivesLibraryService;
 import cs.service.expert.ExpertService;
 import cs.service.project.*;
+import cs.service.restService.SignRestService;
 import cs.service.sys.LogService;
 import cs.service.sys.SysFileService;
 import cs.service.topic.TopicInfoService;
@@ -140,6 +141,8 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     @Autowired
     private ExpertSelectedRepo expertSelectedRepo;
 
+    @Autowired
+    private SignRestService signRestService;
 
     @Override
     public void setServletContext(ServletContext servletContext) {
@@ -1259,7 +1262,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 openType = "doc";
         }
         model.addAttribute("fileType", openType);
-        String fileUrl = sysFileService.getLocalUrl();
+        String fileUrl = signRestService.getLocalUrl();
         if (fileUrl.endsWith("/")) {
             fileUrl = fileUrl.substring(0, fileUrl.lastIndexOf("/"));
         }

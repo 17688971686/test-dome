@@ -264,22 +264,6 @@ public class SysFileServiceImpl implements SysFileService {
         }
     }
 
-    @Override
-    public String getLocalUrl() {
-        String localUrl = "";
-        SysConfigDto sysConfigDto = sysConfigService.findByKey(LOCAL_URL.getValue());
-        if(sysConfigDto != null) {
-            localUrl = sysConfigDto.getConfigValue();
-        }else{
-            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-            localUrl = propertyUtil.readProperty(IFResultCode.LOCAL_URL);
-        }
-        if (Validate.isString(localUrl) && localUrl.endsWith("/")) {
-            localUrl = localUrl.substring(0, localUrl.length() - 1);
-        }
-        return localUrl;
-    }
-
     /**
      * 通过业务ID和业务类型删除对应的文件
      * @param businessId

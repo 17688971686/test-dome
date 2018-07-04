@@ -9,21 +9,20 @@ import cs.common.FGWResponse;
 import cs.common.IFResultCode;
 import cs.common.ResultMsg;
 import cs.common.constants.Constant;
-import cs.common.utils.DateUtils;
 import cs.common.utils.SMSUtils;
 import cs.common.utils.Validate;
+import cs.domain.project.Sign;
 import cs.domain.sys.Log;
+import cs.domain.sys.SMSLog;
 import cs.domain.sys.User;
-import cs.model.project.DispatchDocDto;
 import cs.model.project.SignDto;
 import cs.model.project.SignPreDto;
 import cs.model.sys.SysFileDto;
-import cs.model.sys.UserDto;
-import cs.service.project.SignService;
 import cs.service.restService.SignRestService;
 import cs.service.rtx.RTXService;
-import cs.service.sys.*;
-import cs.service.topic.TopicInfoService;
+import cs.service.sys.LogService;
+import cs.service.sys.MsgService;
+import cs.threadtask.MsgThread;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -31,8 +30,11 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
+import static cs.common.constants.Constant.MsgType.incoming_type;
+import static cs.common.constants.Constant.RevireStageKey.SMS_SING_NOTICE_USER;
 
 /**
  * 系统接口controller
@@ -47,107 +49,99 @@ public class SysRestController {
     private static Logger logger = Logger.getLogger(SysRestController.class);
     @Autowired
     private SignRestService signRestService;
-    @Autowired
-    private TopicInfoService topicInfoService;
-    @Autowired
-    private HttpClientOperate httpClientOperate;
-    @Autowired
-    private LogService logService;
-    @Autowired
-    private SignService signService;
 
     @Autowired
-    private UserService userService;
+    private HttpClientOperate httpClientOperate;
+
+    @Autowired
+    private LogService logService;
 
     @Autowired
     private RTXService rtxService;
 
     @Autowired
-    private SMSLogService smsLogService;
-
-    @Autowired
-    private SysConfigService sysConfigService;
-
-    @Autowired
-    private WorkdayService workdayService;
+    private MsgService msgService;
 
     /**
      * 项目签收信息
+     *
      * @param signDtoJson
      * @return
      */
     @RequestMapping(name = "项目签收信息", value = "/pushProject", method = RequestMethod.POST)
-    @LogMsg(module = "系统接口【委里推送数据接口】",logLevel = "1")
+    @LogMsg(module = "系统接口【委里推送数据接口】", logLevel = "1")
     public synchronized ResultMsg pushProject(@RequestParam String signDtoJson) {
         ResultMsg resultMsg = null;
+        String projName = "";
+        String fileCode = "";
         SignDto signDto = JSON.parseObject(signDtoJson, SignDto.class);
-        //AAA 项目signDto.getFilecode()  委里收文编号
-        String msg = "项目【"+signDto.getProjectname()+"("+signDto.getFilecode()+")json="+signDtoJson+"】";
-        try{
-            //json转出对象
-            resultMsg = signRestService.pushProject(signDto,true,null);
-        }catch (Exception e){
-            resultMsg = new ResultMsg(false,IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(),e.getMessage());
+        if(Validate.isObject(signDto)){
+            projName = signDto.getProjectname();
+            fileCode = signDto.getFilecode();
+        }
+        try {
+            resultMsg = signRestService.pushProject(signDto, true);
+        } catch (Exception e) {
+            resultMsg = new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(), e.getMessage());
             e.printStackTrace();
         }
-        // 判断短信日志表中是否已经发送短信 收文类型: incoming_type
-       /*if(resultMsg.isFlag()&& rtxService.rtxSMSEnabled()){
-           boolean boo = SMSUtils.getWeek(workdayService,new Date(),sysConfigService);
-           if (boo){
-               SMSUtils.seekSMSThread(null,signRestService.getListUser("收文成功"),signDto.getProjectname(),signDto.getFilecode(),"incoming_type","收文成功",smsContent.seekSMSSuccee(signDto.getProjectname(),signDto.getFilecode(),"收文成功(项目签收信息)"),  smsLogService);
-           }
-       }else {
-           if (rtxService.rtxSMSEnabled()) {
-               boolean boo = SMSUtils.getWeek(workdayService,new Date(), sysConfigService);
-               if (boo) {
-                   if ("SIGN_05".equals(resultMsg.getReCode())){
-                           SMSUtils.seekSMSThread(null,signRestService.getListUser("收文成功"), signDto.getProjectname(), signDto.getFilecode(), "incoming_type", "收文成功", smsContent.seekSMSSuccee(signDto.getProjectname(), signDto.getFilecode(), "收文成功(项目签收信息)"), smsLogService);
-                       }
-                   }else{
-                        SMSUtils.seekSMSThread(null,signRestService.getListUser("收文失败"), signDto.getProjectname(), signDto.getFilecode(), "incoming_type", "收文失败", smsContent.seekSMSSuccee(signDto.getProjectname(), signDto.getFilecode(), "收文失败(项目签收信息)"), smsLogService);
-                   }
-               }
-           }*/
-
+        //如果已经启用短信提醒,并且在早上8点-晚上8点时间段内
+        if (rtxService.rtxSMSEnabled() && SMSUtils.isSendTime()) {
+            List<User> recvUserList = msgService.getNoticeUserByConfigKey(SMS_SING_NOTICE_USER.getValue());
+            if(Validate.isList(recvUserList)){
+                String msgContent = SMSUtils.buildSendMsgContent(incoming_type.name(),projName+"["+fileCode+"]",resultMsg.isFlag());
+                SMSLog smsLog = new SMSLog();
+                smsLog.setSmsLogType(incoming_type.name());
+                smsLog.setProjectName(projName);
+                smsLog.setFileCode(fileCode);
+                if(resultMsg.isFlag()){
+                    Sign sign = (Sign) resultMsg.getReObj();
+                    smsLog.setBuninessId(sign.getSignid());
+                }
+                ExecutorService threadPool = Executors.newSingleThreadExecutor();
+                threadPool.execute(new MsgThread(msgService,recvUserList,msgContent,smsLog));
+                threadPool.shutdown();
+            }
+        }
         resultMsg.setReObj(null);
         return resultMsg;
     }
 
     /**
      * 根据委里收文编号获取项目信息
-     * @param fileCode      委里收文编号
-     * @param signType      签收类型（1为预签收，其它为正式签收）
+     *
+     * @param fileCode 委里收文编号
+     * @param signType 签收类型（1为预签收，其它为正式签收）
      * @return
      */
     @RequestMapping(name = "项目预签收信息", value = "/getPreSign", method = RequestMethod.GET)
     @ResponseBody
-    @LogMsg(module = "系统接口【通过收文编号获取项目信息】",logLevel = "1")
-    public synchronized ResultMsg findPreSignByfileCode(@RequestParam String fileCode,@RequestParam String signType){
+    @LogMsg(module = "系统接口【通过收文编号获取项目信息】", logLevel = "1")
+    public synchronized ResultMsg findPreSignByfileCode(@RequestParam String fileCode, @RequestParam String signType) {
         String signPreInfo = "";
         ResultMsg resultMsg = null;
-        try{
+        try {
             String preUrl = signRestService.getPreReturnUrl();
-            preUrl = preUrl + "?swbh="+fileCode;
-            signPreInfo =  httpClientOperate.doGet(preUrl);
-          //  JSON.
+            preUrl = preUrl + "?swbh=" + fileCode;
+            signPreInfo = httpClientOperate.doGet(preUrl);
+            //  JSON.
             String msg = "";
-            Map resultMap = (Map)JSON.parse(signPreInfo);
-            if(resultMap.get("data") != null && !resultMap.get("data").equals("null")){
+            Map resultMap = (Map) JSON.parse(signPreInfo);
+            if (resultMap.get("data") != null && !resultMap.get("data").equals("null")) {
                 SignPreDto signPreDto = JSON.parseObject(signPreInfo, SignPreDto.class);
-                 msg = "项目【"+signPreDto.getData().getProjectname()+"("+signPreDto.getData().getFilecode()+")】，";
                 //json转出对象
-                if(Validate.isString(signType) && signType.equals("1")){
+                if (Validate.isString(signType) && signType.equals("1")) {
                     //获取项目预签收信息
-                    resultMsg = signRestService.pushPreProject(signPreDto.getData(),false);
-                }else{
-                    resultMsg = signRestService.pushProject(signPreDto.getData(),false,null);
+                    resultMsg = signRestService.pushPreProject(signPreDto.getData(), false);
+                } else {
+                    resultMsg = signRestService.pushProject(signPreDto.getData(), false);
                 }
-            }else{
+            } else {
                 msg = "该项目信息不存在请核查！";
-                resultMsg = new ResultMsg(false,IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(),msg);
+                resultMsg = new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(), msg);
             }
-        }catch (Exception e){
-            resultMsg = new ResultMsg(false,IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(),e.getMessage());
+        } catch (Exception e) {
+            resultMsg = new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(), e.getMessage());
             e.printStackTrace();
         }
         return resultMsg;
@@ -155,31 +149,31 @@ public class SysRestController {
 
     /**
      * 通过收文编号存储批复金额下载pdf文件
+     *
      * @return
      */
     @RequestMapping(name = "项目批复金额与pdf文件下载", value = "/downRemoteFile", method = RequestMethod.POST)
-    @LogMsg(module = "系统接口【通过收文编号存储批复金额下载pdf文件】",logLevel = "1")
+    @LogMsg(module = "系统接口【通过收文编号存储批复金额下载pdf文件】", logLevel = "1")
     public synchronized ResultMsg downRemoteFile(@RequestParam String signDtoJson) {
         ResultMsg resultMsg = null;
         SignDto signDto = JSON.parseObject(signDtoJson, SignDto.class);
-        try{
-            //json转出对象
-            resultMsg = signRestService.pushProject(signDto,true,"downRemoteFile_channel");
-        }catch (Exception e){
-            resultMsg = new ResultMsg(false,IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(),e.getMessage());
+        try {
+            resultMsg = signRestService.signProjAppr(signDto, true);
+        } catch (Exception e) {
+            resultMsg = new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(), e.getMessage());
             e.printStackTrace();
         }
-        resultMsg.setReObj(null);
         return resultMsg;
     }
+
     /**
      * 项目信息返回委里接口
      *
      * @return
      */
-    @RequestMapping(name = "项目批复金额与pdf文件下载", value = "/testSendSignMsg", method = {RequestMethod.POST,RequestMethod.GET})
+    @RequestMapping(name = "项目批复金额与pdf文件下载", value = "/testSendSignMsg", method = {RequestMethod.POST, RequestMethod.GET})
     public ResultMsg sendSignMsg(String nodeNameKey) {
-        ResultMsg resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败！");
+        ResultMsg resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败！");
         try {
             // 接口地址
             String endpoint = "http://203.91.46.83:8032/FGWPM/restservices/FGWPMRest/uploadPszxData/query";
@@ -258,12 +252,12 @@ public class SysRestController {
             HttpResult hst = httpClientOperate.doPost(endpoint, params);
             System.out.println(hst.toString());
 
-            if(Validate.isObject(hst) && (200 < hst.getStatusCode() && 400 > hst.getStatusCode())){
-                FGWResponse fGWResponse = JSON.toJavaObject(JSON.parseObject(hst.getContent()),FGWResponse.class);
+            if (Validate.isObject(hst) && (200 == hst.getStatusCode())) {
+                FGWResponse fGWResponse = JSON.toJavaObject(JSON.parseObject(hst.getContent()), FGWResponse.class);
                 resultMsg.setReCode(fGWResponse.getRestate());
                 resultMsg.setReMsg(fGWResponse.getRedes());
                 resultMsg.setFlag((IFResultCode.RECODE.OK.getCode()).equals(fGWResponse.getRestate()));
-            }else{
+            } else {
                 resultMsg.setReCode("ERROR");
                 resultMsg.setReMsg("异常");
                 resultMsg.setFlag(false);
@@ -271,8 +265,8 @@ public class SysRestController {
 
         } catch (Exception e) {
             String errorMsg = e.getMessage();
-            logger.info("项目回调接口异常："+errorMsg);
-            resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),errorMsg);
+            logger.info("项目回调接口异常：" + errorMsg);
+            resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), errorMsg);
         }
         //添加日记记录
         Log log = new Log();
@@ -372,7 +366,7 @@ fileUrl=http://172.18.225.38:8089/FGWPM/LEAP/Download/default/2018/6/26/236c4c69
         //项目添加附件列表
         signDto2.setSysFileDtoList(fileDtoList2);
         Map<String, String> params = new HashMap<>();
-        logger.info("委里批复数据:   "+JSON.toJSONString(signDto2));
+        logger.info("委里批复数据:   " + JSON.toJSONString(signDto2));
         params.put("signDtoJson", JSON.toJSONString(signDto2));
         HttpResult hst2 = httpClientOperate.doPost(REST_SERVICE_URI2, params);
         //System.out.println(params.get("signDtoJson"));

@@ -810,18 +810,8 @@ public class DateUtils {
         //得到 JSON 属性对象列表
         JSONObject jo = json.getJSONObject("data");
         System.out.println(jo.getString("accessToken"));*/
-        try{
-
-            InetAddress myip= InetAddress.getLocalHost();
-
-            System.out.println("你的IP地址是："+myip.getHostAddress());
-
-            System.out.println("主机名为："+myip.getHostName()+"。");
-
-        }catch(Exception e){
-
-            e.printStackTrace();
-
-        }
+        Calendar c = Calendar.getInstance();
+        int hour = c.get(Calendar.HOUR_OF_DAY);
+        System.out.println(hour);
     }
 }

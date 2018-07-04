@@ -17,18 +17,15 @@ import org.apache.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static cs.common.cache.CacheConstant.IP_CACHE;
+import static cs.common.constants.Constant.RevireStageKey.SMS_SYS_TYPE;
 import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
 /**
- * Created by Administrator on 2018/5/31.
+ * Created by ldm on 2018/6/31.
  */
 @Service
 public class MsgServiceImpl implements MsgService{
@@ -60,9 +57,7 @@ public class MsgServiceImpl implements MsgService{
                     String resultCode = json.getString("resultCode");
                     if("0000000".equals(resultCode)){
                         JSONObject jo = json.getJSONObject("data");
-                        SMSUtils.setTOKEN(jo.getString("accessToken"));
-                        SMSUtils.setGetTokenTime(new Date().getTime());
-                        SMSUtils.setTokenExpireValue(jo.getLong("expiredValue"));
+                        SMSUtils.resetTokenInfo(jo.getString("accessToken"),new Date().getTime(),jo.getLong("expiredValue"));
                         resultMsg.setFlag(true);
                     }
                     resultMsg.setReCode(resultCode);
@@ -77,7 +72,7 @@ public class MsgServiceImpl implements MsgService{
         return resultMsg;
     }
 
-
+/*
     @Override
     @Transactional
     public String orNotsendSMS(List<User> userList, String projectName, String fileCode, String type, String infoType,String xianzhiNumber) {
@@ -122,7 +117,7 @@ public class MsgServiceImpl implements MsgService{
             return "已记录在短信日志中";
         }
         return null;
-    }
+    }*/
 
 
     @Override
@@ -142,7 +137,7 @@ public class MsgServiceImpl implements MsgService{
                     sendUserName += ",";
                 }
                 phone += Validate.removeSpace(user.getUserMPhone());
-                sendUserName = Validate.removeSpace(user.getDisplayName());
+                sendUserName += Validate.removeSpace(user.getDisplayName());
                 mphoneCount ++;
             }else{
                 errorInfo += "用户["+user.getDisplayName()+"]的手机号码无效;";
@@ -154,6 +149,7 @@ public class MsgServiceImpl implements MsgService{
         if(Validate.isString(phone)){
             boolean isTokenEnable = true;
             if(SMSUtils.isTokenTimeout()){
+                SMSUtils.resetTokenInfo("",0L,0L);
                 resultMsg = getMsgToken();
                 isTokenEnable = resultMsg.isFlag();
             }
@@ -181,17 +177,26 @@ public class MsgServiceImpl implements MsgService{
                     smsLog.setIsCallApi(Constant.EnumState.YES.getValue());
 
                     String sendResult = httpClientOperate.doGet(msgUrl, params);
-                    if(Validate.isString(sendResult)){
-                        JSONObject json = new JSONObject(sendResult);
-                        if(Validate.isObject(json) ){
-                            String resultCode = json.getString("resultCode");
-                            if("0000000".equals(resultCode)){
-                                resultMsg.setFlag(true);
+                    String resultCode = SMSUtils.analysisResult(sendResult);
+                    if(Validate.isString(resultCode)){
+                        if("0000000".equals(resultCode)){
+                            resultMsg.setFlag(true);
+                        //如果是token失效，则获取新token重新发送
+                        }else if("0190007".equals(resultCode)){
+                            SMSUtils.resetTokenInfo("",0L,0L);
+                            ResultMsg newResultMsg = getMsgToken();
+                            if(newResultMsg.isFlag()){
+                                sendResult = httpClientOperate.doGet(msgUrl, params);
+                                resultCode = SMSUtils.analysisResult(sendResult);
+                                if("0000000".equals(resultCode)){
+                                    resultMsg.setFlag(true);
+                                }
                             }
-                            resultMsg.setReCode(resultCode);
-                            resultMsg.setReMsg(SMSUtils.getMsgInfoByCode(resultCode));
                         }
+                        resultMsg.setReCode(resultCode);
+                        resultMsg.setReMsg(SMSUtils.getMsgInfoByCode(resultCode));
                     }
+
                 }catch (Exception e){
                     logger.error("发送短信异常："+e.getMessage());
                     resultMsg.setReMsg("发送短信异常："+e.getMessage());
@@ -234,5 +239,30 @@ public class MsgServiceImpl implements MsgService{
         smsLogRepo.save(smsLog);
     }
 
+
+    @Override
+    public List<User> getNoticeUserByConfigKey(String configKey) {
+        SysConfigDto sysConfigDto = sysConfigService.findByKey(configKey);
+        if (Validate.isObject(sysConfigDto) && Validate.isString(sysConfigDto.getConfigValue())) {
+            String configValue = sysConfigDto.getConfigValue();
+            //替换所有的中文字符
+            configValue = configValue.replaceAll("；",";").replaceAll("，",",");
+            List<String> totalUser = StringUtil.getSplit(configValue,";");
+            if(Validate.isList(totalUser)){
+                List<User> resultList = new ArrayList<>();
+                for(String userInfo :totalUser){
+                    List<String> user = StringUtil.getSplit(userInfo,",");
+                    if(Validate.isList(user)){
+                        User u = new User();
+                        u.setUserMPhone(Validate.removeSpace(user.get(0)));
+                        u.setDisplayName(Validate.removeSpace(user.get(1)));
+                        resultList.add(u);
+                    }
+                }
+                return resultList;
+            }
+        }
+        return null;
+    }
 
 }

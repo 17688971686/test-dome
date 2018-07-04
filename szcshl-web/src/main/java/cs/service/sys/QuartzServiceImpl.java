@@ -18,6 +18,7 @@ import cs.service.flow.FlowService;
 import cs.service.project.ProjectStopService;
 import cs.service.project.SignService;
 import cs.service.restService.SignRestService;
+import cs.service.rtx.RTXService;
 import org.activiti.engine.RuntimeService;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
@@ -61,11 +62,10 @@ public class QuartzServiceImpl implements QuartzService {
     @Autowired
     private RuntimeService runtimeService;
     @Autowired
-    private SMSLogService smsLogService;
-
-
+    private RTXService rtxService;
     @Autowired
-    private SysConfigService sysConfigService;
+    private MsgService msgService;
+
     @Override
     public PageModelDto<QuartzDto> get(ODataObj odataObj) {
         PageModelDto<QuartzDto> pageModelDto = new PageModelDto<QuartzDto>();
@@ -121,7 +121,7 @@ public class QuartzServiceImpl implements QuartzService {
         if (Constant.EnumState.YES.getValue().equals(domain.getRunWay())) {
             returnResult = quartzExecute(domain.getId());
         }
-        if(returnResult == null){
+        if (returnResult == null) {
             returnResult = new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
         }
         return returnResult;
@@ -129,6 +129,7 @@ public class QuartzServiceImpl implements QuartzService {
 
     /**
      * 根据主键查询
+     *
      * @param id
      * @return
      */
@@ -142,6 +143,7 @@ public class QuartzServiceImpl implements QuartzService {
 
     /**
      * 停用定时器
+     *
      * @param id
      */
     @Override
@@ -151,7 +153,7 @@ public class QuartzServiceImpl implements QuartzService {
         if (quartz == null) {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，该定时器已被删除！");
         }
-        if(Constant.EnumState.YES.getValue().equals(quartz.getCurState())){
+        if (Constant.EnumState.YES.getValue().equals(quartz.getCurState())) {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，该定时器正在运行，不能进行此操作！");
         }
         quartz.setIsEnable(Constant.EnumState.NO.getValue());
@@ -162,13 +164,14 @@ public class QuartzServiceImpl implements QuartzService {
 
     /**
      * 查询系统在用，并且是自动启动的项目
+     *
      * @return
      */
     @Override
     public List<Quartz> findDefaultQuartz() {
         Criteria criteria = quartzRepo.getExecutableCriteria();
-        criteria.add(Restrictions.eq(Quartz_.runWay.getName(),Constant.EnumState.YES.getValue()));
-        criteria.add(Restrictions.eq(Quartz_.isEnable.getName(),Constant.EnumState.YES.getValue()));
+        criteria.add(Restrictions.eq(Quartz_.runWay.getName(), Constant.EnumState.YES.getValue()));
+        criteria.add(Restrictions.eq(Quartz_.isEnable.getName(), Constant.EnumState.YES.getValue()));
         return criteria.list();
     }
 
@@ -186,7 +189,7 @@ public class QuartzServiceImpl implements QuartzService {
                 return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，该定时器已被删除！");
             }
             String time = quartz.getCronExpression();
-            if(!Validate.isString(time)){
+            if (!Validate.isString(time)) {
                 return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，该定时器执行表达式没设置！");
             }
             SchedulerFactory schedulderFactory = new StdSchedulerFactory();
@@ -195,22 +198,23 @@ public class QuartzServiceImpl implements QuartzService {
             String jobName = quartz.getQuartzName();
 
             //把所有用到的service加入到参数中去
-            Map<String,Object> params = new HashMap<>();
-            params.put("logService",logService);
-            params.put("expertReviewService",expertReviewService);
-            params.put("projectStopService",projectStopService);
-            params.put("workdayService",workdayService);
-            params.put("flowService",flowService);
-            params.put("signService",signService);
-            params.put("signRestService",signRestService);
-            params.put("projectStopRepo",projectStopRepo);
-            params.put("runtimeService",runtimeService);
+            Map<String, Object> params = new HashMap<>();
+            params.put("logService", logService);
+            params.put("expertReviewService", expertReviewService);
+            params.put("projectStopService", projectStopService);
+            params.put("workdayService", workdayService);
+            params.put("flowService", flowService);
+            params.put("signService", signService);
+            params.put("signRestService", signRestService);
+            params.put("projectStopRepo", projectStopRepo);
+            params.put("runtimeService", runtimeService);
 
-            params.put("sysConfigService",sysConfigService);
-            params.put("smsLogService",smsLogService);
+            //短信需要用到的service
+            params.put("rtxService", rtxService);
+            params.put("msgService", msgService);
 
             if (Job.class.isAssignableFrom(Class.forName(cls))) {
-                QuartzManager.addJob(sched, jobName, Class.forName(cls), time,params);
+                QuartzManager.addJob(sched, jobName, Class.forName(cls), time, params);
                 //设置状态
                 quartz.setCurState(Constant.EnumState.YES.getValue());
                 quartz.setIsEnable(Constant.EnumState.YES.getValue());
@@ -220,12 +224,13 @@ public class QuartzServiceImpl implements QuartzService {
                 return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，设置参数不正确！");
             }
         } catch (Exception e) {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败:"+e.getMessage());
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败:" + e.getMessage());
         }
     }
 
     /**
      * 暂停定时器
+     *
      * @param quartzId
      * @return
      */
@@ -245,8 +250,8 @@ public class QuartzServiceImpl implements QuartzService {
             quartzRepo.save(quartz);
 
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
-        }catch(Exception e){
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败："+e.getMessage());
+        } catch (Exception e) {
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败：" + e.getMessage());
         }
     }
 

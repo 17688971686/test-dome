@@ -59,11 +59,6 @@ public interface SysFileService {
      * @return
      */
     String getFtpRoot(String relativeUrl);
-    /**
-     * 获取本地
-     * @return
-     */
-    String getLocalUrl();
 
 
     /**

@@ -231,7 +231,7 @@ public class Validate {
     /**
      * 去掉一些无用的空格
      *
-     * @param promises
+     * @param s
      * @return
      * @author HZH
      */

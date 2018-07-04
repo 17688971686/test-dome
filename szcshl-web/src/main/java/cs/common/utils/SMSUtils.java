@@ -2,26 +2,11 @@ package cs.common.utils;
 
 
 import cs.common.constants.Constant;
-import cs.domain.sys.SMSLog;
-import cs.domain.sys.User;
-import cs.model.sys.SysConfigDto;
-import cs.service.sys.SMSLogService;
-import cs.service.sys.SysConfigService;
-import cs.service.sys.WorkdayService;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by Administrator on 2018/5/29.
@@ -125,19 +110,30 @@ public class SMSUtils {
                 codeMsg = "获取accessToken的次数已达到上限";
                 break;
         }
-
         return codeMsg;
     }
 
-    public static String buildSendMsgContent(String msgType, String procInstName) {
-        StringBuffer stringBuffer = new StringBuffer("\n 您收到一条待办");
+    public static String buildSendMsgContent(String msgType, String procInstName,boolean isSucess) {
+        StringBuffer stringBuffer = new StringBuffer();
         Constant.MsgType typeEnum = Constant.MsgType.valueOf(msgType);
         switch (typeEnum) {
             case task_type:
-                stringBuffer.append("任务。\n 任务名称:" + procInstName + ",请及时处理").append("\n");
+                stringBuffer.append("\n 您收到一条待办任务。\n 任务名称:" + procInstName + ",请及时处理").append("\n");
                 break;
             case project_type:
-                stringBuffer.append("项目。\n 项目名称:" + procInstName + ",请及时处理").append("\n");
+                stringBuffer.append("\n 您收到一条待办项目。\n 项目名称:" + procInstName + ",请及时处理").append("\n");
+                break;
+            case incoming_type: //委里推送项目
+                stringBuffer.append("\n 您收到一条信息(委里推送项目提示): \n"+procInstName);
+                if(isSucess){
+                    stringBuffer.append(" 推送成功！");
+                }else{
+                    stringBuffer.append(" 推送失败！");
+                }
+                stringBuffer.append("\n");
+                break;
+            case sendfgw_type:
+                stringBuffer.append("\n 您收到一条信息(项目回传委里提示)：\n"+procInstName).append("\n");
                 break;
             default:
                 ;
@@ -146,23 +142,30 @@ public class SMSUtils {
         return stringBuffer.toString();
     }
 
+
     /**
-     * 封装短信发送失败内容
-     *
-     * @param projectName
-     * @param fileCode
-     * @param type
+     * 获取返回码
+     * @param httpResult
+     * @return
      */
-    public String seekSMSSuccee(String projectName, String fileCode, String type) {
-        StringBuffer stringBuffer = new StringBuffer("\n 您收到一条信息:");
-        if (type.contains("收文")) {
-            stringBuffer.append(type + "。\n 项目名称:" + projectName + "(" + fileCode + ")").append("\n");
+    public static String analysisResult(String httpResult) {
+        if(Validate.isString(httpResult)){
+            JSONObject json = new JSONObject(httpResult);
+            if(Validate.isObject(json) ){
+                String resultCode = json.getString("resultCode");
+                return resultCode;
+            }
         }
-        if (type.contains("发文")) {
-            stringBuffer.append(type + "。\n 项目名称:" + projectName + "(" + fileCode + ")").append("\n");
-        }
-        stringBuffer.append(COMPANY_SIGN);
-        return stringBuffer.toString();
+        return "";
+    }
+
+    /**
+     * 重置token信息
+     */
+    public static void resetTokenInfo(String token,long newTime,long expireValue) {
+        setTOKEN(token);
+        setGetTokenTime(newTime);
+        setTokenExpireValue(expireValue);
     }
 
     /**
@@ -179,6 +182,16 @@ public class SMSUtils {
             return false;
         }
         return true;
+    }
+
+    public static boolean isSendTime() {
+        Calendar c = Calendar.getInstance();
+        int hour = c.get(Calendar.HOUR_OF_DAY);
+        if(hour > 7 && hour < 20){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     public static long getGetTokenTime() {
@@ -204,4 +217,6 @@ public class SMSUtils {
     public static void setTOKEN(String TOKEN) {
         SMSUtils.TOKEN = TOKEN;
     }
+
+
 }

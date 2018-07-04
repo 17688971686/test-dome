@@ -1,8 +1,6 @@
 package cs.domain.sys;
 
 import cs.common.constants.Constant;
-import cs.service.sys.SMSLogService;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -80,7 +78,7 @@ public class SMSLog {
     /**
      * 业务ID
      */
-    @Column(columnDefinition = "varchar(64)")
+    @Column(columnDefinition = "varchar(1024)")
 	private String buninessId;
 
     /**
