@@ -185,7 +185,7 @@ public class PartyManagerController {
     @ResponseBody
     public ResultMsg importFile( HttpServletRequest req , @RequestParam(name = "file") MultipartFile file){
         ExcelReader er = null ;
-        String returnMsg = "";
+        String returnMsg = "导入数据成功！<br/>";
         try{
             er  = new ExcelReader();
 
@@ -239,6 +239,7 @@ public class PartyManagerController {
             }
 //            partyManagerService.batchSave(partyManagerList);
         }catch (Exception e){
+            returnMsg = "数据导入失败";
             e.printStackTrace();
         }
         return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "数据导入成功!" , returnMsg );

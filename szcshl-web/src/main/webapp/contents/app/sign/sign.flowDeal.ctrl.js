@@ -87,7 +87,7 @@
         vm.curDate = "";  //当前日期
         active();
         function active() {
-            debugger;
+            // debugger;
             $('#myTab li').click(function (e) {
                 var aObj = $("a", this);
                 e.preventDefault();
@@ -120,7 +120,7 @@
             });
             // 初始化业务信息
             signSvc.initFlowPageData(vm.model.signid, function (data) {
-                debugger;
+                // debugger;
                 vm.model = data;
                 vm.curDate = data.curDate;
                 var deActive = $("#myTab .active");
@@ -150,7 +150,7 @@
                     vm.showFlag.tabFilerecord = true;
                     vm.fileRecord = vm.model.fileRecordDto;
                 }
-                debugger;
+                // debugger;
                 //判断是否有多个分支，用于控制是否显示总投资字段 和 分开获取关联的项目信息（主要用于项目概算阶段）（旧版本）
                 //通过评估部门的个数来控制总投资字段  修改于（2018-01-16）
                 if (vm.model.workProgramDtoList && vm.model.workProgramDtoList.length > 0) {
@@ -297,7 +297,7 @@
         /***************  S_评审意见管理  ***************/
         // begin 管理个人意见
         vm.ideaEdit = function (options) {
-            debugger;
+            // debugger;
             if (!angular.isObject(options)) {
                 options = {};
             }
@@ -306,7 +306,7 @@
 
         //选择个人常用意见
         vm.selectedIdea = function () {
-            debugger;
+            // debugger;
             vm.flow.dealOption = vm.chooseIdea;
         }
         /***************  E_评审意见管理  ***************/
@@ -314,7 +314,7 @@
         /***************  S_专家评分，评审费发放  ***************/
         // 编辑专家评分
         vm.editSelectExpert = function (id) {
-            debugger;
+            // debugger;
             vm.scoreExpert = {};
             $.each(vm.model.expertReviewDto.expertSelectedDtoList, function (i, scopeEP) {
                 if (scopeEP.id == id) {
@@ -663,7 +663,7 @@
 
         //S_工作方案  --链接到  登记表补充资料
         vm.addRegisterFile = function () {
-            debugger;
+            // debugger;
             $("#associateWindow").kendoWindow({
                 width: "80%",
                 height: "800px",

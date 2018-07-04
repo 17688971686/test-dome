@@ -9,7 +9,7 @@
         vm.projectStop = {};
         vm.projectStop.signid = signId;
         vm.projectStop.stopId = $state.params.stopId;
-
+        vm.signId = signId;
         //用于控制发起流程，返回流程等按钮
         vm.showStartFlow = true;
         if(vm.projectStop.stopId != ""){
@@ -31,7 +31,7 @@
             //创建附件对象
             vm.sysFile = {
                 businessId: vm.projectStop.stopid,
-                mainId: vm.projectStop.stopid,
+                mainId: vm.signId,
                 mainType: "暂停项目",
                 sysBusiType: vm.projectStop.sysBusiType,
                 showBusiType:false,
