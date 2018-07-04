@@ -65,19 +65,15 @@ public class SignRestServiceImpl implements SignRestService {
 
     @Autowired
     private UserService userService;
+
     @Autowired
     private LogService logService;
 
     @Autowired
     private RTXService rtxService;
 
-
     @Autowired
     private SMSLogService smsLogService;
-
-
-    @Autowired
-    private SMSContent smsContent;
 
     @Autowired
     private DispatchDocService dispatchDocService;

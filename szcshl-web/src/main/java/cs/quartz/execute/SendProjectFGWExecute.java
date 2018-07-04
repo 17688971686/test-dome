@@ -62,7 +62,7 @@ public class SendProjectFGWExecute implements Job {
         WorkdayService workdayService = (WorkdayService) context.getMergedJobDataMap().get("workdayService");
         SysConfigService sysConfigService = (SysConfigService) context.getMergedJobDataMap().get("sysConfigService");
         SMSLogService smsLogService = (SMSLogService) context.getMergedJobDataMap().get("smsLogService");
-        SMSContent smsContent = (SMSContent) context.getMergedJobDataMap().get("smsContent");
+
         //添加日记记录
         Log log = new Log();
         log.setCreatedDate(new Date());
@@ -105,15 +105,7 @@ public class SendProjectFGWExecute implements Job {
                         if (resultMsg.isFlag()) {
                             sucessIdList.add(signDto.getSignid());
                             sucessCount++;
-                            boolean boo = SMSUtils.getWeek(workdayService,new Date(),sysConfigService);
-                            if (boo) {
-                                SMSUtils.seekSMSThread(smsContent,signRestService.getListUser("发文成功"),signDto.getProjectname(),signDto.getFilecode(),"dispatch_type","回传委里发文成功",smsContent.seekSMSSuccee(signDto.getProjectname(),signDto.getFilecode(),"发文成功(回传委里)"),  smsLogService);
-                            }
                         } else {
-                            boolean boo = SMSUtils.getWeek(workdayService,new Date(),sysConfigService);
-                            if(boo){
-                                SMSUtils.seekSMSThread(smsContent,signRestService.getListUser("发文失败"),signDto.getProjectname(),signDto.getFilecode(),"dispatch_type","回传委里发文失败",smsContent.seekSMSSuccee(signDto.getProjectname(),signDto.getFilecode(),"发文失败(回传委里)"),  smsLogService);
-                            }
                             errorCount++;
                         }
                         stringBuffer.append(resultMsg.getReMsg() + "\r\n");

@@ -859,4 +859,15 @@ public class Constant {
         市外专家,
         新专家
     }
+
+    /**
+     * 短信类型
+     */
+    public enum MsgType {
+        task_type,          //任务短信
+        project_type,        //项目短信
+        dispatch_type,
+        incoming_type,
+        custom_type
+    }
 }

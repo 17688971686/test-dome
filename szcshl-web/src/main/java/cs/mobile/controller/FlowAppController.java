@@ -1,9 +1,9 @@
 package cs.mobile.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import cs.common.ResultMsg;
 import cs.common.constants.Constant;
 import cs.common.constants.FlowConstant;
-import cs.common.ResultMsg;
 import cs.common.utils.Validate;
 import cs.domain.sys.Log;
 import cs.mobile.service.FlowAppService;
@@ -26,7 +26,6 @@ import cs.service.reviewProjectAppraise.AppraiseService;
 import cs.service.rtx.RTXService;
 import cs.service.sys.AnnountmentService;
 import cs.service.sys.LogService;
-import cs.service.sys.SMSContent;
 import cs.service.sys.UserService;
 import cs.service.topic.TopicInfoService;
 import org.activiti.engine.RepositoryService;
@@ -41,7 +40,10 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -72,8 +74,6 @@ public class FlowAppController {
     private FlowAppService flowAppService;
     @Autowired
     private TaskService taskService;
-    @Autowired
-    private SMSContent smsContent;
     @Autowired
     @Qualifier("SignFlowAppImpl")
     private IFlowApp signFlowAppImpl;
@@ -225,7 +225,7 @@ public class FlowAppController {
         log.setLogLevel(Constant.EnumState.PROCESS.getValue());
         logService.save(log);
         //腾讯通消息处理
-        rtxService.dealPoolRTXMsg(flowDto.getTaskId(),resultMsg,processInstance,smsContent.get(projectOrTask,processInstance.getName()));
+        //rtxService.dealPoolRTXMsg(flowDto.getTaskId(),resultMsg,processInstance,smsContent.get(projectOrTask,processInstance.getName()));
         return resultMsg;
     }
 

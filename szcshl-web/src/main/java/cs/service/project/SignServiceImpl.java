@@ -145,10 +145,6 @@ public class SignServiceImpl implements SignService {
     @Autowired
     private UnitScoreService unitScoreService;
     @Autowired
-    private RTXService rtxService;
-    @Autowired
-    private SMSContent smsContent;
-    @Autowired
     private AgentTaskService agentTaskService;
     @Autowired
     private AssistUnitRepo assistUnitRepo;
@@ -714,19 +710,23 @@ public class SignServiceImpl implements SignService {
         if (!Validate.isString(sign.getLeaderId())) {
             return new ResultMsg(false, MsgCode.ERROR.getValue(), "操作失败，请先设置默认办理部门！");
         }
-        //建设单位(builtcompanyName)、编制单位(designcompanyName)、
-        // 主办处室(maindeptName)、缓急程度(urgencydegree)、秘密等级(secrectlevel)
-        if (!Validate.isString(sign.getBuiltcompanyName()) || !Validate.isString(sign.getDesigncompanyName())
-                || !Validate.isString(sign.getMaindeptName()) || !Validate.isString(sign.getUrgencydegree())
-                || !Validate.isString(sign.getSecrectlevel())) {
-            String resultStr = sign.getBuiltcompanyName() == null ? DEFAULT_BUILD_COMPNAME+"," : "";
-            resultStr += sign.getDesigncompanyName() == null ? DEFAULT_DESIGN_COMPNAME+"," : "";
-            resultStr += sign.getMaindeptName() == null ? "主办处室," : "";
-            resultStr += sign.getUrgencydegree() == null ? "缓急程度," : "";
-            resultStr += sign.getSecrectlevel() == null ? "秘密等级," : "";
+        //项目建议书、可研、概算要验证必填字段
+        if(STAGE_SUG.equals(sign.getReviewstage()) || STAGE_STUDY.equals(sign.getReviewstage()) || STAGE_BUDGET.equals(sign.getReviewstage())){
+            //建设单位(builtcompanyName)、编制单位(designcompanyName)、
+            // 主办处室(maindeptName)、缓急程度(urgencydegree)、秘密等级(secrectlevel)
+            if (!Validate.isString(sign.getBuiltcompanyName()) || !Validate.isString(sign.getDesigncompanyName())
+                    || !Validate.isString(sign.getMaindeptName()) || !Validate.isString(sign.getUrgencydegree())
+                    || !Validate.isString(sign.getSecrectlevel())) {
+                String resultStr = sign.getBuiltcompanyName() == null ? DEFAULT_BUILD_COMPNAME+"," : "";
+                resultStr += sign.getDesigncompanyName() == null ? DEFAULT_DESIGN_COMPNAME+"," : "";
+                resultStr += sign.getMaindeptName() == null ? "主办处室," : "";
+                resultStr += sign.getUrgencydegree() == null ? "缓急程度," : "";
+                resultStr += sign.getSecrectlevel() == null ? "秘密等级," : "";
 
-            return new ResultMsg(false, MsgCode.ERROR.getValue(), resultStr.substring(0, resultStr.length() - 1) + "不能为空");
+                return new ResultMsg(false, MsgCode.ERROR.getValue(), resultStr.substring(0, resultStr.length() - 1) + "不能为空");
+            }
         }
+
 
         try {
             //1、启动流程
@@ -769,12 +769,10 @@ public class SignServiceImpl implements SignService {
             //放入腾讯通消息缓冲池
             RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
             //发送短信消息
-            ResultMsg resultMsg = new ResultMsg(true, MsgCode.OK.getValue(),task.getId(),"操作成功！",processInstance);
-
-            return resultMsg;
+            return new ResultMsg(true, MsgCode.OK.getValue(),task.getId(),"操作成功！",sign.getProjectname());
         } catch (Exception e) {
             log.error("发起项目签收流程异常：" + e.getMessage());
-            return new ResultMsg(true, MsgCode.OK.getValue(), "操作异常，错误信息已记录，请刷新重试或联系管理员处理！");
+            return new ResultMsg(false, MsgCode.ERROR.getValue(), "操作异常，错误信息已记录，请刷新重试或联系管理员处理！");
         }
     }
 

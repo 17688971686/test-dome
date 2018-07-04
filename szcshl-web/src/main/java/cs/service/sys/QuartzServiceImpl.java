@@ -62,8 +62,6 @@ public class QuartzServiceImpl implements QuartzService {
     private RuntimeService runtimeService;
     @Autowired
     private SMSLogService smsLogService;
-    @Autowired
-    private SMSContent smsContent;
 
 
     @Autowired
@@ -208,15 +206,8 @@ public class QuartzServiceImpl implements QuartzService {
             params.put("projectStopRepo",projectStopRepo);
             params.put("runtimeService",runtimeService);
 
-
             params.put("sysConfigService",sysConfigService);
             params.put("smsLogService",smsLogService);
-            params.put("smsContent",smsContent);
-
-//            WorkdayService workdayService = (WorkdayService) context.getMergedJobDataMap().get("workdayService");
-//            SysConfigService sysConfigService = (SysConfigService) context.getMergedJobDataMap().get("sysConfigService");
-//            SMSLogService smsLogService = (SMSLogService) context.getMergedJobDataMap().get("smsLogService");
-//            SMSContent smsContent = (SMSContent) context.getMergedJobDataMap().get("smsContent");
 
             if (Job.class.isAssignableFrom(Class.forName(cls))) {
                 QuartzManager.addJob(sched, jobName, Class.forName(cls), time,params);

@@ -66,9 +66,6 @@ public class SysRestController {
     private SMSLogService smsLogService;
 
     @Autowired
-    private SMSContent smsContent;
-
-    @Autowired
     private SysConfigService sysConfigService;
 
     @Autowired
@@ -94,7 +91,7 @@ public class SysRestController {
             e.printStackTrace();
         }
         // 判断短信日志表中是否已经发送短信 收文类型: incoming_type
-       if(resultMsg.isFlag()&& rtxService.rtxSMSEnabled()){
+       /*if(resultMsg.isFlag()&& rtxService.rtxSMSEnabled()){
            boolean boo = SMSUtils.getWeek(workdayService,new Date(),sysConfigService);
            if (boo){
                SMSUtils.seekSMSThread(null,signRestService.getListUser("收文成功"),signDto.getProjectname(),signDto.getFilecode(),"incoming_type","收文成功",smsContent.seekSMSSuccee(signDto.getProjectname(),signDto.getFilecode(),"收文成功(项目签收信息)"),  smsLogService);
@@ -110,7 +107,7 @@ public class SysRestController {
                         SMSUtils.seekSMSThread(null,signRestService.getListUser("收文失败"), signDto.getProjectname(), signDto.getFilecode(), "incoming_type", "收文失败", smsContent.seekSMSSuccee(signDto.getProjectname(), signDto.getFilecode(), "收文失败(项目签收信息)"), smsLogService);
                    }
                }
-           }
+           }*/
 
         resultMsg.setReObj(null);
         return resultMsg;

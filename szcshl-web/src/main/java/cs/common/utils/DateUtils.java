@@ -1,7 +1,10 @@
 package cs.common.utils;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.apache.log4j.Logger;
 
+import java.net.InetAddress;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -799,6 +802,26 @@ public class DateUtils {
 
     public static void main(String[] args) throws ParseException {
         //long totalDay = DateUtils.daysBetween(DateUtils.converToDate("2017-11-12","yyyy-MM-dd"),DateUtils.converToDate("2017-11-26","yyyy-MM-dd"));
-        System.out.println(DateUtils.minBetween(DateUtils.converToDate("2018-04-25 22:01:00","yyyy-MM-dd HH:mm:ss"),new Date()));
+        //System.out.println(DateUtils.minBetween(DateUtils.converToDate("2018-04-25 22:01:00","yyyy-MM-dd HH:mm:ss"),new Date()));
+        /*String jsonInfo = "{\"data\":{\"accessToken\":\"ED920981FE92F35EB04ACC30CE8840326DE0209A0EFD7E6BCE8F5135C61E9E0DD7B0F42E63075E37\",\"expiredValue\":\"7200\"},\"resultCode\":\"0000000\",\"resultMessage\":\"成功\"}";
+        //先把String 形式的 JSON 转换位 JSON 对象
+        JSONObject json = new JSONObject(jsonInfo);
+        System.out.println(json.getString("resultCode"));
+        //得到 JSON 属性对象列表
+        JSONObject jo = json.getJSONObject("data");
+        System.out.println(jo.getString("accessToken"));*/
+        try{
+
+            InetAddress myip= InetAddress.getLocalHost();
+
+            System.out.println("你的IP地址是："+myip.getHostAddress());
+
+            System.out.println("主机名为："+myip.getHostName()+"。");
+
+        }catch(Exception e){
+
+            e.printStackTrace();
+
+        }
     }
 }

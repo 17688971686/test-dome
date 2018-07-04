@@ -32,13 +32,13 @@ public class RTXUtils {
      * @return
      */
     public static void sendRTXThread(String taskId,List<User> receiverList, String seekContent, LogService logService){
-        ExecutorService threadPool = Executors.newCachedThreadPool();
+        ExecutorService threadPool = Executors.newSingleThreadExecutor();
         //线程池提交一个异步任务
         Future<HashMap<String,String>> future = threadPool.submit(new Callable<HashMap<String,String>>() {
             @Override
             public HashMap<String,String> call() throws Exception {
                 //异步任务 不需要直接反应结果，通过日志记录发信状况信息
-                sendRTXSMS(taskId,receiverList,seekContent,logService);
+                sendRTXSMS(taskId,receiverList,seekContent);
                 return
                         new HashMap<String,String>(){
                             {this.put("success", "成功获取future异步任务结果");}
@@ -52,7 +52,7 @@ public class RTXUtils {
     }
 
     //发送腾讯通消息
-    public static boolean sendRTXSMS(String taskId,List<User> receiverList,String seekContent,LogService logService){
+    public static boolean sendRTXSMS(String taskId,List<User> receiverList,String seekContent){
         User u = null;
         if (Validate.isList(receiverList)) {
             String rtxNames = "";
@@ -65,7 +65,7 @@ public class RTXUtils {
             }
             if (Validate.isString(rtxNames)) {
                 //正式启动再去掉注释
-                sendRTXMsg(null,"您有待办任务待处理！",rtxNames);
+                sendRTXMsg(null,seekContent,rtxNames);
                 RTXSendMsgPool.getInstance().removeCache(taskId);
                 return true;
             }

@@ -22,8 +22,6 @@ import cs.service.flow.FlowService;
 import cs.service.project.SignBranchService;
 import cs.service.project.SignService;
 import cs.service.rtx.RTXService;
-import cs.service.sys.SMSContent;
-import org.activiti.engine.runtime.ProcessInstance;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -55,8 +53,6 @@ public class SignController {
     private OrgDeptRepo orgDeptRepo;
     @Autowired
     private RTXService rtxService;
-    @Autowired
-    private SMSContent smsContent;
 
     //@RequiresPermissions("sign#fingByOData#post")
     @RequiresAuthentication
@@ -387,8 +383,8 @@ public class SignController {
     public ResultMsg startNewFlow(@RequestParam(required = true) String signid) {
         ResultMsg resultMsg = signService.startNewFlow(signid);
         if(resultMsg.isFlag()){
-            ProcessInstance processInstance = (ProcessInstance) resultMsg.getReObj();
-            rtxService.dealPoolRTXMsg(resultMsg.getIdCode(),resultMsg,processInstance,smsContent.get("项目",processInstance.getName()));
+            String procInstName = Validate.isObject(resultMsg.getReObj())?resultMsg.getReObj().toString():"";
+            rtxService.dealPoolRTXMsg(resultMsg.getIdCode(),resultMsg,procInstName,Constant.MsgType.project_type.name());
             resultMsg.setIdCode(null);
             resultMsg.setReObj(null);
         }

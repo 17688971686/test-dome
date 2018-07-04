@@ -2,7 +2,6 @@ package cs.service.sys;
 
 import cs.common.ResultMsg;
 import cs.domain.sys.SMSLog;
-import cs.domain.sys.User;
 import cs.model.PageModelDto;
 import cs.model.sys.SMSLogDto;
 import cs.repository.odata.ODataObj;
@@ -22,10 +21,11 @@ public interface SMSLogService {
 	ResultMsg sendSMSContent(SMSLogDto smsLogDto);
 
 	void deleteSMSLog(String id);
+
 	/**
 	 * 判断短信日志表心思是否存在
 	 * @param type
 	 * */
-	public SMSLog querySMSLog(String userName,String smsUserPhone,String projectName,String filecode,String resultCode,String type,String infoType,String seekContent, SMSLogService smsLogService,boolean success);
+	SMSLog querySMSLog(String userName,String smsUserPhone,String projectName,String filecode,String resultCode,String type,String infoType,String seekContent, SMSLogService smsLogService,boolean success);
 
 }

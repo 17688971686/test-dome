@@ -18,24 +18,25 @@ public class SMSLog {
     /**
      * 用户名
      */
-    @Column(columnDefinition = "varchar(64)")
+    @Column(columnDefinition = "varchar(4000)")
 	private String userName;
+
     /**
      * 短信用户名
      */
-    @Column(columnDefinition = "varchar(64)")
+    @Column(columnDefinition = "varchar(2000)")
     private String smsUserName;
 
     /**
      * 发送短信手机号码
      */
-    @Column(columnDefinition = "varchar(255)")
+    @Column(columnDefinition = "varchar(4000)")
     private String smsUserPhone;
 
     /**
-     * 是:单个发送还是多个发送
+     * 单个发送还是多个发送(1:表示单，2表示多)
      */
-    @Column(columnDefinition = "varchar(64)")
+    @Column(columnDefinition = "varchar(2)")
     private String manyOrOne;
 
     /**
@@ -44,7 +45,6 @@ public class SMSLog {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(columnDefinition = "date NOT NULL")
 	private Date createdDate;
-
 
     /**
      * 短信结果编码
@@ -70,16 +70,19 @@ public class SMSLog {
      */
     @Column(columnDefinition = "varchar(4000)")
 	private String message;
+
     /**
      * 自定义信息内容
      */
-    @Column(columnDefinition = "varchar(255)")
+    @Column(columnDefinition = "varchar(4000)")
     private String customMessage;
+
     /**
      * 业务ID
      */
     @Column(columnDefinition = "varchar(64)")
 	private String buninessId;
+
     /**
      *
      */
@@ -90,6 +93,7 @@ public class SMSLog {
      */
     @Column(columnDefinition = "varchar(64)")
     private String projectName;
+
     /**
      * IP地址
      */
@@ -101,7 +105,6 @@ public class SMSLog {
      */
     @Column(columnDefinition = "varchar(2)")
     private String result;
-
 
     /**
      * 修改时间

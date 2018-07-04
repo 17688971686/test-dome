@@ -2,17 +2,15 @@ package cs.controller.flow;
 
 import cs.ahelper.LogMsg;
 import cs.ahelper.MudoleAnnotation;
-import cs.common.constants.Constant;
+import cs.common.constants.Constant.MsgType;
 import cs.common.constants.Constant.MsgCode;
 import cs.common.constants.FlowConstant;
 import cs.common.ResultMsg;
-import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.flow.HiProcessTask;
 import cs.domain.flow.RuProcessTask;
 import cs.domain.flow.RuTask;
 import cs.domain.project.SignDispaWork;
-import cs.domain.sys.Log;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.flow.Node;
@@ -32,8 +30,6 @@ import cs.service.project.WorkProgramService;
 import cs.service.reviewProjectAppraise.AppraiseService;
 import cs.service.rtx.RTXService;
 import cs.service.sys.AnnountmentService;
-import cs.service.sys.LogService;
-import cs.service.sys.SMSContent;
 import cs.service.sys.UserService;
 import cs.service.topic.TopicInfoService;
 import org.activiti.bpmn.model.BpmnModel;
@@ -81,9 +77,6 @@ public class FlowController {
     private FlowService flowService;
     @Autowired
     private TaskService taskService;
-
-    @Autowired
-    private SMSContent smsContent;
 
     @Autowired
     @Qualifier("signFlowImpl")
@@ -137,8 +130,6 @@ public class FlowController {
     private MonthlyNewsletterService monthlyNewsletterService;
     @Autowired
     private AnnountmentService annountmentService;
-    @Autowired
-    private LogService logService;
     @Autowired
     private UserService userService;
     @Autowired
@@ -454,10 +445,8 @@ public class FlowController {
         ResultMsg resultMsg = null;
         String errorMsg = "";
         String module="";
-        String businessKey = "";
         ProcessInstance processInstance = null;
-        //判断是任务还是项目
-        String projectOrTask = "";
+        boolean isProj = false;
         try{
             processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(flowDto.getProcessInstanceId()).singleResult();
             Task task = null;
@@ -473,53 +462,41 @@ public class FlowController {
                 return new ResultMsg(false, MsgCode.ERROR.getValue(), "项目已暂停，不能进行操作！");
             }
             module = processInstance.getProcessDefinitionKey();
-            businessKey = processInstance.getBusinessKey();
-
             switch (module){
                 case FlowConstant.SIGN_FLOW:
-                    projectOrTask="项目";
+                    isProj = true;
                     resultMsg = signService.dealFlow(processInstance, task,flowDto);
                     break;
                 case FlowConstant.ROLL_BACK_SEND_FLOW:
-                    projectOrTask="项目";
                     resultMsg = signService.dealFlow(processInstance, task,flowDto);
                     break;
                 case FlowConstant.TOPIC_FLOW:
-                    projectOrTask="任务";
                     resultMsg = topicInfoService.dealFlow(processInstance, task,flowDto);
                     break;
                 //图书流程，已给委里处理
                 case FlowConstant.BOOKS_BUY_FLOW:
-                    projectOrTask="任务";
                     resultMsg = bookBuyBusinessService.dealFlow(processInstance, task,flowDto);
                     break;
                 //固定资产，已给委里处理
                 case FlowConstant.ASSERT_STORAGE_FLOW:
-                    projectOrTask="任务";
                     resultMsg = assertStorageBusinessService.dealFlow(processInstance,task,flowDto);
                     break;
                 case FlowConstant.PROJECT_STOP_FLOW:
-                    projectOrTask="任务";
                     resultMsg = projectStopService.dealFlow(processInstance, task,flowDto);
                     break;
                 case FlowConstant.FLOW_ARCHIVES:
-                    projectOrTask="任务";
                     resultMsg = archivesLibraryService.dealFlow(processInstance, task,flowDto);
                     break;
                 case FlowConstant.FLOW_APPRAISE_REPORT:
-                    projectOrTask="任务";
                     resultMsg = appraiseService.dealFlow(processInstance, task,flowDto);
                     break;
                 case FlowConstant.FLOW_SUPP_LETTER:
-                    projectOrTask="任务";
                     resultMsg = addSuppLetterService.dealSignSupperFlow(processInstance, task,flowDto);
                     break;
                 case FlowConstant.MONTHLY_BULLETIN_FLOW:
-                    projectOrTask="任务";
                     resultMsg = monthlyNewsletterService.dealSignSupperFlow(processInstance, task,flowDto);
                     break;
                 case FlowConstant.ANNOUNT_MENT_FLOW:
-                    projectOrTask="任务";
                     resultMsg = annountmentService.dealSignSupperFlow(processInstance, task,flowDto);
                     break;
                 default:
@@ -531,7 +508,7 @@ public class FlowController {
             resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"操作异常，错误信息已记录，请联系管理员查看！");
         }
         //腾讯通消息处理
-        rtxService.dealPoolRTXMsg(flowDto.getTaskId(),resultMsg,processInstance,smsContent.get(projectOrTask,processInstance.getName()));
+        rtxService.dealPoolRTXMsg(flowDto.getTaskId(),resultMsg,processInstance.getName(),isProj? MsgType.project_type.name(): MsgType.task_type.name());
         return resultMsg;
     }
     @RequiresAuthentication
