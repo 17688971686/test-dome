@@ -19,9 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-
 import static cs.common.cache.CacheConstant.IP_CACHE;
-import static cs.common.constants.Constant.RevireStageKey.SMS_SYS_TYPE;
 import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
 /**
@@ -40,6 +38,9 @@ public class MsgServiceImpl implements MsgService{
 
     @Autowired
     private HttpClientOperate httpClientOperate;
+
+    @Autowired
+    private WorkdayService workdayService;
 
     @Override
     public ResultMsg getMsgToken() {
@@ -71,54 +72,6 @@ public class MsgServiceImpl implements MsgService{
         }
         return resultMsg;
     }
-
-/*
-    @Override
-    @Transactional
-    public String orNotsendSMS(List<User> userList, String projectName, String fileCode, String type, String infoType,String xianzhiNumber) {
-        SysConfigDto sysConfigDto  =null;
-        if ("打开限制次数".equals(xianzhiNumber)){
-            sysConfigDto  = sysConfigService.findByDataKey("seek_sms_time_type");
-            if ("0".equals(sysConfigDto.getConfigValue())){
-                return "打开限制次数";
-            }
-        }
-        if ("关闭限制次数".equals(xianzhiNumber)){
-            sysConfigDto  = sysConfigService.findByDataKey("seek_sms_time_type");
-            if ("1".equals(sysConfigDto.getConfigValue())){
-                return "关闭限制次数";
-            }
-        }
-        return null;
-    }
-
-    @Override
-    @Transactional
-    public String querySmsNumber(List<User> receiverList, String projectName, String fileCode, String type, String infoType,String xianzhiNumber) {
-        User user = null;
-        String phone = "",userName = "";
-        //获取电话号码
-        if (receiverList.size() > 1) {
-            for (int i = 0, l = receiverList.size(); i < l; i++) {
-                user = receiverList.get(i);
-                if (StringUtil.isNotEmpty(user.getUserMPhone())) {
-                    if (i == receiverList.size() - 1) {
-                        phone += user.getUserMPhone().trim();
-                        userName += user.getDisplayName().trim();
-                    } else {
-                        phone += user.getUserMPhone().trim() + ",";
-                        userName += user.getDisplayName().trim() + ",";
-                    }
-                }
-            }
-        }
-        boolean booleans = smsLogRepo.isSMSlogExist(type, projectName, phone,  userName,  fileCode,infoType);
-        if (!booleans) {
-            return "已记录在短信日志中";
-        }
-        return null;
-    }*/
-
 
     @Override
     public void sendMsg(List<User> recvUserList, String msgContent,SMSLog smsLog) {

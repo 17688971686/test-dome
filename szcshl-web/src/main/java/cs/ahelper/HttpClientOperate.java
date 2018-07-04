@@ -123,8 +123,6 @@ public class HttpClientOperate implements BeanFactoryAware{
         // 创建http POST请求
         HttpPost httpPost = new HttpPost(url);
         httpPost.setConfig(requestConfig);
-        httpPost.setHeader("Accept", "application/json");
-        httpPost.setHeader("Content-Type", "application/json");
         if(params != null){
             // 设置2个post参数，一个是scope、一个是q
             List<NameValuePair> parameters = new ArrayList<NameValuePair>(0);

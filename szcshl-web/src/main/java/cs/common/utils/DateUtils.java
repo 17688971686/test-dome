@@ -810,8 +810,7 @@ public class DateUtils {
         //得到 JSON 属性对象列表
         JSONObject jo = json.getJSONObject("data");
         System.out.println(jo.getString("accessToken"));*/
-        Calendar c = Calendar.getInstance();
-        int hour = c.get(Calendar.HOUR_OF_DAY);
-        System.out.println(hour);
+        Date lastDate = addDay(new Date(),1);
+        System.out.println(lastDate);
     }
 }

@@ -75,6 +75,7 @@ public class SendProjectFGWExecute implements Job {
         //短信需要用到的service
         RTXService rtxService = (RTXService) context.getMergedJobDataMap().get("rtxService");
         MsgService msgService = (MsgService) context.getMergedJobDataMap().get("msgService");
+        WorkdayService workdayService = (WorkdayService) context.getMergedJobDataMap().get("workdayService");
 
         //添加日记记录
         Log log = new Log();
@@ -148,7 +149,7 @@ public class SendProjectFGWExecute implements Job {
                         signService.updateSignState(StringUtils.join(sucessIdList, ","), Sign_.isSendFGW.getName(), Constant.EnumState.YES.getValue());
                     }
                     //发送短信
-                    if (rtxService.rtxSMSEnabled()  && SMSUtils.isSendTime() ) {
+                    if (rtxService.rtxSMSEnabled()  && SMSUtils.isSendTime() && workdayService.isWorkDay(new Date())) {
                         List<User> recvUserList = msgService.getNoticeUserByConfigKey(SMS_SENDFGW_FAIL_USER.getValue());
                         if(Validate.isList(recvUserList)){
                             String msgContent = SMSUtils.buildSendMsgContent(sendfgw_type.name(),msgBuffer.toString(),resultMsg.isFlag());

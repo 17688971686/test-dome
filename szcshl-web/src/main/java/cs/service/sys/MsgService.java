@@ -4,10 +4,11 @@ import cs.common.ResultMsg;
 import cs.domain.sys.SMSLog;
 import cs.domain.sys.User;
 
+import java.util.Date;
 import java.util.List;
 
 /**
- * Created by Administrator on 2018/5/31.
+ * Created by ldm on 2018/7/2.
  */
 public interface MsgService {
 
@@ -17,22 +18,6 @@ public interface MsgService {
      */
     ResultMsg getMsgToken();
 
-
-    /**
-     * 判断是否已经已发送过短信.规则是发送过短信就不再发送短信
-     * @param projectName
-     * @param fileCode
-     * @param type
-     * */
-    //String orNotsendSMS(List<User> list, String projectName, String fileCode, String type, String infoType,String xianzhiNumber);
-
-    /**
-     * 判断是否已经已发送过短信.规则是发送过短信就不再发送短信
-     * @param projectName
-     * @param fileCode
-     * @param type
-     * */
-    //String querySmsNumber(List<User> list, String projectName, String fileCode, String type, String infoType,String xianzhiNumber);
 
     /**
      * 发送短信
@@ -46,4 +31,5 @@ public interface MsgService {
      * 通过配置值获取通知的用户信息
      */
     List<User> getNoticeUserByConfigKey(String configKey);
+
 }

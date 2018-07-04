@@ -43,10 +43,11 @@ public interface WorkdayService {
 	 */
 	List<Workday> getBetweenTimeDay(Date startDate   , Date endDate);
 
+
 	/**
-	 * 判断当天是不是工作日
-	 * @param dates
+	 * 判断当天是否是工作日
+	 * @param date
 	 * @return
 	 */
-	Boolean isRepeat(Date dates,String temp);
+	boolean isWorkDay(Date date);
 }
