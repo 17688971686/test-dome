@@ -151,6 +151,10 @@ public class TopicInfo extends DomainBase {
     @JSONField(serialize = false)
     private List<Contract> contractList;
 
+    /**
+     * 业绩课题是否维护 9 已经维护
+     */
+    private String isMaintain;
 
     public String getId() {
         return id;
@@ -326,5 +330,13 @@ public class TopicInfo extends DomainBase {
 
     public void setContractList(List<Contract> contractList) {
         this.contractList = contractList;
+    }
+
+    public String getIsMaintain() {
+        return isMaintain;
+    }
+
+    public void setIsMaintain(String isMaintain) {
+        this.isMaintain = isMaintain;
     }
 }

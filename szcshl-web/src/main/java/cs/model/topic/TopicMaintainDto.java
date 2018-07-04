@@ -31,6 +31,8 @@ public class TopicMaintainDto extends BaseDto {
     @JSONField(format = "yyyy-MM-dd")
     private Date endTime;
 
+    private String topicId;
+
     public String getId() {
         return id;
     }
@@ -63,4 +65,11 @@ public class TopicMaintainDto extends BaseDto {
         this.endTime = endTime;
     }
 
+    public String getTopicId() {
+        return topicId;
+    }
+
+    public void setTopicId(String topicId) {
+        this.topicId = topicId;
+    }
 }

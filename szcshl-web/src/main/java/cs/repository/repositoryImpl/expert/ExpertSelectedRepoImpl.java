@@ -814,11 +814,11 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append(" left join cs_dispatch_doc d on s.signid = d.signid left join CS_SIGN_PRINCIPAL2 p");
         StringBuilder orgIds = new StringBuilder();
         if(Validate.isString(achievementSumDto.getUserId())){
-            sqlBuilder.append(" on s.signid = p.signid where s.processstate >= 6 and p.ismainuser is not null " +
+            sqlBuilder.append(" on s.signid = p.signid where s.processstate >= 6 and s.signstate != 7 and p.ismainuser is not null " +
                     " and p.userid = '"+ achievementSumDto.getUserId()+"' ");
         }else{
             if(level == 0){
-                sqlBuilder.append(" on s.signid = p.signid where s.processstate >= 6 and p.ismainuser is not null " +
+                sqlBuilder.append(" on s.signid = p.signid where s.processstate >= 6  and s.signstate != 7 and p.ismainuser is not null " +
                         " and p.userid = '"+ SessionUtil.getUserId()+"' ");
             }else if(level==1 ||level ==2 || level == 3){
                 List<String> tempList = StringUtil.getSplit(achievementSumDto.getDeptIds(),",");
@@ -840,12 +840,12 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                     }
                 }
 
-                sqlBuilder.append(" on s.signid = p.signid where s.processstate >= 6 and p.ismainuser is not null " +
+                sqlBuilder.append(" on s.signid = p.signid where s.processstate >= 6  and s.signstate != 7 and p.ismainuser is not null " +
                         " and exists(select 1 from cs_user u " +
                         "  where u.orgid in ("+orgIds.toString()+") " +
                         "  and u.id = p.userid) ");
             }else if(level==4){
-                sqlBuilder.append(" on s.signid = p.signid where s.processstate >= 6 and p.ismainuser is not null " +
+                sqlBuilder.append(" on s.signid = p.signid where s.processstate >= 6  and s.signstate != 7 and p.ismainuser is not null " +
                         " and exists(select 1 from CS_DEPT_CS_USER u where u.userlist_id = p.userid ) ");
             }
         }
@@ -944,10 +944,10 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                 " on s.signid = p.signid");
         StringBuilder orgIds = new StringBuilder();
         if(Validate.isString(achievementSumDto.getUserId())){
-            sqlBuilder.append(" where s.processstate >= 6 and p.userid = '"+ achievementSumDto.getUserId()+"' ");
+            sqlBuilder.append(" where s.processstate >= 6  and s.signstate != 7 and p.userid = '"+ achievementSumDto.getUserId()+"' ");
         }else{
             if(level == 0){
-                sqlBuilder.append(" where s.processstate >= 6 and p.userid = '"+ SessionUtil.getUserId()+"' ");
+                sqlBuilder.append(" where s.processstate >= 6  and s.signstate != 7 and p.userid = '"+ SessionUtil.getUserId()+"' ");
             }else if(level==1 || level==2 || level==3){
                 List<String> tempList = StringUtil.getSplit(achievementSumDto.getDeptIds(),",");
                 if(!Validate.isList(tempList)){
@@ -967,12 +967,12 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                         }
                     }
                 }
-                sqlBuilder.append(" where s.processstate >= 6 " +
+                sqlBuilder.append(" where s.processstate >= 6  and s.signstate != 7 " +
                         " and exists(select 1 from cs_user u " +
                         "  where u.orgid in ("+orgIds+") " +
                         "  and u.id = p.userid) ");
             }else if(level==4){
-                sqlBuilder.append(" where s.processstate >= 6 and exists(select 1 from CS_DEPT_CS_USER u where u.userlist_id = p.userid ) ");
+                sqlBuilder.append(" where s.processstate >= 6  and s.signstate != 7 and exists(select 1 from CS_DEPT_CS_USER u where u.userlist_id = p.userid ) ");
             }
         }
 
@@ -1092,13 +1092,13 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                      orgIds.append(",");
                  }
              }
-            sqlBuilder.append(" where s.processstate >= 6 " +
+            sqlBuilder.append(" where s.processstate >= 6  and s.signstate != 7 " +
                     " and exists(select 1 from cs_user u " +
                     "  where u.orgid in ("+orgIds.toString()+") " +
                     "  and u.id = p.userid) " +
                     "  and p.ismainuser is not null");
         }else { //todo:信息化组单独测试
-            sqlBuilder.append(" where s.processstate >= 6 and exists(select 1 from CS_DEPT_CS_USER u where u.userlist_id = p.userid ) ");
+            sqlBuilder.append(" where s.processstate >= 6  and s.signstate != 7 and exists(select 1 from CS_DEPT_CS_USER u where u.userlist_id = p.userid ) ");
         }
         if(null != achievementDeptDetailDto){
             if(Validate.isString(achievementDeptDetailDto.getYear()) && Validate.isString(achievementDeptDetailDto.getQuarter())){
@@ -1148,7 +1148,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                     "  and u.id = p.userid) " +
                     "  and p.ismainuser is not null");
         }else { //todo:信息化组单独测试
-            sqlBuilder.append(" where s.processstate >= 6 and exists(select 1 from CS_DEPT_CS_USER u where u.userlist_id = p.userid ) ");
+            sqlBuilder.append(" where s.processstate >= 6  and s.signstate != 7 and exists(select 1 from CS_DEPT_CS_USER u where u.userlist_id = p.userid ) ");
         }
             sqlBuilder.append(" and D.DISPATCHDATE >= to_date(:beginTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("beginTime",beginTime);
             sqlBuilder.append(" and D.DISPATCHDATE <= to_date(:endTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("endTime",endTime);

@@ -114,8 +114,8 @@
 
 		<tr>
 			<td style="width:25%;vertical-align: middle;"  class="text-center">核减(核增)投资率</td>
-			<td style="width:25%;vertical-align: middle;"  class="text-center"><span>{{vm.mainDoc.extraRateSum}}%</span></td>
-			<td style="vertical-align: middle;"  class="text-center"><span>{{vm.assistDoc.extraRateSum}}%</span></td>
+			<td style="width:25%;vertical-align: middle;"  class="text-center"><span ng-if="vm.mainDoc.extraRateSum">{{vm.mainDoc.extraRateSum}}%</span></td>
+			<td style="vertical-align: middle;"  class="text-center"><span ng-if="vm.assistDoc.extraRateSum">{{vm.assistDoc.extraRateSum}}%</span></td>
 			<td style="vertical-align: middle;"  class="text-center"></td>
 		</tr>
 		<tr ng-if="vm.level=='0'">
@@ -346,8 +346,8 @@
 
 			<tr>
 				<td style="width:25%;vertical-align: middle;"  class="text-center">核减(核增)投资率</td>
-				<td style="width:25%;vertical-align: middle;"  class="text-center"><span>{{vm.mainPersonalDoc.extraRateSum}}%</span></td>
-				<td style="vertical-align: middle;"  class="text-center"><span>{{vm.assistPersonalDoc.extraRateSum}}%</span></td>
+				<td style="width:25%;vertical-align: middle;"  class="text-center"><span ng-if="vm.mainPersonalDoc.extraRateSum">{{vm.mainPersonalDoc.extraRateSum}}%</span></td>
+				<td style="vertical-align: middle;"  class="text-center"><span ng-if="vm.assistPersonalDoc.extraRateSum">{{vm.assistPersonalDoc.extraRateSum}}%</span></td>
 				<td style="vertical-align: middle;"  class="text-center"></td>
 			</tr>
 			<tr>
