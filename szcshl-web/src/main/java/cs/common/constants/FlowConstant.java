@@ -419,4 +419,16 @@ public class FlowConstant {
         }
         return resultValue;
     }
+
+    /***************************   合并发文参数 begin  **************************/
+    /**
+     * 合并发文次项目
+     */
+    public static final String PROJ_DIS_MERGE_A = "PROJ_DIS_MERGE_A";
+    /**
+     * 环节处理人参数
+     */
+    public static final String USER_SIGN_NAME = "USER_SIGN_NAME";
+
+    /***************************   合并发文参数 end  **************************/
 }
