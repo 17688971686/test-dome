@@ -89,7 +89,7 @@ public class SMSLog {
 
     /**
      */
-    @Column(columnDefinition = "varchar(64)")
+    @Column(columnDefinition = "varchar(512)")
     private String projectName;
 
     /**
