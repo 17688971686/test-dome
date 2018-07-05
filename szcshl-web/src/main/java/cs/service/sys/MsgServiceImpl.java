@@ -39,9 +39,6 @@ public class MsgServiceImpl implements MsgService{
     @Autowired
     private HttpClientOperate httpClientOperate;
 
-    @Autowired
-    private WorkdayService workdayService;
-
     @Override
     public ResultMsg getMsgToken() {
         ResultMsg resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"获取token没有返回信息！");
@@ -155,9 +152,7 @@ public class MsgServiceImpl implements MsgService{
                     resultMsg.setReMsg("发送短信异常："+e.getMessage());
                 }
             }else{
-                SMSUtils.setTOKEN("");
-                SMSUtils.setGetTokenTime(0L);
-                SMSUtils.setTokenExpireValue(0L);
+                SMSUtils.resetTokenInfo("",0L,0L);
             }
         }else{
             resultMsg.setReMsg("发送短信用户列表，没有符合条件的手机号码!");
