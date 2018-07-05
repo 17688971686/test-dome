@@ -103,7 +103,7 @@ public class HttpClientOperate implements BeanFactoryAware{
         URIBuilder uriBuilder = new URIBuilder(url);
         if(params != null){
             for(String key : params.keySet()){
-                uriBuilder.setParameter(key, URLEncoder.encode(params.get(key), SysConstants.UTF8));
+                uriBuilder.setParameter(key, params.get(key));
             }
         }
         return this.doGet(uriBuilder.build().toString());
