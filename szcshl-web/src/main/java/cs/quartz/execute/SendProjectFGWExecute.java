@@ -1,35 +1,32 @@
 package cs.quartz.execute;
 
-import cs.common.constants.Constant;
 import cs.common.ResultMsg;
+import cs.common.constants.Constant;
 import cs.common.utils.DateUtils;
 import cs.common.utils.SMSUtils;
 import cs.common.utils.Validate;
-import cs.domain.project.Sign;
 import cs.domain.project.Sign_;
 import cs.domain.sys.Log;
 import cs.domain.sys.SMSLog;
-import cs.domain.sys.SysFile;
 import cs.domain.sys.User;
 import cs.model.project.CommentDto;
 import cs.model.project.SignDto;
 import cs.model.project.WorkProgramDto;
-import cs.service.expert.ExpertReviewService;
 import cs.service.flow.FlowService;
 import cs.service.project.SignService;
 import cs.service.restService.SignRestService;
 import cs.service.rtx.RTXService;
-import cs.service.sys.*;
+import cs.service.sys.LogService;
+import cs.service.sys.MsgService;
+import cs.service.sys.WorkdayService;
 import cs.threadtask.MsgThread;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,11 +35,8 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static com.ibm.icu.util.LocalePriorityList.add;
-import static cs.common.constants.Constant.MsgType.incoming_type;
 import static cs.common.constants.Constant.MsgType.sendfgw_type;
 import static cs.common.constants.Constant.RevireStageKey.SMS_SENDFGW_FAIL_USER;
-import static cs.common.constants.Constant.RevireStageKey.SMS_SING_NOTICE_USER;
 import static cs.common.constants.FlowConstant.*;
 import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
