@@ -50,7 +50,6 @@ public class SignMergeRepoImpl extends AbstractRepository<SignMerge, String> imp
     @Override
     public List<SignMerge> findByType(String signId, String mergeType) {
         Criteria criteria = getExecutableCriteria();
-        criteria.setProjection(Projections.rowCount());
         criteria.add(Restrictions.eq(SignMerge_.signId.getName(),signId));
         criteria.add(Restrictions.eq(SignMerge_.mergeType.getName(),mergeType));
         return criteria.list();

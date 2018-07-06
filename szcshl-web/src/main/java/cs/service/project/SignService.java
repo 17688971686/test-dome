@@ -55,7 +55,7 @@ public interface SignService {
      * @param flowDto
      * @return
      */
-    ResultMsg dealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto);
+    ResultMsg dealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto) throws Exception;
     //流程处理end
 
     /**

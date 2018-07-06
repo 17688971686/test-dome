@@ -450,11 +450,11 @@ public class FlowController {
     @RequestMapping(name = "流程提交", path = "commit", method = RequestMethod.POST)
     @LogMsg(module = "流程提交",logLevel = "1")
     @ResponseBody
+    @Transactional(rollbackFor = {Exception.class})
     public ResultMsg flowCommit(@RequestBody FlowDto flowDto){
         ResultMsg resultMsg = null;
         String errorMsg = "";
         String module="";
-        String businessKey = "";
         ProcessInstance processInstance = null;
         //判断是任务还是项目
         String projectOrTask = "";
@@ -473,7 +473,6 @@ public class FlowController {
                 return new ResultMsg(false, MsgCode.ERROR.getValue(), "项目已暂停，不能进行操作！");
             }
             module = processInstance.getProcessDefinitionKey();
-            businessKey = processInstance.getBusinessKey();
 
             switch (module){
                 case FlowConstant.SIGN_FLOW:
@@ -528,22 +527,16 @@ public class FlowController {
         }catch (Exception e){
             errorMsg = e.getMessage();
             log.info("流程提交异常："+errorMsg);
-            resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"操作异常，错误信息已记录，请联系管理员查看！");
+            resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"操作异常，错误信息已记录，请联系管理员查看！异常信息："+errorMsg);
         }
         //腾讯通消息处理
         rtxService.dealPoolRTXMsg(flowDto.getTaskId(),resultMsg,processInstance,smsContent.get(projectOrTask,processInstance.getName()));
         return resultMsg;
     }
+
     @RequiresAuthentication
     @RequestMapping(name = "获取重写工作方案分支", path = "getBranchInfo", method = RequestMethod.GET)
     public @ResponseBody ResultMsg getBranchInfo(@RequestBody FlowDto flowDto) {
-        /*
-项目signID:
- 41f13169-cf7c-4273-b7a0-841921d467ae
-        *
-        * */
-
-
 
         ResultMsg resultMsg = flowService.getBranchInfo(flowDto);
         return resultMsg;
@@ -551,7 +544,9 @@ public class FlowController {
 
     @RequiresAuthentication
     @RequestMapping(name = "流程回退", path = "rollbacklast", method = RequestMethod.POST)
-    public @ResponseBody ResultMsg rollBackLast(@RequestBody FlowDto flowDto) {
+    @ResponseBody
+    @Transactional
+    public ResultMsg rollBackLast(@RequestBody FlowDto flowDto) {
         ResultMsg resultMsg = flowService.rollBackLastNode(flowDto);
         return resultMsg;
     }
@@ -560,7 +555,8 @@ public class FlowController {
     @RequiresAuthentication
     @Transactional
     @RequestMapping(name = "激活流程", path = "active/{businessKey}", method = RequestMethod.POST)
-    public @ResponseBody ResultMsg activeFlow(@PathVariable("businessKey") String businessKey) {
+    @ResponseBody
+    public ResultMsg activeFlow(@PathVariable("businessKey") String businessKey) {
         log.info("流程激活成功！businessKey=" + businessKey);
         return flowService.restartFlow(businessKey);
     }

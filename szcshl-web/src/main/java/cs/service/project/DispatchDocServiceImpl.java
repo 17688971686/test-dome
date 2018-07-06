@@ -136,8 +136,9 @@ public class DispatchDocServiceImpl implements DispatchDocService {
     @Override
     @Transactional
     public ResultMsg save(DispatchDocDto dispatchDocDto) {
-        boolean isUpdate = Validate.isString(dispatchDocDto.getSignId());
-        if (isUpdate) {
+        boolean isHaveSign = Validate.isString(dispatchDocDto.getSignId());
+        boolean isUpdate = Validate.isString(dispatchDocDto.getId());
+        if (isHaveSign) {
             if (Constant.MergeType.DIS_SINGLE.getValue().equals(dispatchDocDto.getDispatchWay())) {
                 //单个发文
                 if (signMergeRepo.isHaveMerge(dispatchDocDto.getSignId(), Constant.MergeType.DISPATCH.getValue())) {
@@ -671,20 +672,13 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         dispatchDocRepo.updateDispatchDoc(dispatchDocDto, isMain);
     }
 
-    @Override
-    public boolean checkIsMegerDis(String disWay) {
-        if (Validate.isString(disWay) && MergeType.DISPATCH.equals(disWay)) {
-            return true;
-        }
-        return false;
-    }
 
     @Override
-    public boolean checkIsMain(String isMainProj) {
-        if (Validate.isString(isMainProj) && EnumState.YES.getValue().equals(isMainProj)) {
-            return true;
-        }
-        return false;
+    public DispatchDocDto findById(String dictId) {
+        DispatchDocDto dispatchDocDto = new DispatchDocDto();
+        DispatchDoc dispatchDoc = dispatchDocRepo.findById(DispatchDoc_.id.getName(),dictId);
+        BeanCopierUtils.copyProperties(dispatchDoc,dispatchDocDto);
+        return dispatchDocDto;
     }
 
 

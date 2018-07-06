@@ -98,7 +98,7 @@ public interface FlowService {
      * @param definitionKey     流程定义KEY
      * @return
      */
-    ResultMsg dealFlowByBusinessKey(String businessKey,String activiName,FlowDto flowDto,String definitionKey);
+    ResultMsg dealFlowByBusinessKey(String businessKey,String activiName,FlowDto flowDto,String definitionKey) throws Exception;
 
     /**
      * 取回流程
@@ -190,5 +190,5 @@ public interface FlowService {
      * @param flowDto
      * @return
      */
-    ResultMsg dealMerDisFlow(ProcessInstance processInstance, Task task, DispatchDoc dp, String nodeName, FlowDto flowDto, boolean isAgentTask);
+    ResultMsg dealMerDisFlow(ProcessInstance processInstance, Task task, DispatchDoc dp, String nodeName, FlowDto flowDto, boolean isAgentTask) throws Exception;
 }

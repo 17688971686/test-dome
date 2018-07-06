@@ -13139,6 +13139,7 @@
         vm.sign = {};
         vm.searchSign = {};        //发文查询对象
         vm.dispatchDoc = {};       //发文对象
+        vm.disData = {};            //从数据库查询的对象
         vm.dispatchDoc.signId = $state.params.signid;
         vm.isControl = $state.params.isControl;//按钮控制
         vm.dispatchDoc.id = "";
@@ -13398,7 +13399,7 @@
                     bsWin.alert(data.reMsg);
                 });
             } else {
-                bsWin.alert("提交失败，请确认填写内容！");
+                bsWin.alert("提交失败，带红色*的项是必填项，请确认是否已经填写！");
             }
         }
 
@@ -13449,22 +13450,32 @@
 
         // 打开合并页面
         vm.gotoMergePage = function () {
-            vm.busiFlag.isMain = (vm.dispatchDoc.isMainProject == "9") ? true : false;//判断是否为主项目
-            //没保存或者单个发文改成合并发文主项目时候要先进行保存
-            if (vm.dispatchDoc.isMainProject == 9 && !vm.dispatchDoc.id) {
+            if(vm.dispatchDoc.id){
+                vm.disData = {};
+                //先从数据库查询原始数据判断
+                dispatchSvc.findDocById(vm.dispatchDoc.id,function (data) {
+                    vm.disData = data;
+                    //发文方式不一样，先保存
+                    if(vm.disData.dispatchWay != vm.dispatchDoc.dispatchWay
+                       || vm.disData.isMainProject != vm.dispatchDoc.isMainProject){
+                        bsWin.alert("请先保存！");
+                        return ;
+                    }else{
+                        //初始化合并评审信息
+                        dispatchSvc.initMergeInfo(vm, vm.dispatchDoc.signId);
+                        $("#mergeSign").kendoWindow({
+                            width: "75%",
+                            height: "700px",
+                            title: "合并发文",
+                            visible: false,
+                            modal: true,
+                            closable: true,
+                            actions: ["Pin", "Minimize", "Maximize", "Close"]
+                        }).data("kendoWindow").center().open();
+                    }
+                })
+            }else{
                 bsWin.alert("请先保存！");
-            } else {
-                //初始化合并评审信息
-                dispatchSvc.initMergeInfo(vm, vm.dispatchDoc.signId);
-                $("#mergeSign").kendoWindow({
-                    width: "75%",
-                    height: "700px",
-                    title: "合并发文",
-                    visible: false,
-                    modal: true,
-                    closable: true,
-                    actions: ["Pin", "Minimize", "Maximize", "Close"]
-                }).data("kendoWindow").center().open();
             }
         }
 
@@ -13571,8 +13582,33 @@
             chooseProject: chooseProject,       // 选择合并发文项目
             cancelProject: cancelProject,       // 取消选择
             deleteAllMerge : deleteAllMerge,    // 取消所有的合并项目
+            findDocById : findDocById,          //根据ID查询发文信息
         };
         return service;
+
+        function findDocById(dictId,callBack){
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/dispatch/findById",
+                params: {
+                    dictId: dictId
+                }
+            }
+            var httpSuccess = function success(response) {
+                //关闭项目关联窗口
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess,
+                onError:function () {
+                    vm.isCommit = false;
+                }
+            });
+        }
 
         // begin#gotoWPage
         function initMergeInfo(vm,signId) {

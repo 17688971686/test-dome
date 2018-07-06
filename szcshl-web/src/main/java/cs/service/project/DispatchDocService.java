@@ -35,17 +35,11 @@ public interface DispatchDocService {
      */
     void updateDispatchByDocDto(DispatchDocDto dispatchDocDto,String isMain);
 
-    /**
-     * 判断是否是合并发文
-     * @param disWay
-     * @return
-     */
-    boolean checkIsMegerDis(String disWay);
 
     /**
-     * 判断是否是主项目
-     * @param isMainProj
+     * 根据ID查询
+     * @param dictId
      * @return
      */
-    boolean checkIsMain(String isMainProj);
+    DispatchDocDto findById(String dictId);
 }

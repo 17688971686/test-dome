@@ -1,5 +1,7 @@
 package cs.service.flow;
 
+import cs.ahelper.projhelper.DisUtil;
+import cs.ahelper.projhelper.WorkPGUtil;
 import cs.common.RandomGUID;
 import cs.common.constants.Constant;
 import cs.common.constants.Constant.MergeType;
@@ -24,6 +26,7 @@ import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
 import cs.repository.repositoryImpl.flow.RuTaskRepo;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.project.*;
+import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.repository.repositoryImpl.topic.WorkPlanRepo;
 import cs.service.project.AgentTaskService;
 import cs.service.project.SignPrincipalService;
@@ -70,9 +73,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.zip.ZipInputStream;
 
-import static cs.common.constants.FlowConstant.FLOW_SIGN_BMLD_QRFW;
-import static cs.common.constants.FlowConstant.FLOW_SIGN_FW;
-import static cs.common.constants.FlowConstant.FLOW_SIGN_QRFW;
+import static cs.common.constants.FlowConstant.*;
 import static cs.common.constants.SysConstants.SEPARATE_COMMA;
 import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
@@ -156,6 +157,9 @@ public class FlowServiceImpl implements FlowService {
     private SignRepo signRepo;
     @Autowired
     private AgentTaskService agentTaskService;
+    @Autowired
+    private UserRepo userRepo;
+
     /**
      * 回退到上一环节或者指定环节
      *
@@ -169,6 +173,8 @@ public class FlowServiceImpl implements FlowService {
         String errorMsg = "";
         String module = "";
         String businessKey = "";
+        DisUtil disUtil = null;
+        WorkPGUtil workPGUtil = null;
         try {
             // 取得当前任务
             HistoricTaskInstance currTask = historyService.createHistoricTaskInstanceQuery().taskId(flowDto.getTaskId()).singleResult();
@@ -221,10 +227,11 @@ public class FlowServiceImpl implements FlowService {
                             signService.updateSignProcessState(businessKey, Constant.SignProcessState.DO_WP.getValue());
                             signBranchRepo.resetBranchState(businessKey, wk.getBranchId());
                         }
+                        workPGUtil = WorkPGUtil.create(wk);
                         if (FlowConstant.FLOW_SIGN_XMFZR1.equals(backActivitiId)) {
                             //如果是合并评审环节，还要合并回退
-                            if (Constant.MergeType.REVIEW_MERGE.getValue().equals(wk.getIsSigle()) && Constant.EnumState.YES.getValue().equals(wk.getIsMainProject())) {
-                                List<SignMerge> mergeList = signMergeRepo.findByIds(SignMerge_.signId.getName(), instance.getBusinessKey(), null);
+                            if (workPGUtil.isMergeWP() && workPGUtil.isMainWP()) {
+                                List<SignMerge> mergeList = signMergeRepo.findByType(businessKey, MergeType.WORK_PROGRAM.getValue());
                                 if (Validate.isList(mergeList)) {
                                     FlowDto flowDto2 = new FlowDto();
                                     flowDto2.setDealOption(flowDto.getDealOption());
@@ -240,59 +247,31 @@ public class FlowServiceImpl implements FlowService {
                             }
                         }
                         //清空审批意见
-                        wk.setMinisterSuggesttion("");
-                        wk.setMinisterDate(null);
-                        wk.setMinisterName("");
-                        wk.setLeaderSuggesttion("");
-                        wk.setLetterDate(null);
-                        wk.setLeaderName("");
-                        workProgramRepo.save(wk);
-                        //如果是发文环节回退，还要清空发文审批表的审批意见
-                    } else if (FlowConstant.FLOW_SIGN_FGLD_QRFW.equals(backActivitiId)) {
+                        workPGUtil.resetMinisterOption().resetLeaderOption();
+                        workProgramRepo.save(workPGUtil.getWorkProgram());
+
+                    }else if (FlowConstant.FLOW_SIGN_ZR_QRFW.equals(backActivitiId)) {
+                        //主任发文回退
                         DispatchDoc dispatchDoc = dispatchDocRepo.findById("signid", businessKey);
                         if (Validate.isObject(dispatchDoc) && Validate.isString(dispatchDoc.getId())) {
-                            dispatchDoc.setViceDirectorSuggesttion("");
-                            dispatchDoc.setViceDirectorDate(null);
-                            dispatchDoc.setViceDirectorName("");
-
-                            dispatchDoc.setDirectorSuggesttion("");
-                            dispatchDoc.setDirectorDate(null);
-                            dispatchDoc.setDirectorName("");
-                            dispatchDocRepo.save(dispatchDoc);
+                            disUtil = DisUtil.create(dispatchDoc);
+                            disUtil.resetViceDirectorOption().resetDirectorOption();
+                            dispatchDocRepo.save(disUtil.getDispatchDoc());
                         }
-                    } else if (FlowConstant.FLOW_SIGN_BMLD_QRFW.equals(backActivitiId)) {
+                    }else if (FlowConstant.FLOW_SIGN_BMLD_QRFW.equals(backActivitiId)) {
+                        //分管副主任审批发文
                         DispatchDoc dispatchDoc = dispatchDocRepo.findById("signid", businessKey);
                         if (Validate.isObject(dispatchDoc) && Validate.isString(dispatchDoc.getId())) {
-                            dispatchDoc.setMinisterSuggesttion("");
-                            dispatchDoc.setMinisterDate(null);
-                            dispatchDoc.setMinisterName("");
-
-                            dispatchDoc.setViceDirectorSuggesttion("");
-                            dispatchDoc.setViceDirectorDate(null);
-                            dispatchDoc.setViceDirectorName("");
-
-                            dispatchDoc.setDirectorSuggesttion("");
-                            dispatchDoc.setDirectorDate(null);
-                            dispatchDoc.setDirectorName("");
-                            dispatchDocRepo.save(dispatchDoc);
+                            disUtil = DisUtil.create(dispatchDoc);
+                            disUtil.resetMinisterOption().resetViceDirectorOption().resetDirectorOption();
+                            dispatchDocRepo.save(disUtil.getDispatchDoc());
                         }
-                        //回退到发文环节
+                    //回退到发文环节
                     } else if (FlowConstant.FLOW_SIGN_FW.equals(backActivitiId)) {
                         DispatchDoc dispatchDoc = dispatchDocRepo.findById("signid", businessKey);
                         if (Validate.isObject(dispatchDoc) && Validate.isString(dispatchDoc.getId())) {
-                            dispatchDoc.setSecondChargeSuggest("");
-                            dispatchDoc.setMinisterSuggesttion("");
-                            dispatchDoc.setMinisterDate(null);
-                            dispatchDoc.setMinisterName("");
-
-                            dispatchDoc.setViceDirectorSuggesttion("");
-                            dispatchDoc.setViceDirectorDate(null);
-                            dispatchDoc.setViceDirectorName("");
-
-                            dispatchDoc.setDirectorSuggesttion("");
-                            dispatchDoc.setDirectorDate(null);
-                            dispatchDoc.setDirectorName("");
-                            dispatchDocRepo.save(dispatchDoc);
+                            disUtil.resetMainUserOption().resetSecondUserOption().resetMinisterOption().resetViceDirectorOption().resetDirectorOption();
+                            dispatchDocRepo.save(disUtil.getDispatchDoc());
                         }
                     }
                     break;
@@ -338,10 +317,8 @@ public class FlowServiceImpl implements FlowService {
                 List<PvmTransition> nextTransitionList = currActivity.getIncomingTransitions();
                 for (PvmTransition nextTransition : nextTransitionList) {
                     PvmActivity nextActivity = nextTransition.getSource();
-                    ActivityImpl nextActivityImpl = ((ProcessDefinitionImpl) definition)
-                            .findActivity(nextActivity.getId());
-                    TransitionImpl newTransition = currActivity
-                            .createOutgoingTransition();
+                    ActivityImpl nextActivityImpl = ((ProcessDefinitionImpl) definition).findActivity(nextActivity.getId());
+                    TransitionImpl newTransition = currActivity.createOutgoingTransition();
                     newTransition.setDestination(nextActivityImpl);
                     newTransitions.add(newTransition);
                 }
@@ -817,7 +794,7 @@ public class FlowServiceImpl implements FlowService {
      * @return
      */
     @Override
-    public ResultMsg dealFlowByBusinessKey(String businessKey, String activiName, FlowDto flowDto, String definitionKey) {
+    public ResultMsg dealFlowByBusinessKey(String businessKey, String activiName, FlowDto flowDto, String definitionKey) throws Exception {
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceBusinessKey(businessKey).singleResult();
         if (processInstance == null) {
             return new ResultMsg(false, Constant.MsgCode.FLOW_INSTANCE_NULL.getValue(), "流程已处理完毕！");
@@ -1368,115 +1345,196 @@ public class FlowServiceImpl implements FlowService {
      * @return
      */
     @Override
-    public ResultMsg dealMerDisFlow(ProcessInstance processInstance, Task task,DispatchDoc dp, String nodeName, FlowDto flowDto, boolean isAgentTask) {
-        String businessId = "",                                 //业务ID
-                assigneeValue = "",                              //环节处理人
-                signid = processInstance.getBusinessKey(),       //项目ID
-                curUserId = SessionUtil.getUserId();             //当前用户ID
+    public ResultMsg dealMerDisFlow(ProcessInstance processInstance, Task task, DispatchDoc dp, String nodeName, FlowDto flowDto, boolean isAgentTask) throws Exception {
+        String assigneeValue = "",                             //环节处理人
+                nextNodeKey = "",                               //环节名称
+                signid = processInstance.getBusinessKey();      //项目ID
+
         boolean isNextUser = false;
         List<AgentTask> agentTaskList = new ArrayList<>();      //代办任务
         Map<String, Object> variables = new HashMap<>();        //环节参数
         List<User> userList = null;                             //处理人列表
         User dealUser = null;                                   //处理人
-        List<SignPrincipal> signPriList = null;                 //项目负责人
         Sign sign = null;                                       //项目信息
-        List<SignMerge> mergeList =  signMergeRepo.findByType(signid, MergeType.DISPATCH.getValue());
-        try {
-            switch (nodeName){
-                //发文申请
-                case FLOW_SIGN_FW:
-                    if (Validate.isList(mergeList)) {
-                        //1、先检验是否发放评审费和通过校验
-                        for (SignMerge s : mergeList) {
-                            if(!signService.checkReviewCost(s.getMergeId())){
-                                return new ResultMsg(false, MsgCode.ERROR.getValue(),"合并发文次项目,还没完成专家评审费发放，不能进行下一步操作！");
-                            }
-                            if(!signService.checkFileUpload(s.getMergeId())){
-                                return new ResultMsg(false, MsgCode.ERROR.getValue(),"合并发文次项目,还没上传[评审意见]或者[审核意见]附件信息！");
-                            }
-                        }
-                    }
-                    //校验本身是否已经发送评审费和上传附件
-                    if(!signService.checkReviewCost(signid)){
-                        return new ResultMsg(false,MsgCode.ERROR.getValue(),"您还没完成专家评审费发放，不能进行下一步操作！");
-                    }
-                    if(!signService.checkFileUpload(signid)){
-                        return new ResultMsg(false,MsgCode.ERROR.getValue(),"您还没上传[评审意见]或者[审核意见]附件信息！");
-                    }
-                    //取环节处理人
-                    userList = signPrincipalService.getAllSecondPriUser(signid);
-                    if (Validate.isList(userList)) {
-                        //有项目负责人，则项目负责人审核
-                        variables.put(FlowConstant.SignFlowParams.HAVE_XMFZR.getValue(), true);
-                        for (User user : userList) {
-                            String userId = userService.getTaskDealId(user.getId(), agentTaskList, FLOW_SIGN_QRFW);
-                            assigneeValue = StringUtil.joinString(assigneeValue, SEPARATE_COMMA, userId);
-                        }
-                        variables.put(FlowConstant.SignFlowParams.USER_HQ_LIST.getValue(), StringUtil.getSplit(assigneeValue, SEPARATE_COMMA));
-                    } else {
-                        //没有项目负责人，则主办部长审核
-                        variables.put(FlowConstant.SignFlowParams.HAVE_XMFZR.getValue(), false);
-                        assigneeValue = signService.getMainDirecotr(signid, agentTaskList,FlowConstant.FLOW_SIGN_BMLD_QRFW);
-                        variables.put(FlowConstant.SignFlowParams.USER_BZ1.getValue(), assigneeValue);
-                    }
+        List<SignMerge> mergeList = signMergeRepo.findByType(signid, MergeType.DISPATCH.getValue());
+        ResultMsg returnMsg = new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！");
 
-                    //开始处理流程
-                    commitFWSQNode(variables,signid,task.getId(),processInstance.getId(),flowDto.getDealOption(),dp,isAgentTask);
-                    //处理合并发文的发文和项目信息
+        switch (nodeName) {
+            //发文申请
+            case FLOW_SIGN_FW:
+                if (Validate.isList(mergeList)) {
+                    //1、先检验是否发放评审费和通过校验
                     for (SignMerge s : mergeList) {
-                        sign = signRepo.findById(s.getMergeId());
-                        ResultMsg resultMsg = checkMerDisNode(task,processInstance,sign,FLOW_SIGN_FW);
-                        if(resultMsg.isFlag()){
-                            commitFWSQNode(variables,sign.getSignid(),task.getId(),processInstance.getId(),flowDto.getDealOption(),sign.getDispatchDoc(),isAgentTask);
-                        }else{
-                            return resultMsg;
+                        if (!signService.checkReviewCost(s.getMergeId())) {
+                            return new ResultMsg(false, MsgCode.ERROR.getValue(), "合并发文次项目,还没完成专家评审费发放，不能进行下一步操作！");
+                        }
+                        if (!signService.checkFileUpload(s.getMergeId())) {
+                            return new ResultMsg(false, MsgCode.ERROR.getValue(), "合并发文次项目,还没上传[评审意见]或者[审核意见]附件信息！");
                         }
                     }
-                    break;
-                //项目负责人办理
-                case FLOW_SIGN_QRFW:
-                    boolean isAgree = Constant.EnumState.YES.getValue().equals(flowDto.getBusinessMap().get("AGREE").toString());
-                    if(isAgree){
-                        variables.put(FlowConstant.SignFlowParams.HAVE_XB.getValue(), false);
-                        //获取主分支的部门领导
-                        assigneeValue = signService.getMainDirecotr(signid, agentTaskList, FLOW_SIGN_BMLD_QRFW);
-                        variables.put(FlowConstant.SignFlowParams.USER_BZ1.getValue(), assigneeValue);
-                    }else{
-                        variables.put(FlowConstant.SignFlowParams.HAVE_XB.getValue(), null);
-                        variables.put(FlowConstant.SignFlowParams.XMFZR_SP.getValue(), false);
-                        //选择第一负责人
+                }
+                //校验本身是否已经发送评审费和上传附件
+                if (!signService.checkReviewCost(signid)) {
+                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还没完成专家评审费发放，不能进行下一步操作！");
+                }
+                if (!signService.checkFileUpload(signid)) {
+                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还没上传[评审意见]或者[审核意见]附件信息！");
+                }
+                //取环节处理人
+                userList = signPrincipalService.getAllSecondPriUser(signid);
+                if (Validate.isList(userList)) {
+                    //有项目负责人，则项目负责人审核
+                    variables.put(FlowConstant.SignFlowParams.HAVE_XMFZR.getValue(), true);
+                    for (User user : userList) {
+                        String userId = userService.getTaskDealId(user.getId(), agentTaskList, FLOW_SIGN_QRFW);
+                        assigneeValue = StringUtil.joinString(assigneeValue, SEPARATE_COMMA, userId);
                     }
-                    //开始处理流程
-                    commitFZENode(variables,signid,task.getId(),processInstance.getId(),flowDto.getDealOption(),dp,isAgentTask,isAgree,agentTaskList,FLOW_SIGN_QRFW);
-                    //处理合并发文的发文和项目信息
-                    for (SignMerge s : mergeList) {
-                        sign = signRepo.findById(s.getMergeId());
-                        ResultMsg resultMsg = checkMerDisNode(task,processInstance,sign,FLOW_SIGN_QRFW);
-                        if(resultMsg.isFlag()){
-                            commitFZENode(variables,s.getSignId(),task.getId(),processInstance.getId(),flowDto.getDealOption(),sign.getDispatchDoc(),isAgentTask,isAgree,agentTaskList,FLOW_SIGN_QRFW);
-                        }else{
-                            return resultMsg;
-                        }
+                    variables.put(FlowConstant.SignFlowParams.USER_HQ_LIST.getValue(), StringUtil.getSplit(assigneeValue, SEPARATE_COMMA));
+                } else {
+                    //没有项目负责人，则主办部长审核
+                    variables.put(FlowConstant.SignFlowParams.HAVE_XMFZR.getValue(), false);
+                    assigneeValue = signService.getMainDirecotr(signid, agentTaskList, FlowConstant.FLOW_SIGN_BMLD_QRFW);
+                    variables.put(FlowConstant.SignFlowParams.USER_BZ1.getValue(), assigneeValue);
+                }
+
+                //开始处理流程
+                commitFWSQNode(variables, signid, task.getId(), processInstance.getId(), flowDto.getDealOption(), dp, isAgentTask);
+                //处理合并发文的发文和项目信息
+                for (SignMerge s : mergeList) {
+                    sign = signRepo.findById(s.getMergeId());
+                    ResultMsg resultMsg = checkMerDisNode(sign, FLOW_SIGN_FW);
+                    if (resultMsg.isFlag()) {
+                        Map<String, Object> resultObj = (Map<String, Object>) resultMsg.getReObj();
+                        task = (Task) resultObj.get("task");
+                        processInstance = (ProcessInstance) resultObj.get("processInstance");
+                        commitFWSQNode(variables, sign.getSignid(), task.getId(), processInstance.getId(), flowDto.getDealOption(), sign.getDispatchDoc(), isAgentTask);
+                    } else {
+                        throw new Exception(resultMsg.getReMsg());
                     }
-                    break;
-            }
-        } catch (Exception e) {
-            log.error("合并发文异常："+e.getMessage());
+                }
+                break;
+            //项目负责人办理
+            case FLOW_SIGN_QRFW:
+                boolean isAgree = Constant.EnumState.YES.getValue().equals(flowDto.getBusinessMap().get("AGREE").toString());
+                if (isAgree) {
+                    variables.put(FlowConstant.SignFlowParams.HAVE_XB.getValue(), false);
+                    //获取主分支的部门领导
+                    assigneeValue = signService.getMainDirecotr(signid, agentTaskList, FLOW_SIGN_BMLD_QRFW);
+                    variables.put(FlowConstant.SignFlowParams.USER_BZ1.getValue(), assigneeValue);
+                } else {
+                    variables.put(FlowConstant.SignFlowParams.HAVE_XB.getValue(), null);
+                    variables.put(FlowConstant.SignFlowParams.XMFZR_SP.getValue(), false);
+                    //选择第一负责人
+                }
+                //开始处理流程
+                commitFZENode(variables, signid, task.getId(), processInstance.getId(), flowDto.getDealOption(), dp, isAgentTask, isAgree, agentTaskList, FLOW_SIGN_QRFW);
+                //处理合并发文的发文和项目信息
+                for (SignMerge s : mergeList) {
+                    sign = signRepo.findById(s.getMergeId());
+                    ResultMsg resultMsg = checkMerDisNode(sign, FLOW_SIGN_QRFW);
+                    if (resultMsg.isFlag()) {
+                        Map<String, Object> resultObj = (Map<String, Object>) resultMsg.getReObj();
+                        task = (Task) resultObj.get("task");
+                        processInstance = (ProcessInstance) resultObj.get("processInstance");
+                        commitFZENode(variables, s.getSignId(), task.getId(), processInstance.getId(), flowDto.getDealOption(), sign.getDispatchDoc(), isAgentTask, isAgree, agentTaskList, FLOW_SIGN_QRFW);
+                    } else {
+                        throw new Exception(resultMsg.getReMsg());
+                    }
+                }
+                break;
+            //主办部长审批发文
+            case FLOW_SIGN_BMLD_QRFW:
+                sign = signRepo.findById(Sign_.signid.getName(), signid);
+                User mainLead = userRepo.getCacheUserById(sign.getLeaderId());
+                assigneeValue = Validate.isString(mainLead.getTakeUserId()) ? mainLead.getTakeUserId() : mainLead.getId();
+                //没有协办
+                variables.put(FlowConstant.SignFlowParams.HAVE_XB.getValue(), false);
+                variables.put(FlowConstant.SignFlowParams.USER_FGLD1.getValue(), assigneeValue);
+
+                commitZBNode(variables, task.getId(), processInstance.getId(), flowDto.getDealOption(), dp, isAgentTask);
+                for (SignMerge s : mergeList) {
+                    sign = signRepo.findById(s.getMergeId());
+                    ResultMsg resultMsg = checkMerDisNode(sign, FLOW_SIGN_BMLD_QRFW);
+                    if (resultMsg.isFlag()) {
+                        Map<String, Object> resultObj = (Map<String, Object>) resultMsg.getReObj();
+                        task = (Task) resultObj.get("task");
+                        processInstance = (ProcessInstance) resultObj.get("processInstance");
+                        commitZBNode(variables, task.getId(), processInstance.getId(), flowDto.getDealOption(), sign.getDispatchDoc(), isAgentTask);
+                    } else {
+                        throw new Exception(resultMsg.getReMsg());
+                    }
+                }
+                break;
+            //主办分管副主任审批发文
+            case FLOW_SIGN_FGLD_QRFW:
+                dealUser = userRepo.findUserByRoleName(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue()).get(0);
+                assigneeValue = userService.getTaskDealId(dealUser, agentTaskList, FLOW_SIGN_ZR_QRFW);
+                variables.put(FlowConstant.SignFlowParams.USER_ZR.getValue(), assigneeValue);
+                //下一环节还是自己处理
+                isNextUser = assigneeValue.equals(SessionUtil.getUserId());
+                nextNodeKey = FLOW_SIGN_ZR_QRFW;
+
+                commitFGZRNode(variables, task.getId(), processInstance.getId(), flowDto.getDealOption(), dp, isAgentTask);
+                for (SignMerge s : mergeList) {
+                    sign = signRepo.findById(s.getMergeId());
+                    ResultMsg resultMsg = checkMerDisNode(sign, FLOW_SIGN_FGLD_QRFW);
+                    if (resultMsg.isFlag()) {
+                        Map<String, Object> resultObj = (Map<String, Object>) resultMsg.getReObj();
+                        task = (Task) resultObj.get("task");
+                        processInstance = (ProcessInstance) resultObj.get("processInstance");
+                        commitFGZRNode(variables, task.getId(), processInstance.getId(), flowDto.getDealOption(), sign.getDispatchDoc(), isAgentTask);
+                    } else {
+                        throw new Exception(resultMsg.getReMsg());
+                    }
+                }
+
+                break;
+            //主任审批发文
+            case FLOW_SIGN_ZR_QRFW:
+                //项目负责人生成发文编号
+                variables = signService.buildMainPriUser(variables, signid, agentTaskList, FlowConstant.FLOW_SIGN_FWBH);
+                commitZRNode(variables, task.getId(), processInstance.getId(), flowDto.getDealOption(), dp, isAgentTask);
+                for (SignMerge s : mergeList) {
+                    sign = signRepo.findById(s.getMergeId());
+                    ResultMsg resultMsg = checkMerDisNode(sign, FLOW_SIGN_ZR_QRFW);
+                    if (resultMsg.isFlag()) {
+                        Map<String, Object> resultObj = (Map<String, Object>) resultMsg.getReObj();
+                        task = (Task) resultObj.get("task");
+                        processInstance = (ProcessInstance) resultObj.get("processInstance");
+                        commitZRNode(variables, task.getId(), processInstance.getId(), flowDto.getDealOption(), sign.getDispatchDoc(), isAgentTask);
+                    } else {
+                        throw new Exception(resultMsg.getReMsg());
+                    }
+                }
+                break;
         }
 
         //放入腾讯通消息缓冲池
         if (isNextUser == false) {
             RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
+        } else {
+            processInstance = runtimeService.createProcessInstanceQuery().processInstanceBusinessKey(signid).singleResult();
+            List<Task> nextTaskList = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskAssignee(assigneeValue).list();
+            for (Task t : nextTaskList) {
+                if (nextNodeKey.equals(t.getTaskDefinitionKey())) {
+                    ResultMsg resultMsg = signService.dealFlow(processInstance, t, flowDto);
+                    if (!returnMsg.isFlag()) {
+                        return resultMsg;
+                    }
+                }
+            }
         }
         //如果是代办，还要更新环节名称和任务ID
         if (Validate.isList(agentTaskList)) {
-            agentTaskService.updateAgentInfo(agentTaskList,processInstance.getId(),processInstance.getName());
+            agentTaskService.updateAgentInfo(agentTaskList, processInstance.getId(), processInstance.getName());
         }
-        return new ResultMsg(true,MsgCode.OK.getValue(),"操作成功！");
+
+        return returnMsg;
     }
 
     /**
      * 发文申请环节处理
+     *
      * @param signId
      * @param taskId
      * @param procInstId
@@ -1484,58 +1542,130 @@ public class FlowServiceImpl implements FlowService {
      * @param dp
      * @param isAgentTask
      */
-    private void commitFWSQNode(Map<String, Object> variables,String signId,String taskId,String procInstId,String dealOption,DispatchDoc dp,boolean isAgentTask){
+    private void commitFWSQNode(Map<String, Object> variables, String signId, String taskId, String procInstId, String dealOption, DispatchDoc dp, boolean isAgentTask) {
         taskService.addComment(taskId, procInstId, dealOption);
         taskService.complete(taskId, variables);
         //修改第一负责人信息
-        dp.setMianChargeSuggest(dealOption + "  签名：" + ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask) + "  日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
+        dp.setMianChargeSuggest(dealOption + "  签名：" + ActivitiUtil.getSignName(SessionUtil.getDisplayName(), isAgentTask) + "  日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
         signService.resetDisReviewOption(dp);
         dispatchDocRepo.save(dp);
         signRepo.updateSignProcessState(signId, Constant.SignProcessState.END_DIS.getValue());
     }
 
     /**
-     * 合并发文负责人处理环节
+     * 合并发文，项目负责人处理环节
+     *
+     * @param variables
+     * @param signId
+     * @param taskId
+     * @param procInstId
+     * @param dealOption
      * @param dp
+     * @param isAgentTask
+     * @param isAgree
+     * @param agentTaskList
+     * @param nodeKey
      */
-    private void commitFZENode(Map<String, Object> variables,String signId,String taskId,String procInstId,String dealOption,DispatchDoc dp,boolean isAgentTask,boolean isAgree,List<AgentTask> agentTaskList,String nodeKey){
+    private void commitFZENode(Map<String, Object> variables, String signId, String taskId, String procInstId, String dealOption, DispatchDoc dp, boolean isAgentTask, boolean isAgree, List<AgentTask> agentTaskList, String nodeKey) {
         String newDealOption = dealOption;
-        if(isAgree){
+        if (isAgree) {
             newDealOption += "【审批结果：核稿无误】";
-        }else{
+        } else {
             newDealOption += "【审批结果：核稿有误】";
-            variables = signService.buildMainPriUser(variables,signId,agentTaskList,nodeKey);
+            variables = signService.buildMainPriUser(variables, signId, agentTaskList, nodeKey);
         }
         taskService.addComment(taskId, procInstId, newDealOption);
         taskService.complete(taskId, variables);
         //修改第二负责人意见
         String optionString = Validate.isString(dp.getSecondChargeSuggest()) ? (dp.getSecondChargeSuggest() + "<br>") : "";
-        dp.setSecondChargeSuggest(optionString + dealOption + " 签名：" + ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask) + " 日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
+        dp.setSecondChargeSuggest(optionString + dealOption + " 签名：" + ActivitiUtil.getSignName(SessionUtil.getDisplayName(), isAgentTask) + " 日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
         dispatchDocRepo.save(dp);
     }
 
-    private ResultMsg checkMerDisNode(Task task,ProcessInstance processInstance,Sign sign,String nodeName){
-        ResultMsg resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"");
-        if(!Validate.isObject(sign.getDispatchDoc())){
-            resultMsg.setReMsg("项目【"+sign.getProjectname()+"】还没填报发文！");
+    /**
+     * 部长审批环节意见
+     *
+     * @param variables
+     * @param taskId
+     * @param procInstId
+     * @param dealOption
+     * @param dp
+     * @param isAgentTask
+     */
+    private void commitZBNode(Map<String, Object> variables, String taskId, String procInstId, String dealOption, DispatchDoc dp, boolean isAgentTask) {
+        taskService.addComment(taskId, procInstId, dealOption);
+        taskService.complete(taskId, variables);
+        dp.setMinisterSuggesttion(dealOption);
+        dp.setMinisterDate(new Date());
+        dp.setMinisterName(ActivitiUtil.getSignName(SessionUtil.getDisplayName(), isAgentTask));
+        dispatchDocRepo.save(dp);
+    }
+
+    /**
+     * 分管副主任审批环节
+     *
+     * @param variables
+     * @param taskId
+     * @param procInstId
+     * @param dealOption
+     * @param dp
+     * @param isAgentTask
+     */
+    private void commitFGZRNode(Map<String, Object> variables, String taskId, String procInstId, String dealOption, DispatchDoc dp, boolean isAgentTask) {
+        taskService.addComment(taskId, procInstId, dealOption);
+        taskService.complete(taskId, variables);
+        dp.setViceDirectorDate(new Date());
+        dp.setViceDirectorName(ActivitiUtil.getSignName(SessionUtil.getDisplayName(), isAgentTask));
+        dispatchDocRepo.save(dp);
+    }
+
+    /**
+     * 主任环节提交
+     *
+     * @param variables
+     * @param taskId
+     * @param procInstId
+     * @param dealOption
+     * @param dp
+     * @param isAgentTask
+     */
+    private void commitZRNode(Map<String, Object> variables, String taskId, String procInstId, String dealOption, DispatchDoc dp, boolean isAgentTask) {
+        taskService.addComment(taskId, procInstId, dealOption);
+        taskService.complete(taskId, variables);
+        dp.setDirectorSuggesttion(dealOption);
+        dp.setDirectorDate(new Date());
+        dp.setDirectorName(ActivitiUtil.getSignName(SessionUtil.getDisplayName(), isAgentTask));
+        dispatchDocRepo.save(dp);
+    }
+
+    private ResultMsg checkMerDisNode(Sign sign, String nodeName) {
+        ResultMsg resultMsg = new ResultMsg(false, MsgCode.ERROR.getValue(), "");
+        if (!Validate.isObject(sign.getDispatchDoc())) {
+            resultMsg.setReMsg("项目【" + sign.getProjectname() + "】还没填报发文！");
             return resultMsg;
         }
-        processInstance = runtimeService.createProcessInstanceQuery().processInstanceBusinessKey(sign.getSignid()).singleResult();
+        Map<String, Object> resultObj = new HashMap<>();
+        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceBusinessKey(sign.getSignid()).singleResult();
         if (processInstance == null) {
-            resultMsg.setReMsg("项目【"+sign.getProjectname()+"】流程已办结！");
-           return resultMsg;
-        }
-        task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
-        if (task == null) {
-            resultMsg.setReMsg("项目【"+sign.getProjectname()+"】流程已办结！");
+            resultMsg.setReMsg("项目【" + sign.getProjectname() + "】流程已办结！");
             return resultMsg;
+        } else {
+            resultObj.put("processInstance", processInstance);
+        }
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
+        if (task == null) {
+            resultMsg.setReMsg("项目【" + sign.getProjectname() + "】流程已办结！");
+            return resultMsg;
+        } else {
+            resultObj.put("task", task);
         }
         if (!task.getTaskDefinitionKey().equals(nodeName)) {
-            resultMsg.setReMsg("项目【"+sign.getProjectname()+"】办理环节与主项目不一致！");
+            resultMsg.setReMsg("项目【" + sign.getProjectname() + "】办理环节与主项目不一致！");
             return resultMsg;
         }
         resultMsg.setFlag(true);
         resultMsg.setReCode(MsgCode.OK.getValue());
+        resultMsg.setReObj(resultObj);
         return resultMsg;
     }
 }

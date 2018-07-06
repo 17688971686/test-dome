@@ -1,6 +1,9 @@
 package cs.service.project;
 
 import com.alibaba.fastjson.JSON;
+import cs.ahelper.projhelper.BranchUtil;
+import cs.ahelper.projhelper.DisUtil;
+import cs.ahelper.projhelper.WorkPGUtil;
 import cs.common.HqlBuilder;
 import cs.common.RandomGUID;
 import cs.common.ResultMsg;
@@ -777,7 +780,7 @@ public class SignServiceImpl implements SignService {
 
     @Override
     @Transactional
-    public ResultMsg dealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto) {
+    public ResultMsg dealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto) throws Exception {
         //参数定义
         String signid = processInstance.getBusinessKey(),
                 businessId = "",                        //前段传过来的业务ID
@@ -801,6 +804,8 @@ public class SignServiceImpl implements SignService {
         //取得之前的环节处理人信息
         Map<String, Object> variables = new HashMap<>();
         ResultMsg returnResult = null;
+        DisUtil disUtil = null;
+        WorkPGUtil workPGUtil = null;
 
         //以下是流程环节处理
         switch (task.getTaskDefinitionKey()) {
@@ -1206,18 +1211,15 @@ public class SignServiceImpl implements SignService {
                 }
                 //更改工作方案信息
                 wk = workProgramRepo.findBySignIdAndBranchId(signid, branchIndex, false);
-                wk.setMinisterSuggesttion(flowDto.getDealOption());
-                wk.setMinisterDate(new Date());
-                wk.setMinisterName(ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask));
-
+                workPGUtil = WorkPGUtil.create(wk);
+                workPGUtil.setMinisterOption(flowDto.getDealOption(),new Date(),ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask));
                 //如果是主办流程，要判断是否有合并评审方案，有则跟着主项目一起办理
-                if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)) {
-                    if (Constant.MergeType.REVIEW_MERGE.getValue().equals(wk.getIsSigle()) && EnumState.YES.getValue().equals(wk.getIsMainProject())) {
+                if (BranchUtil.isMainBranch(branchIndex)) {
+                    if (workPGUtil.isMergeWP() && workPGUtil.isMainWP()) {
                         List<SignMerge> mergeList = signMergeRepo.findByType(signid, MergeType.WORK_PROGRAM.getValue());
                         if (Validate.isList(mergeList)) {
                             ResultMsg resultMsg = null;
-                            FlowDto flowDto2 = new FlowDto();
-                            flowDto2.setDealOption(flowDto.getDealOption());
+                            FlowDto flowDto2 = new FlowDto(flowDto.getDealOption());
                             for (SignMerge s : mergeList) {
                                 resultMsg = flowService.dealFlowByBusinessKey(s.getMergeId(), FlowConstant.FLOW_SIGN_BMLD_SPW1, flowDto2, processInstance.getProcessDefinitionKey());
                                 if (resultMsg.isFlag() || Constant.MsgCode.FLOW_INSTANCE_NULL.getValue().equals(resultMsg.getReCode())
@@ -1284,6 +1286,7 @@ public class SignServiceImpl implements SignService {
 
                 //更改工作方案审核信息
                 wk = workProgramRepo.findBySignIdAndBranchId(signid, branchIndex, false);
+                workPGUtil = WorkPGUtil.create(wk);
 
                 //如果是主办流程，要判断是否有合并评审方案，有则跟着主项目一起办理
                 if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)) {
@@ -1308,9 +1311,8 @@ public class SignServiceImpl implements SignService {
                     }
                 }
 
-                wk.setLeaderSuggesttion(flowDto.getDealOption());
-                wk.setLeaderDate(new Date());
-                wk.setLeaderName(ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask));
+                workPGUtil.setLeaderOption(flowDto.getDealOption(),new Date(),ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask));
+
 
                 workProgramRepo.save(wk);
                 //完成分支的工作方案
@@ -1339,10 +1341,14 @@ public class SignServiceImpl implements SignService {
             case FLOW_SIGN_FW:
                 businessId = flowDto.getBusinessMap().get("DIS_ID").toString();
                 dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
-
-                //是否是合并发文主项目
-                if(dispatchDocService.checkIsMegerDis(dp.getDispatchWay()) && dispatchDocService.checkIsMain(dp.getIsMainProject())){
-                    isMergeDisTask = true;
+                disUtil = DisUtil.create(dp);
+                //是否是合并发文项目
+                if(disUtil.isMergeDis()){
+                    if(disUtil.isMainProj()){
+                        isMergeDisTask = true;
+                    }else{
+                        return new ResultMsg(false,MsgCode.ERROR.getValue(),"合并发文的项目，只能由主项目进行操作！");
+                    }
                 }
                 if(isMergeDisTask){
                     //合并发文主项目，另起一个方法处理
@@ -1387,9 +1393,14 @@ public class SignServiceImpl implements SignService {
                 }
                 businessId = flowDto.getBusinessMap().get("DIS_ID").toString();
                 dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
-                //是否是合并发文主项目
-                if(dispatchDocService.checkIsMegerDis(dp.getDispatchWay()) && dispatchDocService.checkIsMain(dp.getIsMainProject())){
-                    isMergeDisTask = true;
+                disUtil = DisUtil.create(dp);
+                //是否是合并发文项目
+                if(disUtil.isMergeDis()){
+                    if(disUtil.isMainProj()){
+                        isMergeDisTask = true;
+                    }else{
+                        return new ResultMsg(false,MsgCode.ERROR.getValue(),"合并发文的项目，只能由主项目进行操作！");
+                    }
                 }
                 if(isMergeDisTask){
                     //合并发文主项目，另起一个方法处理
@@ -1459,9 +1470,14 @@ public class SignServiceImpl implements SignService {
             case FLOW_SIGN_BMLD_QRFW:
                 businessId = flowDto.getBusinessMap().get("DIS_ID").toString();
                 dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
-                //是否是合并发文主项目
-                if(dispatchDocService.checkIsMegerDis(dp.getDispatchWay()) && dispatchDocService.checkIsMain(dp.getIsMainProject())){
-                    isMergeDisTask = true;
+                disUtil = DisUtil.create(dp);
+                //是否是合并发文项目
+                if(disUtil.isMergeDis()){
+                    if(disUtil.isMainProj()){
+                        isMergeDisTask = true;
+                    }else{
+                        return new ResultMsg(false,MsgCode.ERROR.getValue(),"合并发文的项目，只能由主项目进行操作！");
+                    }
                 }
                 if(isMergeDisTask){
                     //合并发文主项目，另起一个方法处理
@@ -1575,35 +1591,54 @@ public class SignServiceImpl implements SignService {
                 if (!Validate.isList(userList)) {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先设置【" + EnumFlowNodeGroupName.DIRECTOR.getValue() + "】角色用户！");
                 }
-                dealUser = userList.get(0);
-                assigneeValue = userService.getTaskDealId(dealUser, agentTaskList, FLOW_SIGN_ZR_QRFW);
-                variables.put(FlowConstant.SignFlowParams.USER_ZR.getValue(), assigneeValue);
-
-                //修改发文信息
                 businessId = flowDto.getBusinessMap().get("DIS_ID").toString();
                 dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
-                if (dp.getMoreLeader() == 1) {
-                    String vdSug = Validate.isString(dp.getViceDirectorSuggesttion()) ? (dp.getViceDirectorSuggesttion() + "<br>") : "";
-                    dp.setViceDirectorSuggesttion(vdSug + flowDto.getDealOption() + "  签名：" + ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask) + "   日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
-                } else {
-                    dp.setViceDirectorSuggesttion(flowDto.getDealOption());
+                disUtil = DisUtil.create(dp);
+                //是否是合并发文项目
+                if(disUtil.isMergeDis()){
+                    if(disUtil.isMainProj()){
+                        isMergeDisTask = true;
+                    }else{
+                        return new ResultMsg(false,MsgCode.ERROR.getValue(),"合并发文的项目，只能由主项目进行操作！");
+                    }
                 }
-                dp.setViceDirectorDate(new Date());
-                dp.setViceDirectorName(ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask));
-                dispatchDocRepo.save(dp);
-                //下一环节还是自己处理
-                if (assigneeValue.equals(SessionUtil.getUserId())) {
-                    isNextUser = true;
-                    nextNodeKey = FLOW_SIGN_ZR_QRFW;
+                if(isMergeDisTask){
+                    //合并发文主项目，另起一个方法处理
+                    returnResult = flowService.dealMerDisFlow(processInstance,task,dp,FLOW_SIGN_FGLD_QRFW,flowDto,isAgentTask);
+                }else{
+                    dealUser = userList.get(0);
+                    assigneeValue = userService.getTaskDealId(dealUser, agentTaskList, FLOW_SIGN_ZR_QRFW);
+                    variables.put(FlowConstant.SignFlowParams.USER_ZR.getValue(), assigneeValue);
+
+                    //修改发文信息
+                    if (dp.getMoreLeader() == 1) {
+                        String vdSug = Validate.isString(dp.getViceDirectorSuggesttion()) ? (dp.getViceDirectorSuggesttion() + "<br>") : "";
+                        dp.setViceDirectorSuggesttion(vdSug + flowDto.getDealOption() + "  签名：" + ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask) + "   日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
+                    } else {
+                        dp.setViceDirectorSuggesttion(flowDto.getDealOption());
+                    }
+                    dp.setViceDirectorDate(new Date());
+                    dp.setViceDirectorName(ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask));
+                    dispatchDocRepo.save(dp);
+                    //下一环节还是自己处理
+                    if (assigneeValue.equals(SessionUtil.getUserId())) {
+                        isNextUser = true;
+                        nextNodeKey = FLOW_SIGN_ZR_QRFW;
+                    }
                 }
                 break;
             //主任审批发文
             case FLOW_SIGN_ZR_QRFW:
                 businessId = flowDto.getBusinessMap().get("DIS_ID").toString();
                 dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
-                //是否是合并发文主项目
-                if(dispatchDocService.checkIsMegerDis(dp.getDispatchWay()) && dispatchDocService.checkIsMain(dp.getIsMainProject())){
-                    isMergeDisTask = true;
+                disUtil = DisUtil.create(dp);
+                //是否是合并发文项目
+                if(disUtil.isMergeDis()){
+                    if(disUtil.isMainProj()){
+                        isMergeDisTask = true;
+                    }else{
+                        return new ResultMsg(false,MsgCode.ERROR.getValue(),"合并发文的项目，只能由主项目进行操作！");
+                    }
                 }
                 if(isMergeDisTask){
                     //合并发文主项目，另起一个方法处理
