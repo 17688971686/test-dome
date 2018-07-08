@@ -32,6 +32,7 @@ import java.math.BigDecimal;
 import java.util.*;
 
 import static cs.common.constants.Constant.EXPERT_REVIEW_COST;
+import static cs.common.constants.SysConstants.SEPARATE_COMMA;
 import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
 @Service
@@ -540,7 +541,10 @@ public class ExpertServiceImpl implements ExpertService {
                 resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先保存专家抽取条件再进行专家抽取！");
                 break;
             }
-            conditionIds += Validate.isString(conditionIds) ? "," + epConditon.getId() : epConditon.getId();
+            if(Validate.isString(conditionIds)){
+                conditionIds += SEPARATE_COMMA;
+            }
+            conditionIds += epConditon.getId();
             if (resultMsg != null && resultMsg.isFlag() == false) {
                 return resultMsg;
             }

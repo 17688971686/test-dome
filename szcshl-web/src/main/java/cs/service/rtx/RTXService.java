@@ -41,6 +41,7 @@ public class RTXService {
 
     @Autowired
     private UserRepo userRepo;
+
     @Autowired
     private SysConfigService sysConfigService;
 
@@ -48,11 +49,8 @@ public class RTXService {
     private LogService logService;
 
     @Autowired
-    private SMSLogService smsLogService;
-    @Autowired
     private MsgService msgService;
-    @Autowired
-    private SignRestService signRestService;
+
 
     /**
      * 获取腾讯通的sessionKey

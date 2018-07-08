@@ -127,30 +127,43 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
                 //项目状态查询修改
                 if (SignDispaWork_.processState.getName().equals(item.getField())) {
                     processState = Integer.parseInt(item.getValue().toString());
-                    //在办项目或者暂停项目
-                    if(processState == 1 || processState == 2){
-                        criteria.add(Restrictions.eq(SignDispaWork_.signState.getName(),String.valueOf(processState)));
-                        criteria.add(Restrictions.le(SignDispaWork_.processState.getName(), Constant.SignProcessState.END_WP.getValue()));
-                    }else if(processState == 17){
-                        //未发送存档
-                        criteria.add(Restrictions.ge(SignDispaWork_.processState.getName(), Constant.SignProcessState.IS_START.getValue()));
-                        criteria.add(Restrictions.le(SignDispaWork_.processState.getName(),Constant.SignProcessState.SEND_CW.getValue()));
-                    }else if(processState == 68){
-                        //已发文未存档
-                        criteria.add(Restrictions.or(Restrictions.eq(SignDispaWork_.processState.getName(), Constant.SignProcessState.END_DIS_NUM.getValue()),
-                                Restrictions.eq(SignDispaWork_.processState.getName(),Constant.SignProcessState.SEND_CW.getValue()),
-                                Restrictions.eq(SignDispaWork_.processState.getName(),Constant.SignProcessState.SEND_FILE.getValue())));
-                    }else if(processState == 69){
-                        //已发文项目
-                        criteria.add(Restrictions.ge(SignDispaWork_.processState.getName(),Constant.SignProcessState.END_DIS_NUM.getValue()));
-                    }else if(processState == 89){
-                        //已发送存档
-                        criteria.add(Restrictions.ge(SignDispaWork_.processState.getName(),Constant.SignProcessState.SEND_FILE.getValue()));
-                    }
-                    else if(processState == 24){
-                        //曾经暂停
-                        criteria.add(Restrictions.eq(SignDispaWork_.isProjectStop.getName(),Constant.EnumState.YES.getValue()));
-                        criteria.add(Restrictions.eq(SignDispaWork_.signState.getName(),Constant.EnumState.PROCESS.getValue()));
+                    switch (processState){
+                        case 1:
+                        case 2:
+                            //在办项目或者暂停项目
+                            criteria.add(Restrictions.eq(SignDispaWork_.signState.getName(),String.valueOf(processState)));
+                            criteria.add(Restrictions.le(SignDispaWork_.processState.getName(), Constant.SignProcessState.END_WP.getValue()));
+                            break;
+                        case 17:
+                            //未发送存档
+                            criteria.add(Restrictions.ge(SignDispaWork_.processState.getName(), Constant.SignProcessState.IS_START.getValue()));
+                            criteria.add(Restrictions.le(SignDispaWork_.processState.getName(),Constant.SignProcessState.SEND_CW.getValue()));
+                            break;
+                        case 68:
+                            //已发文未存档
+                            criteria.add(Restrictions.or(Restrictions.eq(SignDispaWork_.processState.getName(), Constant.SignProcessState.END_DIS_NUM.getValue()),
+                                    Restrictions.eq(SignDispaWork_.processState.getName(),Constant.SignProcessState.SEND_CW.getValue()),
+                                    Restrictions.eq(SignDispaWork_.processState.getName(),Constant.SignProcessState.SEND_FILE.getValue())));
+                            break;
+                        case 69:
+                            //已发文项目
+                            criteria.add(Restrictions.ge(SignDispaWork_.processState.getName(),Constant.SignProcessState.END_DIS_NUM.getValue()));
+                            break;
+                        case 89:
+                            //已发送存档
+                            criteria.add(Restrictions.ge(SignDispaWork_.processState.getName(),Constant.SignProcessState.SEND_FILE.getValue()));
+                            break;
+                        case 24:
+                            //曾经暂停
+                            criteria.add(Restrictions.eq(SignDispaWork_.isProjectStop.getName(),Constant.EnumState.YES.getValue()));
+                            criteria.add(Restrictions.eq(SignDispaWork_.signState.getName(),Constant.EnumState.PROCESS.getValue()));
+                            break;
+                        case 8:
+                            criteria.add(Restrictions.eq(SignDispaWork_.processState.getName(),Constant.SignProcessState.SEND_FILE.getValue()));
+                            break;
+                        case 9:
+                            criteria.add(Restrictions.eq(SignDispaWork_.processState.getName(),Constant.SignProcessState.FINISH.getValue()));
+                            break;
                     }
                     continue;
                 }

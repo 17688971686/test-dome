@@ -109,27 +109,10 @@
                     filterable: false,
                     template:function(item){
                         var nValue = "";
-                        if(item.item){
-                            nValue = item.item
+                        if(item.smsUserPhone){
+                            nValue = item.smsUserPhone;
                         }
                         return "<textarea rows='4' style='width:100%;'>"+nValue+"</textarea>";
-                    },
-                }
-                , {
-                    field: "",
-                    title: "是否使用api",
-                    width: 100,
-                    filterable: false,
-                    template:function(item){
-                        if(item.isCallApi){
-                            if(item.isCallApi == "9"){
-                                return '是';
-                            }else {
-                                return '否';
-                            }
-                        }else{
-                            return "";
-                        }
                     },
                 },
                 {

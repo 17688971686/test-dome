@@ -409,6 +409,8 @@
             var interValVar = $interval(function () {
                 if (totalExpertCount == 0) {
                     $interval.cancel(interValVar);
+                    vm.showLastDraf = true;
+                    vm.init(vm.businessId, vm.minBusinessId);
                 }else{
                     var selscope = Math.floor(Math.random() * (allEPList.length));
                     vm.showAutoExpertName = allEPList[selscope].name;
