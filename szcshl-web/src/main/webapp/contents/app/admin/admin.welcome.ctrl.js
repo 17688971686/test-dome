@@ -310,7 +310,8 @@
             }
 
             for(var i=0; i < vm.timeArr.length; i++){
-                vm.timeHeadArr.push(getNewDayStr(vm.timeArr[i]));
+                vm.timeHeadArr.push(getNewDayStr(vm.timeArr[i]) +"("+getWeek(vm.timeArr[i])+")");
+
             }
         }
 
@@ -326,8 +327,7 @@
                 pastYear = pastDate.getFullYear(),
                 pastMonth = pastDate.getMonth() + 1,
                 pastDay = pastDate.getDate();
-
-            return pastYear + '-' + pastMonth + '-' + pastDay;
+            return pastYear + '-' + pastMonth + '-' + pastDay ;
         }
 
         function getNewDayStr(dateTemp) {
@@ -347,6 +347,29 @@
                 myweekday = "0" + myweekday;
             }
             return (myyear.toString() + "-" + mymonth.toString() + "-" + myweekday.toString());
+        }
+
+        /**
+         * 根据日期字符串获取星期几
+         *
+         */
+        function getWeek(dateString){
+            var date;
+            if(isNull(dateString)){
+                date = new Date;
+            }else{
+                var dateArray = dateString.split("-");
+                date = new Date(dateArray[0], parseInt(dateArray[1]-1), dateArray[2]);
+            }
+            var dayIndex = date.getDay();
+            return "星期" + "日一二三四五六".charAt(dayIndex);
+        }
+
+        function isNull(object){
+            if(object == null || typeof object == "undefined"){
+                return true;
+            }
+            return false;
         }
     }
 })();

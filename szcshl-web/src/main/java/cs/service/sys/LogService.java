@@ -8,6 +8,6 @@ import cs.repository.odata.ODataObj;
 public interface LogService {
 
 	PageModelDto<LogDto> get(ODataObj odataObj);
-
+	PageModelDto<LogDto> findFgwSignLog(ODataObj odataObj);
 	void save(Log log);
 }

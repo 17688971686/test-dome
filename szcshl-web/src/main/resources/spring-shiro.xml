@@ -136,6 +136,9 @@
                 /testRTX =anon
                 <!--接口-->
                 /intfc/** =anon
+                <!--委里日志-->
+                /log/html/fgwSignLog =anon
+                /log/findFgwSignLog =anon
                 /file/printPreview/** =anon
                 <!--附件下载-->
                 /file/remoteDownload/** =anon

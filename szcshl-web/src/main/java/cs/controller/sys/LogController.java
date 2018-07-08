@@ -35,13 +35,26 @@ public class LogController {
         return logDtos;
     }
 
+
+    @RequestMapping(name = "获取日志数据", path = "findFgwSignLog", method = RequestMethod.POST)
+    @ResponseBody
+    public PageModelDto<LogDto>findFgwSignLog(HttpServletRequest request) throws ParseException {
+        ODataObj odataObj = new ODataObj(request);
+        PageModelDto<LogDto> logDtos = logService.findFgwSignLog(odataObj);
+        return logDtos;
+    }
+
     // begin#html
-    @RequiresPermissions("log#html/list#get")
+
     @RequestMapping(name = "日志查询", path = "html/list", method = RequestMethod.GET)
     public String list() {
         return ctrlName + "/list";
     }
 
+    @RequestMapping(name = "日志查询", path = "html/fgwSignLog", method = RequestMethod.GET)
+    public String fgwSignLog() {
+        return  "log/fgwSignLog";
+    }
     //end#html
 
 }
