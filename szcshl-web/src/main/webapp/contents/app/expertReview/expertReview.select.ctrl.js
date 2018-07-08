@@ -23,9 +23,9 @@
         vm.isback = $state.params.isback;               //用来判断返回的是否是维护页面的工作方案
         vm.processInstanceId = $state.params.processInstanceId; //流程实例ID
         vm.isSuperUser = isSuperUser;
-        vm.saveNewExpertFlag = 0;   //保存新专家标志
-        vm.reviewType = $state.params.reviewType; //评审方式
-
+        vm.saveNewExpertFlag = 0;                       //保存新专家标志
+        vm.reviewType = $state.params.reviewType;       //评审方式
+        vm.showLastDraf = true;                         //显示上次抽取的专家
         //S 查看专家详细
         vm.findExportDetail = function (id) {
             expertSvc.getExpertById(id, function (data) {
@@ -146,7 +146,7 @@
                 if (!angular.isUndefined(vm.expertReview.expertSelectedDtoList) && angular.isArray(vm.expertReview.expertSelectedDtoList)) {
                     vm.autoSelectedEPList = [];
                     var isShowAutoExpert = false;
-                    if(vm.expertReview.extractInfo){
+                    if(vm.expertReview.extractInfo && vm.showLastDraf){
                         isShowAutoExpert = true;
                     }
                     $.each(vm.expertReview.expertSelectedDtoList, function (i, sep) {
@@ -548,8 +548,10 @@
                                 if(vm.businessType == "SIGN"){
                                     workprogramSvc.updateWPExpertCost(vm.minBusinessId);
                                 }
+                                vm.showLastDraf = false;
                                 //刷新页面抽取的专家
                                 vm.reFleshSelEPInfo(data.reObj.autoEPList);
+
                                 //抽取结果数组
                                 vm.autoSelectedEPList = [];
                                 vm.autoSelectedEPList = data.reObj.autoEPList;
@@ -559,7 +561,6 @@
                                 vm.showAutoExpertWin();
                                 //显示抽取效果
                                 expertReviewSvc.validateAutoExpert(data.reObj.allEPList, vm);
-                                vm.init(vm.businessId, vm.minBusinessId);
 
                             } else {
                                 bsWin.error(data.reMsg);
@@ -602,17 +603,19 @@
 
         //再次抽取专家
         vm.repeatAutoExpert = function (id) {
-           /* var condition = [];
+           var condition = [];
             $.each(vm.expertReview.expertSelConditionDtoList, function (i, con) {
                 if (con.id == id) {
                     condition.push(con);
                 }
-            })*/
+            })
             //先确认是否已经保存
             expertReviewSvc.checkCondition(id, function (data) {
                 if (data && data.id) {
                     expertReviewSvc.queryAutoExpert(false,condition, vm.minBusinessId, vm.expertReview.id, function (data) {
                         if (data.flag || data.reCode == 'ok') {
+                            //再次抽取，不用显示上次抽取的专家
+                            vm.showLastDraf = false;
                             //更新专家评审费用
                             if(vm.businessType == "SIGN"){
                                 workprogramSvc.updateWPExpertCost(vm.minBusinessId);

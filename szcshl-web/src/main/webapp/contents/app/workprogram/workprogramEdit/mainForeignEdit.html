@@ -2,7 +2,7 @@
 <!--  主流程编辑的工作方案  -->
 <!--S 进口设备 -->
 <!--  s table-->
-<table class="table table-bordered" style="min-width: 900px;min-height: 1200px;">
+<table class="table table-bordered" style="min-width: 900px;">
     <caption class="text-center">
         <p style="float:left;">
             <span>QR-4.10-05-A0</span>
@@ -94,16 +94,15 @@
                    ng-model="vm.work.contactPersonFax" name="contactPersonFax" id="contactPersonFax">
         </td>
     </tr>
-    
-   
+
     <tr>
-        <td class="text-center">项目概况</td>
+        <td class="text-center" style="vertical-align: middle;">项目概况</td>
         <td colspan="8">
             <textarea maxlength="1500" rows="5" cols="" ng-model="vm.work.projectBackGround" name="projectBackGround"  style="width:98%;">{{vm.work.projectBackGround}}</textarea>
         </td>
     </tr>
     <tr>
-        <td class="text-center">拟评审重点问题</td>
+        <td class="text-center" style="vertical-align: middle;">拟评审重点问题</td>
         <td colspan="8">
             <textarea maxlength="1024"  rows="5" ng-model="vm.work.mainPoint" name="mainPoint" style="width:98%">{{vm.work.mainPoint}}</textarea>
         </td>

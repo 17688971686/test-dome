@@ -9,6 +9,7 @@ import cs.common.FGWResponse;
 import cs.common.IFResultCode;
 import cs.common.ResultMsg;
 import cs.common.constants.Constant;
+import cs.common.utils.DateUtils;
 import cs.common.utils.SMSUtils;
 import cs.common.utils.Validate;
 import cs.domain.project.Sign;
@@ -22,6 +23,7 @@ import cs.service.restService.SignRestService;
 import cs.service.rtx.RTXService;
 import cs.service.sys.LogService;
 import cs.service.sys.MsgService;
+import cs.service.sys.WorkdayService;
 import cs.threadtask.MsgThread;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +64,8 @@ public class SysRestController {
     @Autowired
     private MsgService msgService;
 
+    @Autowired
+    private WorkdayService workdayService;
     /**
      * 项目签收信息
      *
@@ -418,5 +422,12 @@ fileUrl=http://172.18.225.38:8089/FGWPM/LEAP/Download/default/2018/6/26/236c4c69
         System.out.println(hst.toString());*/
     }
 
+    @RequestMapping(name = "项目签收信息", value = "/checkWorkDay")
+    public String checkWorkDay() throws IOException {
+        if( workdayService.isWorkDay(DateUtils.converToDate("2018-05-02",DateUtils.DATE_PATTERN))){
+            return "是";
+        }
+        return "否";
+    }
 
 }
