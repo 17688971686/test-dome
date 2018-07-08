@@ -832,7 +832,7 @@
                         for (var i = 0; i < isCheck.length; i++) {
                             ids.push(isCheck[i].value);
                         }
-                        expertReviewSvc.affirmAutoExpert(vm.minBusinessId, vm.businessType, ids.join(","), '9', function (data) {
+                        expertReviewSvc.affirmAutoExpert(vm.expertReview.id,vm.minBusinessId, vm.businessType, ids.join(","), '9', function (data) {
                             if (data.flag || data.reCode == 'ok') {
                                 //更新专家评审费用
                                 if(vm.businessType == "SIGN"){
