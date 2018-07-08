@@ -810,7 +810,6 @@ public class DateUtils {
         //得到 JSON 属性对象列表
         JSONObject jo = json.getJSONObject("data");
         System.out.println(jo.getString("accessToken"));*/
-        Date lastDate = addDay(new Date(),1);
-        System.out.println(lastDate);
+        System.out.println(DateUtils.converToString(new Date(), "yy"));
     }
 }
