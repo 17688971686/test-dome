@@ -17,11 +17,15 @@ public class SMSUtils {
     /**
      * 单条发送短信地址
      */
-    public static final String SM_URL_ONE = "http://172.18.225.30:8080/jxh/open/serApi.do?serCode=dzzwdxptdf";
+    public static final String SM_URL = "http://172.18.225.30:8080/jxh/open/serApi.do";
     /**
-     * 多条发送短信地址
+     * 单条短信的sercode
      */
-    public static final String SM_URL_MANY = "http://172.18.225.30:8080/jxh/open/serApi.do?serCode=dzzwdxptqf";
+    public static final String ONE_SERCODE = "dzzwdxptdf";
+    /**
+     * 多条短信的sercode
+     */
+    public static final String MANY_SERCODE = "dzzwdxptqf";
     /**
      * 单条发送密钥
      */
@@ -152,7 +156,8 @@ public class SMSUtils {
         if(Validate.isString(httpResult)){
             JSONObject json = new JSONObject(httpResult);
             if(Validate.isObject(json) ){
-                String resultCode = json.getString("resultCode");
+                JSONObject jo = json.getJSONObject("data");
+                String resultCode = jo.getString("code");
                 return resultCode;
             }
         }
