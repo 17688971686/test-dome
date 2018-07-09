@@ -32,6 +32,7 @@ import cs.service.project.AgentTaskService;
 import cs.service.project.SignPrincipalService;
 import cs.service.project.SignService;
 import cs.service.rtx.RTXSendMsgPool;
+import cs.service.rtx.RTXService;
 import cs.service.sys.LogService;
 import cs.service.sys.OrgService;
 import cs.service.sys.UserService;
@@ -118,6 +119,8 @@ public class FlowServiceImpl implements FlowService {
     @Autowired
     private OrgService orgService;
     @Autowired
+    private RTXService rtxService;
+    @Autowired
     @Qualifier("signFlowBackImpl")
     private IFlowBack signFlowBackImpl;
     @Autowired
@@ -174,6 +177,7 @@ public class FlowServiceImpl implements FlowService {
         DisUtil disUtil = null;
         WorkPGUtil workPGUtil = null;
         Map<String,Object> resultMap = null;
+        boolean isProj = false;
         try {
             // 取得当前任务
             HistoricTaskInstance currTask = historyService.createHistoricTaskInstanceQuery().taskId(flowDto.getTaskId()).singleResult();
@@ -215,6 +219,7 @@ public class FlowServiceImpl implements FlowService {
             businessKey = instance.getBusinessKey();
             switch (module) {
                 case FlowConstant.SIGN_FLOW:
+                    isProj = true;
                     resultMap = signFlowBackImpl.backActivitiId(instance.getBusinessKey(), task.getTaskDefinitionKey());
                     backActivitiId = resultMap.get(FLOW_BACK_NODEKEY).toString();
                     //如果是回退到工作方案环节，还要修改预定会议室状态和重置分支工作方案状态
@@ -359,11 +364,12 @@ public class FlowServiceImpl implements FlowService {
             for (PvmTransition pvmTransition : oriPvmTransitionList) {
                 pvmTransitionList.add(pvmTransition);
             }
+            resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
             //发送腾讯通消息
             if(Validate.isString(assigneeValue)){
                 RTXSendMsgPool.getInstance().sendReceiverIdPool(flowDto.getTaskId(), assigneeValue);
+                rtxService.dealPoolRTXMsg(flowDto.getTaskId(),resultMsg,instance.getName(),isProj? Constant.MsgType.project_type.name(): Constant.MsgType.task_type.name());
             }
-            resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
         } catch (Exception e) {
             errorMsg = e.getMessage();
             log.error("流程回退异常：" + errorMsg);
