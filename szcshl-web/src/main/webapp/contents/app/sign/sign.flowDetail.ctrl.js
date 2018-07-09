@@ -122,7 +122,6 @@
                     vm.registerFile=[];//其他资料
                     vm.drawingFile=[];//图纸资料
                     vm.otherFile=[];//归档的其他资料
-                    // debugger;
                     vm.model.registerFileDtoDtoList.forEach(function(registerFile  , x){
                         if(registerFile.businessType =="3" || registerFile.businessType =="5"
                             ||registerFile.businessType =="6"||registerFile.businessType =="7"){
@@ -140,7 +139,6 @@
 
             // 初始化上传附件
             sysfileSvc.findByMianId(vm.model.signid,function(data){
-                // debugger;
                 if(data && data.length > 0){
                     vm.showFlag.tabSysFile = true;
                     vm.sysFileList = data;
@@ -151,7 +149,6 @@
 
         //附件下载
         vm.commonDownloadSysFile = function(sysFileId){
-            // debugger;
             sysfileSvc.downloadFile(sysFileId);
         }
 

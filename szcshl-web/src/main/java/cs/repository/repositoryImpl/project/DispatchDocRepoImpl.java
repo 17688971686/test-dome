@@ -106,4 +106,15 @@ public class DispatchDocRepoImpl extends AbstractRepository<DispatchDoc, String>
         sqlBuilder.setParam("disId",disId);
         executeSql(sqlBuilder);
     }
+
+    @Override
+    public void updateMergeDisFileNum(String signId,String fileNum, int maxSeq) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" update cs_dispatch_doc set " + DispatchDoc_.fileNum.getName() + " =:fileNum ").setParam("fileNum", fileNum);
+        sqlBuilder.append(" ," + DispatchDoc_.fileSeq.getName() + " =:fileSeq").setParam("fileSeq", maxSeq);
+        sqlBuilder.append(" where signId in (select mergeId from cs_sign_merge where signId = :signId ");
+        sqlBuilder.setParam("signId", signId);
+        sqlBuilder.append(" and mergeType =:mergeType )").setParam("mergeType", Constant.MergeType.DISPATCH.getValue());
+        executeSql(sqlBuilder);
+    }
 }

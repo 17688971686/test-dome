@@ -30,4 +30,14 @@ public interface DispatchDocRepo extends IRepository<DispatchDoc,String>{
      * @param apprValue
      */
     void updateDisApprValue(String disId, BigDecimal apprValue);
+
+    void updateDispatchDoc(DispatchDocDto dispatchDocDto,String isMain);
+
+    /**
+     * 更新合并发文的发文编号
+     * @param signId    主项目ID
+     * @param fileNum   发文编号
+     * @param maxSeq    最大序号
+     */
+    void updateMergeDisFileNum(String signId,String fileNum, int maxSeq);
 }

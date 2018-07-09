@@ -381,6 +381,34 @@ public class SignDispaWork {
     @Column(columnDefinition = "DATE")
     private Date expectdispatchdate;
 
+    /**
+     * 是否合并发文(1表示单个发文，2表示合并发文)
+     */
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String mergeDis;
+
+    /**
+     * 是否合并发文主项目
+     */
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String mergeDisMain;
+
+
+    public String getMergeDis() {
+        return mergeDis;
+    }
+
+    public void setMergeDis(String mergeDis) {
+        this.mergeDis = mergeDis;
+    }
+
+    public String getMergeDisMain() {
+        return mergeDisMain;
+    }
+
+    public void setMergeDisMain(String mergeDisMain) {
+        this.mergeDisMain = mergeDisMain;
+    }
 
     public String getCountryCode() {
         return countryCode;

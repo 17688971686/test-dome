@@ -1,10 +1,11 @@
 package cs.service.project;
 
-import cs.common.constants.Constant;
-import cs.common.constants.Constant.EnumState;
-import cs.common.constants.FlowConstant;
-import cs.common.HqlBuilder;
+import cs.ahelper.projhelper.ProjUtil;
+import cs.common.RandomGUID;
 import cs.common.ResultMsg;
+import cs.common.constants.Constant;
+import cs.common.constants.Constant.*;
+import cs.common.constants.FlowConstant;
 import cs.common.constants.SysConstants;
 import cs.common.ftp.ConfigProvider;
 import cs.common.ftp.FtpClientConfig;
@@ -19,13 +20,14 @@ import cs.domain.sys.Ftp_;
 import cs.domain.sys.SysFile;
 import cs.model.project.DispatchDocDto;
 import cs.model.project.SignDto;
-import cs.repository.repositoryImpl.expert.ExpertRepo;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
-import cs.repository.repositoryImpl.project.*;
+import cs.repository.repositoryImpl.project.DispatchDocRepo;
+import cs.repository.repositoryImpl.project.SignBranchRepo;
+import cs.repository.repositoryImpl.project.SignMergeRepo;
+import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.sys.FtpRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
 import cs.service.external.DeptService;
-import cs.service.sys.SysConfigService;
 import cs.service.sys.SysFileService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
@@ -51,25 +53,15 @@ public class DispatchDocServiceImpl implements DispatchDocService {
     @Autowired
     private SignMergeRepo signMergeRepo;
     @Autowired
-    private ExpertRepo expertRepo;
+    private SignBranchRepo signBranchRepo;
     @Autowired
     private SysFileRepo sysFileRepo;
-    @Autowired
-    private SignDispaWorkRepo signDispaWorkRepo;
-    @Autowired
-    private SysConfigService sysConfigService;
     @Autowired
     private FtpRepo ftpRepo;
     @Autowired
     private SysFileService sysFileService;
     @Autowired
-    private WorkProgramRepo workProgramRepo;
-    @Autowired
-    private ProjMaxSeqRepo projMaxSeqRepo;
-
-    @Autowired
     private ExpertReviewRepo expertReviewRepo;
-
     @Autowired
     private DeptService deptService;
 
@@ -87,11 +79,9 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         if (dispatchDoc == null || !Validate.isString(dispatchDoc.getId())) {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，无法获取收文信息");
         }
-        if (Constant.MergeType.DIS_MERGE.getValue().equals(dispatchDoc.getDispatchWay()) &&
-                !EnumState.YES.getValue().equals(dispatchDoc.getIsMainProject())) {
+        if (ProjUtil.isMergeDis(dispatchDoc.getDispatchWay()) && !ProjUtil.isMain(dispatchDoc.getIsMainProject())) {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，当前项目为合并发文次项目，由主项目生成发文编号！");
         }
-
         if (Validate.isString(dispatchDoc.getFileNum())) {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，该发文已经生成了发文编号！");
         }
@@ -117,14 +107,8 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         dispatchDoc.setDispatchDate(now);
         dispatchDocRepo.save(dispatchDoc);
         //如果是合并发文，则更新所有关联的发文编号
-        if (Constant.MergeType.DIS_MERGE.getValue().equals(dispatchDoc.getDispatchWay())) {
-            HqlBuilder sqlBuilder = HqlBuilder.create();
-            sqlBuilder.append(" update cs_dispatch_doc set " + DispatchDoc_.fileNum.getName() + " =:fileNum ").setParam("fileNum", dispatchDoc.getFileNum());
-            sqlBuilder.append(" ," + DispatchDoc_.fileSeq.getName() + " =:fileSeq").setParam("fileSeq", dispatchDoc.getFileSeq());
-            sqlBuilder.append(" where signId in (select mergeId from cs_sign_merge where signId = :signId ");
-            sqlBuilder.setParam("signId", signId);
-            sqlBuilder.append(" and mergeType =:mergeType )").setParam("mergeType", Constant.MergeType.DISPATCH.getValue());
-            dispatchDocRepo.executeSql(sqlBuilder);
+        if (ProjUtil.isMergeDis(dispatchDoc.getDispatchWay()) && ProjUtil.isMain(dispatchDoc.getIsMainProject())) {
+            dispatchDocRepo.updateMergeDisFileNum(signId,fileNum,maxSeq);
         }
         //更改项目信息
         Sign sign = signRepo.findById(Sign_.signid.getName(), signId);
@@ -146,15 +130,19 @@ public class DispatchDocServiceImpl implements DispatchDocService {
     @Override
     @Transactional
     public ResultMsg save(DispatchDocDto dispatchDocDto) {
-        if (Validate.isString(dispatchDocDto.getSignId())) {
-            //1、先进行业务判断
-            // 单个发文
+        boolean isHaveSign = Validate.isString(dispatchDocDto.getSignId());
+        boolean isUpdate = Validate.isString(dispatchDocDto.getId());
+        if (isHaveSign) {
             if (Constant.MergeType.DIS_SINGLE.getValue().equals(dispatchDocDto.getDispatchWay())) {
+                //单个发文
                 if (signMergeRepo.isHaveMerge(dispatchDocDto.getSignId(), Constant.MergeType.DISPATCH.getValue())) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，单个发文不能关联其他项目，请先删除关联项目再操作！");
                 }
-                // 合并发文次项目一定要关联
             } else if (Constant.MergeType.DIS_MERGE.getValue().equals(dispatchDocDto.getDispatchWay()) && EnumState.NO.getValue().equals(dispatchDocDto.getIsMainProject())) {
+                //合并发文项目一定是单个分支项目
+                if (signBranchRepo.countBranch(dispatchDocDto.getSignId()) > 1) {
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "合并发文的项目，不能有多个分支！");
+                }
                 if (!signMergeRepo.checkIsMerege(dispatchDocDto.getSignId(), Constant.MergeType.DISPATCH.getValue())) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，当前出文方式为合并发文次项目，请在主项目挑选此项目为次项目再发文！");
                 }
@@ -162,10 +150,10 @@ public class DispatchDocServiceImpl implements DispatchDocService {
             //2、执行保存操作
             Date now = new Date();
             DispatchDoc dispatchDoc = null;
-            if (!Validate.isString(dispatchDocDto.getId())) {
+            if (!isUpdate) {
                 dispatchDoc = new DispatchDoc();
                 BeanCopierUtils.copyProperties(dispatchDocDto, dispatchDoc);
-                dispatchDoc.setId(UUID.randomUUID().toString());
+                dispatchDoc.setId((new RandomGUID()).valueAfterMD5);
                 dispatchDoc.setDraftDate(now);
                 dispatchDoc.setCreatedBy(SessionUtil.getLoginName());
                 dispatchDoc.setCreatedDate(now);
@@ -418,7 +406,6 @@ public class DispatchDocServiceImpl implements DispatchDocService {
                     e.printStackTrace();
                 }
 
-
                 try {
                     SysFile studyEstimate = CreateTemplateUtils.createStudyTemplateEstimate(f, sign);
                     if (studyEstimate != null && Validate.isString(studyEstimate.getSysFileId())) {
@@ -650,7 +637,6 @@ public class DispatchDocServiceImpl implements DispatchDocService {
                     result.append("【评审组名单】");
                     e.printStackTrace();
                 }
-
         }
 
         //3、保存文件信息
@@ -678,5 +664,18 @@ public class DispatchDocServiceImpl implements DispatchDocService {
     public void updateDisApprValue(String disId,BigDecimal apprValue) {
         dispatchDocRepo.updateDisApprValue(disId, apprValue);
     }
+
+    public void updateDispatchByDocDto(DispatchDocDto dispatchDocDto, String isMain) {
+        dispatchDocRepo.updateDispatchDoc(dispatchDocDto, isMain);
+    }
+
+    @Override
+    public DispatchDocDto findById(String dictId) {
+        DispatchDocDto dispatchDocDto = new DispatchDocDto();
+        DispatchDoc dispatchDoc = dispatchDocRepo.findById(DispatchDoc_.id.getName(), dictId);
+        BeanCopierUtils.copyProperties(dispatchDoc, dispatchDocDto);
+        return dispatchDocDto;
+    }
+
 
 }

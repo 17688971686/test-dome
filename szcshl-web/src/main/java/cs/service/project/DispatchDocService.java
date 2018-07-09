@@ -37,4 +37,11 @@ public interface DispatchDocService {
      */
     void updateDisApprValue(String disId,BigDecimal apprValue);
 
+
+    /**
+     * 根据ID查询
+     * @param dictId
+     * @return
+     */
+    DispatchDocDto findById(String dictId);
 }
