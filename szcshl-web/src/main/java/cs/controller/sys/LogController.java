@@ -1,6 +1,5 @@
 package cs.controller.sys;
 
-import cs.ahelper.LogMsg;
 import cs.ahelper.MudoleAnnotation;
 import cs.model.PageModelDto;
 import cs.model.sys.LogDto;
@@ -35,7 +34,7 @@ public class LogController {
         return logDtos;
     }
 
-
+    @RequiresAuthentication
     @RequestMapping(name = "获取日志数据", path = "findFgwSignLog", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<LogDto>findFgwSignLog(HttpServletRequest request) throws ParseException {
@@ -45,15 +44,16 @@ public class LogController {
     }
 
     // begin#html
-
+    @RequiresPermissions("log#html/list#get")
     @RequestMapping(name = "日志查询", path = "html/list", method = RequestMethod.GET)
     public String list() {
         return ctrlName + "/list";
     }
 
-    @RequestMapping(name = "日志查询", path = "html/fgwSignLog", method = RequestMethod.GET)
+    @RequiresPermissions("log#html/fgwSignLog#get")
+    @RequestMapping(name = "委里日志查询", path = "html/fgwSignLog", method = RequestMethod.GET)
     public String fgwSignLog() {
-        return  "log/fgwSignLog";
+        return "log/fgwSignLog";
     }
     //end#html
 

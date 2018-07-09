@@ -163,6 +163,7 @@
             vm.condition = {};
             if(vm.conditions.length == 0){
                 vm.condition.sort = vm.conMaxIndex+1;
+                vm.condition.endTime = new Date();
             }else{
                 vm.conMaxIndex = vm.conditions.length;
                 vm.condition.sort = vm.conditions.length+1;

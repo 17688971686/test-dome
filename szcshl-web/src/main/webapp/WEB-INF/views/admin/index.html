@@ -578,6 +578,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <@shiro.hasPermission name="log#html/list#get">
                                 <li><a href="javascript:void(0)" ui-sref="log">日志查询</a></li>
                             </@shiro.hasPermission>
+                            <@shiro.hasPermission name="log#html/fgwSignLog#get">
+                            <li><a href="javascript:void(0)" ui-sref="logFgw">委里日志查询</a></li>
+                            </@shiro.hasPermission>
                             <@shiro.hasPermission name="smslog#html/list#get">
                             <li><a href="javascript:void(0)" ui-sref="smslog">短信记录</a></li>
                             </@shiro.hasPermission>
