@@ -273,6 +273,12 @@
                     controller: 'logCtrl',
                     controllerAs: 'vm'
                 })
+                .state('logFgw', {
+                    url: '/logFgw',
+                    templateUrl: rootPath + '/log/html/fgwSignLog.html',
+                    controller: 'logFgwCtrl',
+                    controllerAs: 'vm'
+                })
                 //begin#smslog  需要替换的注销2018
                 .state('smslog', {
                     url: '/smslog',
