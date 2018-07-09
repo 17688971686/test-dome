@@ -3,6 +3,7 @@ package cs.controller.sys;
 import com.alibaba.fastjson.JSON;
 import cs.ahelper.LogMsg;
 import cs.ahelper.MudoleAnnotation;
+import cs.ahelper.projhelper.ProjUtil;
 import cs.common.constants.Constant;
 import cs.common.constants.FlowConstant;
 import cs.common.utils.*;
@@ -175,11 +176,17 @@ public class AdminController {
                 List<RuProcessTask> userProcessList = new ArrayList<>();
                 for (int i = 0; i < totalCount; i++) {
                     RuProcessTask rt = authRuSignTask.get(i);
+                    //合并评审环节
+                    List<String> mergeReview = Arrays.asList(FLOW_SIGN_BMLD_SPW1, FLOW_SIGN_FGLD_SPW1);
+                    //合并发文环节
+                    List<String> mergeDisNode = Arrays.asList(FLOW_SIGN_QRFW, FLOW_SIGN_BMLD_QRFW,FLOW_SIGN_FGLD_QRFW,FLOW_SIGN_ZR_QRFW);
                     //过滤掉合并项目的次项目
-                    if (rt.getReviewType() == null || "".equals(rt.getReviewType()) || Constant.EnumState.YES.getValue().equals(rt.getReviewType())
-                            || (Constant.EnumState.NO.getValue().equals(rt.getReviewType())
-                            && !FlowConstant.FLOW_SIGN_BMLD_SPW1.equals(rt.getNodeDefineKey()) && !FlowConstant.FLOW_SIGN_FGLD_SPW1.equals(rt.getNodeDefineKey()))
-                            ) {
+                    if ((!Validate.isString(rt.getReviewType()) || ProjUtil.isMergeRVMainTask(rt.getReviewType())
+                         || (ProjUtil.isMergeRVAssistTask(rt.getReviewType()) && !mergeReview.contains(rt.getNodeDefineKey()))
+                        )&& ( !Validate.isString(rt.getMergeDis()) || Constant.MergeType.DIS_SINGLE.getValue().equals(rt.getMergeDis())
+                            || (ProjUtil.isMergeDis(rt.getMergeDis()) && ProjUtil.isMain(rt.getMergeDisMain()))
+                            || (ProjUtil.isMergeDis(rt.getMergeDis()) && !ProjUtil.isMain(rt.getMergeDisMain()) && !mergeDisNode.contains(rt.getNodeDefineKey())))
+                    ) {
                         if (curUserId.equals(rt.getAssignee())
                                 || (rt.getAssigneeList() != null && rt.getAssigneeList().indexOf(curUserId) > -1)) {
 

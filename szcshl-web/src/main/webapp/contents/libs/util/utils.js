@@ -98,3 +98,16 @@ String.prototype.trim = function() {
 String.prototype.CompatibleDate = function(){
     return this.replace(/-/g,"/");
 }
+
+/**
+ * 字符串包含
+ * @param needle
+ * @returns {boolean}
+ */
+Array.prototype.in_array = function ( needle ) {
+    for (i in this) {
+        if (this[i] == needle)
+            return true;
+    }
+    return false;
+}

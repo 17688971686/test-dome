@@ -102,6 +102,7 @@ public class FlowConstant {
      * 拟补充资料函流程
      */
     public final static String FLOW_SUPP_LETTER = "FLOW_SUPP_LETTER";
+
     /**
      * 拟补充资料函流程环节
      */
@@ -171,10 +172,12 @@ public class FlowConstant {
             return value;
         }
     }
+
     /**
      *课题研究流程
      */
     public final static String TOPIC_FLOW = "TOPIC_FLOW";
+
     /**
      *图书采购流程
      */
@@ -420,15 +423,15 @@ public class FlowConstant {
         return resultValue;
     }
 
-    /***************************   合并发文参数 begin  **************************/
+    /***************************   流程回退参数 begin  **************************/
     /**
-     * 合并发文次项目
+     * 回退环节
      */
-    public static final String PROJ_DIS_MERGE_A = "PROJ_DIS_MERGE_A";
-    /**
-     * 环节处理人参数
-     */
-    public static final String USER_SIGN_NAME = "USER_SIGN_NAME";
+    public static final String FLOW_BACK_NODEKEY = "FLOW_BACK_NODEKEY";
 
+    /**
+     * 用户人
+     */
+    public static final String FLOW_BACK_USER = "FLOW_BACK_USER";
     /***************************   合并发文参数 end  **************************/
 }

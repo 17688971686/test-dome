@@ -548,6 +548,10 @@ public class FlowController {
     @Transactional
     public ResultMsg rollBackLast(@RequestBody FlowDto flowDto) {
         ResultMsg resultMsg = flowService.rollBackLastNode(flowDto);
+        //成功，发送短信通知
+        if(resultMsg.isFlag()){
+            //flowDto.getTaskId()
+        }
         return resultMsg;
     }
 

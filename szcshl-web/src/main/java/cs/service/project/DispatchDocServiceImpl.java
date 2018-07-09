@@ -1,11 +1,11 @@
 package cs.service.project;
 
+import cs.ahelper.projhelper.ProjUtil;
 import cs.common.RandomGUID;
-import cs.common.constants.Constant;
-import cs.common.constants.Constant.EnumState;
-import cs.common.constants.FlowConstant;
-import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
+import cs.common.constants.Constant;
+import cs.common.constants.Constant.*;
+import cs.common.constants.FlowConstant;
 import cs.common.constants.SysConstants;
 import cs.common.ftp.ConfigProvider;
 import cs.common.ftp.FtpClientConfig;
@@ -20,13 +20,14 @@ import cs.domain.sys.Ftp_;
 import cs.domain.sys.SysFile;
 import cs.model.project.DispatchDocDto;
 import cs.model.project.SignDto;
-import cs.repository.repositoryImpl.expert.ExpertRepo;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
-import cs.repository.repositoryImpl.project.*;
+import cs.repository.repositoryImpl.project.DispatchDocRepo;
+import cs.repository.repositoryImpl.project.SignBranchRepo;
+import cs.repository.repositoryImpl.project.SignMergeRepo;
+import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.sys.FtpRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
 import cs.service.external.DeptService;
-import cs.service.sys.SysConfigService;
 import cs.service.sys.SysFileService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
@@ -77,11 +78,9 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         if (dispatchDoc == null || !Validate.isString(dispatchDoc.getId())) {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，无法获取收文信息");
         }
-        if (Constant.MergeType.DIS_MERGE.getValue().equals(dispatchDoc.getDispatchWay()) &&
-                !EnumState.YES.getValue().equals(dispatchDoc.getIsMainProject())) {
+        if (ProjUtil.isMergeDis(dispatchDoc.getDispatchWay()) && !ProjUtil.isMain(dispatchDoc.getIsMainProject())) {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，当前项目为合并发文次项目，由主项目生成发文编号！");
         }
-
         if (Validate.isString(dispatchDoc.getFileNum())) {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，该发文已经生成了发文编号！");
         }
@@ -107,14 +106,8 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         dispatchDoc.setDispatchDate(now);
         dispatchDocRepo.save(dispatchDoc);
         //如果是合并发文，则更新所有关联的发文编号
-        if (Constant.MergeType.DIS_MERGE.getValue().equals(dispatchDoc.getDispatchWay())) {
-            HqlBuilder sqlBuilder = HqlBuilder.create();
-            sqlBuilder.append(" update cs_dispatch_doc set " + DispatchDoc_.fileNum.getName() + " =:fileNum ").setParam("fileNum", dispatchDoc.getFileNum());
-            sqlBuilder.append(" ," + DispatchDoc_.fileSeq.getName() + " =:fileSeq").setParam("fileSeq", dispatchDoc.getFileSeq());
-            sqlBuilder.append(" where signId in (select mergeId from cs_sign_merge where signId = :signId ");
-            sqlBuilder.setParam("signId", signId);
-            sqlBuilder.append(" and mergeType =:mergeType )").setParam("mergeType", Constant.MergeType.DISPATCH.getValue());
-            dispatchDocRepo.executeSql(sqlBuilder);
+        if (ProjUtil.isMergeDis(dispatchDoc.getDispatchWay()) && ProjUtil.isMain(dispatchDoc.getIsMainProject())) {
+            dispatchDocRepo.updateMergeDisFileNum(signId,fileNum,maxSeq);
         }
         //更改项目信息
         Sign sign = signRepo.findById(Sign_.signid.getName(), signId);
@@ -146,7 +139,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
                 }
             } else if (Constant.MergeType.DIS_MERGE.getValue().equals(dispatchDocDto.getDispatchWay()) && EnumState.NO.getValue().equals(dispatchDocDto.getIsMainProject())) {
                 //合并发文项目一定是单个分支项目
-                if(signBranchRepo.countBranch(dispatchDocDto.getSignId()) > 1){
+                if (signBranchRepo.countBranch(dispatchDocDto.getSignId()) > 1) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "合并发文的项目，不能有多个分支！");
                 }
                 if (!signMergeRepo.checkIsMerege(dispatchDocDto.getSignId(), Constant.MergeType.DISPATCH.getValue())) {
@@ -676,8 +669,8 @@ public class DispatchDocServiceImpl implements DispatchDocService {
     @Override
     public DispatchDocDto findById(String dictId) {
         DispatchDocDto dispatchDocDto = new DispatchDocDto();
-        DispatchDoc dispatchDoc = dispatchDocRepo.findById(DispatchDoc_.id.getName(),dictId);
-        BeanCopierUtils.copyProperties(dispatchDoc,dispatchDocDto);
+        DispatchDoc dispatchDoc = dispatchDocRepo.findById(DispatchDoc_.id.getName(), dictId);
+        BeanCopierUtils.copyProperties(dispatchDoc, dispatchDocDto);
         return dispatchDocDto;
     }
 

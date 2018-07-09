@@ -7,6 +7,12 @@ import cs.repository.repositoryImpl.sys.AnnountmentRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import static cs.common.constants.FlowConstant.FLOW_BACK_NODEKEY;
+import static cs.common.constants.FlowConstant.FLOW_BACK_USER;
+
 /**
  * Created by hjm on 2017/11/28.
  */
@@ -22,29 +28,36 @@ public class AnnountMentFlowBackImpl implements IFlowBack {
      * @return
      */
     @Override
-    public String backActivitiId(String businessKey,String curActivitiId) {
-        //根据businessKey查出数据
-        Annountment annountment =annountmentRepo.findById(Annountment_.anId.getName(),businessKey);
+    public Map<String,Object> backActivitiId(String businessKey, String curActivitiId) {
+        Map<String,Object> resultMap = new HashMap<>();
         String backActivitiId = "";
+        String dealUserParam = "";
         switch (curActivitiId){
             case FlowConstant.ANNOUNT_BZ:
                 backActivitiId = FlowConstant.ANNOUNT_TZ;
+                dealUserParam = FlowConstant.AnnountMentFLOWParams.USER.getValue();
                 break;
             case FlowConstant.ANNOUNT_FZ:
-                if(annountment.getDeptMinisterId()==null){//是否有部门负责人ID
+                Annountment annountment =annountmentRepo.findById(Annountment_.anId.getName(),businessKey);
+                if(null == annountment.getDeptMinisterId()){//是否有部门负责人ID
                     backActivitiId = FlowConstant.ANNOUNT_TZ;
+                    dealUserParam = FlowConstant.AnnountMentFLOWParams.USER.getValue();
                 }else{
                     backActivitiId = FlowConstant.ANNOUNT_BZ;
+                    dealUserParam = FlowConstant.AnnountMentFLOWParams.USER_BZ.getValue();
                 }
 
                 break;
             case FlowConstant.ANNOUNT_ZR:
                 backActivitiId = FlowConstant.ANNOUNT_FZ;
+                dealUserParam = FlowConstant.AnnountMentFLOWParams.USER_FZ.getValue();
                 break;
            default:
                break;
 
         }
-        return backActivitiId;
+        resultMap.put(FLOW_BACK_NODEKEY,backActivitiId);
+        resultMap.put(FLOW_BACK_USER,dealUserParam);
+        return resultMap;
     }
 }

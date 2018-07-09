@@ -1,8 +1,8 @@
 package cs.service.project;
 
 import com.alibaba.fastjson.JSON;
-import cs.ahelper.projhelper.BranchUtil;
 import cs.ahelper.projhelper.DisUtil;
+import cs.ahelper.projhelper.ProjUtil;
 import cs.ahelper.projhelper.WorkPGUtil;
 import cs.common.HqlBuilder;
 import cs.common.RandomGUID;
@@ -1214,7 +1214,7 @@ public class SignServiceImpl implements SignService {
                 workPGUtil = WorkPGUtil.create(wk);
                 workPGUtil.setMinisterOption(flowDto.getDealOption(),new Date(),ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask));
                 //如果是主办流程，要判断是否有合并评审方案，有则跟着主项目一起办理
-                if (BranchUtil.isMainBranch(branchIndex)) {
+                if (ProjUtil.isMainBranch(branchIndex)) {
                     if (workPGUtil.isMergeWP() && workPGUtil.isMainWP()) {
                         List<SignMerge> mergeList = signMergeRepo.findByType(signid, MergeType.WORK_PROGRAM.getValue());
                         if (Validate.isList(mergeList)) {

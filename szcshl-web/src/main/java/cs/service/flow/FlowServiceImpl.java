@@ -170,11 +170,10 @@ public class FlowServiceImpl implements FlowService {
     @Transactional
     public ResultMsg rollBackLastNode(FlowDto flowDto) {
         ResultMsg resultMsg = null;
-        String errorMsg = "";
-        String module = "";
-        String businessKey = "";
+        String errorMsg = "",module = "",businessKey = "",userParam = "",assigneeValue = "";
         DisUtil disUtil = null;
         WorkPGUtil workPGUtil = null;
+        Map<String,Object> resultMap = null;
         try {
             // 取得当前任务
             HistoricTaskInstance currTask = historyService.createHistoricTaskInstanceQuery().taskId(flowDto.getTaskId()).singleResult();
@@ -188,8 +187,7 @@ public class FlowServiceImpl implements FlowService {
                 return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，流程已结束！");
             }
             // 取得流程定义
-            ProcessDefinitionEntity definition = (ProcessDefinitionEntity) (processEngine.getRepositoryService().getProcessDefinition(currTask
-                    .getProcessDefinitionId()));
+            ProcessDefinitionEntity definition = (ProcessDefinitionEntity) (processEngine.getRepositoryService().getProcessDefinition(currTask.getProcessDefinitionId()));
             if (definition == null) {
                 return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，流程定义数据为空！");
             }
@@ -217,7 +215,8 @@ public class FlowServiceImpl implements FlowService {
             businessKey = instance.getBusinessKey();
             switch (module) {
                 case FlowConstant.SIGN_FLOW:
-                    backActivitiId = signFlowBackImpl.backActivitiId(instance.getBusinessKey(), task.getTaskDefinitionKey());
+                    resultMap = signFlowBackImpl.backActivitiId(instance.getBusinessKey(), task.getTaskDefinitionKey());
+                    backActivitiId = resultMap.get(FLOW_BACK_NODEKEY).toString();
                     //如果是回退到工作方案环节，还要修改预定会议室状态和重置分支工作方案状态
                     if (FlowConstant.FLOW_SIGN_XMFZR1.equals(backActivitiId) || FlowConstant.FLOW_SIGN_XMFZR2.equals(backActivitiId)
                             || FlowConstant.FLOW_SIGN_XMFZR3.equals(backActivitiId) || FlowConstant.FLOW_SIGN_XMFZR4.equals(backActivitiId)) {
@@ -231,52 +230,64 @@ public class FlowServiceImpl implements FlowService {
                         if (FlowConstant.FLOW_SIGN_XMFZR1.equals(backActivitiId)) {
                             //如果是合并评审环节，还要合并回退
                             if (workPGUtil.isMergeWP() && workPGUtil.isMainWP()) {
-                                List<SignMerge> mergeList = signMergeRepo.findByType(businessKey, MergeType.WORK_PROGRAM.getValue());
-                                if (Validate.isList(mergeList)) {
-                                    FlowDto flowDto2 = new FlowDto();
-                                    flowDto2.setDealOption(flowDto.getDealOption());
-                                    for (SignMerge s : mergeList) {
-                                        Task task2 = taskService.createTaskQuery().processInstanceBusinessKey(s.getMergeId()).active().singleResult();
-                                        flowDto2.setTaskId(task2.getId());
-                                        resultMsg = rollBackLastNode(flowDto2);
-                                        if (!resultMsg.isFlag() || Constant.MsgCode.ERROR.getValue().equals(resultMsg.getReCode())) {
-                                            return resultMsg;
-                                        }
-                                    }
-                                }
+                               resultMsg = mergerProjBack(businessKey,MergeType.WORK_PROGRAM.getValue(),flowDto.getDealOption());
+                               if(Validate.isObject(resultMsg) && (!resultMsg.isFlag() || Constant.MsgCode.ERROR.getValue().equals(resultMsg.getReCode()))){
+                                   return resultMsg;
+                               }
                             }
                         }
                         //清空审批意见
                         workPGUtil.resetMinisterOption().resetLeaderOption();
                         workProgramRepo.save(workPGUtil.getWorkProgram());
 
-                    }else if (FlowConstant.FLOW_SIGN_ZR_QRFW.equals(backActivitiId)) {
-                        //主任发文回退
+                    }else if (FlowConstant.FLOW_SIGN_FGLD_QRFW.equals(backActivitiId)) {
+                        //回退到分管副主任审批环节
                         DispatchDoc dispatchDoc = dispatchDocRepo.findById("signid", businessKey);
                         if (Validate.isObject(dispatchDoc) && Validate.isString(dispatchDoc.getId())) {
                             disUtil = DisUtil.create(dispatchDoc);
+                            if(disUtil.isMergeDis() && disUtil.isMainProj()){
+                                resultMsg = mergerProjBack(businessKey,MergeType.DIS_MERGE.getValue(),flowDto.getDealOption());
+                                if(Validate.isObject(resultMsg) && (!resultMsg.isFlag() || Constant.MsgCode.ERROR.getValue().equals(resultMsg.getReCode()))){
+                                    return resultMsg;
+                                }
+                            }
                             disUtil.resetViceDirectorOption().resetDirectorOption();
                             dispatchDocRepo.save(disUtil.getDispatchDoc());
                         }
                     }else if (FlowConstant.FLOW_SIGN_BMLD_QRFW.equals(backActivitiId)) {
-                        //分管副主任审批发文
+                        //回退到部长审批环节
                         DispatchDoc dispatchDoc = dispatchDocRepo.findById("signid", businessKey);
                         if (Validate.isObject(dispatchDoc) && Validate.isString(dispatchDoc.getId())) {
                             disUtil = DisUtil.create(dispatchDoc);
+                            if(disUtil.isMergeDis() && disUtil.isMainProj()){
+                                resultMsg = mergerProjBack(businessKey,MergeType.DIS_MERGE.getValue(),flowDto.getDealOption());
+                                if(Validate.isObject(resultMsg) && (!resultMsg.isFlag() || Constant.MsgCode.ERROR.getValue().equals(resultMsg.getReCode()))){
+                                    return resultMsg;
+                                }
+                            }
                             disUtil.resetMinisterOption().resetViceDirectorOption().resetDirectorOption();
                             dispatchDocRepo.save(disUtil.getDispatchDoc());
                         }
-                    //回退到发文环节
+
                     } else if (FlowConstant.FLOW_SIGN_FW.equals(backActivitiId)) {
+                        //回退到发文环节
                         DispatchDoc dispatchDoc = dispatchDocRepo.findById("signid", businessKey);
                         if (Validate.isObject(dispatchDoc) && Validate.isString(dispatchDoc.getId())) {
+                            disUtil = DisUtil.create(dispatchDoc);
+                            if(disUtil.isMergeDis() && disUtil.isMainProj()){
+                                resultMsg = mergerProjBack(businessKey,MergeType.DIS_MERGE.getValue(),flowDto.getDealOption());
+                                if(Validate.isObject(resultMsg) && (!resultMsg.isFlag() || Constant.MsgCode.ERROR.getValue().equals(resultMsg.getReCode()))){
+                                    return resultMsg;
+                                }
+                            }
                             disUtil.resetMainUserOption().resetSecondUserOption().resetMinisterOption().resetViceDirectorOption().resetDirectorOption();
                             dispatchDocRepo.save(disUtil.getDispatchDoc());
                         }
                     }
                     break;
                 case FlowConstant.TOPIC_FLOW:
-                    backActivitiId = topicFlowBackImpl.backActivitiId(instance.getBusinessKey(), task.getTaskDefinitionKey());
+                    resultMap = topicFlowBackImpl.backActivitiId(instance.getBusinessKey(), task.getTaskDefinitionKey());
+                    backActivitiId = resultMap.get(FLOW_BACK_NODEKEY).toString();
                     //如果是回退到工作方案环节，还要修改预定会议室状态
                     if (FlowConstant.TOPIC_GZFA.equals(backActivitiId)) {
                         WorkPlan workPlan = workPlanRepo.findById("topId", instance.getBusinessKey());
@@ -286,22 +297,28 @@ public class FlowServiceImpl implements FlowService {
                     }
                     break;
                 case FlowConstant.PROJECT_STOP_FLOW:
-                    backActivitiId = projectStopFlowBackImpl.backActivitiId(instance.getBusinessKey(), task.getTaskDefinitionKey());
+                    resultMap = projectStopFlowBackImpl.backActivitiId(instance.getBusinessKey(), task.getTaskDefinitionKey());
+                    backActivitiId = resultMap.get(FLOW_BACK_NODEKEY).toString();
                     break;
                 case FlowConstant.FLOW_APPRAISE_REPORT:
-                    backActivitiId = appraiseFlowBackImpl.backActivitiId(instance.getBusinessKey(), task.getTaskDefinitionKey());
+                    resultMap = appraiseFlowBackImpl.backActivitiId(instance.getBusinessKey(), task.getTaskDefinitionKey());
+                    backActivitiId = resultMap.get(FLOW_BACK_NODEKEY).toString();
                     break;
                 case FlowConstant.FLOW_ARCHIVES:
-                    backActivitiId = archivesFlowBackImpl.backActivitiId(instance.getBusinessKey(), task.getTaskDefinitionKey());
+                    resultMap = archivesFlowBackImpl.backActivitiId(instance.getBusinessKey(), task.getTaskDefinitionKey());
+                    backActivitiId = resultMap.get(FLOW_BACK_NODEKEY).toString();
                     break;
                 case FlowConstant.FLOW_SUPP_LETTER:
-                    backActivitiId = suppLetterFlowBackImpl.backActivitiId(instance.getBusinessKey(), task.getTaskDefinitionKey());
+                    resultMap = suppLetterFlowBackImpl.backActivitiId(instance.getBusinessKey(), task.getTaskDefinitionKey());
+                    backActivitiId = resultMap.get(FLOW_BACK_NODEKEY).toString();
                     break;
                 case FlowConstant.ANNOUNT_MENT_FLOW:
-                    backActivitiId = annountmentFlowBackImpl.backActivitiId(instance.getBusinessKey(), task.getTaskDefinitionKey());
+                    resultMap = annountmentFlowBackImpl.backActivitiId(instance.getBusinessKey(), task.getTaskDefinitionKey());
+                    backActivitiId = resultMap.get(FLOW_BACK_NODEKEY).toString();
                     break;
                 case FlowConstant.MONTHLY_BULLETIN_FLOW:
-                    backActivitiId = monthFlowBackImpl.backActivitiId(instance.getBusinessKey(), task.getTaskDefinitionKey());
+                    resultMap = monthFlowBackImpl.backActivitiId(instance.getBusinessKey(), task.getTaskDefinitionKey());
+                    backActivitiId = resultMap.get(FLOW_BACK_NODEKEY).toString();
                     break;
                 default:
                     backActivitiId = "";
@@ -328,7 +345,13 @@ public class FlowServiceImpl implements FlowService {
             Map<String, Object> valiables = taskService.getVariables(task.getId());
             taskService.addComment(task.getId(), instance.getId(), flowDto.getDealOption() + "【流程回退】");    //添加处理信息
             taskService.complete(task.getId(), valiables);
-
+            if(Validate.isMap(resultMap)){
+                userParam = resultMap.get(FLOW_BACK_USER).toString();
+                Object uObj = valiables.get(userParam);
+                if(Validate.isObject(uObj)){
+                    assigneeValue = uObj.toString();
+                }
+            }
             // 恢复方向
             for (TransitionImpl transitionImpl : newTransitions) {
                 currActivity.getOutgoingTransitions().remove(transitionImpl);
@@ -336,7 +359,10 @@ public class FlowServiceImpl implements FlowService {
             for (PvmTransition pvmTransition : oriPvmTransitionList) {
                 pvmTransitionList.add(pvmTransition);
             }
-
+            //发送腾讯通消息
+            if(Validate.isString(assigneeValue)){
+                RTXSendMsgPool.getInstance().sendReceiverIdPool(flowDto.getTaskId(), assigneeValue);
+            }
             resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
         } catch (Exception e) {
             errorMsg = e.getMessage();
@@ -360,6 +386,25 @@ public class FlowServiceImpl implements FlowService {
         return resultMsg;
     }
 
+    /**
+     * 合并项目回退
+     * @param businessKey
+     * @param mergeType
+     */
+    public ResultMsg mergerProjBack(String businessKey,String mergeType,String dealOption){
+        ResultMsg resultMsg = null;
+        List<SignMerge> mergeList = signMergeRepo.findByType(businessKey,mergeType);
+        if (Validate.isList(mergeList)) {
+            FlowDto flowDto2 = new FlowDto();
+            flowDto2.setDealOption(dealOption);
+            for (SignMerge s : mergeList) {
+                Task task2 = taskService.createTaskQuery().processInstanceBusinessKey(s.getMergeId()).active().singleResult();
+                flowDto2.setTaskId(task2.getId());
+                resultMsg = rollBackLastNode(flowDto2);
+            }
+        }
+        return resultMsg;
+    }
 
     @Override
     public void nextTaskDefinition(List<Node> nextNodeList, ActivityImpl activityImpl, String activityId) {
@@ -1501,6 +1546,8 @@ public class FlowServiceImpl implements FlowService {
                         Map<String, Object> resultObj = (Map<String, Object>) resultMsg.getReObj();
                         task = (Task) resultObj.get("task");
                         processInstance = (ProcessInstance) resultObj.get("processInstance");
+                        //主任审批之后，由各个的项目负责人处理
+                        variables = signService.buildMainPriUser(variables, s.getMergeId(), agentTaskList, FlowConstant.FLOW_SIGN_FWBH);
                         commitZRNode(variables, task.getId(), processInstance.getId(), flowDto.getDealOption(), sign.getDispatchDoc(), isAgentTask);
                     } else {
                         throw new Exception(resultMsg.getReMsg());
@@ -1528,7 +1575,6 @@ public class FlowServiceImpl implements FlowService {
         if (Validate.isList(agentTaskList)) {
             agentTaskService.updateAgentInfo(agentTaskList, processInstance.getId(), processInstance.getName());
         }
-
         return returnMsg;
     }
 
