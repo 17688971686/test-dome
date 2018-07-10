@@ -19,6 +19,8 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.*;
 import static cs.common.cache.CacheConstant.IP_CACHE;
 import static cs.common.constants.SysConstants.SEPARATE_COMMA;
@@ -115,49 +117,38 @@ public class MsgServiceImpl implements MsgService{
                     params.put("mobile", phone);
                     params.put("content", msgContent);
                     //1、多人发送
-                    if(mphoneCount > 1){
+                    if(mphoneCount == 1){
                         params.put("apiSecret", SMSUtils.apiSecret_one);
                         params.put("serCode", SMSUtils.ONE_SERCODE);
                         smsLog.setManyOrOne("1");
-                        //2、单人发送
+                    //2、单人发送
                     }else{
                         params.put("apiSecret", SMSUtils.apiSecret_many);
                         params.put("serCode", SMSUtils.MANY_SERCODE);
                         smsLog.setManyOrOne("2");
                     }
                     smsLog.setIsCallApi(Constant.EnumState.YES.getValue());
-                    HttpResult hst = httpClientOperate.doPost(SMSUtils.SM_URL, params);
-                    if (Validate.isObject(hst) && (200 == hst.getStatusCode())) {
-                        String resultCode = SMSUtils.analysisResult(hst.getContent());
-                        if(Validate.isString(resultCode)){
-                            if("0000000".equals(resultCode)){
-                                resultMsg.setFlag(true);
-                                //如果是token失效，则获取新token重新发送
-                            }else if("0190007".equals(resultCode)){
-                                SMSUtils.resetTokenInfo("",0L,0L);
-                                ResultMsg newResultMsg = getMsgToken();
-                                if(newResultMsg.isFlag()){
-                                    hst = httpClientOperate.doPost(SMSUtils.SM_URL, params);
-                                    if(Validate.isObject(hst) && (200 == hst.getStatusCode())){
-                                        resultCode = SMSUtils.analysisResult(hst.getContent());
-                                        if("0000000".equals(resultCode)){
-                                            resultMsg.setFlag(true);
-                                        }
-                                    }else{
-                                        resultMsg.setReCode(resultCode);
-                                        resultMsg.setReMsg(SMSUtils.getMsgInfoByCode(resultCode));
-                                    }
+
+                    String smsContent = httpClientOperate.doGet(SMSUtils.SM_URL, params);
+                    String resultCode = SMSUtils.analysisResult(smsContent);
+                    if(Validate.isString(resultCode)) {
+                        if ("0000000".equals(resultCode)) {
+                            resultMsg.setFlag(true);
+                            //如果是token失效，则获取新token重新发送
+                        } else if ("0190007".equals(resultCode)) {
+                            SMSUtils.resetTokenInfo("", 0L, 0L);
+                            ResultMsg newResultMsg = getMsgToken();
+                            if (newResultMsg.isFlag()) {
+                                smsContent = httpClientOperate.doGet(SMSUtils.SM_URL, params);
+                                resultCode = SMSUtils.analysisResult(smsContent);
+                                if ("0000000".equals(resultCode)) {
+                                    resultMsg.setFlag(true);
                                 }
                             }
-                            resultMsg.setReCode(resultCode);
-                            resultMsg.setReMsg(SMSUtils.getMsgInfoByCode(resultCode));
                         }
-                    }else{
-                        resultMsg.setReCode(hst.getStatusCode().toString());
-                        resultMsg.setReMsg(hst.getContent());
+                        resultMsg.setReCode(resultCode);
+                        resultMsg.setReMsg(SMSUtils.getMsgInfoByCode(resultCode));
                     }
-
-
                 }catch (Exception e){
                     logger.error("发送短信异常："+e.getMessage());
                     resultMsg.setReMsg("发送短信异常："+e.getMessage());
