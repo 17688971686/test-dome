@@ -1352,10 +1352,13 @@ public class SignServiceImpl implements SignService {
                 //1、附件检验，只要验证评审意见或者审核意见就行
                 boolean isUploadMainFile = false;
                 List<SysFile> fileList = sysFileRepo.findByMainId(signid);
-                for(SysFile sysFile : fileList){
-                    String fileShowName = sysFile.getShowName();
-                    if(fileShowName.contains("评审意见") || fileShowName.contains("审核意见")){
-                        isUploadMainFile = true;
+                if(Validate.isList(fileList)){
+                    for(SysFile sysFile : fileList){
+                        String fileShowName = sysFile.getShowName();
+                        if(fileShowName.contains("评审意见") || fileShowName.contains("审核意见")){
+                            isUploadMainFile = true;
+                            break;
+                        }
                     }
                 }
                 if(!isUploadMainFile){

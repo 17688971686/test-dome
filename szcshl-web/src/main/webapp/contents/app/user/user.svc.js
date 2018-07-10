@@ -122,8 +122,6 @@
             var isValid = $('form').valid();
             if (isValid) {
                 vm.isSubmit = true;
-                vm.model.id = vm.id;// id
-
                 // zTree
                 var nodes = getZtreeChecked();
                 var nodes_role = $linq(nodes).where(function (x) {

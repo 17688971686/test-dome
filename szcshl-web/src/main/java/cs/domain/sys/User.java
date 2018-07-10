@@ -3,6 +3,7 @@ package cs.domain.sys;
 import cs.domain.DomainBase;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -185,7 +186,7 @@ public class User extends DomainBase {
     private String mngOrgType;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    private List<Role> roles ;
+    private List<Role> roles = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "orgID")
