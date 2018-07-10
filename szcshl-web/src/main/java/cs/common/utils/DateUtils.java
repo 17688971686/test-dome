@@ -1,10 +1,20 @@
 package cs.common.utils;
 
+import cs.common.constants.SysConstants;
+import org.apache.http.Consts;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.apache.log4j.Logger;
 
+import java.io.IOException;
 import java.net.InetAddress;
+import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -800,7 +810,7 @@ public class DateUtils {
     }
 
 
-    public static void main(String[] args) throws ParseException {
+    public static void main(String[] args) throws ParseException, URISyntaxException, IOException {
         //long totalDay = DateUtils.daysBetween(DateUtils.converToDate("2017-11-12","yyyy-MM-dd"),DateUtils.converToDate("2017-11-26","yyyy-MM-dd"));
         //System.out.println(DateUtils.minBetween(DateUtils.converToDate("2018-04-25 22:01:00","yyyy-MM-dd HH:mm:ss"),new Date()));
         /*String jsonInfo = "{\"data\":{\"accessToken\":\"ED920981FE92F35EB04ACC30CE8840326DE0209A0EFD7E6BCE8F5135C61E9E0DD7B0F42E63075E37\",\"expiredValue\":\"7200\"},\"resultCode\":\"0000000\",\"resultMessage\":\"成功\"}";
@@ -811,5 +821,22 @@ public class DateUtils {
         JSONObject jo = json.getJSONObject("data");
         System.out.println(jo.getString("accessToken"));*/
         System.out.println(DateUtils.converToString(new Date(), "yy"));
+        System.out.println(DateUtils.converToString(new Date(), "yy"));
+        String smsUrl = SMSUtils.SM_URL+"?mobile=135811,55555,3333";
+
+        // 构造一个form表单式的实体
+
+        Map<String, String> params = new HashMap<>();
+        params.put("accessToken", SMSUtils.getTOKEN());
+        params.put("content", "发送短信");
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>(0);
+        if(params != null){
+            for(String key : params.keySet()){
+                parameters.add(new BasicNameValuePair(key, params.get(key)));
+            }
+        }
+        String url = EntityUtils.toString(new UrlEncodedFormEntity(parameters, Consts.UTF_8));
+        smsUrl += "&"+url;
+        System.out.println(smsUrl);
     }
 }

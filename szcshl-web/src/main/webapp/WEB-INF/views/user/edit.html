@@ -81,6 +81,7 @@
                 <td class="text-right">所在部门</td>
                 <td>
                     <select ng-model="vm.model.orgId" id="orgId" name="orgId" class="form-control select-sm">
+                        <option value="">请选择</option>
                         <option ng-repeat="x in vm.org" ng-selected="vm.model.orgDto.id == x.id" value="{{x.id}}">
                             {{x.name}}
                         </option>

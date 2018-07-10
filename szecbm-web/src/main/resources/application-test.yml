@@ -1,0 +1,18 @@
+#测试环境配置
+logging:
+  level:
+    root: INFO
+    org.springframework: error
+
+sn:
+  shiro:
+    loginCaptcha: false
+
+spring:
+  datasource:
+    driver-class-name: oracle.jdbc.OracleDriver
+    url: jdbc:oracle:thin:@192.168.1.30:1521:orcl
+    username: szec_bm
+    password: szecPassword
+
+
