@@ -734,7 +734,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 workDto.setSecondChargeUserName(mainWork.getSecondChargeUserName());
             }
         }
-        if (Constant.EnumState.NO.getValue().equals(workDto.getIsMainProject()) && EnumState.NO.equals(workDto.getIsSigle())) {//次项目
+        if (Constant.EnumState.NO.getValue().equals(workDto.getIsMainProject()) && Constant.MergeType.REVIEW_MERGE.getValue().equals(workDto.getIsSigle())) {//次项目
             //查找主项目信息，并且获取主项目的会议室信息和专家信息
             WorkProgram wp = workProgramRepo.findMainReviewWP(workDto.getSignId());
             workProgramRepo.initWPMeetingExp(workDto, wp);
