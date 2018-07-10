@@ -113,6 +113,11 @@ public class SMSUtils {
             case "0190024":
                 codeMsg = "获取accessToken的次数已达到上限";
                 break;
+            case "0200001":
+                codeMsg = "发送失败";
+                break;
+            default:
+                ;
         }
         return codeMsg;
     }
