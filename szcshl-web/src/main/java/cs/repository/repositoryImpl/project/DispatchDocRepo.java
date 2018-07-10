@@ -31,7 +31,6 @@ public interface DispatchDocRepo extends IRepository<DispatchDoc,String>{
      */
     void updateDisApprValue(String disId, BigDecimal apprValue);
 
-    void updateDispatchDoc(DispatchDocDto dispatchDocDto,String isMain);
 
     /**
      * 更新合并发文的发文编号

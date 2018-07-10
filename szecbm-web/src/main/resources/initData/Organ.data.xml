@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<datas class="com.sn.framework.module.sys.domain.Organ" strategy="update" relate="parentId" relationChain="organRel">
+    <data organId="GDSZPSZX" organCode="GDSZPSZX" organName="深圳市评审中心" shortName="深圳市评审中心" organType="0"></data>
+</datas>

@@ -19,7 +19,5 @@ public class MyOracleDialect extends Oracle10gDialect{
         registerHibernateType(Types.LONGNVARCHAR, StandardBasicTypes.STRING.getName());
         registerHibernateType(Types.DECIMAL, StandardBasicTypes.DOUBLE.getName());
         registerHibernateType(Types.NCLOB, StandardBasicTypes.STRING.getName());
-
-
     }
 }

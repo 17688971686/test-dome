@@ -1,6 +1,7 @@
 package cs.service.sys;
 
 import cs.ahelper.HttpClientOperate;
+import cs.ahelper.HttpResult;
 import cs.common.RandomGUID;
 import cs.common.ResultMsg;
 import cs.common.cache.CacheManager;
@@ -13,13 +14,21 @@ import cs.domain.sys.SMSLog;
 import cs.domain.sys.User;
 import cs.model.sys.SysConfigDto;
 import cs.repository.repositoryImpl.sys.SMSLogRepo;
+import org.apache.http.Consts;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.*;
 import static cs.common.cache.CacheConstant.IP_CACHE;
+import static cs.common.constants.SysConstants.SEPARATE_COMMA;
 import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
 /**
@@ -83,8 +92,8 @@ public class MsgServiceImpl implements MsgService{
             allUserName += user.getDisplayName()+" ";
             if(Validate.isString(user.getUserMPhone()) && Validate.isPhone(user.getUserMPhone())){
                 if(mphoneCount > 0){
-                    phone += ",";
-                    sendUserName += ",";
+                    phone += SEPARATE_COMMA;
+                    sendUserName += SEPARATE_COMMA;
                 }
                 phone += Validate.removeSpace(user.getUserMPhone());
                 sendUserName += Validate.removeSpace(user.getDisplayName());
@@ -107,38 +116,45 @@ public class MsgServiceImpl implements MsgService{
                 resultMsg.setReCode(Constant.MsgCode.ERROR.getValue());
                 resultMsg.setReMsg("发送短信没有返回信息!");
                 try {
-                    String msgUrl = "";
+                    String smsUrl = SMSUtils.SM_URL + "?mobile="+phone;
                     //发送短信
                     Map<String, String> params = new HashMap<>();
                     params.put("accessToken", SMSUtils.getTOKEN());
-                    params.put("mobile", phone);
+                    //params.put("mobile", phone);
                     params.put("content", msgContent);
                     //1、多人发送
-                    if(mphoneCount > 1){
+                    if(mphoneCount == 1){
                         params.put("apiSecret", SMSUtils.apiSecret_one);
-                        msgUrl = SMSUtils.SM_URL_ONE;
+                        params.put("serCode", SMSUtils.ONE_SERCODE);
                         smsLog.setManyOrOne("1");
-                        //2、单人发送
+                    //2、单人发送
                     }else{
                         params.put("apiSecret", SMSUtils.apiSecret_many);
-                        msgUrl = SMSUtils.SM_URL_MANY;
+                        params.put("serCode", SMSUtils.MANY_SERCODE);
                         smsLog.setManyOrOne("2");
                     }
                     smsLog.setIsCallApi(Constant.EnumState.YES.getValue());
-
-                    String sendResult = httpClientOperate.doGet(msgUrl, params);
-                    String resultCode = SMSUtils.analysisResult(sendResult);
-                    if(Validate.isString(resultCode)){
-                        if("0000000".equals(resultCode)){
+                    List<NameValuePair> parameters = new ArrayList<>();
+                    if(params != null){
+                        for(String key : params.keySet()){
+                            parameters.add(new BasicNameValuePair(key, params.get(key)));
+                        }
+                    }
+                    String url = EntityUtils.toString(new UrlEncodedFormEntity(parameters, Consts.UTF_8));
+                    smsUrl += "&"+url;
+                    String smsContent = httpClientOperate.doGet(smsUrl);
+                    String resultCode = SMSUtils.analysisResult(smsContent);
+                    if(Validate.isString(resultCode)) {
+                        if ("0000000".equals(resultCode)) {
                             resultMsg.setFlag(true);
-                        //如果是token失效，则获取新token重新发送
-                        }else if("0190007".equals(resultCode)){
-                            SMSUtils.resetTokenInfo("",0L,0L);
+                            //如果是token失效，则获取新token重新发送
+                        } else if ("0190007".equals(resultCode)) {
+                            SMSUtils.resetTokenInfo("", 0L, 0L);
                             ResultMsg newResultMsg = getMsgToken();
-                            if(newResultMsg.isFlag()){
-                                sendResult = httpClientOperate.doGet(msgUrl, params);
-                                resultCode = SMSUtils.analysisResult(sendResult);
-                                if("0000000".equals(resultCode)){
+                            if (newResultMsg.isFlag()) {
+                                smsContent = httpClientOperate.doGet(smsUrl);
+                                resultCode = SMSUtils.analysisResult(smsContent);
+                                if ("0000000".equals(resultCode)) {
                                     resultMsg.setFlag(true);
                                 }
                             }
@@ -146,7 +162,6 @@ public class MsgServiceImpl implements MsgService{
                         resultMsg.setReCode(resultCode);
                         resultMsg.setReMsg(SMSUtils.getMsgInfoByCode(resultCode));
                     }
-
                 }catch (Exception e){
                     logger.error("发送短信异常："+e.getMessage());
                     resultMsg.setReMsg("发送短信异常："+e.getMessage());

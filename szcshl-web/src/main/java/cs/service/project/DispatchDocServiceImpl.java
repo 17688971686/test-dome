@@ -665,10 +665,6 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         dispatchDocRepo.updateDisApprValue(disId, apprValue);
     }
 
-    public void updateDispatchByDocDto(DispatchDocDto dispatchDocDto, String isMain) {
-        dispatchDocRepo.updateDispatchDoc(dispatchDocDto, isMain);
-    }
-
     @Override
     public DispatchDocDto findById(String dictId) {
         DispatchDocDto dispatchDocDto = new DispatchDocDto();

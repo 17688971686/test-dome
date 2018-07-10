@@ -1,21 +1,19 @@
 package cs.repository.repositoryImpl.project;
 
-import java.math.BigDecimal;
-import java.util.List;
-
-import cs.common.constants.Constant;
 import cs.common.HqlBuilder;
+import cs.common.constants.Constant;
 import cs.common.utils.Validate;
-import cs.model.project.DispatchDocDto;
+import cs.domain.project.DispatchDoc;
+import cs.domain.project.DispatchDoc_;
+import cs.domain.project.Sign_;
+import cs.repository.AbstractRepository;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import cs.domain.project.DispatchDoc;
-import cs.domain.project.DispatchDoc_;
-import cs.domain.project.Sign_;
-import cs.repository.AbstractRepository;
+import java.math.BigDecimal;
+import java.util.List;
 
 import static cs.common.constants.Constant.DEVICE_BILL_HOMELAND;
 import static cs.common.constants.Constant.DEVICE_BILL_IMPORT;

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<datas class="com.sn.framework.module.sys.domain.Dict" strategy="all" relate="parentId">
+
+    <data dictId="USER" dictKey="USER" dictName="用户信息" dictState="1">
+        <data dictId="USE_STATE" dictKey="USE_STATE" dictName="用户状态" remark="用户状态" dictState="1">
+            <data dictId="USE_STATE_1" dictKey="1" dictName="可用" dictState="1"/>
+            <data dictId="USE_STATE_0" dictKey="0" dictName="禁用" dictState="1"/>
+        </data>
+    </data>
+
+
+    <data dictId="ORGAN" dictKey="ORGAN" dictName="组织机构管理" dictState="1">
+        <data dictId="ORGAN_TYPR" dictKey="ORGAN_TYPR" dictName="机构类型" remark="机构类型" dictState="1">
+            <data dictId="ORGAN_TYPR_0" dictKey="0" dictName="分类" remark="分类" dictState="1"/>
+            <data dictId="ORGAN_TYPR_1" dictKey="1" dictName="单位" remark="单位" dictState="1"/>
+            <data dictId="ORGAN_TYPR_2" dictKey="2" dictName="部门" remark="部门" dictState="1"/>
+        </data>
+    </data>
+
+    <data dictId="RESOURCE" dictKey="RESOURCE" dictName="系统资源管理" dictState="1">
+        <data dictId="RESOURCE_TYPR" dictKey="RESOURCE_TYPR" dictName="资源类型" remark="资源类型" dictState="1">
+            <data dictId="RESOURCE_TYPR_0" dictKey="0" dictName="模块" remark="模块" dictState="1"/>
+            <data dictId="RESOURCE_TYPR_1" dictKey="1" dictName="菜单" remark="菜单" dictState="1"/>
+            <data dictId="RESOURCE_TYPR_2" dictKey="2" dictName="按钮" remark="按钮" dictState="1"/>
+        </data>
+    </data>
+
+</datas>

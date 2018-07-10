@@ -1,0 +1,127 @@
+.login-body {
+    background: url("../image/01.jpg") no-repeat;
+    background-size: cover;
+    overflow: hidden;
+}
+
+.regist-body-all {
+    background: url("../image/02.jpg") no-repeat;
+    background-size: cover;
+    overflow: hidden;
+}
+
+.regist-body {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.regist-body .login-box {
+    margin: auto;
+}
+
+.top {
+    height: 120px;
+    width: 719px;
+    line-height: 120px;
+}
+
+.login-box, .register-box {
+    width: 719px;
+    background: #fff;
+    /*filter: alpha(Opacity=60);
+    -moz-opacity: 0.6;
+    opacity: 0.6;*/
+}
+
+.login-box-body, .register-box-body {
+    background: #fff;
+    width: 370px;
+    margin: auto;
+}
+
+.login-logo, .register-logo {
+    /*width: 719px;*/
+    background: #d7eeff;
+    height: 67px;
+    /*margin: 0px;*/
+    line-height: 67px;
+    color: #1f95ec;
+    font-size: 18px;
+}
+
+.btn {
+    border: none;
+    border-radius: 3px !important;
+}
+
+.vcode {
+    cursor: pointer;
+}
+
+.input-validation-error {
+    border: 1px solid red;
+}
+
+ul {
+    list-style: none;
+    color: red;
+}
+
+.form-control {
+    height: 50px;
+    border-radius: 3px;
+    padding-left: 40px;
+}
+
+.login-box-body .form-control-feedback, .register-box-body .form-control-feedback {
+    height: 24px;
+    width: 34px;
+    right: auto;
+    line-height: 24px;
+    top: 14px;
+    color: #b9b9b9;
+    border-right: 1px solid #ccc;
+}
+
+.ownername, .ownercell, .owneremail, .ownereownercode, .ownerepassword, .ownerepassword-reply, .ownerepersonname, .ownerephonenumber, .ownereusername {
+    background: url("../image/icon.png") no-repeat;
+    background-position: -116px -260px;
+}
+
+.ownername {
+    background-position: -116px -260px;
+}
+
+.ownereownercode {
+    background-position: 5px -332px;
+}
+
+.ownereusername {
+    background-position: -76px -258px;
+}
+
+.ownerepassword {
+    background-position: -34px -296px;
+}
+
+.ownerepassword-reply {
+    background-position: -34px -332px;
+}
+
+.ownerepersonname {
+    background-position: -402px -371px;
+}
+
+.ownerephonenumber {
+    background-position: -278px -36px;
+}
+
+.ownercell {
+    background-position: -236px -409px;
+}
+
+.owneremail {
+    background-position: -157px -36px;
+}

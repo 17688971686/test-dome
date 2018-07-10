@@ -1,0 +1,18 @@
+logging:
+  level:
+    root: error
+
+sn:
+  shiro:
+# session超时时间（单位：秒）
+    session-timeout: 7200
+    loginCaptcha: false
+
+spring:
+  devtools.livereload.enabled: false
+  datasource:
+    driver-class-name: oracle.jdbc.OracleDriver
+    url: jdbc:oracle:thin:@192.168.1.30:1521:orcl
+    username: szec_bm
+    password: szecPassword
+
