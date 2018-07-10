@@ -123,56 +123,61 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public ResultMsg createUser(UserDto userDto) {
-        User findUser = userRepo.findUserByName(userDto.getLoginName());
-        // 用户不存在
-        if (findUser == null) {
-            boolean isSLeader = false;  //是否是分管领导
-            User user = new User();
-            BeanCopierUtils.copyProperties(userDto, user);
+        ResultMsg resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败！");
+        boolean isUpdate = Validate.isString(userDto.getId());
+        if(isUpdate){
+            resultMsg = updateUser(userDto);
+        }else{
+            User findUser = userRepo.findUserByName(userDto.getLoginName());
+            // 用户不存在
+            if (findUser == null) {
+                boolean isSLeader = false;  //是否是分管领导
+                User user = new User();
+                BeanCopierUtils.copyProperties(userDto, user);
 
-            user.setId(UUID.randomUUID().toString());
-            if (!Validate.isString(user.getUserNo())) {
-                user.setUserNo(String.format("%03d", Integer.valueOf(findMaxUserNo()) + 1));
-            }
+                user.setId(UUID.randomUUID().toString());
+                if (!Validate.isString(user.getUserNo())) {
+                    user.setUserNo(String.format("%03d", Integer.valueOf(findMaxUserNo()) + 1));
+                }
 
-            if (userDto != null && userDto.getLoginFailCount() == null) {
-                user.setLoginFailCount(0);
-            }
-            user.setCreatedBy(SessionUtil.getLoginName());
-            user.setCreatedDate(new Date());
-            user.setModifiedDate(new Date());
-            user.setModifiedBy(SessionUtil.getLoginName());
-            user.setPassword(DEFAULT_PASSWORD);        //设置系统默认登录密码
+                if (userDto != null && userDto.getLoginFailCount() == null) {
+                    user.setLoginFailCount(0);
+                }
+                user.setCreatedBy(SessionUtil.getLoginName());
+                user.setCreatedDate(new Date());
+                user.setModifiedDate(new Date());
+                user.setModifiedBy(SessionUtil.getLoginName());
+                user.setPassword(DEFAULT_PASSWORD);        //设置系统默认登录密码
 
-            List<String> roleNames = new ArrayList<String>();
-            // 加入角色
-            for (RoleDto roleDto : userDto.getRoleDtoList()) {
-                Role role = roleRepo.findById(Role_.id.getName(), roleDto.getId());
-                if (role != null) {
-                    if (EnumFlowNodeGroupName.VICE_DIRECTOR.getValue().equals(role.getRoleName())) {
-                        isSLeader = true;
+                List<String> roleNames = new ArrayList<String>();
+                // 加入角色
+                for (RoleDto roleDto : userDto.getRoleDtoList()) {
+                    Role role = roleRepo.findById(Role_.id.getName(), roleDto.getId());
+                    if (role != null) {
+                        if (EnumFlowNodeGroupName.VICE_DIRECTOR.getValue().equals(role.getRoleName())) {
+                            isSLeader = true;
+                        }
+                        user.getRoles().add(role);
+                        roleNames.add(role.getRoleName());
                     }
-                    user.getRoles().add(role);
-                    roleNames.add(role.getRoleName());
                 }
-            }
-            //添加部门
-            if (Validate.isString(userDto.getOrgId())) {
-                Org o = orgRepo.findById(Org_.id.getName(), userDto.getOrgId());
-                user.setOrg(o);
-                //如果是分管领导，则设置默认分管部门类型
-                if (isSLeader) {
-                    user.setMngOrgType(Constant.OrgType.getValue(o.getName()));
+                //添加部门
+                if (Validate.isString(userDto.getOrgId())) {
+                    Org o = orgRepo.findById(Org_.id.getName(), userDto.getOrgId());
+                    user.setOrg(o);
+                    //如果是分管领导，则设置默认分管部门类型
+                    if (isSLeader) {
+                        user.setMngOrgType(Constant.OrgType.getValue(o.getName()));
+                    }
                 }
+                userRepo.save(user);
+                fleshPostUserCache();
+                return new ResultMsg(true, Constant.MsgCode.OK.getValue(), user.getId(), "创建成功",null);
+            } else {
+                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), String.format("用户：%s 已经存在,请重新输入！", userDto.getLoginName()));
             }
-            userRepo.save(user);
-            fleshPostUserCache();
-            //createActivitiUser(user.getId(), user.getLoginName(), user.getPassword(), roleNames);
-            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), user.getId(), "创建成功", null);
-        } else {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), String.format("用户：%s 已经存在,请重新输入！", userDto.getLoginName()));
         }
-
+        return resultMsg;
     }
 
     @Override

@@ -47,6 +47,7 @@
                     if(data.flag || data.reCode == 'ok'){
                         if(!vm.model.id){
                             vm.model.id = data.idCode;
+                            vm.isUpdate = true;
                         }
                         bsWin.success("操作成功！");
                     }else{

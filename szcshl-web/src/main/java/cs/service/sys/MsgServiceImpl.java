@@ -14,6 +14,11 @@ import cs.domain.sys.SMSLog;
 import cs.domain.sys.User;
 import cs.model.sys.SysConfigDto;
 import cs.repository.repositoryImpl.sys.SMSLogRepo;
+import org.apache.http.Consts;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,10 +116,11 @@ public class MsgServiceImpl implements MsgService{
                 resultMsg.setReCode(Constant.MsgCode.ERROR.getValue());
                 resultMsg.setReMsg("发送短信没有返回信息!");
                 try {
+                    String smsUrl = SMSUtils.SM_URL + "?mobile="+phone;
                     //发送短信
                     Map<String, String> params = new HashMap<>();
                     params.put("accessToken", SMSUtils.getTOKEN());
-                    params.put("mobile", phone);
+                    //params.put("mobile", phone);
                     params.put("content", msgContent);
                     //1、多人发送
                     if(mphoneCount == 1){
@@ -128,8 +134,15 @@ public class MsgServiceImpl implements MsgService{
                         smsLog.setManyOrOne("2");
                     }
                     smsLog.setIsCallApi(Constant.EnumState.YES.getValue());
-
-                    String smsContent = httpClientOperate.doGet(SMSUtils.SM_URL, params);
+                    List<NameValuePair> parameters = new ArrayList<>();
+                    if(params != null){
+                        for(String key : params.keySet()){
+                            parameters.add(new BasicNameValuePair(key, params.get(key)));
+                        }
+                    }
+                    String url = EntityUtils.toString(new UrlEncodedFormEntity(parameters, Consts.UTF_8));
+                    smsUrl += "&"+url;
+                    String smsContent = httpClientOperate.doGet(smsUrl);
                     String resultCode = SMSUtils.analysisResult(smsContent);
                     if(Validate.isString(resultCode)) {
                         if ("0000000".equals(resultCode)) {
@@ -139,7 +152,7 @@ public class MsgServiceImpl implements MsgService{
                             SMSUtils.resetTokenInfo("", 0L, 0L);
                             ResultMsg newResultMsg = getMsgToken();
                             if (newResultMsg.isFlag()) {
-                                smsContent = httpClientOperate.doGet(SMSUtils.SM_URL, params);
+                                smsContent = httpClientOperate.doGet(smsUrl);
                                 resultCode = SMSUtils.analysisResult(smsContent);
                                 if ("0000000".equals(resultCode)) {
                                     resultMsg.setFlag(true);
