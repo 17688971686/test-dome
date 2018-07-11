@@ -89,4 +89,12 @@ public final class Constants {
         Role               // 角色
     }
 
+    /**
+     * 系统返回码
+     */
+    public enum ReCode{
+        ERROR,
+        OK
+    }
+
 }

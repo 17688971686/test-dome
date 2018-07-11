@@ -67,3 +67,7 @@ sn:
 
 security.basic.enabled: false
 management.security.enabled: false
+
+system:
+  sysfile:
+    enableip: 192.168.1.30

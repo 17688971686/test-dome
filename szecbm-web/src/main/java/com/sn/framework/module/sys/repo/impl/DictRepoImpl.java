@@ -24,7 +24,7 @@ import java.util.List;
 @Repository
 public class DictRepoImpl extends AbstractRepository<Dict, String> implements IDictRepo {
 
-    private final Logger logger = LoggerFactory.getLogger(OrganRepoImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(DictRepoImpl.class);
 
     @Override
     public List<Dict> findChildrenById(String dictId) {

@@ -16,3 +16,6 @@ spring:
     username: szec_bm
     password: szecPassword
 
+system:
+  sysfile:
+    enableip: 192.168.1.30
