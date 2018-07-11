@@ -15,7 +15,7 @@
         vm.confirmEPListReplace = [];                   //已经调整过的聘请专家列表（已经经过确认的专家）
         vm.matchEPMap = {};                             //保存符合条件的专家信息
         vm.selectIds = [],                              //已经抽取的专家信息ID（用于排除查询）
-        vm.businessId = $state.params.businessId;       //专家评审方案业务ID
+            vm.businessId = $state.params.businessId;       //专家评审方案业务ID
         vm.minBusinessId = $state.params.minBusinessId; //专家抽取方案业务ID
         vm.businessType = $state.params.businessType;   //专家业务类型
         vm.taskId = $state.params.taskId;               //任务ID
@@ -603,7 +603,7 @@
 
         //再次抽取专家
         vm.repeatAutoExpert = function (id) {
-           var condition = [];
+            var condition = [];
             $.each(vm.expertReview.expertSelConditionDtoList, function (i, con) {
                 if (con.id == id) {
                     condition.push(con);
@@ -689,15 +689,19 @@
 
         //确定实际参加会议的专家
         vm.affirmJoinExpert = function () {
-            $("#confirmJoinExpert").kendoWindow({
-                width: "960px",
-                height: "600px",
-                title: "参加评审会专家确认",
-                visible: false,
-                modal: true,
-                closable: true,
-                actions: ["Pin", "Minimize", "Maximize", "Close"]
-            }).data("kendoWindow").center().open();
+            if(vm.expertReview && vm.expertReview.expertSelectedDtoList){
+                vm.confirmEPList = vm.expertReview.expertSelectedDtoList;
+                $("#confirmJoinExpert").kendoWindow({
+                    width: "960px",
+                    height: "600px",
+                    title: "参加评审会专家确认",
+                    visible: false,
+                    modal: true,
+                    closable: true,
+                    actions: ["Pin", "Minimize", "Maximize", "Close"]
+                }).data("kendoWindow").center().open();
+            }
+
         }
 
         //拟聘请专家信息返回
@@ -708,8 +712,8 @@
             }
             if (vm.isback) {
                 $state.go('MaintainProjectEdit',{
-                        signid: vm.businessId,
-                        processInstanceId:vm.processInstanceId
+                    signid: vm.businessId,
+                    processInstanceId:vm.processInstanceId
                 });
             } else {
                 $state.go('flowWPEdit', {
@@ -806,7 +810,7 @@
                                 }
                                 bsWin.alert("删除成功！", function () {
                                     vm.removeSelectEP = false;
-                                   //重新查询专家
+                                    //重新查询专家
                                     vm.init(vm.businessId, vm.minBusinessId);
                                 });
                             } else {
