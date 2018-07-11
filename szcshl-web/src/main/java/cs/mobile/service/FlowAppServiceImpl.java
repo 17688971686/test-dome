@@ -89,7 +89,7 @@ public class FlowAppServiceImpl implements FlowAppService {
 
     @Override
     @Transactional
-    public ResultMsg dealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto, UserDto userDto) {
+    public ResultMsg dealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto, UserDto userDto) throws Exception {
         //参数定义
         String signid = processInstance.getBusinessKey(),
                 businessId = "",                    //前段传过来的业务ID

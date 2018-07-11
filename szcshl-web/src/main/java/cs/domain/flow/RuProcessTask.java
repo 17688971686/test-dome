@@ -201,6 +201,18 @@ public class RuProcessTask {
     private Date expectdispatchdate;
 
     /**
+     * 是否合并发文(1表示单个发文，2表示合并发文)
+     */
+    @Column
+    private String mergeDis;
+
+    /**
+     * 是否合并发文主项目
+     */
+    @Column
+    private String mergeDisMain;
+
+    /**
      * 合并评审项目
      */
     //这是此注解后该属性不会数据持久化
@@ -525,5 +537,21 @@ public class RuProcessTask {
 
     public void setIsAgent(String isAgent) {
         this.isAgent = isAgent;
+    }
+
+    public String getMergeDis() {
+        return mergeDis;
+    }
+
+    public void setMergeDis(String mergeDis) {
+        this.mergeDis = mergeDis;
+    }
+
+    public String getMergeDisMain() {
+        return mergeDisMain;
+    }
+
+    public void setMergeDisMain(String mergeDisMain) {
+        this.mergeDisMain = mergeDisMain;
     }
 }

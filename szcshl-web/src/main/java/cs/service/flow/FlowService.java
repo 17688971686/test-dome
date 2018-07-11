@@ -4,6 +4,7 @@ import cs.common.ResultMsg;
 import cs.domain.flow.HiProcessTask;
 import cs.domain.flow.RuProcessTask;
 import cs.domain.flow.RuTask;
+import cs.domain.project.DispatchDoc;
 import cs.domain.project.SignDispaWork;
 import cs.model.PageModelDto;
 import cs.model.flow.*;
@@ -97,7 +98,7 @@ public interface FlowService {
      * @param definitionKey     流程定义KEY
      * @return
      */
-    ResultMsg dealFlowByBusinessKey(String businessKey,String activiName,FlowDto flowDto,String definitionKey);
+    ResultMsg dealFlowByBusinessKey(String businessKey,String activiName,FlowDto flowDto,String definitionKey) throws Exception;
 
     /**
      * 取回流程
@@ -179,4 +180,15 @@ public interface FlowService {
 
 
     ResultMsg getBranchInfo(FlowDto flowDto);
+
+    /**
+     * 合并发文流程处理
+     * @param processInstance
+     * @param task
+     * @param dp
+     * @param nodeName
+     * @param flowDto
+     * @return
+     */
+    ResultMsg dealMerDisFlow(ProcessInstance processInstance, Task task, DispatchDoc dp, String nodeName, FlowDto flowDto, boolean isAgentTask) throws Exception;
 }

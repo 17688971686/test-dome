@@ -20,7 +20,7 @@ public interface FlowAppService {
      * @param userDto
      * @return
      */
-    ResultMsg dealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto, UserDto userDto);
+    ResultMsg dealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto, UserDto userDto) throws Exception;
 
     /**
      * 图书流程处理

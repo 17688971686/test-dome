@@ -15,8 +15,33 @@
             chooseProject: chooseProject,       // 选择合并发文项目
             cancelProject: cancelProject,       // 取消选择
             deleteAllMerge : deleteAllMerge,    // 取消所有的合并项目
+            findDocById : findDocById,          //根据ID查询发文信息
         };
         return service;
+
+        function findDocById(dictId,callBack){
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/dispatch/findById",
+                params: {
+                    dictId: dictId
+                }
+            }
+            var httpSuccess = function success(response) {
+                //关闭项目关联窗口
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess,
+                onError:function () {
+                    vm.isCommit = false;
+                }
+            });
+        }
 
         // begin#gotoWPage
         function initMergeInfo(vm,signId) {
