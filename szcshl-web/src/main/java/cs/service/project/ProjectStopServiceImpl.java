@@ -343,7 +343,7 @@ public class ProjectStopServiceImpl implements ProjectStopService {
             case FlowConstant.FLOW_STOP_FZR:
                 String directorId = SessionUtil.getUserInfo().getOrg().getOrgDirector();
                 assigneeValue = userService.getTaskDealId(directorId, agentTaskList, FlowConstant.FLOW_STOP_BZ_SP);
-                variables = ActivitiUtil.setAssigneeValue(FlowConstant.SignFlowParams.USER_FGLD1.getValue(), assigneeValue);
+                variables = ActivitiUtil.setAssigneeValue(FlowConstant.SignFlowParams.USER_BZ1.getValue(), assigneeValue);
                 break;
             //部长审批
             case FlowConstant.FLOW_STOP_BZ_SP:

@@ -636,7 +636,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
             case "WORKPROGRAM":
                 WorkProgramDto workProgramDto = workProgramService.initWorkProgramById(businessId);
-//                  SignDto signDto =  signService.findById(workProgramDto.getSignId(), true);
+//                  SignDto signDto123 =  signService.findById(workProgramDto.getSignId(), true);
 //                    WorkProgram workProgram = new WorkProgram();
 //                    BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto, workProgram);
                 if (!Validate.isString(workProgramDto.getIsHaveEIA())) {
@@ -644,7 +644,8 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 }
                 Map<String, Object> workData = TemplateUtil.entryAddMap(workProgramDto);
 
-                List<ExpertSelectedDto> expertSelectedDtoLists = expertSelectedRepo.findByBusinessId(workProgramDto.getId());
+//                List<ExpertSelectedDto> expertSelectedDtoLists = expertSelectedRepo.findByBusinessId(workProgramDto.getId());
+                List<ExpertSelectedDto> expertSelectedDtoLists = workProgramDto.getExpertSelectedDtoList();
                 List<ExpertDto> expertDtoList = workProgramDto.getExpertDtoList();
                 ExpertDto[] expertDtos = new ExpertDto[10];
 

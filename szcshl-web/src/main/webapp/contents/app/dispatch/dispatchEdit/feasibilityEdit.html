@@ -10,22 +10,13 @@
         <p class="h3">
             <strong>深圳市政府投资项目评审中心<br>项目发文审批表</strong>
         </p>
-        <p>
-           <span style="padding: 5px 10px;float: left;">
-            发文方式：
-            <select ng-model="vm.dispatchDoc.dispatchWay" name="dispatchWay" id="dispatchWay"
-                    ng-change="vm.sigleProject()" ng-disabled="vm.showFlag.isReveiwDS">
-                <option value="1">单个发文</option>
-            </select>
-        </span>
-        <!--
+        <p style="text-align: left;">
         <span>
             发文方式：
             <select ng-model="vm.dispatchDoc.dispatchWay" name="dispatchWay" id="dispatchWay"
                     ng-change="vm.sigleProject()" ng-disabled="vm.showFlag.isReveiwDS">
-                <option ng-repeat="x in DICT.DISPATCH_WAY.dicts | orderBy:'dictSort':false"
-                        value="{{x.dictKey}}"
-                        ng-selected="vm.dispatchDoc.dispatchWay==x.dictKey">{{x.dictName}}</option>
+                 <option value="1" ng-selected="vm.dispatchDoc.dispatchWay==1">单个发文</option>
+                 <option value="2" ng-selected="vm.dispatchDoc.dispatchWay==2">合并发文</option>
             </select>
         </span>
         <span ng-show="vm.dispatchDoc.dispatchWay == 2" style="margin-left:10px;">
@@ -39,7 +30,6 @@
                     ng-show="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject == 9"
                     ng-hide="vm.dispatchDoc.dispatchWay == 1 || vm.dispatchDoc.isMainProject == 0">关联项目</button>
         </span>
-        -->
 
         <span style="padding: 5px 10px;float:right;">发文类型： <span class="required">*</span>
             <select ng-model="vm.dispatchDoc.dispatchType" name="dispatchType" id="dispatchType" data-val="true"
@@ -48,7 +38,7 @@
                         ng-selected="vm.dispatchDoc.dispatchType==x.dictName">{{x.dictName}}</option>
             </select>
         </span>
- 		</p>
+        </p>
     </caption>
     <tbody>
 
@@ -82,17 +72,21 @@
     <tr>
         <td class="text-center">秘密等级</td>
         <td>
-            <select ng-model="vm.dispatchDoc.secretLevel" name="secretLevel" id="secretLevel" class="form-control input-xm ">
-                <option ng-repeat="x in DICT.SECRECTLEVEL.dicts"  ng-selected="vm.model.secrectlevel == x.dictName"
-                        value="{{x.dictName}}">{{x.dictName}}</option>
+            <select ng-model="vm.dispatchDoc.secretLevel" name="secretLevel" id="secretLevel"
+                    class="form-control input-xm ">
+                <option ng-repeat="x in DICT.SECRECTLEVEL.dicts" ng-selected="vm.model.secrectlevel == x.dictName"
+                        value="{{x.dictName}}">{{x.dictName}}
+                </option>
             </select>
         </td>
 
         <td class="text-center">紧急程度</td>
         <td>
-            <select ng-model="vm.dispatchDoc.urgentLevel" name="urgentLevel" id="urgentLevel" class="form-control input-xm ">
-                <option ng-repeat="x in DICT.BAOMI.dicts"  ng-selected="vm.model.urgencydegree == x.dictName"
-                        value="{{x.dictName}}">{{x.dictName}}</option>
+            <select ng-model="vm.dispatchDoc.urgentLevel" name="urgentLevel" id="urgentLevel"
+                    class="form-control input-xm ">
+                <option ng-repeat="x in DICT.BAOMI.dicts" ng-selected="vm.model.urgencydegree == x.dictName"
+                        value="{{x.dictName}}">{{x.dictName}}
+                </option>
             </select>
         </td>
 
@@ -176,7 +170,6 @@
     </tr>
 
 
-
     <tr style="height:100px;">
         <td class="text-center" style="vertical-align: middle;">部长审核意见</td>
         <td colspan="5">
@@ -207,8 +200,12 @@
                 <tbody ng-repeat="dispatchDoc in vm.associateDispatchs.slice().reverse()">
                 <tr>
                     <td width="20%">
-                        <div ng-if="dispatchDoc.signDto.ischangeEstimate && dispatchDoc.signDto.ischangeEstimate == '9'">调整概算阶段</div>
-                        <div ng-if="!dispatchDoc.signDto.ischangeEstimate || dispatchDoc.signDto.ischangeEstimate == '0'">{{dispatchDoc.signDto.reviewstage}}</div>
+                        <div ng-if="dispatchDoc.signDto.ischangeEstimate && dispatchDoc.signDto.ischangeEstimate == '9'">
+                            调整概算阶段
+                        </div>
+                        <div ng-if="!dispatchDoc.signDto.ischangeEstimate || dispatchDoc.signDto.ischangeEstimate == '0'">
+                            {{dispatchDoc.signDto.reviewstage}}
+                        </div>
                     </td>
                     <td width="14%">申报</td>
                     <td width="14%">审定</td>
@@ -272,7 +269,7 @@
                 <tr>
                     <td width="20%">{{vm.sign.reviewstage}}</td>
                     <td width="14%">申报</td>
-                    <td width="14%" >审定</td>
+                    <td width="14%">审定</td>
                     <td width="14%">核减（增）</td>
                     <td width="14%">核减（增）率</td>
                     <td width="14%">批复金额</td>
@@ -288,11 +285,11 @@
                                data-val-regex-pattern="([1-9][\d]{0,7}|0)(\.[\d]{1,7})?"/>
                         <span data-valmsg-for="declareValue" data-valmsg-replace="true" class="errors"></span>
                     </td>
-                    <td >
+                    <td>
                         <input type="txt" maxlength="200" class="form-control input-sm "
                                ng-model="vm.dispatchDoc.authorizeValue" id="authorizeValue" name="authorizeValue"
                                ng-blur="vm.count()"
-                       />
+                        />
                         <span data-valmsg-for="authorizeValue" data-valmsg-replace="true" class="errors"></span>
                     </td>
                     <td>
@@ -340,7 +337,7 @@
                     </td>
                 </tr>
 
-                <tr style="height:80px;" ng-if="vm.dispatchDoc.dispatchType=='项目发文'" >
+                <tr style="height:80px;" ng-if="vm.dispatchDoc.dispatchType=='项目发文'">
                     <td>审定建设规模及内容<span class="required">*</span></td>
                     <td colspan="6">
                         <textarea maxlength="1000" data-val-length-max="1000"
@@ -359,11 +356,10 @@
                                   ng-change="vm.dispatchDoc.buildSizeContent=countCharacter(vm.dispatchDoc.buildSizeContent,1000,'buildSizeContentCount')"
                                   class="form-control input-sm " ng-disabled="vm.isnotEdit"
                                   rows="3" ng-model="vm.dispatchDoc.buildSizeContent" id="buildSizeContent"
-                                  name="buildSizeContent" />
+                                  name="buildSizeContent"/>
                         <p id="buildSizeContentCount" style="text-align: right;"></p>
                     </td>
                 </tr>
-
 
 
                 <tr style="height:80px;" ng-if="vm.dispatchDoc.dispatchType=='项目发文'">
@@ -386,7 +382,7 @@
                                   ng-change="vm.dispatchDoc.fundTotalOrigin=countCharacter(vm.dispatchDoc.fundTotalOrigin,1000,'fundTotalOriginCount')"
                                   class="form-control input-sm " ng-disabled="vm.isnotEdit"
                                   rows="3" ng-model="vm.dispatchDoc.fundTotalOrigin" id="fundTotalOrigin"
-                                  name="fundTotalOrigin" />
+                                  name="fundTotalOrigin"/>
 
                         <p id="fundTotalOriginCount" style="text-align: right;"></p>
                     </td>
@@ -400,12 +396,12 @@
                                  class="form-control input-sm " ng-disabled="vm.isnotEdit"
                                  rows="3" ng-model="vm.dispatchDoc.nextWorkPlan" id="nextWorkPlan"
                                  name="nextWorkPlan" data-val="true" data-val-required="必填"/>
-                        <span  data-valmsg-for="nextWorkPlan" data-valmsg-replace="true" class="errors"></span>
+                        <span data-valmsg-for="nextWorkPlan" data-valmsg-replace="true" class="errors"></span>
                         <p id="nextWorkPlanCount" style="text-align: right;"></p>
                     </td>
                 </tr>
 
-                <tr ng-if="vm.dispatchDoc.dispatchType!='项目发文'"  style="height: 80px;">
+                <tr ng-if="vm.dispatchDoc.dispatchType!='项目发文'" style="height: 80px;">
                     <td>下一阶段工作要求</td>
                     <td colspan="6">
                        <textarea maxlength="1000" data-val-length-max="1000"

@@ -420,7 +420,6 @@
                     template: function (item) {
                         if (item.surplusDays != undefined) {
                             return item.surplusDays;
-                            // return (item.surplusDays > 0) ? item.surplusDays : 0;
                         } else {
                             return "";
                         }
@@ -510,8 +509,17 @@
         //判断是否显示处理按钮（主要针对合并评审项目,部长审核和分管领导审核两个环节）
         function checkCanEdit(item) {
             var isDetailBt = (item.processState == 2) ? true : false;
+            var reviewNode = ["SIGN_BMLD_SPW1","SIGN_FGLD_SPW1"];
+            var mergeDisNode = ["SIGN_QRFW","SIGN_BMLD_QRFW","SIGN_FGLD_QRFW","SIGN_ZR_QRFW"];
+            //合并评审
             if (!isDetailBt) {
-                if (item.reviewType && (item.reviewType == 0 || item.reviewType == '0') && (item.nodeDefineKey == 'SIGN_BMLD_SPW1' || item.nodeDefineKey == 'SIGN_FGLD_SPW1')) {
+                if (item.reviewType && (item.reviewType == 0 || item.reviewType == '0') && ($.inArray(item.nodeDefineKey, reviewNode) >= 0)) {
+                    isDetailBt = true;
+                }
+            }
+            //合并发文
+            if (!isDetailBt) {
+                if (item.mergeDis && item.mergeDis == 2 && item.mergeDisMain == 0 && ($.inArray(item.nodeDefineKey, mergeDisNode) >= 0) ) {
                     isDetailBt = true;
                 }
             }

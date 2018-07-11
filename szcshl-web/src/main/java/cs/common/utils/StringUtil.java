@@ -177,6 +177,16 @@ public class StringUtil extends StringUtils {
         return result;
     }
 
+    /**
+     * 数组是否包含某个字符串
+     * @param strArr
+     * @param str
+     * @return
+     */
+    public static boolean isContainStr(List<String> strArr,String str){
+       return strArr.contains(str);
+    }
+
     public static void main(String[] args) {
         /*System.out.print("李安".substring(0,1));
         String str = "integer'2'";
@@ -193,6 +203,7 @@ public class StringUtil extends StringUtils {
 		System.out.println(ss.endsWith("0000"));*/
 
         List<String> lines = Arrays.asList("spring", "node", "mkyong");
+        System.out.println(isContainStr(lines,"spring2"));
         List<String> result0 = getFilterOutput(lines, "mkyong");
         // output "spring", "node"
         for (String temp : result0) {
