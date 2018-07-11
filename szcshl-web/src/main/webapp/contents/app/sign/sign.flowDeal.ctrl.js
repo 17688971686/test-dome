@@ -664,15 +664,15 @@
         //S_工作方案  --链接到  登记表补充资料
         vm.addRegisterFile = function () {
             // debugger;
-            $("#associateWindow").kendoWindow({
-                width: "80%",
-                height: "800px",
-                title: "项目关联",
-                visible: false,
-                modal: true,
-                closable: true,
-                actions: ["Pin", "Minimize", "Maximize", "close"],
-            }).data("kendoWindow").center().open();
+            /*$("#associateWindow").kendoWindow({
+             width: "80%",
+             height: "800px",
+             title: "项目关联",
+             visible: false,
+             modal: true,
+             closable: true,
+             actions: ["Pin", "Minimize", "Maximize", "close"],
+             }).data("kendoWindow").center().open();*/
             $state.go('registerFile', {businessId: vm.model.signid});
         }// E_工作方案  --链接到  登记表补充资料
 
@@ -806,10 +806,10 @@
         vm.addFinancialApply = function (id) {
             vm.costType = "REVIEW";
             /*if ("9" == vm.model.isassistflow || 9 == vm.model.isassistflow) {
-                vm.costType = "ASSIST";
-            } else {
-                vm.costType = "REVIEW";
-            }*/
+             vm.costType = "ASSIST";
+             } else {
+             vm.costType = "REVIEW";
+             }*/
             /**
              * 初始化费用录入
              */
