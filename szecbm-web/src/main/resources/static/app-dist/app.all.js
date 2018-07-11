@@ -128,70 +128,222 @@
 (function () {
     'use strict';
 
-    var app = angular.module('myApp');
+    angular.module('myApp').config(function ($stateProvider) {
+        var userInfo_url = util.formatUrl('admin/userInfo');
 
-    app.config(function ($stateProvider) {
-        $stateProvider
-            .state('operatorLog', {
-                url: "/operatorLog",
-                controllerAs: "vm",
-                templateUrl: util.formatUrl('sys/operatorLog/html/list'),
-                controller: function ($scope, operatorLogSvc, bsWin) {
-                    $scope.csHide("bm");
+        $stateProvider.state('userInfo', {
+            url: "/userInfo",
+            controllerAs: "vm",
+            templateUrl: userInfo_url,
+            controller: function ($scope, $http, bsWin) {
+                var vm = this;
+                vm.isSubmit = false;
+                vm.toUpdate = function () {
+                    util.initJqValidation();
+                    var isValid = $('form').valid();
+                    if (isValid) {
+                        var encrypt = new JSEncrypt();
+                        $http.get(util.formatUrl("rsaKey")).success(function (data) {
+                            encrypt.setPublicKey(data || "");
+                            if (vm.model.oldPassword) {
+                                vm.model.oldPassword = encrypt.encrypt(vm.model.oldPassword);
+                                vm.model.newPassword = encrypt.encrypt(vm.model.newPassword);
+                                vm.model.verifyPassword = encrypt.encrypt(vm.model.verifyPassword);
+                            }
 
-                    var vm = this;
-                    vm.model = {};
-                    vm.delLog = function(days){
-                        operatorLogSvc.deleteLog(vm,days);
+                            vm.isSubmit = true;
+                            $http.put(userInfo_url, vm.model).then(function () {
+                                vm.isSubmit = false;
+                                bsWin.success("修改成功");
+                            }, function () {
+                                vm.isSubmit = false;
+                            })
+                        })
                     }
-
-                    // vm.del = function (id) {
-                    //     vm.model.id = id;
-                    //     bsWin.confirm("确认删除数据吗？", function () {
-                    //         operatorLogSvc.deleteLog(vm);
-                    //     })
-                    // };
-                    //
-                    // vm.dels = function () {
-                    //     var rows = $('#editTable').bootstrapTable('getSelections');//返回的是所有选中的行对象
-                    //     if (rows.length == 0) {
-                    //         bsWin.alert("请选择要删除的数据");
-                    //         return;
-                    //     }
-                    //     var ids = [];
-                    //     $.each(rows, function (i, row) {
-                    //         ids.push(row.id)
-                    //     });
-                    //     vm.del(ids.join(","));
-                    // };
-
-                    // 初始化列表
-                    operatorLogSvc.bsTableControl($scope);
                 }
-
-            });
+            }
+        });
     });
 
 })();
 (function () {
     'use strict';
 
-    angular.module('myApp').factory("operatorLogSvc", function ($http, bsWin) {
-        var operatorLog_url = util.formatUrl("sys/operatorLog");
+    angular.module('myApp').config(welcomeConfig);
+
+    welcomeConfig.$inject = ["$stateProvider"];
+
+    function welcomeConfig($stateProvider) {
+        $stateProvider.state('welcome', {
+            url: "/welcome",
+            templateUrl: util.formatUrl('admin/welcome'),
+            controllerAs: "vm",
+            controller: welcomeCtrl
+        });
+    }
+
+    welcomeCtrl.$inject = ["$scope", "operatorLogSvc"];
+
+    function welcomeCtrl($scope, operatorLogSvc) {
+        var vm = this;
+
+        // 用户操作日志
+        vm.getOperatorLogList = function () {
+            operatorLogSvc.getOperatorLogList(vm, {
+                "$orderby": "createdDate desc",
+                "$top": 5
+            });
+        }
+
+    }
+
+})();
+(function () {
+    'use strict';
+
+    angular.module('myApp').factory("welcomeSvc", function ($http, bsWin) {
+        var welcome_url = util.formatUrl("admin");
+
+        return {};
+
+    });
+})();
+(function () {
+    'use strict';
+
+    angular.module('myApp').config(function ($stateProvider) {
+        $stateProvider.state('attachment', {
+            url: "/attachment",
+            controllerAs: "vm",
+            templateUrl: util.formatUrl('sys/attachment/html/list'),
+            controller: function ($scope, attachmentSvc, bsWin) {
+                $scope.csHide("bm");
+                var vm = this;
+                vm.attachment = {};
+
+                vm.del = function (fileId) {
+                    bsWin.confirm("确认删除数据吗？", function () {
+                        attachmentSvc.deleteById(vm, fileId, function () {
+                            vm.bsTableControl.refresh();
+                        });
+                    });
+                }
+
+                vm.dels = function () {
+                    var rows = $('#editTable').bootstrapTable('getSelections');//返回的是所有选中的行对象
+
+                    if (rows.length == 0) {
+                        bsWin.warning("请选择要删除的数据");
+                        return;
+                    }
+                    var ids = [];
+                    $.each(rows, function (i, row) {
+                        ids.push(row.id);
+                    })
+                    vm.del(ids.join(","));
+                }
+
+                attachmentSvc.bsTableControl(vm);
+
+            }
+        });
+    });
+
+})();
+(function () {
+    'use strict';
+
+    angular.module('myApp').config(function ($stateProvider) {
+        $stateProvider.state('attachmentEdit', {
+            url: "/attachmentEdit/:id",
+            controllerAs: "vm",
+            templateUrl: util.formatUrl('sys/attachment/html/edit'),
+            controller: function ($scope, attachmentSvc, $state, bsWin) {
+                $scope.csHide("bm");
+                var vm = this;
+                vm.attachment = {};
+                vm.attachmentId = $state.params.id;
+                vm.attachment.publicAtt = true;
+                if (vm.attachmentId) {
+                    attachmentSvc.findDocById(vm.attachmentId, vm);
+                }
+
+                vm.save = function () {
+                    if (vm.attachmentId) {
+                        vm.attachment.id = vm.attachmentId;
+                        attachmentSvc.update(vm);//更新
+                    } else {
+                        if (!vm.attachment.id) {
+                            bsWin.alert("请先上传文档！");
+                            return;
+                        }
+                        attachmentSvc.create(vm);//创建
+                    }
+                }
+
+                //初始化上传控件
+                $('#orginalFiles').uploadify({
+                    uploader: util.formatUrl('sys/attachment/upload'),
+                    swf: util.formatUrl("libs/uploadify/uploadify.swf"),
+                    method: 'post',
+                    multi: true,
+                    auto: true,//自动上传
+                    fileObjName: 'files',// 上传参数名称
+                    fileSizeLimit: "10MB",//上传文件大小限制
+                    buttonText: '选择文档',
+                    fileExt: '*.pdf;*.txt;*.png;*.doc',
+                    fileTypeExts: '*.pdf;*.txt;*.png;*.doc;*png;*.docx;*.xls;*.xlsx;*.ppt;*.pptx;*.ceb',
+                    fileTypeDesc: "请选择*.pdf;*.txt;*.png;*.doc文件",     // 文件说明
+                    removeCompleted: true,   //设置已完成上传的文件是否从队列中移除，默认为true
+                    onUploadStart: function (file) {
+                        if (!vm.attachment.tableKey) {
+                            bsWin.error("参数错误！");
+                            return false;
+                        }
+                        //var filters=[];
+                        if (vm.attachment.id) {
+                            $('#orginalFiles').uploadify("settings", "formData", {"attId": vm.attachment.id});//传参到后台
+                        }
+                        $('#orginalFiles').uploadify("settings", "formData", {"tableKey": vm.attachment.tableKey});//传参到后台
+                    },
+                    onUploadSuccess: function (file, data, response) {
+                        angular.element("body").scope().$apply(function () {
+                            vm.attachment.originalName = (file.name).substring(0, (file.name).indexOf("."));
+                            bsWin.alert("上传成功");
+                        })
+                    },
+                    onUploadError: function (file, errorCode, errorMsg, errorString) {
+                        angular.element("body").scope().$apply(function () {
+                            bsWin.error("上传失败");
+                        })
+                    },
+                });
+
+
+                vm.backPrevPage = function (backUrl) {
+                    $scope.backPrevPage(backUrl);
+                };
+
+            }
+        });
+    });
+
+})();
+(function () {
+    'use strict';
+
+    angular.module('myApp').factory("attachmentSvc", function ($http, bsWin) {
+        var attachment_url = util.formatUrl("sys/attachment");
         return {
-            /**
-             * 构建操作日志登录列表配置项
-             * @param vm    作用域
-             */
             bsTableControl: function (vm) {
                 vm.bsTableControl = {
                     options: util.getTableFilterOption({
-                        url: operatorLog_url,
+                        url: attachment_url,
+                        defaultSort: "itemOrder desc",
                         columns: [{
                             title: '行号',
-                            switchable: false,
                             width: 50,
-                            align: "left",
+                            switchable: false,
                             formatter: function (value, row, index) {
                                 var state = vm.bsTableControl.state;
                                 if (state.pageNumber && state.pageSize) {
@@ -201,107 +353,126 @@
                                 }
                             }
                         }, {
-                            field: 'createdDate',
-                            title: '操作时间',
-                            width: 160,
+                            checkbox: true
+                        },{
+                            field: 'originalName',
+                            title: '文档名称',
                             sortable: true,
-                            filterControl: "datepicker",
-                            filterOperator: "lte"
-                        }, {
-                            field: 'createdBy',
-                            title: '操作人',
-                            width: 100,
-                            sortable: true,
-                            filterControl: "input",
-                            filterOperator: "like"
-                        }, {
-                            field: 'operateName',
-                            title: '操作名',
-                            width: 150,
-                            sortable: true,
-                            filterControl: "input",
-                            filterOperator: "like"
-                        }, {
-                            field: 'operateUri',
-                            title: '请求链接',
-                            width: 150,
-                            sortable: true,
-                            filterControl: "input",
-                            filterOperator: "like"
-                        }, {
-                            field: 'operateMethod',
-                            title: '请求方式',
-                            width: 80,
-                            sortable: true,
-                            filterControl: "input",
-                            filterOperator: "like"
-                        }, {
-                            field: 'operateTime',
-                            title: '耗时（毫秒）',
-                            width: 100,
-                            sortable: true,
-                            align: "right",
-                            filterControl: "number"
-                        }, {
-                            field: 'ipAddress',
-                            title: 'IP地址',
-                            width: 100,
-                            align: "center",
-                            filterControl: "input",
-                            filterOperator: "like"
-                        }, {
-                            field: 'clientType',
-                            title: '客户端类型',
-                            width: 100,
-                            sortable: true,
-                            filterControl: "input",
-                            filterOperator: "like"
-                        }, {
-                            field: 'operateType',
-                            title: '状态',
-                            width: 60,
                             filterControl: "input",
                             filterOperator: "like",
-                            formatter: "<span ng-show='row.operateType==1' class='bg-green'>成功</span><span ng-show='row.operateType!=1' class='bg-red'>失败</span>"
+                            formatter: function (value, row, index) {
+                                return '<a href="' + attachment_url + '/download/' + row.id + '" target="_blank">' + value + '</a>';
+                            }
                         }, {
-                            field: 'message',
-                            title: '结果消息',
-                            width: 200,
+                            field: 'docCategory',
+                            title: '文档分类',
+                            sortable: true,
+                            filterControl: "input",
+                            filterOperator: "like",
+                            formatter: "{{DICT.ATTACHMENT.dicts.CATEGORY.dicts[row.docCategory].dictName}}"
+                        }, {
+                            field: 'attMonth',
+                            title: '所属月份',
+                            width: 100,
+                            sortable: true,
                             filterControl: "input",
                             filterOperator: "like"
+                        }, {
+                            field: 'publicAtt',
+                            title: '是否公开给业主',
+                            width: 130,
+                            sortable: false,
+                            align: "center",
+                            filterControl: "input",
+                            filterOperator: "like",
+                            formatter:function(value){
+                               if(value){
+                                    return"是";
+                                }else{
+                                    return"否";
+                                }
+                            }
+                        }, {
+                            field: 'createdDate',
+                            title: '建档时间',
+                            width: 200,
+                            sortable: true,
+                            filterControl: "datepicker",
+                            filterOperator: "gt"
+                        }, {
+                            field: 'modifiedDate',
+                            title: '最后修改时间',
+                            width: 200,
+                            sortable: false,
+                            filterControl: "datepicker",
+                            filterOperator: "gt"
+                        }, {
+                            field: 'createdBy',
+                            title: '建档人',
+                            width: 100,
+                            sortable: false,
+                            filterControl: "input",
+                            filterOperator: "like"
+                        },{
+                            field: '',
+                            title: '操作',
+                            width: 100,
+                            formatter: $("#columnBtns").html()
                         }]
                     })
-                };
+                }
+            },
+            create: function (vm) {
+                util.initJqValidation();
+                var isValid = $('form').valid();
+                if (isValid) {
+                    vm.isSubmit = true;
+                    $http.put(attachment_url, vm.attachment).then(function () {
+                        bsWin.success("添加成功");
+                        vm.backPrevPage();
+                        vm.isSubmit = false;
+                    }).then(function () {
+                        vm.isSubmit = false;
+                    });
+                }
             },
             /**
-             * 获取操作日志数据
-             * @param vm        作用域
-             * @param params    查询参数
+             * 通过主键查找数据
+             * @param fileId
+             * @param vm
              */
-            getOperatorLogList: function (vm, params) {
-                $http.get(operatorLog_url, {
-                    params: params
-                }).success(function (data) {
-                    vm.operatorLogList = data || {};
+            findDocById: function (vm) {
+                $http.get(attachment_url + "/findById",{params:{"id":vm.attachment.id}}).then(function (response) {
+                    vm.attachment = response.data;
                 });
             },
-            /**
-             * 删除操作日志数据
-             * @param vm    作用域
-             * @param days  删除指定天数之前的数据
-             */
-            deleteLog: function (vm, days) {
+            update: function (vm) {
+                util.initJqValidation();
+                var isValid = $('form').valid();
+                if (isValid) {
+                    vm.isSubmit = true;
+                    $http.put(attachment_url, vm.attachment).success(function () {
+                        vm.isSubmit = false;
+                        bsWin.success("更新成功");
+                        vm.backPrevPage("attachment");
+                    }).then(function () {
+                        vm.isSubmit = false;
+                    });
+                }
+            },
+            deleteById: function (vm, fileId, fn) {
                 vm.isSubmit = true;
-                $http['delete'](operatorLog_url, {params: {"days": days || ""}}).then(function () {
-                    bsWin.alert("删除成功");
+                $http['delete'](attachment_url, {params: {"id": fileId || ""}}).then(function () {
+                    bsWin.success("删除成功");
+                    // $("#editTable").bootstrapTable('refresh', "");//刷新表格數據
+                    angular.isFunction(fn) && fn();
                     vm.isSubmit = false;
-                    $("#editTable").bootstrapTable('refresh', "");//刷新表格数据
+                }).then(function () {
+                    vm.isSubmit = false;
                 });
-            }
+            },
 
-        };
-
-
+        }
     });
 
 })();
@@ -530,6 +701,696 @@
             });
         }
     });
+
+})();
+(function () {
+    'use strict';
+
+    var app = angular.module('myApp');
+
+    app.config(function ($stateProvider) {
+        $stateProvider
+            .state('operatorLog', {
+                url: "/operatorLog",
+                controllerAs: "vm",
+                templateUrl: util.formatUrl('sys/operatorLog/html/list'),
+                controller: function ($scope, operatorLogSvc, bsWin) {
+                    $scope.csHide("bm");
+
+                    var vm = this;
+                    vm.model = {};
+                    vm.delLog = function(days){
+                        operatorLogSvc.deleteLog(vm,days);
+                    }
+
+                    // vm.del = function (id) {
+                    //     vm.model.id = id;
+                    //     bsWin.confirm("确认删除数据吗？", function () {
+                    //         operatorLogSvc.deleteLog(vm);
+                    //     })
+                    // };
+                    //
+                    // vm.dels = function () {
+                    //     var rows = $('#editTable').bootstrapTable('getSelections');//返回的是所有选中的行对象
+                    //     if (rows.length == 0) {
+                    //         bsWin.alert("请选择要删除的数据");
+                    //         return;
+                    //     }
+                    //     var ids = [];
+                    //     $.each(rows, function (i, row) {
+                    //         ids.push(row.id)
+                    //     });
+                    //     vm.del(ids.join(","));
+                    // };
+
+                    // 初始化列表
+                    operatorLogSvc.bsTableControl($scope);
+                }
+
+            });
+    });
+
+})();
+(function () {
+    'use strict';
+
+    angular.module('myApp').factory("operatorLogSvc", function ($http, bsWin) {
+        var operatorLog_url = util.formatUrl("sys/operatorLog");
+        return {
+            /**
+             * 构建操作日志登录列表配置项
+             * @param vm    作用域
+             */
+            bsTableControl: function (vm) {
+                vm.bsTableControl = {
+                    options: util.getTableFilterOption({
+                        url: operatorLog_url,
+                        columns: [{
+                            title: '行号',
+                            switchable: false,
+                            width: 50,
+                            align: "left",
+                            formatter: function (value, row, index) {
+                                var state = vm.bsTableControl.state;
+                                if (state.pageNumber && state.pageSize) {
+                                    return index + 1 + (state.pageNumber - 1) * state.pageSize;
+                                } else {
+                                    return index + 1
+                                }
+                            }
+                        }, {
+                            field: 'createdDate',
+                            title: '操作时间',
+                            width: 100,
+                            sortable: true,
+                            filterControl: "datepicker",
+                            filterOperator: "lte"
+                        }, {
+                            field: 'createdBy',
+                            title: '操作人',
+                            width: 100,
+                            sortable: true,
+                            filterControl: "input",
+                            filterOperator: "like"
+                        }, {
+                            field: 'operateName',
+                            title: '操作名',
+                            width: 100,
+                            sortable: true,
+                            filterControl: "input",
+                            filterOperator: "like"
+                        }, {
+                            field: 'operateTime',
+                            title: '耗时',
+                            width: 80,
+                            sortable: true,
+                            align: "right",
+                            filterControl: "number"
+                        }, {
+                            field: 'ipAddress',
+                            title: 'IP地址',
+                            width: 100,
+                            align: "center",
+                            filterControl: "input",
+                            filterOperator: "like"
+                        },  {
+                            field: 'sucessFlag',
+                            title: '结果',
+                            width: 60,
+                            filterControl: "input",
+                            filterOperator: "like",
+                            formatter: "<span ng-show='row.sucessFlag==1' class='bg-green'>成功</span><span ng-show='row.sucessFlag!=1' class='bg-red'>失败</span>"
+                        }, {
+                            field: 'message',
+                            title: '结果消息',
+                            width: 120
+                        },{
+                            field: 'oldInfo',
+                            title: '原数据',
+                            width: 200,
+                            formatter: function (value, row, index) {
+                                if(value){
+                                    return "<textarea style='width: 100%' rows='4'>"+value+"</textarea>";
+                                }else{
+                                    return "<textarea style='width: 100%' rows='4'> </textarea>";
+                                }
+                            }
+                        },{
+                            field: 'newInfo',
+                            title: '更新数据',
+                            width: 200,
+                            formatter: function (value, row, index) {
+                                if(value){
+                                    return "<textarea style='width: 100%' rows='4'>"+value+"</textarea>";
+                                }else{
+                                    return "<textarea style='width: 100%' rows='4'> </textarea>";
+                                }
+                            }
+                        },{
+                            field: 'updateInfo',
+                            title: '更新信息',
+                            width: 200,
+                            formatter: function (value, row, index) {
+                                if(value){
+                                    return "<textarea style='width: 100%' rows='4'>"+value+"</textarea>";
+                                }else{
+                                    return "<textarea style='width: 100%' rows='4'> </textarea>";
+                                }
+                            }
+                        }]
+                    })
+                };
+            },
+            /**
+             * 获取操作日志数据
+             * @param vm        作用域
+             * @param params    查询参数
+             */
+            getOperatorLogList: function (vm, params) {
+                $http.get(operatorLog_url, {
+                    params: params
+                }).success(function (data) {
+                    vm.operatorLogList = data || {};
+                });
+            },
+            /**
+             * 删除操作日志数据
+             * @param vm    作用域
+             * @param days  删除指定天数之前的数据
+             */
+            deleteLog: function (vm, days) {
+                vm.isSubmit = true;
+                $http['delete'](operatorLog_url, {params: {"days": days || ""}}).then(function () {
+                    bsWin.alert("删除成功");
+                    vm.isSubmit = false;
+                    $("#editTable").bootstrapTable('refresh', "");//刷新表格数据
+                });
+            }
+
+        };
+
+
+    });
+
+})();
+(function () {
+    'use strict';
+
+    angular.module('myApp').config(organAddConfig);
+
+    organAddConfig.$inject = ["$stateProvider"];
+
+    function organAddConfig($stateProvider) {
+        $stateProvider
+            .state('organ.add', {
+                url: "/organAdd/:id",
+                controllerAs: "vm",
+                templateUrl: util.formatUrl('sys/organ/html/add'),
+                controller: organAddCtrl
+            });
+    }
+
+    organAddCtrl.$inject = ["$scope", "organSvc", "$state"];
+
+    function organAddCtrl($scope, organSvc, $state) {
+        $scope.organId = $state.params.id;
+        $scope.isSubmit = false;
+        $scope.hasParent = false;
+
+        if ($scope.organId) {
+            $scope.hasParent = true;
+            organSvc.findOrganById($scope, function (data) {
+                $scope.parentOrgan = data;
+                $scope.model = {
+                    parentId: data.organId
+                };
+            });
+        } else {
+            var parentOrganTree;
+            $scope.$watch("organList", function (organList) {
+                parentOrganTree && parentOrganTree.destroy();
+
+                if (!organList || organList.length == 0) {
+                    $scope.hasParent = true;
+                } else {
+                    $scope.hasParent = false;
+                    parentOrganTree = $.fn.zTree.init($("#parentOrganTree"), {
+                        treeId: "organId",
+                        data: {
+                            key: {
+                                name: "organName"
+                            },
+                            simpleData: {
+                                enable: true,
+                                idKey: "organId",
+                                pIdKey: "parentId"
+                            }
+                        },
+                        check: {
+                            enable: true,
+                            chkStyle: "radio"
+                        },
+                        callback: {
+                            onCheck: function (event, treeId, treeNode) {
+                                if (treeNode.checked) {
+                                    $scope.$apply(function () {
+                                        if(!$scope.model) $scope.model = {};
+                                        $scope.model.parentId = treeNode.organId;
+                                    })
+                                }
+                            }
+                        }
+                    }, organList);
+                }
+            })
+        }
+
+        $scope.saveOrgan = function () {
+            organSvc.createOrgan($scope, function () {
+                $state.go("organ", {}, {reload: true});
+            });
+        };
+
+    }
+
+})();
+(function () {
+    'use strict';
+
+    angular.module('myApp').config(organConfig);
+
+    organConfig.$inject = ["$stateProvider"];
+
+    function organConfig($stateProvider) {
+        $stateProvider.state('organ', {
+            url: "/organ",
+            controllerAs: "vm",
+            templateUrl: util.formatUrl('sys/organ/html/list'),
+            controller: organCtrl
+        });
+    }
+
+    organCtrl.$inject = ["$scope", "$state", "organSvc", "bsWin"];
+
+    function organCtrl($scope, $state, organSvc, bsWin) {
+        $scope.csHide("bm");
+
+        $scope.deleteOrgan = function (organId) {
+            $scope.organId = organId;
+            bsWin.confirm("确认删除数据吗？", function () {
+                organSvc.deleteOrgan(vm);
+            })
+        };
+
+        var treeAddBtn = $("#treeAddBtn"),
+            organTreeDom = $("#organTree"),
+            organTreeDelete = organTreeDom.attr("delete");
+
+        // 初始化机构树
+        var organTree;
+        initOrganTree();
+        function initOrganTree() {
+            organTree && organTree.destroy();
+
+            organSvc.getOrganList($scope, function (data) {
+                organTree = $.fn.zTree.init(organTreeDom, {
+                    treeId: "organId",
+                    data: {
+                        key: {
+                            name: "organName"
+                        },
+                        simpleData: {
+                            enable: true,
+                            idKey: "organId",
+                            pIdKey: "parentId"
+                        }
+                    },
+                    edit: {
+                        enable: true,
+                        removeTitle: "删除机构",
+                        showRemoveBtn: function (treeId, treeNode) {
+                            if (!organTreeDelete) {
+                                return false;
+                            }
+                            return treeNode.organDataType > 0 ? !treeNode.isParent : false;
+                        },
+                        showRenameBtn: false
+                    },
+                    view: {
+                        addHoverDom: function (treeId, treeNode) {
+                            if (treeNode.organType < 2) {
+                                var sObj = $("#" + treeNode.tId + "_span");
+                                if (treeNode.editNameFlag || $("#addBtn_" + treeNode.tId).length > 0) return;
+                                if (treeAddBtn.length > 0) {
+                                    var addStr = util.format(treeAddBtn.html(), treeNode.tId);
+                                    sObj.after(addStr);
+                                    var btn = $("#addBtn_" + treeNode.tId);
+                                    if (btn) btn.bind("click", function () {
+                                        $state.go("organ.add", {id: treeNode.organId});
+                                        return false;
+                                    });
+                                }
+                            }
+                        },
+                        removeHoverDom: function (treeId, treeNode) {
+                            $("#addBtn_" + treeNode.tId).unbind().remove();
+                        },
+                        selectedMulti: false
+                    },
+                    callback: {
+                        onClick: function (event, treeId, treeNode) {
+                            // if (treeNode.organDataType == 0 && !treeNode.isParent) {
+                            //     $state.go('organ.user', {id: treeNode.organId});
+                            // } else {
+                            // if (treeNode.organType == 0) {
+                            $state.go('organ.edit', {id: treeNode.organId});
+                            // } else {
+                            //     $state.go('organ.user', {id: treeNode.organId});
+                            // }
+                            // }
+                        },
+                        beforeRemove: function (treeId, treeNode) {
+                            $scope.$apply(function () {
+                                $scope.organId = treeNode.organId;
+                                organSvc.deleteOrgan($scope, function () {
+                                    $scope.organId = null;
+                                    $state.go('organ', {}, {reload: true});
+                                });
+                            });
+                            return false;
+                        },
+                        beforeDrag: function () {
+                            return false;
+                        }
+                    }
+                }, data);
+
+                var rootNode = organTree.getNodeByParam("parentId", null);
+                organTree.expandNode(rootNode, true);
+
+                // 初始化模糊搜索方法
+                window.fuzzySearch("organTree", '#organKey', null, true);
+            })
+        }
+
+        $scope.initOrganTree = initOrganTree;
+    }
+
+})();
+(function () {
+    'use strict';
+
+    angular.module('myApp').config(myConfig);
+
+    myConfig.$inject = ["$stateProvider"];
+
+    function myConfig($stateProvider) {
+        $stateProvider.state('organ.edit', {
+            url: "/organEdit/:id",
+            controllerAs: "vm",
+            templateUrl: util.formatUrl('sys/organ/html/edit'),
+            controller: myCtrl
+        });
+    }
+
+    myCtrl.$inject = ["$scope", "$state", "organSvc", "resourceSvc"];
+
+    function myCtrl($scope, $state, organSvc, resourceSvc) {
+        $scope.organId = $state.params.id;
+        $scope.isSubmit = false;
+
+        if ($scope.organId) {
+            organSvc.findOrganById($scope, function (data) {
+                $scope.model = data;
+                if (data.parentId) {
+                    organSvc.findOrganById({organId: data.parentId}, function (parentOrgan) {
+                        $scope.parentOrgan = parentOrgan;
+                    });
+                }
+            });
+        }
+
+        $scope.saveOrgan = function () {
+            organSvc.updateOrgan($scope, function () {
+                $scope.initOrganTree && $scope.initOrganTree();
+            })
+        };
+
+        $scope.authorization = function () {
+            initResourceTree();
+            $("#organAuthorizationWin").modal('show');
+        }
+
+        $scope.toAuthorization = function () {
+            if (resourceTree) {
+                $scope.model.resources = resourceTree.getCheckedNodes(true);
+                organSvc.authorization($scope);
+            }
+        }
+
+        var resourceTree;
+
+        function initResourceTree() {
+            if (!resourceTree) {
+                resourceSvc.getResourceData($scope, function (data) {
+                    data = data.value || [];
+
+                    resourceTree = $.fn.zTree.init($("#resourceTree"), {
+                        treeId: "resId",
+                        check: {
+                            enable: true,
+                            chkboxType: {"Y": "p", "N": "s"}
+                        },
+                        data: {
+                            key: {
+                                name: "resName"
+                            },
+                            simpleData: {
+                                enable: true,
+                                idKey: "resId",
+                                pIdKey: "parentId"
+                            }
+                        }
+                    }, data);
+
+                    checkNodes();
+                });
+            } else {
+                checkNodes();
+            }
+
+            function checkNodes() {
+                resourceTree.checkAllNodes(false);
+                $.each($scope.model.resources, function (k, v) {
+                    resourceTree.checkNode(resourceTree.getNodeByParam("resId", v.resId), true, true);
+                })
+            }
+        }
+    }
+
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('myApp').factory("organSvc", organSvc);
+
+    organSvc.$inject = ["$http", "bsWin"];
+
+    function organSvc($http, bsWin) {
+        var organ_url = util.formatUrl("sys/organ");
+
+        return {
+            getOrganList: function (vm, fn) {
+                $http.get(organ_url + "?$orderby=itemOrder asc").success(function (data) {
+                    vm.organList = data.value || [];
+                    fn && fn(vm.organList);
+                });
+            },
+            /**
+             * 机构列表（用于业主单位列表）
+             * @param vm
+             * @param fn
+             */
+            findOrganList: function (vm, fn) {
+                $http.get(organ_url + "/findOrganList").then(function (response) {
+                    if (fn) {
+                        fn(response.data)
+                    } else {
+                        vm.organList = response.data;
+                    }
+                })
+            },
+
+            createOrgan: function (vm, fn) {
+                util.initJqValidation();
+                var isValid = $('form').valid();
+                if (isValid) {
+                    vm.isSubmit = true;
+                    $http.post(organ_url, vm.model).then(function () {
+                        vm.isSubmit = false;
+                        bsWin.success("创建成功", function () {
+                            fn && fn();
+                        });
+                    }, function () {
+                        vm.isSubmit = false;
+                    });
+                }
+            },
+            //begin#updateOrgan
+            findOrganById: function (vm, fn) {
+                $http.get(organ_url + "/" + (vm.organId || "")).success(function (data) {
+                    data = data || {};
+                    if(!fn) {
+                        vm.model = data;
+                    } else {
+                        fn(data);
+                    }
+                });
+            },
+            updateOrgan: function (vm, fn) {
+                util.initJqValidation();
+                var isValid = $('form').valid();
+                if (isValid) {
+                    vm.isSubmit = true;
+                    $http.put(organ_url, vm.model).then(function () {
+                        vm.isSubmit = false;
+                        bsWin.success("更新成功", function () {
+                            fn && fn();
+                        });
+                    }, function () {
+                        vm.isSubmit = false;
+                    });
+                }
+            },
+            //End:updateOrgan
+
+            deleteOrgan: function (vm, fn) {
+                // console.log(vm.organ.id);
+                $http['delete'](organ_url, {params: {"organId": vm.organId || ""}}).then(function () {
+                    bsWin.success("删除成功", function () {
+                        fn && fn();
+                    });
+                }, function () {
+                    vm.isSubmit = false;
+                });
+            },
+            authorization: function (vm) {
+                if (!vm.organId || !vm.model) {
+                    bsWin.warning("缺少参数");
+                    return;
+                }
+                vm.isSubmit = true;
+                $http.put(organ_url + "/authorization?organId=" + vm.organId, vm.model.resources || []).then(function () {
+                    vm.isSubmit = false;
+                    bsWin.success("权限更新成功");
+                }, function () {
+                    vm.isSubmit = false;
+                });
+            }
+        };
+
+
+    }
+
+})();
+(function () {
+    'use strict';
+
+    angular.module('myApp').config(myConfig);
+
+    myConfig.$inject = ["$stateProvider"]
+
+    function myConfig($stateProvider) {
+        $stateProvider.state('organ.user', {
+            url: "/organUser/:id",
+            controllerAs: "vm",
+            templateUrl: util.formatUrl('sys/organ/html/user'),
+            controller: myCtrl
+        });
+    }
+
+    myCtrl.$inject = ["$scope", "$state", "organSvc", "userSvc", "bsWin"];
+
+    function myCtrl($scope, $state, organSvc, userSvc, bsWin) {
+        $scope.organId = $state.params.id || '';
+        $scope.isSubmit = false;
+        $scope.isUpdate = false;
+        $scope.openUserEditWin = function (userId) {
+            userEditWin.modal("show");
+            if (userId) {
+                $scope.isUpdate = true;
+                $scope.userId = userId;
+                userSvc.findUserById($scope, function (data) {
+                    $scope.model = data;
+                });
+            } else {
+                $scope.isUpdate = false;
+                $scope.model = {
+                    useState: 1,
+                    organ: {
+                        organId: $scope.organId
+                    }
+                };
+            }
+        }
+
+        var userEditWin = $("#organUserEditModel").on('hidden.bs.modal', function (e) {
+            $scope.$apply(function () {
+                $scope.model = null;
+            })
+        });
+
+        $scope.saveUser = function () {
+            if ($scope.isUpdate) {
+                userSvc.updateUser($scope, function () {
+                    userEditWin.modal("hide");
+                    $("#editTable").bootstrapTable('refresh');//刷新表格数据
+                });
+            } else {
+                userSvc.createUser($scope, function () {
+                    userEditWin.modal("hide");
+                    $("#editTable").bootstrapTable('refresh');//刷新表格数据
+                });
+            }
+        }
+
+        $scope.delUser = function (userId) {
+            $scope.userId = userId;
+            bsWin.confirm("确认删除数据吗？", function () {
+                userSvc.deleteUser($scope);
+            })
+        };
+
+        $scope.delUsers = function () {
+            var rows = $('#editTable').bootstrapTable('getSelections');//返回的是所有选中的行对象
+            if (rows.length == 0) {
+                bsWin.alert("请选择要删除的数据");
+                return;
+            }
+            var ids = [];
+            $.each(rows, function (i, row) {
+                ids.push(row.userId)
+            });
+            $scope.delUser(ids.join(","));
+        };
+
+        $scope.start = function (row) {
+            $scope.userId = row.userId;
+            userSvc.enableUser($scope);
+        }
+
+        $scope.stop = function (row) {
+            $scope.userId = row.userId;
+            userSvc.disableUser($scope);
+        }
+
+        organSvc.findOrganById($scope, function (data) {
+            $scope.organ = data;
+        });
+        userSvc.bsTableControl($scope, {field: "organ.organId", operator: "eq", value: $scope.organId});
+        userSvc.reloadBsTable($scope);
+    }
 
 })();
 (function () {
@@ -1119,89 +1980,6 @@
 (function () {
     'use strict';
 
-    angular.module('myApp').config(function ($stateProvider) {
-        var userInfo_url = util.formatUrl('admin/userInfo');
-
-        $stateProvider.state('userInfo', {
-            url: "/userInfo",
-            controllerAs: "vm",
-            templateUrl: userInfo_url,
-            controller: function ($scope, $http, bsWin) {
-                var vm = this;
-                vm.isSubmit = false;
-                vm.toUpdate = function () {
-                    util.initJqValidation();
-                    var isValid = $('form').valid();
-                    if (isValid) {
-                        var encrypt = new JSEncrypt();
-                        $http.get(util.formatUrl("rsaKey")).success(function (data) {
-                            encrypt.setPublicKey(data || "");
-                            if (vm.model.oldPassword) {
-                                vm.model.oldPassword = encrypt.encrypt(vm.model.oldPassword);
-                                vm.model.newPassword = encrypt.encrypt(vm.model.newPassword);
-                                vm.model.verifyPassword = encrypt.encrypt(vm.model.verifyPassword);
-                            }
-
-                            vm.isSubmit = true;
-                            $http.put(userInfo_url, vm.model).then(function () {
-                                vm.isSubmit = false;
-                                bsWin.success("修改成功");
-                            }, function () {
-                                vm.isSubmit = false;
-                            })
-                        })
-                    }
-                }
-            }
-        });
-    });
-
-})();
-(function () {
-    'use strict';
-
-    angular.module('myApp').config(welcomeConfig);
-
-    welcomeConfig.$inject = ["$stateProvider"];
-
-    function welcomeConfig($stateProvider) {
-        $stateProvider.state('welcome', {
-            url: "/welcome",
-            templateUrl: util.formatUrl('admin/welcome'),
-            controllerAs: "vm",
-            controller: welcomeCtrl
-        });
-    }
-
-    welcomeCtrl.$inject = ["$scope", "operatorLogSvc"];
-
-    function welcomeCtrl($scope, operatorLogSvc) {
-        var vm = this;
-
-        // 用户操作日志
-        vm.getOperatorLogList = function () {
-            operatorLogSvc.getOperatorLogList(vm, {
-                "$orderby": "createdDate desc",
-                "$top": 5
-            });
-        }
-
-    }
-
-})();
-(function () {
-    'use strict';
-
-    angular.module('myApp').factory("welcomeSvc", function ($http, bsWin) {
-        var welcome_url = util.formatUrl("admin");
-
-        return {};
-
-    });
-})();
-(function () {
-    'use strict';
-
     angular.module('myApp').config(userConfig);
 
     userConfig.$inject = ["$stateProvider"];
@@ -1701,774 +2479,6 @@
 
         };
 
-    }
-
-})();
-(function () {
-    'use strict';
-
-    angular.module('myApp').config(function ($stateProvider) {
-        $stateProvider.state('attachment', {
-            url: "/attachment",
-            controllerAs: "vm",
-            templateUrl: util.formatUrl('sys/attachment/html/list'),
-            controller: function ($scope, attachmentSvc, bsWin) {
-                $scope.csHide("bm");
-                var vm = this;
-                vm.attachment = {};
-
-                vm.del = function (fileId) {
-                    bsWin.confirm("确认删除数据吗？", function () {
-                        attachmentSvc.deleteById(vm, fileId, function () {
-                            vm.bsTableControl.refresh();
-                        });
-                    });
-                }
-
-                vm.dels = function () {
-                    var rows = $('#editTable').bootstrapTable('getSelections');//返回的是所有选中的行对象
-
-                    if (rows.length == 0) {
-                        bsWin.warning("请选择要删除的数据");
-                        return;
-                    }
-                    var ids = [];
-                    $.each(rows, function (i, row) {
-                        ids.push(row.id);
-                    })
-                    vm.del(ids.join(","));
-                }
-
-                attachmentSvc.bsTableControl(vm);
-
-            }
-        });
-    });
-
-})();
-(function () {
-    'use strict';
-
-    angular.module('myApp').config(function ($stateProvider) {
-        $stateProvider.state('attachmentEdit', {
-            url: "/attachmentEdit/:id",
-            controllerAs: "vm",
-            templateUrl: util.formatUrl('sys/attachment/html/edit'),
-            controller: function ($scope, attachmentSvc, $state, bsWin) {
-                $scope.csHide("bm");
-                var vm = this;
-                vm.attachment = {};
-                vm.attachmentId = $state.params.id;
-                vm.attachment.publicAtt = true;
-                if (vm.attachmentId) {
-                    attachmentSvc.findDocById(vm.attachmentId, vm);
-                }
-
-                vm.save = function () {
-                    if (vm.attachmentId) {
-                        vm.attachment.id = vm.attachmentId;
-                        attachmentSvc.update(vm);//更新
-                    } else {
-                        if (!vm.attachment.id) {
-                            bsWin.alert("请先上传文档！");
-                            return;
-                        }
-                        attachmentSvc.create(vm);//创建
-                    }
-                }
-
-                //初始化上传控件
-                $('#orginalFiles').uploadify({
-                    uploader: util.formatUrl('sys/attachment/upload'),
-                    swf: util.formatUrl("libs/uploadify/uploadify.swf"),
-                    method: 'post',
-                    multi: true,
-                    auto: true,//自动上传
-                    fileObjName: 'files',// 上传参数名称
-                    fileSizeLimit: "10MB",//上传文件大小限制
-                    buttonText: '选择文档',
-                    fileExt: '*.pdf;*.txt;*.png;*.doc',
-                    fileTypeExts: '*.pdf;*.txt;*.png;*.doc;*png;*.docx;*.xls;*.xlsx;*.ppt;*.pptx;*.ceb',
-                    fileTypeDesc: "请选择*.pdf;*.txt;*.png;*.doc文件",     // 文件说明
-                    removeCompleted: true,   //设置已完成上传的文件是否从队列中移除，默认为true
-                    onUploadStart: function (file) {
-                        if (!vm.attachment.tableKey) {
-                            bsWin.error("参数错误！");
-                            return false;
-                        }
-                        //var filters=[];
-                        if (vm.attachment.id) {
-                            $('#orginalFiles').uploadify("settings", "formData", {"attId": vm.attachment.id});//传参到后台
-                        }
-                        $('#orginalFiles').uploadify("settings", "formData", {"tableKey": vm.attachment.tableKey});//传参到后台
-                    },
-                    onUploadSuccess: function (file, data, response) {
-                        angular.element("body").scope().$apply(function () {
-                            vm.attachment.originalName = (file.name).substring(0, (file.name).indexOf("."));
-                            bsWin.alert("上传成功");
-                        })
-                    },
-                    onUploadError: function (file, errorCode, errorMsg, errorString) {
-                        angular.element("body").scope().$apply(function () {
-                            bsWin.error("上传失败");
-                        })
-                    },
-                });
-
-
-                vm.backPrevPage = function (backUrl) {
-                    $scope.backPrevPage(backUrl);
-                };
-
-            }
-        });
-    });
-
-})();
-(function () {
-    'use strict';
-
-    angular.module('myApp').factory("attachmentSvc", function ($http, bsWin) {
-        var attachment_url = util.formatUrl("sys/attachment");
-        return {
-            bsTableControl: function (vm) {
-                vm.bsTableControl = {
-                    options: util.getTableFilterOption({
-                        url: attachment_url,
-                        defaultSort: "itemOrder desc",
-                        columns: [{
-                            title: '行号',
-                            width: 50,
-                            switchable: false,
-                            formatter: function (value, row, index) {
-                                var state = vm.bsTableControl.state;
-                                if (state.pageNumber && state.pageSize) {
-                                    return index + 1 + (state.pageNumber - 1) * state.pageSize;
-                                } else {
-                                    return index + 1
-                                }
-                            }
-                        }, {
-                            checkbox: true
-                        },{
-                            field: 'originalName',
-                            title: '文档名称',
-                            sortable: true,
-                            filterControl: "input",
-                            filterOperator: "like",
-                            formatter: function (value, row, index) {
-                                return '<a href="' + attachment_url + '/download/' + row.id + '" target="_blank">' + value + '</a>';
-                            }
-                        }, {
-                            field: 'docCategory',
-                            title: '文档分类',
-                            sortable: true,
-                            filterControl: "input",
-                            filterOperator: "like",
-                            formatter: "{{DICT.ATTACHMENT.dicts.CATEGORY.dicts[row.docCategory].dictName}}"
-                        }, {
-                            field: 'attMonth',
-                            title: '所属月份',
-                            width: 100,
-                            sortable: true,
-                            filterControl: "input",
-                            filterOperator: "like"
-                        }, {
-                            field: 'publicAtt',
-                            title: '是否公开给业主',
-                            width: 130,
-                            sortable: false,
-                            align: "center",
-                            filterControl: "input",
-                            filterOperator: "like",
-                            formatter:function(value){
-                               if(value){
-                                    return"是";
-                                }else{
-                                    return"否";
-                                }
-                            }
-                        }, {
-                            field: 'createdDate',
-                            title: '建档时间',
-                            width: 200,
-                            sortable: true,
-                            filterControl: "datepicker",
-                            filterOperator: "gt"
-                        }, {
-                            field: 'modifiedDate',
-                            title: '最后修改时间',
-                            width: 200,
-                            sortable: false,
-                            filterControl: "datepicker",
-                            filterOperator: "gt"
-                        }, {
-                            field: 'createdBy',
-                            title: '建档人',
-                            width: 100,
-                            sortable: false,
-                            filterControl: "input",
-                            filterOperator: "like"
-                        },{
-                            field: '',
-                            title: '操作',
-                            width: 100,
-                            formatter: $("#columnBtns").html()
-                        }]
-                    })
-                }
-            },
-            create: function (vm) {
-                util.initJqValidation();
-                var isValid = $('form').valid();
-                if (isValid) {
-                    vm.isSubmit = true;
-                    $http.put(attachment_url, vm.attachment).then(function () {
-                        bsWin.success("添加成功");
-                        vm.backPrevPage();
-                        vm.isSubmit = false;
-                    }).then(function () {
-                        vm.isSubmit = false;
-                    });
-                }
-            },
-            /**
-             * 通过主键查找数据
-             * @param fileId
-             * @param vm
-             */
-            findDocById: function (vm) {
-                $http.get(attachment_url + "/findById",{params:{"id":vm.attachment.id}}).then(function (response) {
-                    vm.attachment = response.data;
-                });
-            },
-            update: function (vm) {
-                util.initJqValidation();
-                var isValid = $('form').valid();
-                if (isValid) {
-                    vm.isSubmit = true;
-                    $http.put(attachment_url, vm.attachment).success(function () {
-                        vm.isSubmit = false;
-                        bsWin.success("更新成功");
-                        vm.backPrevPage("attachment");
-                    }).then(function () {
-                        vm.isSubmit = false;
-                    });
-                }
-            },
-            deleteById: function (vm, fileId, fn) {
-                vm.isSubmit = true;
-                $http['delete'](attachment_url, {params: {"id": fileId || ""}}).then(function () {
-                    bsWin.success("删除成功");
-                    // $("#editTable").bootstrapTable('refresh', "");//刷新表格數據
-                    angular.isFunction(fn) && fn();
-                    vm.isSubmit = false;
-                }).then(function () {
-                    vm.isSubmit = false;
-                });
-            },
-
-        }
-    });
-
-})();
-(function () {
-    'use strict';
-
-    angular.module('myApp').config(organAddConfig);
-
-    organAddConfig.$inject = ["$stateProvider"];
-
-    function organAddConfig($stateProvider) {
-        $stateProvider
-            .state('organ.add', {
-                url: "/organAdd/:id",
-                controllerAs: "vm",
-                templateUrl: util.formatUrl('sys/organ/html/add'),
-                controller: organAddCtrl
-            });
-    }
-
-    organAddCtrl.$inject = ["$scope", "organSvc", "$state"];
-
-    function organAddCtrl($scope, organSvc, $state) {
-        $scope.organId = $state.params.id;
-        $scope.isSubmit = false;
-        $scope.hasParent = false;
-
-        if ($scope.organId) {
-            $scope.hasParent = true;
-            organSvc.findOrganById($scope, function (data) {
-                $scope.parentOrgan = data;
-                $scope.model = {
-                    parentId: data.organId
-                };
-            });
-        } else {
-            var parentOrganTree;
-            $scope.$watch("organList", function (organList) {
-                parentOrganTree && parentOrganTree.destroy();
-
-                if (!organList || organList.length == 0) {
-                    $scope.hasParent = true;
-                } else {
-                    $scope.hasParent = false;
-                    parentOrganTree = $.fn.zTree.init($("#parentOrganTree"), {
-                        treeId: "organId",
-                        data: {
-                            key: {
-                                name: "organName"
-                            },
-                            simpleData: {
-                                enable: true,
-                                idKey: "organId",
-                                pIdKey: "parentId"
-                            }
-                        },
-                        check: {
-                            enable: true,
-                            chkStyle: "radio"
-                        },
-                        callback: {
-                            onCheck: function (event, treeId, treeNode) {
-                                if (treeNode.checked) {
-                                    $scope.$apply(function () {
-                                        if(!$scope.model) $scope.model = {};
-                                        $scope.model.parentId = treeNode.organId;
-                                    })
-                                }
-                            }
-                        }
-                    }, organList);
-                }
-            })
-        }
-
-        $scope.saveOrgan = function () {
-            organSvc.createOrgan($scope, function () {
-                $state.go("organ", {}, {reload: true});
-            });
-        };
-
-    }
-
-})();
-(function () {
-    'use strict';
-
-    angular.module('myApp').config(organConfig);
-
-    organConfig.$inject = ["$stateProvider"];
-
-    function organConfig($stateProvider) {
-        $stateProvider.state('organ', {
-            url: "/organ",
-            controllerAs: "vm",
-            templateUrl: util.formatUrl('sys/organ/html/list'),
-            controller: organCtrl
-        });
-    }
-
-    organCtrl.$inject = ["$scope", "$state", "organSvc", "bsWin"];
-
-    function organCtrl($scope, $state, organSvc, bsWin) {
-        $scope.csHide("bm");
-
-        $scope.deleteOrgan = function (organId) {
-            $scope.organId = organId;
-            bsWin.confirm("确认删除数据吗？", function () {
-                organSvc.deleteOrgan(vm);
-            })
-        };
-
-        var treeAddBtn = $("#treeAddBtn"),
-            organTreeDom = $("#organTree"),
-            organTreeDelete = organTreeDom.attr("delete");
-
-        // 初始化机构树
-        var organTree;
-        initOrganTree();
-        function initOrganTree() {
-            organTree && organTree.destroy();
-
-            organSvc.getOrganList($scope, function (data) {
-                organTree = $.fn.zTree.init(organTreeDom, {
-                    treeId: "organId",
-                    data: {
-                        key: {
-                            name: "organName"
-                        },
-                        simpleData: {
-                            enable: true,
-                            idKey: "organId",
-                            pIdKey: "parentId"
-                        }
-                    },
-                    edit: {
-                        enable: true,
-                        removeTitle: "删除机构",
-                        showRemoveBtn: function (treeId, treeNode) {
-                            if (!organTreeDelete) {
-                                return false;
-                            }
-                            return treeNode.organDataType > 0 ? !treeNode.isParent : false;
-                        },
-                        showRenameBtn: false
-                    },
-                    view: {
-                        addHoverDom: function (treeId, treeNode) {
-                            if (treeNode.organType < 2) {
-                                var sObj = $("#" + treeNode.tId + "_span");
-                                if (treeNode.editNameFlag || $("#addBtn_" + treeNode.tId).length > 0) return;
-                                if (treeAddBtn.length > 0) {
-                                    var addStr = util.format(treeAddBtn.html(), treeNode.tId);
-                                    sObj.after(addStr);
-                                    var btn = $("#addBtn_" + treeNode.tId);
-                                    if (btn) btn.bind("click", function () {
-                                        $state.go("organ.add", {id: treeNode.organId});
-                                        return false;
-                                    });
-                                }
-                            }
-                        },
-                        removeHoverDom: function (treeId, treeNode) {
-                            $("#addBtn_" + treeNode.tId).unbind().remove();
-                        },
-                        selectedMulti: false
-                    },
-                    callback: {
-                        onClick: function (event, treeId, treeNode) {
-                            // if (treeNode.organDataType == 0 && !treeNode.isParent) {
-                            //     $state.go('organ.user', {id: treeNode.organId});
-                            // } else {
-                            // if (treeNode.organType == 0) {
-                            $state.go('organ.edit', {id: treeNode.organId});
-                            // } else {
-                            //     $state.go('organ.user', {id: treeNode.organId});
-                            // }
-                            // }
-                        },
-                        beforeRemove: function (treeId, treeNode) {
-                            $scope.$apply(function () {
-                                $scope.organId = treeNode.organId;
-                                organSvc.deleteOrgan($scope, function () {
-                                    $scope.organId = null;
-                                    $state.go('organ', {}, {reload: true});
-                                });
-                            });
-                            return false;
-                        },
-                        beforeDrag: function () {
-                            return false;
-                        }
-                    }
-                }, data);
-
-                var rootNode = organTree.getNodeByParam("parentId", null);
-                organTree.expandNode(rootNode, true);
-
-                // 初始化模糊搜索方法
-                window.fuzzySearch("organTree", '#organKey', null, true);
-            })
-        }
-
-        $scope.initOrganTree = initOrganTree;
-    }
-
-})();
-(function () {
-    'use strict';
-
-    angular.module('myApp').config(myConfig);
-
-    myConfig.$inject = ["$stateProvider"];
-
-    function myConfig($stateProvider) {
-        $stateProvider.state('organ.edit', {
-            url: "/organEdit/:id",
-            controllerAs: "vm",
-            templateUrl: util.formatUrl('sys/organ/html/edit'),
-            controller: myCtrl
-        });
-    }
-
-    myCtrl.$inject = ["$scope", "$state", "organSvc", "resourceSvc"];
-
-    function myCtrl($scope, $state, organSvc, resourceSvc) {
-        $scope.organId = $state.params.id;
-        $scope.isSubmit = false;
-
-        if ($scope.organId) {
-            organSvc.findOrganById($scope, function (data) {
-                $scope.model = data;
-                if (data.parentId) {
-                    organSvc.findOrganById({organId: data.parentId}, function (parentOrgan) {
-                        $scope.parentOrgan = parentOrgan;
-                    });
-                }
-            });
-        }
-
-        $scope.saveOrgan = function () {
-            organSvc.updateOrgan($scope, function () {
-                $scope.initOrganTree && $scope.initOrganTree();
-            })
-        };
-
-        $scope.authorization = function () {
-            initResourceTree();
-            $("#organAuthorizationWin").modal('show');
-        }
-
-        $scope.toAuthorization = function () {
-            if (resourceTree) {
-                $scope.model.resources = resourceTree.getCheckedNodes(true);
-                organSvc.authorization($scope);
-            }
-        }
-
-        var resourceTree;
-
-        function initResourceTree() {
-            if (!resourceTree) {
-                resourceSvc.getResourceData($scope, function (data) {
-                    data = data.value || [];
-
-                    resourceTree = $.fn.zTree.init($("#resourceTree"), {
-                        treeId: "resId",
-                        check: {
-                            enable: true,
-                            chkboxType: {"Y": "p", "N": "s"}
-                        },
-                        data: {
-                            key: {
-                                name: "resName"
-                            },
-                            simpleData: {
-                                enable: true,
-                                idKey: "resId",
-                                pIdKey: "parentId"
-                            }
-                        }
-                    }, data);
-
-                    checkNodes();
-                });
-            } else {
-                checkNodes();
-            }
-
-            function checkNodes() {
-                resourceTree.checkAllNodes(false);
-                $.each($scope.model.resources, function (k, v) {
-                    resourceTree.checkNode(resourceTree.getNodeByParam("resId", v.resId), true, true);
-                })
-            }
-        }
-    }
-
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('myApp').factory("organSvc", organSvc);
-
-    organSvc.$inject = ["$http", "bsWin"];
-
-    function organSvc($http, bsWin) {
-        var organ_url = util.formatUrl("sys/organ");
-
-        return {
-            getOrganList: function (vm, fn) {
-                $http.get(organ_url + "?$orderby=itemOrder asc").success(function (data) {
-                    vm.organList = data.value || [];
-                    fn && fn(vm.organList);
-                });
-            },
-            /**
-             * 机构列表（用于业主单位列表）
-             * @param vm
-             * @param fn
-             */
-            findOrganList: function (vm, fn) {
-                $http.get(organ_url + "/findOrganList").then(function (response) {
-                    if (fn) {
-                        fn(response.data)
-                    } else {
-                        vm.organList = response.data;
-                    }
-                })
-            },
-
-            createOrgan: function (vm, fn) {
-                util.initJqValidation();
-                var isValid = $('form').valid();
-                if (isValid) {
-                    vm.isSubmit = true;
-                    $http.post(organ_url, vm.model).then(function () {
-                        vm.isSubmit = false;
-                        bsWin.success("创建成功", function () {
-                            fn && fn();
-                        });
-                    }, function () {
-                        vm.isSubmit = false;
-                    });
-                }
-            },
-            //begin#updateOrgan
-            findOrganById: function (vm, fn) {
-                $http.get(organ_url + "/" + (vm.organId || "")).success(function (data) {
-                    data = data || {};
-                    if(!fn) {
-                        vm.model = data;
-                    } else {
-                        fn(data);
-                    }
-                });
-            },
-            updateOrgan: function (vm, fn) {
-                util.initJqValidation();
-                var isValid = $('form').valid();
-                if (isValid) {
-                    vm.isSubmit = true;
-                    $http.put(organ_url, vm.model).then(function () {
-                        vm.isSubmit = false;
-                        bsWin.success("更新成功", function () {
-                            fn && fn();
-                        });
-                    }, function () {
-                        vm.isSubmit = false;
-                    });
-                }
-            },
-            //End:updateOrgan
-
-            deleteOrgan: function (vm, fn) {
-                // console.log(vm.organ.id);
-                $http['delete'](organ_url, {params: {"organId": vm.organId || ""}}).then(function () {
-                    bsWin.success("删除成功", function () {
-                        fn && fn();
-                    });
-                }, function () {
-                    vm.isSubmit = false;
-                });
-            },
-            authorization: function (vm) {
-                if (!vm.organId || !vm.model) {
-                    bsWin.warning("缺少参数");
-                    return;
-                }
-                vm.isSubmit = true;
-                $http.put(organ_url + "/authorization?organId=" + vm.organId, vm.model.resources || []).then(function () {
-                    vm.isSubmit = false;
-                    bsWin.success("权限更新成功");
-                }, function () {
-                    vm.isSubmit = false;
-                });
-            }
-        };
-
-
-    }
-
-})();
-(function () {
-    'use strict';
-
-    angular.module('myApp').config(myConfig);
-
-    myConfig.$inject = ["$stateProvider"]
-
-    function myConfig($stateProvider) {
-        $stateProvider.state('organ.user', {
-            url: "/organUser/:id",
-            controllerAs: "vm",
-            templateUrl: util.formatUrl('sys/organ/html/user'),
-            controller: myCtrl
-        });
-    }
-
-    myCtrl.$inject = ["$scope", "$state", "organSvc", "userSvc", "bsWin"];
-
-    function myCtrl($scope, $state, organSvc, userSvc, bsWin) {
-        $scope.organId = $state.params.id || '';
-        $scope.isSubmit = false;
-        $scope.isUpdate = false;
-        $scope.openUserEditWin = function (userId) {
-            userEditWin.modal("show");
-            if (userId) {
-                $scope.isUpdate = true;
-                $scope.userId = userId;
-                userSvc.findUserById($scope, function (data) {
-                    $scope.model = data;
-                });
-            } else {
-                $scope.isUpdate = false;
-                $scope.model = {
-                    useState: 1,
-                    organ: {
-                        organId: $scope.organId
-                    }
-                };
-            }
-        }
-
-        var userEditWin = $("#organUserEditModel").on('hidden.bs.modal', function (e) {
-            $scope.$apply(function () {
-                $scope.model = null;
-            })
-        });
-
-        $scope.saveUser = function () {
-            if ($scope.isUpdate) {
-                userSvc.updateUser($scope, function () {
-                    userEditWin.modal("hide");
-                    $("#editTable").bootstrapTable('refresh');//刷新表格数据
-                });
-            } else {
-                userSvc.createUser($scope, function () {
-                    userEditWin.modal("hide");
-                    $("#editTable").bootstrapTable('refresh');//刷新表格数据
-                });
-            }
-        }
-
-        $scope.delUser = function (userId) {
-            $scope.userId = userId;
-            bsWin.confirm("确认删除数据吗？", function () {
-                userSvc.deleteUser($scope);
-            })
-        };
-
-        $scope.delUsers = function () {
-            var rows = $('#editTable').bootstrapTable('getSelections');//返回的是所有选中的行对象
-            if (rows.length == 0) {
-                bsWin.alert("请选择要删除的数据");
-                return;
-            }
-            var ids = [];
-            $.each(rows, function (i, row) {
-                ids.push(row.userId)
-            });
-            $scope.delUser(ids.join(","));
-        };
-
-        $scope.start = function (row) {
-            $scope.userId = row.userId;
-            userSvc.enableUser($scope);
-        }
-
-        $scope.stop = function (row) {
-            $scope.userId = row.userId;
-            userSvc.disableUser($scope);
-        }
-
-        organSvc.findOrganById($scope, function (data) {
-            $scope.organ = data;
-        });
-        userSvc.bsTableControl($scope, {field: "organ.organId", operator: "eq", value: $scope.organId});
-        userSvc.reloadBsTable($scope);
     }
 
 })();

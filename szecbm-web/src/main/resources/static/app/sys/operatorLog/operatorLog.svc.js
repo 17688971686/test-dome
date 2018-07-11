@@ -28,7 +28,7 @@
                         }, {
                             field: 'createdDate',
                             title: '操作时间',
-                            width: 160,
+                            width: 100,
                             sortable: true,
                             filterControl: "datepicker",
                             filterOperator: "lte"
@@ -42,28 +42,14 @@
                         }, {
                             field: 'operateName',
                             title: '操作名',
-                            width: 150,
-                            sortable: true,
-                            filterControl: "input",
-                            filterOperator: "like"
-                        }, {
-                            field: 'operateUri',
-                            title: '请求链接',
-                            width: 150,
-                            sortable: true,
-                            filterControl: "input",
-                            filterOperator: "like"
-                        }, {
-                            field: 'operateMethod',
-                            title: '请求方式',
-                            width: 80,
+                            width: 100,
                             sortable: true,
                             filterControl: "input",
                             filterOperator: "like"
                         }, {
                             field: 'operateTime',
-                            title: '耗时（毫秒）',
-                            width: 100,
+                            title: '耗时',
+                            width: 80,
                             sortable: true,
                             align: "right",
                             filterControl: "number"
@@ -74,26 +60,50 @@
                             align: "center",
                             filterControl: "input",
                             filterOperator: "like"
-                        }, {
-                            field: 'clientType',
-                            title: '客户端类型',
-                            width: 100,
-                            sortable: true,
-                            filterControl: "input",
-                            filterOperator: "like"
-                        }, {
-                            field: 'operateType',
-                            title: '状态',
+                        },  {
+                            field: 'sucessFlag',
+                            title: '结果',
                             width: 60,
                             filterControl: "input",
                             filterOperator: "like",
-                            formatter: "<span ng-show='row.operateType==1' class='bg-green'>成功</span><span ng-show='row.operateType!=1' class='bg-red'>失败</span>"
+                            formatter: "<span ng-show='row.sucessFlag==1' class='bg-green'>成功</span><span ng-show='row.sucessFlag!=1' class='bg-red'>失败</span>"
                         }, {
                             field: 'message',
                             title: '结果消息',
+                            width: 120
+                        },{
+                            field: 'oldInfo',
+                            title: '原数据',
                             width: 200,
-                            filterControl: "input",
-                            filterOperator: "like"
+                            formatter: function (value, row, index) {
+                                if(value){
+                                    return "<textarea style='width: 100%' rows='4'>"+value+"</textarea>";
+                                }else{
+                                    return "<textarea style='width: 100%' rows='4'> </textarea>";
+                                }
+                            }
+                        },{
+                            field: 'newInfo',
+                            title: '更新数据',
+                            width: 200,
+                            formatter: function (value, row, index) {
+                                if(value){
+                                    return "<textarea style='width: 100%' rows='4'>"+value+"</textarea>";
+                                }else{
+                                    return "<textarea style='width: 100%' rows='4'> </textarea>";
+                                }
+                            }
+                        },{
+                            field: 'updateInfo',
+                            title: '更新信息',
+                            width: 200,
+                            formatter: function (value, row, index) {
+                                if(value){
+                                    return "<textarea style='width: 100%' rows='4'>"+value+"</textarea>";
+                                }else{
+                                    return "<textarea style='width: 100%' rows='4'> </textarea>";
+                                }
+                            }
                         }]
                     })
                 };

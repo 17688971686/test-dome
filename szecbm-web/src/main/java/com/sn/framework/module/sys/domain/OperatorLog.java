@@ -34,6 +34,7 @@ public class OperatorLog extends DomainBase {
      */
     @Column
     private String clientIdentify;
+
     @Column
     private String userAgent;
     /**
@@ -62,6 +63,11 @@ public class OperatorLog extends DomainBase {
     @Column(length = 10)
     private String operateType;
     /**
+     * 业务类型
+     */
+    @Column(length = 32)
+    private String businessType;
+    /**
      * 消息
      */
     @Column(length = 2000)
@@ -71,5 +77,27 @@ public class OperatorLog extends DomainBase {
      */
     @Column
     private long operateTime;
+    /**
+     * 旧数据
+     */
+    @Column(columnDefinition = "CLOB")
+    private String oldInfo;
 
+    /**
+     * 新数据
+     */
+    @Column(columnDefinition = "CLOB")
+    private String newInfo;
+
+    /**
+     * 修改的内容
+     */
+    @Column(columnDefinition = "CLOB")
+    private String updateInfo;
+
+    /**
+     * 成功标识
+     */
+    @Column(length = 2)
+    private String sucessFlag;
 }

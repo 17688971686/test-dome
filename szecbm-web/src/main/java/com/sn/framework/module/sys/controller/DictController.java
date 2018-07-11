@@ -1,11 +1,14 @@
 package com.sn.framework.module.sys.controller;
 
+import com.sn.framework.core.syslog.OperatorType;
+import com.sn.framework.core.syslog.SysLog;
 import com.sn.framework.module.sys.model.DictDto;
 import com.sn.framework.module.sys.service.IDictService;
 import com.sn.framework.odata.impl.jpa.OdataJPA;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -55,6 +58,7 @@ public class DictController {
     @RequiresPermissions("sys:dict:put")
     @RequestMapping(name = "更新字典", path = "", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @SysLog(businessType = "数字字典",operatorType = OperatorType.UPDATE,serviceclass = IDictService.class,idName = "dictId")
     public void put(@RequestBody DictDto dictDto) {
         dictService.update(dictDto);
     }

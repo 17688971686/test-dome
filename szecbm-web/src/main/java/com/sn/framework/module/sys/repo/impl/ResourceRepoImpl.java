@@ -23,23 +23,29 @@ public class ResourceRepoImpl extends AbstractRepository<Resource, String> imple
 
     @Override
     public Set<String> findUserPermission(User user) {
-        Set<Role> roles = user.getRoles();
-        Organ organ = user.getOrgan();
-        if (ObjectUtils.isEmpty(roles) && null == organ) {
-            return new HashSet<>();
+        Set<String> permissions = new HashSet<>();
+        if(1 == user.getSuperUser()){
+            permissions.add("*");
+        }else{
+            Set<Role> roles = user.getRoles();
+            Organ organ = user.getOrgan();
+            if (ObjectUtils.isEmpty(roles) && null == organ) {
+                return new HashSet<>();
+            }
+            CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<String> query = builder.createQuery(String.class);
+            Root<Resource> root = query.from(Resource.class);
+            List<Predicate> predicateList = createPredicates(roles, organ, root);
+            Path permCode = root.get(Resource_.permCode);
+            query.where(builder.and(
+                    builder.or(predicateList.toArray(new Predicate[predicateList.size()])),
+                    permCode.isNotNull(),
+                    builder.notEqual(permCode, "")
+            ));
+            List<String> permCodes = entityManager.createQuery(query.select(root.get(Resource_.permCode)).distinct(true)).getResultList();
+            permissions = new HashSet<>(permCodes);
         }
-        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<String> query = builder.createQuery(String.class);
-        Root<Resource> root = query.from(Resource.class);
-        List<Predicate> predicateList = createPredicates(roles, organ, root);
-        Path permCode = root.get(Resource_.permCode);
-        query.where(builder.and(
-                builder.or(predicateList.toArray(new Predicate[predicateList.size()])),
-                permCode.isNotNull(),
-                builder.notEqual(permCode, "")
-        ));
-        List<String> permCodes = entityManager.createQuery(query.select(root.get(Resource_.permCode)).distinct(true)).getResultList();
-        return new HashSet<>(permCodes);
+        return permissions;
     }
 
     private List<Predicate> createPredicates(Set<Role> roles, Organ organ, Root<Resource> root) {
