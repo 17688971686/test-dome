@@ -988,9 +988,11 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                         }
                     }
 
-                    String[] projectNames = expertReview.getReviewTitle().split("》");
-                    expertData.put("projectName", projectNames.length > 0 ? projectNames[0].substring(1, projectNames[0].length()) : expertReview.getReviewTitle());
-
+//                    String[] projectNames = expertReview.getReviewTitle().split("》");
+//                    expertData.put("projectName", projectNames.length > 0 ? projectNames[0].substring(1, projectNames[0].length()) : expertReview.getReviewTitle());
+                    String reviewTitle = expertReview.getReviewTitle();
+                    expertData.put("projectName" , reviewTitle);
+                    expertData.put("projectName2" , reviewTitle.replaceAll("专家" , "外地专家"));
                     if (isSplit) {
                         expertData.put("expertList", expertSelectedList1);
                         expertData.put("expertList2", expertSelectedList2);
@@ -1199,7 +1201,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             int bytesum = 0;
             int byteread = 0;
             inStream = new FileInputStream(file); //读入原文件
-             ouputStream = response.getOutputStream();
+            ouputStream = response.getOutputStream();
             byte[] buffer = new byte[1444];
             while ( (byteread = inStream.read(buffer)) != -1) {
                 bytesum += byteread; //字节数 文件大小
