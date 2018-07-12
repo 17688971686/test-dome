@@ -4,7 +4,7 @@
 <#assign path=request.contextPath/>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>广西百色市重大项目管理系统</title>
+    <title>深圳市政府投资项目评审中心项目评审管理系统</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"/>
     <link rel="shortcut icon" href="${path}/imgs/favicon.ico">
@@ -73,7 +73,7 @@
     <link href="${path}/css/Transm.css" rel="stylesheet"/>
     <link href="${path}/css/hover-min.css" rel="stylesheet"/>
     <link href="${path}/css/share.css" rel="stylesheet"/>
-    <link href="${path}/css/welcome.css" rel="stylesheet" >
+    <link href="${path}/css/welcome.css" rel="stylesheet">
 
     <script type="text/javascript">
         //应用路径
@@ -86,85 +86,68 @@
 <body class="hold-transition skin-blue-light fixed sidebar-mini" mouse-Scroll style="min-width: 1024px;">
 <div id="loading-bar-container"></div>
 <div class="wrapper">
-
-    <header class="main-header cs-scroll-header">
-        <!-- Logo -->
-        <span class="logo">
-            <!-- mini logo for sidebar mini 50x50 pixels -->
-            <span class="logo-mini"><img src="${path}/login/image/logo3.png" width="40"></span>
-            <!-- logo for reguuserStatetate and mobile devices -->
-            <span class="logo-lg"><img src="${path}/login/image/logo2.png" width="210"></span>
-        </span>
-        <!-- Header Navbar: style can be found in header.less -->
-        <nav class="navbar navbar-static-top">
-            <!-- Sidebar toggle button-->
-            <a href="javascript:void(0);" class="sidebar-toggle" data-toggle="offcanvas" role="button">
-                <span class="sr-only">收缩导航</span>
+    <div class="header">
+        <header class="main-header">
+            <!-- Logo -->
+            <a class="logo">
+                <img src="${path}/imgs/szlogo.png" alt="LOGO">
             </a>
-            <span class="tabbox" id="topMenuBox">
-            <#--<span class="top-tab" ng-repeat="x in MAIN_MENU">
-                    <a ng-click='csHide(x.resName)' ng-href="{{x.resUri||'javascript:;'}}" target="{{x.target}}">
-                        <i class="t-z-green-hover {{x.resIcon||'fa fa-bars'}}" style=""></i>
-                        <span>{{x.resName}}</span>
+            <!-- Header Navbar: style can be found in header.less -->
+            <nav class="navbar navbar-static-top" role="navigation">
+                <div class="navbar-custom-menu">
+                    <a href="javascript:void(0);" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+                        <span class="sr-only">收缩导航</span>
                     </a>
-                 </span>-->
-            </span>
-            <div class="navbar-custom-menu">
-                <ul class="nav navbar-nav">
-                    <!-- User Account: style can be found in dropdown.less -->
-                    <li class="dropdown user user-menu">
-                        <!-- Menu Toggle Button -->
-                        <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
-                            <!-- The user image in the navbar-->
-                            <img src="${path}/libs/adminLTE/img/avatar5.png" class="user-image"
-                                 alt="User Image">
-                            <!-- hidden-xs hides the username on small devices so only the image appears. -->
-                            <span class="hidden-xs">${currentUser.username!''}</span>
-                        </a>
-                        <a class="logout" href="${path}/logout" style="border-left:1px solid #eee;padding-right: 30px">
-                            <span class="glyphicon glyphicon-log-out"></span>
-                            <span>退出</span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <!-- The user image in the menu -->
-                            <li class="user-header">
-                                <img src="${path}/libs/adminLTE/img/avatar5.png" class="img-circle"
+
+                    <ul class="nav navbar-nav">
+                        <!-- User Account: style can be found in dropdown.less -->
+                        <li class="dropdown user user-menu">
+                            <!-- Menu Toggle Button -->
+                            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
+                                <!-- The user image in the navbar-->
+                                <img src="${path}/libs/adminLTE/img/avatar5.png" class="user-image"
                                      alt="User Image">
-                                <p>
-                                ${currentUser.username!''}
-                                    <small>${.now}</small>
-                                </p>
-                            </li>
-                            <!-- Menu Body -->
-                            <li class="user-body">
-                                <div class="row">
-                                <#--<div class="col-xs-4 text-center">
-                                        <a href="#">Followers</a>
+                                <!-- hidden-xs hides the username on small devices so only the image appears. -->
+                                <span class="hidden-xs">${currentUser.username!''}</span>
+                            </a>
+                            <a class="logout" href="${path}/logout"
+                               style="border-left:1px solid #eee;padding-right: 30px">
+                                <span class="glyphicon glyphicon-log-out"></span>
+                                <span>退出</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <!-- The user image in the menu -->
+                                <li class="user-header">
+                                    <img src="${path}/libs/adminLTE/img/avatar5.png" class="img-circle"
+                                         alt="User Image">
+                                    <p>
+                                    ${currentUser.username!''}
+                                        <small>${.now}</small>
+                                    </p>
+                                </li>
+                                <!-- Menu Body -->
+                                <li class="user-body">
+                                    <div class="row">
+
                                     </div>
-                                    <div class="col-xs-4 text-center">
-                                        <a href="#">Sales</a>
+                                    <!-- /.row -->
+                                </li>
+                                <!-- Menu Footer-->
+                                <li class="user-footer">
+                                    <div class="pull-left">
+                                        <a href="#/userInfo" class="btn btn-default btn-flat">个人信息</a>
                                     </div>
-                                    <div class="col-xs-4 text-center">
-                                        <a href="#">朋友</a>
-                                    </div>-->
-                                </div>
-                                <!-- /.row -->
-                            </li>
-                            <!-- Menu Footer-->
-                            <li class="user-footer">
-                                <div class="pull-left">
-                                    <a href="#/userInfo" class="btn btn-default btn-flat">个人信息</a>
-                                </div>
-                                <div class="pull-right">
-                                    <a href="${path}/logout" class="btn btn-default btn-flat">退出</a>
-                                </div>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-    </header>
+                                    <div class="pull-right">
+                                        <a href="${path}/logout" class="btn btn-default btn-flat">退出</a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+    </div>
     <div style="height: 50px"></div>
     <!-- Left side column. contains the logo and sidebar -->
     <aside class="main-sidebar">
@@ -187,7 +170,6 @@
             </li>
 
             <li class="treeview active" ng-repeat="y in x.children" ng-if="!!x.children">
-
                 <a class="" ng-href="{{y.resUri||'javascript:;'}}" target="{{y.target}}">
                     <i class="{{y.resIcon||'fa fa-bars'}}"></i>
                     <span>{{y.resName}}</span>
@@ -195,7 +177,6 @@
                             <i class="fa fa-angle-left pull-right"></i>
                             </span>
                 </a>
-
                 <ul class="treeview-menu" ng-if="!!y.children">
                     <li ng-repeat="z in y.children">
                         <a ng-href="{{z.resUri||'javascript:;'}}" target="{{z.target}}">
@@ -203,9 +184,7 @@
                         </a>
                     </li>
                 </ul>
-
             </li>
-
         </ul>-->
         </section>
         <!-- /.sidebar -->
@@ -213,14 +192,14 @@
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper content-wrapper-all" ui-view style="padding-top: 5px;min-height:895px;"></div>
-    <!-- /.content-wrapper -->
+    <!-- /.content-wrapper
     <footer class="main-footer">
         <div class="pull-right hidden-xs">
             <b>版本</b> 1.0.0
         </div>
         <strong>广西深宁科技有限公司 版权所有</strong>
     </footer>
-
+    -->
 </div>
 <!-- ./wrapper -->
 

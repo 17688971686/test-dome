@@ -51,6 +51,7 @@ public class DictController {
     @RequiresPermissions("sys:dict:post")
     @RequestMapping(name = "创建字典", path = "", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.CREATED)
+    @SysLog(businessType = "数据字典",operatorType = OperatorType.ADD,serviceclass = IDictService.class,idName = "dictId")
     public void post(@RequestBody DictDto dictDto) {
         dictService.create(dictDto);
     }
@@ -58,7 +59,7 @@ public class DictController {
     @RequiresPermissions("sys:dict:put")
     @RequestMapping(name = "更新字典", path = "", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    @SysLog(businessType = "数字字典",operatorType = OperatorType.UPDATE,serviceclass = IDictService.class,idName = "dictId")
+    @SysLog(businessType = "数据字典",operatorType = OperatorType.UPDATE,serviceclass = IDictService.class,idName = "dictId")
     public void put(@RequestBody DictDto dictDto) {
         dictService.update(dictDto);
     }
@@ -66,6 +67,7 @@ public class DictController {
     @RequiresPermissions("sys:dict:delete")
     @RequestMapping(name = "删除字典", path = "", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @SysLog(businessType = "数据字典",operatorType = OperatorType.DELETE,serviceclass = IDictService.class,idName = "dictId")
     public void delete(String dictId) {
         if (dictId.contains(SEPARATE_COMMA)) {
             dictService.deleteByIds(dictId.split(SEPARATE_COMMA));

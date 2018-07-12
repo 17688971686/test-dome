@@ -1,12 +1,16 @@
 package com.sn.framework.core.common;
 
 
+import com.sn.framework.core.Constants;
+import lombok.Data;
+
 /**
  * 操作返回类
  * 
  * @author ldm
  * 
  */
+@Data
 public class ResultMsg implements java.io.Serializable {
 
 	private boolean flag; // 成功标识
@@ -46,44 +50,15 @@ public class ResultMsg implements java.io.Serializable {
 		this.reObj = reObj;
 	}
 
-	public String getReCode() {
-		return reCode;
+	public static ResultMsg ok(String msg){
+		return new ResultMsg(true, Constants.ReCode.OK.name(), null == msg?"成功":msg);
 	}
 
-	public void setReCode(String reCode) {
-		this.reCode = reCode;
+	public static ResultMsg error(String msg){
+		return new ResultMsg(false, Constants.ReCode.ERROR.name(), null == msg?"失败":msg);
 	}
 
-	public String getReMsg() {
-		return reMsg;
+	public static ResultMsg error(int httpCode,String msg){
+		return new ResultMsg(false, String.valueOf(httpCode), null == msg?"失败":msg);
 	}
-
-	public void setReMsg(String reMsg) {
-		this.reMsg = reMsg;
-	}
-
-	public Object getReObj() {
-		return reObj;
-	}
-
-	public void setReObj(Object reObj) {
-		this.reObj = reObj;
-	}
-
-	public boolean isFlag() {
-		return flag;
-	}
-
-	public void setFlag(boolean flag) {
-		this.flag = flag;
-	}
-
-	public String getIdCode() {
-		return idCode;
-	}
-
-	public void setIdCode(String idCode) {
-		this.idCode = idCode;
-	}
-
 }

@@ -43,9 +43,9 @@
                             <tr ng-repeat="x in vm.operatorLogList.value">
                                 <td>{{$index + 1}}.</td>
                                 <td>{{x.createdBy}}</td>
-                                <td>{{x.operateName}}</td>
-                                <td><span ng-show='x.operateType==1' class='bg-green'>成功</span><span
-                                        ng-show='x.operateType!=1' class='bg-red'>失败</span></td>
+                                <td>{{x.businessType}}[{{x.operateType}}]</td>
+                                <td><span ng-show='x.sucessFlag==1' class="label label-success">成功</span><span
+                                        ng-show='x.sucessFlag!=1' class="label label-danger">失败</span></td>
                                 <td>
                                     <span class="label label-info">{{x.createdDate}}</span>
                                 </td>

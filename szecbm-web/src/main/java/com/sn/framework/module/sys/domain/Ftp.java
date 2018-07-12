@@ -12,7 +12,7 @@ import javax.persistence.Table;
  * ftp管理表
  */
 @Entity
-@Table(name = "cs_ftp")
+@Table(name = "cs_sys_ftp")
 @Data
 public class Ftp {
     @Id

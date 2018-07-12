@@ -5,9 +5,9 @@ package com.sn.framework.core.syslog;
  * Created by ldm on 2018/7/11 0011.
  */
 public class OperatorType {
-
     public final static String ADD = "新增";
     public final static String SAVE = "保存";
     public final static String UPDATE = "更新";
     public final static String DELETE = "删除";
+    public final static String QUERY = "查询";
 }

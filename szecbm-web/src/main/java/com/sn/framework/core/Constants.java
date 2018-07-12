@@ -42,30 +42,6 @@ public final class Constants {
      */
     public final static String ORGAN_TYPE_GXBSSLD = "GXBSSLD";
 
-    /**
-     * 单位类型：主办单位
-     */
-    public final static String ORGAN_TYPE_GXBSFGW = "GXBSFGW";
-
-    /**
-     * 单位类型：主办单位——县（区）发改委
-     */
-    public final static String ORGAN_TYPE_GXBSXQFGW = "GXBSXQFGW";
-
-    /**
-     * 单位类型：协办单位
-     */
-    public final static String ORGAN_TYPE_GXBSXBDW = "GXBSXBDW";
-
-    /**
-     * 单位类型：业主单位
-     */
-    public final static String ORGAN_TYPE_GXBSYZDW = "GXBSYZDW";
-
-    /**
-     * 单位类型：市重大项目管理办公室
-     */
-    public final static String ORGAN_TYPE_GXBSZDXMBGS = "GXBSZDXMBGS";
 
     public final static String ORGAN_REL_SEPARATE = "|";
 
@@ -74,15 +50,6 @@ public final class Constants {
      */
     public final static String SYS_VAR_CODE_IS_INIT = "isInit";
 
-    /**
-     * 系统变量：微信同步
-     */
-    public final static String SYS_VAR_CODE_WECHAT_SYN = "wechatSyn";
-
-    /**
-     * 系统变量：发送微信消息
-     */
-    public final static String SYS_VAR_CODE_WECHAT_MSG = "wechatMsg";
 
     public enum FlowUserGroupType {
         Organ,             // 机构
@@ -97,4 +64,14 @@ public final class Constants {
         OK
     }
 
+    /**
+     * 处理意见环节
+     * comment nodekey
+     */
+
+    public enum NodeKey{
+        XM_FGLD,            //项目分管领导
+        XM_BZ,              //项目部长
+        XM_QSR
+    }
 }

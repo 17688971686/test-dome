@@ -40,12 +40,15 @@
                             filterControl: "input",
                             filterOperator: "like"
                         }, {
-                            field: 'operateName',
-                            title: '操作名',
+                            field: 'businessType',
+                            title: '操作对象',
                             width: 100,
                             sortable: true,
                             filterControl: "input",
-                            filterOperator: "like"
+                            filterOperator: "like",
+                            formatter: function (value, row, index) {
+                                return row.businessType+"["+row.operateType+"]";
+                            }
                         }, {
                             field: 'operateTime',
                             title: '耗时',

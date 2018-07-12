@@ -13,14 +13,16 @@ textarea{
 *
 index page 仅针对adminLET的skin-blue-light风格的修改版
 */
-
-.skin-blue-light .main-header .logo, .skin-blue-light .main-header .navbar {
+.skin-blue-light .main-header .navbar{
     color: #000;
-    background: transparent;
-
+}
+.skin-blue-light .main-header .logo{
+    color: #000;
+    width: 650px;
 }
 .skin-blue-light .main-header .navbar{
     border-bottom:1px solid #ccc;
+    margin-left:650px;
 }
 .navbar-custom-menu > .navbar-nav > li {
     background: #00c0ef;
@@ -51,23 +53,24 @@ index page 仅针对adminLET的skin-blue-light风格的修改版
     background: #cccccc
 }
 .main-header .sidebar-toggle {
-    float: left;
-    color: #2498ea;
+    color: #fff;
     background-image: none;
     padding: 15px 15px;
     font-family: fontAwesome;
+    position: absolute;
+    left: 0;
+    top: 0;
 }
 
-.skin-blue-light .main-header .navbar .sidebar-toggle {
+.skin-blue-light .main-header .navbar {
     color: #2498ea;
 }
 
 .skin-blue-light .main-header .navbar .sidebar-toggle:hover {
     background-color: #2498ea;
 }
-
-.skin-blue-light .main-header .logo:hover {
-    background-color: #f9fafc;
+.sidebar-mini.sidebar-collapse .main-header .logo{
+    padding-left: 10px;
 }
 
 .cs-scroll-header {

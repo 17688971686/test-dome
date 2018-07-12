@@ -53,7 +53,7 @@ public interface ISysFileService extends ISService<SysFileDto> {
      * @param busiType
      * @return
      */
-    ResultMsg downRemoteFile(String businessId, List<cs.model.sys.SysFileDto> sysFileDtoList, String userId, String mainType, String busiType);
+    ResultMsg downRemoteFile(String businessId, List<SysFileDto> sysFileDtoList, String userId, String mainType, String busiType);
 
     /**
      * 保存

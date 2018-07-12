@@ -13,26 +13,20 @@
         };
     }).run(["$templateCache", function ($templateCache) {
         // 系统菜单模板
-        $templateCache.put(sysTopMenusTpl,
+        /*$templateCache.put(sysTopMenusTpl,
             '<span class="top-tab" ng-repeat="x in MAIN_MENU">\
                 <a ng-click="!!x.children && csHide(x.resId)" id="menu_{{x.resId}}" ng-href="{{x.resUri||\'javascript:;\'}}" target="{{x.target}}">\
                     <i class="t-z-green-hover {{x.resIcon||\'fa fa-bars\'}}"></i>\
                     <span>{{x.resName}}</span>\
                 </a>\
-            </span>');
+            </span>');*/
         // 系统左菜单模板
         $templateCache.put(sysLeftMenusTpl,
-            '<ul class="sidebar-menu" ng-repeat="x in MAIN_MENU"  ng-if="menuBoxResId==x.resId">\
+            '<ul class="sidebar-menu">\
                 <li class="active treeview">\
                     <a href="#/"><i class="fa fa-home"></i><span>主页</span></a>\
                 </li>\
-                <li class="treeview">\
-                    <a class="t-z-blue-dep" href="javascript:;">\
-                        <i class="{{x.resIcon||\'fa fa-bars\'}}"></i>\
-                        <span> &nbsp; {{x.resName}}</span>\
-                    </a>\
-                </li>\
-                <li class="treeview active" ng-repeat="y in x.children" ng-if="!!x.children">\
+                <li class="treeview active" ng-repeat="y in MAIN_MENU" >\
                     <a class="" ng-href="{{y.resUri||\'javascript:;\'}}" target="{{y.target}}">\
                         <i class="{{y.resIcon||\'fa fa-bars\'}}"></i>\
                         <span>{{y.resName}}</span>\
@@ -72,7 +66,7 @@
             initMenus: function (vm, fn) {
                 $http.get(util.formatUrl("sys/user/resources?status=1")).success(function (data) {
                     vm.MAIN_MENU = initMenus(data);
-                    fn && fn($templateCache.get(sysTopMenusTpl), $templateCache.get(sysLeftMenusTpl));
+                    fn && fn($templateCache.get(sysLeftMenusTpl));
                 });
             }
         };

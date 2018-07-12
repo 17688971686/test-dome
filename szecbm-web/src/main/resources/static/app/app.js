@@ -19,10 +19,6 @@
             }
         });
         $scope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
-            // console.log("$stateChangeSuccess", toState);
-            // $scope.currentState_name = toState.name;
-            // $scope.currentState_url = toState.url;
-            // $scope.currentState_params = toParams;
             $scope.previousState_name = fromState.name;
             $scope.previousState_params = fromParams;
         });
@@ -43,19 +39,16 @@
         }
 
         //  初始化系统菜单
-        snBaseUtils.initMenus($scope, function (sysTopMenusTpl, sysLeftMenusTpl) {
+        snBaseUtils.initMenus($scope, function (sysLeftMenusTpl) {
             if (!$scope.menuBoxResId) {
                 $scope.menuBoxResId = "pm";
             }
-            topMenuBox.append($compile(sysTopMenusTpl)($scope));
+            //topMenuBox.append($compile(sysTopMenusTpl)($scope));
             leftMenuBox.append($compile(sysLeftMenusTpl)($scope));
         });
 
-
         // 初始化数据字典
         snBaseUtils.initDicts($scope);
-
-
     }
 
     appConfig.$inject = ['$urlRouterProvider', 'cfpLoadingBarProvider', '$compileProvider'];

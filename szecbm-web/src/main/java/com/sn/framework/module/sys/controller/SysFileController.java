@@ -90,8 +90,7 @@ public class SysFileController {
         }
         StringBuffer errorMsg = new StringBuffer();
         try {
-            String fileUploadPath = SysFileUtil.getUploadPath();
-            String relativeFileUrl = SysFileUtil.generatRelativeUrl(fileUploadPath, mainType, mainId, sysBusiType, null);
+            String relativeFileUrl = SysFileUtil.generatRelativeUrl(mainType, mainId, sysBusiType, null);
 
             Ftp f = ftpRepo.getByIP(enabledIP);
             FtpUtils ftpUtils = new FtpUtils();

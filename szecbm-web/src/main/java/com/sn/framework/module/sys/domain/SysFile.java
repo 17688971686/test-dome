@@ -12,7 +12,7 @@ import javax.persistence.*;
  *         系统文件
  */
 @Entity
-@Table(name = "cs_sysfile")
+@Table(name = "cs_sys_file")
 @Data
 public class SysFile extends DomainBase {
     //主键

@@ -1,10 +1,9 @@
 package com.sn.framework.core.util;
 
-import cs.common.constants.Constant;
-import cs.common.utils.PropertyUtil;
-import cs.common.utils.Tools;
-import cs.common.utils.Validate;
-import org.apache.log4j.Logger;
+import com.sn.framework.core.common.Validate;
+import com.sn.framework.module.sys.repo.impl.SysFileRepoImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -19,7 +18,7 @@ import java.util.Random;
  * @author lqs
  */
 public class SysFileUtil {
-    private static Logger logger = Logger.getLogger(SysFileUtil.class);
+    private final Logger logger = LoggerFactory.getLogger(SysFileUtil.class);
 
     private static String FILE_UPLOAD_PATH = "file_upload_path";
 
@@ -40,21 +39,11 @@ public class SysFileUtil {
         }
         return  size;
     }
-    /**
-     * 根据附件主类划分
-     * @return
-     */
-    public static String getUploadPath() {
-        PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-        String uploadPath = propertyUtil.readProperty(FILE_UPLOAD_PATH);
-        return  Validate.isString(uploadPath)?uploadPath : "C:\\szec_uploadfile";
-    }
 
     /**
      * 根据业务类型(urlGenerator)生成不同规则的文件路径
-     * @param fileLocation 文件存放的根目录
      */
-    public static String generatRelativeUrl(String fileLocation,String mainType,String mainId, String sysBusiType, String fileName) {
+    public static String generatRelativeUrl(String mainType,String mainId, String sysBusiType, String fileName) {
 
         String relativeUrl = "";
         if(!Validate.isString(mainType)){
@@ -70,18 +59,6 @@ public class SysFileUtil {
         if(Validate.isString(sysBusiType)){
             relativeUrl += (File.separator+sysBusiType);
         }
-        //如果是本地
-        if(Validate.isString(fileLocation)){
-            String url = fileLocation;
-            File isFileExists = new File(url + File.separator + relativeUrl);
-            if (isFileExists.exists()) {
-                if (!isFileExists.isDirectory()) {
-                    isFileExists.mkdirs();
-                }
-            } else {
-                isFileExists.mkdirs();
-            }
-        }
 
         //如果有文件名，则加上文件名
         if(Validate.isString(fileName)){
@@ -90,7 +67,7 @@ public class SysFileUtil {
             if(fileName.indexOf(".") >0){
                 extendName = fileName.substring(fileName.lastIndexOf("."), fileName.length());
             }
-            String distFileName = Tools.generateRandomFilename().concat(extendName);
+            String distFileName = SysFileUtil.generateRandomFilename().concat(extendName);
             relativeUrl += File.separator + distFileName;
         }
         return relativeUrl;
