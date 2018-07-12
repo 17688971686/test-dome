@@ -95,15 +95,15 @@
                                 <w:szCs w:val="44"/>
                             </w:rPr>
                         </w:pPr>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:hint="eastAsia"/>
-                                <w:spacing w:val="0"/>
-                                <w:sz w:val="44"/>
-                                <w:szCs w:val="44"/>
-                            </w:rPr>
-                            <w:t>《</w:t>
-                        </w:r>
+                    <#-- <w:r>
+                         <w:rPr>
+                             <w:rFonts w:hint="eastAsia"/>
+                             <w:spacing w:val="0"/>
+                             <w:sz w:val="44"/>
+                             <w:szCs w:val="44"/>
+                         </w:rPr>
+                         <w:t>《</w:t>
+                     </w:r>-->
                         <w:r>
                             <w:rPr>
                                 <w:rFonts w:hint="eastAsia"/>
@@ -115,17 +115,17 @@
                             </w:rPr>
                             <w:t>${projectName!}</w:t>
                         </w:r>
-                        <w:bookmarkStart w:id="0" w:name="_Toc199925865"/>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:hint="eastAsia"/>
-                                <w:spacing w:val="0"/>
-                                <w:sz w:val="44"/>
-                                <w:szCs w:val="44"/>
-                            </w:rPr>
-                            <w:t>》专家评审费发放表</w:t>
-                        </w:r>
-                        <w:bookmarkEnd w:id="0"/>
+                    <#-- <w:bookmarkStart w:id="0" w:name="_Toc199925865"/>
+                     <w:r>
+                         <w:rPr>
+                             <w:rFonts w:hint="eastAsia"/>
+                             <w:spacing w:val="0"/>
+                             <w:sz w:val="44"/>
+                             <w:szCs w:val="44"/>
+                         </w:rPr>
+                         <w:t>》专家评审费发放表</w:t>
+                     </w:r>
+                     <w:bookmarkEnd w:id="0"/>-->
                     </w:p>
                     <w:p>
                         <w:pPr>
@@ -577,7 +577,7 @@
                                 </w:p>
                             </w:tc>
                         </w:tr>
-<#list expertList as expert>
+                    <#list expertList as expert>
                         <w:tr>
                             <w:tblPrEx>
                                 <w:tblBorders>
@@ -991,7 +991,7 @@
                                 </w:p>
                             </w:tc>
                         </w:tr>
-</#list>
+                    </#list>
                         <w:tr>
                             <w:tblPrEx>
                                 <w:tblBorders>
@@ -1089,29 +1089,29 @@
                                 </w:p>
                             </w:tc>
                             <w:tc>
-                            <w:tcPr>
-                                <w:tcW w:w="900" w:type="dxa"/>
-                                <w:vAlign w:val="center"/>
-                            </w:tcPr>
-                            <w:p>
-                                <w:pPr>
-                                    <w:jc w:val="center"/>
-                                    <w:rPr>
-                                        <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
-                                        <w:sz w:val="24"/>
-                                        <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                    </w:rPr>
-                                </w:pPr>
-                                <w:r>
-                                    <w:rPr>
-                                        <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                        <w:sz w:val="24"/>
-                                        <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                    </w:rPr>
-                                    <w:t>${(totalCostSum?c)!}</w:t>
-                                </w:r>
-                            </w:p>
-                        </w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="900" w:type="dxa"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p>
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
+                                            <w:sz w:val="24"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
+                                        </w:rPr>
+                                        <w:t>${(totalCostSum?c)!}</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
                             <w:tc>
                                 <w:tcPr>
                                     <w:tcW w:w="800" w:type="dxa"/>

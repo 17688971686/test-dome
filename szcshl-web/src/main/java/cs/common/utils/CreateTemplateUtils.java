@@ -59,7 +59,7 @@ public class CreateTemplateUtils {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("projectName", sign.getProjectname());
 
-        dataMap.put("docNum", "深投审【" + DateUtils.converToString(new Date(), DateUtils.DATE_YEAR) + "】");
+        dataMap.put("docNum", "深投审〔" + DateUtils.converToString(new Date(), DateUtils.DATE_YEAR) + "〕");
         dataMap.put("explain", "xxxxx");
         dataMap.put("title1", "xxxxx");
         dataMap.put("content1", "xxxxx");
@@ -88,8 +88,8 @@ public class CreateTemplateUtils {
 
         dataMap.put("mdnum", "3");
         dataMap.put("projectName", sign.getProjectname());
-        dataMap.put("generalCounsel", "市发改" + generalCounsel + "主任");
-        dataMap.put("counselor", "市发改委" + counselor + "处长");
+        dataMap.put("generalCounsel",  generalCounsel );
+        dataMap.put("counselor",  counselor );
         dataMap.put("director", sign.getLeaderName());
         String leaderName = sign.getLeaderName() == null ? "" : sign.getLeaderName();
         dataMap.put("viceDirector", leaderName);
@@ -164,7 +164,7 @@ public class CreateTemplateUtils {
 
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("projectName", sign.getProjectname());
-        dataMap.put("docNum", "深投审【" + DateUtils.converToString(new Date(), "yyyy") + "】");
+        dataMap.put("docNum", "深投审〔" + DateUtils.converToString(new Date(), DateUtils.DATE_YEAR) + "〕");
         dataMap.put("explain", "xxxxx");
         dataMap.put("title1", "xxxxx");
         dataMap.put("content1", "xxxxx");
@@ -229,8 +229,8 @@ public class CreateTemplateUtils {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("mdnum", "3");
         dataMap.put("projectName", sign.getProjectname());
-        dataMap.put("generalCounsel", "市发改" + generalCounsel + "主任");
-        dataMap.put("counselor", "市发改委" + counselor + "处长");
+        dataMap.put("generalCounsel", generalCounsel );
+        dataMap.put("counselor",  counselor );
         dataMap.put("director", sign.getLeaderName());
         String leanderName = sign.getLeaderName() == null ? "" : sign.getLeaderName();
         dataMap.put("viceDirector", leanderName);
@@ -278,7 +278,7 @@ public class CreateTemplateUtils {
     public static SysFile createSugTemplateOpinion(Ftp f, Sign sign) {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("projectName", sign.getProjectname());
-        dataMap.put("docNum", "深投审【" + DateUtils.converToString(new Date(), "yyyy") + "】");
+        dataMap.put("docNum", "深投审〔" + DateUtils.converToString(new Date(), DateUtils.DATE_YEAR) + "〕");
         dataMap.put("explain", "xxxxx");
         dataMap.put("title1", "xxxxx");
         dataMap.put("content1", "xxxxx");
@@ -325,8 +325,8 @@ public class CreateTemplateUtils {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("psnum", "3");
         dataMap.put("projectName", sign.getProjectname());
-        dataMap.put("generalCounsel", "市发改" + generalCounsel + "主任");
-        dataMap.put("counselor", "市发改委" + counselor + "处长");
+        dataMap.put("generalCounsel",  generalCounsel );
+        dataMap.put("counselor",  counselor );
         dataMap.put("director", sign.getLeaderName());
         String leanderName = sign.getLeaderName() == null ? "" : sign.getLeaderName();
         dataMap.put("viceDirector", leanderName);
@@ -371,7 +371,7 @@ public class CreateTemplateUtils {
     public static SysFile createReportTemplateOpinion(Ftp f, Sign sign) {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("projectName", sign.getProjectname());
-        dataMap.put("docNum", "深投审【" + DateUtils.converToString(new Date(), "yyyy") + "】");
+        dataMap.put("docNum", "深投审〔" + DateUtils.converToString(new Date(), DateUtils.DATE_YEAR) + "〕");
         dataMap.put("explain", "xxxxx");
         dataMap.put("title1", "xxxxx");
         dataMap.put("content1", "xxxxx");
@@ -416,8 +416,8 @@ public class CreateTemplateUtils {
 
         dataMap.put("psnum", "3");
         dataMap.put("projectName", sign.getProjectname());
-        dataMap.put("generalCounsel", "市发改" + generalCounsel + "主任");
-        dataMap.put("counselor", "市发改委" + counselor + "处长");
+        dataMap.put("generalCounsel", generalCounsel );
+        dataMap.put("counselor",  counselor );
         dataMap.put("director", sign.getLeaderName());
         String leanderName = sign.getLeaderName() == null ? "" : sign.getLeaderName();
         dataMap.put("viceDirector", leanderName);

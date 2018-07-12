@@ -396,20 +396,20 @@
                             </w:tc>
                         </w:tr>
                     </w:tbl>
-                    <w:p>
-                        <w:pPr>
-                            <w:sectPr>
-                                <w:footerReference r:id="rId3" w:type="default"/>
-                                <w:footerReference r:id="rId4" w:type="even"/>
-                                <w:type w:val="continuous"/>
-                                <w:pgSz w:w="11906" w:h="16838"/>
-                                <w:pgMar w:top="2098" w:right="1559" w:bottom="1418" w:left="1559" w:header="851"
-                                         w:footer="1361" w:gutter="0"/>
-                                <w:cols w:space="720" w:num="1"/>
-                                <w:docGrid w:type="linesAndChars" w:linePitch="573" w:charSpace="-1843"/>
-                            </w:sectPr>
-                        </w:pPr>
-                    </w:p>
+                <#--<w:p>
+                    <w:pPr>
+                        <w:sectPr>
+                            <w:footerReference r:id="rId3" w:type="default"/>
+                            <w:footerReference r:id="rId4" w:type="even"/>
+                            <w:type w:val="continuous"/>
+                            <w:pgSz w:w="11906" w:h="16838"/>
+                            <w:pgMar w:top="2098" w:right="1559" w:bottom="1418" w:left="1559" w:header="851"
+                                     w:footer="1361" w:gutter="0"/>
+                            <w:cols w:space="720" w:num="1"/>
+                            <w:docGrid w:type="linesAndChars" w:linePitch="573" w:charSpace="-1843"/>
+                        </w:sectPr>
+                    </w:pPr>
+                </w:p>-->
                     <w:p>
                         <w:pPr>
                             <w:pStyle w:val="5"/>
