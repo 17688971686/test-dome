@@ -39,4 +39,10 @@ public interface RoomBookingRepo extends IRepository<RoomBooking, String> {
      * @param status
      */
     void updateStateByBusinessId(String businessId,String status);
+
+    /**
+     * 根据业务ID删除会议信息
+     * @param businessId
+     */
+    void deleteByBusinessId(String businessId);
 }

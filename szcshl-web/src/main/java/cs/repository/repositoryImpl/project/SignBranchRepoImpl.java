@@ -378,4 +378,13 @@ public class SignBranchRepoImpl extends AbstractRepository<SignBranch, String> i
         return "";
     }
 
+    @Override
+    public int countNeedWP(String signId) {
+        Criteria criteria = getExecutableCriteria();
+        criteria.add(Restrictions.eq(SignBranch_.signId.getName(),signId));
+        criteria.add(Restrictions.eq(SignBranch_.isNeedWP.getName(), Constant.EnumState.YES.getValue()));
+        Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+        return totalResult;
+    }
+
 }

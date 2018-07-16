@@ -170,4 +170,10 @@ public interface ExpertSelectedRepo extends IRepository<ExpertSelected, String> 
      */
     List<AchievementDeptDetailDto> findDeptAchievementDetail(AchievementDeptDetailDto achievementSumDto,Map<String,Object> levelMap);
 
+    /**
+     * 根据业务ID删除
+     * @param businessId
+     */
+    void deleteByBusinessId(String businessId);
+
 }

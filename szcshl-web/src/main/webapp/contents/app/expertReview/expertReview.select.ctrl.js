@@ -198,44 +198,47 @@
 
         //保存自选的专家
         vm.saveSelfExpert = function (admin) {
-            var isAdmin = admin;
             var selectIds = common.getKendoCheckId('#selfExpertGrid');
             if (selectIds.length == 0) {
                 bsWin.alert("请先选择专家！");
             } else {
-                var selExpertIdArr = [];
-                $.each(selectIds, function (i, obj) {
-                    selExpertIdArr.push(obj.value);
-                });
-                expertReviewSvc.saveSelfExpert(vm.businessId, vm.minBusinessId, vm.businessType, selExpertIdArr.join(","), vm.expertReview.id, vm.isCommit, function (data) {
-                    if (data.flag || data.reCode == 'ok') {
-                        //更新专家评审费用
-                        if(vm.businessType == "SIGN"){
-                            workprogramSvc.updateWPExpertCost(vm.minBusinessId);
-                        }
-                        //如果是普通用户，还要删除之前选择的专家，因为他只能选一个
-                        if (!"9" == data.reObj.moreExpert) {
-                            var ids = [];
-                            $.each(vm.confirmEPList, function (i, obj) {
-                                if (obj.selectType == '2') {
-                                    ids.push(obj.id);
-                                }
-                            })
-                            vm.reFleshAfterRemove(ids);
-                        }
+                if(!admin && selectIds.length > 1){
+                    bsWin.alert("自选专家只能选择一个！");
+                }else{
+                    var selExpertIdArr = [];
+                    $.each(selectIds, function (i, obj) {
+                        selExpertIdArr.push(obj.value);
+                    });
+                    expertReviewSvc.saveSelfExpert(vm.businessId, vm.minBusinessId, vm.businessType, selExpertIdArr.join(","), vm.expertReview.id, vm.isCommit, function (data) {
+                        if (data.flag || data.reCode == 'ok') {
+                            //更新专家评审费用
+                            if(vm.businessType == "SIGN"){
+                                workprogramSvc.updateWPExpertCost(vm.minBusinessId);
+                            }
+                            //如果是普通用户，还要删除之前选择的专家，因为他只能选一个
+                            if (!"9" == data.reObj.moreExpert) {
+                                var ids = [];
+                                $.each(vm.confirmEPList, function (i, obj) {
+                                    if (obj.selectType == '2') {
+                                        ids.push(obj.id);
+                                    }
+                                })
+                                vm.reFleshAfterRemove(ids);
+                            }
 
-                        if (!vm.expertReview.id) {
-                            vm.expertReview.id = data.idCode;
+                            if (!vm.expertReview.id) {
+                                vm.expertReview.id = data.idCode;
+                            }
+                            //刷新
+                            vm.reFleshSelEPInfo(data.reObj.selectedDtoList);
+                            bsWin.success("操作成功！", function () {
+                                window.parent.$("#selfExpertDiv").data("kendoWindow").close();
+                            });
+                        } else {
+                            bsWin.error(data.reMsg);
                         }
-                        //刷新
-                        vm.reFleshSelEPInfo(data.reObj.selectedDtoList);
-                        bsWin.success("操作成功！", function () {
-                            window.parent.$("#selfExpertDiv").data("kendoWindow").close();
-                        });
-                    } else {
-                        bsWin.error(data.reMsg);
-                    }
-                });
+                    });
+                }
             }
         }
 
@@ -342,7 +345,8 @@
                         if (!vm.expertReview.id) {
                             vm.expertReview.id = data.idCode;
                         }
-                        vm.reFleshSelEPInfo(data.reObj);
+                        vm.reFleshSelEPInfo(data.reObj.selectedDtoList);
+
                         bsWin.success("操作成功！", function () {
                             window.parent.$("#outExpertDiv").data("kendoWindow").close();
                         });

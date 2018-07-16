@@ -19,4 +19,10 @@ public interface ExpertSelConditionRepo extends IRepository<ExpertSelCondition, 
      * @return
      */
     int getExtractEPCount(String minBusinessId);
+
+    /**
+     * 根据业务ID删除
+     * @param id
+     */
+    void deleteByBusinessId(String id);
 }

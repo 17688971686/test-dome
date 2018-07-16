@@ -39,4 +39,12 @@ public class ExpertSelConditionRepoImpl extends AbstractRepository<ExpertSelCond
         sqlBuilder.setParam("businessId",businessId);
         return returnIntBySql(sqlBuilder);
     }
+
+    @Override
+    public void deleteByBusinessId(String businessId) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" delete from CS_EXPERT_CONDITION where BUSINESSID =:businessId ");
+        sqlBuilder.setParam("businessId", businessId);
+        executeSql(sqlBuilder);
+    }
 }
