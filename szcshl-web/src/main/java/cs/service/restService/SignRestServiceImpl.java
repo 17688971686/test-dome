@@ -59,10 +59,7 @@ public class SignRestServiceImpl implements SignRestService {
     @Autowired
     private HttpClientOperate httpClientOperate;
     @Autowired
-    private SysFileRepo sysFileRepo;
-    @Autowired
     private SysFileService sysFileService;
-
     @Autowired
     private DispatchDocService dispatchDocService;
     @Autowired
@@ -113,6 +110,9 @@ public class SignRestServiceImpl implements SignRestService {
             } else {
                 return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_03.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_03.getValue());
             }
+            //申报金额调整(由于委里定义的接口，Declaration这个字段为申报金额字段，所以这里要调整下)；
+            signDto.setAppalyInvestment(signDto.getDeclaration());
+
             resultMsg = signService.createSign(signDto);
 
             if (resultMsg.isFlag()) {
@@ -196,6 +196,8 @@ public class SignRestServiceImpl implements SignRestService {
             } else {
                 return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_03.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_03.getValue());
             }
+            //申报金额调整(由于委里定义的接口，Declaration这个字段为申报金额字段，所以这里要调整下)；
+            signDto.setAppalyInvestment(signDto.getDeclaration());
             resultMsg = signService.reserveAddSign(signDto);
             if (resultMsg.isFlag()) {
                 boolean isLoginUser = Validate.isString(SessionUtil.getUserId());

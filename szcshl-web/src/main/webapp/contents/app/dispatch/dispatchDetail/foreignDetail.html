@@ -4,7 +4,6 @@
 <form id="dispatch_form" name="dispatch_form">
     <!-- s table -->
     <table class="table table-bordered">
-
         <caption class="text-center">
             <p style="padding: 5px 10px;">
                 <span style="float: left;"> QR-4.10-03-A0</span>
@@ -125,7 +124,7 @@
         <tr>
             <td style="vertical-align: middle;" class="text-center">部长审核意见</td>
             <td colspan="5">
-                <div style="min-height: 50px;" >
+                <div style="min-height: 50px;">
                     <div ng-bind-html="vm.dispatchDoc.ministerSuggesttion | trust2Html"></div>
                     <div ng-if="vm.dispatchDoc.branchCount==1">
                         <p class="text-right" ng-if="vm.dispatchDoc.ministerName">签名：{{vm.dispatchDoc.ministerName}}</p>
@@ -140,8 +139,10 @@
             <td colspan="5">
                 <div ng-bind-html="vm.dispatchDoc.viceDirectorSuggesttion | trust2Html"></div>
                 <div style="min-height: 50px;" ng-if="vm.dispatchDoc.moreLeader==0">
-                    <p class="text-right" ng-if="vm.dispatchDoc.viceDirectorName">签名：{{vm.dispatchDoc.viceDirectorName}}</p>
-                    <p class="text-right" ng-if="vm.dispatchDoc.viceDirectorDate">日期：{{vm.dispatchDoc.viceDirectorDate}}</p>
+                    <p class="text-right" ng-if="vm.dispatchDoc.viceDirectorName">
+                        签名：{{vm.dispatchDoc.viceDirectorName}}</p>
+                    <p class="text-right" ng-if="vm.dispatchDoc.viceDirectorDate">
+                        日期：{{vm.dispatchDoc.viceDirectorDate}}</p>
                 </div>
             </td>
         </tr>
@@ -160,5 +161,7 @@
         </tbody>
     </table>    <!-- end table -->
 </form> <!-- end form -->
-<button class="form-control btn-sm btn-primary" style="width: 100px; margin: auto;" ng-click="printFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGEDEVICE')">打印预览</button>
+<button class="form-control btn-sm btn-primary" style="width: 100px; margin: auto;"
+        ng-click="printFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGEDEVICE')">打印预览
+</button>
 <!--  E 进口设备-->

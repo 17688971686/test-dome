@@ -108,65 +108,101 @@
        	 <!-- S 项目建议书 -->
          <div  ng-if="vm.model.reviewstage =='项目建议书'">
              <div id="sign_dispatch_xmjys" ng-include src="'${path}/contents/app/dispatch/dispatchDetail/projectDetail.html'"></div>
-             <#--<div id="sign_dispatch_xmjys_templ" style="display: none;" > <#include "/templatePrint/dispatch/projectDetailXmjys.html"/></div>-->
          </div>
          <!-- E 项目建议书 -->
          
           <!-- S 可行性研究报告 -->
         <div  ng-if="vm.model.reviewstage =='可行性研究报告'">
             <div id="sign_dispatch_kxxyj" ng-include src="'${path}/contents/app/dispatch/dispatchDetail/feasibilityDeatil.html'"></div>
-            <#--<div id="sign_dispatch_kxxyj_templ" style="display: none;" > <#include "/templatePrint/dispatch/projectDetailKxxyjbg.html"/></div>-->
         </div>
          <!-- E 可行性研究报告 -->
          
            <!-- S 资金申请报告 -->
         <div  ng-if="vm.model.reviewstage =='资金申请报告'">
             <div id="sign_dispatch_zjsq" ng-include src="'${path}/contents/app/dispatch/dispatchDetail/capitalAppReportDetail.html'"></div>
-            <#--<div id="sign_dispatch_zjsq_templ" style="display: none;" ><#include "/templatePrint/dispatch/capitalAppReportZjsq.html"/></div>-->
         </div>
          <!-- E 资金申请报告 -->
          
           <!-- S 项目概算 -->
         <div  ng-if="vm.model.reviewstage =='项目概算'">
             <div id="sign_dispatch_xmgs" ng-include src="'${path}/contents/app/dispatch/dispatchDetail/projectBudgetDetail.html'"></div>
-            <#--<div id="sign_dispatch_xmgs_templ" style="display: none;" > <#include "/templatePrint/dispatch/projectDetailXmgs.html"/></div>-->
         </div>
          <!-- E 项目概算 -->
          
        	 <!-- S 进口设备 -->
         <div  ng-if="vm.model.reviewstage =='进口设备'">
             <div id="sign_dispatch_jksb" ng-include src="'${path}/contents/app/dispatch/dispatchDetail/foreignDetail.html'"></div>
-            <#--<div id="sign_dispatch_jksb_templ" style="display: none;" ><#include "/templatePrint/dispatch/projectDetailJksb.html"/></div>-->
         </div>
          <!-- E 进口设备 -->
          
          <!-- S 设备清单（进口）/设备清单（国产） -->
         <div  ng-if="vm.model.reviewstage =='设备清单（国产）' || vm.model.reviewstage =='设备清单（进口）' ">
             <div id="sign_dispatch_sbqd" ng-include src="'${path}/contents/app/dispatch/dispatchDetail/domesticDetail.html'"></div>
-            <#--<div id="sign_dispatch_sbqd_templ" style="display: none;" > <#include "/templatePrint/dispatch/projectDetailSbqd.html"/></div>-->
         </div>
          <!-- E 设备清单（进口）/设备清单（国产） -->
         <!-- S 其他 -->
-        <div   ng-if="vm.model.reviewstage=='其它'">
+        <div  ng-if="vm.model.reviewstage=='其它'">
             <div id="sign_dispatch_qt" ng-include src="'${path}/contents/app/dispatch/dispatchDetail/otherDetail.html'"></div>
-        <#--<div id="sign_dispatch_xmjys_templ" style="display: none;" > <#include "/templatePrint/dispatch/projectDetailXmjys.html"/></div>-->
         </div>
         <!-- E 其他 -->
         <!-- 项目发文模板-->
 
+        <!-- 合并发文次项目 -->
+        <div ng-if="vm.mergeDisDtoList" ng-repeat = "dis in vm.mergeDisDtoList" style="border-top: 1px #000 dashed;margin-top:10px;">
+            <!-- S 项目建议书  -->
+            <div ng-if="dis.dispatchStage=='项目建议书'">
+                <div ng-include  src="'${path}/contents/app/dispatch/merge/projectDetail.html'"></div>
+            </div>
+            <!-- S 项目建议书 -->
+
+            <!-- S 可行性研究报告 -->
+            <div ng-if="dis.dispatchStage=='可行性研究报告'" >
+                <div ng-include  src="'${path}/contents/app/dispatch/merge/feasibilityDetail.html'"></div>
+            </div>
+            <!-- E 可行性研究报告 -->
+
+            <!-- S 资金申请报告 -->
+            <div ng-if="dis.dispatchStage=='资金申请报告'" >
+                <div ng-include src="'${path}/contents/app/dispatch/merge/capitalAppReportDetail.html'"></div>
+            </div>
+            <!-- E 资金申请报告 -->
+
+            <!-- S 项目概算 -->
+            <div ng-if="dis.dispatchStage=='项目概算'" >
+                <div ng-include src="'${path}/contents/app/dispatch/merge/projectBudgetDetail.html'"></div>
+            </div>
+            <!-- E 项目概算 -->
+
+            <!-- S 进口设备 -->
+            <div ng-if="dis.dispatchStage=='进口设备'">
+                <div ng-include src="'${path}/contents/app/dispatch/merge/foreignDetail.html'"></div>
+            </div>
+            <!-- E 进口设备 -->
+
+            <!-- S 设备清单（国产）/设备清单（进口） -->
+            <div ng-if="dis.dispatchStage=='设备清单（国产）' || dis.dispatchStage=='设备清单（进口）' ">
+                <div ng-include src="'${path}/contents/app/dispatch/merge/domesticDetail.html'"></div>
+            </div>
+            <!-- E 设备清单（国产）/设备清单（进口） -->
+
+            <!-- S 其他 -->
+            <div ng-if="dis.dispatchStage=='其它'">
+                <div ng-include src="'${path}/contents/app/dispatch/merge/otherDetail.html'"></div>
+            </div>
+        </div>
     </div>
     <!--E 发文 -->
 
     <!-- S 归档 -->
     <div class="well well-sm tab-pane fade" style="background:white;" id="sign_filerecord" >
         <!-- 项目建议书 -->
-        <div  ng-if="vm.model.reviewstage=='项目建议书'" >
+        <div ng-if="vm.model.reviewstage=='项目建议书'" >
             <div id="sign_filerecord_xmjys" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileProjectIdeaDetail.html'"></div>
             <#--<div id="sign_filerecord_xmjys_templ" style="display: none;" > <#include "/templatePrint/filerecord/fileProjectDetailXmjysl.html"/></div>-->
         </div>
        
         <!-- 资金申请报告 -->
-        <div  ng-if="vm.model.reviewstage=='资金申请报告'" >
+        <div ng-if="vm.model.reviewstage=='资金申请报告'" >
             <div id="sign_filerecord_zjsq" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/filecapitalAppReportDetail.html'"></div>
            <#-- <div id="sign_filerecord_zjsq_templ" style="display: none;" > <#include "/templatePrint/filerecord/capitalAppReportZjsq.html"/></div>-->
         </div>
@@ -184,22 +220,22 @@
         </div>
         
         <!-- 项目概算 -->
-        <div  ng-if="(vm.model.isassistproc!= 9 && vm.model.isassistproc!= '9') && vm.model.reviewstage=='项目概算'" >
+        <div ng-if="(vm.model.isassistproc!= 9 && vm.model.isassistproc!= '9') && vm.model.reviewstage=='项目概算'" >
             <div id="sign_filerecord_xmgs" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileRecordProjectDetail.html'"></div>
             <#--<div id="sign_filerecord_xmgs_templ" style="display: none;" > <#include "/templatePrint/filerecord/fileProjectDetailXmgs.html"/></div>-->
         </div>
-        <div  ng-if="(vm.model.isassistproc== 9 || vm.model.isassistproc== '9') && vm.model.reviewstage=='项目概算'" >
+        <div ng-if="(vm.model.isassistproc== 9 || vm.model.isassistproc== '9') && vm.model.reviewstage=='项目概算'" >
             <div id="sign_filerecord_xmgs_xs" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileRecordProjectDetailXS.html'"></div>
             <#--<div id="sign_filerecord_xmgs_xs_templ" style="display: none;" > <#include "/templatePrint/filerecord/fileProjectDetailXmgsXS.html"/></div>-->
         </div>
 
         <!-- 设备清单（国产） /设备清单（进口）-->
-        <div  ng-if="vm.model.reviewstage=='设备清单（进口）' || vm.model.reviewstage=='设备清单（国产）'" >
+        <div ng-if="vm.model.reviewstage=='设备清单（进口）' || vm.model.reviewstage=='设备清单（国产）'" >
             <div id="sign_filerecord_sbqd" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileRecordDomestiDetail.html'"></div>
             <#--<div id="sign_filerecord_sbqd_templ" style="display: none;" > <#include "/templatePrint/filerecord/fileProjectDetailSbqd.html"/></div>-->
         </div>
         <!-- S 其他 -->
-        <div   ng-if="vm.model.reviewstage=='其它'">
+        <div ng-if="vm.model.reviewstage=='其它'">
             <div id="sign_filerecord_qt" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileRecordOtherDetail.html'"></div>
         <#--<div id="sign_dispatch_xmjys_templ" style="display: none;" > <#include "/templatePrint/dispatch/projectDetailXmjys.html"/></div>-->
         </div>
@@ -223,40 +259,23 @@
     <div class="tab-pane fade" style="background: white;" id="expert_score">
         <#include "/expertReview/expert_score.html"/>
     </div>
-    <!-- 引入专家评分模板-->
-    <#--<div id="expert_score_templ" style="display: none;">
-        <#include "/templatePrint/expert_score.html"/>
-    </div>-->
-    <!-- end 专家评分 -->
+
 
     <!-- start 专家费用 -->
     <div class="tab-pane fade" style="background: white;margin-top:10px;" id="expert_payment">
         <#include "/expertReview/expert_payment.html"/>
     </div>
-    <!-- 引入专家费用模板-->
-    <#--<div id="expert_payment_templ" style="display: none;">
-        <#include "/templatePrint/expert_payment.html"/>
-    </div>-->
-    <!-- end tab3 -->
 
     <!-- start 拟补充资料函 -->
     <div class="tab-pane fade" style="background: white;margin-top:10px;" id="suppLetter_list">
         <#include "/addSuppLetter/common.html"/>
     </div>
-    <!-- 引入拟补充资料函模板-->
-    <#--<div id="suppLetter_list_templ" style="display: none;">
-        <#include "/templatePrint/common.html"/>
-    </div>-->
     <!-- end tab3 -->
 
     <!-- start 拟补充资料 -->
     <div class="tab-pane fade" style="background: white;margin-top:10px;" id="registerFile_list">
         <#include "/addRegisterFile/common_list.html"/>
     </div>
-    <!-- 引入拟补充资料函模板-->
-    <#--<div id="registerFile_list_templ" style="display: none;">
-        <#include "/templatePrint/common_list.html"/>
-    </div>-->
     <!-- end tab3 -->
 
     <!-- start 委项目处理表 -->

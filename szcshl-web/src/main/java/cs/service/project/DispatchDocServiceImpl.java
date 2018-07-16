@@ -30,6 +30,7 @@ import cs.repository.repositoryImpl.sys.SysFileRepo;
 import cs.service.external.DeptService;
 import cs.service.sys.SysFileService;
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static cs.common.constants.Constant.*;
 import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
@@ -106,24 +108,33 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         //更新发文日期
         dispatchDoc.setDispatchDate(now);
         dispatchDocRepo.save(dispatchDoc);
+        updateSignFileNum(signId,fileNum);
+
         //如果是合并发文，则更新所有关联的发文编号
         if (ProjUtil.isMergeDis(dispatchDoc.getDispatchWay()) && ProjUtil.isMain(dispatchDoc.getIsMainProject())) {
             dispatchDocRepo.updateMergeDisFileNum(signId,fileNum,maxSeq);
+            //更新对应的收文信息
+            List<SignMerge> mergeList = signMergeRepo.findByType(signId,MergeType.DIS_MERGE.getValue());
+            for(SignMerge signMerge : mergeList){
+                updateSignFileNum(signMerge.getMergeId(),fileNum);
+            }
         }
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！请立刻添加发文号到评审意见（审核意见）并重新上传。", fileNum);
+    }
+
+    private void updateSignFileNum(String signId,String fileNum){
         //更改项目信息
         Sign sign = signRepo.findById(Sign_.signid.getName(), signId);
         //1、流程状态修改
         sign.setProcessState(Constant.SignProcessState.END_DIS_NUM.getValue());
         //2、发文日期
-        sign.setDispatchdate(now);
+        sign.setDispatchdate(new Date());
         sign.setDocnum(fileNum);
         //3、把亮灯状态去掉
         sign.setIsLightUp(signEnumState.NOLIGHT.getValue());
         //4、发文后剩余工作日
         sign.setDaysafterdispatch(sign.getSurplusdays());
         signRepo.save(sign);
-
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！请立刻添加发文号到评审意见（审核意见）并重新上传。", fileNum);
     }
 
     // 保存发文拟稿
@@ -464,7 +475,6 @@ public class DispatchDocServiceImpl implements DispatchDocService {
                     e.printStackTrace();
                 }
 
-
                 try {
                     SysFile budgetOpinion = CreateTemplateUtils.createBudgetTemplateOpinion(f, sign);
                     if (budgetOpinion != null && Validate.isString(budgetOpinion.getSysFileId())) {
@@ -600,7 +610,6 @@ public class DispatchDocServiceImpl implements DispatchDocService {
                     e.printStackTrace();
                 }
 
-
                 try {
                     SysFile sugOpinion = CreateTemplateUtils.createSugTemplateOpinion(f, sign);
                     if (sugOpinion != null && Validate.isString(sugOpinion.getSysFileId())) {
@@ -671,6 +680,22 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         DispatchDoc dispatchDoc = dispatchDocRepo.findById(DispatchDoc_.id.getName(), dictId);
         BeanCopierUtils.copyProperties(dispatchDoc, dispatchDocDto);
         return dispatchDocDto;
+    }
+
+
+    @Override
+    public List<DispatchDocDto> findMergeDisInfo(String mainSignId) {
+        List<DispatchDoc> mergeDisList = dispatchDocRepo.findMergeDisInfo(mainSignId);
+        if(Validate.isList(mergeDisList)){
+            List<DispatchDocDto> resultList = mergeDisList.stream().map((x) -> {
+                DispatchDocDto dispatchDocDto = new DispatchDocDto();
+                BeanCopierUtils.copyProperties(x,dispatchDocDto);
+                return dispatchDocDto;
+            }).collect(Collectors.toList());
+
+            return resultList;
+        }
+        return null;
     }
 
 

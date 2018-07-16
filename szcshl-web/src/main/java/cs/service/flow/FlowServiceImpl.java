@@ -1667,6 +1667,7 @@ public class FlowServiceImpl implements FlowService {
         taskService.addComment(taskId, procInstId, dealOption);
         taskService.complete(taskId, variables);
         dp.setViceDirectorDate(new Date());
+        dp.setViceDirectorSuggesttion(dealOption);
         dp.setViceDirectorName(ActivitiUtil.getSignName(SessionUtil.getDisplayName(), isAgentTask));
         dispatchDocRepo.save(dp);
     }

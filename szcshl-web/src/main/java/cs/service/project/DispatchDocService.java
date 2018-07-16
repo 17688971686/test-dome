@@ -5,6 +5,7 @@ import cs.model.project.DispatchDocDto;
 import cs.model.project.SignDto;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 public interface DispatchDocService {
@@ -44,4 +45,11 @@ public interface DispatchDocService {
      * @return
      */
     DispatchDocDto findById(String dictId);
+
+    /**
+     * 根据主项目ID查询合并发文次项目信息
+     * @param mainSignId
+     * @return
+     */
+    List<DispatchDocDto> findMergeDisInfo(String mainSignId);
 }

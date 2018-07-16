@@ -3,11 +3,11 @@
 
     angular.module('app').controller('signFlowDealCtrl', sign);
 
-    sign.$inject = ['sysfileSvc', 'signSvc', 'workprogramSvc', '$state', 'flowSvc', 'signFlowSvc', 'ideaSvc',
+    sign.$inject = ['sysfileSvc', 'signSvc', 'dispatchSvc', '$state', 'flowSvc', 'signFlowSvc', 'ideaSvc',
         'addRegisterFileSvc', 'expertReviewSvc', '$scope', 'bsWin', 'financialManagerSvc', 'addSuppLetterQuerySvc',
         'addCostSvc', 'templatePrintSvc', 'companySvc'];
 
-    function sign(sysfileSvc, signSvc, workprogramSvc, $state, flowSvc, signFlowSvc, ideaSvc, addRegisterFileSvc,
+    function sign(sysfileSvc, signSvc, dispatchSvc, $state, flowSvc, signFlowSvc, ideaSvc, addRegisterFileSvc,
                   expertReviewSvc, $scope, bsWin, financialManagerSvc, addSuppLetterQuerySvc, addCostSvc, templatePrintSvc, companySvc) {
 
         var vm = this;
@@ -137,12 +137,20 @@
 
                     vm.dispatchDoc = vm.model.dispatchDocDto;
                     //如果是合并发文次项目，则不用生成发文编号
-                    if ((vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject == 0)
-                        || vm.dispatchDoc.fileNum) {
+                    if ((vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject == 0)|| vm.dispatchDoc.fileNum) {
                         vm.businessFlag.isCreateDisFileNum = true;
                     } else {
                         vm.showFlag.buttDisFileNum = true;
                     }
+                    //如果是合并发文主项目，要获取合并项目信息
+                    if(vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject == 9){
+                        dispatchSvc.findMergeDis(vm.model.signid,function(data){
+                            if(data){
+                                vm.mergeDisDtoList = data;
+                            }
+                        })
+                    }
+
                 }
 
                 //归档
