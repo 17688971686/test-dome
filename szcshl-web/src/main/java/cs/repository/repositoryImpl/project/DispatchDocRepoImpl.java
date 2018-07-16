@@ -115,4 +115,11 @@ public class DispatchDocRepoImpl extends AbstractRepository<DispatchDoc, String>
         sqlBuilder.append(" and mergeType =:mergeType )").setParam("mergeType", Constant.MergeType.DISPATCH.getValue());
         executeSql(sqlBuilder);
     }
+
+    @Override
+    public List<DispatchDoc> findMergeDisInfo(String mainSignId) {
+        Criteria criteria = getExecutableCriteria();
+        criteria.add(Restrictions.sqlRestriction(" {alias}.signid in (select MERGEID from CS_SIGN_MERGE where SIGNID = '"+mainSignId+"' and MERGETYPE = '"+ Constant.MergeType.DIS_MERGE.getValue()+"') "));
+        return criteria.list();
+    }
 }
