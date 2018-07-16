@@ -1228,6 +1228,14 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         return achievementDetailDtoList;
     }
 
+    @Override
+    public void deleteByBusinessId(String businessId) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" delete from CS_EXPERT_SELECTED where BUSINESSID =:businessId ");
+        sqlBuilder.setParam("businessId", businessId);
+        executeSql(sqlBuilder);
+    }
+
     /**
      * 项目评审情况明细
      * @param projectReviewConditionDto

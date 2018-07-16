@@ -86,4 +86,10 @@ public interface ExpertReviewRepo extends IRepository<ExpertReview, String> {
      * @param expertSelectedDto
      */
     void saveSplit(ExpertSelectedDto expertSelectedDto);
+
+    /**
+     * 根据业务ID删除
+     * @param signId
+     */
+    void deleteByBusinessId(String signId);
 }

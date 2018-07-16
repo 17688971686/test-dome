@@ -501,13 +501,8 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             if (signPrincipal == null) {
                 return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "您不是项目负责人，不能对工作方案进行操作！");
             }
-            HqlBuilder sqlBuilder = HqlBuilder.create();
-            sqlBuilder.append(" delete from cs_work_program where signid =:signid and branchId =:branchId and (baseInfo is null or baseInfo !=:bstate )");
-            sqlBuilder.setParam("signid", signId);
-            sqlBuilder.setParam("branchId", signPrincipal.getFlowBranch());
-            sqlBuilder.setParam("bstate",EnumState.YES.getValue());
-
-            int result = workProgramRepo.executeSql(sqlBuilder);
+            //删除工作方案及会议、专家抽取信息
+            workProgramRepo.removeWPCascade(signId,signPrincipal.getFlowBranch());
             //不需要做工作方案
             signBranchRepo.isNeedWP(signId, signPrincipal.getFlowBranch(), EnumState.NO.getValue());
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");

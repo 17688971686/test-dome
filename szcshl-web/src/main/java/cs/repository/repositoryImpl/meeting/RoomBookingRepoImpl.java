@@ -1,22 +1,19 @@
 package cs.repository.repositoryImpl.meeting;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
 import cs.common.HqlBuilder;
+import cs.common.constants.Constant;
 import cs.common.utils.Validate;
+import cs.domain.meeting.RoomBooking;
 import cs.domain.meeting.RoomBooking_;
+import cs.repository.AbstractRepository;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
-import cs.domain.meeting.RoomBooking;
-import cs.model.meeting.RoomBookingDto;
-import cs.repository.AbstractRepository;
+import java.util.Date;
+import java.util.List;
 
 @Repository
 public class RoomBookingRepoImpl extends AbstractRepository<RoomBooking, String>  implements RoomBookingRepo{
@@ -148,6 +145,14 @@ public class RoomBookingRepoImpl extends AbstractRepository<RoomBooking, String>
             hqlBuilder.setParam("businessId",businessId);
             executeHql(hqlBuilder);
         }
+    }
+
+    @Override
+    public void deleteByBusinessId(String businessId) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" delete from CS_ROOM_BOOKING where BUSINESSID =:businessId ");
+        sqlBuilder.setParam("businessId", businessId);
+        executeSql(sqlBuilder);
     }
 
 }

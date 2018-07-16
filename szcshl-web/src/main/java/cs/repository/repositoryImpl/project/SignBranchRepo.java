@@ -126,4 +126,11 @@ public interface SignBranchRepo extends IRepository<SignBranch, String> {
      * @return
      */
     String getOrgDeptNameBySignId(String signid);
+
+    /**
+     * 统计需要做工作方案的分支
+     * @param signid
+     * @return
+     */
+    int countNeedWP(String signid);
 }

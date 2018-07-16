@@ -87,4 +87,10 @@ public interface WorkProgramRepo extends IRepository<WorkProgram, String> {
      * @return
      */
     List<ProMeetDto> findPmProMeetInfo();
+
+    /**
+     * 删除工作方案及会议和专家评审方案等信息
+     * @param signId
+     */
+    void removeWPCascade(String signId,String brandId);
 }
