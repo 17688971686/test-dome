@@ -39,4 +39,11 @@ public interface DispatchDocRepo extends IRepository<DispatchDoc,String>{
      * @param maxSeq    最大序号
      */
     void updateMergeDisFileNum(String signId,String fileNum, int maxSeq);
+
+    /**
+     * 根据主项目ID，查询合并发文次项目信息
+     * @param mainSignId
+     * @return
+     */
+    List<DispatchDoc> findMergeDisInfo(String mainSignId);
 }

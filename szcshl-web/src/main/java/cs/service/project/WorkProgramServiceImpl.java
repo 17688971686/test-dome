@@ -258,7 +258,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             workProgramDto.setProjectName(sign.getProjectname());
             workProgramDto.setBuildCompany(sign.getBuiltcompanyName());
             workProgramDto.setDesignCompany(sign.getDesigncompanyName());
-            workProgramDto.setAppalyInvestment(sign.getDeclaration());
+            workProgramDto.setAppalyInvestment(sign.getAppalyInvestment());
             workProgramDto.setWorkreviveStage(sign.getReviewstage());
             workProgramDto.setBranchId(taskBrandIndex);
             //默认名称
@@ -273,7 +273,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             if (isMainFlowPri) {
                 //判断是否是分办给多个部门办理，如果是，则显示申报总投资金额
                 if (signBranchRepo.countBranch(sign.getSignid()) > 1) {
-                    workProgramDto.setTotalInvestment(sign.getDeclaration());
+                    workProgramDto.setTotalInvestment(sign.getAppalyInvestment());
                     resultMap.put("showTotalInvestment", EnumState.YES.getValue());
                 }
                 copySignCommonInfo(workProgramDto, sign);
@@ -770,7 +770,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             workProgramDto.setProjectName(sign.getProjectname());
             workProgramDto.setBuildCompany(sign.getBuiltcompanyName());
             workProgramDto.setDesignCompany(sign.getDesigncompanyName());
-            workProgramDto.setAppalyInvestment(sign.getDeclaration());
+            workProgramDto.setAppalyInvestment(sign.getAppalyInvestment());
             workProgramDto.setWorkreviveStage(sign.getReviewstage());
             workProgramDto.setBaseInfo(EnumState.YES.getValue());
             workProgramDto.setBranchId(FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue());

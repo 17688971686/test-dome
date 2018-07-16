@@ -16,8 +16,32 @@
             cancelProject: cancelProject,       // 取消选择
             deleteAllMerge : deleteAllMerge,    // 取消所有的合并项目
             findDocById : findDocById,          //根据ID查询发文信息
+            findMergeDis : findMergeDis,        //根据主项目ID，查询合并发文次项目信息
         };
         return service;
+
+        function findMergeDis(mainSignId,callBack){
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/dispatch/findMergeDisInfo",
+                params: {
+                    mainSignId: mainSignId
+                }
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess,
+                onError:function () {
+
+                }
+            });
+        }
 
         function findDocById(dictId,callBack){
             var httpOptions = {

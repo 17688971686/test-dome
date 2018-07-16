@@ -74,7 +74,7 @@ public class SysRestController {
      */
     @RequestMapping(name = "项目签收信息", value = "/pushProject", method = RequestMethod.POST)
     @LogMsg(module = "系统接口【委里推送数据接口】", logLevel = "1")
-    public synchronized ResultMsg pushProject(@RequestParam String signDtoJson) {
+    public ResultMsg pushProject(@RequestParam String signDtoJson) {
         ResultMsg resultMsg = null;
         String projName = "";
         String fileCode = "";

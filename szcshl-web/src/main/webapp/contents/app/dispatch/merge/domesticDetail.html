@@ -1,0 +1,152 @@
+<meta charset="UTF-8">
+<!--  S 设备清单（国产）/设备清单（进口）-->
+<!-- s table -->
+<table class="table table-bordered">
+
+    <caption class="text-center">
+        <p style="padding: 5px 10px;">
+            <span style="float: left;">QR-4.9-09-A0</span>
+        </p>
+        <p class="h3">
+            <strong>深圳市政府投资项目评审中心<br>项目发文审批表</strong>
+        </p>
+        <p>
+            <span style="padding: 5px 10px;float: left;">发文方式：{{(dis.dispatchWay==1)?"单个发文":"合并发文"}}</span>
+            <span ng-show="dis.dispatchWay == 2 && dis.isMainProject==9"
+                  style="padding: 5px 10px;float: left;">主项目</span>
+            <span ng-show="dis.dispatchWay == 2 && dis.isMainProject==0"
+                  style="padding: 5px 10px;float: left;">次项目</span>
+
+            <span style="padding: 5px 10px;float:right;">发文类型：{{dis.dispatchType}}</span>
+        </p>
+    </caption>
+    <tbody>
+
+
+    <tr>
+        <td style="width:15%;" rowspan='2' class="text-center">发文部门</br>拟稿人</td>
+        <td class="text-center" style="width:20%;">
+            {{dis.orgName}}
+        </td>
+        <td style="width:15%;" rowspan='2' class="text-center">校对人</td>
+        <td style="width:15%;" rowspan='2' class="text-center">
+            {{dis.userName}}
+        </td>
+        <td rowspan='2' style="width:15%;" class="text-center">拟稿时间</td>
+        <td rowspan='2' class="text-center" style="width:20%;">
+            {{dis.draftDate | date:'yyyy年MM月dd日'}}
+        </td>
+    </tr>
+    <tr>
+        <td class="text-center"> {{dis.userName}}</td>
+    </tr>
+
+
+    <tr>
+        <td class="text-center">发文日期</td>
+        <td>
+            <input type="text" kendo-date-picker k-format="'yyyy-MM-dd'" class="form-control input-sm "
+                   ng-model="dis.dispatchDate" name="dispatchDate">
+        </td>
+
+        <td class="text-center">文件字号</td>
+        <td>{{dis.fileNum}}</td>
+
+        <td class="text-center">紧密程度</td>
+        <td>
+            {{dis.urgentLevel}}
+        </td>
+    </tr>
+    <tr>
+        <td class="text-center">文件标题</td>
+        <td colspan="5">
+            {{dis.fileTitle}}
+        </td>
+    </tr>
+
+    <tr>
+        <td style="vertical-align: middle;" class="text-center">发行范围</td>
+        <td colspan="5" style="min-height: 50px;">
+            {{dis.dispatchScope}}
+        </td>
+    </tr>
+
+    <tr>
+        <td style="vertical-align: middle;" class="text-center">项目概况</td>
+        <td colspan="5" style="min-height: 100px;">
+            {{dis.description}}
+        </td>
+    </tr>
+
+
+    <tr>
+        <td style="vertical-align: middle;" class="text-center">相关说明</td>
+        <td colspan="5" style="min-height: 100px;">
+            {{dis.description}}
+        </td>
+    </tr>
+
+    <tr>
+        <td style="vertical-align: middle;" class="text-center">项目负责人<br>拟稿意见</td>
+        <td colspan="3" style="min-height: 30px;">
+            第一负责人意见：
+            <div ng-bind-html="dis.mianChargeSuggest | trust2Html"></div>
+        </td>
+        <td colspan="2" style="min-height: 30px;">
+            第二负责人意见：
+            <div ng-bind-html="dis.secondChargeSuggest | trust2Html"></div>
+        </td>
+    </tr>
+
+    <tr style="height: 100px;">
+        <td style="vertical-align: middle;" class="text-center">评审意见摘要</td>
+        <td colspan="5">
+            <div style="height: 80px;">{{dis.reviewAbstract}}</div>
+        </td>
+    </tr>
+
+    <tr>
+        <td style="vertical-align: middle;" class="text-center">部长审核意见</td>
+        <td colspan="5">
+            <div style="min-height: 50px;">
+                <div ng-bind-html="dis.ministerSuggesttion | trust2Html"></div>
+                <div ng-if="dis.branchCount==1">
+                    <p class="text-right" ng-if="dis.ministerName">签名：{{dis.ministerName}}</p>
+                    <p class="text-right" ng-if="dis.ministerDate">日期：{{dis.ministerDate}}</p>
+                </div>
+            </div>
+        </td>
+    </tr>
+
+    <tr>
+        <td style="vertical-align: middle;" class="text-center">分管副主任意见</td>
+        <td colspan="5">
+            <div ng-bind-html="dis.viceDirectorSuggesttion | trust2Html"></div>
+            <div style="min-height: 50px;" ng-if="dis.moreLeader==0">
+                <p class="text-right" ng-if="dis.viceDirectorName">签名：{{dis.viceDirectorName}}</p>
+                <p class="text-right" ng-if="dis.viceDirectorDate">日期：{{dis.viceDirectorDate}}</p>
+            </div>
+        </td>
+    </tr>
+
+    <tr>
+        <td style="vertical-align: middle;" class="text-center">主任签发</td>
+        <td colspan="5">
+            <div style="height: 100px;">
+                <p>{{dis.directorSuggesttion}}</p>
+                <p class="text-right" ng-if="dis.directorName">签名：{{dis.directorName}}</p>
+                <p class="text-right" ng-if="dis.directorDate">日期：{{dis.directorDate}}</p>
+            </div>
+        </td>
+    </tr>
+
+    </tbody>
+</table>    <!-- end table -->
+
+<button ng-if="dis.dispatchStage=='设备清单（国产）'" class="form-control btn-sm btn-primary"
+        style="width: 100px; margin: auto;" ng-click="printFile(dis.id,'DISPATCHDOC' , 'STAGEHOMELAND')">打印预览
+</button>
+<button ng-if="dis.dispatchStage=='设备清单（进口）'" class="form-control btn-sm btn-primary"
+        style="width: 100px; margin: auto;" ng-click="printFile(dis.id,'DISPATCHDOC' , 'STAGEIMPORT')">打印预览
+</button>
+<!--  E 设备清单（国产）/设备清单（进口）-->
