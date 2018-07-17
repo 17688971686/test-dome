@@ -343,11 +343,10 @@ public interface SignService {
 
     /**
      * 获取第一负责人
-     * @param variables
      * @param signid
      * @param agentTaskList
      * @param flowSignFw
      * @return
      */
-    Map<String,Object> buildMainPriUser(Map<String, Object> variables, String signid, List<AgentTask> agentTaskList, String flowSignFw);
+    String getMainPriUserId(String signid, List<AgentTask> agentTaskList, String flowSignFw);
 }

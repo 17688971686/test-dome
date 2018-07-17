@@ -1478,7 +1478,9 @@ public class FlowServiceImpl implements FlowService {
                     //选择第一负责人
                 }
                 //开始处理流程
-                commitFZENode(variables, signid, task.getId(), processInstance.getId(), flowDto.getDealOption(), dp, isAgentTask, isAgree, agentTaskList, FLOW_SIGN_QRFW);
+                assigneeValue = signService.getMainPriUserId(signid, agentTaskList,FlowConstant.FLOW_SIGN_QRFW);
+                variables.put(FlowConstant.SignFlowParams.USER_FZR1.getValue(), assigneeValue);
+                commitFZENode(variables, task.getId(), processInstance.getId(), flowDto.getDealOption(), dp, isAgentTask, isAgree);
                 //处理合并发文的发文和项目信息
                 for (SignMerge s : mergeList) {
                     sign = signRepo.findById(s.getMergeId());
@@ -1487,7 +1489,11 @@ public class FlowServiceImpl implements FlowService {
                         Map<String, Object> resultObj = (Map<String, Object>) resultMsg.getReObj();
                         task = (Task) resultObj.get("task");
                         processInstance = (ProcessInstance) resultObj.get("processInstance");
-                        commitFZENode(variables, s.getSignId(), task.getId(), processInstance.getId(), flowDto.getDealOption(), sign.getDispatchDoc(), isAgentTask, isAgree, agentTaskList, FLOW_SIGN_QRFW);
+                        //以主项目的为主
+                        /*assigneeValue = signService.getMainPriUserId(signid, agentTaskList,FlowConstant.FLOW_SIGN_QRFW);
+                        variables.put(FlowConstant.SignFlowParams.USER_FZR1.getValue(), assigneeValue);*/
+
+                        commitFZENode(variables, task.getId(), processInstance.getId(), flowDto.getDealOption(), sign.getDispatchDoc(), isAgentTask, isAgree);
                     } else {
                         throw new Exception(resultMsg.getReMsg());
                     }
@@ -1543,7 +1549,8 @@ public class FlowServiceImpl implements FlowService {
             //主任审批发文
             case FLOW_SIGN_ZR_QRFW:
                 //项目负责人生成发文编号
-                variables = signService.buildMainPriUser(variables, signid, agentTaskList, FlowConstant.FLOW_SIGN_FWBH);
+                assigneeValue = signService.getMainPriUserId(signid, agentTaskList,FlowConstant.FLOW_SIGN_FWBH);
+                variables.put(FlowConstant.SignFlowParams.USER_FZR1.getValue(), assigneeValue);
                 commitZRNode(variables, task.getId(), processInstance.getId(), flowDto.getDealOption(), dp, isAgentTask);
                 for (SignMerge s : mergeList) {
                     sign = signRepo.findById(s.getMergeId());
@@ -1553,7 +1560,8 @@ public class FlowServiceImpl implements FlowService {
                         task = (Task) resultObj.get("task");
                         processInstance = (ProcessInstance) resultObj.get("processInstance");
                         //主任审批之后，由各个的项目负责人处理
-                        variables = signService.buildMainPriUser(variables, s.getMergeId(), agentTaskList, FlowConstant.FLOW_SIGN_FWBH);
+                        assigneeValue = signService.getMainPriUserId(s.getMergeId(), agentTaskList,FlowConstant.FLOW_SIGN_FWBH);
+                        variables.put(FlowConstant.SignFlowParams.USER_FZR1.getValue(), assigneeValue);
                         commitZRNode(variables, task.getId(), processInstance.getId(), flowDto.getDealOption(), sign.getDispatchDoc(), isAgentTask);
                     } else {
                         throw new Exception(resultMsg.getReMsg());
@@ -1608,23 +1616,19 @@ public class FlowServiceImpl implements FlowService {
      * 合并发文，项目负责人处理环节
      *
      * @param variables
-     * @param signId
      * @param taskId
      * @param procInstId
      * @param dealOption
      * @param dp
      * @param isAgentTask
      * @param isAgree
-     * @param agentTaskList
-     * @param nodeKey
      */
-    private void commitFZENode(Map<String, Object> variables, String signId, String taskId, String procInstId, String dealOption, DispatchDoc dp, boolean isAgentTask, boolean isAgree, List<AgentTask> agentTaskList, String nodeKey) {
+    private void commitFZENode(Map<String, Object> variables, String taskId, String procInstId, String dealOption, DispatchDoc dp, boolean isAgentTask, boolean isAgree) {
         String newDealOption = dealOption;
         if (isAgree) {
             newDealOption += "【审批结果：核稿无误】";
         } else {
             newDealOption += "【审批结果：核稿有误】";
-            variables = signService.buildMainPriUser(variables, signId, agentTaskList, nodeKey);
         }
         taskService.addComment(taskId, procInstId, newDealOption);
         taskService.complete(taskId, variables);

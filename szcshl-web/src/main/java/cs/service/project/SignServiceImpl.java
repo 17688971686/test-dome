@@ -1438,8 +1438,9 @@ public class SignServiceImpl implements SignService {
                     } else {
                         variables.put(FlowConstant.SignFlowParams.HAVE_XB.getValue(), null);
                         variables.put(FlowConstant.SignFlowParams.XMFZR_SP.getValue(), false);
-                        //选择第一负责人
-                        variables = buildMainPriUser(variables, signid, agentTaskList, FLOW_SIGN_FW);
+                        //获取第一负责人
+                        assigneeValue = getMainPriUserId(signid, agentTaskList,FlowConstant.FLOW_SIGN_FW);
+                        variables.put(FlowConstant.SignFlowParams.USER_FZR1.getValue(), assigneeValue);
                         flowDto.setDealOption(flowDto.getDealOption() + "【审批结果：核稿有误】");
                     }
                     break;
@@ -1460,7 +1461,9 @@ public class SignServiceImpl implements SignService {
                 //如果不同意，则回退到发文环节
                 } else {
                     variables.put(FlowConstant.SignFlowParams.XBBZ_SP.getValue(), false);
-                    variables = buildMainPriUser(variables, signid, agentTaskList,FLOW_SIGN_FW);
+                    //获取第一负责人
+                    assigneeValue = getMainPriUserId(signid, agentTaskList,FlowConstant.FLOW_SIGN_FW);
+                    variables.put(FlowConstant.SignFlowParams.USER_FZR1.getValue(), assigneeValue);
                     flowDto.setDealOption(flowDto.getDealOption() + "【审批结果：核稿有误】");
                 }
                 //协办部门的意见也要保存
@@ -1579,7 +1582,9 @@ public class SignServiceImpl implements SignService {
                     //不同意则回退到发文申请环节
                 } else {
                     variables.put(FlowConstant.SignFlowParams.XBFZR_SP.getValue(), false);
-                    variables = buildMainPriUser(variables, signid, agentTaskList,FLOW_SIGN_FW);
+                    //获取第一负责人
+                    assigneeValue = getMainPriUserId(signid, agentTaskList,FlowConstant.FLOW_SIGN_FW);
+                    variables.put(FlowConstant.SignFlowParams.USER_FZR1.getValue(), assigneeValue);
                     flowDto.setDealOption(flowDto.getDealOption() + "【审批结果：核稿有误】");
                 }
                 //修改发文信息
@@ -1653,8 +1658,10 @@ public class SignServiceImpl implements SignService {
                     dp.setDirectorDate(new Date());
                     dp.setDirectorName(ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask));
                     dispatchDocRepo.save(dp);
-                    //项目负责人生成发文编号
-                    variables = buildMainPriUser(variables, signid, agentTaskList,FlowConstant.FLOW_SIGN_FWBH);
+
+                    //获取第一负责人
+                    assigneeValue = getMainPriUserId(signid, agentTaskList,FlowConstant.FLOW_SIGN_FWBH);
+                    variables.put(FlowConstant.SignFlowParams.USER_FZR1.getValue(), assigneeValue);
                 }
 
                 break;
@@ -1710,7 +1717,10 @@ public class SignServiceImpl implements SignService {
                 //没有评审费，则直接到归档环节(还是当前人处理)
                 } else {
                     variables.put(FlowConstant.SignFlowParams.HAVE_ZJPSF.getValue(), false);
-                    variables = buildMainPriUser(variables, signid, agentTaskList,FlowConstant.FLOW_SIGN_GD);
+                    //获取第一负责人
+                    assigneeValue = getMainPriUserId(signid, agentTaskList,FlowConstant.FLOW_SIGN_GD);
+                    variables.put(FlowConstant.SignFlowParams.USER_FZR1.getValue(), assigneeValue);
+
                     signRepo.updateSignProcessState(signid, Constant.SignProcessState.SEND_FILE.getValue());
                 }
                 break;
@@ -1722,7 +1732,9 @@ public class SignServiceImpl implements SignService {
                 //确认归档环节，才是已发送存档
                 //sign.setProcessState(Constant.SignProcessState.SEND_FILE.getValue());
                 signRepo.save(sign);
-                variables = buildMainPriUser(variables, signid, agentTaskList,FlowConstant.FLOW_SIGN_GD);
+                //获取第一负责人
+                assigneeValue = getMainPriUserId(signid, agentTaskList,FlowConstant.FLOW_SIGN_GD);
+                variables.put(FlowConstant.SignFlowParams.USER_FZR1.getValue(), assigneeValue);
                 break;
 
             //第一负责人归档
@@ -1941,11 +1953,9 @@ public class SignServiceImpl implements SignService {
     }
 
     @Override
-    public Map<String, Object> buildMainPriUser(Map<String, Object> variables, String signid, List<AgentTask> agentTaskList,String nodeKey) {
+    public String getMainPriUserId(String signid, List<AgentTask> agentTaskList,String nodeKey) {
         User dealUser = signPrincipalService.getMainPriUser(signid);
-        String dealId = userService.getTaskDealId(dealUser, agentTaskList,nodeKey);
-        variables.put(FlowConstant.SignFlowParams.USER_FZR1.getValue(), dealId);
-        return variables;
+        return userService.getTaskDealId(dealUser, agentTaskList,nodeKey);
     }
 
     /**
