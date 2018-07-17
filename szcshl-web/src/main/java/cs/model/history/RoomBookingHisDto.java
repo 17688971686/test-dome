@@ -1,8 +1,7 @@
 package cs.model.history;
 
-import cs.model.meeting.RoomBookingDto;
+import cs.domain.meeting.RoomBookBase;
 
-public class RoomBookingHisDto extends RoomBookingDto {
-
+public class RoomBookingHisDto extends RoomBookBase {
 
 }

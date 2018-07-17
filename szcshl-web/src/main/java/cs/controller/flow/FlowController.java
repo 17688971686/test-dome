@@ -469,8 +469,8 @@ public class FlowController {
                     isProj = true;
                     resultMsg = signService.dealFlow(processInstance, task,flowDto);
                     break;
-                case FlowConstant.ROLL_BACK_SEND_FLOW:
-                    resultMsg = signService.dealFlow(processInstance, task,flowDto);
+                case FlowConstant.WORK_HIS_FLOW:
+                    //resultMsg = signService.dealFlow(processInstance, task,flowDto);
                     break;
                 case FlowConstant.TOPIC_FLOW:
                     resultMsg = topicInfoService.dealFlow(processInstance, task,flowDto);
@@ -710,20 +710,5 @@ public class FlowController {
         return  flowService.getProc();
     }
 
-    @RequiresAuthentication
-    @RequestMapping(name = "重写工作方案", path = "rollbackSend/{processKey}", method = RequestMethod.GET)
-    public String rollbackSend(@PathVariable("processKey") String processKey) {
-        String resultPage = "";
-        switch (processKey){
-            case FlowConstant.ROLL_BACK_SEND_FLOW:
-                resultPage = "rollbackSend/rollbackSend";
-                break;
-            case FlowConstant.QUERY_BRANCH_INFO:
-                resultPage = "rollbackSend/getBranchInfo";
-                break;
-            default:
-                ;
-        }
-        return resultPage;
-    }
+
 }
