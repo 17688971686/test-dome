@@ -1,0 +1,53 @@
+<table class="table table-bordered">
+    <tbody>
+    <tr ng-repeat="file5 in vm.fileList5[0]" >
+
+       <#-- <td>
+            {{vm.fileList1[].fileName}}
+        </td>
+        <td>
+            {{vm.fileList2[].fileName}}
+        </td>
+        <td>
+            {{vm.fileList3[].fileName}}
+        </td>-->
+        <td >
+            {{vm.fileList4[vm.index4][vm.index42].fileName}}
+        </td>
+        <td>{{file5.fileName}}</td>
+       <#-- <td >
+          <table class="table table-bordered">
+              <tr ng-repeat="file2 in vm.fileList2[$index]" rowspan="{{vm.fileList3[$index].length}}">
+
+                  <td>{{file2.fileName}}</td>
+              </tr>
+          </table>
+        </td>
+        <td >
+            <table>
+                <tr ng-repeat="file3 in vm.fileList3[$index]" rowspan="{{vm.fileList4[$index].length}}">
+
+                    <td>{{file3.fileName}}</td>
+                </tr>
+            </table>
+        </td>
+        <td >
+            <table>
+                <tr ng-repeat="file4 in vm.fileList4" rowspan="{{vm.fileList5[$index].length}}">
+
+                    <td>{{file4.fileName}}</td>
+                </tr>
+            </table>
+        </td>
+        <td >
+            <table>
+                <tr ng-repeat="file5 in vm.fileList5">
+
+                    <td>{{file5.fileName}}</td>
+                </tr>
+            </table>
+        </td>-->
+    </tr>
+    </tbody>
+
+</table>

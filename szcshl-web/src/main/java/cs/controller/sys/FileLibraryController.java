@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Description: 文件库
@@ -108,6 +109,13 @@ public class FileLibraryController {
         return fileLibraryDto ;
     }
 
+    @RequiresAuthentication
+    @RequestMapping(name="查询所有文件列表，并分等级查询",path="getFiles",method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String , Object> getFiles(){
+        return fileLibraryService.getFiles();
+    }
+
     /**
      * begin html
      */
@@ -151,5 +159,11 @@ public class FileLibraryController {
     @RequestMapping(name="政策标准库-新建文件",path="html/policyEdit",method=RequestMethod.GET)
     public String policyEdit(){
         return ctrlName + "/policyEdit";
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name="文件指标库列表",path="html/documentList",method=RequestMethod.GET)
+    public String documentList(){
+        return ctrlName + "/documentList";
     }
 }

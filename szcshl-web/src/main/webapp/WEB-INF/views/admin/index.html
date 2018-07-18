@@ -556,6 +556,9 @@ end 图书管理 -->
 <@shiro.hasPermission name="fileLibrary#html/policyLibrary#get">
 <li><a href="javascript:void(0)" ui-sref="policyLibrary">政策标准库</a></li>
 </@shiro.hasPermission>
+        <@shiro.hasPermission name="fileLibrary#html/documentLibrary#get">
+            <li><a href="javascript:void(0)" ui-sref="documentLibrary">文件标准库</a></li>
+        </@shiro.hasPermission>
 </ul>
 </li>
 </@shiro.hasPermission>
