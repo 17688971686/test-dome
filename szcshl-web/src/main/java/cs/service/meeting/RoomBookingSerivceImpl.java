@@ -472,17 +472,24 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce {
         for (int i = 0; i < rows; i++) {
             List<String> rbNames = new ArrayList<>(7);
             //遍历每一天的会议预定情况
-            for (int j = 0; j < roomBookMap.size(); j++) {
+            if(roomBookMap.size() > 0){
+                for (int j = 0; j < roomBookMap.size(); j++) {
 
-                Object[] objArr = roomBookMap.get(j);
-                //判断该数组是否有值，并判断行数是否小于该数组的长度
-                //通过行数作为下标来获取对应的值
-                if (objArr != null && objArr.length > 0 && i < objArr.length) {
-                    rbNames.add((String) objArr[i]);
-                } else {
+                    Object[] objArr = roomBookMap.get(j);
+                    //判断该数组是否有值，并判断行数是否小于该数组的长度
+                    //通过行数作为下标来获取对应的值
+                    if (objArr != null && objArr.length > 0 && i < objArr.length) {
+                        rbNames.add((String) objArr[i]);
+                    } else {
+                        rbNames.add("");
+                    }
+                }
+            }else{
+                for(int k = 0 ; k < 7 ; k ++ ){
                     rbNames.add("");
                 }
             }
+
             rbNameList.add(rbNames);
         }
 
