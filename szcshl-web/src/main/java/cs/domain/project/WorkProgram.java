@@ -14,6 +14,12 @@ import javax.persistence.*;
 @DynamicUpdate(true)
 public class WorkProgram extends WorkBase {
 
+    /**
+     * 重做工作方案流程
+     */
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String processInstanceId;
+
     //收文，一对一（只做级联删除）
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "signId")
@@ -28,4 +34,11 @@ public class WorkProgram extends WorkBase {
     }
 
 
+    public String getProcessInstanceId() {
+        return processInstanceId;
+    }
+
+    public void setProcessInstanceId(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
 }

@@ -1,7 +1,21 @@
 <meta charset="UTF-8">
 
 <div class="well well-sm" style="background:white;display: none;" id="reworkWorkPlanWindow" >
-	<div class="label-info" style="padding:5px;">
-	fsdfasfs
-	</div>
+	<table class="table table-bordered+9">
+		<tr >
+			<td class="text-center"  >选择</td>
+			<td class="text-center"  >分支</td>
+			<td class="text-center"  >办理部门</td>
+			<td class="text-center"  >负责人</td>
+
+		</tr>
+		<tr ng-repeat="b in vm.signBranchData | orderBy:'BID'">
+			<td align="center">
+				<input type="checkbox" name="checkps"  value="{{b.BID}}"/>
+			</td>
+			<td class="text-center">{{ b.BID}}</td>
+			<td class="text-center">{{ b.NAME}}</td>
+			<td class="text-center">{{ b.USERNAMES }}</td>
+		</tr>
+	</table>
 </div>

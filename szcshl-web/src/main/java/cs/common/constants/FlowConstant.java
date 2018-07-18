@@ -18,7 +18,6 @@ public class FlowConstant {
     public static final String WPHIS_BMLD_SPW = "ROLL_BACK_SEND_BZ_SP";                //部长审批
     public static final String WPHIS_FGLD_SPW = "ROLL_BACK_SEND_FGLD_SP";              //分管领导审批
 
-    public static final String QUERY_BRANCH_INFO = "QUERY_BRANCH_INFO";                //负责人填报
 
     /**
      * 项目签收流程

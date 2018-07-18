@@ -2,10 +2,15 @@ package cs.controller.project;
 
 import cs.ahelper.IgnoreAnnotation;
 import cs.common.ResultMsg;
+import cs.common.constants.Constant;
 import cs.common.utils.Validate;
+import cs.domain.project.Sign;
 import cs.domain.project.WorkProgram;
 import cs.model.project.WorkProgramDto;
+import cs.repository.repositoryImpl.project.SignRepo;
 import cs.service.project.WorkProgramService;
+import cs.service.rtx.RTXSendMsgPool;
+import cs.service.rtx.RTXService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,12 +23,13 @@ import java.util.Map;
 @RequestMapping(name = "工作方案", path = "workprogram")
 @IgnoreAnnotation
 public class WorkProgramController {
-
     private String ctrlName = "workprogram";
-
     @Autowired
     private WorkProgramService workProgramService;
-
+    @Autowired
+    private RTXService rtxService;
+    @Autowired
+    private SignRepo signRepo;
     @RequiresAuthentication
     //@RequiresPermissions("workprogram#addWork#post")
     @RequestMapping(name = "保存工作方案", path = "addWork", method = RequestMethod.POST)
@@ -109,6 +115,18 @@ public class WorkProgramController {
         return workProgramService.updateReviewType(workProgramDto.getSignId(),workProgramDto.getId(),workProgramDto.getReviewType());
     }
 
+    @RequiresAuthentication
+    @RequestMapping(name = "发起重新做工作方案流程", path = "startReWorkFlow", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg startReWorkFlow(@RequestParam String signId,@RequestParam String brandIds) {
+        Sign sign = signRepo.findById(signId);
+        ResultMsg resultMsg = workProgramService.startReWorkFlow(sign,brandIds);
+        if(resultMsg.isFlag()){
+            //如果成功，则发送短信通知
+            rtxService.dealPoolRTXMsg(signId,resultMsg,sign.getProjectname()+"[重做工作方案]", Constant.MsgType.task_type.name());
+        }
+        return resultMsg;
+    }
 
     @RequiresAuthentication
     @RequestMapping(name = "更新工作方案专家评审费用", path = "updateWPExpertCost", method = RequestMethod.POST)

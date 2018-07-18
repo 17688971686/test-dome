@@ -36,6 +36,7 @@ import cs.service.rtx.RTXService;
 import cs.service.sys.LogService;
 import cs.service.sys.OrgService;
 import cs.service.sys.UserService;
+import cs.sql.WorkSql;
 import org.activiti.engine.*;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
@@ -1241,9 +1242,9 @@ public class FlowServiceImpl implements FlowService {
      */
     @Override
     public List<String> findUserIdByProcessInstanceId(String processInstanceId) {
-        HqlBuilder sqlBuilder = HqlBuilder.create();
+        /*HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("select distinct ACT.USER_ID_ from ACT_HI_IDENTITYLINK act where act.PROC_INST_ID_ = :processInstanceId");
-        sqlBuilder.setParam("processInstanceId", processInstanceId);
+        sqlBuilder.setParam("processInstanceId", processInstanceId);*/
         List<Map<String, Object>> resultMapList = jdbcTemplate.queryForList("select distinct ACT.USER_ID_ USER_ID from ACT_HI_IDENTITYLINK act where act.PROC_INST_ID_ = '" + processInstanceId + "'");
         List<String> resultList = new ArrayList<>();
         for (Map<String, Object> map : resultMapList) {
@@ -1376,14 +1377,13 @@ public class FlowServiceImpl implements FlowService {
     }
 
     /**
-     * @param flowDto
-     * @return
-     * @TODO 获取该项目有几个分支（未实现）
+     * @param signId
+     * @return List<Map<String,Object>>
      */
 
     @Override
-    public ResultMsg getBranchInfo(FlowDto flowDto) {
-        return null;
+    public List<Map<String,Object>> getBranchInfo(String signId) {
+        return jdbcTemplate.queryForList(WorkSql.getReWorkSql(),signId);
     }
 
     /**

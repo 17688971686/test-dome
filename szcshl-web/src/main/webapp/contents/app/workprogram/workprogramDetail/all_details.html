@@ -218,31 +218,34 @@
                     <p class="text-right" ng-if="w.leaderDate">日期：{{w.leaderDate}}</p>
                 </td>
             </tr>
+
         </table>
+        <p style="text-align: center;margin-top:5px;">
+            <button  ng-if="w.workreviveStage=='项目建议书'" class="btn btn-sm btn-primary"
+                      ng-click="printFile(w.id,'WORKPROGRAM','STAGESUG')">打印预览
+            </button>
+            <button ng-if="w.workreviveStage=='可行性研究报告'" class="btn btn-sm btn-primary"
+                     ng-click="printFile(w.id,'WORKPROGRAM','STAGESTUDY')">打印预览
+            </button>
+            <button ng-if="w.workreviveStage=='项目概算'" class="btn btn-sm btn-primary"
+                    ng-click="printFile(w.id,'WORKPROGRAM','STAGEBUDGET')">打印预览
+            </button>
+            <button ng-if="w.workreviveStage=='其它'" class="btn btn-sm btn-primary"
+                    ng-click="printFile(w.id,'WORKPROGRAM','STAGEOTHER')">打印预览
+            </button>
+            <button ng-if="w.expertSelectedDtoList"  class="btn btn-sm btn-primary"
+                    ng-click="printFile(w.id,'WORKPROGRAM','INFORMATION')">打印专家信息预览
+            </button>
+            <button ng-if="w.expertSelectedDtoList"  class="btn btn-sm btn-primary"
+                    ng-click="exportInfo(w.id,'WORKPROGRAM','INFORMATION', '专家信息导出')">专家信息导出
+            </button>
+        </p>
     </div>
-    <button  ng-if="w.workreviveStage=='项目建议书'" class="form-control btn-sm btn-primary"
-             style="width: 100px; margin: auto;display: inline;margin-left: 45%" ng-click="printFile(w.id,'WORKPROGRAM','STAGESUG')">打印预览
-    </button>
-    <button ng-if="w.workreviveStage=='可行性研究报告'" class="form-control btn-sm btn-primary"
-            style="width: 100px; margin: auto;display: inline;margin-left: 45%" ng-click="printFile(w.id,'WORKPROGRAM','STAGESTUDY')">打印预览
-    </button>
-    <button ng-if="w.workreviveStage=='项目概算'" class="form-control btn-sm btn-primary"
-            style="width: 100px; margin: auto;display: inline;margin-left: 45%" ng-click="printFile(w.id,'WORKPROGRAM','STAGEBUDGET')">打印预览
-    </button>
-    <button ng-if="w.workreviveStage=='其它'" class="form-control btn-sm btn-primary"
-            style="width: 100px; margin: auto;display: inline;margin-left: 45%" ng-click="printFile(w.id,'WORKPROGRAM','STAGEOTHER')">打印预览
-    </button>
-    <button ng-if="w.expertSelectedDtoList"  class="form-control btn-sm btn-primary"
-            style="width: 120px; margin: auto;display: inline"  ng-click="printFile(w.id,'WORKPROGRAM','INFORMATION')">打印专家信息预览
-    </button>
-    <button ng-if="w.expertSelectedDtoList"  class="form-control btn-sm btn-primary"
-            style="width: 120px; margin: auto;display: inline"  ng-click="exportInfo(w.id,'WORKPROGRAM','INFORMATION' , '专家信息导出')">专家信息导出
-    </button>
 </div>
 <!-- end 主项目 -->
 
 <!-- start 协审项目（项目建议书/可行性研究报告） -->
-<div ng-repeat="w in vm.model.workProgramDtoList | toArray:false | orderBy:'branchId'"  style="margin-top:10px;"
+<div ng-repeat="w in vm.model.workProgramDtoList | toArray:false | orderBy:'branchId'"  style="margin-top:10px;border-top: 1px dashed #000;"
      ng-if="(w.workreviveStage=='项目建议书' || w.workreviveStage=='可行性研究报告'  || w.workreviveStage=='项目概算' || w.workreviveStage=='其它' || w.workreviveStage=='资金申请报告') && (w.branchId != '1' && w.branchId != 1)">
     <a data-toggle="collapse" data-target="#aswp_{{$index}}"
        ng-show="(vm.model.workProgramDtoList.length > 1) || vm.showAll">
@@ -444,31 +447,26 @@
                 </td>
             </tr>
         </table>
+        <p style="width: 100%;text-align: center;margin-top:5px;">
+            <button ng-if="w.workreviveStage=='项目建议书'" class="btn btn-sm btn-primary"
+                    ng-click="printFile(w.id,'WORKPROGRAM','STAGESUG')">打印预览
+            </button>
+            <button ng-if="w.workreviveStage=='可行性研究报告'" class="btn btn-sm btn-primary"
+                    ng-click="printFile(w.id,'WORKPROGRAM','STAGESTUDY')">打印预览
+            </button>
+            <button ng-if="w.workreviveStage=='项目概算'" class="btn btn-sm btn-primary"
+                    ng-click="printFile(w.id,'WORKPROGRAM','STAGEBUDGET')">打印预览
+            </button>
+            <button ng-if="w.workreviveStage=='其它'" class="btn btn-sm btn-primary"
+                    ng-click="printFile(w.id,'WORKPROGRAM','STAGEOTHER')">打印预览
+            </button>
+            <button ng-if="w.expertSelectedDtoList" class="btn btn-sm btn-primary"
+                    ng-click="printFile(w.id,'WORKPROGRAM','INFORMATION')">打印专家信息预览
+            </button>
+            <button ng-if="w.expertSelectedDtoList"  class="btn btn-sm btn-primary"
+                    ng-click="exportInfo(w.id,'WORKPROGRAM','INFORMATION' , '专家信息导出')">专家信息导出
+            </button>
+        </p>
     </div>
-    <!-- <button id="wp_{{w.branchId}}_{{w.isMainProject}}"  class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="vm.printpage($event)">打印</button>-->
-    <div style="width: 100%;text-align: center;margin-top:5px;">
-        <button ng-if="w.workreviveStage=='项目建议书'" class="form-control btn-sm btn-primary"
-                style="width: 100px; margin: auto;display: inline;margin-left: 45%"
-                ng-click="printFile(w.id,'WORKPROGRAM','STAGESUG')">打印预览
-        </button>
-        <button ng-if="w.workreviveStage=='可行性研究报告'" class="form-control btn-sm btn-primary"
-                style="width: 100px; margin: auto;display: inline;margin-left: 45%"
-                ng-click="printFile(w.id,'WORKPROGRAM','STAGESTUDY')">打印预览
-        </button>
-        <button ng-if="w.workreviveStage=='项目概算'" class="form-control btn-sm btn-primary"
-                style="width: 100px; margin: auto;display: inline;margin-left: 45%"
-                ng-click="printFile(w.id,'WORKPROGRAM','STAGEBUDGET')">打印预览
-        </button>
-        <button ng-if="w.workreviveStage=='其它'" class="form-control btn-sm btn-primary"
-                style="width: 100px; margin: auto;display: inline;margin-left: 45%"
-                ng-click="printFile(w.id,'WORKPROGRAM','STAGEOTHER')">打印预览
-        </button>
-        <button ng-if="w.expertSelectedDtoList" class="form-control btn-sm btn-primary"
-                style="width: 120px; margin: auto;display: inline"
-                ng-click="printFile(w.id,'WORKPROGRAM','INFORMATION')">打印专家信息预览
-        </button>
-        <button ng-if="w.expertSelectedDtoList"  class="form-control btn-sm btn-primary"
-                style="width: 120px; margin: auto;display: inline"  ng-click="exportInfo(w.id,'WORKPROGRAM','INFORMATION' , '专家信息导出')">专家信息导出
-        </button>
-    </div>
+
 </div>

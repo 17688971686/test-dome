@@ -155,4 +155,11 @@ public class RoomBookingRepoImpl extends AbstractRepository<RoomBooking, String>
         executeSql(sqlBuilder);
     }
 
+    @Override
+    public List<RoomBooking> findByBusinessId(String businessId) {
+        Criteria criteria = getExecutableCriteria();
+        criteria.add(Restrictions.eq(RoomBooking_.businessId.getName(),businessId));
+        return criteria.list();
+    }
+
 }

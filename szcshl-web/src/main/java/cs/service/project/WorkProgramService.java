@@ -116,4 +116,12 @@ public interface WorkProgramService {
      * @return
      */
     ResultMsg saveBaseInfo(WorkProgramDto workProgramDto);
+
+    /**
+     * 重做工作方案
+     * @param sign
+     * @param brandIds  分支ID
+     * @return
+     */
+    ResultMsg startReWorkFlow(Sign sign, String brandIds);
 }

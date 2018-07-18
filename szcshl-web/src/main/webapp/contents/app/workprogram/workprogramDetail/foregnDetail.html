@@ -211,21 +211,24 @@
                 </td>
             </tr>
         </table>
+        <p style="text-align: center;margin-top: 5px;">
+            <button class="btn btn-sm btn-primary"
+                    ng-click="printFile(w.id,'WORKPROGRAM','STAGEDEVICE')">打印预览
+            </button>
+            <button ng-if="w.expertSelectedDtoList"  class="btn btn-sm btn-primary"
+                    ng-click="printFile(w.id,'WORKPROGRAM','INFORMATION')">打印专家信息预览
+            </button>
+            <button ng-if="w.expertSelectedDtoList"  class="btn btn-sm btn-primary"
+                    ng-click="exportInfo(w.id,'WORKPROGRAM','INFORMATION' , '专家信息导出')">专家信息导出
+            </button>
+        </p>
     </div>
-    <button class="form-control btn-sm btn-primary"  style="width: 100px; margin: auto;display: inline;margin-left: 45%"
-            ng-click="printFile(w.id,'WORKPROGRAM','STAGEDEVICE')">打印预览
-    </button>
-    <button ng-if="w.expertSelectedDtoList"  class="form-control btn-sm btn-primary"
-            style="width: 120px; margin: auto;display: inline"  ng-click="printFile(w.id,'WORKPROGRAM','INFORMATION')">打印专家信息预览
-    </button>
-    <button ng-if="w.expertSelectedDtoList"  class="form-control btn-sm btn-primary"
-            style="width: 120px; margin: auto;display: inline"  ng-click="exportInfo(w.id,'WORKPROGRAM','INFORMATION' , '专家信息导出')">专家信息导出
-    </button>
+
 </div>
 <!-- end 主项目 -->
 
 <!-- start 协办项目（进口设备） -->
-<div ng-repeat="w in vm.model.workProgramDtoList | toArray:false | orderBy:'branchId'"  style="margin-top:10px;"
+<div ng-repeat="w in vm.model.workProgramDtoList | toArray:false | orderBy:'branchId'"  style="margin-top:10px;border: dashed 1px #000;"
      ng-if="(w.workreviveStage=='进口设备') && (w.branchId != '1' && w.branchId != 1)">
     <a data-toggle="collapse" data-target="#aswp_{{$index}}"
        ng-show="(vm.model.workProgramDtoList.length > 1) || vm.showAll">
@@ -430,20 +433,18 @@
                     <p class="text-right" ng-if="w.leaderDate">日期：{{w.leaderDate}}</p>
                 </td>
             </tr>
-
         </table>
+        <p style="text-align: center;margin-top: 5px;">
+            <button class="btn btn-sm btn-primary"
+                    ng-click="printFile(w.id,'WORKPROGRAM','STAGEDEVICE')">打印预览
+            </button>
+            <button ng-if="w.expertSelectedDtoList" class="btn btn-sm btn-primary"
+                    ng-click="printFile(w.id,'WORKPROGRAM','INFORMATION')">打印专家信息预览
+            </button>
+            <button ng-if="w.expertSelectedDtoList"  class="btn btn-sm btn-primary"
+                    ng-click="exportInfo(w.id,'WORKPROGRAM','INFORMATION' , '专家信息导出')">专家信息导出
+            </button>
+        </p>
     </div>
-    <div style="width: 100%;text-align: center;margin-top:5px;">
-        <button class="form-control btn-sm btn-primary"
-                style="width: 100px; margin: auto;display: inline;margin-left: 45%"
-                ng-click="printFile(w.id,'WORKPROGRAM','STAGEDEVICE')">打印预览
-        </button>
-        <button ng-if="w.expertSelectedDtoList" class="form-control btn-sm btn-primary"
-                style="width: 120px; margin: auto;display: inline"
-                ng-click="printFile(w.id,'WORKPROGRAM','INFORMATION')">打印专家信息预览
-        </button>
-        <button ng-if="w.expertSelectedDtoList"  class="form-control btn-sm btn-primary"
-                style="width: 120px; margin: auto;display: inline"  ng-click="exportInfo(w.id,'WORKPROGRAM','INFORMATION' , '专家信息导出')">专家信息导出
-        </button>
-    </div>
+
 </div>

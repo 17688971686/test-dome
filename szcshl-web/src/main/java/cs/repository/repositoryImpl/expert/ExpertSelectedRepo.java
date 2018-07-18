@@ -160,8 +160,19 @@ public interface ExpertSelectedRepo extends IRepository<ExpertSelected, String> 
      */
     List<AchievementDetailDto> findAchievementDetail(AchievementSumDto achievementSumDto,Map<String,Object> levelMap,List<OrgDept> orgDeptList);
 
+    /**
+     * 根据业务ID查询已经确认的专家抽取信息
+     * @param businessID
+     * @return
+     */
     List<ExpertSelectedDto> findByBusinessId(String businessID);
 
+    /**
+     * 根据业务ID查询所有
+     * @param businessID
+     * @return
+     */
+    List<ExpertSelected> findAllByBusinessId(String businessID);
     /**
      * 查询部门业绩明细
      * @param achievementSumDto

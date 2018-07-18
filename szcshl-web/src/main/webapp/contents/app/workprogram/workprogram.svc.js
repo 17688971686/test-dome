@@ -28,9 +28,30 @@
             initFlowWP : initFlowWP,                    //初始化流程工作方案
             initBaseInfo : initBaseInfo,                //初始化项目基本信息
             saveBaseInfo : saveBaseInfo,                //保存项目基本信息
+            getProjBranchInfo : getProjBranchInfo,            //获取项目的分支信息
         };
 
         return service;
+
+        function getProjBranchInfo(signId,callBack){
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/flow/getBranchInfo",
+                params: {
+                    signId : signId,
+                },
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
 
         function initBaseInfo(signId,callBack){
             var httpOptions = {

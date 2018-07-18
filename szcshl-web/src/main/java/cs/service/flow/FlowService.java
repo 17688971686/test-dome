@@ -179,7 +179,12 @@ public interface FlowService {
     ResultMsg taskTransferAssignee(String taskId,String oldUserId,String newUserId);
 
 
-    ResultMsg getBranchInfo(FlowDto flowDto);
+    /**
+     * 获取重新做工作方案的分支
+     * @param signId
+     * @return
+     */
+    List<Map<String,Object>> getBranchInfo(String signId);
 
     /**
      * 合并发文流程处理

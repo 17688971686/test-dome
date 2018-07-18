@@ -515,14 +515,6 @@ public class FlowController {
     }
 
     @RequiresAuthentication
-    @RequestMapping(name = "获取重写工作方案分支", path = "getBranchInfo", method = RequestMethod.GET)
-    public @ResponseBody ResultMsg getBranchInfo(@RequestBody FlowDto flowDto) {
-
-        ResultMsg resultMsg = flowService.getBranchInfo(flowDto);
-        return resultMsg;
-    }
-
-    @RequiresAuthentication
     @RequestMapping(name = "流程回退", path = "rollbacklast", method = RequestMethod.POST)
     @ResponseBody
     @Transactional
@@ -530,7 +522,6 @@ public class FlowController {
         ResultMsg resultMsg = flowService.rollBackLastNode(flowDto);
         return resultMsg;
     }
-
 
     @RequiresAuthentication
     @Transactional
@@ -541,7 +532,7 @@ public class FlowController {
         return flowService.restartFlow(businessKey);
     }
 
-    @Deprecated
+
     /**
      * 流程挂起
      * @param businessKey
@@ -619,6 +610,9 @@ public class FlowController {
             case FlowConstant.ANNOUNT_MENT_FLOW:
                 resultPage = "annountMent/flow/flowDeal";
                 break;
+            case FlowConstant.WORK_HIS_FLOW:
+                resultPage = "workprogram/flow/flowDeal";
+                break;
             default:
                 ;
         }
@@ -686,8 +680,7 @@ public class FlowController {
                 resultPage = "reviewProjectAppraise/flowEnd";
                 break;
             case FlowConstant.FLOW_SUPP_LETTER:
-                resultPage = "" +
-                        "";
+                resultPage = "";
                 break;
             case FlowConstant.MONTHLY_BULLETIN_FLOW:
                 resultPage = "monthlyNewsletter/flow/flowDeal";
@@ -710,5 +703,11 @@ public class FlowController {
         return  flowService.getProc();
     }
 
+    @RequiresAuthentication
+    @RequestMapping(name = "获取重写工作方案分支", path = "getBranchInfo", method = RequestMethod.POST)
+    @ResponseBody
+    public List<Map<String,Object>> getReWorkBranch(@RequestParam String signId) {
+        return flowService.getBranchInfo(signId);
+    }
 
 }

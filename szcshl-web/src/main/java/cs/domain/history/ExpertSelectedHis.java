@@ -1,6 +1,5 @@
 package cs.domain.history;
 
-import cs.domain.expert.ExpertReview;
 import cs.domain.expert.ExpertSelectedBase;
 import org.hibernate.annotations.DynamicUpdate;
 

@@ -9,6 +9,6 @@ public interface WorkProgramHisService{
      * @param workProgram
      * @return
      */
-    boolean copyWorkProgram(WorkProgram workProgram);
+    boolean copyWorkProgram(WorkProgram workProgram,String signId) throws RuntimeException;
 
 }
