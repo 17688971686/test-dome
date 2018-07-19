@@ -1,7 +1,12 @@
 package com.sn.framework.module.sys.repo.impl;
 
 import com.sn.framework.core.common.ResultMsg;
+import com.sn.framework.core.common.Validate;
+import com.sn.framework.core.ftp.ConfigProvider;
+import com.sn.framework.core.ftp.FtpClientConfig;
+import com.sn.framework.core.ftp.FtpUtils;
 import com.sn.framework.core.repo.impl.AbstractRepository;
+import com.sn.framework.module.sys.domain.Ftp;
 import com.sn.framework.module.sys.domain.SysFile;
 import com.sn.framework.module.sys.domain.SysFile_;
 import com.sn.framework.module.sys.repo.ISysFileRepo;
@@ -70,9 +75,34 @@ public class SysFileRepoImpl extends AbstractRepository<SysFile, String> impleme
 
     }
 
+    /**
+     * 根据附件ID删除附件
+     *
+     * @param sysFileId
+     * @return
+     */
     @Override
     public ResultMsg deleteByFileId(String sysFileId) {
-        return null;
+        ResultMsg resultMsg ;
+        if (Validate.isString(sysFileId)) {
+            SysFile fl = getById(sysFileId);
+            delete(fl);
+            try {
+                //删除ftp上的文件
+                Ftp f = fl.getFtp();
+                FtpUtils ftpUtils = new FtpUtils();
+                FtpClientConfig k = ConfigProvider.getDownloadConfig(f);
+                boolean deleteResult = ftpUtils.remove(fl.getFileUrl(),k);
+                resultMsg = new ResultMsg(true, "ok","删除成功！");
+            } catch (Exception e) {
+                resultMsg = new ResultMsg(false, "error","操作失败，错误信息已记录，请联系管理员查看！");
+                logger.info("删除ftp附件【" + fl.getShowName() + "】异常：" + e.getMessage());
+            } finally {
+            }
+        }else{
+            resultMsg = new ResultMsg(false, "error","没有删除的附件信息！");
+        }
+        return resultMsg;
     }
 
     @Override

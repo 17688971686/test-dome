@@ -1,5 +1,6 @@
 package com.sn.framework.module.sys.service;
 
+
 import com.sn.framework.core.common.ResultMsg;
 import com.sn.framework.core.service.ISService;
 import com.sn.framework.module.sys.domain.Ftp;
@@ -41,7 +42,7 @@ public interface ISysFileService extends ISService<SysFileDto> {
      * @param ftp
      * @return
      */
-    ResultMsg saveToFtp(long size, String fileName, String businessId, String fileType, String relativeFileUrl,
+    SysFile saveToFtp(long size, String fileName, String businessId, String fileType, String relativeFileUrl,
                         String mainId, String mainType, String sysfileType, String sysBusiType, Ftp ftp);
 
     /**
@@ -68,4 +69,12 @@ public interface ISysFileService extends ISService<SysFileDto> {
      * @return
      */
     SysFile isExistFile(String relativeFileUrl, String fileName);
+
+    /**
+     * 删除附件
+     * @param sysFileId
+     * @return
+     */
+
+     ResultMsg deleteByFileId(String sysFileId);
 }

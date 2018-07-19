@@ -97,7 +97,7 @@
                        id="parentId" name="parentId"/>
             </div>
         </div>
-        <div class="form-group">
+   <#--     <div class="form-group">
             <label for="itemOrder" class="col-sm-2 control-label">所属区域：</label>
             <div class="col-sm-4">
                 <select class="form-control" name="organRegion" id="organRegion" ng-model="model.organRegion"
@@ -105,7 +105,7 @@
                     <option value="">--请选择--</option>
                 </select>
             </div>
-        </div>
+        </div>-->
         <div class="form-group">
             <label for="itemOrder" class="col-sm-2 control-label">排序号：</label>
             <div class="col-sm-4">

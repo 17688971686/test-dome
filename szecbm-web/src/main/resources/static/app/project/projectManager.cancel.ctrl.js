@@ -15,13 +15,33 @@
         });
     }
 
-    projectManagerCancelCtrl.$inject = ["$scope","projectManagerSvc"];
+    projectManagerCancelCtrl.$inject = ["$scope","projectManagerSvc","bsWin"];
 
-    function projectManagerCancelCtrl($scope,projectManagerSvc) {
+    function projectManagerCancelCtrl($scope,projectManagerSvc,bsWin) {
         $scope.csHide("cjgl");
         var vm = this;
+        vm.model = {};
         //获取项目列表
         projectManagerSvc.bsTableCancelManagement(vm);
+
+        //导出项目信息
+        vm.expProinfo = function () {
+            projectManagerSvc.createProReport(vm);
+        }
+
+        vm.restore = function (pro) {
+            vm.model = pro;
+            vm.model.status = '1';
+            bsWin.confirm("是否恢复项目", function () {
+                projectManagerSvc.restoreInvestProject(vm);
+            })
+        }
+
+        vm.delete = function (id) {
+            bsWin.confirm("是否删除项目，删除后数据不可恢复", function () {
+                projectManagerSvc.deleteGovernmentInvestProject(id);
+            })
+        }
     }
 
 })();

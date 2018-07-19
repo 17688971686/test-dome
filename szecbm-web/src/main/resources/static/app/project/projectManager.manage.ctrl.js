@@ -15,12 +15,27 @@
         });
     }
 
-    projectManagerCtrl.$inject = ["$scope","projectManagerSvc"];
+    projectManagerCtrl.$inject = ["$scope","projectManagerSvc","bsWin"];
 
-    function projectManagerCtrl($scope,projectManagerSvc) {
+    function projectManagerCtrl($scope,projectManagerSvc,bsWin) {
         var vm = this;
+        vm.model = {};
         //获取项目列表
         projectManagerSvc.bsTableControlForManagement(vm);
+
+        //导出项目信息
+        vm.expProinfo = function () {
+            projectManagerSvc.createProReport(vm);
+        }
+
+        //作废项目
+        vm.cancel = function (pro) {
+            vm.model = pro;
+            vm.model.status = '2';
+            bsWin.confirm("是否作废项目", function () {
+                projectManagerSvc.cancelInvestProject(vm);
+            })
+        }
     }
 
 })();

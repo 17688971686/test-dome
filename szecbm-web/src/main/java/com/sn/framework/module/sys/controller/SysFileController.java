@@ -1,5 +1,7 @@
 package com.sn.framework.module.sys.controller;
 
+import com.sn.framework.common.SnRuntimeException;
+import com.sn.framework.common.StringUtil;
 import com.sn.framework.core.Constants;
 import com.sn.framework.core.common.ResultMsg;
 import com.sn.framework.core.common.SessionUtil;
@@ -10,23 +12,25 @@ import com.sn.framework.core.ftp.FtpUtils;
 import com.sn.framework.core.util.ResponseUtils;
 import com.sn.framework.core.util.SysFileUtil;
 import com.sn.framework.module.sys.domain.Ftp;
-import com.sn.framework.module.sys.domain.Ftp_;
 import com.sn.framework.module.sys.domain.SysFile;
 import com.sn.framework.module.sys.model.SysFileDto;
 import com.sn.framework.module.sys.repo.IFtpRepo;
+import com.sn.framework.module.sys.repo.ISysFileRepo;
 import com.sn.framework.module.sys.service.ISysFileService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -46,8 +50,13 @@ public class SysFileController {
     @Value("${system.sysfile.enableip}")
     private String enabledIP;
 
+
+   @Autowired
+    private ISysFileRepo sysFileRepo;
+
+
     @RequiresAuthentication
-    @RequestMapping(name = "根据业务ID获取附件", path = "findByBusinessId", method = RequestMethod.POST)
+    @RequestMapping(name = "根据业务ID获取附件", path = "findByBusinessId", method = RequestMethod.GET)
     @ResponseBody
     public List<SysFileDto> findByBusinessId(@RequestParam(required = true) String businessId) {
         List<SysFileDto> sysfileDto = sysFileService.findByBusinessId(businessId);
@@ -55,7 +64,7 @@ public class SysFileController {
     }
 
     @RequiresAuthentication
-    @RequestMapping(name = "根据主模块ID获取附件", path = "findByMainId", method = RequestMethod.POST)
+    @RequestMapping(name = "根据主模块ID获取附件", path = "findByMainId", method = RequestMethod.GET)
     @ResponseBody
     public List<SysFileDto> findByMainId(@RequestParam(required = true) String mainId) {
         List<SysFileDto> sysfileDto = sysFileService.findByMainId(mainId);
@@ -64,7 +73,7 @@ public class SysFileController {
 
     /**
      * @param request
-     * @param multipartFileList
+     * @param
      * @param businessId        业务ID
      * @param mainId            主ID
      * @param sysfileType       附件模块类型
@@ -75,24 +84,16 @@ public class SysFileController {
     @RequiresAuthentication
     @RequestMapping(name = "文件上传", path = "fileUpload", method = RequestMethod.POST)
     @ResponseBody
-    public ResultMsg upload(HttpServletRequest request, @RequestParam(name = "file") MultipartFile[] multipartFileList,
-                            @RequestParam(required = true) String businessId, String mainId, String mainType,
+    public List<SysFile> upload(HttpServletRequest request,  List<MultipartFile> files,String sysFileId,
+                             String businessId, String mainId, String mainType,
                             String sysfileType, String sysBusiType) {
         ResultMsg resultMsg = new ResultMsg(false, Constants.ReCode.ERROR.name(), "");
-        if (multipartFileList == null || multipartFileList.length == 0) {
-            resultMsg = new ResultMsg(false, Constants.ReCode.ERROR.name(), "请选择要上传的附件");
-            return resultMsg;
-        }
-        //项目附件才需要类型
-        if (!Validate.isString(sysBusiType)) {
-            resultMsg = new ResultMsg(false, Constants.ReCode.ERROR.name(), "附件上传失败，请选择文件类型！");
-            return resultMsg;
-        }
-        StringBuffer errorMsg = new StringBuffer();
+        List<SysFile> attachmentList = new ArrayList<>();
+        Assert.notEmpty(files, "请选择要上传的附件");
         try {
             String relativeFileUrl = SysFileUtil.generatRelativeUrl(mainType, mainId, sysBusiType, null);
-
             Ftp f = ftpRepo.getByIP(enabledIP);
+            Assert.notNull(f,"请配置ftp信息");
             FtpUtils ftpUtils = new FtpUtils();
             FtpClientConfig k = ConfigProvider.getUploadConfig(f);
             //上传到ftp,如果有根目录，则加入根目录
@@ -104,19 +105,20 @@ public class SysFileController {
                 }
             }
 
-            for (MultipartFile multipartFile : multipartFileList) {
+            for (MultipartFile multipartFile : files) {
                 String fileName = multipartFile.getOriginalFilename();
                 if (fileName.indexOf(".") == -1) {
-                    errorMsg.append("附件【" + fileName + "】没有后缀名，无法上传到文件服务器！");
-                    continue;
+                    throw new SnRuntimeException("附件【" + fileName + "】没有后缀名，无法上传到文件服务器！");
                 }
                 String fileType = fileName.substring(fileName.lastIndexOf("."), fileName.length());
                 //统一转成小写
                 fileType = fileType.toLowerCase();
                 String uploadFileName = "";
-                SysFile sysFile = sysFileService.isExistFile(relativeFileUrl, fileName);
+                //SysFile sysFile = sysFileService.isExistFile(relativeFileUrl, fileName);
+                SysFile sysFile = null;
                 //如果附件已存在
-                if (null != sysFile) {
+                if (StringUtil.isNotBlank(sysFileId)) {
+                    sysFile = sysFileRepo.getById(sysFileId);
                     String fileUrl = sysFile.getFileUrl();
                     String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
                     if (relativeFileUrl.equals(removeRelativeUrl)) {
@@ -132,23 +134,22 @@ public class SysFileController {
                         sysFile.setModifiedBy(SessionUtil.getDisplayName());
                         sysFile.setModifiedDate(new Date());
                         sysFileService.save(sysFile);
-                        resultMsg = new ResultMsg(true,Constants.ReCode.OK.name(), "文件上传成功！");
                     } else {
-                        resultMsg = sysFileService.saveToFtp(multipartFile.getSize(), fileName, businessId, fileType,
+                        sysFile = sysFileService.saveToFtp(multipartFile.getSize(), fileName, businessId, fileType,
                                 relativeFileUrl + File.separator + uploadFileName, mainId, mainType, sysfileType, sysBusiType, f);
                     }
+                    attachmentList.add(sysFile);
                 } else {
-                    errorMsg.append("附件【" + fileName + "】上传失败，无法上传到文件服务器！");
+                    throw new SnRuntimeException("附件【" + fileName + "】上传失败，无法上传到文件服务器！");
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
-            resultMsg = new ResultMsg(false, Constants.ReCode.ERROR.name(), "附件上传失败，连接ftp服务失败，请核查！");
+            throw new SnRuntimeException("附件上传失败，连接ftp服务失败，请核查！");
         } finally {
 
         }
-        resultMsg.setReMsg(resultMsg.getReMsg() + errorMsg.toString());
-        return resultMsg;
+        return attachmentList;
     }
 
     @RequiresAuthentication
@@ -223,9 +224,10 @@ public class SysFileController {
         }
     }
 
-    @RequiresAuthentication
-    @RequestMapping(name = "文件下载", path = "fileDownload", method = RequestMethod.POST)
-    public void fileDownload(@RequestParam(required = true) String sysfileId, HttpServletResponse response) throws Exception {
+
+    @RequestMapping(name = "文件下载", path = "fileDownload", method = RequestMethod.GET)
+    @ResponseStatus(value = HttpStatus.OK)
+    public void fileDownload(@RequestParam(required = true)String sysfileId, HttpServletResponse response) throws Exception {
         OutputStream out = response.getOutputStream();
         try {
             SysFile sysFile = sysFileService.getById(sysfileId);
@@ -257,5 +259,18 @@ public class SysFileController {
                 e.printStackTrace();
             }
         }
+    }
+
+    @RequestMapping(name = "下载附件", path = "download/{id}", method = RequestMethod.GET)
+    @ResponseStatus(value = HttpStatus.OK)
+    public void download1(@PathVariable String id, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        OutputStream out = response.getOutputStream();
+       // attachmentService.download(id, request, response);
+    }
+
+    @RequestMapping(name = "附件删除", path = "", method = RequestMethod.DELETE)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void delete(@RequestParam(required = true) String sysFileId) {
+        sysFileService.deleteByFileId(sysFileId);
     }
 }

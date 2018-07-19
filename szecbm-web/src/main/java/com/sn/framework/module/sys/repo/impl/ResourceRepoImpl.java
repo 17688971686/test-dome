@@ -24,7 +24,7 @@ public class ResourceRepoImpl extends AbstractRepository<Resource, String> imple
     @Override
     public Set<String> findUserPermission(User user) {
         Set<String> permissions = new HashSet<>();
-        if(1 == user.getSuperUser()){
+        if( null !=user.getSuperUser() && (1 == user.getSuperUser())){
             permissions.add("*");
         }else{
             Set<Role> roles = user.getRoles();

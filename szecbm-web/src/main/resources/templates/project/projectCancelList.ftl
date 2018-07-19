@@ -14,16 +14,21 @@
 <!-- Main content -->
 <section class="content">
     <div class="well well-sm" style="background:white;">
+        <div id="toolbar" class="form-inline" role="form">
+            <div class="form-inline" role="button">
+                <button class="btn btn-sm btn-success" ng-click="vm.expProinfo()">导出</button>
+            </div>
+        </div>
         <script type="text/template" id="columnBtns">
-            <a class="btn btn-xs btn-primary" href="#/projectManageEdit/{{row.id}}/view" >
+            <a class="btn btn-xs btn-primary" href="#/projectManageView/{{row.id}}/cancelView" >
                 <span class="glyphicon glyphicon-pencil"></span> 查看
             </a>
-            <a class="btn btn-xs btn-primary" href="#/projectManageEdit/{{row.id}}/normal" >
+            <button class="btn btn-xs btn-primary" ng-click="vm.restore(row)">
                 <span class="glyphicon glyphicon-pencil"></span> 恢复
-            </a>
-            <a class="btn btn-xs btn-primary" href="#/projectManageEdit/{{row.id}}/delete" >
+            </button>
+            <button class="btn btn-xs btn-primary" ng-click="vm.delete(row.id)">
                 <span class="glyphicon glyphicon-pencil"></span> 删除
-            </a>
+            </button>
         </script>
 
         <table bs-table-control="vm.bsTableCancelManagement" data-toolbar="#toolbar" id="listTable"></table>

@@ -30,7 +30,7 @@ public class Project extends DomainBase {
 
     //项目名称
     @Column(columnDefinition = "VARCHAR(200)")
-    private String projectName;
+        private String projectName;
 
 
     //评审阶段
@@ -47,7 +47,7 @@ public class Project extends DomainBase {
 
     //项目负责人
     @Column(columnDefinition = "VARCHAR(64)")
-    private String mUserId;
+    private String mainUser;
 
     //发文日期
     @Column
@@ -121,14 +121,6 @@ public class Project extends DomainBase {
         this.reviewDept = reviewDept;
     }
 
-    public String getmUserId() {
-        return mUserId;
-    }
-
-    public void setmUserId(String mUserId) {
-        this.mUserId = mUserId;
-    }
-
     public String getDispatchDate() {
         return dispatchDate;
     }
@@ -167,5 +159,21 @@ public class Project extends DomainBase {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public String getMainUser() {
+        return mainUser;
+    }
+
+    public void setMainUser(String mainUser) {
+        this.mainUser = mainUser;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

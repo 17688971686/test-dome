@@ -206,8 +206,12 @@ public class UserServiceImpl extends SServiceImpl<IUserRepo, User, UserDto> impl
     @Transactional(rollbackFor = Exception.class)
     @Cacheable(cacheNames = CACHE_KEY_SYS_RESOURCE, key = "#username + '_' + #status")
     public List<Resource> getUserResources(String username, String status) {
-        User user = baseRepo.findByUsername(username);
-        return resourceRepo.findMenus(user, status);
+        if(!"admin".equals(username)){
+            User user = baseRepo.findByUsername(username);
+            return resourceRepo.findMenus(user, status);
+        }else{
+            return resourceRepo.findAll();
+        }
     }
 
     @Override

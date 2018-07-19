@@ -1,7 +1,7 @@
 <!--S_小型项目信息-->
 <meta charset="UTF-8">
 <#assign path=request.contextPath/>
-<#macro projectEditInfo isEdit=true modelKey="model">
+<#macro projectEditInfo isEdit=true modelKey="model" >
 <table  class="table table-bordered table-striped">
     <tr>
         <td class="text-right" width="200">收文编号：<span class="text-red">(*)</span></td>
@@ -27,11 +27,18 @@
         <td>
             <select class="form-control input-sm" style="width:200px;" ng-model="vm.${modelKey}.reviewStage"
                     <#if !isEdit>disabled</#if>
-                    name="reviewStage" id="reviewStage" data-val="true" data-val-required="必填">
+                    name="reviewStage" id="reviewStage" data-val="true" data-val-required="必填"
+              <#--  ng-options="x.dictKey as x.dictName for x in DICT.PRO_STAGE.dicts.PRO_STAGE.dictList"-->>
                 <option value="">---请选择---</option>
-                <option value="1">---项目建议书---</option>
-                <option value="2">---可行性研究报告---</option>
-                <option value="3">---资金申请报告---</option>
+         <#--       <option ng-repeat="x in DICT.RESOURCE.dicts.RESOURCE_TYPR.dictList"
+                        value="{{x.dictKey}}">
+                    {{x.dictName}}
+                </option>-->
+
+               <option ng-repeat="x in DICT.REVIEWSTAGE.dicts.PRO_STAGE.dictList"
+                        value="{{x.dictKey}}">
+                    {{x.dictName}}
+                </option>
             </select>
             <span data-valmsg-for="reviewStage" data-valmsg-replace="true" class="text-red"></span>
         </td>
@@ -51,11 +58,11 @@
             <select   class="form-control input-sm" style="width:200px;" ng-model="vm.${modelKey}.reviewDept"
                     <#if !isEdit>disabled</#if> id="reviewDept" name="reviewDept" data-val="true" data-val-required="必填">
                 <option value="">---请选择---</option>
-<#--                <option ng-repeat="x in vm.deptAllArr" ng-selected="vm.${modelKey}.implementDept == x.organName" value="{{x.organName}}" >{{x.organName}}</option>-->
-                <option value="">---请选择---</option>
-                <option value="1">---评估一部---</option>
-                <option value="2">---评估二部---</option>
-                <option value="3">---概算一部---</option>
+                <option ng-repeat="x in DICT.DEPT.dicts.TRANSACT_DEPARTMENT.dictList"
+                        value="{{x.dictKey}}">
+                    {{x.dictName}}
+                </option>
+
             </select>
             <span data-valmsg-for="reviewDept" data-valmsg-replace="true" class="text-red"></span>
         </td>
@@ -63,10 +70,10 @@
         <td>
             <div class="input-group" style="width: 200px;">
                 <input class="form-control input-sm" <#if !isEdit>disabled<#else>type="text"</#if>
-                       id="mUserId" name="mUserId" data-val="true" data-val-required="必填"
-                       ng-model="vm.${modelKey}.mUserId">
+                       id="mainUser" name="mainUser" data-val="true" data-val-required="必填"
+                       ng-model="vm.${modelKey}.mainUser">
             </div>
-            <span data-valmsg-for="mUserId" data-valmsg-replace="true" class="text-red"></span>
+            <span data-valmsg-for="mainUser" data-valmsg-replace="true" class="text-red"></span>
         </td>
     </tr>
 
@@ -91,9 +98,9 @@
         <td>
             <input style="width:200px;" type="text" maxlength="150" class="form-control input-sm"
                    <#if !isEdit>disabled</#if>
-                   id="fileCode" name="fileCode" style="width: 200px;" data-val="true" data-val-required="必填"
-                   ng-model="vm.${modelKey}.fileCode">
-            <span data-valmsg-for="fileCode" data-valmsg-replace="true" class="text-red"></span>
+                   id="fileNum" name="fileNum" style="width: 200px;" data-val="true" data-val-required="必填"
+                   ng-model="vm.${modelKey}.fileNum">
+            <span data-valmsg-for="fileNum" data-valmsg-replace="true" class="text-red"></span>
         </td>
     </tr>
     <tr>
@@ -137,4 +144,106 @@
     </tr>
 
 </table>
+
+    <#if isEdit>
+<#--附件上传begin-->
+<div>
+    <table style="width:100%;" class="table table-bordered table-striped">
+        <tr>
+            <td colspan="2" style="background:#3c8dbc;color:#fff">项目附件</td>
+        </tr>
+        <tbody>
+        <tr>
+            <td>
+                <table style="width: 98%;" class="table table-bordered table-striped">
+                    <tbody>
+                    <tr>
+                        <td>
+                            <div>
+                                    <span style="padding: 10px 15px; line-height: 24px; display: inline-block; color: #ff1822;">
+                                        注意：请严格按照以下附件类型上传正确的文件<br>
+                                        允许上传的文件类型：图片(.jpg,.gif,.png),文档<br>
+                                    </span><br>
+                                <span class="p1" style="color: #ff1822;">（文件大小不能超过40M）</span>
+                                <input name="files" type="file" id="relateAttach">
+                            </div>
+                            <ul class="list-group">
+                                <li class="list-group-item" ng-repeat="x in vm.attachments">
+                                    <i class="fa fa-file"></i> {{x.showName}}
+                                    <button class="btn btn-xs btn-danger" type="button"
+                                            ng-click="vm.removeFile(x.sysFileId, $index);" title="删除">删除
+                                    </button>
+                                </li>
+                            </ul>
+                        </td>
+                        <td colspan="2">
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+    </#if>
+<#--附件上传End-->
+
+<#--附件下载-->
+    <#if !isEdit>
+<div class="bg-info text-info title">文件查看</div>
+<div style="display: block;">
+    <table style="width:100%;" class="table table-bordered table-striped">
+        <tbody>
+        <tr>
+            <td>
+                <span id="modal-302564" href="#modal-container-pro" role="button"
+                      class="btn btn-sm btn-primary" data-toggle="modal">文件下载（所有附件）</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+<#--</div>-->
+    <!--  弹框开始 -->
+    <div class="modal fade" id="modal-container-pro" role="dialog"
+         aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-hidden="true">×
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        文件列表
+                    </h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="container">
+                        <div class="row clearfix">
+                            <div class="col-md-12 column">
+                                <ul>
+                                    <li class="p-blue" ng-repeat="x in vm.attachments">
+                                        <a href="${path}/sys/sysfile/fileDownload?sysfileId={{x.sysFileId}}"
+                                           target="_blank">
+                                            <i class="fa fa-file"></i>
+                                            {{x.showName}}
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    </#if>
+<!-- 弹框结束 -->
+<#--附件下载-->
 </#macro>

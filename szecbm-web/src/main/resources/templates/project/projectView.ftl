@@ -4,7 +4,7 @@
         项目编辑
     </h1>
     <ol class="breadcrumb">
-        <li class="active">项目管理</li>
+        <li class="active">小型项目管理</li>
         <li class="active">项目填报</li>
         <li class="active">项目编辑</li>
     </ol>
@@ -18,19 +18,15 @@
     <div class="well well-sm" style="background:white;">
         <form id="form" name="form" ng-init="vm.model.fillDate = '${.now?string("yyyy-MM-dd")}'">
             <div class="toolbar">
-                <button class="btn btn-sm btn-primary" ui-sref="projectManage">
+                <button ng-if="vm.flag=='view'" class="btn btn-sm btn-primary" ui-sref="projectManage">
                     <span class="glyphicon glyphicon-chevron-left"></span> 返回
                 </button>
-                <button class="btn btn-sm btn-success" ng-click="vm.save()" >
-                    <span class="glyphicon glyphicon-ok"></span> 保存
-                </button>
-                <button class="btn btn-sm btn-success" ng-click="vm.save()" ng-show="vm.isSubmit">
-                    <span class="glyphicon glyphicon-ok"></span> 更新
+                 <button ng-if="vm.flag=='cancelView'" class="btn btn-sm btn-primary" ui-sref="projectManageCancel">
+                    <span class="glyphicon glyphicon-chevron-left"></span> 返回
                 </button>
             </div>
-
         <#include "projectEditInfo.ftl">
-        <@projectEditInfo isEdit=true></@projectEditInfo>
+        <@projectEditInfo isEdit=false></@projectEditInfo>
         </form>
     </div>
 </section>
