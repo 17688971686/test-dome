@@ -19,6 +19,7 @@
                 <button class="btn btn-sm btn-primary" ui-sref="projectManageEdit">
                     <span class="glyphicon glyphicon-plus"></span> 添加项目
                 </button>
+                <button class="btn btn-sm btn-success" ng-click="vm.expProinfo()">导出</button>
             <#--    <button class="btn btn-sm btn-danger" ng-click="vm.dels()" ng-disabled="vm.isSubmit">
                     <span class="glyphicon glyphicon-remove"></span> 批量删除
                 </button>-->
@@ -26,15 +27,18 @@
         </div>
 
         <script type="text/template" id="columnBtns">
-            <a class="btn btn-xs btn-primary" href="#/projectManageEdit/{{row.id}}/view" >
+            <a class="btn btn-xs btn-primary" href="#/projectManageView/{{row.id}}/view" >
                 <span class="glyphicon glyphicon-pencil"></span> 查看
             </a>
             <a class="btn btn-xs btn-primary" href="#/projectManageEdit/{{row.id}}/edit" >
                 <span class="glyphicon glyphicon-pencil"></span> 编辑
             </a>
-            <a class="btn btn-xs btn-primary" href="#/projectManageEdit/{{row.id}}/cancel" >
+     <#--       <a class="btn btn-xs btn-primary" href="#/projectManageEdit/{{row.id}}/cancel" >
                 <span class="glyphicon glyphicon-pencil"></span> 作废
-            </a>
+            </a>-->
+            <button class="btn btn-xs btn-primary" ng-click="vm.cancel(row)">
+                <span class="glyphicon glyphicon-pencil"></span> 作废
+            </button>
         </script>
 
         <table bs-table-control="vm.bsTableControlForManagement" data-toolbar="#toolbar" id="listTable"></table>

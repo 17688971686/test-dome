@@ -7,6 +7,7 @@
 
     function projectManagerSvc($http, bsWin, $state) {
         var url_management = util.formatUrl("project");
+        var attachments_url = util.formatUrl("sys/sysfile");
         return {
 
             bsTableControlForManagement: function (vm, searchUrl, filter) {
@@ -39,7 +40,7 @@
                             sortable: false,
                             filterControl: "input",
                             filterOperator: "like",
-                            formatter: '<a href="#/smallProjectManageFillDetails/{{row.id}}" style="color:blue">{{row.projectname}}</a>'
+                            formatter: '<a href="#/projectManageView/{{row.id}}/view" style="color:blue">{{row.projectName}}</a>'
                         }, {
                             field: 'reviewStage',
                             title: '评审阶段',
@@ -56,7 +57,7 @@
                             width: 90,
                             filterControl: 'input'
                         }, {
-                            field: 'mUserId',
+                            field: 'mainUser',
                             title: '项目负责人',
                             width: 90,
                             filterControl: 'input'
@@ -125,7 +126,7 @@
                             sortable: false,
                             filterControl: "input",
                             filterOperator: "like",
-                            formatter: '<a href="#/smallProjectManageFillDetails/{{row.id}}" style="color:blue">{{row.projectname}}</a>'
+                            formatter: '<a href="#/projectManageView/{{row.id}}/cancelView" style="color:blue">{{row.projectName}}</a>'
                         }, {
                             field: 'reviewStage',
                             title: '评审阶段',
@@ -142,7 +143,7 @@
                             width: 90,
                             filterControl: 'input'
                         }, {
-                            field: 'mUserId',
+                            field: 'mainUser',
                             title: '项目负责人',
                             width: 90,
                             filterControl: 'input'
@@ -192,13 +193,9 @@
             //创建政府投资项目
             createGovernmentInvestProject: function (vm) {
                 $http.post(url_management, vm.model).then(function () {
-                    if(vm.model.status == 1){
-                        bsWin.success("提交成功");
-                        $state.go("projectManage");
-                    }else{
                         bsWin.success("创建成功");
                         $state.go("projectManage");
-                    }
+
                 });
 
             },
@@ -212,20 +209,110 @@
             //更新项目
             updateGovernmentInvestProject: function (vm) {
                 $http.put(url_management, vm.model).then(function () {
-                    if(vm.model.status == '2' || vm.model.status == '1'){
-                        if(vm.model.status == '2'){
-                            bsWin.success("作废成功");
-                            $state.go("projectManage");
-                        }else{
-                            bsWin.success("恢复成功");
-                            $state.go("projectManageCancel");
-                        }
-                    }else{
-                        bsWin.success("更新成功");
+                    bsWin.success("更新成功");
+                });
+            },
+            //恢复项目
+            restoreInvestProject: function (vm) {
+                $http.post(url_management + "/restore", vm.model).then(function () {
+                    bsWin.success("项目恢复成功");
+                    $("#listTable").bootstrapTable('refresh');//刷新表格数据
+                });
+
+            },
+            //作废项目
+            cancelInvestProject: function (vm) {
+                $http.post(url_management + "/cancel", vm.model).then(function () {
+                    bsWin.success("项目作废成功");
+                    $("#listTable").bootstrapTable('refresh');//刷新表格数据
+                });
+
+            },
+            createProReport: function(vm) {
+ /*               var filter = [];
+                if (vm.model.projectIndustry) {
+                    filter.push(util.format("governmentInvestProject.projectIndustry eq '{0}'", vm.model.projectIndustry));
+                }
+                if (vm.model.constructionType) {
+                    filter.push(util.format("governmentInvestProject.constructionType eq '{0}'" + vm.model.constructionType));
+                }
+                if (vm.model.haveUserId) {
+                    filter.push(util.format("governmentInvestProject.userId eq '{0}'", vm.model.haveUserId));
+                }
+                window.open(url_projectCollect + "/createGovProReport2?submitDate=" + vm.model.submitDate +
+                    "&$filter=" + filter.join(" and "));*/
+            window.open(url_management + "/exportPro2?fileCode=22");
+        },
+
+            /**
+             * 查询附件列表
+             * @param vm
+             * @param params
+             * @param fn
+             */
+            getAttachments: function (vm, params, fn) {
+                $http.get(attachments_url + "/findByBusinessId", {params: params}).success(function (data) {
+                    fn(data);
+                });
+            },
+            /**
+             * 初始化附件上传
+             * @param vm
+             * @param id
+             * @param fn
+             */
+            initUploadConfig: function (vm, id, fn) {
+                $("#" + id).uploadify({
+                    uploader: util.formatUrl('sys/sysfile/fileUpload'),
+                    swf: util.formatUrl("libs/uploadify/uploadify.swf"),
+                    buttonText: '相关附件',
+                    method: 'post',
+                    multi: true,
+                    auto: true,//自动上传
+                    fileObjName: 'files',// 上传参数名称
+                    fileSizeLimit: "40MB",//上传文件大小限制
+                    fileExt: '*.pdf;*.txt;*.png;*.doc',
+                    fileTypeExts: '*.pdf;*.txt;*.png;*.doc',
+                    fileTypeDesc: "请选择*.pdf;*.txt;*.png;*.doc文件",     // 文件说明
+                    removeCompleted: true,
+                    onUploadStart: function (file) {
+                        $('#relateAttach').uploadify("settings", "formData", {
+                            "businessId": vm.model.id ? vm.model.id : vm.UUID
+                        });
+                    },
+                    onUploadSuccess: function (file, data, response) {
+                        fn(data);
+                        angular.element("body").scope().$apply(function () {
+                            bsWin.success("上传成功")
+                        });
+                    },
+                    onCancel: function (file) {
+                        bsWin.confirm("询问提示", "确认删除该文件吗？", function () {
+                        });
+                    },
+                    onUploadError: function (file, errorCode, errorMsg, errorString) {
+                        angular.element("body").scope().$apply(function () {
+                            bsWin.error("上传失败");
+                        });
                     }
                 });
             },
-
+            /**
+             * 获取UUID:附件上传id
+             * @param vm
+             */
+            createUUID: function (vm) {
+                $http.get(url_management + "/createUUID").success(function (data) {
+                    vm.UUID = data || [];
+                });
+            },
+            deleteFileById: function (fileId, vm, fn) {
+                $http['delete'](attachments_url, {params: {"sysFileId": fileId || ""}}).then(function () {
+                    bsWin.success("删除成功");
+                    angular.isFunction(fn) && fn();
+                }).then(function () {
+                });
+            }
         }
     }
 

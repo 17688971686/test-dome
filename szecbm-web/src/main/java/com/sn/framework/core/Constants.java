@@ -74,4 +74,28 @@ public final class Constants {
         XM_BZ,              //项目部长
         XM_QSR
     }
+
+
+    /**
+     * 模板枚举
+     */
+    public static enum Template {
+        WORD_SUFFIX(".doc", "work文档"),
+        PROJECT_DETAIL("project/projectInfo","工程信息统计表");
+        private String key;
+        private String value;
+
+        Template(String key, String value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public String getKey() {
+            return key;
+        }
+    }
 }

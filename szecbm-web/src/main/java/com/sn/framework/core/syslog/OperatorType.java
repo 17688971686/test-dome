@@ -9,5 +9,7 @@ public class OperatorType {
     public final static String SAVE = "保存";
     public final static String UPDATE = "更新";
     public final static String DELETE = "删除";
+    public final static String RESTORE = "恢复";
+    public final static String CANCEL = "作废";
     public final static String QUERY = "查询";
 }
