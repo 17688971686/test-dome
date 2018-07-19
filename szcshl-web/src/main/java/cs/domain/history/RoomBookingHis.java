@@ -1,6 +1,6 @@
 package cs.domain.history;
 
-import cs.domain.meeting.RoomBooking;
+import cs.domain.meeting.RoomBookBase;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -10,5 +10,5 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="cs_his_room_booking")
-public class RoomBookingHis extends RoomBooking {
+public class RoomBookingHis extends RoomBookBase {
 }

@@ -1,6 +1,10 @@
 package cs.service.history;
 
+import cs.domain.history.WorkProgramHis;
 import cs.domain.project.WorkProgram;
+import cs.model.history.WorkProgramHisDto;
+
+import java.util.List;
 
 public interface WorkProgramHisService{
 
@@ -9,6 +13,15 @@ public interface WorkProgramHisService{
      * @param workProgram
      * @return
      */
-    boolean copyWorkProgram(WorkProgram workProgram);
+    boolean copyWorkProgram(WorkProgram workProgram,String signId) throws RuntimeException;
+
+    /**
+     * 根据项目ID和分支，查询历史信息
+     * @param signid
+     * @param branchId
+     * @return
+     */
+    List<WorkProgramHisDto> findBySignAndBranch(String signid, String branchId);
+
 
 }

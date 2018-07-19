@@ -18,6 +18,17 @@ public class WorkPGUtil {
     public static WorkPGUtil create(WorkProgram workProgram) {
         return new WorkPGUtil(workProgram);
     }
+    /**
+     * 是否评审工作方案
+     * @return
+     */
+    public boolean isReviewWP(){
+        String reviewType = workProgram.getReviewType();
+        if(Constant.MergeType.REVIEW_MEETING.getValue().equals(reviewType) || Constant.MergeType.REVIEW_LEETER.getValue().equals(reviewType)){
+            return true;
+        }
+        return false;
+    }
 
     /**
      * 是否合并评审工作方案
@@ -74,7 +85,7 @@ public class WorkPGUtil {
      */
     public WorkPGUtil resetLeaderOption(){
         workProgram.setLeaderSuggesttion("");
-        workProgram.setLetterDate(null);
+        workProgram.setLeaderDate(null);
         workProgram.setLeaderName("");
         return this;
     }
@@ -85,7 +96,7 @@ public class WorkPGUtil {
      */
     public WorkPGUtil setLeaderOption(String option, Date date, String signName){
         workProgram.setLeaderSuggesttion(option);
-        workProgram.setLetterDate(date);
+        workProgram.setLeaderDate(date);
         workProgram.setLeaderName(signName);
         return this;
     }

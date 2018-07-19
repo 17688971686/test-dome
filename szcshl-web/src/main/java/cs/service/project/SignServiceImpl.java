@@ -1176,7 +1176,7 @@ public class SignServiceImpl implements SignService {
                             return new ResultMsg(false, MsgCode.ERROR.getValue(), "【项目建议书】和【可行性研究报告】阶段必须要做工作方案！");
                         }
                     }
-                    signBranchRepo.finishBranch(signid, branchIndex);
+                    signBranchRepo.updateFinishState(signid, branchIndex,EnumState.YES.getValue());
                     //设定是否做工作方案参数
                     ActivitiUtil.setWorkParam(variables, branchIndex, false);
                 }
@@ -1317,11 +1317,9 @@ public class SignServiceImpl implements SignService {
                 }
 
                 workPGUtil.setLeaderOption(flowDto.getDealOption(),new Date(),ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask));
-
-
                 workProgramRepo.save(wk);
                 //完成分支的工作方案
-                signBranchRepo.finishBranch(signid, branchIndex);
+                signBranchRepo.updateFinishState(signid, branchIndex,EnumState.YES.getValue());
                 //更改预定会议室状态
                 roomBookingRepo.updateStateByBusinessId(wk.getId(), EnumState.YES.getValue());
                 //更新评审会时间

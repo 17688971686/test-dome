@@ -13,7 +13,7 @@
                 <p class="h3">
                     <strong>{{w.titleName}}</strong>
                 </p>
-                <p style="margin-top: 50px;"">
+                <p style="margin-top: 50px;">
                 <span style="float:left;">
 		            <span>评审方式: {{w.reviewType}}</span>
 		            <span style="margin:0px 10px;">{{w.isSigle}}</span>
@@ -399,7 +399,7 @@
             </tr>
         </table>
     </div>
-    <div style="width: 100%;text-align: center;margin-top:5px;">
+    <p style="width: 100%;text-align: center;">
         <button class="form-control btn-sm btn-primary"
                 style="width: 100px; margin: auto;display: inline;margin-left: 45%"
                 ng-click="printFile(w.id,'WORKPROGRAM','STAGEREPORT')">打印预览
@@ -411,5 +411,5 @@
         <button ng-if="w.expertSelectedDtoList"  class="form-control btn-sm btn-primary"
                 style="width: 120px; margin: auto;display: inline"  ng-click="exportInfo(w.id,'WORKPROGRAM','INFORMATION' , '专家信息导出')">专家信息导出
         </button>
-    </div>
+    </p>
 </div>

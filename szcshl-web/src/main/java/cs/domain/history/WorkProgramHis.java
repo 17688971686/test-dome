@@ -1,8 +1,10 @@
 package cs.domain.history;
 
+import cs.domain.project.WorkBase;
 import cs.domain.project.WorkProgram;
 import org.hibernate.annotations.DynamicUpdate;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -13,5 +15,16 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "cs_his_work_program")
 @DynamicUpdate(true)
-public class WorkProgramHis extends WorkProgram {
+public class WorkProgramHis extends WorkBase {
+
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String signId;
+
+    public String getSignId() {
+        return signId;
+    }
+
+    public void setSignId(String signId) {
+        this.signId = signId;
+    }
 }

@@ -1,7 +1,8 @@
 package cs.domain.history;
 
-import cs.domain.expert.ExpertReview;
+import cs.domain.expert.ExpertReviewBase;
 import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -13,7 +14,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "cs_his_expert_review")
 @DynamicUpdate(true)
-public class ExpertReviewHis extends ExpertReview {
-
+public class ExpertReviewHis extends ExpertReviewBase {
 
 }

@@ -562,6 +562,13 @@
                     controller: 'flowWPEditCtrl',
                     controllerAs: 'vm'
                 })
+                //重做工作方案
+                .state('reWorkFlow', {
+                    url: '/reWorkFlow/:signid/:branchId',
+                    templateUrl: rootPath + '/workprogram/html/edit.html',
+                    controller: 'flowWPEditCtrl',
+                    controllerAs: 'vm'
+                })
                 .state('initProjBase', {
                     url: '/initProjBase/:signid/:isadmin',
                     templateUrl: rootPath + '/workprogram/html/baseEdit.html',

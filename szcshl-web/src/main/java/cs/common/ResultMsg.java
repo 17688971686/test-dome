@@ -1,6 +1,8 @@
 package cs.common;
 
 
+import cs.common.constants.Constant;
+
 /**
  * 操作返回类
  * 
@@ -45,7 +47,13 @@ public class ResultMsg implements java.io.Serializable {
 		this.reMsg = reMsg;
 		this.reObj = reObj;
 	}
+	public static ResultMsg ok(String msg){
+		return new ResultMsg(true, Constant.MsgCode.OK.getValue(), null == msg?"成功":msg);
+	}
 
+	public static ResultMsg error(String msg){
+		return new ResultMsg(false,  Constant.MsgCode.ERROR.getValue(), null == msg?"失败":msg);
+	}
 	public String getReCode() {
 		return reCode;
 	}

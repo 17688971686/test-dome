@@ -1829,4 +1829,11 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         return expertSelectedDtoList;
     }
 
+    @Override
+    public List<ExpertSelected> findAllByBusinessId(String businessID) {
+        Criteria criteria = expertSelectedRepo.getExecutableCriteria();
+        criteria.add(Restrictions.eq(ExpertSelected_.businessId.getName(),businessID));
+        return criteria.list();
+    }
+
 }

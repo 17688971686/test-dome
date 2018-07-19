@@ -1,5 +1,9 @@
 package cs.common.utils;
 
+import com.sn.framework.common.*;
+import org.springframework.http.MediaType;
+
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -609,7 +613,20 @@ public class Validate {
             return num;
         }
     }
-
+    /**
+     * 判断是否json的响应
+     *
+     * @param request
+     * @return
+     */
+    public static boolean isJsonContent(HttpServletRequest request) {
+        String accept = request.getHeader("Accept");
+        if (com.sn.framework.common.StringUtil.isNotBlank(accept)) {
+            return accept.contains(MediaType.APPLICATION_JSON_VALUE);
+        }
+        String x = request.getContentType();
+        return com.sn.framework.common.StringUtil.isNotBlank(x) && x.contains(MediaType.APPLICATION_JSON_VALUE);
+    }
     /**
      * 测试main
      *

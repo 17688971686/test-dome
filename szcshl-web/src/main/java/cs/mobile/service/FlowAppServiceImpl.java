@@ -425,7 +425,7 @@ public class FlowAppServiceImpl implements FlowAppService {
                             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "【项目建议书】和【可行性研究报告】阶段必须要做工作方案！");
                         }
                     }
-                    signBranchRepo.finishBranch(signid, branchIndex);
+                    signBranchRepo.updateFinishState(signid, branchIndex, Constant.EnumState.YES.getValue());
                     //不做工作方案，还是需要设定下一环节处理人
                     //设定下一环节处理人
                     if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)) {
@@ -576,7 +576,7 @@ public class FlowAppServiceImpl implements FlowAppService {
                 wk.setLeaderName(userDto.getDisplayName());
                 workProgramRepo.save(wk);
                 //完成分支的工作方案
-                signBranchRepo.finishBranch(signid, branchIndex);
+                signBranchRepo.updateFinishState(signid, branchIndex, Constant.EnumState.YES.getValue());
                 //更改预定会议室状态
                 roomBookingRepo.updateStateByBusinessId(wk.getId(), Constant.EnumState.YES.getValue());
                 //更新评审会时间

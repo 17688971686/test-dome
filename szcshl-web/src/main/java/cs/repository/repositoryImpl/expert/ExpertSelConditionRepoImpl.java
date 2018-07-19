@@ -4,7 +4,11 @@ import cs.common.HqlBuilder;
 import cs.domain.expert.ExpertSelCondition;
 import cs.domain.expert.ExpertSelCondition_;
 import cs.repository.AbstractRepository;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * Description: 专家抽取条件 数据操作实现类
@@ -46,5 +50,12 @@ public class ExpertSelConditionRepoImpl extends AbstractRepository<ExpertSelCond
         sqlBuilder.append(" delete from CS_EXPERT_CONDITION where BUSINESSID =:businessId ");
         sqlBuilder.setParam("businessId", businessId);
         executeSql(sqlBuilder);
+    }
+
+    @Override
+    public List<ExpertSelCondition> findAllByBusinessId(String businessId) {
+        Criteria criteria = getExecutableCriteria();
+        criteria.add(Restrictions.eq(ExpertSelCondition_.businessId.getName(),businessId));
+        return criteria.list();
     }
 }

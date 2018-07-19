@@ -457,10 +457,10 @@ public class FlowController {
                 task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
             }
             if (task == null) {
-                return new ResultMsg(false, MsgCode.ERROR.getValue(), "该流程已被处理！");
+                return ResultMsg.error("该流程已处理！");
             }
             if (task.isSuspended()) {
-                return new ResultMsg(false, MsgCode.ERROR.getValue(), "项目已暂停，不能进行操作！");
+                return ResultMsg.error("项目已暂停，不能进行提交操作！");
             }
             module = processInstance.getProcessDefinitionKey();
 
@@ -469,8 +469,8 @@ public class FlowController {
                     isProj = true;
                     resultMsg = signService.dealFlow(processInstance, task,flowDto);
                     break;
-                case FlowConstant.ROLL_BACK_SEND_FLOW:
-                    resultMsg = signService.dealFlow(processInstance, task,flowDto);
+                case FlowConstant.WORK_HIS_FLOW:
+                    resultMsg = workProgramService.dealFlow(processInstance, task,flowDto);
                     break;
                 case FlowConstant.TOPIC_FLOW:
                     resultMsg = topicInfoService.dealFlow(processInstance, task,flowDto);
@@ -515,14 +515,6 @@ public class FlowController {
     }
 
     @RequiresAuthentication
-    @RequestMapping(name = "获取重写工作方案分支", path = "getBranchInfo", method = RequestMethod.GET)
-    public @ResponseBody ResultMsg getBranchInfo(@RequestBody FlowDto flowDto) {
-
-        ResultMsg resultMsg = flowService.getBranchInfo(flowDto);
-        return resultMsg;
-    }
-
-    @RequiresAuthentication
     @RequestMapping(name = "流程回退", path = "rollbacklast", method = RequestMethod.POST)
     @ResponseBody
     @Transactional
@@ -530,7 +522,6 @@ public class FlowController {
         ResultMsg resultMsg = flowService.rollBackLastNode(flowDto);
         return resultMsg;
     }
-
 
     @RequiresAuthentication
     @Transactional
@@ -541,7 +532,7 @@ public class FlowController {
         return flowService.restartFlow(businessKey);
     }
 
-    @Deprecated
+
     /**
      * 流程挂起
      * @param businessKey
@@ -619,6 +610,9 @@ public class FlowController {
             case FlowConstant.ANNOUNT_MENT_FLOW:
                 resultPage = "annountMent/flow/flowDeal";
                 break;
+            case FlowConstant.WORK_HIS_FLOW:
+                resultPage = "workprogram/flow/flowDeal";
+                break;
             default:
                 ;
         }
@@ -658,6 +652,9 @@ public class FlowController {
             case FlowConstant.ANNOUNT_MENT_FLOW:
                 resultPage = "annountMent/flow/flowDetail";
                 break;
+            case FlowConstant.WORK_HIS_FLOW:
+                resultPage = "workprogram/flow/flowDetail";
+                break;
             default:
                 ;
         }
@@ -686,8 +683,7 @@ public class FlowController {
                 resultPage = "reviewProjectAppraise/flowEnd";
                 break;
             case FlowConstant.FLOW_SUPP_LETTER:
-                resultPage = "" +
-                        "";
+                resultPage = "";
                 break;
             case FlowConstant.MONTHLY_BULLETIN_FLOW:
                 resultPage = "monthlyNewsletter/flow/flowDeal";
@@ -697,6 +693,9 @@ public class FlowController {
                 break;
             case FlowConstant.BOOKS_BUY_FLOW:
                 resultPage = "bookBuyBusiness/flowEnd";
+                break;
+            case FlowConstant.WORK_HIS_FLOW:
+                resultPage = "workprogram/flow/flowEnd";
                 break;
             default:
                 ;
@@ -711,19 +710,10 @@ public class FlowController {
     }
 
     @RequiresAuthentication
-    @RequestMapping(name = "重写工作方案", path = "rollbackSend/{processKey}", method = RequestMethod.GET)
-    public String rollbackSend(@PathVariable("processKey") String processKey) {
-        String resultPage = "";
-        switch (processKey){
-            case FlowConstant.ROLL_BACK_SEND_FLOW:
-                resultPage = "rollbackSend/rollbackSend";
-                break;
-            case FlowConstant.QUERY_BRANCH_INFO:
-                resultPage = "rollbackSend/getBranchInfo";
-                break;
-            default:
-                ;
-        }
-        return resultPage;
+    @RequestMapping(name = "获取重写工作方案分支", path = "getBranchInfo", method = RequestMethod.POST)
+    @ResponseBody
+    public List<Map<String,Object>> getReWorkBranch(@RequestParam String signId) {
+        return flowService.getBranchInfo(signId);
     }
+
 }

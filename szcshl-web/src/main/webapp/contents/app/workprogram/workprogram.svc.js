@@ -3,8 +3,8 @@
 
     angular.module('app').factory('workprogramSvc', workprogram);
 
-    workprogram.$inject = ['$http', '$state', '$rootScope'];
-    function workprogram($http, $state, $rootScope) {
+    workprogram.$inject = ['$http', '$state', '$rootScope','sysfileSvc'];
+    function workprogram($http, $state, $rootScope,sysfileSvc) {
         var url_company = rootPath + "/company";
         var service = {
             initPage: initPage,				            //初始化页面参数
@@ -28,9 +28,93 @@
             initFlowWP : initFlowWP,                    //初始化流程工作方案
             initBaseInfo : initBaseInfo,                //初始化项目基本信息
             saveBaseInfo : saveBaseInfo,                //保存项目基本信息
+            getProjBranchInfo : getProjBranchInfo,      //获取项目的分支信息
+            reStartWorkFlow : reStartWorkFlow,          //发起重做工作方案流程
+            initFlowDeal : initFlowDeal,                //初始化重做工作方案流程
         };
 
         return service;
+
+        //初始化重做工作方案流程信息
+        function initFlowDeal(vm,$scope,isLoadFile){
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/workprogram/initDealFlow",
+                params: {
+                    wpId : vm.businessKey,
+                },
+            }
+            var httpSuccess = function success(response) {
+                vm.model = {};
+                if(response.data.SignDto){
+                    vm.model = response.data.SignDto;
+                    //加载项目附件
+                    if(isLoadFile){
+                        sysfileSvc.findByMianId(vm.model.signid,function(data){
+                            if(data && data.length > 0){
+                                vm.showFlag.tabSysFile = true;
+                                vm.sysFileList = data;
+                                sysfileSvc.initZtreeClient(vm,$scope);//树形图
+                            }
+                        });
+                    }
+                }
+                vm.model.workProgramDtoList = [];
+                if(response.data.WorkProgramDto){
+                    vm.model.workProgramDtoList.push(response.data.WorkProgramDto);
+                    vm.branchId = response.data.WorkProgramDto.branchId;
+                }
+                if(response.data.WorkProgramHisDtoList){
+                    vm.WorkProgramHisDtoList = response.data.WorkProgramHisDtoList;
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
+        function reStartWorkFlow(signId,branchIds,callBack){
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/workprogram/startReWorkFlow",
+                params: {
+                    signId : signId,
+                    brandIds : branchIds
+                },
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
+        function getProjBranchInfo(signId,callBack){
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/flow/getBranchInfo",
+                params: {
+                    signId : signId,
+                },
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
 
         function initBaseInfo(signId,callBack){
             var httpOptions = {
@@ -52,13 +136,14 @@
             });
         }
         //初始化流程工作方案
-        function initFlowWP(signId,taskId,callBack){
+        function initFlowWP(signId,taskId,branchId,callBack){
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/workprogram/initFlowWP",
                 params: {
                     signId : signId,
-                    taskId : taskId
+                    taskId : taskId,
+                    branchId : branchId
                 },
             }
             var httpSuccess = function success(response) {

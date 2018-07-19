@@ -45,4 +45,11 @@ public interface RoomBookingRepo extends IRepository<RoomBooking, String> {
      * @param businessId
      */
     void deleteByBusinessId(String businessId);
+
+    /**
+     * 根据业务ID查询会议室预定信息
+     * @param id
+     * @return
+     */
+    List<RoomBooking> findByBusinessId(String id);
 }

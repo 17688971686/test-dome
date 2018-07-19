@@ -8,17 +8,16 @@ public class FlowConstant {
 
     /***************  流程名称  ****************/
     /**
-     * 回退：项目回退流程
+     * 重写工作方案流程
      */
-    public final static String ROLL_BACK_SEND_FLOW = "ROLL_BACK_SEND_FLOW";           //项目回退流程:重写工作方案
+    public final static String WORK_HIS_FLOW = "WORK_HIS_FLOW";
     /**
-     * 项目回退流程环节名称
+     * 重写工作方案流程环节名称
      */
-    public static final String ROLL_BACK_SEND_FZR = "ROLL_BACK_SEND_FZR";                //负责人填报
-    public static final String ROLL_BACK_SEND_BZ_SP = "ROLL_BACK_SEND_BZ_SP";                 //部长审批
-    public static final String ROLL_BACK_SEND_FGLD_SP = "ROLL_BACK_SEND_FGLD_SP";              //分管领导审批
+    public static final String WPHIS_XMFZR = "WPHIS_XMFZR";            //负责人填报
+    public static final String WPHIS_BMLD_SPW = "WPHIS_BMLD_SPW";      //部长审批
+    public static final String WPHIS_FGLD_SPW = "WPHIS_FGLD_SPW";      //分管领导审批
 
-    public static final String QUERY_BRANCH_INFO = "QUERY_BRANCH_INFO";                //负责人填报
 
     /**
      * 项目签收流程
@@ -28,7 +27,7 @@ public class FlowConstant {
      * 项目签收流程环节名称
      */
     public static final String FLOW_SIGN_ZR = "SIGN_ZR";                //填报
-    public static final String FLOW_SIGN_QS = "SIGN_QS";                 //签收
+    public static final String FLOW_SIGN_QS = "SIGN_QS";                //签收
     public static final String FLOW_SIGN_ZHB = "SIGN_ZHB";              //综合部审批
     public static final String FLOW_SIGN_FGLD_FB = "SIGN_FGLD_FB";      //分管副主任审批
     public static final String FLOW_SIGN_BMFB1 = "SIGN_BMFB1";          //部门分办1
@@ -414,7 +413,7 @@ public class FlowConstant {
             case ANNOUNT_MENT_FLOW:
                 resultValue = "【通知公告流程】";
                 break;
-            case ROLL_BACK_SEND_FLOW:
+            case WORK_HIS_FLOW:
                 resultValue = "【重写工作方案流程】";
                 break;
             default:

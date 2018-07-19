@@ -4,10 +4,10 @@
     angular.module('app').controller('signFlowDealCtrl', sign);
 
     sign.$inject = ['sysfileSvc', 'signSvc', 'dispatchSvc', '$state', 'flowSvc', 'signFlowSvc', 'ideaSvc',
-        'addRegisterFileSvc', 'expertReviewSvc', '$scope', 'bsWin', 'financialManagerSvc', 'addSuppLetterQuerySvc',
+        'workprogramSvc', 'expertReviewSvc', '$scope', 'bsWin', 'financialManagerSvc', 'addSuppLetterQuerySvc',
         'addCostSvc', 'templatePrintSvc', 'companySvc'];
 
-    function sign(sysfileSvc, signSvc, dispatchSvc, $state, flowSvc, signFlowSvc, ideaSvc, addRegisterFileSvc,
+    function sign(sysfileSvc, signSvc, dispatchSvc, $state, flowSvc, signFlowSvc, ideaSvc, workprogramSvc,
                   expertReviewSvc, $scope, bsWin, financialManagerSvc, addSuppLetterQuerySvc, addCostSvc, templatePrintSvc, companySvc) {
 
         var vm = this;
@@ -759,26 +759,45 @@
 
         // S_跳转到 发文 重写工作方案
         vm.reworkWorkPlanViem = function () {
-            // debugger;
-            // var signid = vm.model.signid;
-            // var workId = $state.params.id;
-            // var taskId = $state.params.taskId; // 流程任务ID
-            // var processInstanceId = $state.params.processInstanceId; // 流程实例ID
-            /**
-             * 1、获取需要重写的工作方案
-             * 2、
-             * */
-            //选中要关联的项目
-            $("#reworkWorkPlanWindow").kendoWindow({
-                width: "50%",
-                height: "400px",
-                title: "重写工作方案",
-                visible: false,
-                modal: true,
-                closable: true,
-                actions: ["Pin", "Minimize", "Maximize", "close"],
-            }).data("kendoWindow").center().open();
+            workprogramSvc.getProjBranchInfo($state.params.signid,function(data){
+                vm.signBranchData = data;
+                $("#reworkWorkPlanWindow").kendoWindow({
+                    width: "720px",
+                    height: "400px",
+                    title: "重写工作方案",
+                    visible: false,
+                    modal: true,
+                    closable: true,
+                    actions: ["Pin", "Minimize", "Maximize", "close"],
+                }).data("kendoWindow").center().open();
+            });
         }// E_跳转到 发文 编辑页面
+
+        //S_重做工作方案
+        vm.reWorkFlow = function(){
+            var isCheck = $("#rework input[name='checBrands']:checked");
+            if(!isCheck || isCheck.length ==0){
+                bsWin.alert("请选择要重做工作方案的分支！");
+            }else{
+                var branchArr = [];
+                for (var i = 0; i < isCheck.length; i++) {
+                    branchArr.push(isCheck[i].value);
+                }
+                var branchStr = branchArr.join(',');
+                bsWin.confirm("确定重做么？" , function(){
+                    workprogramSvc.reStartWorkFlow($state.params.signid, branchStr, function(data){
+                        console.log(data);
+                        if(data.flag || data.reCode == 'ok'){
+                            bsWin.success("操作成功！",function(){
+                                window.parent.$("#reworkWorkPlanWindow").data("kendoWindow").close();
+                            });
+                        }else{
+                            bsWin.alert(data.reMsg);
+                        }
+                    });
+                })
+            }
+        }//E_重做工作方案
 
         //关联项目条件查询
         vm.associateQuerySign = function () {
