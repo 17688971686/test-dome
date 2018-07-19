@@ -3,7 +3,7 @@
   <process id="FLOW_ARCHIVES" name="项目档案查阅流程" isExecutable="true">
     <startEvent id="ARC_START" name="开始"></startEvent>
     <userTask id="ARC_SQ" name="查阅申请" activiti:assignee="${user}"></userTask>
-    <userTask id="ARC_FGLD_SP" name="分管领导审批" activiti:assignee="${user_fgld}"></userTask>
+    <userTask id="ARC_FGLD_SP" name="分管副主任审批" activiti:assignee="${user_fgld}"></userTask>
     <userTask id="ARC_ZR_SP" name="主任审批" activiti:assignee="${user_zr}"></userTask>
     <userTask id="ARC_BZ_SP" name="部长审批" activiti:assignee="${user_bz}"></userTask>
     <endEvent id="ARC_END" name="结束"></endEvent>
