@@ -762,7 +762,7 @@
             workprogramSvc.getProjBranchInfo($state.params.signid,function(data){
                 vm.signBranchData = data;
                 $("#reworkWorkPlanWindow").kendoWindow({
-                    width: "50%",
+                    width: "720px",
                     height: "400px",
                     title: "重写工作方案",
                     visible: false,
@@ -771,8 +771,33 @@
                     actions: ["Pin", "Minimize", "Maximize", "close"],
                 }).data("kendoWindow").center().open();
             });
-
         }// E_跳转到 发文 编辑页面
+
+        //S_重做工作方案
+        vm.reWorkFlow = function(){
+            var isCheck = $("#rework input[name='checBrands']:checked");
+            if(!isCheck || isCheck.length ==0){
+                bsWin.alert("请选择要重做工作方案的分支！");
+            }else{
+                var branchArr = [];
+                for (var i = 0; i < isCheck.length; i++) {
+                    branchArr.push(isCheck[i].value);
+                }
+                var branchStr = branchArr.join(',');
+                bsWin.confirm("确定重做么？" , function(){
+                    workprogramSvc.reStartWorkFlow($state.params.signid, branchStr, function(data){
+                        console.log(data);
+                        if(data.flag || data.reCode == 'ok'){
+                            bsWin.success("操作成功！",function(){
+                                window.parent.$("#reworkWorkPlanWindow").data("kendoWindow").close();
+                            });
+                        }else{
+                            bsWin.alert(data.reMsg);
+                        }
+                    });
+                })
+            }
+        }//E_重做工作方案
 
         //关联项目条件查询
         vm.associateQuerySign = function () {

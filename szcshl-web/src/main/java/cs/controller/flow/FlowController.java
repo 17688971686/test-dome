@@ -457,10 +457,10 @@ public class FlowController {
                 task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
             }
             if (task == null) {
-                return new ResultMsg(false, MsgCode.ERROR.getValue(), "该流程已被处理！");
+                return ResultMsg.error("该流程已处理！");
             }
             if (task.isSuspended()) {
-                return new ResultMsg(false, MsgCode.ERROR.getValue(), "项目已暂停，不能进行操作！");
+                return ResultMsg.error("项目已暂停，不能进行提交操作！");
             }
             module = processInstance.getProcessDefinitionKey();
 
@@ -470,7 +470,7 @@ public class FlowController {
                     resultMsg = signService.dealFlow(processInstance, task,flowDto);
                     break;
                 case FlowConstant.WORK_HIS_FLOW:
-                    //resultMsg = signService.dealFlow(processInstance, task,flowDto);
+                    resultMsg = workProgramService.dealFlow(processInstance, task,flowDto);
                     break;
                 case FlowConstant.TOPIC_FLOW:
                     resultMsg = topicInfoService.dealFlow(processInstance, task,flowDto);
@@ -652,6 +652,9 @@ public class FlowController {
             case FlowConstant.ANNOUNT_MENT_FLOW:
                 resultPage = "annountMent/flow/flowDetail";
                 break;
+            case FlowConstant.WORK_HIS_FLOW:
+                resultPage = "workprogram/flow/flowDetail";
+                break;
             default:
                 ;
         }
@@ -690,6 +693,9 @@ public class FlowController {
                 break;
             case FlowConstant.BOOKS_BUY_FLOW:
                 resultPage = "bookBuyBusiness/flowEnd";
+                break;
+            case FlowConstant.WORK_HIS_FLOW:
+                resultPage = "workprogram/flow/flowEnd";
                 break;
             default:
                 ;

@@ -1317,8 +1317,6 @@ public class SignServiceImpl implements SignService {
                 }
 
                 workPGUtil.setLeaderOption(flowDto.getDealOption(),new Date(),ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask));
-
-
                 workProgramRepo.save(wk);
                 //完成分支的工作方案
                 signBranchRepo.updateFinishState(signid, branchIndex,EnumState.YES.getValue());

@@ -1,12 +1,10 @@
 package cs.domain.history;
 
+import cs.domain.expert.Expert;
 import cs.domain.expert.ExpertSelectedBase;
 import org.hibernate.annotations.DynamicUpdate;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * 抽取的专家信息
@@ -16,16 +14,28 @@ import javax.persistence.Table;
 @DynamicUpdate(true)
 public class ExpertSelectedHis extends ExpertSelectedBase {
 
-    //抽取评审方案（多对一）
-    @ManyToOne
-    @JoinColumn(name = "expertReviewId")
-    private ExpertReviewHis expertReviewHis;
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String expertReviewId;
 
-    public ExpertReviewHis getExpertReviewHis() {
-        return expertReviewHis;
+    //抽取专家关系（多对一）
+    @ManyToOne
+    @JoinColumn(name = "expertId")
+    private Expert expert;
+
+
+    public String getExpertReviewId() {
+        return expertReviewId;
     }
 
-    public void setExpertReviewHis(ExpertReviewHis expertReviewHis) {
-        this.expertReviewHis = expertReviewHis;
+    public void setExpertReviewId(String expertReviewId) {
+        this.expertReviewId = expertReviewId;
+    }
+
+    public Expert getExpert() {
+        return expert;
+    }
+
+    public void setExpert(Expert expert) {
+        this.expert = expert;
     }
 }

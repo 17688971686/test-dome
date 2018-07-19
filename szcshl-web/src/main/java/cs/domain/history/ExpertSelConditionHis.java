@@ -1,28 +1,23 @@
 package cs.domain.history;
 
-import cs.domain.expert.ExpertReview;
 import cs.domain.expert.ExpertSelConditionBase;
 import org.hibernate.annotations.DynamicUpdate;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "cs_his_expert_condition")
 @DynamicUpdate(true)
 public class ExpertSelConditionHis extends ExpertSelConditionBase {
 
-    @ManyToOne
-    @JoinColumn(name = "expertReviewId")
-    private ExpertReviewHis expertReviewHis;
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String expertReviewId;
 
-    public ExpertReviewHis getExpertReviewHis() {
-        return expertReviewHis;
+    public String getExpertReviewId() {
+        return expertReviewId;
     }
 
-    public void setExpertReviewHis(ExpertReviewHis expertReviewHis) {
-        this.expertReviewHis = expertReviewHis;
+    public void setExpertReviewId(String expertReviewId) {
+        this.expertReviewId = expertReviewId;
     }
 }

@@ -3,22 +3,18 @@ package cs.service.project;
 import cs.ahelper.projhelper.ProjUtil;
 import cs.ahelper.projhelper.WorkPGUtil;
 import cs.common.RandomGUID;
+import cs.common.ResultMsg;
 import cs.common.constants.Constant;
 import cs.common.constants.Constant.EnumState;
 import cs.common.constants.FlowConstant;
-import cs.common.HqlBuilder;
-import cs.common.ResultMsg;
 import cs.common.constants.SysConstants;
 import cs.common.utils.*;
-import cs.domain.expert.Expert;
-import cs.domain.expert.ExpertReview_;
-import cs.domain.expert.ExpertSelCondition_;
-import cs.domain.expert.ExpertSelected_;
+import cs.domain.expert.*;
 import cs.domain.meeting.RoomBooking;
 import cs.domain.meeting.RoomBooking_;
 import cs.domain.project.*;
 import cs.domain.sys.*;
-import cs.domain.sys.Ftp_;
+import cs.model.flow.FlowDto;
 import cs.model.project.ProMeetDto;
 import cs.model.project.ProMeetShow;
 import cs.model.project.WorkProgramDto;
@@ -27,9 +23,12 @@ import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.repository.repositoryImpl.expert.ExpertSelConditionRepo;
 import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
-import cs.repository.repositoryImpl.project.*;
+import cs.repository.repositoryImpl.project.SignBranchRepo;
+import cs.repository.repositoryImpl.project.SignMergeRepo;
+import cs.repository.repositoryImpl.project.SignRepo;
+import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import cs.repository.repositoryImpl.sys.FtpRepo;
-import cs.repository.repositoryImpl.sys.OrgRepo;
+import cs.repository.repositoryImpl.sys.OrgDeptRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.service.history.WorkProgramHisService;
@@ -52,10 +51,8 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static cs.common.constants.FlowConstant.WPHIS_XMFZR;
+import static cs.common.constants.FlowConstant.*;
 import static cs.common.constants.SysConstants.SEPARATE_COMMA;
-import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
-import static cs.common.constants.SysConstants.SUPER_NAME;
 
 @Service
 public class WorkProgramServiceImpl implements WorkProgramService {
@@ -98,7 +95,12 @@ public class WorkProgramServiceImpl implements WorkProgramService {
     private ProcessEngine processEngine;
     @Autowired
     private UserService userService;
-
+    @Autowired
+    private AgentTaskService agentTaskService;
+    @Autowired
+    private UserRepo userRepo;
+    @Autowired
+    private OrgDeptRepo orgDeptRepo;
     /**
      * 保存工作方案
      *
@@ -181,18 +183,19 @@ public class WorkProgramServiceImpl implements WorkProgramService {
      * 根据收文ID初始化 用户待处理的工作方案
      */
     @Override
-    public Map<String, Object> initWorkProgram(String signId, String taskId) {
+    public Map<String, Object> initWorkProgram(String signId, String taskId,String brandId) {
         Map<String, Object> resultMap = new HashMap<>();
         WorkProgramDto workProgramDto = new WorkProgramDto();
         String curUserId = SessionUtil.getUserId();
         List<User> priUserList = null;
         //分支
-        String branchIndex = "";
+        String branchIndex = brandId;
         String mainBranchId = FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue();
-        Task task = taskService.createTaskQuery().taskId(taskId).active().singleResult();
-
-        String taskBrandIndex = task.getTaskDefinitionKey().substring(task.getTaskDefinitionKey().length() - 1);
-        boolean isMainBrand = ProjUtil.isMainBranch(taskBrandIndex);
+        if(Validate.isString(taskId)){
+            Task task = taskService.createTaskQuery().taskId(taskId).active().singleResult();
+            branchIndex = task.getTaskDefinitionKey().substring(task.getTaskDefinitionKey().length() - 1);
+        }
+        boolean isMainBrand = ProjUtil.isMainBranch(branchIndex);
         //1、根据收文ID查询出所有的工作方案ID
         Criteria criteria = workProgramRepo.getExecutableCriteria();
         criteria.createAlias(WorkProgram_.sign.getName(), WorkProgram_.sign.getName());
@@ -219,10 +222,8 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 List<WorkProgramDto> wpDtoList = new ArrayList<>();
                 for (int i = 0; i < totalL; i++) {
                     WorkProgram wp = wpList.get(i);
-                    branchIndex = wp.getBranchId();
                     boolean isBrandUser = false;
-
-                    if (taskBrandIndex.equals(branchIndex)) {
+                    if (branchIndex.equals(wp.getBranchId())) {
                         priUserList = signPrincipalService.getSignPriUser(signId, branchIndex);
                         for (User user : priUserList) {
                             //当前处理人是代人人的时候也要考虑进去
@@ -281,7 +282,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             workProgramDto.setDesignCompany(sign.getDesigncompanyName());
             workProgramDto.setAppalyInvestment(sign.getAppalyInvestment());
             workProgramDto.setWorkreviveStage(sign.getReviewstage());
-            workProgramDto.setBranchId(taskBrandIndex);
+            workProgramDto.setBranchId(branchIndex);
             //默认名称
             workProgramDto.setTitleName(sign.getReviewstage() + Constant.WORKPROGRAM_NAME);
             workProgramDto.setTitleDate(new Date());
@@ -849,24 +850,42 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 
     @Override
     @Transactional
-    public ResultMsg startReWorkFlow(Sign sign, String brandIds) {
-        if (sign.getProcessState() < Constant.SignProcessState.END_WP.getValue()) {
-            return ResultMsg.error("该项目正在做工作方案，不能发起重做流程！");
-        }
+    public ResultMsg startReWorkFlow(String signId, String brandIds) {
+        Sign sign = signRepo.findById(signId);
         if (sign.getProcessState() > Constant.SignProcessState.END_DIS_NUM.getValue()) {
             return ResultMsg.error("已经发文的项目，不能再进行修改！");
         }
         List<String> brandIdList = StringUtil.getSplit(brandIds, SysConstants.SEPARATE_COMMA);
+        int startCount = brandIdList.size();
+        if(startCount == 0){
+            return ResultMsg.error("请选择要重做的工作方案！");
+        }
         //工作方案留痕
         List<WorkProgram> workProgramList = sign.getWorkProgramList();
+        WorkProgram mainWP = ProjUtil.filterMainWP(workProgramList);
+        if(Validate.isList(workProgramList)){
+            //检验选择的工作方案是否已经发起流程，并且未完成
+            ResultMsg checkResult = checkWorkFlow(brandIdList,workProgramList);
+            if(!checkResult.isFlag()){
+                return checkResult;
+            }
+        }
+
         List<WorkProgram> reWorkList = new ArrayList<>();
         //初始化工作方案
-        for (String brandId : brandIdList) {
+        for (int i=0;i<startCount;i++) {
+            String brandId = brandIdList.get(i);
             WorkProgram newWP = new WorkProgram();
             boolean isNew = true;
             for (WorkProgram wp : workProgramList) {
                 if (brandId.equals(wp.getBranchId())) {
                     BeanCopierUtils.copyProperties(wp,newWP);
+                    if(!ProjUtil.isMainBranch(wp.getBranchId())){
+                        //如果不是主工作方案，还要把主工作方案的数据拷贝过来
+                        if(Validate.isObject(mainWP)){
+                            ProjUtil.copyMainWPProps(mainWP,wp);
+                        }
+                    }
                     workProgramHisService.copyWorkProgram(wp, sign.getSignid());
                     WorkPGUtil.create(newWP).resetLeaderOption().resetMinisterOption();
                     isNew = false;
@@ -911,7 +930,140 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         workProgramRepo.bathUpdate(reWorkList);
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(sign.getSignid(), allAssigneeValue);
-        return ResultMsg.ok("操作成功");
+
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功",sign.getProjectname()+"[重做工作方案]");
+    }
+
+    private ResultMsg checkWorkFlow(List<String> brandIdList, List<WorkProgram> workProgramList) {
+        for(String brandId : brandIdList){
+            for(WorkProgram workProgram : workProgramList){
+                if(brandId.equals(workProgram.getBranchId()) && flowWork(workProgram.getProcessInstanceId())){
+                    return ResultMsg.error("分支["+workProgram.getBranchId()+"]的工作方案正在重做，不能重复发起！");
+                }
+            }
+        }
+        return ResultMsg.ok("ok");
+    }
+
+    private boolean flowWork(String processInstanceId) {
+        if(Validate.isString(processInstanceId) &&
+                Validate.isObject(runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult())){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public ResultMsg dealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto) {
+        String assigneeValue = "",                                  //环节处理人
+               curUserId = SessionUtil.getUserId();                 //当前用户ID
+        WorkProgram wk = workProgramRepo.findById(processInstance.getBusinessKey());
+        Sign sign = wk.getSign();
+        WorkPGUtil workPGUtil = WorkPGUtil.create(wk);
+
+        List<AgentTask> agentTaskList = new ArrayList<>();
+        Map<String, Object> variables = new HashMap<>();
+        switch (task.getTaskDefinitionKey()) {
+            case WPHIS_XMFZR:
+                //项目负责人填报环节
+                //主流程要第一负责才能进行下一步操作
+                if (ProjUtil.isMainBranch(wk.getBranchId())) {
+                    User mainUser = userRepo.getCacheUserById(sign.getmUserId());
+                    if (!curUserId.equals(mainUser.getId()) && !curUserId.equals(mainUser.getTakeUserId())) {
+                        return ResultMsg.error("您不是第一负责人，不能进行下一步操作！");
+                    }
+
+                    //是否合并评审主项目
+                    boolean isMergeMain = workPGUtil.isMergeWP() && workPGUtil.isMainWP();
+                    //单个评审或者合并评审主项目；如果是专家评审会，则要选择专家和会议室
+                    boolean needCheck = workPGUtil.isReviewWP() && (!workPGUtil.isMergeWP() || isMergeMain);
+                    if (needCheck) {
+                        if (expertRepo.countByBusinessId(wk.getId()) == 0) {
+                            return ResultMsg.error("您选择的评审方式是【" + wk.getReviewType() + "】，但是还没有选择专家，请先选择专家！");
+                        }
+                        if (Constant.MergeType.REVIEW_MEETING.getValue().equals(wk.getReviewType()) && !roomBookingRepo.isHaveBookMeeting(wk.getId())) {
+                            return ResultMsg.error("您选择的评审方式是【" + wk.getReviewType() + "】，但是还没有选择会议室，请先预定会议室！");
+                        }
+                    }
+                    //如果没有合并其他项目，则不准提交
+                    if (isMergeMain && !signMergeRepo.isHaveMerge(sign.getSignid(), Constant.MergeType.WORK_PROGRAM.getValue())) {
+                        return ResultMsg.error("工作方案您选择的是合并评审主项目，您还没有设置关联项目，不能提交到下一步！");
+                    }
+                    //如果合并评审次项目没提交，不能进行下一步操作
+                    if (!signRepo.isMergeSignEndWP(sign.getSignid())) {
+                        return ResultMsg.error("合并评审次项目还未提交审批，主项目不能提交审批！");
+                    }
+                }
+
+                OrgDept orgDept = orgDeptRepo.queryBySignBranchId(sign.getSignid(), wk.getBranchId());
+                if (orgDept == null || !Validate.isString(orgDept.getDirectorID())) {
+                    return ResultMsg.error("请设置该分支的部门负责人！");
+                }
+                assigneeValue = userService.getTaskDealId(orgDept.getDirectorID(), agentTaskList,WPHIS_BMLD_SPW);
+
+                variables.put(FlowConstant.FlowParams.USER_BZ.getValue(),assigneeValue);
+                //更改预定会议室状态
+                roomBookingRepo.updateStateByBusinessId(wk.getId(), EnumState.PROCESS.getValue());
+                //完成分支工作方案
+                signBranchRepo.finishWP(sign.getSignid(), wk.getBranchId());
+                break;
+            case WPHIS_BMLD_SPW:
+                //部长审批环节
+                boolean isAgentTask = agentTaskService.isAgentTask(task.getId(),curUserId); //是否为代办任务
+                workPGUtil.setMinisterOption(flowDto.getDealOption(),new Date(),ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask));
+                workProgramRepo.save(wk);
+                //设定下一环节处理人【主分支哪个领导安排部门工作方案则由他审批，次分支则按按照部门所在领导审批】
+                if(ProjUtil.isMainBranch(wk.getBranchId())){
+                    assigneeValue = userService.getTaskDealId(sign.getLeaderId(), agentTaskList,WPHIS_FGLD_SPW);
+                }else{
+                    assigneeValue = userService.getTaskDealId(SessionUtil.getUserInfo().getOrg().getOrgSLeader(), agentTaskList,WPHIS_FGLD_SPW);
+                }
+                variables.put(FlowConstant.FlowParams.USER_FGLD.getValue(), assigneeValue);
+                break;
+            case WPHIS_FGLD_SPW:
+                //分管领导审批环节
+                boolean isAgentTask2 = agentTaskService.isAgentTask(task.getId(),curUserId); //是否为代办任务
+                workPGUtil.setLeaderOption(flowDto.getDealOption(),new Date(),ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask2));
+                workProgramRepo.save(wk);
+                //完成分支的工作方案
+                signBranchRepo.updateFinishState(sign.getSignid(), wk.getBranchId(),EnumState.YES.getValue());
+                //更改预定会议室状态
+                roomBookingRepo.updateStateByBusinessId(wk.getId(), EnumState.YES.getValue());
+                //更新评审会时间
+                ExpertReview expertReview = expertReviewRepo.findById(ExpertReview_.businessId.getName(), sign.getSignid());
+                if (expertReview != null) {
+                    //以主工作方案为准，工作方案不做工作方案，则任选一个
+                    if (ProjUtil.isMainBranch(wk.getBranchId()) || expertReview.getReviewDate() == null) {
+                        //如果是专家评审会，获取评审会日期
+                        if (Constant.MergeType.REVIEW_MEETING.getValue().equals(wk.getReviewType())) {
+                            expertReview.setReviewDate(roomBookingRepo.getMeetingDateByBusinessId(wk.getId()));
+                            //如果是专家函评，取函评日期并修改专家默认评审方式为函评
+                        } else {
+                            expertReview.setReviewDate(wk.getLetterDate());
+                            expertSelectedRepo.updateExpertSelectState(wk.getId(), ExpertSelected_.isLetterRw.getName(), EnumState.YES.getValue());
+                        }
+                        expertReviewRepo.save(expertReview);
+                    }
+                }
+                break;
+             default:
+                    ;
+        }
+        taskService.addComment(task.getId(), processInstance.getId(), flowDto.getDealOption());    //添加处理信息
+        if (flowDto.isEnd()) {
+            taskService.complete(task.getId());
+        } else {
+            taskService.complete(task.getId(), variables);
+        }
+        //下一环节人发送短信
+        if(Validate.isString(assigneeValue)){
+            RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
+        }
+        //如果是代办，还要更新环节名称和任务ID
+        if (Validate.isList(agentTaskList)) {
+            agentTaskService.updateAgentInfo(agentTaskList,processInstance.getId(),processInstance.getName());
+        }
+        return ResultMsg.ok("操作成功！");
     }
 
     /**
@@ -966,8 +1118,6 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         }
         return wp;
     }
-
-
 
     private List<ProMeetShow> proAmMeetInfoUpdate(List<ProMeetDto> proMeetDtoList) {
         List<ProMeetShow> proMeetShowList = new ArrayList<ProMeetShow>();

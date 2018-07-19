@@ -28,9 +28,6 @@ public class HomeController {
 
 	@Autowired
 	private RepositoryService repositoryService;
-
-	@Autowired
-	private RTXService rtxService;
 	
 	@RequestMapping(name = "登录", path = "/")
 	public String login() {

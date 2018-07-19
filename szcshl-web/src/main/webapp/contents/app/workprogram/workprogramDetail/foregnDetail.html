@@ -15,7 +15,7 @@
                 <p class="h3">
                     <strong>{{w.titleName}}</strong>
                 </p>
-                <p style="margin-top: 50px;"">
+                <p style="margin-top: 50px;">
                 <span style="float:left;">
 		            <span>评审方式: {{w.reviewType}}</span>
 		            <span style="margin:0px 10px;">{{w.isSigle}}</span>
@@ -228,7 +228,7 @@
 <!-- end 主项目 -->
 
 <!-- start 协办项目（进口设备） -->
-<div ng-repeat="w in vm.model.workProgramDtoList | toArray:false | orderBy:'branchId'"  style="margin-top:10px;border: dashed 1px #000;"
+<div ng-repeat="w in vm.model.workProgramDtoList | toArray:false | orderBy:'branchId'"  style="margin-top:10px;"
      ng-if="(w.workreviveStage=='进口设备') && (w.branchId != '1' && w.branchId != 1)">
     <a data-toggle="collapse" data-target="#aswp_{{$index}}"
        ng-show="(vm.model.workProgramDtoList.length > 1) || vm.showAll">

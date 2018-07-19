@@ -145,6 +145,9 @@ public class FlowServiceImpl implements FlowService {
     @Autowired
     @Qualifier("projectStopFlowBackImpl")
     private IFlowBack projectStopFlowBackImpl;
+    @Autowired
+    @Qualifier("workHisFlowBackImpl")
+    private IFlowBack workHisFlowBackImpl;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -324,6 +327,10 @@ public class FlowServiceImpl implements FlowService {
                     break;
                 case FlowConstant.MONTHLY_BULLETIN_FLOW:
                     resultMap = monthFlowBackImpl.backActivitiId(instance.getBusinessKey(), task.getTaskDefinitionKey());
+                    backActivitiId = resultMap.get(FLOW_BACK_NODEKEY).toString();
+                    break;
+                case FlowConstant.WORK_HIS_FLOW:
+                    resultMap = workHisFlowBackImpl.backActivitiId(instance.getBusinessKey(), task.getTaskDefinitionKey());
                     backActivitiId = resultMap.get(FLOW_BACK_NODEKEY).toString();
                     break;
                 default:

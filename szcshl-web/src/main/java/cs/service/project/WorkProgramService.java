@@ -6,7 +6,10 @@ import java.util.Map;
 import cs.common.ResultMsg;
 import cs.domain.project.Sign;
 import cs.domain.project.WorkProgram;
+import cs.model.flow.FlowDto;
 import cs.model.project.WorkProgramDto;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 
 public interface WorkProgramService {
 
@@ -24,7 +27,7 @@ public interface WorkProgramService {
      * @param taskId    主要是用于区分是自己的工作方案还是代办的工作方案
      * @return
      */
-    Map<String,Object> initWorkProgram(String signId,String taskId);
+    Map<String,Object> initWorkProgram(String signId,String taskId,String brandId);
 
     Map<String,Object> workMaintainList(String signId);
 
@@ -119,9 +122,18 @@ public interface WorkProgramService {
 
     /**
      * 重做工作方案
-     * @param sign
+     * @param signId
      * @param brandIds  分支ID
      * @return
      */
-    ResultMsg startReWorkFlow(Sign sign, String brandIds);
+    ResultMsg startReWorkFlow(String signId, String brandIds);
+
+    /**
+     * 重做工作方案流程处理
+     * @param processInstance
+     * @param task
+     * @param flowDto
+     * @return
+     */
+    ResultMsg dealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto);
 }

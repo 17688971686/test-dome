@@ -1,13 +1,21 @@
 package cs.controller.project;
 
 import cs.ahelper.IgnoreAnnotation;
+import cs.ahelper.projhelper.ProjUtil;
 import cs.common.ResultMsg;
 import cs.common.constants.Constant;
+import cs.common.constants.FlowConstant;
+import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.Validate;
 import cs.domain.project.Sign;
+import cs.domain.project.Sign_;
 import cs.domain.project.WorkProgram;
+import cs.model.history.WorkProgramHisDto;
+import cs.model.project.SignDto;
 import cs.model.project.WorkProgramDto;
 import cs.repository.repositoryImpl.project.SignRepo;
+import cs.repository.repositoryImpl.project.WorkProgramRepo;
+import cs.service.history.WorkProgramHisService;
 import cs.service.project.WorkProgramService;
 import cs.service.rtx.RTXSendMsgPool;
 import cs.service.rtx.RTXService;
@@ -17,6 +25,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -30,6 +40,11 @@ public class WorkProgramController {
     private RTXService rtxService;
     @Autowired
     private SignRepo signRepo;
+    @Autowired
+    private WorkProgramRepo workProgramRepo;
+    @Autowired
+    private WorkProgramHisService workProgramHisService;
+
     @RequiresAuthentication
     //@RequiresPermissions("workprogram#addWork#post")
     @RequestMapping(name = "保存工作方案", path = "addWork", method = RequestMethod.POST)
@@ -49,8 +64,8 @@ public class WorkProgramController {
     //@RequiresPermissions("workprogram#initWorkProgram#post")
     @RequestMapping(name = "初始化工作方案", path = "initFlowWP", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String,Object> initFlowWP(@RequestParam(required = true) String signId,@RequestParam(required = true) String taskId) {
-        return workProgramService.initWorkProgram(signId,taskId);
+    public Map<String,Object> initFlowWP(@RequestParam(required = true) String signId, String taskId,String branchId) {
+        return workProgramService.initWorkProgram(signId,taskId,branchId);
     }
 
     @RequiresAuthentication
@@ -119,15 +134,53 @@ public class WorkProgramController {
     @RequestMapping(name = "发起重新做工作方案流程", path = "startReWorkFlow", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg startReWorkFlow(@RequestParam String signId,@RequestParam String brandIds) {
-        Sign sign = signRepo.findById(signId);
-        ResultMsg resultMsg = workProgramService.startReWorkFlow(sign,brandIds);
+        ResultMsg resultMsg = workProgramService.startReWorkFlow(signId,brandIds);
         if(resultMsg.isFlag()){
             //如果成功，则发送短信通知
-            rtxService.dealPoolRTXMsg(signId,resultMsg,sign.getProjectname()+"[重做工作方案]", Constant.MsgType.task_type.name());
+            String taskName = resultMsg.getReObj().toString();
+            rtxService.dealPoolRTXMsg(signId,resultMsg,taskName, Constant.MsgType.task_type.name());
         }
         return resultMsg;
+
     }
 
+    @RequiresAuthentication
+    @RequestMapping(name = "初始化重做工作方案流程信息", path = "initDealFlow", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String,Object> initDealFlow(String wpId){
+        Map<String,Object> resultMap = new HashMap<>();
+        //查询工作方案信息
+        WorkProgram workProgram = workProgramRepo.findById(wpId);
+        WorkProgramDto workProgramDto = new WorkProgramDto();
+        BeanCopierUtils.copyProperties(workProgram, workProgramDto);
+        workProgramRepo.initWPMeetingExp(workProgramDto, workProgram);
+
+        //项目信息
+        Sign sign = workProgram.getSign();
+        if(Validate.isObject(sign) && Validate.isString(sign.getSignid())){
+            SignDto signDto = new SignDto();
+            BeanCopierUtils.copyProperties(sign,signDto);
+            resultMap.put("SignDto",signDto);
+        }
+
+        //如果不是主工作方案，还要查询主工作方案信息
+        if(!ProjUtil.isMainBranch(workProgram.getBranchId())){
+            WorkProgram mainWP = workProgramRepo.findBySignIdAndBranchId(workProgram.getSign().getSignid(), FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue(), false);
+            if(Validate.isObject(mainWP)){
+                WorkProgramDto mainWPDto = new WorkProgramDto();
+                BeanCopierUtils.copyProperties(mainWP,mainWPDto);
+                workProgramDto.setMainWorkProgramDto(mainWPDto);
+            }
+        }
+
+        resultMap.put("WorkProgramDto",workProgramDto);
+        //历史工作方案记录
+        List<WorkProgramHisDto> wpHisDtoList = workProgramHisService.findBySignAndBranch(sign.getSignid(),workProgram.getBranchId());
+        if(Validate.isList(wpHisDtoList)){
+            resultMap.put("WorkProgramHisDtoList",wpHisDtoList);
+        }
+        return resultMap;
+    }
     @RequiresAuthentication
     @RequestMapping(name = "更新工作方案专家评审费用", path = "updateWPExpertCost", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)

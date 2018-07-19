@@ -1,19 +1,26 @@
 <meta charset="UTF-8">
 
 <div class="well well-sm" style="background:white;display: none;" id="reworkWorkPlanWindow" >
-	<table class="table table-bordered+9">
+	<table class="table table-bordered" id="rework">
+		<tr>
+			<td colspan="4">
+				项目工作方案分支
+				<button class="btn btn-xs btn-success" ng-click="vm.reWorkFlow()" >
+					<span class="glyphicon glyphicon-ok"></span>确定
+				</button>
+			</td>
+		</tr>
 		<tr >
 			<td class="text-center"  >选择</td>
 			<td class="text-center"  >分支</td>
 			<td class="text-center"  >办理部门</td>
 			<td class="text-center"  >负责人</td>
-
 		</tr>
 		<tr ng-repeat="b in vm.signBranchData | orderBy:'BID'">
-			<td align="center">
-				<input type="checkbox" name="checkps"  value="{{b.BID}}"/>
+			<td align="center" style="width: 80px;">
+				<input type="checkbox" name="checBrands" value="{{b.BID}}"/>
 			</td>
-			<td class="text-center">{{ b.BID}}</td>
+			<td class="text-center" style="width: 80px;">{{ b.BID}}</td>
 			<td class="text-center">{{ b.NAME}}</td>
 			<td class="text-center">{{ b.USERNAMES }}</td>
 		</tr>

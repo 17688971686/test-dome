@@ -219,7 +219,7 @@
 <!-- end 主项目 -->
 
 <!-- start 协审项目（设备清单（国产）/设备清单（进口）） -->
-<div ng-repeat="w in vm.model.workProgramDtoList | toArray:false | orderBy:'branchId'"  style="margin-top:10px;border-top: 1px dashed #000;"
+<div ng-repeat="w in vm.model.workProgramDtoList | toArray:false | orderBy:'branchId'"  style="margin-top:10px;"
      ng-if="(w.workreviveStage=='设备清单（国产）' || w.workreviveStage=='设备清单（进口）' ) && (w.branchId != '1' && w.branchId != 1)">
     <a  data-toggle="collapse" data-target="#aswp_{{$index}}" ng-show="(vm.model.workProgramDtoList.length > 1) || vm.showAll">
         [协办工作方案]
