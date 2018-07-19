@@ -85,6 +85,7 @@
                     sysFileLoadType = 2;
                     break;
                 case flowcommon.getFlowDefinedKey().FLOW_ARCHIVES:          //档案借阅流程
+                    vm.minDate = (new Date()).Format("yyyy-MM-dd")
                     archivesLibrarySvc.initFlowDeal(vm);
                     sysFileLoadType = 1;
                     break;

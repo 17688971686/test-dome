@@ -128,11 +128,11 @@ public class HomeController {
 	}
 
     @RequiresAuthentication
-    @RequestMapping(name = "档案借阅流程流程",path = "archivesFlow",method = RequestMethod.GET)
+    @RequestMapping(name = "档案借阅流程",path = "archivesFlow",method = RequestMethod.GET)
     @Transactional
     public @ResponseBody String archivesFlow(){
         //部署下一个版本
-        logger.info("开始项目暂停流程...");
+        logger.info("开始档案借阅流程...");
         InputStream in=this.getClass().getClassLoader().getResourceAsStream("activiti/archives.zip");
         ZipInputStream zipIn=new ZipInputStream(in);
         Deployment  deployment = repositoryService.createDeployment().addZipInputStream(zipIn).name("项目档案查阅流程").deploy();
