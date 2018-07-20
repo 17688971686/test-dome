@@ -45,8 +45,6 @@
                 if (preView.data) {
                     vm.project = preView.data.project;
                 }
-                //恢复数据
-                /*vm.project = preView.data.project;*/
                 //恢复页数页码
                 if (preView.queryParams) {
                     vm.queryParams = preView.queryParams;

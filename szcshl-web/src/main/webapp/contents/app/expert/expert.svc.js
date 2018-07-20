@@ -347,7 +347,7 @@
 		function auditGrid(vm){
 			var dataSource1 = new kendo.data.DataSource({
 				type : 'odata',
-				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{$filter:"state eq '1'"}),
+				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{$filter:"state eq '1'"},true),
 				schema : common.kendoGridConfig().schema({
 					id : "id",
 					fields : {
@@ -368,7 +368,7 @@
 			
 			var dataSource2 = new kendo.data.DataSource({
 				type : 'odata',
-				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{$filter:"state eq '2'"}),
+				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{$filter:"state eq '2'"},true),
 				schema : common.kendoGridConfig().schema({
 					id : "id",
 					fields : {
@@ -389,7 +389,7 @@
 			
 			var dataSource3 = new kendo.data.DataSource({
 				type : 'odata',
-				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{$filter:"state eq '3'"}),
+				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{$filter:"state eq '3'"},true),
 				schema : common.kendoGridConfig().schema({
 					id : "id",
 					fields : {
@@ -410,7 +410,7 @@
 			
 			var dataSource4 = new kendo.data.DataSource({
 				type : 'odata',
-				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{$filter:"state eq '4'"}),
+				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{$filter:"state eq '4'"},true),
 				schema : common.kendoGridConfig().schema({
 					id : "id",
 					fields : {
@@ -431,7 +431,7 @@
 			
 			var dataSource5 = new kendo.data.DataSource({
 				type : 'odata',
-				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{$filter:"state eq '0'"}),
+				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{$filter:"state eq '0'"},true),
 				schema : common.kendoGridConfig().schema({
 					id : "id",
 					fields : {
