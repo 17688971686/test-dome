@@ -42,7 +42,7 @@ public class Project extends DomainBase {
     private String proUnit;
 
     //评审部门
-    @Column(columnDefinition = "VARCHAR(1)")
+    @Column(columnDefinition = "VARCHAR(30)")
     private String reviewDept;
 
     //项目负责人
@@ -66,7 +66,7 @@ public class Project extends DomainBase {
     private String fileNo;
 
     //备注
-    @Column(columnDefinition="VARCHAR(200)")
+    @Column(columnDefinition="VARCHAR(500)")
     private String remark;
 
     //状态：1.正常 2.作废

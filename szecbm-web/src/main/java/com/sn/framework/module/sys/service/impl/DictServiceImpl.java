@@ -241,4 +241,20 @@ public class DictServiceImpl extends SServiceImpl<IDictRepo, Dict, DictDto> impl
 //        return dictKeys.get(0);
 //    }
 
+    @Override
+    @Cacheable(value = DICT_ITEMS, key = "'childrenMap_' + #dictId")
+    public Map<String, DictDto> findChildrenMapById(String dictId) {
+        Map<String, DictDto> dictNameDataMap = new HashMap<>();
+
+        // 查询数据库
+        List<DictDto> dictItems = findChildrenById(dictId);
+        if (ObjectUtils.isNotEmpty(dictItems)) {
+            for (DictDto dictDto : dictItems) {
+                dictNameDataMap.put(dictDto.getDictKey(), dictDto);
+            }
+        }
+
+        return dictNameDataMap;
+    }
+
 }

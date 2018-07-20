@@ -9,6 +9,8 @@ import com.sn.framework.jxls.JxlsUtils;
 import com.sn.framework.module.project.domain.Project_;
 import com.sn.framework.module.project.model.ProjectDto;
 import com.sn.framework.module.project.service.IProjectService;
+import com.sn.framework.module.sys.service.IDictService;
+import com.sn.framework.module.sys.service.ISysFileService;
 import com.sn.framework.odata.OdataFilter;
 import com.sn.framework.odata.impl.jpa.OdataJPA;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,11 @@ public class ProjectController {
     private String ctrlName = "project";
     @Autowired
     private IProjectService projectService;
+    @Autowired
+    private IDictService dictService;
+
+    @Autowired
+    private ISysFileService sysFileService;
 
     @Value("${sn.multipart.disk-path}")
     private String ATTACHMENT_DISK_PATH;
@@ -132,17 +139,19 @@ public class ProjectController {
 
     @GetMapping(name = "导出汇总打印", path = "exportPro2")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void createSmallReport2(HttpServletResponse resp, String submitDate, OdataJPA odata,ProjectDto projectDto) throws IOException {
+    public void createSmallReport2(HttpServletResponse resp,OdataJPA odata,ProjectDto projectDto) throws IOException {
         Map<String, Object> resultMap = new HashMap<String, Object>();
-   /*     odata.addEQFilter(GovInvestProMonthReport_.submitDate, submitDate);
-        List<GovInvestProMonthReportDto> govProRepList = governmentInvestProjectMonthReportService.findByOdata(odata);*/
-        List<ProjectDto> projectList = projectService.findAll();
-        resultMap.put("projectList",projectList);
+        PageModelDto<ProjectDto> pageModelDto = projectService.findPageByOdata(odata);
+        resultMap.put("projectList",pageModelDto.getValue());
+        // 项目行业
+        resultMap.put("TRANSACT_DEPARTMENT", dictService.findChildrenMapById("TRANSACT_DEPARTMENT"));
+        resultMap.put("PRO_STAGE", dictService.findChildrenMapById("PRO_STAGE"));
         resultMap.put("title","项目信息列表");
         resp.setCharacterEncoding(UTF_8.name());
         resp.setContentType("application/vnd.ms-excel");
         String filename = new String("smallProject.xls".getBytes(UTF_8), ISO_8859_1);
         resp.setHeader("Content-disposition", "attachment;filename=" + filename);
+        //TRANSACT_DEPARTMENT[myGroup.item.govInvestProject.projectIndustry].dictName
 
         JxlsUtils.exportExcel("classpath:jxls/smallProject.xls", resp.getOutputStream(), resultMap);
     }
@@ -154,7 +163,8 @@ public class ProjectController {
         Map<String , Object> dataMap = new HashMap<>();
         dataMap.put("projectList",projectList);
         String templateName = "project/proInfoExport";
-        String outFilePath = ATTACHMENT_DISK_PATH + File.separator + "proInfoExport.doc";
+        String outFilePath = ATTACHMENT_DISK_PATH + File.separator + "proInf" +
+                "oExport.doc";
         File exclFile = CreateTemplateUtils.createMonthTemplate(dataMap, templateName, outFilePath);
         resp.setCharacterEncoding(UTF_8.name());
         resp.setContentType("application/msword");

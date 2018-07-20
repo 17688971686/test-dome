@@ -21,6 +21,13 @@ public interface IDictService extends ISService<DictDto> {
     List<DictDto> findChildrenById(String dictId);
 
     /**
+     * 通过父级字典 ID 获取子字典集
+     * @param dictId
+     * @return
+     */
+    Map<String, DictDto> findChildrenMapById(String dictId);
+
+    /**
      *
      * @param parentId
      * @return
