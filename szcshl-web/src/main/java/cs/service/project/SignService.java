@@ -355,5 +355,5 @@ public interface SignService {
      * @param sign
      * @return
      */
-    boolean updateProjectNameCase(Sign sign);
+    void updateProjectNameCascade(Sign sign,String newProjectName);
 }

@@ -47,6 +47,11 @@ import cs.service.sys.CompanyService;
 import cs.service.sys.SysConfigService;
 import cs.service.sys.UserService;
 import cs.service.sys.WorkdayService;
+import cs.sql.FileRecordSql;
+import cs.sql.ProjSql;
+import cs.sql.ReviewSql;
+import cs.sql.WorkSql;
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -154,7 +159,8 @@ public class SignServiceImpl implements SignService {
     private AgentTaskService agentTaskService;
     @Autowired
     private AssistUnitRepo assistUnitRepo;
-
+    @Autowired
+    private HistoryService historyService;
     /**
      * 项目签收保存操作（这里的方法是正式签收）
      *
@@ -182,10 +188,11 @@ public class SignServiceImpl implements SignService {
         if (sign == null) {
             sign = initNewSignInfo(signDto, false, now, isSignUser);
         } else {
+            if(!signDto.getProjectname().equals(sign.getProjectname())){
+                updateProjectNameCascade(sign,signDto.getProjectname());
+            }
             //【如果之前已经有送件人签名，则不能覆盖（因为委里过来的值不是评审中心要的值）】
             BeanCopierUtils.copyPropertiesIgnoreProps(signDto, sign,PUSH_SIGN_IGNORE_PROPS);
-
-            //如果标题有修改，则要同步更新所有涉及标题的
         }
         sign.setModifiedDate(now);
         sign.setModifiedBy(isSignUser?SessionUtil.getDisplayName(): SysConstants.SUPER_ACCOUNT);
@@ -337,6 +344,9 @@ public class SignServiceImpl implements SignService {
     public void updateSign(SignDto signDto) {
         boolean isSignUser = Validate.isString(SessionUtil.getUserId());
         Sign sign = signRepo.findById(signDto.getSignid());
+        if(!signDto.getProjectname().equals(sign.getProjectname())){
+            updateProjectNameCascade(sign,signDto.getProjectname());
+        }
         BeanCopierUtils.copyPropertiesIgnoreNull(signDto, sign);
         if (Validate.isString(sign.getDesigncompanyName())) {//添加单位评分
             Company company = companyRepo.findCompany(sign.getDesigncompanyName());
@@ -1958,8 +1968,23 @@ public class SignServiceImpl implements SignService {
     }
 
     @Override
-    public boolean updateProjectNameCase(Sign sign) {
-        return false;
+    public void updateProjectNameCascade(Sign sign,String newProjectName) {
+        //如果还未完成流程，则要修改流程名称
+        if(Validate.isString(sign.getProcessInstanceId())){
+            signRepo.executeSql(ProjSql.updateRunFlowName(sign.getProcessInstanceId(),newProjectName));
+            signRepo.executeSql(ProjSql.updateHisFlowName(sign.getProcessInstanceId(),newProjectName));
+        }
+        //评审费发送表标题
+        signRepo.executeSql(ReviewSql.updateReviewTitleName(sign.getSignid(),newProjectName));
+        //工作方案标题
+        signRepo.executeSql(WorkSql.updateWPProjName(sign.getSignid(),newProjectName));
+        //工作方案留痕标题
+        signRepo.executeSql(WorkSql.updateWPHisProjName(sign.getSignid(),newProjectName));
+        //更新重做工作方案流程标题
+        signRepo.executeSql(WorkSql.updateRunFlowName(sign.getSignid(),newProjectName));
+        signRepo.executeSql(WorkSql.updateHisFlowName(sign.getSignid(),newProjectName));
+        //存档项目名称
+        signRepo.executeSql(FileRecordSql.updateProjNameSql(sign.getSignid(),newProjectName));
     }
 
     /**

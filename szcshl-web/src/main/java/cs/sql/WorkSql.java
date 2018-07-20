@@ -1,5 +1,6 @@
 package cs.sql;
 
+import cs.ahelper.projhelper.ProjUtil;
 import cs.common.HqlBuilder;
 
 /**
@@ -53,4 +54,35 @@ public class WorkSql {
         return sqlBuilder;
     }
 
+    public static HqlBuilder updateWPProjName(String signId,String newName) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" UPDATE CS_WORK_PROGRAM SET PROJECTNAME = :newName where SIGNID =:signId ");
+        sqlBuilder.setParam("newName",newName).setParam("signId",signId);
+        return sqlBuilder;
+    }
+
+    public static HqlBuilder updateWPHisProjName(String signId, String newName) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" UPDATE CS_HIS_WORK_PROGRAM SET PROJECTNAME = :newName where SIGNID =:signId ");
+        sqlBuilder.setParam("newName", ProjUtil.getReFlowName(newName)).setParam("signId",signId);
+        return sqlBuilder;
+    }
+
+    public static HqlBuilder updateRunFlowName(String signId, String newName) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" update ACT_RU_EXECUTION set NAME_ =:newName where PROC_INST_ID_ in ");
+        sqlBuilder.setParam("newName",ProjUtil.getReFlowName(newName));
+        sqlBuilder.append(" (select PROCESSINSTANCEID from CS_WORK_PROGRAM where SIGNID = :signId) ");
+        sqlBuilder.setParam("signId",signId);
+        return sqlBuilder;
+    }
+
+    public static HqlBuilder updateHisFlowName(String signId, String newName) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" update ACT_HI_PROCINST set NAME_ =:newName where PROC_INST_ID_ in ");
+        sqlBuilder.setParam("newName",newName);
+        sqlBuilder.append(" (select PROCESSINSTANCEID from CS_WORK_PROGRAM where SIGNID = :signId) ");
+        sqlBuilder.setParam("signId",signId);
+        return sqlBuilder;
+    }
 }

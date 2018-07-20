@@ -140,4 +140,8 @@ public class ProjUtil {
         //第二负责人secondChargeUserName
         wp.setSecondChargeUserName(mainWP.getSecondChargeUserName());
     }
+
+    public static String getReFlowName(String projName){
+        return "["+projName+"]重做工作方案]";
+    }
 }

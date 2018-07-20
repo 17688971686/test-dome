@@ -921,7 +921,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                     ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USERS.getValue(), assigneeValue));
             //设置流程实例名称
             orgName = signBranchRepo.getOrgDeptNameBySignId( sign.getSignid(), workProgram.getBranchId());
-            processEngine.getRuntimeService().setProcessInstanceName(processInstance.getId(), sign.getProjectname() + "[" + orgName + "重做工作方案]");
+            processEngine.getRuntimeService().setProcessInstanceName(processInstance.getId(), ProjUtil.getReFlowName(sign.getProjectname()));
             //所有的处理人
             allAssigneeValue += assigneeValue;
 
@@ -931,7 +931,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(sign.getSignid(), allAssigneeValue);
 
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功",sign.getProjectname()+"[重做工作方案]");
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功",ProjUtil.getReFlowName(sign.getProjectname()));
     }
 
     private ResultMsg checkWorkFlow(List<String> brandIdList, List<WorkProgram> workProgramList) {
