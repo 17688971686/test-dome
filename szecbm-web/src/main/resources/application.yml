@@ -1,7 +1,7 @@
 server:
   port: 8888
   context-path: /
-  display-name: gxbspms
+  display-name: szecbm-web
 
 logging.file: ${sn.multipart.disk-path}\logs\${server.display-name}_${spring.profiles.active}.log
 
