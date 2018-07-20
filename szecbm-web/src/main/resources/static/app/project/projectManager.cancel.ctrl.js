@@ -21,11 +21,13 @@
         $scope.csHide("cjgl");
         var vm = this;
         vm.model = {};
+        vm.tableParams = {};
         //获取项目列表
         projectManagerSvc.bsTableCancelManagement(vm);
 
         //导出项目信息
         vm.expProinfo = function () {
+            vm.status = '2';
             projectManagerSvc.createProReport(vm);
         }
 
