@@ -349,4 +349,11 @@ public interface SignService {
      * @return
      */
     String getMainPriUserId(String signid, List<AgentTask> agentTaskList, String flowSignFw);
+
+    /**
+     * 更新所有涉及项目名称的字段
+     * @param sign
+     * @return
+     */
+    boolean updateProjectNameCase(Sign sign);
 }

@@ -154,8 +154,7 @@ public class SignServiceImpl implements SignService {
     private AgentTaskService agentTaskService;
     @Autowired
     private AssistUnitRepo assistUnitRepo;
-    @Autowired
-    private DispatchDocService dispatchDocService;
+
     /**
      * 项目签收保存操作（这里的方法是正式签收）
      *
@@ -185,6 +184,8 @@ public class SignServiceImpl implements SignService {
         } else {
             //【如果之前已经有送件人签名，则不能覆盖（因为委里过来的值不是评审中心要的值）】
             BeanCopierUtils.copyPropertiesIgnoreProps(signDto, sign,PUSH_SIGN_IGNORE_PROPS);
+
+            //如果标题有修改，则要同步更新所有涉及标题的
         }
         sign.setModifiedDate(now);
         sign.setModifiedBy(isSignUser?SessionUtil.getDisplayName(): SysConstants.SUPER_ACCOUNT);
@@ -1954,6 +1955,11 @@ public class SignServiceImpl implements SignService {
     public String getMainPriUserId(String signid, List<AgentTask> agentTaskList,String nodeKey) {
         User dealUser = signPrincipalService.getMainPriUser(signid);
         return userService.getTaskDealId(dealUser, agentTaskList,nodeKey);
+    }
+
+    @Override
+    public boolean updateProjectNameCase(Sign sign) {
+        return false;
     }
 
     /**
