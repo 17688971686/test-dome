@@ -141,11 +141,13 @@
         $scope.csHide("cjgl");
         var vm = this;
         vm.model = {};
+        vm.tableParams = {};
         //获取项目列表
         projectManagerSvc.bsTableCancelManagement(vm);
 
         //导出项目信息
         vm.expProinfo = function () {
+            vm.status = '2';
             projectManagerSvc.createProReport(vm);
         }
 
@@ -279,11 +281,14 @@
     function projectManagerCtrl($scope,projectManagerSvc,bsWin) {
         var vm = this;
         vm.model = {};
+        vm.tableParams = {};
+
         //获取项目列表
         projectManagerSvc.bsTableControlForManagement(vm);
 
         //导出项目信息
         vm.expProinfo = function () {
+            vm.status = '1';
             projectManagerSvc.createProReport(vm);
         }
 
@@ -308,11 +313,30 @@
     function projectManagerSvc($http, bsWin, $state) {
         var url_management = util.formatUrl("project");
         var attachments_url = util.formatUrl("sys/sysfile");
+
         return {
 
             bsTableControlForManagement: function (vm, searchUrl, filter) {
                 vm.bsTableControlForManagement = {
                     options: util.getTableFilterOption({
+                        queryParams: function (params) {
+                           var filters = params.filter;
+                            var me = this,
+                                _params = {
+                                    "$skip": params.offset,
+                                    "$top": params.limit,
+                                    "$orderby": !params.sort ? me.defaultSort : (params.sort + " " + params.order),
+                                    "$filter": filters.length ==0 ? "" :$.toOdataFilter({
+                                        logic:"and",
+                                        filters:filters
+                                 })
+                                };
+                            if (me.pagination) {
+                                _params["$inlinecount"] = "allpages";
+                            }
+                            vm.tableParams = _params;
+                            return _params;
+                        },
                         url: url_management + ("/proInfo" || ""),
                         defaultFilters: filter,
                         columns: [{
@@ -332,7 +356,8 @@
                             field: 'fileCode',
                             title: '收文编号',
                             width: 100,
-                            filterControl: 'input'
+                            filterControl: 'input',
+                            filterOperator: "like"
                         },{
                             field: 'projectName',
                             title: '项目名称',
@@ -345,17 +370,20 @@
                             field: 'reviewStage',
                             title: '评审阶段',
                             width: 100,
-                            filterControl: 'input'
+                            filterControl: 'dict',
+                            filterData: 'DICT.REVIEWSTAGE.dicts.PRO_STAGE'
                         }, {
                             field: 'proUnit',
                             title: '项目单位',
                             width: 90,
-                            filterControl: 'input'
+                            filterControl: 'input',
+                            filterOperator: "like",
                         }, {
                             field: 'reviewDept',
                             title: '评审部门',
                             width: 90,
-                            filterControl: 'input'
+                            filterControl: 'dict',
+                            filterData: 'DICT.DEPT.dicts.TRANSACT_DEPARTMENT'
                         }, {
                             field: 'mainUser',
                             title: '项目负责人',
@@ -370,7 +398,8 @@
                             field: 'fileNum',
                             title: '发文号',
                             width: 90,
-                            filterControl: 'input'
+                            filterControl: 'input',
+                            filterOperator: "like",
                         }, {
                             field: 'fileDate',
                             title: '存档日期',
@@ -380,12 +409,14 @@
                             field: 'fileNo',
                             title: '存档号',
                             width: 90,
-                            filterControl: 'input'
+                            filterControl: 'input',
+                            filterOperator: "like",
                         },{
                             field: 'remark',
                             title: '备注',
                             width: 90,
-                            filterControl: 'input'
+                            filterControl: 'input',
+                            filterOperator: "like"
                         },{
                             field: 'id',
                             title: '操作',
@@ -397,88 +428,115 @@
             },
 
             bsTableCancelManagement: function (vm, searchUrl, filter) {
-                vm.bsTableCancelManagement = {
-                    options: util.getTableFilterOption({
-                        url: url_management + ("/cancelInfo" || ""),
-                        defaultFilters: filter,
-                        columns: [{
-                            title: '序号',
-                            switchable: false,
-                            align: "center",
-                            width: 50,
-                            formatter: function (value, row, index) {
-                                var state = vm.bsTableCancelManagement.state;
-                                if (state.pageNumber && state.pageSize) {
-                                    return index + 1 + (state.pageNumber - 1) * state.pageSize;
-                                } else {
-                                    return index + 1;
+                {
+                    vm.bsTableCancelManagement = {
+                        options: util.getTableFilterOption({
+                            queryParams: function (params) {
+                                var filters = params.filter;
+                                var me = this,
+                                    _params = {
+                                        "$skip": params.offset,
+                                        "$top": params.limit,
+                                        "$orderby": !params.sort ? me.defaultSort : (params.sort + " " + params.order),
+                                        "$filter": filters.length ==0 ? "" :$.toOdataFilter({
+                                            logic:"and",
+                                            filters:filters
+                                        })
+                                    };
+                                if (me.pagination) {
+                                    _params["$inlinecount"] = "allpages";
                                 }
-                            }
-                        },{
-                            field: 'fileCode',
-                            title: '收文编号',
-                            width: 100,
-                            filterControl: 'input'
-                        },{
-                            field: 'projectName',
-                            title: '项目名称',
-                            width: 200,
-                            sortable: false,
-                            filterControl: "input",
-                            filterOperator: "like",
-                            formatter: '<a href="#/projectManageView/{{row.id}}/cancelView" style="color:blue">{{row.projectName}}</a>'
-                        }, {
-                            field: 'reviewStage',
-                            title: '评审阶段',
-                            width: 100,
-                            filterControl: 'input'
-                        }, {
-                            field: 'proUnit',
-                            title: '项目单位',
-                            width: 90,
-                            filterControl: 'input'
-                        }, {
-                            field: 'reviewDept',
-                            title: '评审部门',
-                            width: 90,
-                            filterControl: 'input'
-                        }, {
-                            field: 'mainUser',
-                            title: '项目负责人',
-                            width: 90,
-                            filterControl: 'input'
-                        }, {
-                            field: 'dispatchDate',
-                            title: '发文日期',
-                            width: 90,
-                            filterControl: 'input'
-                        }, {
-                            field: 'fileNum',
-                            title: '发文号',
-                            width: 90,
-                            filterControl: 'input'
-                        }, {
-                            field: 'fileDate',
-                            title: '存档日期',
-                            width: 90,
-                            filterControl: 'input'
-                        },{
-                            field: 'fileNo',
-                            title: '存档号',
-                            width: 90,
-                            filterControl: 'input'
-                        },{
-                            field: 'remark',
-                            title: '备注',
-                            width: 90,
-                            filterControl: 'input'
-                        },{
-                            field: 'id',
-                            title: '操作',
-                            width: 240,
-                            formatter: $("#columnBtns").html()
-                        }]
-                    })
+                                vm.tableParams = _params;
+                                return _params;
+                            },
+                            url: url_management + ("/cancelInfo" || ""),
+                            defaultFilters: filter,
+                            columns: [{
+                                title: '序号',
+                                switchable: false,
+                                align: "center",
+                                width: 50,
+                                formatter: function (value, row, index) {
+                                    var state = vm.bsTableCancelManagement.state;
+                                    if (state.pageNumber && state.pageSize) {
+                                        return index + 1 + (state.pageNumber - 1) * state.pageSize;
+                                    } else {
+                                        return index + 1;
+                                    }
+                                }
+                            },{
+                                field: 'fileCode',
+                                title: '收文编号',
+                                width: 100,
+                                filterControl: 'input',
+                                filterOperator: "like"
+                            },{
+                                field: 'projectName',
+                                title: '项目名称',
+                                width: 200,
+                                sortable: false,
+                                filterControl: "input",
+                                filterOperator: "like",
+                                formatter: '<a href="#/projectManageView/{{row.id}}/view" style="color:blue">{{row.projectName}}</a>'
+                            }, {
+                                field: 'reviewStage',
+                                title: '评审阶段',
+                                width: 100,
+                                filterControl: 'dict',
+                                filterData: 'DICT.REVIEWSTAGE.dicts.PRO_STAGE'
+                            }, {
+                                field: 'proUnit',
+                                title: '项目单位',
+                                width: 90,
+                                filterControl: 'input',
+                                filterOperator: "like",
+                            }, {
+                                field: 'reviewDept',
+                                title: '评审部门',
+                                width: 90,
+                                filterControl: 'dict',
+                                filterData: 'DICT.DEPT.dicts.TRANSACT_DEPARTMENT'
+                            }, {
+                                field: 'mainUser',
+                                title: '项目负责人',
+                                width: 90,
+                                filterControl: 'input'
+                            }, {
+                                field: 'dispatchDate',
+                                title: '发文日期',
+                                width: 90,
+                                filterControl: 'input'
+                            }, {
+                                field: 'fileNum',
+                                title: '发文号',
+                                width: 90,
+                                filterControl: 'input',
+                                filterOperator: "like",
+                            }, {
+                                field: 'fileDate',
+                                title: '存档日期',
+                                width: 90,
+                                filterControl: 'input'
+                            },{
+                                field: 'fileNo',
+                                title: '存档号',
+                                width: 90,
+                                filterControl: 'input',
+                                filterOperator: "like",
+                            },{
+                                field: 'remark',
+                                title: '备注',
+                                width: 90,
+                                filterControl: 'input',
+                                filterOperator: "like"
+                            },{
+                                field: 'id',
+                                title: '操作',
+                                width: 240,
+                                formatter: $("#columnBtns").html()
+                            }]
+                        })
+                    }
                 }
             },
             //根据id查找小型投资项目
@@ -529,19 +587,7 @@
 
             },
             createProReport: function(vm) {
- /*               var filter = [];
-                if (vm.model.projectIndustry) {
-                    filter.push(util.format("governmentInvestProject.projectIndustry eq '{0}'", vm.model.projectIndustry));
-                }
-                if (vm.model.constructionType) {
-                    filter.push(util.format("governmentInvestProject.constructionType eq '{0}'" + vm.model.constructionType));
-                }
-                if (vm.model.haveUserId) {
-                    filter.push(util.format("governmentInvestProject.userId eq '{0}'", vm.model.haveUserId));
-                }
-                window.open(url_projectCollect + "/createGovProReport2?submitDate=" + vm.model.submitDate +
-                    "&$filter=" + filter.join(" and "));*/
-            window.open(url_management + "/exportPro2?fileCode=22");
+                window.open(url_management + "/exportPro2?$filter=" + vm.tableParams.$filter +"and status eq '"+vm.status+"' &$orderby="+ vm.tableParams.$orderby);
         },
 
             /**
@@ -571,13 +617,14 @@
                     auto: true,//自动上传
                     fileObjName: 'files',// 上传参数名称
                     fileSizeLimit: "40MB",//上传文件大小限制
-                    fileExt: '*.pdf;*.txt;*.png;*.doc',
-                    fileTypeExts: '*.pdf;*.txt;*.png;*.doc',
-                    fileTypeDesc: "请选择*.pdf;*.txt;*.png;*.doc文件",     // 文件说明
+                    fileExt: '*.pdf;*.txt;*.png;*.jpg;*.doc;*.docx;*.wps',
+                    fileTypeExts: '*.pdf;*.txt;*.png;*.jpg;*.doc;*.docx;*.wps',
+                    fileTypeDesc: "请选择*.pdf;*.txt;*.png;*.jpg;*.doc;*.docx;*.wps文件",     // 文件说明
                     removeCompleted: true,
                     onUploadStart: function (file) {
                         $('#relateAttach').uploadify("settings", "formData", {
-                            "businessId": vm.model.id ? vm.model.id : vm.UUID
+                            "businessId": vm.model.id ? vm.model.id : vm.UUID,
+                            "mainType" : 'ProAttachment'
                         });
                     },
                     onUploadSuccess: function (file, data, response) {
@@ -592,7 +639,23 @@
                     },
                     onUploadError: function (file, errorCode, errorMsg, errorString) {
                         angular.element("body").scope().$apply(function () {
-                            bsWin.error("上传失败");
+                            switch (errorCode) {
+                                case -100:
+                                    bsWin.error("上传的文件数量已经超出系统限制的文件！");
+                                    break;
+                                case -110:
+                                    bsWin.error("文件 [" + file.name + "] 大小超出系统限制的大小！");
+                                    break;
+                                case -120:
+                                    bsWin.error("文件 [" + file.name + "] 大小异常！");
+                                    break;
+                                case -130:
+                                    bsWin.error("文件 [" + file.name + "] 类型不正确！");
+                                    break;
+                                default:
+                                    bsWin.error("上传失败");
+                                    break;
+                            }
                         });
                     }
                 });
@@ -769,233 +832,6 @@
         return {};
 
     });
-})();
-(function () {
-    'use strict';
-
-    angular.module('myApp').config(function ($stateProvider) {
-        $stateProvider.state('dict', {
-            url: "/dict",
-            controllerAs: "vm",
-            templateUrl: util.formatUrl('sys/dict/html/list'),
-            controller: function ($scope, dictSvc, bsWin) {
-                $scope.csHide("bm");
-                var vm = this;
-                vm.dict = {};
-                //deleteDict#Begin
-                vm.dels = function () {
-                    var nodes = vm.dictsTree.getSelectedNodes();
-                    if (nodes && nodes.length > 0) {
-                        vm.del(nodes[0].dictId)
-                    } else {
-                        bsWin.confirm("请选择数据")
-                    }
-                };
-                vm.del = function (dictId) {
-                    vm.dict.dictId = dictId;
-                    bsWin.confirm("删除字典将会连下级字典一起删除，确认删除数据吗？", function () {
-                        dictSvc.deleteDict(vm);
-                    });
-                };
-                //deleteDict#End
-
-                vm.resetDict = function () {
-                    bsWin.confirm("您确定要重置数据字典吗？", function () {
-                        dictSvc.resetDict(vm);
-                    });
-                }
-
-                dictSvc.initDictTree(vm);
-            }
-
-        });
-    });
-
-})();
-(function () {
-    'use strict';
-
-    angular.module('myApp').config(function ($stateProvider) {
-        $stateProvider.state('dict.edit', {
-            url: "/dictEdit/:dictId",
-            controllerAs: "vm",
-            templateUrl: util.formatUrl('sys/dict/html/edit'),
-            controller: function ($scope, dictSvc, $state) {
-                $scope.csHide("bm");
-                var vm = this;
-                vm.dict = {};
-                vm.dictId = $state.params.dictId;
-                if (vm.dictId) {
-                    vm.isUpdate = true;
-                }
-                if (vm.isUpdate) {
-                    dictSvc.findDictById(vm);
-                } else {
-                    dictSvc.initpZtreeClient(vm);
-                }
-                vm.create = function () {
-                    if (vm.dictsTree) {
-                        var pNode = vm.dictsTree.getCheckedNodes(true);
-                        if (pNode && pNode.length != 0) {
-                            vm.dict.parentId = pNode[0].dictId;
-                        }
-                    }
-                    dictSvc.createDict(vm);
-                };
-
-                vm.update = function () {
-                    dictSvc.updateDict(vm);
-                };
-
-                vm.dictTypeChange = function () {
-                    if (vm.dict.dictType) {
-                        vm.dict.dictKey = '';
-                    }
-                };
-
-            }
-        });
-    });
-
-})();
-(function () {
-    'use strict';
-
-    var app = angular.module('myApp');
-    app.factory("dictSvc", function ($http, bsWin, $state) {
-        var dict_url = util.formatUrl("sys/dict");
-        return {
-            //list#zTree#Begin
-            initDictTree: initDictTree,
-            //list#zTree#End
-            //edit#zTree#Begin
-            /**
-             * 初始化数据字典树
-             * @param vm    作用域
-             */
-            initpZtreeClient: function (vm) {
-                vm.dictsTree && vm.dictsTree.destroy();
-                $http.get(dict_url + "?$orderby=itemOrder asc").success(function (data) {
-                    //vm.dict = data;
-                    var setting = {
-                        check: {enable: true, chkStyle: "radio", radioType: "all"},
-                        data: {
-                            key: {
-                                name: "dictName"
-                            },
-                            simpleData: {
-                                enable: true,
-                                idKey: "dictId",
-                                pIdKey: "parentId",
-                                rootPId: 0
-                            }
-                        }
-                    };
-                    vm.dictsTree = $.fn.zTree.init($("#pzTree"), setting, data || []);
-                });
-            },
-            //edit#zTree#End
-            /**
-             * 创建数据字典
-             * @param vm    作用域
-             */
-            createDict: function (vm) {
-                util.initJqValidation();
-                var isValid = $('form').valid();
-                if (isValid) {
-                    vm.isSubmit = true;
-                    $http.post(dict_url, vm.dict).then(function () {
-                        bsWin.success("创建成功");
-                        vm.isSubmit = false;
-                        initDictTree(vm);
-                    }, function () {
-                        vm.isSubmit = false;
-                    });
-                }
-            },
-            /**
-             * 通过主键查找数据字典数据
-             * @param vm    作用域
-             */
-            findDictById: function (vm) {
-                if (!vm.dictId) return false;
-                $http.get(dict_url + "/" + vm.dictId).success(function (data) {
-                    vm.dict = data;
-                });
-            },
-
-            updateDict: function (vm) {
-                util.initJqValidation();
-                var isValid = $('form').valid();
-                if (isValid) {
-                    vm.isSubmit = true;
-                    $http.put(dict_url, vm.dict).then(function () {
-                        bsWin.success("更新成功");
-                        vm.isSubmit = false;
-                        initDictTree(vm);
-                    }, function () {
-                        vm.isSubmit = false;
-                    })
-                }
-            },
-
-            deleteDict: function (vm) {
-                vm.isSubmit = true;
-                $http['delete'](dict_url, {params: {"dictId": vm.dict.dictId || ""}}).then(function () {
-                    bsWin.success("删除成功");
-                    vm.isSubmit = false;
-                    initDictTree(vm);
-                }, function () {
-                    vm.isSubmit = false;
-                });
-            },
-            /**
-             *
-             * @param vm
-             */
-            resetDict: function (vm) {
-                vm.isSubmit = true;
-                $http.post(dict_url + "/reset", {}).then(function () {
-                    bsWin.success("操作成功");
-                    vm.isSubmit = false;
-                    initDictTree(vm);
-                }, function () {
-                    vm.isSubmit = false;
-                });
-            }
-        };
-
-        function initDictTree(vm) {
-            vm.dictsTree && vm.dictsTree.destroy();
-            $http.get(dict_url + "?$orderby=itemOrder asc").success(function (data) {
-                // vm.dict = data;
-
-                vm.dictsTree = $.fn.zTree.init($("#zTree"), {
-                    callback: {
-                        onClick: zTreeOnClick
-                    },
-                    data: {
-                        key: {
-                            name: "dictName"
-                        },
-                        simpleData: {
-                            enable: true,
-                            idKey: "dictId",
-                            pIdKey: "parentId",
-                            rootPId: 0
-                        }
-                    }
-                }, data || []);
-                function zTreeOnClick(event, treeId, treeNode) {
-                    $state.go('dict.edit', {dictId: treeNode.dictId});
-                }
-
-                // 初始化模糊搜索方法
-                window.fuzzySearch("zTree", '#dictTreeKey', null, true);
-            });
-        }
-    });
-
 })();
 (function () {
     'use strict';
@@ -1261,6 +1097,233 @@
                 });
             },
 
+        }
+    });
+
+})();
+(function () {
+    'use strict';
+
+    angular.module('myApp').config(function ($stateProvider) {
+        $stateProvider.state('dict', {
+            url: "/dict",
+            controllerAs: "vm",
+            templateUrl: util.formatUrl('sys/dict/html/list'),
+            controller: function ($scope, dictSvc, bsWin) {
+                $scope.csHide("bm");
+                var vm = this;
+                vm.dict = {};
+                //deleteDict#Begin
+                vm.dels = function () {
+                    var nodes = vm.dictsTree.getSelectedNodes();
+                    if (nodes && nodes.length > 0) {
+                        vm.del(nodes[0].dictId)
+                    } else {
+                        bsWin.confirm("请选择数据")
+                    }
+                };
+                vm.del = function (dictId) {
+                    vm.dict.dictId = dictId;
+                    bsWin.confirm("删除字典将会连下级字典一起删除，确认删除数据吗？", function () {
+                        dictSvc.deleteDict(vm);
+                    });
+                };
+                //deleteDict#End
+
+                vm.resetDict = function () {
+                    bsWin.confirm("您确定要重置数据字典吗？", function () {
+                        dictSvc.resetDict(vm);
+                    });
+                }
+
+                dictSvc.initDictTree(vm);
+            }
+
+        });
+    });
+
+})();
+(function () {
+    'use strict';
+
+    angular.module('myApp').config(function ($stateProvider) {
+        $stateProvider.state('dict.edit', {
+            url: "/dictEdit/:dictId",
+            controllerAs: "vm",
+            templateUrl: util.formatUrl('sys/dict/html/edit'),
+            controller: function ($scope, dictSvc, $state) {
+                $scope.csHide("bm");
+                var vm = this;
+                vm.dict = {};
+                vm.dictId = $state.params.dictId;
+                if (vm.dictId) {
+                    vm.isUpdate = true;
+                }
+                if (vm.isUpdate) {
+                    dictSvc.findDictById(vm);
+                } else {
+                    dictSvc.initpZtreeClient(vm);
+                }
+                vm.create = function () {
+                    if (vm.dictsTree) {
+                        var pNode = vm.dictsTree.getCheckedNodes(true);
+                        if (pNode && pNode.length != 0) {
+                            vm.dict.parentId = pNode[0].dictId;
+                        }
+                    }
+                    dictSvc.createDict(vm);
+                };
+
+                vm.update = function () {
+                    dictSvc.updateDict(vm);
+                };
+
+                vm.dictTypeChange = function () {
+                    if (vm.dict.dictType) {
+                        vm.dict.dictKey = '';
+                    }
+                };
+
+            }
+        });
+    });
+
+})();
+(function () {
+    'use strict';
+
+    var app = angular.module('myApp');
+    app.factory("dictSvc", function ($http, bsWin, $state) {
+        var dict_url = util.formatUrl("sys/dict");
+        return {
+            //list#zTree#Begin
+            initDictTree: initDictTree,
+            //list#zTree#End
+            //edit#zTree#Begin
+            /**
+             * 初始化数据字典树
+             * @param vm    作用域
+             */
+            initpZtreeClient: function (vm) {
+                vm.dictsTree && vm.dictsTree.destroy();
+                $http.get(dict_url + "?$orderby=itemOrder asc").success(function (data) {
+                    //vm.dict = data;
+                    var setting = {
+                        check: {enable: true, chkStyle: "radio", radioType: "all"},
+                        data: {
+                            key: {
+                                name: "dictName"
+                            },
+                            simpleData: {
+                                enable: true,
+                                idKey: "dictId",
+                                pIdKey: "parentId",
+                                rootPId: 0
+                            }
+                        }
+                    };
+                    vm.dictsTree = $.fn.zTree.init($("#pzTree"), setting, data || []);
+                });
+            },
+            //edit#zTree#End
+            /**
+             * 创建数据字典
+             * @param vm    作用域
+             */
+            createDict: function (vm) {
+                util.initJqValidation();
+                var isValid = $('form').valid();
+                if (isValid) {
+                    vm.isSubmit = true;
+                    $http.post(dict_url, vm.dict).then(function () {
+                        bsWin.success("创建成功");
+                        vm.isSubmit = false;
+                        initDictTree(vm);
+                    }, function () {
+                        vm.isSubmit = false;
+                    });
+                }
+            },
+            /**
+             * 通过主键查找数据字典数据
+             * @param vm    作用域
+             */
+            findDictById: function (vm) {
+                if (!vm.dictId) return false;
+                $http.get(dict_url + "/" + vm.dictId).success(function (data) {
+                    vm.dict = data;
+                });
+            },
+
+            updateDict: function (vm) {
+                util.initJqValidation();
+                var isValid = $('form').valid();
+                if (isValid) {
+                    vm.isSubmit = true;
+                    $http.put(dict_url, vm.dict).then(function () {
+                        bsWin.success("更新成功");
+                        vm.isSubmit = false;
+                        initDictTree(vm);
+                    }, function () {
+                        vm.isSubmit = false;
+                    })
+                }
+            },
+
+            deleteDict: function (vm) {
+                vm.isSubmit = true;
+                $http['delete'](dict_url, {params: {"dictId": vm.dict.dictId || ""}}).then(function () {
+                    bsWin.success("删除成功");
+                    vm.isSubmit = false;
+                    initDictTree(vm);
+                }, function () {
+                    vm.isSubmit = false;
+                });
+            },
+            /**
+             *
+             * @param vm
+             */
+            resetDict: function (vm) {
+                vm.isSubmit = true;
+                $http.post(dict_url + "/reset", {}).then(function () {
+                    bsWin.success("操作成功");
+                    vm.isSubmit = false;
+                    initDictTree(vm);
+                }, function () {
+                    vm.isSubmit = false;
+                });
+            }
+        };
+
+        function initDictTree(vm) {
+            vm.dictsTree && vm.dictsTree.destroy();
+            $http.get(dict_url + "?$orderby=itemOrder asc").success(function (data) {
+                // vm.dict = data;
+
+                vm.dictsTree = $.fn.zTree.init($("#zTree"), {
+                    callback: {
+                        onClick: zTreeOnClick
+                    },
+                    data: {
+                        key: {
+                            name: "dictName"
+                        },
+                        simpleData: {
+                            enable: true,
+                            idKey: "dictId",
+                            pIdKey: "parentId",
+                            rootPId: 0
+                        }
+                    }
+                }, data || []);
+                function zTreeOnClick(event, treeId, treeNode) {
+                    $state.go('dict.edit', {dictId: treeNode.dictId});
+                }
+
+                // 初始化模糊搜索方法
+                window.fuzzySearch("zTree", '#dictTreeKey', null, true);
+            });
         }
     });
 
