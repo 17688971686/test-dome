@@ -140,4 +140,11 @@ public interface SignBranchRepo extends IRepository<SignBranch, String> {
      */
     int countNeedWP(String signid);
 
+    /**
+     * 根据项目ID和分支ID查询分支信息
+     * @param signId
+     * @param branchId
+     * @return
+     */
+    SignBranch findBySignIdAndBranchId(String signId,String branchId);
 }

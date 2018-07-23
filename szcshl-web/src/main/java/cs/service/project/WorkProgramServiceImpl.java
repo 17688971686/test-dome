@@ -169,7 +169,8 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 
             workProgram.setBaseInfo(EnumState.NO.getValue());
             workProgramRepo.save(workProgram);
-
+            //更改分支状态
+            signBranchRepo.isNeedWP(sign.getSignid(),workProgram.getBranchId(),EnumState.YES.getValue());
             //用于返回页面
             workProgramDto.setId(workProgram.getId());
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", workProgramDto);
@@ -839,6 +840,10 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             workProgram.setModifiedBy(SessionUtil.getDisplayName());
             workProgram.setModifiedDate(new Date());
             workProgramRepo.save(workProgram);
+
+            if(EnumState.NO.getValue().equals(workProgram.getBaseInfo())){
+                signBranchRepo.isNeedWP(sign.getSignid(),workProgram.getBranchId(),EnumState.NO.getValue());
+            }
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(), wpId, "保存失败，异常信息已记录，请联系管理员处理！", null);
         } catch (Exception e) {
             e.printStackTrace();

@@ -12,7 +12,12 @@
         return function (val) {
             return $sce.trustAsHtml(val);
         };
-    }]).filter('myFilter', function () {
+    }]).filter('ntobr', function(){
+        var filter = function(input){
+            return input.replace(/\n/g,"<\/br>").replace(/ /g,"&nbsp;");
+        };
+        return filter;
+    }).filter('myFilter', function () {
         return function (collection, keyname, value) {
             var output = [];
             var valueArr = [];

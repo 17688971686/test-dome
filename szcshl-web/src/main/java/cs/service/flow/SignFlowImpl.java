@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cs.domain.project.SignBranch;
 import cs.domain.project.WorkProgram;
 import cs.domain.sys.OrgDept;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
@@ -119,21 +120,10 @@ public class SignFlowImpl implements IFlow {
                 if(!Validate.isString(branchIndex)){
                     branchIndex =  FlowConstant.SignFlowParams.BRANCH_INDEX4.getValue();
                 }
-                String isNeedWP =  Constant.EnumState.YES.getValue();
-
-                WorkProgram wp = workProgramRepo.findBySignIdAndBranchId(businessKey,branchIndex, false);
-                boolean isFinishWP = false;
-                if(Validate.isObject(wp)){
-                    if(Validate.isString(wp.getBaseInfo()) && Constant.EnumState.YES.getValue().equals(wp.getBaseInfo())){
-                        isFinishWP = false;
-                        isNeedWP =  Constant.EnumState.NO.getValue();
-                    }else{
-                        isFinishWP = true;
-                    }
-                }
-                businessMap.put("isNeedWP", isNeedWP);
+                SignBranch signBranch = signBranchRepo.findBySignIdAndBranchId(businessKey,branchIndex);
+                businessMap.put("isNeedWP", signBranch.getIsNeedWP());
                 //能查询出工作方案，代表已经完成工作填写
-                businessMap.put("isFinishWP", isFinishWP);
+                businessMap.put("isFinishWP", Constant.EnumState.YES.getValue().equals(signBranch.getIsFinished())?true:false);
                 break;
             //发文申请
             case FlowConstant.FLOW_SIGN_FW:

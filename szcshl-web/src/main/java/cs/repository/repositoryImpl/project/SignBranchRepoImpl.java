@@ -386,6 +386,17 @@ public class SignBranchRepoImpl extends AbstractRepository<SignBranch, String> i
         return totalResult;
     }
 
+    @Override
+    public SignBranch findBySignIdAndBranchId(String signId, String branchId) {
+        Criteria criteria = getExecutableCriteria();
+        criteria.add(Restrictions.eq(SignBranch_.signId.getName(),signId));
+        criteria.add(Restrictions.eq(SignBranch_.branchId.getName(),branchId));
+        List<SignBranch> resuList = criteria.list();
+        if(Validate.isList(resuList)){
+            return resuList.get(0);
+        }
+        return null;
+    }
 
 
 }
