@@ -122,8 +122,6 @@ public class SignFlowImpl implements IFlow {
                 }
                 SignBranch signBranch = signBranchRepo.findBySignIdAndBranchId(businessKey,branchIndex);
                 businessMap.put("isNeedWP", signBranch.getIsNeedWP());
-                //能查询出工作方案，代表已经完成工作填写
-                businessMap.put("isFinishWP", Constant.EnumState.YES.getValue().equals(signBranch.getIsFinished())?true:false);
                 break;
             //发文申请
             case FlowConstant.FLOW_SIGN_FW:

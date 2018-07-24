@@ -14,7 +14,9 @@
         };
     }]).filter('ntobr', function(){
         var filter = function(input){
-            return input.replace(/\n/g,"<\/br>").replace(/ /g,"&nbsp;");
+            if(input){
+                return input.replace(/\n/g,"<\/br>").replace(/ /g,"&nbsp;");
+            }
         };
         return filter;
     }).filter('myFilter', function () {

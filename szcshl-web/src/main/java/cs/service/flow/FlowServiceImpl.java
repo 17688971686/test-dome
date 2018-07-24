@@ -1475,6 +1475,7 @@ public class FlowServiceImpl implements FlowService {
             case FLOW_SIGN_QRFW:
                 boolean isAgree = Constant.EnumState.YES.getValue().equals(flowDto.getBusinessMap().get("AGREE").toString());
                 if (isAgree) {
+                    variables.put(FlowConstant.SignFlowParams.XMFZR_SP.getValue(), true);
                     variables.put(FlowConstant.SignFlowParams.HAVE_XB.getValue(), false);
                     //获取主分支的部门领导
                     assigneeValue = signService.getMainDirecotr(signid, agentTaskList, FLOW_SIGN_BMLD_QRFW);
@@ -1483,10 +1484,10 @@ public class FlowServiceImpl implements FlowService {
                     variables.put(FlowConstant.SignFlowParams.HAVE_XB.getValue(), null);
                     variables.put(FlowConstant.SignFlowParams.XMFZR_SP.getValue(), false);
                     //选择第一负责人
+                    assigneeValue = signService.getMainPriUserId(signid, agentTaskList,FlowConstant.FLOW_SIGN_QRFW);
+                    variables.put(FlowConstant.SignFlowParams.USER_FZR1.getValue(), assigneeValue);
+
                 }
-                //开始处理流程
-                assigneeValue = signService.getMainPriUserId(signid, agentTaskList,FlowConstant.FLOW_SIGN_QRFW);
-                variables.put(FlowConstant.SignFlowParams.USER_FZR1.getValue(), assigneeValue);
                 commitFZENode(variables, task.getId(), processInstance.getId(), flowDto.getDealOption(), dp, isAgentTask, isAgree);
                 //处理合并发文的发文和项目信息
                 for (SignMerge s : mergeList) {
