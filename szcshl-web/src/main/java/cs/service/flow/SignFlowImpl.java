@@ -122,6 +122,13 @@ public class SignFlowImpl implements IFlow {
                 }
                 SignBranch signBranch = signBranchRepo.findBySignIdAndBranchId(businessKey,branchIndex);
                 businessMap.put("isNeedWP", signBranch.getIsNeedWP());
+
+                WorkProgram wp = workProgramRepo.findBySignIdAndBranchId(businessKey,branchIndex,false);
+                if(Validate.isObject(wp) && !Constant.EnumState.YES.getValue().equals(wp.getBaseInfo())){
+                    businessMap.put("isFinishWP", true);
+                }else{
+                    businessMap.put("isFinishWP", false);
+                }
                 break;
             //发文申请
             case FlowConstant.FLOW_SIGN_FW:

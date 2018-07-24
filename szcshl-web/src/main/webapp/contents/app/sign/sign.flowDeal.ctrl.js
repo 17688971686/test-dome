@@ -120,7 +120,7 @@
             });
             // 初始化业务信息
             signSvc.initFlowPageData(vm.model.signid, function (data) {
-                // debugger;
+
                 vm.model = data;
                 vm.curDate = data.curDate;
                 var deActive = $("#myTab .active");
@@ -134,7 +134,6 @@
                 //发文
                 if (vm.model.dispatchDocDto) {
                     vm.showFlag.tabDispatch = true;
-
                     vm.dispatchDoc = vm.model.dispatchDocDto;
                     //如果是合并发文次项目，则不用生成发文编号
                     if ((vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject == 0)|| vm.dispatchDoc.fileNum) {
@@ -158,7 +157,7 @@
                     vm.showFlag.tabFilerecord = true;
                     vm.fileRecord = vm.model.fileRecordDto;
                 }
-                // debugger;
+
                 //判断是否有多个分支，用于控制是否显示总投资字段 和 分开获取关联的项目信息（主要用于项目概算阶段）（旧版本）
                 //通过评估部门的个数来控制总投资字段  修改于（2018-01-16）
                 if (vm.model.workProgramDtoList && vm.model.workProgramDtoList.length > 0) {
@@ -1146,9 +1145,17 @@
                         title: "询问提示",
                         message: "不做工作方案系统将会删除工作方案数据，确认不做工作方案么？",
                         onOk: function () {
-                            $('.confirmDialog').modal('hide');
+                            vm.isSubmit = true;
                             vm.businessFlag.isNeedWP = 0;
-                            signSvc.removeWP(vm);
+                            signSvc.removeWP(vm,function(data){
+                                if (data.flag || data.reCode == "ok") {
+                                    bsWin.success("操作成功！",function(){
+                                        active();
+                                    });
+                                } else {
+                                    bsWin.error(data.reMsg);
+                                }
+                            });
                         },
                         onClose: function () {
                             checkbox.checked = !checked;

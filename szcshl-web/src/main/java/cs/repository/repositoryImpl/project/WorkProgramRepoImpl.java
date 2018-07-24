@@ -399,24 +399,28 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram,String> 
     @Override
     public void removeWPCascade(String signId,String brandId) {
         WorkProgram workProgram = findBySignIdAndBranchId(signId,brandId,false);
-        //1、删除会议室
-        roomBookingRepo.deleteByBusinessId(workProgram.getId());
-        //2、删除专家抽取等信息
-        expertSelectedRepo.deleteByBusinessId(workProgram.getId());
-        //3、删除专家抽取条件
-        expertSelConditionRepo.deleteByBusinessId(workProgram.getId());
-        //4、判断专家抽取方案，如果只有一个，则删除
-        int bCount = signBranchRepo.countNeedWP(signId);
-        if(bCount == 1){
-            expertReviewRepo.deleteByBusinessId(signId);
+        if(Validate.isObject(workProgram) && Validate.isString(workProgram.getId())){
+            //1、删除会议室
+            roomBookingRepo.deleteByBusinessId(workProgram.getId());
+            //2、删除专家抽取等信息
+            expertSelectedRepo.deleteByBusinessId(workProgram.getId());
+            //3、删除专家抽取条件
+            expertSelConditionRepo.deleteByBusinessId(workProgram.getId());
+            //4、判断专家抽取方案，如果只有一个，则删除
+            int bCount = signBranchRepo.countNeedWP(signId);
+            if(bCount == 1){
+                expertReviewRepo.deleteByBusinessId(signId);
+            }
+            //5、删除工作方案
+            HqlBuilder sqlBuilder = HqlBuilder.create();
+            sqlBuilder.append(" delete from cs_work_program where signid =:signid and branchId =:branchId and (baseInfo is null or baseInfo !=:bstate )");
+            sqlBuilder.setParam("signid", signId);
+            sqlBuilder.setParam("branchId", brandId);
+            sqlBuilder.setParam("bstate", Constant.EnumState.YES.getValue());
+            executeSql(sqlBuilder);
         }
-        //5、删除工作方案
-        HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append(" delete from cs_work_program where signid =:signid and branchId =:branchId and (baseInfo is null or baseInfo !=:bstate )");
-        sqlBuilder.setParam("signid", signId);
-        sqlBuilder.setParam("branchId", brandId);
-        sqlBuilder.setParam("bstate", Constant.EnumState.YES.getValue());
-        executeSql(sqlBuilder);
+
+        signBranchRepo.isNeedWP(signId,brandId, Constant.EnumState.NO.getValue());
     }
 
 }

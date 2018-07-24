@@ -149,12 +149,12 @@ public class DispatchDocServiceImpl implements DispatchDocService {
                 if (signMergeRepo.isHaveMerge(dispatchDocDto.getSignId(), Constant.MergeType.DISPATCH.getValue())) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，单个发文不能关联其他项目，请先删除关联项目再操作！");
                 }
-            } else if (Constant.MergeType.DIS_MERGE.getValue().equals(dispatchDocDto.getDispatchWay()) && EnumState.NO.getValue().equals(dispatchDocDto.getIsMainProject())) {
+            } else if (Constant.MergeType.DIS_MERGE.getValue().equals(dispatchDocDto.getDispatchWay())) {
                 //合并发文项目一定是单个分支项目
                 if (signBranchRepo.countBranch(dispatchDocDto.getSignId()) > 1) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "合并发文的项目，不能有多个分支！");
                 }
-                if (!signMergeRepo.checkIsMerege(dispatchDocDto.getSignId(), Constant.MergeType.DISPATCH.getValue())) {
+                if (EnumState.NO.getValue().equals(dispatchDocDto.getIsMainProject()) && !signMergeRepo.checkIsMerege(dispatchDocDto.getSignId(), Constant.MergeType.DISPATCH.getValue())) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，当前出文方式为合并发文次项目，请在主项目挑选此项目为次项目再发文！");
                 }
             }

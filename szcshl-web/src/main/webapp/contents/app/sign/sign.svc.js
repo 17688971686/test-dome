@@ -514,7 +514,7 @@
         }//E_初始化流程页面
 
         //S_removeWP
-        function removeWP(vm) {
+        function removeWP(vm,callBack) {
             var httpOptions = {
                 method: 'delete',
                 url: rootPath + "/workprogram/deleteBySignId",
@@ -524,12 +524,8 @@
             }
             var httpSuccess = function success(response) {
                 vm.isSubmit = false;
-                if (response.data.flag || response.data.reCode == "ok") {
-                    //更改状态
-                    vm.businessFlag.isFinishWP = false;
-                    bsWin.success("操作成功！");
-                } else {
-                    bsWin.error(response.data.reMsg);
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
                 }
             }
             common.http({

@@ -98,8 +98,10 @@
                     }
                     vm.showFlag.businessTr = true;
                     vm.showFlag.nodeWorkProgram = true;
+
                     vm.businessFlag.isFinishWP = vm.flow.businessMap.isFinishWP;
                     vm.businessFlag.isNeedWP = vm.flow.businessMap.isNeedWP;
+
                     //已经在做工作方案，则显示
                     if(vm.model.processState >= 2 ){
                         if(vm.businessFlag.curBranchId == '1' && vm.model.projBaseInfoDto){
@@ -113,9 +115,13 @@
                                 })
                                 vm.businessFlag.editExpertSC = true;        //显示专家评分按钮
                                 vm.showFlag.tabWorkProgram = true;
-                                $("#show_workprogram_a").click();
                             }
                         }
+                    }
+                    if(vm.businessFlag.isFinishWP){
+                        $("#show_workprogram_a").click();
+                    }else{
+                        $("#show_sign_a").click();
                     }
                     break;
                 //部长审核工作方案
