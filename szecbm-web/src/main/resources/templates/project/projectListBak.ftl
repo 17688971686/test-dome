@@ -88,8 +88,9 @@
                 <button type="button" class="btn btn-default" name="refresh" aria-label="refresh" title="搜索">
                     搜索
                 </button>
+            </div>
         </div>-->
-         <table bs-table-control="vm.rsTableControl" data-toolbar="#toolbar" id="listTable"></table>
+
         <script type="text/template" id="columnBtns">
             <a class="btn btn-xs btn-primary" href="#/projectManageView/{{row.id}}/view" >
                 <span class="glyphicon glyphicon-pencil"></span> 查看
@@ -97,11 +98,14 @@
             <a class="btn btn-xs btn-primary" href="#/projectManageEdit/{{row.id}}/edit" >
                 <span class="glyphicon glyphicon-pencil"></span> 编辑
             </a>
+     <#--       <a class="btn btn-xs btn-primary" href="#/projectManageEdit/{{row.id}}/cancel" >
+                <span class="glyphicon glyphicon-pencil"></span> 作废
+            </a>-->
             <button class="btn btn-xs btn-primary" ng-click="vm.cancel(row)">
                 <span class="glyphicon glyphicon-pencil"></span> 作废
             </button>
         </script>
-
+        <table bs-table-control="vm.rsTableControl" data-toolbar="#toolbar" id="listTable"></table>
     </div>
 
 </section>

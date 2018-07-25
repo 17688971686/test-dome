@@ -78,6 +78,43 @@
     </tr>
 
     <tr>
+        <td class="text-right">第一负责人：<span class="text-red">(*)</span></td>
+ <#--       <td >
+            <select ng-model="vm.${modelKey}.mainUser" name="mainUser" id="mainUser"
+                    ng-change="vm.checkPrincipal();" data-val="true" data-val-required="请选择项目负责人">
+                <option value="">请选择</option>
+                <option ng-repeat="x in vm.principalUsers" value="{{x.id}}" ng-selected="x.id == vm.model.mainPrinUserId ">{{x.displayName}}</option>
+            </select>
+            <span data-valmsg-for="mainPrinUserId" data-valmsg-replace="true" class="errors"></span>
+        </td>-->
+        <td>
+            <select   class="form-control input-sm" style="width:200px;" ng-model="vm.${modelKey}.mainUser" ng-change="vm.checkPrincipal();"
+                      <#if !isEdit>disabled</#if> id="mainUser" name="mainUser" data-val="true" data-val-required="必填">
+                <option value="">---请选择---</option>
+                <option ng-repeat="x in vm.principalUsers"
+                        ng-selected="x.userId == vm.model.mainUser "
+                        value="{{x.userId}}">
+                    {{x.dictName}}
+                </option>
+            </select>
+            <span data-valmsg-for="mainUser" data-valmsg-replace="true" class="text-red"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="text-right">其他负责人：</td>
+        <td>
+            <ul id="principalUser_ul">
+                <li ng-repeat="u in vm.principalUsers" id="principalUser" style="float: left;width: 80px;">
+                    <input type="checkbox" selectType="assistUser" tit="{{u.displayName}}" value="{{u.userId}}"
+                           ng-checked="vm.model.assistUser && (vm.model.assistUser).indexOf(u.userId)>-1"
+                           ng-disabled="vm.model.mainUser == u.userId"
+                         />{{u.displayName}}
+                </li>
+            </ul>
+        </td>
+    </tr>
+
+    <tr>
         <td class="text-right">发文日期：<span class="text-red">(*)</span></td>
         <td>
             <#if !isEdit>

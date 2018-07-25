@@ -7,6 +7,7 @@
 
     function projectManagerSvc($http, bsWin, $state) {
         var url_management = util.formatUrl("project");
+        var url_user = util.formatUrl("sys/user");
         var attachments_url = util.formatUrl("sys/sysfile");
 
         return {
@@ -121,11 +122,92 @@
                     })
                 }
             },
+            rsTableControl : function rsTableControl(vm) {
+                vm.rsTableControl = {
+                    options: util.getTableOption({
+                        url: url_management + ("/proInfo" || ""),
+                        defaultSort: "createdDate desc",
+                        columns: [{
+                            title: '序号',
+                            switchable: false,
+                            width: 50,
+                            formatter: function (value, row, index) {
+                                var state = vm.rsTableControl.state;
+                                if (state.pageNumber && state.pageSize) {
+                                    return index + 1 + (state.pageNumber - 1) * state.pageSize;
+                                } else {
+                                    return index + 1
+                                }
+                            }
+                        },{
+                            field: 'fileCode',
+                            title: '收文编号',
+                            width: 100,
+                        },{
+                            field: 'projectName',
+                            title: '项目名称',
+                            width: 200,
+                            sortable: false,
+                            formatter: '<a href="#/projectManageView/{{row.id}}/view" style="color:blue">{{row.projectName}}</a>'
+                        }, {
+                            field: 'reviewStage',
+                            title: '评审阶段',
+                            filterControl: 'dict',
+                            filterData: 'DICT.REVIEWSTAGE.dicts.PRO_STAGE',
+                            width: 100,
+                        }, {
+                            field: 'proUnit',
+                            title: '项目单位',
+                            width: 90,
+                        }, {
+                            field: 'reviewDept',
+                            title: '评审部门',
+                            width: 90,
+                            filterControl: 'dict',
+                            filterData: 'DICT.DEPT.dicts.TRANSACT_DEPARTMENT'
+                        }, {
+                            field: 'mainUser',
+                            title: '项目负责人',
+                            width: 90,
+                        }, {
+                            field: 'dispatchDate',
+                            title: '发文日期',
+                            width: 90,
+                        }, {
+                            field: 'fileNum',
+                            title: '发文号',
+                            width: 90,
+
+                        }, {
+                            field: 'fileDate',
+                            title: '存档日期',
+                            width: 90,
+
+                        },{
+                            field: 'fileNo',
+                            title: '存档号',
+                            width: 90,
+
+                        },{
+                            field: 'remark',
+                            title: '备注',
+                            width: 90,
+
+                        },{
+                            field: 'id',
+                            title: '操作',
+                            width: 240,
+                            formatter: $("#columnBtns").html()
+                        }
+                            ]
+                    })
+                };
+            },
 
             bsTableCancelManagement: function (vm, searchUrl, filter) {
                 {
                     vm.bsTableCancelManagement = {
-                        options: util.getTableFilterOption({
+                        options: util.getTableOption({
                             queryParams: function (params) {
                                 var filters = params.filter;
                                 var me = this,
@@ -369,6 +451,11 @@
                     bsWin.success("删除成功");
                     angular.isFunction(fn) && fn();
                 }).then(function () {
+                });
+            },
+            findOrgUser: function (vm,fn) {
+                $http.get(url_user + "/findUsersByOrgId").success(function (data) {
+                    fn(data)
                 });
             }
         }

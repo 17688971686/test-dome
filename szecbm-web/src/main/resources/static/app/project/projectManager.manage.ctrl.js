@@ -23,7 +23,7 @@
         vm.tableParams = {};
 
         //获取项目列表
-        projectManagerSvc.bsTableControlForManagement(vm);
+        projectManagerSvc.rsTableControl(vm);
 
         //导出项目信息
         vm.expProinfo = function () {

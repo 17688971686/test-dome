@@ -49,6 +49,10 @@ public class Project extends DomainBase {
     @Column(columnDefinition = "VARCHAR(64)")
     private String mainUser;
 
+    //其他项目负责人
+    @Column(columnDefinition = "VARCHAR(521)")
+    private String assistUser;
+
     //发文日期
     @Column
     private String dispatchDate;
@@ -176,4 +180,5 @@ public class Project extends DomainBase {
     public void setStatus(String status) {
         this.status = status;
     }
+
 }
