@@ -1,5 +1,5 @@
-<!--
-window.onerror = reportError;
+<!-- -->
+    window.onerror = reportError;
 function reportError(msg,url,line) {
 return true;
 }
@@ -9,6 +9,7 @@ whichIt = null;
 lastScrollX = 0; lastScrollY = 0;
 NS = (document.layers) ? 1 : 0;
 IE = (document.all) ? 1: 0;
+
 <!-- STALKER CODE -->
 function heartBeat() {
 if(IE) { diffY = document.body.scrollTop+document.body.offsetHeight-350; diffX = document.body.scrollLeft; }
