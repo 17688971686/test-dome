@@ -136,4 +136,11 @@ public interface WorkProgramService {
      * @return
      */
     ResultMsg dealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto);
+
+    /**
+     * 删除流程处理
+     * @param businessKey
+     * @return
+     */
+    ResultMsg endFlow(String businessKey);
 }

@@ -5,19 +5,11 @@
 
 import React from "react";
 import {AsyncStorage, View, Text, Button, StyleSheet,Image,TouchableOpacity} from "react-native";
-import axios from "axios/index";
 import Icon from 'react-native-vector-icons/Ionicons';
 
 export default class MyselfScreen extends React.Component {
     constructor(props) {
         super(props);
-/*        const me = this;
-        me.state = {};
-        axios.get("/api/user").then((res) => {
-            me.setState(res.data);
-        }).catch((error) => {
-            console.error(error);
-        })*/
     }
 
     render() {

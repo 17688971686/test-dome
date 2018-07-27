@@ -60,4 +60,11 @@ public interface TopicInfoService {
      * @return
      */
     ResultMsg saveTopicDetailList(TopicMaintainDto[] topicMaintainDtoArray);
+
+    /**
+     * 暂停流程
+     * @param businessKey
+     * @return
+     */
+    ResultMsg endFlow(String businessKey);
 }

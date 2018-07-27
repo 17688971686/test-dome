@@ -1,12 +1,10 @@
 /**
- * 深圳评审中心项目评审管理系统 App
+ * 深圳 App
  * @author: tzg
  */
 
 import React from 'react';
 import {createSwitchNavigator, createBottomTabNavigator ,createStackNavigator,View,Text} from 'react-navigation';
-import axios from 'axios';
-import * as DeviceInfo from "react-native-device-info/deviceinfo";
 import AuthLoadingScreen from './screen/AuthLoadingScreen';
 import SignInScreen from './screen/SignInScreen';
 import HomeScreen from './screen/HomeScreen';
@@ -95,7 +93,7 @@ const RouteConfigs = {
 
 const StackNavigatorConfig = {
     navigationOptions: {
-        title:'深圳市政府投资项目评审中心',
+        title:'深圳政府投资项目评审中心项目评审管理系统',
         headerTitleStyle: {fontSize: 18, color: '#fff'},
         headerStyle: {width:'100%',height: 50, backgroundColor: '#1E5AAF',elevation:0,},
     },
@@ -116,32 +114,6 @@ const RootStack = createSwitchNavigator(
         Auth: SignInScreen
     },
 );
-
-// axios 全局配置
-axios.defaults.baseURL = 'http://test.gxsnkj.com:9090/gxbspms';
-axios.defaults.headers.common['TOKEN'] = "";
-axios.defaults.headers.common['clientId'] = DeviceInfo.getUniqueID();
-
-// // 添加请求拦截器
-// axios.interceptors.request.use(function (config) {
-//     // 在发送请求之前做些什么
-//     return config;
-// }, function (error) {
-//     Alert.alert("11");
-//     // 对请求错误做些什么
-//     return Promise.reject(error);
-// });
-
-// 添加响应拦截器
-axios.interceptors.response.use((response) => {
-    // 对响应数据做点什么
-    console.log(response);
-    return response;
-}, (error) => {
-    console.error(error);
-    // 对响应错误做点什么
-    return Promise.reject(error);
-});
 
 export default class App extends React.Component {
     render() {

@@ -106,4 +106,11 @@ public interface AddSuppLetterService {
 	 * @return
 	 */
     ResultMsg checkIsApprove(String signId, String fileType);
+
+	/**
+	 * 结束流程
+	 * @param businessKey
+	 * @return
+	 */
+	ResultMsg endFlow(String businessKey);
 }

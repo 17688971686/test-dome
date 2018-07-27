@@ -64,4 +64,11 @@ public interface MonthlyNewsletterService {
 	 * @return
 	 */
 	ResultMsg dealSignSupperFlow(ProcessInstance processInstance, Task task, FlowDto flowDto);
+
+	/**
+	 * 结束流程
+	 * @param businessKey
+	 * @return
+	 */
+    ResultMsg endFlow(String businessKey);
 }

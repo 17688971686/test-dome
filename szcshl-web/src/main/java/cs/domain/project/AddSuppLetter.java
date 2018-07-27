@@ -164,7 +164,7 @@ public class AddSuppLetter extends DomainBase {
     private String businessType;
 
     /**
-     * 审批状态：0部长审批,1分管领导审批,2主任审批,9审批完成
+     * 审批状态：0部长审批,1分管领导审批,2主任审批,9审批完成,8:结束流程
      */
     @Column(columnDefinition = "VARCHAR(2)")
     private String appoveStatus;

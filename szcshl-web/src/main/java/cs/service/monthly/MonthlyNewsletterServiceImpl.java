@@ -42,6 +42,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.File;
 import java.util.*;
 
+import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
+
 /**
  * Description: 月报简报 业务操作实现类
  * author: sjy
@@ -98,22 +100,22 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
     @Transactional
     public ResultMsg save(MonthlyNewsletterDto record) {
         MonthlyNewsletter domain = new MonthlyNewsletter();
+        Date now = new Date();
         if(Validate.isString(record.getId())){
-             domain =   monthlyNewsletterRepo.findById(record.getId());
+            domain =   monthlyNewsletterRepo.findById(record.getId());
             BeanCopierUtils.copyPropertiesIgnoreNull(record,domain);
         }else{
             BeanCopierUtils.copyProperties(record, domain);
-            Date now = new Date();
             domain.setId(UUID.randomUUID().toString());
-            domain.setCreatedBy(SessionUtil.getDisplayName());
-            domain.setModifiedBy(SessionUtil.getDisplayName());
+            domain.setCreatedBy(SessionUtil.getUserId());
             domain.setAddTime(now);
             domain.setAuthorizedUser(SessionUtil.getDisplayName());
             domain.setAuthorizedTime(now);
             domain.setMonthlyType(EnumState.NORMAL.getValue());
             domain.setCreatedDate(now);
-            domain.setModifiedDate(now);
         }
+        domain.setModifiedDate(now);
+        domain.setModifiedBy(SessionUtil.getDisplayName());
         monthlyNewsletterRepo.save(domain);
 
         return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！", record);
@@ -632,6 +634,19 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+    }
+
+    @Override
+    public ResultMsg endFlow(String businessKey) {
+        MonthlyNewsletter monthlyNewsletter = monthlyNewsletterRepo.findById(MonthlyNewsletter_.id.getName(),businessKey);
+        if(Validate.isObject(monthlyNewsletter)){
+            if(!SessionUtil.getUserId().equals(monthlyNewsletter.getCreatedBy()) && !SUPER_ACCOUNT.equals(SessionUtil.getLoginName())){
+                return ResultMsg.error("您无权进行删除流程操作！");
+            }
+            monthlyNewsletter.setMonthlyType(EnumState.DELETE.getValue());
+            monthlyNewsletterRepo.save(monthlyNewsletter);
+        }
+        return ResultMsg.ok("操作成功！");
     }
 
 }

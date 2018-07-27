@@ -7,6 +7,8 @@ import javax.transaction.Transactional;
 import cs.common.constants.FlowConstant;
 import cs.common.utils.*;
 import cs.domain.project.AgentTask;
+import cs.domain.project.ProjectStop;
+import cs.domain.project.ProjectStop_;
 import cs.domain.sys.User;
 import cs.model.flow.FlowDto;
 import cs.repository.repositoryImpl.sys.UserRepo;
@@ -31,6 +33,8 @@ import cs.model.PageModelDto;
 import cs.model.archives.ArchivesLibraryDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.archives.ArchivesLibraryRepo;
+
+import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
 /**
  * Description: 档案借阅管理 业务操作实现类
@@ -88,7 +92,7 @@ public class ArchivesLibraryServiceImpl implements ArchivesLibraryService {
         } else {
             BeanCopierUtils.copyProperties(record, domain);
             domain.setId(UUID.randomUUID().toString());
-            domain.setCreatedBy(SessionUtil.getDisplayName());
+            domain.setCreatedBy(SessionUtil.getUserId());
             domain.setCreatedDate(now);
         }
 
@@ -437,6 +441,19 @@ public class ArchivesLibraryServiceImpl implements ArchivesLibraryService {
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+    }
+
+    @Override
+    public ResultMsg endFlow(String businessKey) {
+        ArchivesLibrary archivesLibrary = archivesLibraryRepo.findById(ArchivesLibrary_.id.getName(),businessKey);
+        if(Validate.isObject(archivesLibrary)){
+            if(!SessionUtil.getUserId().equals(archivesLibrary.getCreatedBy()) && !SUPER_ACCOUNT.equals(SessionUtil.getLoginName())){
+                return ResultMsg.error("您无权进行删除流程操作！");
+            }
+            archivesLibrary.setArchivesStatus(EnumState.FORCE.getValue());
+            archivesLibraryRepo.save(archivesLibrary);
+        }
+        return ResultMsg.ok("操作成功！");
     }
 
 

@@ -43,6 +43,7 @@ import org.activiti.engine.task.Task;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,7 +53,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static cs.common.constants.FlowConstant.*;
+import static cs.common.constants.IgnoreProps.BASE_IGNORE_PROPS;
 import static cs.common.constants.SysConstants.SEPARATE_COMMA;
+import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
 @Service
 public class WorkProgramServiceImpl implements WorkProgramService {
@@ -132,7 +135,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                     }
                 }
                 workProgram = workProgramRepo.findById(WorkProgram_.id.getName(), workProgramDto.getId());
-                BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto, workProgram);
+                BeanUtils.copyProperties(workProgramDto, workProgram,BASE_IGNORE_PROPS);
 
             } else {
                 workProgram = new WorkProgram();
@@ -811,6 +814,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
     @Override
     public ResultMsg saveBaseInfo(WorkProgramDto workProgramDto) {
         String wpId = workProgramDto.getId();
+        boolean isNew = false;
         try {
             Sign sign = null;
             WorkProgram workProgram = null;
@@ -820,6 +824,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto, workProgram);
                 workProgram.setSign(sign);
             } else {
+                isNew = true;
                 workProgram = new WorkProgram();
                 BeanCopierUtils.copyProperties(workProgramDto, workProgram);
                 wpId = (new RandomGUID()).valueAfterMD5;
@@ -829,19 +834,22 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 workProgram.setCreatedBy(SessionUtil.getUserId());
                 workProgram.setCreatedDate(new Date());
             }
-
-            //如果主分支没有工作方案，则设置为基本信息，有则设置为项目基本信息
-            if (signBranchRepo.checkIsNeedWP(sign.getSignid(), FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue())) {
-                workProgram.setBaseInfo(EnumState.NO.getValue());
-            } else {
+            //如果是新增，则为基本信息，因为默认是需要做工作方案的
+            if(isNew){
                 workProgram.setBaseInfo(EnumState.YES.getValue());
+            }else{
+                //如果主分支没有工作方案，则设置为基本信息，有则设置为项目基本信息
+                if (signBranchRepo.checkIsNeedWP(sign.getSignid(), FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue())) {
+                    workProgram.setBaseInfo(EnumState.NO.getValue());
+                } else {
+                    workProgram.setBaseInfo(EnumState.YES.getValue());
+                }
             }
-
             workProgram.setModifiedBy(SessionUtil.getDisplayName());
             workProgram.setModifiedDate(new Date());
             workProgramRepo.save(workProgram);
 
-            if(EnumState.NO.getValue().equals(workProgram.getBaseInfo())){
+            if(EnumState.YES.getValue().equals(workProgram.getBaseInfo())){
                 signBranchRepo.isNeedWP(sign.getSignid(),workProgram.getBranchId(),EnumState.NO.getValue());
             }
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(), wpId, "保存失败，异常信息已记录，请联系管理员处理！", null);
@@ -1067,6 +1075,22 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         //如果是代办，还要更新环节名称和任务ID
         if (Validate.isList(agentTaskList)) {
             agentTaskService.updateAgentInfo(agentTaskList,processInstance.getId(),processInstance.getName());
+        }
+        return ResultMsg.ok("操作成功！");
+    }
+
+    /**
+     * 停止流程
+     * @param businessKey
+     * @return
+     */
+    @Override
+    public ResultMsg endFlow(String businessKey) {
+        WorkProgram wp = workProgramRepo.findById(WorkProgram_.id.getName(),businessKey);
+        if(Validate.isObject(wp)){
+            if(!SessionUtil.getUserId().equals(wp.getCreatedBy()) && !SUPER_ACCOUNT.equals(SessionUtil.getLoginName())){
+                return ResultMsg.error("你无权进行删除流程操作");
+            }
         }
         return ResultMsg.ok("操作成功！");
     }

@@ -386,38 +386,29 @@
         }// E_流程激活
 
         // S_终止流程
-        function deleteFlow(vm) {
-            if (vm.flow.dealOption == null || vm.flow.dealOption == "") {
-                common.alert({
-                    vm: vm,
-                    msg: "请填写处理信息！"
-                })
-                return;
-            }
-            var httpOptions = {
-                method: 'post',
-                url: rootPath + "/flow/deleteFLow",
-                data: vm.flow
-            }
-            var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        common.alert({
-                            vm: vm,
-                            msg: "操作成功！"
-                        })
+        function deleteFlow(processId,comment,callBack) {
+            if(!processId){
+                bsWin.alert("获取流程实例失败！");
+            }else{
+                var httpOptions = {
+                    method: 'post',
+                    url: rootPath + "/flow/deleteFLow",
+                    params: {
+                        processInstanceId : processId,
+                        comment : comment
                     }
-                })
+                }
+                var httpSuccess = function success(response) {
+                    if (callBack != undefined && typeof callBack == 'function') {
+                        callBack(response.data);
+                    }
+                }
+                common.http({
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
             }
-
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
         }// E_终止流程
 
     }

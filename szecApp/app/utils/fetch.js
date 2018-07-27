@@ -1,8 +1,6 @@
-import 'isomorphic-fetch';
-import 'es6-promise';
-import {message} from "antd";
-import history from 'history/createBrowserHistory'
-import * as config from '../constants/config.js';
+import * as config from './config.js';
+import * as DeviceInfo from "react-native-device-info/deviceinfo";
+import {AsyncStorage} from "react-native";
 /**
  * 将对象转成 a=1&b=2的形式
  * @param obj 对象
@@ -30,7 +28,7 @@ function obj2params(obj, arr = [], idx = 0) {
 function commonFetcdh(url, options, method = 'GET', isCommitForm) {
     let initObj = {}
     method = method.toUpperCase();
-    //url = config.js.SYSTEM_ROOT + url;
+    url = config.REQ_RUL + url;
     const searchStr = obj2params(options);
     if (method === 'GET') {
         // fetch的GET不允许有body，参数只能放在url中
@@ -41,8 +39,8 @@ function commonFetcdh(url, options, method = 'GET', isCommitForm) {
             credentials: 'include',
             headers: new Headers({
                 'Accept': 'application/json',
-                'sysToken': localStorage.getItem(config.TOKEN_NAME) || '',
-                'userType': config.USER_TYPE
+                'sysToken': AsyncStorage.getItem(config.TOKEN_NAME) || '',
+                'DeviceID': DeviceInfo.getUniqueID()
             }),
         }
     } else {
@@ -53,8 +51,8 @@ function commonFetcdh(url, options, method = 'GET', isCommitForm) {
                 credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
-                    'sysToken': localStorage.getItem(config.TOKEN_NAME) || '',
-                    'userType': config.USER_TYPE
+                    'sysToken': AsyncStorage.getItem(config.TOKEN_NAME) || '',
+                    'DeviceID': DeviceInfo.getUniqueID()
                 },
                 body: JSON.stringify(options)
             }
@@ -66,8 +64,8 @@ function commonFetcdh(url, options, method = 'GET', isCommitForm) {
                 headers: new Headers({
                     'Accept': 'application/json',
                     'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-                    'sysToken': localStorage.getItem(config.TOKEN_NAME) || '',
-                    'userType': config.USER_TYPE
+                    'sysToken': AsyncStorage.getItem(config.TOKEN_NAME) || '',
+                    'DeviceID': DeviceInfo.getUniqueID()
                 }),
                 body: searchStr
             }
@@ -78,11 +76,7 @@ function commonFetcdh(url, options, method = 'GET', isCommitForm) {
 
 //创建fetch中then方法的回调
 function callback(res) {
-    const token = res.headers.get(config.TOKEN_NAME);
-    if (token) {
-        localStorage.setItem(config.TOKEN_NAME, token);
-    }
-    if (res.ok || (res.status > 199 && res.status < 300)) {
+    if (res.flag || (res.status > 199 && res.status < 300)) {
         return res.json().then(response => {
             return response;
         });
@@ -94,10 +88,9 @@ function callback(res) {
 //创建容错方法
 function errHandle(res) {
     if (res.status == 401 || res.status == 403) {
-        message.error("你的权限已失效，请重新登录！");
-        history().push("/");
+
     } else if (res.status == 500) {
-        message.error("请求异常，错误信息已记录，请联系管理员处理！");
+
     }
 }
 

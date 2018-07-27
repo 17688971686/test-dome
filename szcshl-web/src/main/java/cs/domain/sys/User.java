@@ -175,6 +175,12 @@ public class User extends DomainBase {
     private String takeUserId;
 
     /**
+     * 用户token
+     */
+    @Column(columnDefinition = "varchar(256)")
+    private String token;
+
+    /**
      * 设置代办人的时候，是否自动流转任务
      */
     @Column(columnDefinition = "varchar(2)")
@@ -461,5 +467,13 @@ public class User extends DomainBase {
 
     public void setIsAotuTrans(String isAotuTrans) {
         this.isAotuTrans = isAotuTrans;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

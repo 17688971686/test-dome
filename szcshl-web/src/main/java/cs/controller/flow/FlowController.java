@@ -532,7 +532,6 @@ public class FlowController {
         return flowService.restartFlow(businessKey);
     }
 
-
     /**
      * 流程挂起
      * @param businessKey
@@ -550,21 +549,45 @@ public class FlowController {
     @RequiresAuthentication
     @Transactional
     @RequestMapping(name = "终止流程", path = "deleteFLow", method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public ResultMsg deleteFlow(@RequestParam FlowDto flowDto) {
-        ResultMsg resultMsg = null;
+    @ResponseBody
+    public ResultMsg deleteFlow(@RequestParam String processInstanceId,String comment) {
+        ResultMsg resultMsg =  ResultMsg.error("操作失败，没有对应的流程！");
         //流程实例
-        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(flowDto.getProcessInstanceId()).singleResult();
+        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
         switch (processInstance.getProcessDefinitionKey()){
             case FlowConstant.SIGN_FLOW:
                 resultMsg = signService.endFlow(processInstance.getBusinessKey());
                 break;
+            case FlowConstant.WORK_HIS_FLOW:
+                resultMsg = workProgramService.endFlow(processInstance.getBusinessKey());
+                break;
+            case FlowConstant.TOPIC_FLOW:
+                resultMsg = topicInfoService.endFlow(processInstance.getBusinessKey());
+                break;
+            case FlowConstant.PROJECT_STOP_FLOW:
+                resultMsg = projectStopService.endFlow(processInstance.getBusinessKey());
+                break;
+            case FlowConstant.FLOW_ARCHIVES:
+                resultMsg = archivesLibraryService.endFlow(processInstance.getBusinessKey());
+                break;
+            case FlowConstant.FLOW_APPRAISE_REPORT:
+                resultMsg = appraiseService.endFlow(processInstance.getBusinessKey());
+                break;
+            case FlowConstant.FLOW_SUPP_LETTER:
+                resultMsg = addSuppLetterService.endFlow(processInstance.getBusinessKey());
+                break;
+            case FlowConstant.MONTHLY_BULLETIN_FLOW:
+                resultMsg = monthlyNewsletterService.endFlow(processInstance.getBusinessKey());
+                break;
+            case FlowConstant.ANNOUNT_MENT_FLOW:
+                resultMsg = annountmentService.endFlow(processInstance.getBusinessKey());
+                break;
             default:
-                resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"操作失败，没有对应的流程！");
+                ;
         }
         //成功再删除流程
         if(resultMsg.isFlag()){
-            runtimeService.deleteProcessInstance(processInstance.getId(), flowDto.getDealOption());
+            runtimeService.deleteProcessInstance(processInstance.getId(), comment);
         }
         log.info("流程终止成功！businessKey=" + processInstance.getBusinessKey());
         return resultMsg;

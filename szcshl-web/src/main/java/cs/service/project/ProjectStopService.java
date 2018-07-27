@@ -72,4 +72,11 @@ public interface ProjectStopService {
      * @return
      */
     Sign findSignByStopId(String stopid);
+
+    /**
+     * 删除流程
+     * @param businessKey
+     * @return
+     */
+    ResultMsg endFlow(String businessKey);
 }

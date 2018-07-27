@@ -8,6 +8,8 @@ import cs.common.utils.ActivitiUtil;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
+import cs.domain.monthly.MonthlyNewsletter;
+import cs.domain.monthly.MonthlyNewsletter_;
 import cs.domain.project.AgentTask;
 import cs.domain.sys.*;
 import cs.model.PageModelDto;
@@ -35,6 +37,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+
+import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
 @Service
 public class AnnountmentServiceImpl implements AnnountmentService {
@@ -572,6 +576,19 @@ public class AnnountmentServiceImpl implements AnnountmentService {
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+    }
+
+    @Override
+    public ResultMsg endFlow(String businessKey) {
+        Annountment annountment = annountmentRepo.findById(Annountment_.anId.getName(),businessKey);
+        if(Validate.isObject(annountment)){
+            if(!SessionUtil.getUserId().equals(annountment.getCreatedBy()) && !SUPER_ACCOUNT.equals(SessionUtil.getLoginName())){
+                return ResultMsg.error("您无权进行删除流程操作！");
+            }
+            annountment.setAppoveStatus(Constant.EnumState.DELETE.getValue());
+            annountmentRepo.save(annountment);
+        }
+        return ResultMsg.ok("操作成功！");
     }
 
 

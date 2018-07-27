@@ -1440,7 +1440,7 @@
                     title: "操作",
                     width: "15%",
                     template: function (item) {
-                        return common.format($('#columnBtns').html(), item.businessKey, item.processKey, item.taskId, item.instanceId);
+                        return common.format($('#columnBtns').html(), item.businessKey, item.processKey, item.taskId, item.instanceId,"vm.deleteTask('"+item.instanceId+"')");
                     }
                 }
             ];

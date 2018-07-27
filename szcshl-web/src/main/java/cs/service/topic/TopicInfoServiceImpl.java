@@ -36,6 +36,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
+import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
+
 
 /**
  * Description: 课题研究 业务操作实现类
@@ -810,6 +812,24 @@ public class TopicInfoServiceImpl implements TopicInfoService {
         }else{
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"没有分录数据，无法保存！");
         }
+    }
+
+    /**
+     * 删除流程业务处理
+     * @param businessKey
+     * @return
+     */
+    @Override
+    public ResultMsg endFlow(String businessKey) {
+        TopicInfo topicInfo = topicInfoRepo.findById(TopicInfo_.id.getName(),businessKey);
+        if(Validate.isObject(topicInfo)){
+            if(!SessionUtil.getUserId().equals(topicInfo.getCreatedBy()) && !SUPER_ACCOUNT.equals(SessionUtil.getLoginName())){
+                return ResultMsg.error("您无权进行删除流程操作！");
+            }
+            topicInfo.setState(Constant.EnumState.FORCE.getValue());
+            topicInfoRepo.save(topicInfo);
+        }
+        return ResultMsg.ok("操作成功！");
     }
 
 

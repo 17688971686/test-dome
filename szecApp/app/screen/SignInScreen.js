@@ -9,32 +9,21 @@ import {
     View,
     Text,
     TextInput,
-    Alert,
     ImageBackground,
     Image,
     TouchableOpacity,
     KeyboardAvoidingView
 } from "react-native";
-import axios from "axios";
 import Icon from 'react-native-vector-icons/Ionicons';
 import JSEncrypt from '../res/lib/JSEncrypt';
+import ToastUtil from '../utils/ToastUtil';
+import * as fetch from '../utils/fetch';
+import * as config from '../utils/config.js';
 
 export default class SignInScreen extends React.Component {
     constructor(props) {
         super(props);
-        const me = this;
-        me.state = {username: '', password: '', rsaKey: ''};
-        axios.post("/api/rsaKey").then((res) => {
-            // console.log("获取 rsaKey 成功", res);
-            if (res.status == 200) {
-                me.setState({rsaKey: res.data});
-            } else {
-                Alert.alert("服务器异常");
-            }
-        }).catch((error) => {
-            console.error(error);
-            Alert.alert("服务器异常");
-        })
+        this.state = {username: '', password: '', rsaKey: ''};
     }
 
     render() {
@@ -76,14 +65,24 @@ export default class SignInScreen extends React.Component {
     }
 
     toSignInAsync = () => {
-        const un = this.state.username,
-            pd = this.state.password;
+        const un = this.state.username,pd = this.state.password;
         if (!un || !pd) {
-            Alert.alert('账号或密码不能为空');
+            ToastUtil.showLong('账号或密码不能为空',true);
             return false;
         }
-
-        const encrypt = new JSEncrypt();
+        fetch.GET("/api/login/signin",{
+            loginName:un,
+            password:pd
+        }).then((res) =>{
+            const data = res || {};
+            if(data.flag || data.reCode == 'ok'){
+                AsyncStorage.setItem(config.TOKEN_NAME, data.idCode || "");
+                this.props.navigation.navigate('App');
+            }else{
+                ToastUtil.showShort("登录失败！",false);
+            }
+        });
+       /* const encrypt = new JSEncrypt();
         const me = this;
         encrypt.setPublicKey(me.state.rsaKey || "");
         axios.post("/api/getToken", {
@@ -100,7 +99,7 @@ export default class SignInScreen extends React.Component {
         }).catch((error) => {
             console.error(error);
             Alert.alert("登录失败！");
-        })
+        })*/
     };
 }
 

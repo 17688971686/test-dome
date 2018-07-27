@@ -8,6 +8,8 @@ import cs.common.utils.ActivitiUtil;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
+import cs.domain.archives.ArchivesLibrary;
+import cs.domain.archives.ArchivesLibrary_;
 import cs.domain.project.*;
 import cs.domain.sys.OrgDept;
 import cs.domain.sys.User;
@@ -37,6 +39,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+
+import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
 /**
  * Description: 优秀评审项目
@@ -141,7 +145,7 @@ public class AppraiseServiceImpl implements AppraiseService {
             }
             BeanCopierUtils.copyProperties(appraiseReportDto, appraiseReport);
             appraiseReport.setId(UUID.randomUUID().toString());
-            appraiseReport.setCreatedBy(SessionUtil.getDisplayName());
+            appraiseReport.setCreatedBy(SessionUtil.getUserId());
             appraiseReport.setCreatedDate(now);
             if (!Validate.isString(appraiseReport.getProposerName())) {
                 appraiseReport.setProposerName(SessionUtil.getDisplayName());
@@ -440,5 +444,18 @@ public class AppraiseServiceImpl implements AppraiseService {
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+    }
+
+    @Override
+    public ResultMsg endFlow(String businessKey) {
+        AppraiseReport appraiseReport = appraiseRepo.findById(AppraiseReport_.id.getName(),businessKey);
+        if(Validate.isObject(appraiseReport)){
+            if(!SessionUtil.getUserId().equals(appraiseReport.getCreatedBy()) && !SUPER_ACCOUNT.equals(SessionUtil.getLoginName())){
+                return ResultMsg.error("您无权进行删除流程操作！");
+            }
+            appraiseReport.setApproveStatus(Constant.EnumState.FORCE.getValue());
+            appraiseRepo.save(appraiseReport);
+        }
+        return ResultMsg.ok("操作成功！");
     }
 }

@@ -547,7 +547,7 @@ public class SignServiceImpl implements SignService {
                 }
 
                 if (!isMergeReview) {
-                    List<WorkProgramDto> workProgramDtoList = new ArrayList<>(totalL);
+                    List<WorkProgramDto> workProgramDtoList = new ArrayList<>();
                     //由于工作方案不是按主次顺便排序，则遍历工作方案，获取主工作方案
                     WorkProgram mainW = new WorkProgram();
                     if (totalL > 1) {
@@ -586,9 +586,10 @@ public class SignServiceImpl implements SignService {
                             }
                             workProgramDtoList.add(workProgramDto);
                         }
-
                     }
-                    signDto.setWorkProgramDtoList(workProgramDtoList);
+                    if(Validate.isList(workProgramDtoList)){
+                        signDto.setWorkProgramDtoList(workProgramDtoList);
+                    }
                 }
             }
 

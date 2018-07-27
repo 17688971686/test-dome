@@ -7,6 +7,8 @@ import cs.common.ResultMsg;
 import cs.common.utils.*;
 import cs.domain.project.*;
 import cs.domain.sys.User;
+import cs.domain.topic.TopicInfo;
+import cs.domain.topic.TopicInfo_;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.project.ProjectStopDto;
@@ -33,6 +35,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+
+import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
 /**
  * @author ldm
@@ -199,7 +203,7 @@ public class ProjectStopServiceImpl implements ProjectStopService {
                 return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，没填写预计暂停天数！");
             }
             Date now = new Date();
-            projectStop.setCreatedBy(SessionUtil.getDisplayName());
+            projectStop.setCreatedBy(SessionUtil.getUserId());
             projectStop.setCreatedDate(now);
             projectStop.setModifiedBy(SessionUtil.getDisplayName());
             projectStop.setModifiedDate(now);
@@ -479,6 +483,19 @@ public class ProjectStopServiceImpl implements ProjectStopService {
             return signList.get(0);
         }
         return null;
+    }
+
+    @Override
+    public ResultMsg endFlow(String businessKey) {
+        ProjectStop projectStop = projectStopRepo.findById(ProjectStop_.stopid.getName(),businessKey);
+        if(Validate.isObject(projectStop)){
+            if(!SessionUtil.getUserId().equals(projectStop.getCreatedBy()) && !SUPER_ACCOUNT.equals(SessionUtil.getLoginName())){
+                return ResultMsg.error("您无权进行删除流程操作！");
+            }
+            projectStop.setApproveStatus(Constant.EnumState.FORCE.getValue());
+            projectStopRepo.save(projectStop);
+        }
+        return ResultMsg.ok("操作成功！");
     }
 
 }
