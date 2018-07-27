@@ -58,4 +58,6 @@ public interface IUserRepo extends IRepository<User, String> {
      */
     List<String> getUserMobileNumberByOrganId(String organId);
 
+    List<User> getUserByOrganId(String organId);
+
 }

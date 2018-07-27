@@ -1,4 +1,5 @@
 package com.sn.framework.module.project.domain;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sn.framework.core.DomainBase;
 import lombok.Data;
 import javax.persistence.*;
@@ -6,9 +7,9 @@ import java.util.Date;
 
 
 /**
- * 设置为动态更新，只更新有修改的字段
  *
- * @author ldm
+ *
+ * @author zsl
  */
 @Entity
 @Table(name = "cs_project")
@@ -49,17 +50,31 @@ public class Project extends DomainBase {
     @Column(columnDefinition = "VARCHAR(64)")
     private String mainUser;
 
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String mainUserName;
+
+    //其他项目负责人
+    @Column(columnDefinition = "VARCHAR(1024)")
+    private String assistUser;
+
+    @Column(columnDefinition = "VARCHAR(1024)")
+    private String assistUserName;
+
     //发文日期
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @Temporal(TemporalType.TIMESTAMP)
     @Column
-    private String dispatchDate;
+    private Date dispatchDate;
 
     //发文号
     @Column(columnDefinition = "VARCHAR(64)")
     private String fileNum;
 
     //存档日期
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @Temporal(TemporalType.TIMESTAMP)
     @Column
-    private String fileDate;
+    private Date fileDate;
 
     //存档号
     @Column(columnDefinition="VARCHAR(32)")
@@ -72,6 +87,14 @@ public class Project extends DomainBase {
     //状态：1.正常 2.作废
     @Column(columnDefinition="VARCHAR(1)")
     private String status;
+
+    //是否调概
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String ischangeEstimate;
+
+    //是否提前介入
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String isAdvanced;
 
     public String getId() {
         return id;
@@ -121,28 +144,12 @@ public class Project extends DomainBase {
         this.reviewDept = reviewDept;
     }
 
-    public String getDispatchDate() {
-        return dispatchDate;
-    }
-
-    public void setDispatchDate(String dispatchDate) {
-        this.dispatchDate = dispatchDate;
-    }
-
     public String getFileNum() {
         return fileNum;
     }
 
     public void setFileNum(String fileNum) {
         this.fileNum = fileNum;
-    }
-
-    public String getFileDate() {
-        return fileDate;
-    }
-
-    public void setFileDate(String fileDate) {
-        this.fileDate = fileDate;
     }
 
     public String getFileNo() {
@@ -175,5 +182,61 @@ public class Project extends DomainBase {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getAssistUser() {
+        return assistUser;
+    }
+
+    public void setAssistUser(String assistUser) {
+        this.assistUser = assistUser;
+    }
+
+    public Date getDispatchDate() {
+        return dispatchDate;
+    }
+
+    public void setDispatchDate(Date dispatchDate) {
+        this.dispatchDate = dispatchDate;
+    }
+
+    public Date getFileDate() {
+        return fileDate;
+    }
+
+    public void setFileDate(Date fileDate) {
+        this.fileDate = fileDate;
+    }
+
+    public String getIschangeEstimate() {
+        return ischangeEstimate;
+    }
+
+    public void setIschangeEstimate(String ischangeEstimate) {
+        this.ischangeEstimate = ischangeEstimate;
+    }
+
+    public String getIsAdvanced() {
+        return isAdvanced;
+    }
+
+    public void setIsAdvanced(String isAdvanced) {
+        this.isAdvanced = isAdvanced;
+    }
+
+    public String getMainUserName() {
+        return mainUserName;
+    }
+
+    public void setMainUserName(String mainUserName) {
+        this.mainUserName = mainUserName;
+    }
+
+    public String getAssistUserName() {
+        return assistUserName;
+    }
+
+    public void setAssistUserName(String assistUserName) {
+        this.assistUserName = assistUserName;
     }
 }

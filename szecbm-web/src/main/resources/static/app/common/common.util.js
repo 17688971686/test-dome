@@ -175,6 +175,12 @@
         $(from).find('input,select,textarea').each(function (index, obj) {
             var $me = $(this), val = obj.value, name = obj.name, operator;
             if (!name || !val) return;
+            if ($me.hasClass("date-input")) {
+                if (val.indexOf(" ") == -1) {
+                    val += " 00:00:00";
+                }
+                val = new Date(val);
+            }
             if (name.indexOf("filter_") == 0) {
                 var tmp = name.split("_");
                 if (tmp.length == 3) {

@@ -12,15 +12,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 
 /**
  * Created by lqs on 2017/7/19.
@@ -88,6 +88,19 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements IU
             logger.warn("未找到【{}】", organId);
         }
         return null;
+    }
+
+
+
+    @Override
+    public List<User> getUserByOrganId(String organId) {
+            CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+            CriteriaQuery query = builder.createQuery(User.class);
+            Root<User> root = query.from(User.class);
+            Join<User, ?> organJoin = root.join("organ", JoinType.LEFT);
+            query.where(builder.equal(organJoin.get("organId"), organId));
+            List<User> userList = entityManager.createQuery(query.select(root)).getResultList();
+           return userList;
     }
 
 //    @Override

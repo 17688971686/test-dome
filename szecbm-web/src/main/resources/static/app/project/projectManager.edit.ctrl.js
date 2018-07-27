@@ -30,6 +30,10 @@
         projectManagerSvc.initUploadConfig(vm,"relateAttach",function (data) {
             vm.attachments = vm.attachments.concat(JSON.parse(data));
         });
+
+        projectManagerSvc.findOrgUser(function(data){
+            vm.principalUsers = data;
+        });
          if (vm.model.id) {
 
             projectManagerSvc.findGovernmentInvestProjectById(vm, function () {
@@ -76,6 +80,15 @@
             util.initJqValidation();
             var isValid = $('form').valid();
             if(isValid){
+                var selUser = []
+                var selUserName = []
+                $('#principalUser_ul input[selectType="assistUser"]:checked').each(function () {
+                    selUser.push($(this).attr("value"));
+                    selUserName.push($(this).attr("tit"));
+                });
+                vm.model.mainUserName = $.trim($("#mainUser").find("option:selected").text());
+                vm.model.assistUser = selUser.join(",");
+                vm.model.assistUserName = selUserName.join(",");
                 if (vm.model.id) {
                     projectManagerSvc.updateGovernmentInvestProject(vm);
                 } else {
@@ -86,6 +99,24 @@
             }
 
         };
+
+        //检查项目负责人
+        vm.checkPrincipal = function(){
+            var selUserId = $("#mainUser").val();
+            if(selUserId){
+                $('#principalUser_ul input[selectType="assistUser"]').each(
+                    function () {
+                        var value = $(this).attr("value");
+                        if (value == selUserId) {
+                            $(this).removeAttr("checked");
+                            $(this).attr("disabled", "disabled");
+                        } else {
+                            $(this).removeAttr("disabled");
+                        }
+                    }
+                );
+            }
+        }
 
 
     }

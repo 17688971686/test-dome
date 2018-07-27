@@ -300,4 +300,21 @@ public class UserServiceImpl extends SServiceImpl<IUserRepo, User, UserDto> impl
         user.setModifiedBy(SessionUtil.getUsername());
         baseRepo.update(user);
     }
+
+    @Override
+    public List<UserDto> findUserByOrgId() {
+        List<User> userList =  new ArrayList<>();
+        if("admin".equals(SessionUtil.getUserInfo().getUsername())){
+           userList = baseRepo.findAll();
+        }else{
+          userList = baseRepo.getUserByOrganId(SessionUtil.getUserInfo().getOrgan().getOrganId());
+        }
+
+       if(userList.size()> 0){
+           return convertDtos(userList);
+       }else{
+           return null;
+       }
+
+    }
 }

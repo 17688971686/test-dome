@@ -21,14 +21,23 @@
         var vm = this;
         vm.model = {};
         vm.tableParams = {};
+   /*     projectManagerSvc.findOrgUser(function(data){
+            vm.principalUsers = data;
+
+        });*/
 
         //获取项目列表
-        projectManagerSvc.bsTableControlForManagement(vm);
+        projectManagerSvc.rsTableControl(vm);
+
+
 
         //导出项目信息
         vm.expProinfo = function () {
             vm.status = '1';
-            projectManagerSvc.createProReport(vm);
+            vm.tableParams.$filter =  util.buildOdataFilter("#toolbar",null);
+            vm.tableParams.$orderby = "createdDate desc";
+           projectManagerSvc.createProReport(vm);
+
         }
 
         //作废项目

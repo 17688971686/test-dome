@@ -6,6 +6,7 @@ import com.sn.framework.module.sys.domain.Resource;
 import com.sn.framework.module.sys.model.UserDto;
 import com.sn.framework.module.sys.model.UserInfoDto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -63,4 +64,12 @@ public interface IUserService extends ISService<UserDto> {
      * @param roleIds
      */
     void setRoles(String userId, String roleIds);
+
+
+    /**
+     * 根据部门ID查询对应的用户信息
+     */
+
+     List<UserDto> findUserByOrgId();
+
 }

@@ -28,6 +28,8 @@
         //导出项目信息
         vm.expProinfo = function () {
             vm.status = '2';
+            vm.tableParams.$filter =  util.buildOdataFilter("#toolbar",null);
+            vm.tableParams.$orderby = "createdDate desc";
             projectManagerSvc.createProReport(vm);
         }
 

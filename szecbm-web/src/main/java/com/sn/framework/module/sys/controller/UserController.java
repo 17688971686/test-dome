@@ -4,10 +4,12 @@ import com.sn.framework.common.StringUtil;
 import com.sn.framework.core.common.SessionUtil;
 import com.sn.framework.core.web.PageModelDto;
 import com.sn.framework.module.sys.domain.Resource;
+import com.sn.framework.module.sys.domain.User;
 import com.sn.framework.module.sys.domain.User_;
 import com.sn.framework.module.sys.model.UserDto;
 import com.sn.framework.module.sys.service.IUserService;
 import com.sn.framework.odata.impl.jpa.OdataJPA;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -58,6 +60,18 @@ public class UserController {
             userService.deleteById(userId);
         }
     }
+
+
+    @RequestMapping(name = "根据ID获取部门信息", path = "findUsersByOrgId", method = RequestMethod.GET)
+    @ResponseBody
+    public List<UserDto> findUsersByOrgId() {
+        User curUser = SessionUtil.getUserInfo();
+        if(curUser.getOrgan() != null || "admin".equals(curUser.getUsername())){
+            return userService.findUserByOrgId();
+        }
+        return null;
+    }
+
 
     @RequestMapping(name = "根据id获取用户", path = "{userId}", method = RequestMethod.GET)
     @ResponseBody
