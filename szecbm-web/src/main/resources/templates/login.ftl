@@ -23,7 +23,7 @@
 <body style="filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${path}/imgs/loginpage-bg.jpg', sizingMethod=scale);">
 <div class="login-container">
     <div class="logotitle" style="text-align: center;">
-        <img src="${path}/imgs/loginpage-title.png" alt="">
+        <img src="${path}/imgs/loginpage-title1.png" alt="">
     </div>
     <img class="logo" src="${path}/imgs/logo.png" alt="LOGO">
     <div class="loginform" id="ng-app" ng-app="loginApp" ng-controller="loginCtrl as vm">

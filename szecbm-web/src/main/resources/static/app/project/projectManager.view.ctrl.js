@@ -24,6 +24,9 @@
          vm.flag = $state.params.flag;
          vm.attachments = [];
 
+        projectManagerSvc.findOrgUser(function(data){
+            vm.principalUsers = data;
+        });
         /**
          * 初始化附件上传
          */

@@ -66,8 +66,8 @@ public class UserController {
     @ResponseBody
     public List<UserDto> findUsersByOrgId() {
         User curUser = SessionUtil.getUserInfo();
-        if(curUser.getOrgan() != null){
-            return userService.findUserByOrgId(curUser.getOrgan().getOrganId());
+        if(curUser.getOrgan() != null || "admin".equals(curUser.getUsername())){
+            return userService.findUserByOrgId();
         }
         return null;
     }

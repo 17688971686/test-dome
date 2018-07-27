@@ -606,7 +606,7 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
         sqlBuilder.append("on s.signid = f.businessid  ");
         sqlBuilder.append("LEFT JOIN ( SELECT o.id oid, o.name oname, B.SIGNID bsignid FROM V_ORG_DEPT o, CS_SIGN_BRANCH b  WHERE O.ID = B.ORGID AND B.ISMAINBRABCH = '9') mo  ");
         sqlBuilder.append("ON s.signid = mo.bsignid  ");
-        sqlBuilder.append("where r.paydate is not null  ");
+        sqlBuilder.append("where f.paymentdata is not null  ");
         sqlBuilder.append("and f.chargename is not null ");
 
         sqlBuilder1.append("select f.chargename,sum(f.charge) from cs_sign s  ");
@@ -620,7 +620,7 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
         sqlBuilder1.append("ON s.signid = mo.bsignid  ");
         sqlBuilder1.append("where s.isSendFileRecord =:fileState ");
         sqlBuilder1.setParam("fileState", Constant.EnumState.YES.getValue());
-        sqlBuilder1.append("and r.paydate is not null and f.chargename is not null  ");
+        sqlBuilder1.append("and  f.paymentdata is not null and f.chargename is not null  ");
 
         if (null != projectReviewCostDto) {
             if (StringUtil.isNotEmpty(projectReviewCostDto.getChargeName())) {
@@ -643,13 +643,13 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
             }
 
             if (StringUtil.isNotEmpty(projectReviewCostDto.getBeginTime())) {
-                sqlBuilder.append("and r.paydate >= to_date('" + projectReviewCostDto.getBeginTime() + "', 'yyyy-mm-dd hh24:mi:ss') ");
-                sqlBuilder1.append("and r.paydate >= to_date('" + projectReviewCostDto.getBeginTime() + "', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and  f.paymentdata >= to_date('" + projectReviewCostDto.getBeginTime() + "', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder1.append("and  f.paymentdata >= to_date('" + projectReviewCostDto.getBeginTime() + "', 'yyyy-mm-dd hh24:mi:ss') ");
             }
 
             if (StringUtil.isNotEmpty(projectReviewCostDto.getEndTime())) {
-                sqlBuilder.append("and r.paydate <= to_date('" + projectReviewCostDto.getEndTime() + "', 'yyyy-mm-dd hh24:mi:ss') ");
-                sqlBuilder1.append("and r.paydate <= to_date('" + projectReviewCostDto.getEndTime() + "', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and  f.paymentdata <= to_date('" + projectReviewCostDto.getEndTime() + "', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder1.append("and  f.paymentdata <= to_date('" + projectReviewCostDto.getEndTime() + "', 'yyyy-mm-dd hh24:mi:ss') ");
             }
 
             if (StringUtil.isNotEmpty(projectReviewCostDto.getDeptName())) {

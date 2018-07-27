@@ -134,7 +134,7 @@
 <body class="login-body ">
 <div style="text-align: center;margin-top: 30px;padding:0 50px;">
     <a href="">
-        <img src="${path}/login/image/loginpage-logo.png" alt="">
+        <img src="${path}/login/image/szlogo.png" alt="">
     </a>
     <a href="">
         <img src="${path}/login/image/loginpage-title.png" alt=""/>

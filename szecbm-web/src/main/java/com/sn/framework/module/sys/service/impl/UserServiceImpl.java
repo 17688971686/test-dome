@@ -302,9 +302,15 @@ public class UserServiceImpl extends SServiceImpl<IUserRepo, User, UserDto> impl
     }
 
     @Override
-    public List<UserDto> findUserByOrgId(String orgId) {
-       List<User> userList = baseRepo.getUserByOrganId(orgId);
-       if(null != userList){
+    public List<UserDto> findUserByOrgId() {
+        List<User> userList =  new ArrayList<>();
+        if("admin".equals(SessionUtil.getUserInfo().getUsername())){
+           userList = baseRepo.findAll();
+        }else{
+          userList = baseRepo.getUserByOrganId(SessionUtil.getUserInfo().getOrgan().getOrganId());
+        }
+
+       if(userList.size()> 0){
            return convertDtos(userList);
        }else{
            return null;

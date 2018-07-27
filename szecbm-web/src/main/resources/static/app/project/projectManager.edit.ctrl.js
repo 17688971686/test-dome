@@ -81,10 +81,14 @@
             var isValid = $('form').valid();
             if(isValid){
                 var selUser = []
+                var selUserName = []
                 $('#principalUser_ul input[selectType="assistUser"]:checked').each(function () {
                     selUser.push($(this).attr("value"));
+                    selUserName.push($(this).attr("tit"));
                 });
+                vm.model.mainUserName = $.trim($("#mainUser").find("option:selected").text());
                 vm.model.assistUser = selUser.join(",");
+                vm.model.assistUserName = selUserName.join(",");
                 if (vm.model.id) {
                     projectManagerSvc.updateGovernmentInvestProject(vm);
                 } else {

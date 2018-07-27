@@ -70,6 +70,6 @@ public interface IUserService extends ISService<UserDto> {
      * 根据部门ID查询对应的用户信息
      */
 
-     List<UserDto> findUserByOrgId(String orgId);
+     List<UserDto> findUserByOrgId();
 
 }

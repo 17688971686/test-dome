@@ -40,6 +40,13 @@
                     {{x.dictName}}
                 </option>
             </select>
+            <span ng-show="vm.${modelKey}.reviewStage=='PRO_STAGE_SUG'||vm.${modelKey}.reviewStage=='PRO_STAGE_STUDY'||vm.${modelKey}.reviewStage=='PRO_STAGE_BUDGET'||vm.${modelKey}.reviewStage=='FUND_APPLY_REPORT'" >
+                    	<input class="text-right" type="checkbox" style="width:20px;" ng-model="vm.${modelKey}.isAdvanced" name="isAdvanced"  ng-true-value="9" ng-false-value="0" > 提前介入
+                    </span>
+
+            <span ng-show="vm.${modelKey}.reviewStage=='PRO_STAGE_BUDGET'" style="margin-left: 20px;">
+                        <input class="text-right" type="checkbox" style="width:20px;" ng-model="vm.${modelKey}.ischangeEstimate" name="ischangeEstimate"  ng-true-value="9" ng-false-value="0" > 是否调概
+                    </span>
             <span data-valmsg-for="reviewStage" data-valmsg-replace="true" class="text-red"></span>
         </td>
         <td class="text-right">项目单位：<span class="text-red">(*)</span></td>
@@ -62,11 +69,10 @@
                         value="{{x.dictKey}}">
                     {{x.dictName}}
                 </option>
-
             </select>
             <span data-valmsg-for="reviewDept" data-valmsg-replace="true" class="text-red"></span>
         </td>
-        <td class="text-right">项目负责人：<span class="text-red">(*)</span></td>
+       <#-- <td class="text-right">第一负责人：<span class="text-red">(*)</span></td>
         <td>
             <div class="input-group" style="width: 200px;">
                 <input class="form-control input-sm" <#if !isEdit>disabled<#else>type="text"</#if>
@@ -74,41 +80,30 @@
                        ng-model="vm.${modelKey}.mainUser">
             </div>
             <span data-valmsg-for="mainUser" data-valmsg-replace="true" class="text-red"></span>
-        </td>
-    </tr>
-
-    <tr>
-        <td class="text-right">第一负责人：<span class="text-red">(*)</span></td>
- <#--       <td >
-            <select ng-model="vm.${modelKey}.mainUser" name="mainUser" id="mainUser"
-                    ng-change="vm.checkPrincipal();" data-val="true" data-val-required="请选择项目负责人">
-                <option value="">请选择</option>
-                <option ng-repeat="x in vm.principalUsers" value="{{x.id}}" ng-selected="x.id == vm.model.mainPrinUserId ">{{x.displayName}}</option>
-            </select>
-            <span data-valmsg-for="mainPrinUserId" data-valmsg-replace="true" class="errors"></span>
         </td>-->
+        <td class="text-right">第一负责人：<span class="text-red">(*)</span></td>
         <td>
             <select   class="form-control input-sm" style="width:200px;" ng-model="vm.${modelKey}.mainUser" ng-change="vm.checkPrincipal();"
                       <#if !isEdit>disabled</#if> id="mainUser" name="mainUser" data-val="true" data-val-required="必填">
                 <option value="">---请选择---</option>
-                <option ng-repeat="x in vm.principalUsers"
+                <option  ng-repeat="x in vm.principalUsers" ng-if="x.username!= 'admin'"
                         ng-selected="x.userId == vm.model.mainUser "
                         value="{{x.userId}}">
-                    {{x.dictName}}
+                    {{x.displayName}}
                 </option>
             </select>
             <span data-valmsg-for="mainUser" data-valmsg-replace="true" class="text-red"></span>
         </td>
     </tr>
+
     <tr>
         <td class="text-right">其他负责人：</td>
-        <td>
+        <td colspan="3">
             <ul id="principalUser_ul">
                 <li ng-repeat="u in vm.principalUsers" id="principalUser" style="float: left;width: 80px;">
-                    <input type="checkbox" selectType="assistUser" tit="{{u.displayName}}" value="{{u.userId}}"
+                    <input ng-if="u.username != 'admin'"type="checkbox" selectType="assistUser" tit="{{u.displayName}}" value="{{u.userId}}"
                            ng-checked="vm.model.assistUser && (vm.model.assistUser).indexOf(u.userId)>-1"
-                           ng-disabled="vm.model.mainUser == u.userId"
-                         />{{u.displayName}}
+                           ng-disabled="vm.model.mainUser == u.userId"/><span ng-if="u.username != 'admin'">{{u.displayName}}</span>
                 </li>
             </ul>
         </td>
@@ -122,7 +117,7 @@
                        ng-model="vm.${modelKey}.dispatchDate">
             <#else>
                 <div class="input-group date" sn-datetimepicker format="yyyy-mm-dd" style="width: 200px;">
-                    <input class="form-control" size="16" type="text" id="dispatchDate" name="dispatchDate"
+                    <input class="form-control date-input" size="16" type="text" id="dispatchDate" name="dispatchDate"
                            readonly ng-model="vm.${modelKey}.dispatchDate" data-val="true" data-val-required="必填">
                     <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
                     <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
@@ -148,7 +143,7 @@
                        ng-model="vm.${modelKey}.fileDate">
             <#else>
                 <div class="input-group date" sn-datetimepicker format="yyyy-mm-dd" style="width: 200px;">
-                    <input class="form-control" size="16" type="text" id="fileDate" name="fileDate"
+                    <input class="form-control date-input" size="16" type="text" id="fileDate" name="fileDate"
                            readonly ng-model="vm.${modelKey}.fileDate" data-val="true" data-val-required="必填">
                     <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
                     <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
