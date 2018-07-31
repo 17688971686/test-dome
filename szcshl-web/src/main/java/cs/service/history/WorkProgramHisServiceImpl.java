@@ -18,6 +18,7 @@ import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
 import cs.repository.repositoryImpl.history.*;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
+import cs.sql.ReviewSql;
 import cs.sql.WorkSql;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -92,6 +93,8 @@ public class WorkProgramHisServiceImpl implements WorkProgramHisService {
                 expertReviewHis.setId(null);
                 expertReviewHisRepo.save(expertReviewHis);
             }
+            //重置评审方案整体抽取方案
+            expertReviewRepo.executeSql(ReviewSql.resetAllExtract(expertReview.getId()));
         }
         if(isHaveExpertReview){
             //直接通过语句复制

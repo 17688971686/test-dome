@@ -444,19 +444,25 @@
                                 })
                             }
                             if (ids.length > 0) {
-                                expertConditionSvc.deleteSelConditions(vm.expertReview.id,ids.join(","), vm.isCommit, function (data) {
-                                    if (data.flag || data.reCode == 'ok') {
-                                        //更新专家评审费用
-                                        if(vm.businessType == "SIGN"){
-                                            workprogramSvc.updateWPExpertCost(vm.minBusinessId);
+                                if(vm.expertReview.id){
+                                    expertConditionSvc.deleteSelConditions(vm.expertReview.id,ids.join(","), vm.isCommit, function (data) {
+                                        if (data.flag || data.reCode == 'ok') {
+                                            //更新专家评审费用
+                                            if(vm.businessType == "SIGN"){
+                                                workprogramSvc.updateWPExpertCost(vm.minBusinessId);
+                                            }
+                                            bsWin.success("操作成功！", function () {
+                                                vm.init(vm.businessId, vm.minBusinessId);
+                                            });
+                                        } else {
+                                            bsWin.error(data.reMsg);
                                         }
-                                        bsWin.success("操作成功！", function () {
-                                            vm.init(vm.businessId, vm.minBusinessId);
-                                        });
-                                    } else {
-                                        bsWin.error(data.reMsg);
-                                    }
-                                });
+                                    });
+                                }else{
+                                    bsWin.success("操作成功！", function () {
+                                        vm.init(vm.businessId, vm.minBusinessId);
+                                    });
+                                }
                             } else {
                                 bsWin.success("操作成功！");
                             }
