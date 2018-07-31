@@ -1468,28 +1468,29 @@
 
         //S_所有在办任务
         function doingTaskGrid(vm) {
-            /*      var dataSource = new kendo.data.DataSource({
-                      type: 'odata',
-                      transport: common.kendoGridConfig().transport(rootPath + "/flow/queryAgendaTask", $('#doingTaskForm')),
-                      schema: {
-                          data: "value",
-                          total: function (data) {
-                              return data['count'];
-                          },
-                          model: {
-                              id: "taskId"
-                          }
-                      },
-                      serverPaging: true,
-                      serverSorting: true,
-                      serverFiltering: true,
-                      pageSize: 10,
-                      sort: {
-                          field: "createTime",
-                          dir: "desc"
-                      }
-                  });*/
-            var dataSource = common.kendoGridDataSource(rootPath + "/flow/queryAgendaTask", $("#doingTaskForm"), vm.queryParams.page, vm.queryParams.pageSize, vm.gridParams);
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(rootPath + "/flow/queryAgendaTask",$("#doingTaskForm"),vm.gridParams,false),
+                schema: common.kendoGridConfig().schema({
+                    id: "id",
+                    fields: {
+                        createdDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: false,
+                serverSorting: false,
+                serverFiltering: false,
+                pageSize : vm.queryParams.pageSize||10,
+                page:vm.queryParams.page||1,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
+            });
+
+            //var dataSource = common.kendoGridDataSource(rootPath + "/flow/queryAgendaTask", $("#doingTaskForm"), vm.queryParams.page, vm.queryParams.pageSize, vm.gridParams);
             var columns = [
                 {
                     field: "",

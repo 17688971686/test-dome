@@ -47,10 +47,7 @@ import cs.service.sys.CompanyService;
 import cs.service.sys.SysConfigService;
 import cs.service.sys.UserService;
 import cs.service.sys.WorkdayService;
-import cs.sql.FileRecordSql;
-import cs.sql.ProjSql;
-import cs.sql.ReviewSql;
-import cs.sql.WorkSql;
+import cs.sql.*;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
@@ -1986,6 +1983,8 @@ public class SignServiceImpl implements SignService {
         signRepo.executeSql(WorkSql.updateHisFlowName(sign.getSignid(),newProjectName));
         //存档项目名称
         signRepo.executeSql(FileRecordSql.updateProjNameSql(sign.getSignid(),newProjectName));
+        //会议名称修改
+        signRepo.executeSql(MeettingSql.updateProjNameSql(sign.getSignid(),newProjectName));
     }
 
     /**

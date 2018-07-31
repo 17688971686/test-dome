@@ -16,7 +16,6 @@
         //点击时。保存查询的条件和grid列表的条件
         vm.saveView = function(){
             $rootScope.storeView(vm.stateName,{gridParams:vm.gridOptions.dataSource.transport.options.read.data(),queryParams:vm.queryParams,data:vm});
-
         }
            //查询
         vm.query=function () {
@@ -37,12 +36,11 @@
                     vm.model = preView.data.model;
                 }
                 //恢复数据
-                /*vm.project = preView.data.project;*/
+                vm.project = preView.data.project;
                 //恢复页数页码
                 if(preView.queryParams){
                     vm.queryParams=preView.queryParams;
                 }
-
                 adminSvc.doingTaskGrid(vm);
                 //清除返回页面数据
                 $rootScope.view[vm.stateName] = undefined;
