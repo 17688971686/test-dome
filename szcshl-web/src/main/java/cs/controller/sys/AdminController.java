@@ -220,15 +220,25 @@ public class AdminController {
                 Collections.sort(authRuSignTask, new Comparator<RuProcessTask>() {
                     @Override
                     public int compare(RuProcessTask r1, RuProcessTask r2) {
-                        Float r1Day = r1.getSurplusDays() == null ? 0f : r1.getSurplusDays();
-                        Float r2Day = r2.getSurplusDays() == null ? 0f : r2.getSurplusDays();
-                        if (r1Day == r2Day) {
+                        if (r1.getSurplusDays() == null && r2.getSurplusDays() == null) {
                             return 0;
-                        } else if (r1Day > r2Day) {
+                        }
+                        if (r1.getSurplusDays() == null) {
+                            return -1;
+                        }
+                        if (r2.getSurplusDays() == null) {
+                            return 1;
+                        }
+                        return r1.getSurplusDays().compareTo(r2.getSurplusDays());
+                        /*if (r1.getSurplusDays() == r2.getSurplusDays()) {
+
+                            return 0;
+                        } else if (r1.getSurplusDays() > r2.getSurplusDays()) {
+
                             return 1;
                         } else {
                             return -1;
-                        }
+                        }*/
                     }
                 });
                 List<String> existList = new ArrayList<>();
