@@ -1,5 +1,6 @@
 package cs.model.sys;
 
+import cs.domain.sys.FileLibrary;
 import cs.domain.sys.SysFile;
 import cs.model.BaseDto;
 
@@ -29,6 +30,8 @@ public class FileLibraryDto extends BaseDto{
     private Integer fileSort;//排序
 
     private List<SysFileDto> sysFileDtoList ;
+
+    private List<FileLibraryDto> fileLibraryList;
 
 
     public String getFileId() {
@@ -99,5 +102,13 @@ public class FileLibraryDto extends BaseDto{
 
     public void setSysFileDtoList(List<SysFileDto> sysFileDtoList) {
         this.sysFileDtoList = sysFileDtoList;
+    }
+
+    public List<FileLibraryDto> getFileLibraryList() {
+        return fileLibraryList;
+    }
+
+    public void setFileLibraryList(List<FileLibraryDto> fileLibraryList) {
+        this.fileLibraryList = fileLibraryList;
     }
 }

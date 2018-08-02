@@ -1,53 +1,176 @@
-<table class="table table-bordered">
-    <tbody>
-    <tr ng-repeat="file5 in vm.fileList5[0]" >
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.css" rel="stylesheet">
+    <style>
+        #fileTab{
+            margin:0 50px;
+            margin-top: 50px;
+        }
+        #fileTab .nav-tabs{
+            float:left;
+            width: 250px;
+            border:none;
 
-       <#-- <td>
-            {{vm.fileList1[].fileName}}
-        </td>
-        <td>
-            {{vm.fileList2[].fileName}}
-        </td>
-        <td>
-            {{vm.fileList3[].fileName}}
-        </td>-->
-        <td >
-            {{vm.fileList4[vm.index4][vm.index42].fileName}}
-        </td>
-        <td>{{file5.fileName}}</td>
-       <#-- <td >
-          <table class="table table-bordered">
-              <tr ng-repeat="file2 in vm.fileList2[$index]" rowspan="{{vm.fileList3[$index].length}}">
+        }
+        #fileTab .nav-tabs > li{
+            float:none;
+            list-style: none;
+            background-color: #f5f5f5;
+            margin-bottom: 2px;
+        }
+        #fileTab .nav-tabs > li a{
+            display: block;
+            line-height: 50px;
+            font-size: 16px;
+            color:#464646;
+            text-decoration: none;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        #fileTab .nav-tabs > li.active,#fileTab .nav-tabs > li.hover{
+            background:#60b8ee;
+        }
 
-                  <td>{{file2.fileName}}</td>
-              </tr>
-          </table>
-        </td>
-        <td >
-            <table>
-                <tr ng-repeat="file3 in vm.fileList3[$index]" rowspan="{{vm.fileList4[$index].length}}">
+        #fileTab .nav-tabs > li.active > a, #fileTab.nav-tabs > li.active > a:hover, #fileTab.nav-tabs > li> a:hover{
+            border:none;
+            color:#fff;
+            background:transparent;
+            text-decoration: none;
+        }
+        #fileTab .tab-content{
+            margin-left: 280px;
+        }
+        #fileTab .heading{
+            font-size: 22px;
+            text-align: center;
+            border-bottom:1px solid #60b8ee;
+            padding-bottom: 15px;
+            margin:15px 0 30px;
+        }
+        #fileTab .heading-box{
+            border:1px solid #ccc;
+            position: relative;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,.2);
+            border-radius: 5px;
+        }
+        #fileTab .heading-box .two{
+            font-size: 18px;
+            float:left;
+            width:200px;
+            text-align: center;
+            position: absolute;
+            top:50%;
+            transform:translateY(-50%);
+            margin: 0;
+        }
+        #fileTab .heading-box .three{
+            border-bottom:1px solid #ddd;
+            border-left:1px solid #ddd;
+            margin-left: 200px;
+            position: relative;
+        }
+        #fileTab .heading-box .three:last-child{
+            border-bottom:none;
+        }
+        #fileTab .heading-box .file-list{
+            margin-left: 200px;
+            overflow: hidden;
+            border-left:1px solid #ddd;
+            margin-bottom:0;
+            display: flex;
+            padding: 0;
+        }
+        #fileTab .heading-box .three-title{
+            width: 200px;
+            float:left;
+            text-align: center;
+            font-size: 16px;
+            position: absolute;
+            top:50%;
+            transform:translateY(-50%);
+            margin: 0;
 
-                    <td>{{file3.fileName}}</td>
-                </tr>
-            </table>
-        </td>
-        <td >
-            <table>
-                <tr ng-repeat="file4 in vm.fileList4" rowspan="{{vm.fileList5[$index].length}}">
+        }
+        #fileTab .heading-box .file-list:hover li{
+            background:#f1f1f1;
 
-                    <td>{{file4.fileName}}</td>
-                </tr>
-            </table>
-        </td>
-        <td >
-            <table>
-                <tr ng-repeat="file5 in vm.fileList5">
 
-                    <td>{{file5.fileName}}</td>
-                </tr>
-            </table>
-        </td>-->
-    </tr>
-    </tbody>
+        }
+        #fileTab .heading-box .file-list li{
+            flex:1;
+            list-style: none;
+            padding:15px 10px;
+            line-height: 20px;
+            border-bottom:1px solid #ddd;
+            border-right:1px solid #ddd;
+        }
+        #fileTab .heading-box .file-list li:last-child{
+            border-right:none;
+        }
+        #fileTab .heading-box .file-list:last-child li{
+            border-bottom:none;
+        }
+    </style>
 
-</table>
+</head>
+<body ng-app="app" ng-controller="fileCtrl">
+<div id="fileTab">
+    <ul class="nav-tabs">
+        <li class="active"><a title="第一章 核心业务模块" href="#home" aria-controls="home" role="tab" data-toggle="tab">第一章 核心业务模块</a></li>
+        <li><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">第二章 核心业务模块</a></li>
+        <li><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">核心业务管理模块3</a></li>
+        <li><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">核心业务管理模块4</a></li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="home">
+            <h1 class="heading">第一章 核心业务模块</h1>
+            <div ng-repeat="x in vm.data2" class="heading-box">
+                <h2 class="two">{{x.fileName}}</h2>
+                <div class="three" ng-repeat="y in x.fileLibraryList">
+                    <h2 class="two">{{y.fileName}}</h2>
+                    <div class="three" ng-repeat="z in y.fileLibraryList">
+
+                        <div class="three-title">{{z.fileName}}</div>
+                        <ul ng-repeat="k in z.fileLibraryList" class="file-list">
+                            <li style="min-width: 50%"><a href="">{{k.fileName}}</a></li>
+                        </ul>
+                    </div>
+            </div>
+        </div>
+       <#-- <div role="tabpanel" class="tab-pane" id="profile">
+            <h1 class="heading">第二章 核心业务模块</h1>
+            <div ng-repeat="x in data" class="heading-box">
+                <h2 class="two">{{x.name}}</h2>
+                <div class="three" ng-repeat="y in x.child">
+                    <div class="three-title">{{y.name}}</div>
+                    <ul ng-repeat="z in y.child" class="file-list">
+                        <li style="min-width: 50%"><a href="">{{z.fileName}}</a></li>
+                        <li>{{z.fileCode}}</li>
+                        <li>{{z.fileDate}}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="messages">
+            3
+        </div>
+        <div role="tabpanel" class="tab-pane" id="settings">
+            3
+        </div>-->
+    </div>
+</div>
+
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="http://apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script src="./libs//angular/angular.js"></script>
+</body>
+</html>
+

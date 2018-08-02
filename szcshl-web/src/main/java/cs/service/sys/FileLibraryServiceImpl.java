@@ -242,17 +242,10 @@ public class FileLibraryServiceImpl implements  FileLibraryService{
         //1、先查询一级文件
         sql.append("select * from  cs_fileLibrary " );
 
-        sql.append( " where " + FileLibrary_.parentFileId.getName() + " is null ");
-//        sql.append(" where " + FileLibrary_.fileNature.getName() + "=:fileNature");
-//        sql.setParam("fileNature" , Constant.libraryType.FILE_TYPE.getValue());
+        sql.append( " where " + FileLibrary_.parentFileId.getName() + " in ( select fileId from cs_fileLibrary where "  + FileLibrary_.parentFileId.getName() + " is null )");
 
-        //1、查询最后一级文件，即第五级
+        //1、查询一级文件
         List<FileLibrary> fileLibraryList1 = fileLibraryRepo.findBySql(sql);
-
-        List<Object> list2 = new ArrayList<>();
-        List<Object> list3 = new ArrayList<>();
-        List<Object> list4 = new ArrayList<>();
-        List<Object> list5 = new ArrayList<>();
 
         //一级文件
         if(fileLibraryList1 != null && fileLibraryList1.size() > 0 ){
@@ -260,67 +253,82 @@ public class FileLibraryServiceImpl implements  FileLibraryService{
             for(FileLibrary fileLibrary : fileLibraryList1) {
                 FileLibraryDto fileLibraryDto = new FileLibraryDto();
                 BeanCopierUtils.copyProperties(fileLibrary, fileLibraryDto);
-                fileLibraryDtoList1.add(fileLibraryDto);
-                //2、二级文件
+
+                //2、查询二级文件
                 List<FileLibrary> fileLibraryList2 = findChildFile(fileLibrary);
                 if (fileLibraryList2 != null && fileLibraryList2.size() > 0) {
+                    //二级 ， 三级 ， 四级 列表
                     List<FileLibraryDto> fileLibraryDtoList2 = new ArrayList<>();
+
+                    //遍历二级
                     for (FileLibrary fileLibrary2 : fileLibraryList2) {
+
                         FileLibraryDto fileLibraryDto2 = new FileLibraryDto();
-                        BeanCopierUtils.copyProperties(fileLibrary2, fileLibraryDto2);
-                        fileLibraryDtoList2.add(fileLibraryDto2);
-                        //2、三级文件
-                        List<FileLibrary> fileLibraryList3 = findChildFile(fileLibrary2);
-                        if (fileLibraryList3 != null && fileLibraryList3.size() > 0) {
-                            List<FileLibraryDto> fileLibraryDtoList3 = new ArrayList<>();
-                            for (FileLibrary fileLibrary3 : fileLibraryList3) {
-                                FileLibraryDto fileLibraryDto3 = new FileLibraryDto();
-                                BeanCopierUtils.copyProperties(fileLibrary3, fileLibraryDto3);
-                                fileLibraryDtoList3.add(fileLibraryDto3);
-                                //2、四级文件
-                                List<FileLibrary> fileLibraryList4 = findChildFile(fileLibrary3);
-                                if (fileLibraryList4 != null && fileLibraryList4.size() > 0) {
-                                    List<FileLibraryDto> fileLibraryDtoList4 = new ArrayList<>();
-                                    for (FileLibrary fileLibrary4 : fileLibraryList4) {
-                                        FileLibraryDto fileLibraryDto4 = new FileLibraryDto();
-                                        BeanCopierUtils.copyProperties(fileLibrary4, fileLibraryDto4);
-                                        fileLibraryDtoList4.add(fileLibraryDto4);
-                                        //2、五级文件
-                                        List<FileLibrary> fileLibraryList5 = findChildFile(fileLibrary2);
-                                        if (fileLibraryList5 != null && fileLibraryList5.size() > 0) {
-                                            List<FileLibraryDto> fileLibraryDtoList5 = new ArrayList<>();
-                                            for (FileLibrary fileLibrary5 : fileLibraryList5) {
-                                                FileLibraryDto fileLibraryDto5 = new FileLibraryDto();
-                                                BeanCopierUtils.copyProperties(fileLibrary5, fileLibraryDto5);
-                                                fileLibraryDtoList5.add(fileLibraryDto5);
-                                            }
-                                            list5.add(fileLibraryDtoList5);
-                                        }else{
-                                            resultMap.put("five" , null);
-                                        }
-                                    }
-                                    list4.add(fileLibraryDtoList4);
-                                }else{
-                                    resultMap.put("four" , null);
-                                }
-                            }
-                            list3.add(fileLibraryDtoList3);
+                        //如果是文件，则三级为空，直接存到四级
+                        if(Constant.libraryType.FILE_TYPE.getValue().equals(fileLibrary2.getFileNature())){
+                            List<FileLibraryDto> list3 = new ArrayList<>();
+                            List<FileLibraryDto> list4 = new ArrayList<>();
+                            //定义四级对象和集合
+                            FileLibraryDto dto4 = new FileLibraryDto();
+                            BeanCopierUtils.copyProperties(fileLibrary2, dto4);
+                            list4.add(dto4);
+
+                            //定义三级对象以及集合 ， 并将四级集合存入三级对象的集合中
+                            FileLibraryDto dto3 = new FileLibraryDto();
+                            dto3.setFileLibraryList(list4);
+                            list3.add(dto3);
+                            //将三级集合存入二级对象的集合中
+                            fileLibraryDto2.setFileLibraryList(list3);
+                            fileLibraryDtoList2.add(fileLibraryDto2);
 
                         }else{
-                            resultMap.put("three" , null);
-                        }
-                    }
-                    list2.add(fileLibraryDtoList2);
+                            BeanCopierUtils.copyProperties(fileLibrary2, fileLibraryDto2);
+                            fileLibraryDtoList2.add(fileLibraryDto2);
+                            //2、三级文件
+                            List<FileLibrary> fileLibraryList3 = findChildFile(fileLibrary2);
 
-                }else{
-                    resultMap.put("two" , null);
+                            if (fileLibraryList3 != null && fileLibraryList3.size() > 0) {
+                                List<FileLibraryDto> fileLibraryDtoList3 = new ArrayList<>();
+                                for (FileLibrary fileLibrary3 : fileLibraryList3) {
+                                    FileLibraryDto fileLibraryDto3 = new FileLibraryDto();
+
+                                    //判断是否是文件，若是则直接添加到最后一级
+                                    if(Constant.libraryType.FILE_TYPE.getValue().equals(fileLibrary3.getFileNature())){
+                                        FileLibraryDto fileLibraryDto4 = new FileLibraryDto();
+                                        BeanCopierUtils.copyProperties(fileLibrary3, fileLibraryDto4);
+                                        List<FileLibraryDto> list4 = new ArrayList<>();
+                                        list4.add(fileLibraryDto4);
+                                        fileLibraryDto3.setFileLibraryList(list4);
+                                        fileLibraryDtoList3.add(fileLibraryDto3);
+                                    }else{
+                                        BeanCopierUtils.copyProperties(fileLibrary3, fileLibraryDto3);
+                                        fileLibraryDtoList3.add(fileLibraryDto3);
+                                        //2、四级文件
+                                        List<FileLibrary> fileLibraryList4 = findChildFile(fileLibrary3);
+                                        List<FileLibraryDto> fileLibraryDtoList4 = new ArrayList<>();
+                                        if (fileLibraryList4 != null && fileLibraryList4.size() > 0) {
+
+                                            for (FileLibrary fileLibrary4 : fileLibraryList4) {
+                                                FileLibraryDto fileLibraryDto4 = new FileLibraryDto();
+                                                BeanCopierUtils.copyProperties(fileLibrary4, fileLibraryDto4);
+                                                fileLibraryDtoList4.add(fileLibraryDto4);
+                                            }
+                                            fileLibraryDto3.setFileLibraryList(fileLibraryDtoList4);
+                                        }
+                                    }
+
+
+                                }
+                                fileLibraryDto2.setFileLibraryList(fileLibraryDtoList3);
+                            }
+                        }
+
+                    }
+                    fileLibraryDto.setFileLibraryList(fileLibraryDtoList2);
                 }
+                fileLibraryDtoList1.add(fileLibraryDto);
             }
-            resultMap.put("one" , fileLibraryDtoList1);
-            resultMap.put("two" , list2);
-            resultMap.put("three" , list3);
-            resultMap.put("four" , list4);
-            resultMap.put("five" , list5);
+            resultMap.put("data" , fileLibraryDtoList1);
         }
         return resultMap;
     }
