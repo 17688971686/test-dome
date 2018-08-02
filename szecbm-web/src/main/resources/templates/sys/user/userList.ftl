@@ -48,7 +48,6 @@
                         </button>
                     </@shiro.hasPermission>
                     </div>
-
                     <table bs-table-control="vm.bsTableControl" data-toolbar="#toolbar" id="editTable"></table>
                 </fieldset>
             </div>
@@ -57,9 +56,9 @@
 </section>
 
 <script type="text/template" id="userColumnBtns">
-    <@shiro.hasPermission name="sys:user:delete">
-    <button class="btn btn-xs btn-danger" ng-click="vm.del(row.userId)" ng-disabled="vm.isSubmit">
-        <span class="glyphicon glyphicon-remove"></span> 删除
+    <@shiro.hasPermission name="sys:user:setRoles">
+    <button class="btn btn-xs btn-primary" ng-click="vm.setRoles(row)" ng-disabled="vm.isSubmit">
+        <span class="glyphicon glyphicon-pencil"></span> 设置角色
     </button>
     </@shiro.hasPermission>
     <@shiro.hasPermission name="sys:user:put">
@@ -72,19 +71,12 @@
         <span class="glyphicon glyphicon-pencil"></span> 重置密码
     </button>
     </@shiro.hasPermission>
-    <@shiro.hasPermission name="sys:user:setRoles">
-    <button class="btn btn-xs btn-primary" ng-click="vm.setRoles(row)" ng-disabled="vm.isSubmit">
-        <span class="glyphicon glyphicon-pencil"></span> 设置角色
+    <@shiro.hasPermission name="sys:user:delete">
+    <button class="btn btn-xs btn-danger" ng-click="vm.del(row.userId)" ng-disabled="vm.isSubmit">
+        <span class="glyphicon glyphicon-remove"></span> 删除
     </button>
     </@shiro.hasPermission>
-    <@shiro.hasPermission name="sys:user:isEnable">
-    <button class="btn btn-xs btn-success" ng-click="vm.start(row)" ng-show="row.useState==0" ng-disabled="vm.isSubmit">
-        启用
-    </button>
-    <button class="btn btn-xs btn-danger" ng-click="vm.stop(row)" ng-show="row.useState==1" ng-disabled="vm.isSubmit">
-        禁用
-    </button>
-    </@shiro.hasPermission>
+
 </script>
 
 <div id="organUserEditModel" class="modal fade" tabindex="-1" role="dialog">

@@ -161,6 +161,7 @@
         minimumCountColumns: 2,
         clickToSelect: true,
         maintainSelected: true,
+        filterForm:null,
         totalField: "count",            // 修改bs table默认统计字段
         dataField: "value",             // 修改bs table默认数据字段
         defaultSort: "createdDate desc",
@@ -237,7 +238,7 @@
                         "$skip": params.offset,
                         "$top": params.limit,
                         "$orderby": !params.sort ? me.defaultSort : (params.sort + " " + params.order),
-                        "$filter": buildOdataFilter(me.toolbar || "#toolbar", me.defaultFilters)
+                        "$filter": buildOdataFilter(me.filterForm || me.toolbar || "#toolbar", me.defaultFilters)
                     };
                 if (me.pagination) {
                     _params["$inlinecount"] = "allpages";

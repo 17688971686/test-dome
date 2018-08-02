@@ -29,7 +29,9 @@
         //获取项目列表
         projectManagerSvc.rsTableControl(vm);
 
-
+        vm.filterSearch = function(){
+            $('#listTable').bootstrapTable('refresh');
+        }
 
         //导出项目信息
         vm.expProinfo = function () {

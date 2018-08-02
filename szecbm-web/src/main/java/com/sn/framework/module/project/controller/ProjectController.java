@@ -69,7 +69,7 @@ public class ProjectController {
     @ResponseBody
     public PageModelDto<ProjectDto> getCancelProjectForManage(OdataJPA odata) {
         odata.addFilter(Project_.status.getName(), OdataFilter.Operate.EQ, "2");
-        PageModelDto<ProjectDto> pageModelDto = projectService.findPageByOdata(odata);
+        //PageModelDto<ProjectDto> pageModelDto = projectService.findPageByOdata(odata);
         return projectService.findPageByOdata(odata);
     }
 

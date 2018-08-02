@@ -28,11 +28,9 @@ public class Project extends DomainBase {
     @Column(columnDefinition = "VARCHAR(32)")
     private String fileCode;
 
-
     //项目名称
     @Column(columnDefinition = "VARCHAR(200)")
-        private String projectName;
-
+    private String projectName;
 
     //评审阶段
     @Column(columnDefinition = "VARCHAR(64)")
@@ -61,9 +59,9 @@ public class Project extends DomainBase {
     private String assistUserName;
 
     //发文日期
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column
+    @JsonFormat(pattern = "yyyy-mm-dd")
+    @Column(columnDefinition = "Date")
+    @Temporal(TemporalType.DATE)
     private Date dispatchDate;
 
     //发文号
@@ -71,9 +69,9 @@ public class Project extends DomainBase {
     private String fileNum;
 
     //存档日期
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column
+    @JsonFormat(pattern = "yyyy-mm-dd")
+    @Column(columnDefinition = "Date")
+    @Temporal(TemporalType.DATE)
     private Date fileDate;
 
     //存档号

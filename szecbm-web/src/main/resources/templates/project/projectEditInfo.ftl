@@ -28,13 +28,7 @@
             <select class="form-control input-sm" style="width:200px;" ng-model="vm.${modelKey}.reviewStage"
                     <#if !isEdit>disabled</#if>
                     name="reviewStage" id="reviewStage" data-val="true" data-val-required="必填"
-              <#--  ng-options="x.dictKey as x.dictName for x in DICT.PRO_STAGE.dicts.PRO_STAGE.dictList"-->>
                 <option value="">---请选择---</option>
-         <#--       <option ng-repeat="x in DICT.RESOURCE.dicts.RESOURCE_TYPR.dictList"
-                        value="{{x.dictKey}}">
-                    {{x.dictName}}
-                </option>-->
-
                <option ng-repeat="x in DICT.REVIEWSTAGE.dicts.PRO_STAGE.dictList"
                         value="{{x.dictKey}}">
                     {{x.dictName}}
@@ -72,15 +66,6 @@
             </select>
             <span data-valmsg-for="reviewDept" data-valmsg-replace="true" class="text-red"></span>
         </td>
-       <#-- <td class="text-right">第一负责人：<span class="text-red">(*)</span></td>
-        <td>
-            <div class="input-group" style="width: 200px;">
-                <input class="form-control input-sm" <#if !isEdit>disabled<#else>type="text"</#if>
-                       id="mainUser" name="mainUser" data-val="true" data-val-required="必填"
-                       ng-model="vm.${modelKey}.mainUser">
-            </div>
-            <span data-valmsg-for="mainUser" data-valmsg-replace="true" class="text-red"></span>
-        </td>-->
         <td class="text-right">第一负责人：<span class="text-red">(*)</span></td>
         <td>
             <select   class="form-control input-sm" style="width:200px;" ng-model="vm.${modelKey}.mainUser" ng-change="vm.checkPrincipal();"

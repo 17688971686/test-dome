@@ -1064,6 +1064,7 @@
         minimumCountColumns: 2,
         clickToSelect: true,
         maintainSelected: true,
+        filterForm:null,
         totalField: "count",            // 修改bs table默认统计字段
         dataField: "value",             // 修改bs table默认数据字段
         defaultSort: "createdDate desc",
@@ -1078,6 +1079,12 @@
         $(from).find('input,select,textarea').each(function (index, obj) {
             var $me = $(this), val = obj.value, name = obj.name, operator;
             if (!name || !val) return;
+            if ($me.hasClass("date-input")) {
+                if (val.indexOf(" ") == -1) {
+                    val += " 00:00:00";
+                }
+                val = new Date(val);
+            }
             if (name.indexOf("filter_") == 0) {
                 var tmp = name.split("_");
                 if (tmp.length == 3) {
@@ -1134,7 +1141,7 @@
                         "$skip": params.offset,
                         "$top": params.limit,
                         "$orderby": !params.sort ? me.defaultSort : (params.sort + " " + params.order),
-                        "$filter": buildOdataFilter(me.toolbar || "#toolbar", me.defaultFilters)
+                        "$filter": buildOdataFilter(me.filterForm || me.toolbar || "#toolbar", me.defaultFilters)
                     };
                 if (me.pagination) {
                     _params["$inlinecount"] = "allpages";

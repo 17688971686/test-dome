@@ -130,26 +130,9 @@
             rsTableControl : function rsTableControl(vm) {
                 vm.rsTableControl = {
                     options: util.getTableOption({
-                 /*       queryParams: function (params) {
-                            var filters = params.filter;
-                            var me = this,
-                                _params = {
-                                    "$skip": params.offset,
-                                    "$top": params.limit,
-                                    "$orderby": !params.sort ? me.defaultSort : (params.sort + " " + params.order),
-                                    "$filter": filters.length ==0 ? "" :$.toOdataFilter({
-                                        logic:"and",
-                                        filters:filters
-                                    })
-                                };
-                            if (me.pagination) {
-                                _params["$inlinecount"] = "allpages";
-                            }
-                            vm.tableParams = _params;
-                            return _params;
-                        },*/
                         url: url_management + ("/proInfo" || ""),
                         defaultSort: "createdDate desc",
+                        filterForm:"#filterForm",
                         columns: [{
                             title: '序号',
                             switchable: false,
@@ -239,6 +222,7 @@
                         options: util.getTableOption({
                             url: url_management + ("/cancelInfo" || ""),
                             defaultSort: "createdDate desc",
+                            filterForm:"#filterForm",
                             columns: [{
                                 title: '序号',
                                 switchable: false,

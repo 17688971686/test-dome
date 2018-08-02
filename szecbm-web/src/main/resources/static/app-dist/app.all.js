@@ -142,12 +142,19 @@
         var vm = this;
         vm.model = {};
         vm.tableParams = {};
+
         //获取项目列表
         projectManagerSvc.bsTableCancelManagement(vm);
+
+        vm.filterSearch = function(){
+            $('#listTable').bootstrapTable('refresh');
+        }
 
         //导出项目信息
         vm.expProinfo = function () {
             vm.status = '2';
+            vm.tableParams.$filter =  util.buildOdataFilter("#toolbar",null);
+            vm.tableParams.$orderby = "createdDate desc";
             projectManagerSvc.createProReport(vm);
         }
 
@@ -199,6 +206,10 @@
         projectManagerSvc.initUploadConfig(vm,"relateAttach",function (data) {
             vm.attachments = vm.attachments.concat(JSON.parse(data));
         });
+
+        projectManagerSvc.findOrgUser(function(data){
+            vm.principalUsers = data;
+        });
          if (vm.model.id) {
 
             projectManagerSvc.findGovernmentInvestProjectById(vm, function () {
@@ -245,6 +256,15 @@
             util.initJqValidation();
             var isValid = $('form').valid();
             if(isValid){
+                var selUser = []
+                var selUserName = []
+                $('#principalUser_ul input[selectType="assistUser"]:checked').each(function () {
+                    selUser.push($(this).attr("value"));
+                    selUserName.push($(this).attr("tit"));
+                });
+                vm.model.mainUserName = $.trim($("#mainUser").find("option:selected").text());
+                vm.model.assistUser = selUser.join(",");
+                vm.model.assistUserName = selUserName.join(",");
                 if (vm.model.id) {
                     projectManagerSvc.updateGovernmentInvestProject(vm);
                 } else {
@@ -255,6 +275,24 @@
             }
 
         };
+
+        //检查项目负责人
+        vm.checkPrincipal = function(){
+            var selUserId = $("#mainUser").val();
+            if(selUserId){
+                $('#principalUser_ul input[selectType="assistUser"]').each(
+                    function () {
+                        var value = $(this).attr("value");
+                        if (value == selUserId) {
+                            $(this).removeAttr("checked");
+                            $(this).attr("disabled", "disabled");
+                        } else {
+                            $(this).removeAttr("disabled");
+                        }
+                    }
+                );
+            }
+        }
 
 
     }
@@ -282,14 +320,25 @@
         var vm = this;
         vm.model = {};
         vm.tableParams = {};
+   /*     projectManagerSvc.findOrgUser(function(data){
+            vm.principalUsers = data;
+
+        });*/
 
         //获取项目列表
-        projectManagerSvc.bsTableControlForManagement(vm);
+        projectManagerSvc.rsTableControl(vm);
+
+        vm.filterSearch = function(){
+            $('#listTable').bootstrapTable('refresh');
+        }
 
         //导出项目信息
         vm.expProinfo = function () {
             vm.status = '1';
-            projectManagerSvc.createProReport(vm);
+            vm.tableParams.$filter =  util.buildOdataFilter("#toolbar",null);
+            vm.tableParams.$orderby = "createdDate desc";
+           projectManagerSvc.createProReport(vm);
+
         }
 
         //作废项目
@@ -312,6 +361,7 @@
 
     function projectManagerSvc($http, bsWin, $state) {
         var url_management = util.formatUrl("project");
+        var url_user = util.formatUrl("sys/user");
         var attachments_url = util.formatUrl("sys/sysfile");
 
         return {
@@ -385,8 +435,13 @@
                             filterControl: 'dict',
                             filterData: 'DICT.DEPT.dicts.TRANSACT_DEPARTMENT'
                         }, {
-                            field: 'mainUser',
-                            title: '项目负责人',
+                            field: 'mainUserName',
+                            title: '第一负责人',
+                            width: 90,
+                            filterControl: 'input'
+                        }, {
+                            field: 'assistUserName',
+                            title: '其他负责人',
                             width: 90,
                             filterControl: 'input'
                         }, {
@@ -426,70 +481,134 @@
                     })
                 }
             },
+            rsTableControl : function rsTableControl(vm) {
+                vm.rsTableControl = {
+                    options: util.getTableOption({
+                        url: url_management + ("/proInfo" || ""),
+                        defaultSort: "createdDate desc",
+                        filterForm:"#filterForm",
+                        columns: [{
+                            title: '序号',
+                            switchable: false,
+                            width: 50,
+                            formatter: function (value, row, index) {
+                                var state = vm.rsTableControl.state;
+                                if (state.pageNumber && state.pageSize) {
+                                    return index + 1 + (state.pageNumber - 1) * state.pageSize;
+                                } else {
+                                    return index + 1
+                                }
+                            }
+                        },{
+                            field: 'fileCode',
+                            title: '收文编号',
+                            width: 100,
+                        },{
+                            field: 'projectName',
+                            title: '项目名称',
+                            width: 200,
+                            sortable: false,
+                            formatter: '<a href="#/projectManageView/{{row.id}}/view" style="color:blue">{{row.projectName}}</a>'
+                        }, {
+                            field: 'reviewStage',
+                            title: '评审阶段',
+                            filterControl: 'dict',
+                            filterData: 'DICT.REVIEWSTAGE.dicts.PRO_STAGE',
+                            width: 100,
+                        }, {
+                            field: 'proUnit',
+                            title: '项目单位',
+                            width: 90,
+                        }, {
+                            field: 'reviewDept',
+                            title: '评审部门',
+                            width: 90,
+                            filterControl: 'dict',
+                            filterData: 'DICT.DEPT.dicts.TRANSACT_DEPARTMENT'
+                        }, {
+                            field: 'mainUserName',
+                            title: '第一负责人',
+                            width: 90,
+                            filterControl: 'input'
+                        }, {
+                            field: 'assistUserName',
+                            title: '其他负责人',
+                            width: 90,
+                            filterControl: 'input'
+                        },{
+                            field: 'dispatchDate',
+                            title: '发文日期',
+                            width: 90,
+                        }, {
+                            field: 'fileNum',
+                            title: '发文号',
+                            width: 90,
+
+                        }, {
+                            field: 'fileDate',
+                            title: '存档日期',
+                            width: 90,
+
+                        },{
+                            field: 'fileNo',
+                            title: '存档号',
+                            width: 90,
+
+                        },{
+                            field: 'remark',
+                            title: '备注',
+                            width: 90,
+
+                        },{
+                            field: 'id',
+                            title: '操作',
+                            width: 240,
+                            formatter: $("#columnBtns").html()
+                        }
+                            ]
+                    })
+                };
+            },
 
             bsTableCancelManagement: function (vm, searchUrl, filter) {
                 {
                     vm.bsTableCancelManagement = {
-                        options: util.getTableFilterOption({
-                            queryParams: function (params) {
-                                var filters = params.filter;
-                                var me = this,
-                                    _params = {
-                                        "$skip": params.offset,
-                                        "$top": params.limit,
-                                        "$orderby": !params.sort ? me.defaultSort : (params.sort + " " + params.order),
-                                        "$filter": filters.length ==0 ? "" :$.toOdataFilter({
-                                            logic:"and",
-                                            filters:filters
-                                        })
-                                    };
-                                if (me.pagination) {
-                                    _params["$inlinecount"] = "allpages";
-                                }
-                                vm.tableParams = _params;
-                                return _params;
-                            },
+                        options: util.getTableOption({
                             url: url_management + ("/cancelInfo" || ""),
-                            defaultFilters: filter,
+                            defaultSort: "createdDate desc",
+                            filterForm:"#filterForm",
                             columns: [{
                                 title: '序号',
                                 switchable: false,
-                                align: "center",
                                 width: 50,
                                 formatter: function (value, row, index) {
                                     var state = vm.bsTableCancelManagement.state;
                                     if (state.pageNumber && state.pageSize) {
                                         return index + 1 + (state.pageNumber - 1) * state.pageSize;
                                     } else {
-                                        return index + 1;
+                                        return index + 1
                                     }
                                 }
                             },{
                                 field: 'fileCode',
                                 title: '收文编号',
                                 width: 100,
-                                filterControl: 'input',
-                                filterOperator: "like"
                             },{
                                 field: 'projectName',
                                 title: '项目名称',
                                 width: 200,
                                 sortable: false,
-                                filterControl: "input",
-                                filterOperator: "like",
                                 formatter: '<a href="#/projectManageView/{{row.id}}/view" style="color:blue">{{row.projectName}}</a>'
                             }, {
                                 field: 'reviewStage',
                                 title: '评审阶段',
-                                width: 100,
                                 filterControl: 'dict',
-                                filterData: 'DICT.REVIEWSTAGE.dicts.PRO_STAGE'
+                                filterData: 'DICT.REVIEWSTAGE.dicts.PRO_STAGE',
+                                width: 100,
                             }, {
                                 field: 'proUnit',
                                 title: '项目单位',
                                 width: 90,
-                                filterControl: 'input',
-                                filterOperator: "like",
                             }, {
                                 field: 'reviewDept',
                                 title: '评审部门',
@@ -497,46 +616,48 @@
                                 filterControl: 'dict',
                                 filterData: 'DICT.DEPT.dicts.TRANSACT_DEPARTMENT'
                             }, {
-                                field: 'mainUser',
-                                title: '项目负责人',
+                                field: 'mainUserName',
+                                title: '第一负责人',
+                                width: 90,
+                                filterControl: 'input'
+                            }, {
+                                field: 'assistUserName',
+                                title: '其他负责人',
                                 width: 90,
                                 filterControl: 'input'
                             }, {
                                 field: 'dispatchDate',
                                 title: '发文日期',
                                 width: 90,
-                                filterControl: 'input'
                             }, {
                                 field: 'fileNum',
                                 title: '发文号',
                                 width: 90,
-                                filterControl: 'input',
-                                filterOperator: "like",
+
                             }, {
                                 field: 'fileDate',
                                 title: '存档日期',
                                 width: 90,
-                                filterControl: 'input'
+
                             },{
                                 field: 'fileNo',
                                 title: '存档号',
                                 width: 90,
-                                filterControl: 'input',
-                                filterOperator: "like",
+
                             },{
                                 field: 'remark',
                                 title: '备注',
                                 width: 90,
-                                filterControl: 'input',
-                                filterOperator: "like"
+
                             },{
                                 field: 'id',
                                 title: '操作',
                                 width: 240,
                                 formatter: $("#columnBtns").html()
-                            }]
+                            }
+                            ]
                         })
-                    }
+                    };
                 }
             },
             //根据id查找小型投资项目
@@ -675,6 +796,11 @@
                     angular.isFunction(fn) && fn();
                 }).then(function () {
                 });
+            },
+            findOrgUser: function (fn) {
+                $http.get(url_user + "/findUsersByOrgId").success(function (data) {
+                    fn(data)
+                });
             }
         }
     }
@@ -706,6 +832,9 @@
          vm.flag = $state.params.flag;
          vm.attachments = [];
 
+        projectManagerSvc.findOrgUser(function(data){
+            vm.principalUsers = data;
+        });
         /**
          * 初始化附件上传
          */
@@ -3075,6 +3204,7 @@
                         columns: [{
                             title: '行号',
                             switchable: false,
+                            align: "center",
                             width: 50,
                             formatter: function (value, row, index) {
                                 var state = vm.bsTableControl.state;
@@ -3085,11 +3215,11 @@
                                 }
                             }
                         }, {
-                            checkbox: true
+                            checkbox: true,
+                            align: "center"
                         }, {
                             field: 'username',
                             title: '用户名',
-                            sortable: true,
                             width: 150,
                             filterControl: "input",
                             filterOperator: "like"
@@ -3107,30 +3237,22 @@
                             width: 200,
                             filterControl: "input",
                             filterOperator: "like"
-                        }, {
-                            field: 'useState',
-                            title: '状态',
-                            width: 100,
-                            align: "center",
-                            filterControl: "input",
-                            filterOperator: "like",
-                            formatter: '<span ng-if="row.useState == 1" class="bg-green">启用</span><span ng-if="row.useState != 1"  class="bg-red">禁用</span>'
-                            // formatter: function (value, row, index) {
-                            //     return value == 1 ? '<span class="bg-green">启用</span>' : '<span class="bg-red">禁用</span>';
-                            // }
-                        }, {
+                        },  {
                             field: 'lastLoginDate',
                             title: '最后登录时间',
-                            width: 160,
+                            width: 120,
                             sortable: true,
                             filterControl: "datepicker",
                             filterOperator: "gt"
                         }, {
-                            field: 'remark',
-                            title: '备注',
+                            field: 'useState',
+                            title: '状态',
+                            width: 60,
+                            align: "center",
                             filterControl: "input",
-                            filterOperator: "like"
-                        }, {
+                            filterOperator: "like",
+                            formatter: '<span ng-if="row.useState == 1" class="bg-green">启用</span><span ng-if="row.useState != 1"  class="bg-red">禁用</span>'
+                        },{
                             field: '',
                             title: '操作',
                             width: 200,
