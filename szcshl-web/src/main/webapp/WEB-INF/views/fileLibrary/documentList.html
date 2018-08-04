@@ -121,56 +121,32 @@
 </head>
 <body ng-app="app" ng-controller="fileCtrl">
 <div id="fileTab">
-    <ul class="nav-tabs">
-        <li class="active"><a title="第一章 核心业务模块" href="#home" aria-controls="home" role="tab" data-toggle="tab">第一章 核心业务模块</a></li>
-        <li><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">第二章 核心业务模块</a></li>
-        <li><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">核心业务管理模块3</a></li>
-        <li><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">核心业务管理模块4</a></li>
-    </ul>
+    <#--<ul class="nav-tabs" >
+        <li ng-repeat="div_id in vm.ids" class="active" >
+            <a title="{{vm.key[$index]}}" ng-click="vm.animate(div_id)" aria-controls="{{div_id}}" role="tab" data-toggle="tab">{{vm.key[$index]}}</a>
+        </li>
+    </ul>-->
+
 
     <!-- Tab panes -->
     <div class="tab-content">
-        <div role="tabpanel" class="tab-pane active" id="home">
-            <h1 class="heading">第一章 核心业务模块</h1>
-            <div ng-repeat="x in vm.data2" class="heading-box">
+        <div ng-repeat="(key , value) in vm.data">
+        <div role="tabpanel" class="tab-pane"  >
+            <h1 class="heading">{{key}}</h1>
+            <div ng-repeat="x in value" class="heading-box">
                 <h2 class="two">{{x.fileName}}</h2>
                 <div class="three" ng-repeat="y in x.fileLibraryList">
-                    <h2 class="two">{{y.fileName}}</h2>
-                    <div class="three" ng-repeat="z in y.fileLibraryList">
-
-                        <div class="three-title">{{z.fileName}}</div>
-                        <ul ng-repeat="k in z.fileLibraryList" class="file-list">
-                            <li style="min-width: 50%"><a href="">{{k.fileName}}</a></li>
-                        </ul>
-                    </div>
-            </div>
-        </div>
-       <#-- <div role="tabpanel" class="tab-pane" id="profile">
-            <h1 class="heading">第二章 核心业务模块</h1>
-            <div ng-repeat="x in data" class="heading-box">
-                <h2 class="two">{{x.name}}</h2>
-                <div class="three" ng-repeat="y in x.child">
-                    <div class="three-title">{{y.name}}</div>
-                    <ul ng-repeat="z in y.child" class="file-list">
-                        <li style="min-width: 50%"><a href="">{{z.fileName}}</a></li>
-                        <li>{{z.fileCode}}</li>
-                        <li>{{z.fileDate}}</li>
+                    <div class="three-title">{{y.fileName}}</div>
+                    <ul ng-repeat="z in y.fileLibraryList" class="file-list">
+                        <li style="min-width: 50%"><a ng-click="vm.commonDownloadSysFile(z.sysFileDtoList[0].sysFileId)">{{z.fileName}}</a></li>
+                        <li>{{z.createdDate | date : 'yyyy-MM-hh'}}</li>
                     </ul>
-                </div>
             </div>
         </div>
-        <div role="tabpanel" class="tab-pane" id="messages">
-            3
         </div>
-        <div role="tabpanel" class="tab-pane" id="settings">
-            3
-        </div>-->
     </div>
 </div>
 
-<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
-<script src="http://apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-<script src="./libs//angular/angular.js"></script>
 </body>
 </html>
 

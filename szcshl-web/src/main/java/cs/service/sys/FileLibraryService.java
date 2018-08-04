@@ -70,5 +70,4 @@ public interface FileLibraryService {
      */
     Map<String , Object> getFiles();
 
-    Map<String , Object> findFiles();
 }

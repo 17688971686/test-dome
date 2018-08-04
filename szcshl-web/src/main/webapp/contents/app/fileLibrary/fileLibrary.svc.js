@@ -18,7 +18,7 @@
             folderById: folderById, //通过id查询文件夹
             queryUser: queryUser,//模糊查询
             getFileUrlById: getFileUrlById,//获取路径
-            getFiles : getFiles , //获取所有文件，并风等级
+            getFiles : getFiles , //获取所有文件，并分等级
         }
 
         return service;
