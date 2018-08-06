@@ -2,8 +2,12 @@ package cs.controller.sys;
 
 import cs.ahelper.MudoleAnnotation;
 import cs.common.ResultMsg;
+import cs.model.PageModelDto;
 import cs.model.sys.FileLibraryDto;
+import cs.model.sys.PolicyDto;
+import cs.repository.odata.ODataObj;
 import cs.service.sys.FileLibraryService;
+import cs.service.sys.PolicyService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.util.List;
 
@@ -28,6 +33,9 @@ public class FileLibraryController {
 
     @Autowired
     private FileLibraryService fileLibraryService;
+
+    @Autowired
+    private PolicyService policyService;
 
     //@RequiresPermissions("fileLibrary#initFileFolder#get")
     @RequiresAuthentication
@@ -108,6 +116,21 @@ public class FileLibraryController {
         return fileLibraryDto ;
     }
 
+    @RequiresAuthentication
+    @RequestMapping(name = "获取政策指标库数据", path = "findByOData", method = RequestMethod.POST)
+    @ResponseBody
+    public PageModelDto<PolicyDto> get(HttpServletRequest request) throws ParseException {
+        ODataObj odataObj = new ODataObj(request);
+        return policyService.get(odataObj);
+    }
+
+   @RequiresAuthentication
+    @RequestMapping(name = "创建政策指标库", path = "", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg post(@RequestBody PolicyDto record) {
+        return policyService.save(record);
+    }
+
     /**
      * begin html
      */
@@ -133,6 +156,7 @@ public class FileLibraryController {
     }
 
 
+
     @RequiresPermissions("fileLibrary#html/policyLibrary#get")
     @RequestMapping(name="政策标准库",path="html/policyLibrary",method=RequestMethod.GET)
     public String policyLibrary(){
@@ -151,5 +175,11 @@ public class FileLibraryController {
     @RequestMapping(name="政策标准库-新建文件",path="html/policyEdit",method=RequestMethod.GET)
     public String policyEdit(){
         return ctrlName + "/policyEdit";
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name="新建政策标准库",path="html/addPolicyLibrary",method=RequestMethod.GET)
+    public String policyAdd(){
+        return ctrlName + "/addPolicyLibrary";
     }
 }
