@@ -128,8 +128,8 @@
                 }
                 //添加节点
                 function addHoverDom(treeId,treeNode){
-                    //判断，如果是文件夹，才有新增按钮
-                    if(treeNode.fileNature == 'FOLDER'){
+                    //判断，如果是文件夹，才有新增按钮，只能到四级
+                    if(treeNode.fileNature == 'FOLDER' && treeNode.level < 2 ){
                         var sObj = $("#" + treeNode.tId + "_span");
                         if (treeNode.editNameFlag || $("#addBtn_"+treeNode.tId).length>0) return;
                         var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
@@ -140,6 +140,8 @@
                             var zTree = $.fn.zTree.getZTreeObj("zTree");
                             vm.addFolderWindow(treeNode.id);
                         });
+                    }else{
+                        return ;
                     }
 
                 }

@@ -1025,6 +1025,12 @@
                     controller: 'policyListCtrl',
                     controllerAs: 'vm'
                 })
+                .state('documentLibrary', { //文件指标库
+                    url: '/documentLibrary',
+                    templateUrl: rootPath + '/fileLibrary/html/documentList.html',
+                    controller: 'documentListCtrl',
+                    controllerAs: 'vm'
+                })
                 .state('policyLibrary.policyEdit', {//新建文件
                     url: '/policyEdit/:parentId/:fileId',
                     templateUrl: rootPath + '/fileLibrary/html/policyEdit.html',

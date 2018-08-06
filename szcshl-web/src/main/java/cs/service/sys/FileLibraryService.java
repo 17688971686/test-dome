@@ -7,6 +7,7 @@ import cs.model.sys.FileLibraryDto;
 import cs.repository.odata.ODataObj;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by MCL
@@ -62,4 +63,11 @@ public interface FileLibraryService {
      * @return
      */
     ResultMsg deleteRootDirectory(String parentFileId);
+
+    /**
+     * 文件指标库数据查询
+     * @return
+     */
+    Map<String , Object> getFiles();
+
 }

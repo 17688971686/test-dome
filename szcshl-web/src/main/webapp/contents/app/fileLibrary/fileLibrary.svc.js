@@ -18,9 +18,31 @@
             folderById: folderById, //通过id查询文件夹
             queryUser: queryUser,//模糊查询
             getFileUrlById: getFileUrlById,//获取路径
+            getFiles : getFiles , //获取所有文件，并分等级
         }
 
         return service;
+
+        //begin getFiles
+        function getFiles(callBack){
+            var httpOptions = {
+                method: "post",
+                url: rootPath + "/fileLibrary/getFiles",
+            }
+            var httpSuccess = function success(response) {
+                if(callBack != undefined && typeof callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+        //end getFiles
+
         //begin getFileUrlById
         function getFileUrlById(vm, fileId) {
             var httpOptions = {
