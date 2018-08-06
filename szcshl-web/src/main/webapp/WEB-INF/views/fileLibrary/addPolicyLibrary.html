@@ -1,0 +1,179 @@
+<meta charset="UTF-8">
+<#assign path=request.contextPath/>
+
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a>政策指标库管理</a></li>
+        <li class="active">新增政策指标库</li>
+    </ol>
+    <div class="toolbar">
+        <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-ok"></span>保存</button>
+        <go-back-flow ng-if="vm.model.processInstanceId"></go-back-flow>
+        <flow-file-button></flow-file-button>   <!--附件上传按钮-->
+    </div>
+    <form id="policyform" name="policyform">
+        <table class="table table-bordered">
+            <caption class="text-center"><h3><strong>新增政策指标库</strong></h3></caption>
+            <tr>
+                <td class="text-right" style="width:15%;max-width:180px;">标准号： <span class="required">*</span></td>
+                <td>
+                    <input  type="text" maxlength="128" class="form-control input-sm " ng-model="vm.model.standardNo"
+                            id="standardNo" name="standardNo" data-val="true"  data-val-required="必填" data-val-length-max="128">
+                    <span data-valmsg-for="standardNo" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right">中文名称： <span class="required">*</span></td>
+                <td>
+                    <input  type="text" maxlength="256" class="form-control input-sm "  ng-model="vm.model.standardName"
+                            id="standardName" name="standardName" data-val="true" data-val-required="必填" data-val-length-max="256">
+                    <span data-valmsg-for="standardName" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right">英文名称：</td>
+                <td>
+                    <input  type="text" maxlength="256" class="form-control input-sm "  ng-model="vm.model.standardEnglishName"
+                            id="standardEnglishName" name="standardEnglishName" data-val="true"  data-val-length-max="256">
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text-right">标准组织： <span class="required">*</span></td>
+                <td>
+                    <input  type="text" maxlength="256" class="form-control input-sm "  ng-model="vm.model.standardOrg"
+                            id="standardOrg" name="standardOrg" data-val="true" data-val-required="必填" data-val-length-max="256">
+                    <span data-valmsg-for="standardOrg" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text-right">语种： <span class="required">*</span></td>
+                <td>
+                    <input  type="text" maxlength="256" class="form-control input-sm "  ng-model="vm.model.languageType"
+                            id="languageType" name="languageType" data-val="true" data-val-required="必填" data-val-length-max="256">
+                    <span data-valmsg-for="languageType" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text-right">CCS分类： <span class="required">*</span></td>
+                <td>
+                    <input  type="text" maxlength="256" class="form-control input-sm "  ng-model="vm.model.cCSType"
+                            id="cCSType" name="cCSType" data-val="true" data-val-required="必填" data-val-length-max="256">
+                    <span data-valmsg-for="cCSType" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text-right">ICS分类： <span class="required">*</span></td>
+                <td>
+                    <input  type="text" maxlength="256" class="form-control input-sm "  ng-model="vm.model.iCSType"
+                            id="iCSType" name="iCSType" data-val="true" data-val-required="必填" data-val-length-max="256">
+                    <span data-valmsg-for="iCSType" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right">发布日期： <span class="required">*</span></td>
+                <td>
+                    <input  type="text" kendo-date-picker k-format="'yyyy-MM-dd'" class="form-control input-sm "
+                           ng-model="vm.model.publishDate" name="publishDate">
+                    <span data-valmsg-for="publishDate" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right">实施日期： <span class="required">*</span></td>
+                <td>
+                    <input type="text" kendo-date-picker k-format="'yyyy-MM-dd'" class="form-control input-sm "
+                           ng-model="vm.model.implementDate" name="implementDate">
+                    <span data-valmsg-for="implementDate" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text-right">作废日期：<span class="required">*</span></td>
+                <td>
+                    <input type="text" kendo-date-picker k-format="'yyyy-MM-dd'" class="form-control input-sm "
+                           ng-model="vm.model.cancelDate" name="cancelDate">
+                    <span data-valmsg-for="cancelDate" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text-right">标准摘要：</td>
+                <td>
+                    <input  type="text" maxlength="256" class="form-control input-sm "  ng-model="vm.model.standardSummary"
+                            id="standardSummary" name="standardSummary" data-val="true"  data-val-length-max="256">
+                    <span data-valmsg-for="standardSummary" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text-right">发布单位：</td>
+                <td>
+                    <input  type="text" maxlength="256" class="form-control input-sm "  ng-model="vm.model.publishUnit"
+                            id="publishUnit" name="publishUnit" data-val="true"  data-val-length-max="256">
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text-right">归口单位：</td>
+                <td>
+                    <input  type="text" maxlength="256" class="form-control input-sm "  ng-model="vm.model.belongUnit"
+                            id="belongUnit" name="belongUnit" data-val="true"  data-val-length-max="256">
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text-right">起草单位：</td>
+                <td>
+                    <input  type="text" maxlength="256" class="form-control input-sm "  ng-model="vm.model.draftUnit"
+                            id="draftUnit" name="draftUnit" data-val="true"  data-val-length-max="256">
+                    <span data-valmsg-for="draftUnit" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text-right">起草人：</td>
+                <td>
+                    <input  type="text" maxlength="256" class="form-control input-sm "  ng-model="vm.model.draftPerson"
+                            id="draftPerson" name="draftPerson" data-val="true" data-val-length-max="256">
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text-right">出处：</td>
+                <td>
+                    <input  type="text" maxlength="256" class="form-control input-sm "  ng-model="vm.model.rootFrom"
+                            id="rootFrom" name="rootFrom" data-val="true" data-val-length-max="256">
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text-right">备案号： <span class="required">*</span></td>
+                <td>
+                    <input  type="text" maxlength="256" class="form-control input-sm "  ng-model="vm.model.fillingNo"
+                            id="fillingNo" name="fillingNo" data-val="true" data-val-required="必填" data-val-length-max="256">
+                    <span data-valmsg-for="fillingNo" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text-right">简评：</td>
+                <td>
+                    <input  type="text" maxlength="256" class="form-control input-sm "  ng-model="vm.model.briefComment"
+                            id="briefComment" name="briefComment" data-val="true"  data-val-length-max="256">
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text-right">备注：</td>
+                <td >
+                    <textarea cols="100" rows="5"  name="remark" id="remark" ng-model="vm.model.remark" maxlength="512"
+                              class="form-control input-sm " ></textarea>
+                </td>
+            </tr>
+        </table>
+    </form>
+
+</div>
