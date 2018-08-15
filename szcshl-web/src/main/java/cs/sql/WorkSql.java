@@ -41,6 +41,19 @@ public class WorkSql {
         return sqlBuilder;
     }
 
+    public static HqlBuilder copyExpertReview(String reviewId) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" INSERT INTO CS_HIS_EXPERT_REVIEW (ID,CREATEDBY,CREATEDDATE,MODIFIEDBY,MODIFIEDDATE,BUSINESSID,");
+        sqlBuilder.append(" BUSINESSTYPE,EXPRETCOUNT,EXTRACTINFO,FINISHEXTRACT,PAYDATE,REVIEWCOST,REVIEWDATE,");
+        sqlBuilder.append(" REVIEWTAXES,REVIEWTITLE,SELECTINDEX,STATE,TOTALCOST) ");
+        sqlBuilder.append(" SELECT cer.ID,cer.CREATEDBY,cer.CREATEDDATE,cer.MODIFIEDBY,cer.MODIFIEDDATE,cer.BUSINESSID,");
+        sqlBuilder.append(" cer.BUSINESSTYPE,cer.EXPRETCOUNT,cer.EXTRACTINFO,cer.FINISHEXTRACT,cer.PAYDATE,cer.REVIEWCOST,");
+        sqlBuilder.append(" cer.REVIEWDATE,cer.REVIEWTAXES,cer.REVIEWTITLE,cer.SELECTINDEX,cer.STATE,cer.TOTALCOST");
+        sqlBuilder.append(" FROM CS_EXPERT_REVIEW cer WHERE cer.ID = :reviewId ");
+        sqlBuilder.setParam("reviewId",reviewId);
+        return sqlBuilder;
+    }
+
     public static HqlBuilder copyExpertCondition(String businessId) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append(" INSERT INTO CS_HIS_EXPERT_CONDITION (ID,ALTERNATIVENUM,BUSINESSID,COMPOSITESCORE,");
@@ -85,4 +98,6 @@ public class WorkSql {
         sqlBuilder.setParam("signId",signId);
         return sqlBuilder;
     }
+
+
 }

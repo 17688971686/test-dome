@@ -469,8 +469,9 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
         sqlBuilder.append(" sdk.appalyInvestment, sdk.authorizevalue, sdk.signdate, sdk.MORGNAME,sdk.ALLPRIUSER, ");
         sqlBuilder.append(" CFM.CHARGENAME,CFM.CHARGE,CFM.STAGECOUNT,CFM.PAYMENTDATA ");
         sqlBuilder.append(" FROM SIGN_DISP_WORK sdk, CS_FINANCIAL_MANAGER cfm,CS_SIGN sg ");
-        sqlBuilder.append(" WHERE sdk.signid = sg.signid AND sg.isSendFileRecord =:fileState ");
-        sqlBuilder.setParam("fileState", Constant.EnumState.YES.getValue());
+        sqlBuilder.append(" WHERE sdk.signid = sg.signid  ");
+        /*sqlBuilder.append("AND sg.isSendFileRecord =:fileState ");
+        sqlBuilder.setParam("fileState", Constant.EnumState.YES.getValue());*/
         sqlBuilder.append(" AND CFM.BUSINESSID = SDK.SIGNID AND  sdk.signState <> :signState AND CFM.CHARGETYPE = :chargeType AND CFM.PAYMENTDATA is not null  ");
         sqlBuilder.setParam("signState", Constant.EnumState.DELETE.getValue()).setParam("chargeType", Constant.EnumState.PROCESS.getValue());
 

@@ -76,6 +76,7 @@ public class WorkProgramHisServiceImpl implements WorkProgramHisService {
             }).collect(Collectors.toList());
             roomBookingHisRepo.bathUpdate(roomBookingHisList);
         }
+
         if(Validate.isList(idList)){
             roomBookingRepo.deleteById(RoomBooking_.id.getName(),StringUtils.join(idList.toArray(), SysConstants.SEPARATE_COMMA));
         }
@@ -84,14 +85,11 @@ public class WorkProgramHisServiceImpl implements WorkProgramHisService {
         ExpertReviewHis expertReviewHis = null;
         //3、专家抽取方案
         ExpertReview expertReview = expertReviewRepo.findByBusinessId(signId);
-        if(Validate.isObject(expertReview)){
+        if(Validate.isObject(expertReview) && Validate.isString(expertReview.getId())){
             isHaveExpertReview = true;
             expertReviewHis = expertReviewHisRepo.findByBusinessId(signId);
             if(!Validate.isObject(expertReviewHis) || !Validate.isString(expertReviewHis.getId())){
-                expertReviewHis = new ExpertReviewHis();
-                BeanCopierUtils.copyProperties(expertReview,expertReviewHis);
-                expertReviewHis.setId(null);
-                expertReviewHisRepo.save(expertReviewHis);
+                expertSelectedHisRepo.executeSql(WorkSql.copyExpertReview(expertReview.getId()));
             }
             //重置评审方案整体抽取方案
             expertReviewRepo.executeSql(ReviewSql.resetAllExtract(expertReview.getId()));

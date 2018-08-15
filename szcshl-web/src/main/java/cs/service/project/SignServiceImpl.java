@@ -813,7 +813,8 @@ public class SignServiceImpl implements SignService {
         OrgDept orgDept = null;                     //部门和小组
         boolean isNextUser = false,                 //是否是下一环节处理人（主要是处理领导审批，目前主要有三个地方，部长审批工作方案，部长审批发文和分管领导审批发文）
                 isAgentTask = agentTaskService.isAgentTask(task.getId(),curUserId),
-                isMergeDisTask = false;             //是否合并发文任务
+                isMergeDisTask = false,             //是否合并发文任务
+                isCompeleteSign = true;             //是否完成所有会签
         List<AgentTask> agentTaskList = new ArrayList<>();
         //取得之前的环节处理人信息
         Map<String, Object> variables = new HashMap<>();
@@ -1441,7 +1442,9 @@ public class SignServiceImpl implements SignService {
                             variables.put(FlowConstant.SignFlowParams.USER_BZ1.getValue(), assigneeValue);
                         }
                         flowDto.setDealOption(flowDto.getDealOption() + "【审批结果：核稿无误】");
-                        //如果不同意，则流程回到发文申请环节
+
+                        isCompeleteSign = ProjUtil.checkSignComplete(taskService.getVariables(task.getId()),1);
+                    //如果不同意，则流程回到发文申请环节
                     } else {
                         variables.put(FlowConstant.SignFlowParams.HAVE_XB.getValue(), null);
                         variables.put(FlowConstant.SignFlowParams.XMFZR_SP.getValue(), false);
@@ -1465,6 +1468,7 @@ public class SignServiceImpl implements SignService {
                     assigneeValue = getMainDirecotr(signid, agentTaskList, FLOW_SIGN_BMLD_QRFW);
                     variables.put(FlowConstant.SignFlowParams.USER_BZ1.getValue(), assigneeValue);
                     flowDto.setDealOption(flowDto.getDealOption() + "【审批结果：核稿无误】");
+                    isCompeleteSign = ProjUtil.checkSignComplete(taskService.getVariables(task.getId()),1);
                 //如果不同意，则回退到发文环节
                 } else {
                     variables.put(FlowConstant.SignFlowParams.XBBZ_SP.getValue(), false);
@@ -1882,7 +1886,7 @@ public class SignServiceImpl implements SignService {
                 }
             }
 
-            if (isNextUser == false) {
+            if (isNextUser == false && isCompeleteSign) {
                 //放入腾讯通消息缓冲池
                 RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
             }

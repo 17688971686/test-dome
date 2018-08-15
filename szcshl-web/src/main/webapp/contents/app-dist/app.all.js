@@ -495,49 +495,48 @@
                 controller: 'adminSignListCtrl',
                 controllerAs: 'vm'
             })//end#signList
-                .state('projectStopInfo', { //项目暂停表单（多个）
-                    url: '/projectStopInfo/:signId',
-                    templateUrl: rootPath + '/projectStop/html/projectStopInfo.html',
-                    controller: 'projectStopInfoCtrl',
-                    controllerAs: 'vm'
-                })//end#signList
-                .state('selectHeader', {
-                    url: '/selectHeader',
-                    templateUrl: rootPath + '/sign/html/selectHeader.html',
-                    controller: 'selectHeaderCtrl',
-                    controllerAs: 'vm'
-
-                })
-                .state('signGetBack', {//项目取回
-                    url: '/signGetBack',
-                    templateUrl: rootPath + '/sign/html/signGetBack.html',
-                    controller: 'signGetBackCtrl',
-                    controllerAs: 'vm'
-                })
-                .state('pauseProject', { //项目暂停审批
-                    url: '/pauseProject',
-                    templateUrl: rootPath + '/projectStop/html/pauseProjectList.html',
-                    controller: 'pauseProjectCtrl',
-                    controllerAs: 'vm'
-                })
-                .state('projectStopForm', { //项目暂停表单
-                    url: '/projectStopForm/:signId/:stopId',
-                    templateUrl: rootPath + '/projectStop/html/projectStopForm.html',
-                    controller: 'projectStopFormCtrl',
-                    controllerAs: 'vm'
-                })
-                .state('projectStopFormEdit', { //编辑项目暂停表单
-                    url: '/projectStopFormEdit/:stopId',
-                    templateUrl: rootPath + '/projectStop/html/projectStopForm.html',
-                    controller: 'projectStopFormEditCtrl',
-                    controllerAs: 'vm'
-                })
-                .state('reserveAdd', {	//新增预签收
-                    url: '/reserveAdd',
-                    templateUrl: rootPath + '/sign/html/reserveAdd.html',
-                    controller: 'signReserveAddCtrl',
-                    controllerAs: 'vm'
-                }).state('reserveList', {	//预签收列表
+            .state('projectStopInfo', { //项目暂停表单（多个）
+                url: '/projectStopInfo/:signId',
+                templateUrl: rootPath + '/projectStop/html/projectStopInfo.html',
+                controller: 'projectStopInfoCtrl',
+                controllerAs: 'vm'
+            })//end#signList
+            .state('selectHeader', {
+                url: '/selectHeader',
+                templateUrl: rootPath + '/sign/html/selectHeader.html',
+                controller: 'selectHeaderCtrl',
+                controllerAs: 'vm'
+            })
+            .state('signGetBack', {//项目取回
+                url: '/signGetBack',
+                templateUrl: rootPath + '/sign/html/signGetBack.html',
+                controller: 'signGetBackCtrl',
+                controllerAs: 'vm'
+            })
+            .state('pauseProject', { //项目暂停审批
+                url: '/pauseProject',
+                templateUrl: rootPath + '/projectStop/html/pauseProjectList.html',
+                controller: 'pauseProjectCtrl',
+                controllerAs: 'vm'
+            })
+            .state('projectStopForm', { //项目暂停表单
+                url: '/projectStopForm/:signId/:stopId',
+                templateUrl: rootPath + '/projectStop/html/projectStopForm.html',
+                controller: 'projectStopFormCtrl',
+                controllerAs: 'vm'
+            })
+            .state('projectStopFormEdit', { //编辑项目暂停表单
+                url: '/projectStopFormEdit/:stopId',
+                templateUrl: rootPath + '/projectStop/html/projectStopForm.html',
+                controller: 'projectStopFormEditCtrl',
+                controllerAs: 'vm'
+            })
+            .state('reserveAdd', {	//新增预签收
+                url: '/reserveAdd',
+                templateUrl: rootPath + '/sign/html/reserveAdd.html',
+                controller: 'signReserveAddCtrl',
+                controllerAs: 'vm'
+            }).state('reserveList', {	//预签收列表
                 url: '/reserveList',
                 templateUrl: rootPath + '/sign/html/reserveList.html',
                 controller: 'signReserveCtrl',
@@ -1023,6 +1022,12 @@
                     url: '/policyList/:parentId',
                     templateUrl: rootPath + '/fileLibrary/html/policyList.html',
                     controller: 'policyListCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('documentLibrary', { //文件指标库
+                    url: '/documentLibrary',
+                    templateUrl: rootPath + '/fileLibrary/html/documentList.html',
+                    controller: 'documentListCtrl',
                     controllerAs: 'vm'
                 })
                 .state('policyLibrary.policyEdit', {//新建文件
@@ -3983,9 +3988,9 @@
 
     angular.module('app').controller('adminDoingCtrl', admin);
 
-    admin.$inject = ['$location', 'adminSvc', 'flowSvc','pauseProjectSvc','bsWin','signSvc','$state','$rootScope'];
+    admin.$inject = ['$location', 'adminSvc', 'flowSvc','pauseProjectSvc','bsWin','signSvc','$state','$rootScope' , 'addSuppLetterQuerySvc'];
 
-    function admin($location, adminSvc, flowSvc,pauseProjectSvc,bsWin,signSvc,$state,$rootScope) {
+    function admin($location, adminSvc, flowSvc,pauseProjectSvc,bsWin,signSvc,$state,$rootScope , addSuppLetterQuerySvc) {
         var vm = this;
         vm.title = '在办项目';
         vm.model = {};
@@ -4124,6 +4129,27 @@
                 }
             });
         }
+
+
+        //S_链接到拟补充资料函
+        vm.addSuppLetter = function (signId) {
+            vm.signid = signId;
+            addSuppLetterQuerySvc.checkIsApprove(vm.signid,"1",function(data){
+                if(data.flag || data.reCode == 'ok'){
+                    $state.go('addSupp', {businessId: vm.signid, businessType: "SIGN"});
+                }else{
+                    bsWin.confirm({
+                        title: "询问提示",
+                        message: "该项目还有拟补充资料函未审批完成，确定要新增拟补充资料函么？如果要修改拟补充资料函，请到“查询统计”->“拟补充资料函查询”菜单进行修改即可！",
+                        onOk: function () {
+                            $state.go('addSupp', {businessId: vm.signid, businessType: "SIGN"});
+                        }
+                    });
+                }
+            });
+
+
+        }// E_跳转到 拟补充资料函 编辑页面
     }
 })();
 
@@ -18803,6 +18829,45 @@
         }//E_deleteSelConditions
     }
 })();
+(function(){
+    'use strict';
+    angular.module('app').controller('documentListCtrl',documentList);
+
+    documentList.$inject=['$scope','$state','$location', 'bsWin' , '$interval' , 'fileLibrarySvc' , 'sysfileSvc'];
+
+    function documentList($scope,$state,$location, bsWin , $interval , fileLibrarySvc , sysfileSvc){
+        var vm = this;
+
+        vm.fileLibrary = {};
+        activate();
+        function activate() {
+
+            fileLibrarySvc.getFiles(function (data) {
+                vm.data = data;
+                /*vm.ids = [];
+                vm.key = [];
+                vm.value = [];
+                if(vm.data){
+                    var i = 0;
+                    for(var key in vm.data){
+                        vm.ids.push("div_" + i);
+                        vm.key.push(key);
+                        vm.value.push(vm.data[key]);
+                        i++;
+                    }
+
+                }*/
+            });
+        }
+
+        //附件下载
+        vm.commonDownloadSysFile = function (sysFileId) {
+            sysfileSvc.downloadFile(sysFileId);
+        }
+
+
+    }
+})();
 (function () {
     'use strict';
     angular.module('app').factory('fileLibrarySvc', fileLibrary);
@@ -18823,9 +18888,32 @@
             folderById: folderById, //通过id查询文件夹
             queryUser: queryUser,//模糊查询
             getFileUrlById: getFileUrlById,//获取路径
+            getFiles : getFiles , //获取所有文件，并分等级
+            createPolicy: createPolicy //创建政策指标库
         }
 
         return service;
+
+        //begin getFiles
+        function getFiles(callBack){
+            var httpOptions = {
+                method: "post",
+                url: rootPath + "/fileLibrary/getFiles",
+            }
+            var httpSuccess = function success(response) {
+                if(callBack != undefined && typeof callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+        //end getFiles
+
         //begin getFileUrlById
         function getFileUrlById(vm, fileId) {
             var httpOptions = {
@@ -19090,7 +19178,25 @@
             });
         }//end initFileList
 
-
+        //S_创建政策指标库
+        function createPolicy(topicModel,callBack){
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/fileLibrary",
+                data : topicModel
+            };
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess,
+                onError : function(){}
+            });
+        }
 
 
     }
@@ -19207,8 +19313,8 @@
 
                 //添加节点
                 function addHoverDom(treeId,treeNode){
-                    //判断，如果是文件夹，才有新增按钮
-                    if(treeNode.fileNature == 'FOLDER') {
+                    //判断，如果是文件夹，才有新增按钮,只能到四级
+                    if(treeNode.fileNature == 'FOLDER'  && treeNode.level < 2 ) {
                         var sObj = $("#" + treeNode.tId + "_span");
                         if (treeNode.editNameFlag || $("#addBtn_" + treeNode.tId).length > 0) return;
                         var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
@@ -19219,6 +19325,8 @@
                             var zTree = $.fn.zTree.getZTreeObj("zTree");
                             vm.addFolderWindow(treeNode.id);
                         });
+                    }else{
+                        return ;
                     }
                 }
 
@@ -19463,6 +19571,38 @@
             });
         }
     }
+})();
+(function(){
+    'use strict';
+    angular.module('app').controller('policyAddCtrl',policyAdd);
+    policyAdd.$inject=['$state','fileLibrarySvc','$scope' , 'bsWin'];
+    function policyAdd($state,fileLibrarySvc,$scope , bsWin){
+        var vm = this;
+        activate();
+        function activate(){
+
+        }
+
+        //保存
+        vm.create = function(){
+            common.initJqValidation($('#policyform'));
+            var isValid = $('#policyform').valid();
+            if (isValid) {
+                fileLibrarySvc.createPolicy(vm.model, function (data) {
+                    if (data.flag || data.reCode == 'ok') {
+                        vm.model = data.reObj;
+                        bsWin.alert("操作成功！");
+                    } else {
+                        bsWin.alert(data.reMsg);
+                    }
+                });
+            }else{
+                bsWin.alert("页面未填报完整或者为正确，请检查！");
+            }
+        }
+
+    }
+
 })();
 (function(){
     'use strict';
@@ -19754,8 +19894,8 @@
                 }
                 //添加节点
                 function addHoverDom(treeId,treeNode){
-                    //判断，如果是文件夹，才有新增按钮
-                    if(treeNode.fileNature == 'FOLDER'){
+                    //判断，如果是文件夹，才有新增按钮，只能到四级
+                    if(treeNode.fileNature == 'FOLDER' && treeNode.level < 2 ){
                         var sObj = $("#" + treeNode.tId + "_span");
                         if (treeNode.editNameFlag || $("#addBtn_"+treeNode.tId).length>0) return;
                         var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
@@ -19766,6 +19906,8 @@
                             var zTree = $.fn.zTree.getZTreeObj("zTree");
                             vm.addFolderWindow(treeNode.id);
                         });
+                    }else{
+                        return ;
                     }
 
                 }
@@ -40115,25 +40257,22 @@
                         vm.assistPlanSign = data;
                     })
                 }
-
-                //通过评估部门的个数来控制总投资字段
-                if(vm.model.workProgramDtoList && vm.model.workProgramDtoList.length >0) {
-                    var orgStr;
-                    if (vm.model.workProgramDtoList[0].branchId == '1' || vm.model.workProgramDtoList[0].branchId == '1') {
-                        orgStr = vm.model.workProgramDtoList[0].reviewOrgName;
-                    } else {
-                        orgStr = vm.model.workProgramDtoList[0].mainWorkProgramDto.reviewOrgName;
-                    }
-                    if (orgStr != '' && orgStr.split(',').length > 1) {
-
-                        vm.showTotalInvestment = true;
-                    }
-                }
-
                 //归档
                 if (vm.model.fileRecordDto) {
                     vm.showFlag.tabFilerecord = true;
                     vm.fileRecord = vm.model.fileRecordDto;
+                }
+                //通过评估部门的个数来控制总投资字段
+                if(vm.model.workProgramDtoList && vm.model.workProgramDtoList.length >0) {
+                    var orgStr;
+                    if (vm.model.workProgramDtoList[0].branchId == 1) {
+                        orgStr = vm.model.workProgramDtoList[0].reviewOrgName;
+                    } else {
+                        orgStr = vm.model.workProgramDtoList[0].mainWorkProgramDto.reviewOrgName;
+                    }
+                    if (orgStr && orgStr.split(',').length > 1) {
+                        vm.showTotalInvestment = true;
+                    }
                 }
 
                 //初始化专家评分
@@ -40174,7 +40313,6 @@
                     sysfileSvc.initZtreeClient(vm, $scope);//树形图
                 }
             });
-
         }
 
         //签收模板打印
