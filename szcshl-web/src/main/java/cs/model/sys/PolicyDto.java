@@ -117,6 +117,12 @@ public class PolicyDto extends BaseDto{
      */
     private String stardandType;
 
+    /**
+     * 政策指标库的父ID
+     */
+    private String standardPId;
+
+
     public String getId() {
         return id;
     }
@@ -291,5 +297,13 @@ public class PolicyDto extends BaseDto{
 
     public void setStardandType(String stardandType) {
         this.stardandType = stardandType;
+    }
+
+    public String getStandardPId() {
+        return standardPId;
+    }
+
+    public void setStandardPId(String standardPId) {
+        this.standardPId = standardPId;
     }
 }

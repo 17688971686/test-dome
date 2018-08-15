@@ -38,7 +38,10 @@
         <ul id="zTree" class="ztree"></ul>
     </div>
     <div style="width:80%;min-height:800px;border-right:1px solid #888888;float:left;" >
-        <!--<div ui-view></div>-->
+
+        <div ng-if="vm.showAddPolicyLibrary"><#include "/fileLibrary/addPolicyLIbrary.html"/></div>
+
+        <div ng-if="vm.showPolicyList">
         <div class="toolbar">
             <button class="btn btn-sm btn-primary" ng-click="vm.fileEdit()" ng-show="vm.parentFileId" style="margin-left: 10px;">
                 <span class="glyphicon glyphicon-plus"></span>新建文件
@@ -50,7 +53,7 @@
                 <td style="width: 200px;" align="center">附件</td>
                 <td style="width: 100px;" align="center">操作</td>
             </tr>
-            <tr ng-repeat="x in vm.policyList | filter: {fileNature : 'FILE'} ">
+            <tr ng-repeat="x in vm.fileList">
                 <td style="text-align: center;">{{x.fileName}}</td>
                 <td style="text-align: center;">
                     <p ng-repeat="s in x.sysFileDtoList">
@@ -75,6 +78,7 @@
                 </td>
             </tr>
         </table>
+        </div>
     </div>
     <div style="clear:both;"></div>
 
@@ -111,5 +115,3 @@
 </div>
 
 <div style="display: none;"><#include  "/fileLibrary/fileEdit.html"/></div>
-
-<div style="display: none;"><#include "/fileLibrary/addPolicyLIbrary.html"/></div>

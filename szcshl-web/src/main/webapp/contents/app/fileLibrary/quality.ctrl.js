@@ -198,7 +198,6 @@
          * 新建文件夹弹出窗
          * */
         vm.addFolderWindow=function(fileId){
-            console.log(vm.fileLibrary);
             vm.fileLibrary = {};
             vm.fileLibrary.fileType = "QUALITY";
             if(fileId != undefined){

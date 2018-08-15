@@ -157,6 +157,11 @@ public class Policy extends DomainBase{
     @Column(columnDefinition = "VARCHAR(64)")
     private String stardandType;
 
+    /**
+     * 政策指标库的父ID
+     */
+    private String standardPId;
+
 
 
     public String getId() {
@@ -333,5 +338,13 @@ public class Policy extends DomainBase{
 
     public void setStardandType(String stardandType) {
         this.stardandType = stardandType;
+    }
+
+    public String getStandardPId() {
+        return standardPId;
+    }
+
+    public void setStandardPId(String standardPId) {
+        this.standardPId = standardPId;
     }
 }

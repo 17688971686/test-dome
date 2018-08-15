@@ -55,4 +55,25 @@ public class PolicyServiceImpl implements PolicyService {
         policyRepo.save(domain);
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功", record);
     }
+
+    /**
+     * 初设化政策指标库的所有文件
+     * @return
+     */
+    @Override
+    public List<PolicyDto> initFileFolder() {
+        return policyRepo.initFileFolder();
+    }
+
+
+    /**
+     * 通过ID获取文件
+     * @param oDataObj
+     * @param standardId
+     * @return
+     */
+    @Override
+    public PageModelDto<PolicyDto> findFileById(ODataObj oDataObj, String standardId) {
+        return policyRepo.findFileById(oDataObj , standardId);
+    }
 }
