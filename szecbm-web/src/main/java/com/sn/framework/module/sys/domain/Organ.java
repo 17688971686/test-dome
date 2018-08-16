@@ -79,15 +79,39 @@ public class Organ extends DomainBase {
     @Column(name = "remark")
     private String remark;
     /**
-     * 主要领导
+     * 部长
      */
-    @Column
+    @Column(length = 64)
     private String organLead;
+
     /**
-     * 分管员
+     * 部长ID
      */
-    @Column
+    @Column(length = 64)
+    private String organLeadId;
+    /**
+     * 分管领导
+     */
+    @Column(length = 64)
     private String organManage;
+
+    /**
+     * 分管领导ID
+     */
+    @Column(length = 64)
+    private String organManageId;
+
+    /**
+     * 主任
+     */
+    @Column(length = 64)
+    private String orgMLeader;
+
+    /**
+     * 主任ID
+     */
+    @Column(length = 64)
+    private String orgMLeaderId;
     /**
      * 主要领导电话
      */
