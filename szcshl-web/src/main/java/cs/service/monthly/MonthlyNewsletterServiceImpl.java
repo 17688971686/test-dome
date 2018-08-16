@@ -17,6 +17,7 @@ import cs.model.PageModelDto;
 import cs.model.expert.ProReviewConditionDto;
 import cs.model.flow.FlowDto;
 import cs.model.monthly.MonthlyNewsletterDto;
+import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.monthly.MonthlyNewsletterRepo;
 import cs.repository.repositoryImpl.project.AddSuppLetterRepo;
@@ -33,6 +34,7 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,7 +78,32 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
     @Override
     public PageModelDto<MonthlyNewsletterDto> get(ODataObj odataObj) {
         PageModelDto<MonthlyNewsletterDto> pageModelDto = new PageModelDto<MonthlyNewsletterDto>();
-        List<MonthlyNewsletter> resultList = monthlyNewsletterRepo.findByOdata(odataObj);
+        Criteria criteria = monthlyNewsletterRepo.getExecutableCriteria();
+
+        if(Validate.isList(odataObj.getFilter()) ){
+            for(ODataFilterItem oDataFilterItem : odataObj.getFilter()){
+                if("monthlyType".equals(oDataFilterItem.getField()) && "1".equals(oDataFilterItem.getValue())){
+
+                    criteria.add(Restrictions.or(Restrictions.eq(MonthlyNewsletter_.monthlyType.getName() , oDataFilterItem.getValue()) , Restrictions.eq(MonthlyNewsletter_.monthlyType.getName() , "5")));
+                }
+                if("monthlyType".equals(oDataFilterItem.getField()) && "2".equals(oDataFilterItem.getValue())){
+
+                    criteria.add(Restrictions.or(Restrictions.eq(MonthlyNewsletter_.monthlyType.getName() , oDataFilterItem.getValue()) , Restrictions.eq(MonthlyNewsletter_.monthlyType.getName() , "7")));
+                }
+            }
+        }
+        criteria.addOrder(Order.desc(MonthlyNewsletter_.createdDate.getName()));
+        Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+        criteria.setProjection(null);
+        // 处理分页
+        if (odataObj.getSkip() > 0) {
+            criteria.setFirstResult(odataObj.getSkip());
+        }
+        if (odataObj.getTop() > 0) {
+            criteria.setMaxResults(odataObj.getTop());
+        }
+
+        List<MonthlyNewsletter> resultList = criteria.list();
         List<MonthlyNewsletterDto> resultDtoList = new ArrayList<MonthlyNewsletterDto>(resultList.size());
 
         if (resultList != null && resultList.size() > 0) {
@@ -86,7 +113,7 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
                 resultDtoList.add(modelDto);
             });
         }
-        pageModelDto.setCount(odataObj.getCount());
+        pageModelDto.setCount(totalResult);
         pageModelDto.setValue(resultDtoList);
         return pageModelDto;
     }
