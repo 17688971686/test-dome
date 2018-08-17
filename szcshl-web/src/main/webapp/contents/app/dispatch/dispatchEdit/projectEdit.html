@@ -11,22 +11,13 @@
                 深圳市政府投资项目评审中心<br/>项目发文审批表
             </strong>
         </p>
-        <p>
-           <span style="padding: 5px 10px;float: left;">
-            发文方式：
-            <select ng-model="vm.dispatchDoc.dispatchWay" name="dispatchWay" id="dispatchWay"
-                    ng-change="vm.sigleProject()" ng-disabled="vm.showFlag.isReveiwDS">
-                <option value="1">单个发文</option>
-            </select>
-        </span>
-            <!--
+        <p style="text-align: left;">
             <span>
                 发文方式：
                 <select ng-model="vm.dispatchDoc.dispatchWay" name="dispatchWay" id="dispatchWay"
-                        ng-change="vm.sigleProject()" ng-disabled="vm.showFlag.isReveiwDS">
-                    <option ng-repeat="x in DICT.DISPATCH_WAY.dicts | orderBy:'dictSort':false"
-                            value="{{x.dictKey}}"
-                            ng-selected="vm.dispatchDoc.dispatchWay==x.dictKey">{{x.dictName}}</option>
+                        ng-change="vm.sigleProject()" ng-disabled="vm.showFlag.isReveiwDS"><!-- 如果是合并发文次项目，则不允许修改 -->
+                    <option value="1" ng-selected="vm.dispatchDoc.dispatchWay==1">单个发文</option>
+                    <option value="2" ng-selected="vm.dispatchDoc.dispatchWay==2">合并发文</option>
                 </select>
             </span>
             <span ng-show="vm.dispatchDoc.dispatchWay == 2" style="margin-left:10px;">
@@ -40,7 +31,6 @@
                         ng-show="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject == 9"
                         ng-hide="vm.dispatchDoc.dispatchWay == 1 || vm.dispatchDoc.isMainProject == 0">关联项目</button>
             </span>
-            -->
 
             <span style="padding: 5px 10px;float:right;">发文类型：
             <select ng-model="vm.dispatchDoc.dispatchType" name="dispatchType" id="dispatchType" data-val="true"
@@ -82,10 +72,23 @@
     </tr>
     <tr>
         <td class="text-center">秘密等级</td>
-        <td> {{vm.dispatchDoc.secretLevel}}</td>
+        <td>
+            <select ng-model="vm.dispatchDoc.secretLevel" name="secretLevel" id="secretLevel"
+                    class="form-control input-xm ">
+                <option ng-repeat="x in DICT.SECRECTLEVEL.dicts" ng-selected="vm.model.secrectlevel == x.dictName"
+                        value="{{x.dictName}}">{{x.dictName}}
+                </option>
+            </select>
 
         <td class="text-center">紧急程度</td>
-        <td>{{vm.dispatchDoc.urgentLevel}}</td>
+        <td>
+            <select ng-model="vm.dispatchDoc.urgentLevel" name="urgentLevel" id="urgentLevel"
+                    class="form-control input-xm ">
+                <option ng-repeat="x in DICT.BAOMI.dicts" ng-selected="vm.model.urgencydegree == x.dictName"
+                        value="{{x.dictName}}">{{x.dictName}}
+                </option>
+            </select>
+        </td>
 
         <td class="text-center">是否有其他阶段关联</td>
         <td>
@@ -153,8 +156,6 @@
             <div ng-bind-html="vm.dispatchDoc.secondChargeSuggest | trust2Html"></div>
         </td>
     </tr>
-
-
 
 
     <tr>
@@ -274,7 +275,7 @@
                                ng-model="vm.dispatchDoc.declareValue" id="declareValue" name="declareValue"
                                ng-blur="vm.count()"
                                data-val-regex="金额格式不正确"
-                               data-val-regex-pattern="([1-9][\d]{0,7}|0)(\.[\d]{1,7})?" />
+                               data-val-regex-pattern="([1-9][\d]{0,7}|0)(\.[\d]{1,7})?"/>
                         <span data-valmsg-for="declareValue" data-valmsg-replace="true" class="errors"></span>
                     </td>
                     <!--<td ng-if="vm.dispatchDoc.dispatchType=='项目发文'">

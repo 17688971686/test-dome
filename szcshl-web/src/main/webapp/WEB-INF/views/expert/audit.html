@@ -14,7 +14,6 @@
         <div class="tab-pane fade in active" style="background:white;" id="busi_baseinfo">
         <#include "/expertReview/expertDetail.html"/>
         </div><!-- end tab -->
-
         <div class="tab-pane fade" style="background:white;" id="busi_workplan">
         <#include "/expert/reviewProjectList.html"/>
         </div><!-- end tab -->
@@ -29,15 +28,19 @@
     </ol>
 
     <div class="well well-sm">
+
     <form id="auditform" name="auditform">
-        <input id="state" name="state" option="eq" hidden>
         <table style="width:100%; ">
             <tr>
-                <td class="text-right" style="width:80px;">专家范围</td>
+                <td class="text-right" style="width:80px;">专家状态</td>
                 <td>
-                    <select name="state" operator="eq" id="queryState">
+                    <select name="state" operator="eq" >
                         <option value="">请选择</option>
-                        <option ng-repeat="x in DICT.STATE.dicts" value="{{x.dictCode}}">{{x.dictName}}</option>
+                        <option value="1">审核中</option>
+                        <option value="2">正式专家</option>
+                        <option value="3">备选专家</option>
+                        <option value="4">已停用</option>
+                        <option value="0">已删除</option>
                     </select>
                 </td>
                 <td class="text-right" style="width:50px;">姓名</td>

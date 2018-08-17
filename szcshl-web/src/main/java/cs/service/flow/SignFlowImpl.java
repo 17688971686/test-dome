@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cs.domain.project.SignBranch;
 import cs.domain.project.WorkProgram;
 import cs.domain.sys.OrgDept;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
@@ -35,8 +36,6 @@ public class SignFlowImpl implements IFlow {
     @Autowired
     private SignPrincipalService signPrincipalService;
     @Autowired
-    private SignBranchRepo signBranchRepo;
-    @Autowired
     private SignMergeRepo signMergeRepo;
     @Autowired
     private OrgDeptService orgDeptService;
@@ -52,6 +51,8 @@ public class SignFlowImpl implements IFlow {
     private ExpertReviewRepo expertReviewRepo;
     @Autowired
     private AssistUnitRepo assistUnitRepo;
+    @Autowired
+    private SignBranchRepo signBranchRepo;
     /**
      * 获取流程参数
      * @param businessKey
@@ -119,13 +120,15 @@ public class SignFlowImpl implements IFlow {
                 if(!Validate.isString(branchIndex)){
                     branchIndex =  FlowConstant.SignFlowParams.BRANCH_INDEX4.getValue();
                 }
-                WorkProgram wp = workProgramRepo.findBySignIdAndBranchId(businessKey,branchIndex);
-                boolean isFinishWP = false;
-                if(Validate.isObject(wp) && Validate.isString(wp.getId())){
-                    isFinishWP = true;
+                SignBranch signBranch = signBranchRepo.findBySignIdAndBranchId(businessKey,branchIndex);
+                businessMap.put("isNeedWP", signBranch.getIsNeedWP());
+
+                WorkProgram wp = workProgramRepo.findBySignIdAndBranchId(businessKey,branchIndex,false);
+                if(Validate.isObject(wp) && !Constant.EnumState.YES.getValue().equals(wp.getBaseInfo())){
+                    businessMap.put("isFinishWP", true);
+                }else{
+                    businessMap.put("isFinishWP", false);
                 }
-                //能查询出工作方案，代表已经完成工作填写
-                businessMap.put("isFinishWP", isFinishWP);
                 break;
             //发文申请
             case FlowConstant.FLOW_SIGN_FW:
@@ -178,13 +181,7 @@ public class SignFlowImpl implements IFlow {
                 if (isGotoCW){
                     businessMap.put(FlowConstant.SignFlowParams.HAVE_ZJPSF.getValue(), true);
                 }else{
-                    /*//发文环节也可以归档
-                    businessMap.put("isGotoGD", true);
-                    //如果有其它负责人，则还跳转
-                    userList = signPrincipalService.getAllSecondPriUser(businessKey);
-                    if(Validate.isList(userList)){
-                        businessMap.put("checkFileUser", userList.get(0));
-                    }*/
+
                 }
                 break;
             //项目归档

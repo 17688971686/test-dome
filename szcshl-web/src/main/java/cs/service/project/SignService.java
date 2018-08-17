@@ -2,6 +2,8 @@ package cs.service.project;
 
 import cs.common.ResultMsg;
 import cs.domain.flow.RuProcessTask;
+import cs.domain.project.AgentTask;
+import cs.domain.project.DispatchDoc;
 import cs.domain.project.Sign;
 import cs.domain.project.SignDispaWork;
 import cs.model.PageModelDto;
@@ -53,7 +55,7 @@ public interface SignService {
      * @param flowDto
      * @return
      */
-    ResultMsg dealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto);
+    ResultMsg dealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto) throws Exception;
     //流程处理end
 
     /**
@@ -295,4 +297,63 @@ public interface SignService {
      * @return
      */
     ResultMsg saveMoreExpert(String signId , String isMoreExpert);
+
+    /**
+     * 通过fileCode查找signDto
+     * @return
+     */
+    SignDto findSignByFileCode(SignDto signDto);
+
+    /**
+     * 更新回传委里的状态
+     * @param signId
+     * @param state
+     * @return
+     */
+    ResultMsg updateSendFGWState(String signId, String state);
+
+    /**
+     * 校验是否发送评审费
+     * @param signId
+     * @return
+     */
+    boolean checkReviewCost(String signId);
+
+    /**
+     * 验证是否已经上传附件
+     * @param signId
+     * @return
+     */
+    boolean checkFileUpload(String signId);
+
+    /**
+     * 获取主项目负责人
+     * @param signid
+     * @param agentTaskList
+     * @param flowSignBmldQrfw
+     * @return
+     */
+    String getMainDirecotr(String signid, List<AgentTask> agentTaskList, String flowSignBmldQrfw);
+
+    /**
+     * 重置发文的审批意见
+     * @param dp
+     */
+    void resetDisReviewOption(DispatchDoc dp);
+
+    /**
+     * 获取第一负责人
+     * @param signid
+     * @param agentTaskList
+     * @param flowSignFw
+     * @return
+     */
+    String getMainPriUserId(String signid, List<AgentTask> agentTaskList, String flowSignFw);
+
+    /**
+     * 更新所有涉及项目名称的字段
+     * @param sign
+     * @return
+     */
+    void updateProjectNameCascade(Sign sign,String newProjectName);
 }

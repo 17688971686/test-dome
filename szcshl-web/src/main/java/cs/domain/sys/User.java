@@ -3,6 +3,7 @@ package cs.domain.sys;
 import cs.domain.DomainBase;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -174,6 +175,12 @@ public class User extends DomainBase {
     private String takeUserId;
 
     /**
+     * 用户token
+     */
+    @Column(columnDefinition = "varchar(256)")
+    private String token;
+
+    /**
      * 设置代办人的时候，是否自动流转任务
      */
     @Column(columnDefinition = "varchar(2)")
@@ -185,7 +192,7 @@ public class User extends DomainBase {
     private String mngOrgType;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    private List<Role> roles ;
+    private List<Role> roles = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "orgID")
@@ -460,5 +467,13 @@ public class User extends DomainBase {
 
     public void setIsAotuTrans(String isAotuTrans) {
         this.isAotuTrans = isAotuTrans;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

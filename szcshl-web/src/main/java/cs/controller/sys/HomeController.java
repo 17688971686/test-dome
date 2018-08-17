@@ -28,9 +28,6 @@ public class HomeController {
 
 	@Autowired
 	private RepositoryService repositoryService;
-
-	@Autowired
-	private RTXService rtxService;
 	
 	@RequestMapping(name = "登录", path = "/")
 	public String login() {
@@ -77,12 +74,11 @@ public class HomeController {
 	public @ResponseBody String initTopicFlow(){
 		//部署下一个版本
 		logger.info("开始部署课题研究流程...");
-		InputStream in=this.getClass().getClassLoader().getResourceAsStream("activiti/topic.zip");
+		InputStream in=this.getClass().getClassLoader().getResourceAsStream("activiti/newtopic.zip");
 		ZipInputStream zipIn=new ZipInputStream(in);
 		Deployment  deployment = repositoryService.createDeployment().addZipInputStream(zipIn).name("课题研究流程").deploy();
 		ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().deploymentId(deployment.getId()).singleResult();
 		logger.info("课题研究程部署成功,流程名称-"+processDefinition.getName()+",流程ID-"+processDefinition.getId());
-
 		return "init Topic Flow success";
 	}
 
@@ -132,11 +128,11 @@ public class HomeController {
 	}
 
     @RequiresAuthentication
-    @RequestMapping(name = "档案借阅流程流程",path = "archivesFlow",method = RequestMethod.GET)
+    @RequestMapping(name = "档案借阅流程",path = "archivesFlow",method = RequestMethod.GET)
     @Transactional
     public @ResponseBody String archivesFlow(){
         //部署下一个版本
-        logger.info("开始项目暂停流程...");
+        logger.info("开始档案借阅流程...");
         InputStream in=this.getClass().getClassLoader().getResourceAsStream("activiti/archives.zip");
         ZipInputStream zipIn=new ZipInputStream(in);
         Deployment  deployment = repositoryService.createDeployment().addZipInputStream(zipIn).name("项目档案查阅流程").deploy();
@@ -203,4 +199,16 @@ public class HomeController {
 	}
 
 
+	@RequestMapping(name = "重做工作方案流程",path = "reworkFlow",method = RequestMethod.GET)
+	@Transactional
+	public @ResponseBody String reworkFlow(){
+		//部署下一个版本
+		logger.info("开始重做工作方案流程...");
+		InputStream in=this.getClass().getClassLoader().getResourceAsStream("activiti/workhis.zip");
+		ZipInputStream zipIn=new ZipInputStream(in);
+		Deployment  deployment = repositoryService.createDeployment().addZipInputStream(zipIn).name("重做工作方案流程").deploy();
+		ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().deploymentId(deployment.getId()).singleResult();
+		logger.info("重做工作方案流程部署成功,流程名称-"+processDefinition.getName()+",流程ID-"+processDefinition.getId());
+		return "init reworkFlow Flow success";
+	}
 }

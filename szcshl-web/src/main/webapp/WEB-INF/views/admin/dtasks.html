@@ -63,5 +63,8 @@
 <script type="text/template" id="columnBtns">
     <a ng-click="vm.saveView()" class="btn btn-xs btn-primary" href="#/{0}/{1}/{2}/{3}"><span class="glyphicon glyphicon-edit"></span>查看</a>
     <button ng-if="('${CURRENT_USER.loginName}'=='admin')" class="btn btn-xs btn-danger" ng-click="vm.deletProject('{1}')"><i class="fa fa-times" aria-hidden="true"></i>删除</button>
-
+    <a class="btn btn-xs btn-primary" href="#/registerFile/{1}" ><span class="glyphicon glyphicon-edit"></span>登记补充材料</a>
+    <button class="btn btn-xs btn-primary" ng-click="vm.addSuppLetter('{1}')" ><span
+            class="glyphicon glyphicon-edit"></span>拟补充资料函
+    </button>
 </script>

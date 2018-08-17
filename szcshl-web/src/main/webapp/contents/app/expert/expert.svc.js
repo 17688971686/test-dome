@@ -347,7 +347,7 @@
 		function auditGrid(vm){
 			var dataSource1 = new kendo.data.DataSource({
 				type : 'odata',
-				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{$filter:"state eq '1'"}),
+				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{$filter:"state eq '1'"},true),
 				schema : common.kendoGridConfig().schema({
 					id : "id",
 					fields : {
@@ -368,7 +368,7 @@
 			
 			var dataSource2 = new kendo.data.DataSource({
 				type : 'odata',
-				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{$filter:"state eq '2'"}),
+				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{$filter:"state eq '2'"},true),
 				schema : common.kendoGridConfig().schema({
 					id : "id",
 					fields : {
@@ -389,7 +389,7 @@
 			
 			var dataSource3 = new kendo.data.DataSource({
 				type : 'odata',
-				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{$filter:"state eq '3'"}),
+				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{$filter:"state eq '3'"},true),
 				schema : common.kendoGridConfig().schema({
 					id : "id",
 					fields : {
@@ -410,7 +410,7 @@
 			
 			var dataSource4 = new kendo.data.DataSource({
 				type : 'odata',
-				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{$filter:"state eq '4'"}),
+				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{$filter:"state eq '4'"},true),
 				schema : common.kendoGridConfig().schema({
 					id : "id",
 					fields : {
@@ -431,7 +431,7 @@
 			
 			var dataSource5 = new kendo.data.DataSource({
 				type : 'odata',
-				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{$filter:"state eq '0'"}),
+				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{$filter:"state eq '0'"},true),
 				schema : common.kendoGridConfig().schema({
 					id : "id",
 					fields : {
@@ -519,16 +519,11 @@
             vm.gridOptions3.dataSource._skip=0;
             vm.gridOptions4.dataSource._skip=0;
             vm.gridOptions5.dataSource._skip=0;
-            //查询时。不会再经过grid。所以取不到过滤的条件。需要重新在添加
-            $("#state").val("1");
+
 			vm.gridOptions1.dataSource.read();
-            $("#state").val("2");
 			vm.gridOptions2.dataSource.read();
-            $("#state").val("3");
 			vm.gridOptions3.dataSource.read();
-            $("#state").val("4");
 			vm.gridOptions4.dataSource.read();
-            $("#state").val("0");
 			vm.gridOptions5.dataSource.read();
 		}//S_endAudit
 		

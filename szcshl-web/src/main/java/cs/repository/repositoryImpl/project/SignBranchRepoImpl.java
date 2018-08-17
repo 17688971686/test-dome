@@ -64,10 +64,13 @@ public class SignBranchRepoImpl extends AbstractRepository<SignBranch, String> i
      * @param branchId
      */
     @Override
-    public void finishBranch(String signId, String branchId) {
+    public void updateFinishState(String signId, String branchId,String state) {
+        if(!Validate.isString(state)){
+            state = Constant.EnumState.YES.getValue();
+        }
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" update "+SignBranch.class.getSimpleName()+" set "+ SignBranch_.isFinished.getName()+" =:isFinished ");
-        hqlBuilder.setParam("isFinished", Constant.EnumState.YES.getValue());
+        hqlBuilder.setParam("isFinished", state);
         hqlBuilder.append(" where "+SignBranch_.signId.getName()+" =:signId and "+SignBranch_.branchId.getName()+" =:branchId ");
         hqlBuilder.setParam("signId",signId).setParam("branchId",branchId);
         executeHql(hqlBuilder);
@@ -292,22 +295,18 @@ public class SignBranchRepoImpl extends AbstractRepository<SignBranch, String> i
      * @return
      */
     @Override
-    public List<OrgDept> getOrgDeptBySignId(String signId) {
+    public List<OrgDept> getOrgDeptBySignId(String signId,String branchId) {
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append("select o from "+OrgDept.class.getSimpleName()+" o left join ");
         hqlBuilder.append(SignBranch.class.getSimpleName()+" s on o."+OrgDept_.id.getName()+" = s."+SignBranch_.orgId.getName());
         hqlBuilder.append(" and s."+SignBranch_.signId.getName() +" =:signId ");
         hqlBuilder.setParam("signId",signId);
         hqlBuilder.append(" where s."+SignBranch_.signId.getName()+" is not null ");
+        if(Validate.isString(branchId)){
+            hqlBuilder.append(" and s."+SignBranch_.branchId.getName()+" =:branchId ").setParam("branchId",branchId);
+        }
         hqlBuilder.append(" order by s."+SignBranch_.branchId.getName());
 
-        /*Criteria criteria = orgDeptRepo.getExecutableCriteria();
-        StringBuffer sb = new StringBuffer();
-        sb.append(" id in ( select "+SignBranch_.orgId.getName()+" from cs_sign_branch ");
-        sb.append(" where "+SignBranch_.signId.getName()+" = '"+signId+"' )");
-        criteria.add(Restrictions.sqlRestriction(sb.toString()));
-        return criteria.list();
-        */
 
         return orgDeptRepo.findByHql(hqlBuilder);
     }
@@ -363,8 +362,8 @@ public class SignBranchRepoImpl extends AbstractRepository<SignBranch, String> i
     }
 
     @Override
-    public String getOrgDeptNameBySignId(String signid) {
-        List<OrgDept> orgList = getOrgDeptBySignId(signid);
+    public String getOrgDeptNameBySignId(String signid,String branchId) {
+        List<OrgDept> orgList = getOrgDeptBySignId(signid,branchId);
         if (Validate.isList(orgList)) {
             StringBuffer orgName = new StringBuffer();
             for (int i = 0, l = orgList.size(); i < l; i++) {
@@ -377,5 +376,27 @@ public class SignBranchRepoImpl extends AbstractRepository<SignBranch, String> i
         }
         return "";
     }
+
+    @Override
+    public int countNeedWP(String signId) {
+        Criteria criteria = getExecutableCriteria();
+        criteria.add(Restrictions.eq(SignBranch_.signId.getName(),signId));
+        criteria.add(Restrictions.eq(SignBranch_.isNeedWP.getName(), Constant.EnumState.YES.getValue()));
+        Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+        return totalResult;
+    }
+
+    @Override
+    public SignBranch findBySignIdAndBranchId(String signId, String branchId) {
+        Criteria criteria = getExecutableCriteria();
+        criteria.add(Restrictions.eq(SignBranch_.signId.getName(),signId));
+        criteria.add(Restrictions.eq(SignBranch_.branchId.getName(),branchId));
+        List<SignBranch> resuList = criteria.list();
+        if(Validate.isList(resuList)){
+            return resuList.get(0);
+        }
+        return null;
+    }
+
 
 }

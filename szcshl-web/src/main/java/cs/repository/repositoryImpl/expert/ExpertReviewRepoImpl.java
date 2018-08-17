@@ -294,4 +294,13 @@ public class ExpertReviewRepoImpl extends AbstractRepository<ExpertReview, Strin
         executeHql(hqlBuilder);
 
     }
+
+
+    @Override
+    public void deleteByBusinessId(String businessId) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" delete from CS_EXPERT_REVIEW where BUSINESSID =:businessId ");
+        sqlBuilder.setParam("businessId", businessId);
+        executeSql(sqlBuilder);
+    }
 }

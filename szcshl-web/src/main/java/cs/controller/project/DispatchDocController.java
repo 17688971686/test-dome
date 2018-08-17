@@ -2,6 +2,7 @@ package cs.controller.project;
 
 import cs.ahelper.IgnoreAnnotation;
 import cs.common.ResultMsg;
+import cs.domain.project.DispatchDoc;
 import cs.model.project.DispatchDocDto;
 import cs.model.project.SignDto;
 import cs.service.project.DispatchDocService;
@@ -52,10 +53,25 @@ public class DispatchDocController {
 
     @RequiresAuthentication
     //@RequiresPermissions("dispatch#html/initDispatchBySignId#get")
-    @RequestMapping(name = "查询流程发文信息", path = "html/initDispatchBySignId", method = RequestMethod.GET)
-    public @ResponseBody
-    DispatchDocDto initDispatchBySignId(@RequestParam String signId) throws Exception {
+    @RequestMapping(name = "查询流程发文信息", path = "html/initDispatchBySignId", method = {RequestMethod.POST,RequestMethod.GET})
+    @ResponseBody
+    public DispatchDocDto initDispatchBySignId(@RequestParam String signId) throws Exception {
         return dispatchDocService.initDispatchBySignId(signId);
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "查看合并发文次项目信息", path = "findMergeDisInfo", method = {RequestMethod.POST,RequestMethod.GET})
+    @ResponseBody
+    public List<DispatchDocDto> findMergeDisInfo(@RequestParam String mainSignId){
+        return dispatchDocService.findMergeDisInfo(mainSignId);
+    }
+
+
+    @RequiresAuthentication
+    @RequestMapping(name = "根据ID查询对象", path = "findById", method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    public DispatchDocDto findById(@RequestParam String dictId) {
+        return dispatchDocService.findById(dictId);
     }
 
     @RequiresAuthentication

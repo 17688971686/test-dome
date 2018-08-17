@@ -4,7 +4,6 @@ import com.alibaba.fastjson.annotation.JSONField;
 import cs.domain.flow.FlowPrincipal;
 import cs.model.BaseDto;
 import cs.model.expert.ExpertReviewDto;
-
 import javax.persistence.Column;
 import java.util.Date;
 import java.util.List;
@@ -101,9 +100,34 @@ public class TopicInfoDto extends BaseDto {
     private FilingDto filingDto;
 
     /**
+     * 类别
+     */
+    private String topicType;
+
+    /**
+     * 预计完成时间
+     */
+    @JSONField(format = "yyyy-MM-dd")
+    private Date planFinishTime;
+
+
+    /**
+     * 合同信息
+     */
+    private List<ContractDto> contractDtoList;
+
+    /**
      * 专家评审方案信息
      */
     private ExpertReviewDto expertReviewDto;
+
+    /**
+     * 结题方式
+     */
+    @Column(columnDefinition="VARCHAR(1)")
+    private String endTopicFlag;
+
+    private Date approvedDate;
 
     /*******************  以下参数只是为了方便显示，并不是数据表字段 ********************/
     /**
@@ -298,5 +322,45 @@ public class TopicInfoDto extends BaseDto {
 
     public void setExpertReviewDto(ExpertReviewDto expertReviewDto) {
         this.expertReviewDto = expertReviewDto;
+    }
+
+    public String getTopicType() {
+        return topicType;
+    }
+
+    public void setTopicType(String topicType) {
+        this.topicType = topicType;
+    }
+
+    public Date getPlanFinishTime() {
+        return planFinishTime;
+    }
+
+    public void setPlanFinishTime(Date planFinishTime) {
+        this.planFinishTime = planFinishTime;
+    }
+
+    public List<ContractDto> getContractDtoList() {
+        return contractDtoList;
+    }
+
+    public void setContractDtoList(List<ContractDto> contractDtoList) {
+        this.contractDtoList = contractDtoList;
+    }
+
+    public String getEndTopicFlag() {
+        return endTopicFlag;
+    }
+
+    public void setEndTopicFlag(String endTopicFlag) {
+        this.endTopicFlag = endTopicFlag;
+    }
+
+    public Date getApprovedDate() {
+        return approvedDate;
+    }
+
+    public void setApprovedDate(Date approvedDate) {
+        this.approvedDate = approvedDate;
     }
 }

@@ -37,7 +37,11 @@ public class IFResultCode {
         //以下是附件返回码
         SZEC_FILE_EMPTY("FILE_01","没有附件信息"),
         SZEC_FILE_NOT_DOWN("FILE_02","附件获取失败"),
-        SZEC_FILE_NOT_ALL("FILE_03","附件获取不全");
+        SZEC_FILE_NOT_ALL("FILE_03","附件获取不全"),
+
+
+        DISPATHCH_DOC_DTO_1("DISPATHCH_DOC_DTO_1","该项目没有发文信息!"),
+        DISPATHCH_DOC_DTO_2("DISPATHCH_DOC_DTO_2","发文对象为空");
         private String code;
         private String value;
 

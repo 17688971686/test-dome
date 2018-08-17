@@ -42,4 +42,12 @@ public interface WorkdayService {
 	 * @return
 	 */
 	List<Workday> getBetweenTimeDay(Date startDate   , Date endDate);
+
+
+	/**
+	 * 判断当天是否是工作日
+	 * @param date
+	 * @return
+	 */
+	boolean isWorkDay(Date date);
 }

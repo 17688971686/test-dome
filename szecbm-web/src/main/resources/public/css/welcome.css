@@ -1,0 +1,133 @@
+.statistics{
+    margin-bottom: 15px;
+    overflow: hidden;
+    display: flex;
+    background-color: #fff;
+    box-shadow: 5px 5px 20px #ccc;
+    border:1px solid #ccc;
+    border-top:none;
+}
+.statistics .sta-container{
+    float: left;
+    border-right:1px dashed #ccc;
+    padding:0 15px;
+    flex:1;
+    position: relative;
+}
+.statistics .sta-container:last-child{
+    border:none;
+}
+.statistics .sta-container:not(:last-child):before{
+    content:'';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: #ECF0F5;
+    right: -10px;
+    top: -10px;
+    border-radius: 50%;
+    z-index:99;
+}
+.statistics .sta-container:not(:last-child):after{
+    content:'';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: #D3D4D5;
+    right: -10px;
+    bottom: -10px;
+    border-radius: 50%;
+    z-index:99;
+}
+.statistics .title{
+    margin: 15px;
+    border-bottom:1px solid #eee;
+    padding-bottom:10px;
+    padding-left: 10px;
+    position: relative;
+}
+.statistics .sta-list{
+    display: flex;
+}
+.statistics .sta-list li{
+    flex:1;
+    text-align: center;
+    padding-top: 8px;
+    transition:all .5s;
+}
+.statistics .sta-list li:hover{
+    background-color: rgba(0,0,0,.1);
+}
+.statistics .sta-list li a{
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    cursor: pointer;
+}
+.statistics .sta-list li a span.icon{
+    display: inline-block;
+    width: 60px;
+    height: 60px;
+    border-radius: 5px;
+    background-color: #f39c12 ;
+    color:#fff;
+    float: left;
+    margin-right: 10px;
+}
+.statistics .sta-list li a span.icon i{
+    font-size:40px;
+    line-height: 60px;
+}
+.statistics .sta-list li a .num{
+    font-weight:bolder;
+    margin-top:10px;
+}
+.statistics .sta-list li a > div > span{
+    color:#666;
+    white-space: nowrap;
+    overflow: hidden;
+}
+#welcome .box-title{
+    padding-left: 15px;
+}
+#welcome .box{
+    overflow: hidden;
+    border:none;
+    box-shadow: 0 0 10px rgba(0,0,0,.5);
+}
+#welcome .box-header{
+    position: relative;
+}
+#welcome .box-header .tips{
+    position: absolute;
+    background-color: #00c0ef;
+    height: 30px;
+    width: 120px;
+    left: -35px;
+    top: 8px;
+    color:#fff;
+    text-align: center;
+    line-height: 30px;
+    transform:rotate(-45deg);
+    box-shadow: 0 0 10px rgba(0,0,0,.5);
+    letter-spacing: 1px;
+}
+#welcome .box-header .tips.leader{
+    background-color: #00a65a;
+}
+@media (max-width: 1400px) {
+    .statistics .sta-list li a span.icon{
+        width: 50px;
+        height: 50px;
+    }
+    .statistics .sta-list li a span.icon i{
+        font-size:35px;
+        line-height: 50px;
+    }
+    .statistics .sta-list li a .num{
+        margin-top: 4px;
+    }
+    .statistics .sta-list li a > div > span{
+        font-size: 12px;
+    }
+}

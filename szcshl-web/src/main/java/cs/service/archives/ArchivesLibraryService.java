@@ -40,4 +40,10 @@ public interface ArchivesLibraryService {
 	 */
 	ResultMsg dealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto);
 
+	/**
+	 * 流程删除
+	 * @param businessKey
+	 * @return
+	 */
+    ResultMsg endFlow(String businessKey);
 }

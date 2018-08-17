@@ -6,6 +6,7 @@ import cs.common.ResultMsg;
 import cs.common.utils.*;
 import cs.domain.expert.ExpertReview;
 import cs.domain.expert.ExpertReview_;
+import cs.domain.flow.RuProcessTask;
 import cs.domain.meeting.RoomBooking_;
 import cs.domain.project.*;
 import cs.domain.sys.Workday;
@@ -25,6 +26,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.*;
 import org.hibernate.type.IntegerType;
+import org.hibernate.type.StringType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +35,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import static cs.common.constants.FlowConstant.FLOW_SIGN_FW;
+import static cs.common.constants.SysConstants.SEPARATE_COMMA;
 
 /**
  * 项目信息视图 Service
@@ -126,30 +131,43 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
                 //项目状态查询修改
                 if (SignDispaWork_.processState.getName().equals(item.getField())) {
                     processState = Integer.parseInt(item.getValue().toString());
-                    //在办项目或者暂停项目
-                    if(processState == 1 || processState == 2){
-                        criteria.add(Restrictions.eq(SignDispaWork_.signState.getName(),String.valueOf(processState)));
-                        criteria.add(Restrictions.le(SignDispaWork_.processState.getName(), Constant.SignProcessState.END_WP.getValue()));
-                    }else if(processState == 17){
-                        //未发送存档
-                        criteria.add(Restrictions.ge(SignDispaWork_.processState.getName(), Constant.SignProcessState.IS_START.getValue()));
-                        criteria.add(Restrictions.le(SignDispaWork_.processState.getName(),Constant.SignProcessState.SEND_CW.getValue()));
-                    }else if(processState == 68){
-                        //已发文未存档
-                        criteria.add(Restrictions.or(Restrictions.eq(SignDispaWork_.processState.getName(), Constant.SignProcessState.END_DIS_NUM.getValue()),
-                                Restrictions.eq(SignDispaWork_.processState.getName(),Constant.SignProcessState.SEND_CW.getValue()),
-                                Restrictions.eq(SignDispaWork_.processState.getName(),Constant.SignProcessState.SEND_FILE.getValue())));
-                    }else if(processState == 69){
-                        //已发文项目
-                        criteria.add(Restrictions.ge(SignDispaWork_.processState.getName(),Constant.SignProcessState.END_DIS_NUM.getValue()));
-                    }else if(processState == 89){
-                        //已发送存档
-                        criteria.add(Restrictions.ge(SignDispaWork_.processState.getName(),Constant.SignProcessState.SEND_FILE.getValue()));
-                    }
-                    else if(processState == 24){
-                        //曾经暂停
-                        criteria.add(Restrictions.eq(SignDispaWork_.isProjectStop.getName(),Constant.EnumState.YES.getValue()));
-                        criteria.add(Restrictions.eq(SignDispaWork_.signState.getName(),Constant.EnumState.PROCESS.getValue()));
+                    switch (processState){
+                        case 1:
+                        case 2:
+                            //在办项目或者暂停项目
+                            criteria.add(Restrictions.eq(SignDispaWork_.signState.getName(),String.valueOf(processState)));
+                            criteria.add(Restrictions.le(SignDispaWork_.processState.getName(), Constant.SignProcessState.END_WP.getValue()));
+                            break;
+                        case 17:
+                            //未发送存档
+                            criteria.add(Restrictions.ge(SignDispaWork_.processState.getName(), Constant.SignProcessState.IS_START.getValue()));
+                            criteria.add(Restrictions.le(SignDispaWork_.processState.getName(),Constant.SignProcessState.SEND_CW.getValue()));
+                            break;
+                        case 68:
+                            //已发文未存档
+                            criteria.add(Restrictions.or(Restrictions.eq(SignDispaWork_.processState.getName(), Constant.SignProcessState.END_DIS_NUM.getValue()),
+                                    Restrictions.eq(SignDispaWork_.processState.getName(),Constant.SignProcessState.SEND_CW.getValue()),
+                                    Restrictions.eq(SignDispaWork_.processState.getName(),Constant.SignProcessState.SEND_FILE.getValue())));
+                            break;
+                        case 69:
+                            //已发文项目
+                            criteria.add(Restrictions.ge(SignDispaWork_.processState.getName(),Constant.SignProcessState.END_DIS_NUM.getValue()));
+                            break;
+                        case 89:
+                            //已发送存档
+                            criteria.add(Restrictions.ge(SignDispaWork_.processState.getName(),Constant.SignProcessState.SEND_FILE.getValue()));
+                            break;
+                        case 24:
+                            //曾经暂停
+                            criteria.add(Restrictions.eq(SignDispaWork_.isProjectStop.getName(),Constant.EnumState.YES.getValue()));
+                            criteria.add(Restrictions.eq(SignDispaWork_.signState.getName(),Constant.EnumState.PROCESS.getValue()));
+                            break;
+                        case 8:
+                            criteria.add(Restrictions.eq(SignDispaWork_.processState.getName(),Constant.SignProcessState.SEND_FILE.getValue()));
+                            break;
+                        case 9:
+                            criteria.add(Restrictions.eq(SignDispaWork_.processState.getName(),Constant.SignProcessState.FINISH.getValue()));
+                            break;
                     }
                     continue;
                 }
@@ -256,8 +274,8 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
     }
 
     /**
-     * 获取待合并发文的项目
-     * (已完成工作方案，但是没有生成发文编号的项目)
+     * 获取待合并发文的项目,正在做发文项目
+     * (正在运行，没有生成发文编号的项目)
      *
      * @param signId
      * @return
@@ -266,19 +284,29 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
     public List<SignDispaWork> unMergeDISSign(String signId) {
         SignDispaWork mergeSign = signDispaWorkRepo.findById(signId);
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append(" from " + SignDispaWork.class.getSimpleName() + " where ");
-        hqlBuilder.append(SignDispaWork_.processState.getName() + " > :processState1  and " + SignDispaWork_.processState.getName() + " <= :processState2 ");
-        hqlBuilder.setParam("processState1", Constant.SignProcessState.DO_WP.getValue(), IntegerType.INSTANCE);
-        hqlBuilder.setParam("processState2", Constant.SignProcessState.END_DIS_NUM.getValue(), IntegerType.INSTANCE);
+        hqlBuilder.append("select sd from " + SignDispaWork.class.getSimpleName() + " sd , ");
+        hqlBuilder.append( RuProcessTask.class.getSimpleName() + " rt where sd.signid = rt.businessKey ");
+        //正式签收
+        hqlBuilder.append(" and sd.issign = :signState ");
+        hqlBuilder.setParam("signState", Constant.EnumState.YES.getValue(), StringType.INSTANCE);
+        //排除本身
+        hqlBuilder.append(" and sd.signid != :selfId ");
+        hqlBuilder.setParam("selfId", signId, StringType.INSTANCE);
+        //排除已经合并发文的项目
+        hqlBuilder.append(" and sd.signid not in (select mergeId from "+ SignMerge.class.getSimpleName()+" where mergeType = :mergeType1 ) ");
+        hqlBuilder.setParam("mergeType1", Constant.MergeType.DIS_MERGE.getValue());
+        hqlBuilder.append(" and sd.signid not in (select signId from "+ SignMerge.class.getSimpleName()+" where mergeType = :mergeType2 ) ");
+        hqlBuilder.setParam("mergeType2", Constant.MergeType.DIS_MERGE.getValue());
+        //正在做发文项目
+        hqlBuilder.append(" and rt.nodeDefineKey = :nodeKey and rt.processState = :processState ");
+        hqlBuilder.setParam("nodeKey", FLOW_SIGN_FW, StringType.INSTANCE);
+        hqlBuilder.setParam("processState", "1", StringType.INSTANCE);
         //只能关联同部门的项目
-        hqlBuilder.append("and " + SignDispaWork_.mOrgId.getName() + " = :mainOrgId ");
+        hqlBuilder.append(" and sd.mOrgId = :mainOrgId ");
         hqlBuilder.setParam("mainOrgId", mergeSign.getmOrgId());
-        //发文编号为空
-        hqlBuilder.append(" and (" + SignDispaWork_.dfilenum.getName() + " is null or " + SignDispaWork_.dfilenum.getName() + " = '') ");
-        hqlBuilder.append(" and " + SignDispaWork_.signid.getName() + " != :self ").setParam("self", signId);
-        hqlBuilder.append(" and " + SignDispaWork_.signid.getName() + " not in ( select " + SignMerge_.mergeId.getName() + " from " + SignMerge.class.getSimpleName());
-        hqlBuilder.append(" where " + SignMerge_.signId.getName() + " =:signId and " + SignMerge_.mergeType.getName() + " =:mergeType )");
-        hqlBuilder.setParam("signId", signId).setParam("mergeType", Constant.MergeType.DISPATCH.getValue());
+        //未生成发文编号的项目
+        hqlBuilder.append(" and (sd.dfilenum is null or sd.dfilenum = '') ");
+
         return signDispaWorkRepo.findByHql(hqlBuilder);
     }
 
@@ -319,8 +347,8 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，参数异常，请联系管理员查看！");
         }
         Date now = new Date();
-        String createUserName = SessionUtil.getDisplayName();
-        List<String> mergeSignIdList = StringUtil.getSplit(mergeIds, ",");
+        String createUserName = SessionUtil.getLoginName();
+        List<String> mergeSignIdList = StringUtil.getSplit(mergeIds, SEPARATE_COMMA);
         List<SignMerge> saveList = new ArrayList<>(mergeSignIdList.size());
         for (String mergeId : mergeSignIdList) {
             SignMerge signMerge = new SignMerge();

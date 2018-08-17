@@ -146,10 +146,10 @@
             return qs[1];
     }//end
 
-    function kendoGridDataSource(url, searchForm,page,pageSize,queryParams) {
+    function kendoGridDataSource(url, searchForm,page,pageSize,queryParams,isKeepParams) {
         var dataSource = new kendo.data.DataSource({
             type: 'odata',
-            transport: kendoGridConfig().transport(url, searchForm,queryParams),
+            transport: kendoGridConfig().transport(url,searchForm,queryParams,isKeepParams),
             schema: kendoGridConfig().schema({
                 id: "id",
                 fields: {
@@ -226,7 +226,7 @@
                     model: model
                 };
             },
-            transport: function (url, form, paramObj) {
+            transport: function (url, form, paramObj,isKeepParams) {
                 return {
                     read: {
                         url: url,
@@ -242,7 +242,9 @@
                                 if (filterParam) {
                                     if (paramObj && paramObj.$filter) {
                                         var extendFilter = paramObj.$filter;
-                                        paramObj = undefined;
+                                        if(!isKeepParams){
+                                            paramObj = undefined;
+                                        }
                                         return {"$filter":filterParam+" and "+extendFilter};
                                     } else {
                                         return {

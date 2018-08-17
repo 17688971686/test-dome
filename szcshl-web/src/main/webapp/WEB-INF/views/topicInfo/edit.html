@@ -1,0 +1,172 @@
+<meta charset="UTF-8">
+<#assign path=request.contextPath/>
+
+<!-- 附件 -->
+<#include "/file/common.html"/>
+
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a>课题研究管理</a></li>
+        <li class="active">编辑课题结题</li>
+    </ol>
+    <div class="toolbar">
+        <go-back-flow ng-if="vm.model.processInstanceId"></go-back-flow>
+        <flow-file-button></flow-file-button>   <!--附件上传按钮-->
+    </div>
+    <form id="topicform" name="topicform">
+        <table class="table table-bordered">
+            <caption class="text-center"><h3><strong>课题</strong></h3></caption>
+            <tr>
+                <td class="text-right" style="width:15%;max-width:180px;">课题名称： <span class="required">*</span></td>
+                <td>
+                    <input ng-disabled="true" type="text" maxlength="128" class="form-control input-sm " ng-model="vm.model.topicName"
+                           id="topicName" name="topicName" data-val="true"  data-val-required="必填" data-val-length-max="128">
+                    <span data-valmsg-for="topicName" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right">合作研究单位： <span class="required">*</span></td>
+                <td>
+                    <input ng-disabled="true" type="text" maxlength="256" class="form-control input-sm "  ng-model="vm.model.cooperator"
+                           id="cooperator" name="cooperator" data-val="true" data-val-required="必填" data-val-length-max="256">
+                    <span data-valmsg-for="cooperator" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right">申报部门： <span class="required">*</span></td>
+                <td>
+                    <input  type="text" class="form-control input-sm " ng-hide="true" ng-model="vm.model.orgId" ng-init="vm.model.orgId = '${CURRENT_USER.org.id}'">
+                    <input  type="text" class="form-control input-sm " ng-disabled="true" ng-model="vm.model.orgName" ng-init="vm.model.orgName = '${CURRENT_USER.org.name}'" >
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text-right">主要负责人：<span class="required">*</span></td>
+                <td >
+                    <select  ng-disabled="true" ng-model="vm.model.mainPrinUserId" name="mainPrinUserId" id="mainPrinUserId"
+                             ng-change="vm.checkPrincipal();" data-val="true" data-val-required="请选择项目负责人">
+                        <option value="">请选择</option>
+                        <option ng-repeat="x in vm.principalUsers" value="{{x.id}}" ng-selected="x.id == vm.model.mainPrinUserId ">{{x.displayName}}</option>
+                    </select>
+                    <span data-valmsg-for="mainPrinUserId" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text-right">课题负责人：</td>
+                <td>
+                    <ul id="principalUser_ul">
+                        <li ng-repeat="u in vm.principalUsers" id="principalUser" style="float: left;width: 80px;">
+                            <input  ng-disabled="true" type="checkbox" selectType="assistUser" tit="{{u.displayName}}" value="{{u.id}}"
+                                    ng-checked="vm.model.prinUserIds && (vm.model.prinUserIds).indexOf(u.id)>-1"
+                                    ng-disabled="vm.model.mainPrinUserId == u.id"
+                                    ng-click="vm.initUserOption()"/>{{u.displayName}}
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right">类别： <span class="required">*</span></td>
+                <td>
+                    <select ng-model="vm.model.topicType" ng-disabled="true" name="topicType" id="topicType"  data-val="true" data-val-required="请选择类别">
+                        <option value="">请选择</option>
+                        <option ng-repeat="x in DICT.TOPIC_TYPE.dicts" value="{{x.dictKey}}">{{x.dictName}}</option>
+                    </select>
+                    <span data-valmsg-for="topicType" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right">预计完成时间：</td>
+                <td>
+                    <input type="text" kendo-date-picker k-format="'yyyy-MM-dd'" ng-disabled="true" class="form-control input-sm "
+                           ng-model="vm.model.planFinishTime" name="planFinishTime">
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text-right">备注信息：</td>
+                <td >
+                    <textarea ng-disabled="true" cols="100" rows="5"  name="remark" id="remark" ng-model="vm.model.remark" maxlength="512"
+                              class="form-control input-sm " ></textarea>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <form id="contractform" name="contractform">
+        <table class="table table-bordered">
+            <caption class="text-center"><h3><strong>合同</strong></h3></caption>
+            <tr class="contractInfo">
+                <td class="text-center" style="width:20%;">合作单位</td>
+                <td class="text-center" style="width:20%;">委托金额</td>
+                <td class="text-center" style="width:20%;">采购方式</td>
+                <td class="text-center" style="width:20%;">联系人</td>
+                <td class="text-center" style="width:15%;">联系电话</td>
+            </tr>
+            <tr id="conTr{{x.sort}}"  ng-repeat="x in vm.conditions">
+                <td align="center">
+                    <input ng-disabled="true" type="text" maxlength="200" class="form-control input-sm "
+                           id="cooperator{{x.sort}}"  value="{{x.cooperator}}"/>
+                </td>
+
+                <td align="center">
+                    <input  ng-disabled="true" type="text" maxlength="200" class="form-control input-sm "
+                            id="entrustValue{{x.sort}}"  value="{{x.entrustValue}}"
+                            ng-blur="vm.checkPrice(x.sort)" data-val-required="请输入委托金额" />
+                    <span data-valmsg-for="entrustValue{{x.sort}}" data-valmsg-replace="true" class="errors"></span>
+                </td>
+
+                <td align="center">
+                    <select  ng-disabled="true" name="purchaseType" id="purchaseType{{x.sort}}"  data-val="true" data-val-required="请选择采购方式">
+                        <option value="">请选择</option>
+                        <option ng-repeat="y in DICT.TOPIC_BUY_TYPE.dicts"  ng-selected="x.purchaseType ==y.dictKey" value="{{y.dictKey}}">{{y.dictName}}</option>
+                    </select>
+                    <span data-valmsg-for="purchaseType{{x.sort}}" data-valmsg-replace="true" class="errors"></span>
+                </td>
+                <td align="center">
+                    <input ng-disabled="true" type="text" maxlength="200" class="form-control input-sm "
+                           id="contractPerson{{x.sort}}"  value="{{x.contractPerson}}" />
+                </td>
+                <td align="center">
+                    <input ng-disabled="true" type="text" maxlength="200" class="form-control input-sm "
+                           id="contractTel{{x.sort}}"  value="{{x.contractTel}}" />
+                </td>
+            </tr>
+        </table>
+    </form>
+    <form ng-if="vm.curNodeId=='TOPIC_KTFZR'|| vm.curNodeId=='TOPIC_KTFZR_QR'||vm.curNodeId=='TOPIC_ZLGD'" id="endTopicform" name="endTopicform">
+        <div class="toolbar">
+            <button class="btn btn-sm btn-success" ng-click="vm.saveEndTopic()"><span class="glyphicon glyphicon-ok"></span>保存</button>
+        </div>
+        <table class="table table-bordered">
+            <caption class="text-center"><h3><strong>结题</strong></h3></caption>
+            <tr>
+                <td class="text-right" style="width:15%;max-width:180px;">结题方式： <span class="required">*</span></td>
+                <td >
+                    <input ng-disabled="vm.endTopic"  type="radio" name="endTopicFlag" value="1"  ng-model="vm.model.endTopicFlag" ng-checked="vm.model.endTopicFlag == '1'"/> 提出成果鉴定会(方案/报告)
+                    <input ng-disabled="vm.endTopic"  type="radio" name="endTopicFlag" value="2"  ng-model="vm.model.endTopicFlag" ng-checked="vm.model.endTopicFlag == '2'"/>合同审批
+                    <input ng-disabled="vm.endTopic"  type="radio" name="endTopicFlag" value="3"  ng-model="vm.model.endTopicFlag" ng-checked="vm.model.endTopicFlag == '3'"/> 课题结题会议
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right" style="width:15%;max-width:180px;">是否报委务会审定： <span class="required">*</span></td>
+                <td>
+                    <label>
+                        <input ng-disabled="vm.endTopic" type="radio" name="sendFgw" ng-checked="vm.model.sendFgw == '9' "  value="9"  ng-model="vm.model.sendFgw"/>
+                    </label>
+                    是
+                    <label>
+                        <input ng-disabled="vm.endTopic" type="radio" name="sendFgw"  ng-checked="vm.model.sendFgw == '1'" value="1" ng-model="vm.model.sendFgw" />
+                    </label>
+                    否
+                </td>
+            </tr>
+            <tr ng-if="vm.curNodeId == 'TOPIC_KTFZR_QR'||vm.curNodeId == 'TOPIC_ZLGD'">
+                <td class="text-right" style="width:15%;max-width:180px;">审定时间：</td>
+                <td>
+                    <input type="text" kendo-date-picker k-format="'yyyy-MM-dd'" class="form-control input-sm "
+                           ng-model="vm.model.approvedDate" name="approvedDate">
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>

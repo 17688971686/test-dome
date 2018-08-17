@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<datas class="com.sn.framework.module.sys.domain.Resource" strategy="update" relate="parentId">
+
+    <data resId="bm" resName="基础管理" resType="0" status="1" resIcon="fa fa-newspaper-o">
+        <data resId="sys" resName="系统管理" resType="0" status="1" resIcon="fa fa-cogs">
+            <data resId="sysOrgan" resName="组织机构管理" resType="1" status="1" resUri="#/organ" permCode="sys:dict:get"
+                  resIcon="fa fa-users">
+                <data resId="sysOrganCreate" resName="新增机构" resType="2" status="1" resUri="#/organ/"
+                      permCode="sys:organ:post"/>
+                <data resId="sysOrganUpdate" resName="更新机构" resType="2" status="1" resUri="#/organ/{{row.organId}}"
+                      permCode="sys:organ:put"/>
+                <data resId="sysOrganDelete" resName="删除机构" resType="2" status="1" permCode="sys:organ:delete"/>
+                <data resId="sysOrganAuthorization" resName="机构授权" resType="2" status="1"
+                      permCode="sys:organ:authorization"/>
+            </data>
+            <data resId="sysUser" resName="用户信息管理" resType="1" status="1" resUri="#/user" permCode="sys:user:get"
+                  resIcon="fa fa-user">
+                <data resId="sysUserCreate" resName="新增用户信息" resType="2" status="1" resUri="#/user/"
+                      permCode="sys:user:post"/>
+                <data resId="sysUserUpdate" resName="更新用户信息" resType="2" status="1" resUri="#/user/{{row.userId}}"
+                      permCode="sys:user:put"/>
+                <data resId="sysUserDelete" resName="删除用户信息" resType="2" status="1" permCode="sys:user:delete"/>
+                <data resId="sysUserEnable" resName="禁用/启用" resType="2" status="1" permCode="sys:user:isEnable"/>
+                <data resId="sysUserResetPwd" resName="重置用户密码" resType="2" status="1" permCode="sys:user:resetPwd"/>
+                <data resId="sysUserSetRoles" resName="设置用户角色" resType="2" status="1" permCode="sys:user:setRoles"/>
+            </data>
+            <data resId="sysRole" resName="角色信息管理" resType="1" status="1" resUri="#/role" permCode="sys:role:get"
+                  resIcon="fa fa-tags">
+                <data resId="sysRoleCreate" resName="新增角色信息" resType="2" status="1" resUri="#/role/"
+                      permCode="sys:role:post"/>
+                <data resId="sysRoleUpdate" resName="更新角色信息" resType="2" status="1" resUri="#/role/{{row.roleId}}"
+                      permCode="sys:role:put"/>
+                <data resId="sysRoleDelete" resName="删除角色信息" resType="2" status="1" permCode="sys:role:delete"/>
+                <data resId="sysRoleEnable" resName="禁用/启用" resType="2" status="1" permCode="sys:role:isEnable"/>
+                <data resId="sysRoleAuthorization" resName="角色授权" resType="2" status="1"
+                      permCode="sys:role:authorization"/>
+            </data>
+            <data resId="sysResource" resName="系统资源管理" resType="1" status="1" resUri="#/resource"
+                  permCode="sys:resource:get">
+                <data resId="sysResourceCreate" resName="新增系统资源" resType="2" status="1" resUri="#/resource/"
+                      permCode="sys:resource:post"/>
+                <data resId="sysResourceUpdate" resName="更新系统资源" resType="2" status="1"
+                      resUri="#/resource/{{row.resId}}"
+                      permCode="sys:resource:put"/>
+                <data resId="sysResourceDelete" resName="删除系统资源" resType="2" status="1" permCode="sys:resource:delete"/>
+            </data>
+            <data resId="sysDict" resName="数据字典管理" resType="1" status="1" resUri="#/dict" permCode="sys:dict:get"
+                  resIcon="fa fa-book">
+                <data resId="sysDictCreate" resName="新增数据字典" resType="2" status="1" resUri="#/dict/"
+                      permCode="sys:dict:post"/>
+                <data resId="sysDictUpdate" resName="更新数据字典" resType="2" status="1" resUri="#/dict/{{row.resId}}"
+                      permCode="sys:dict:put"/>
+                <data resId="sysDictDelete" resName="删除数据字典" resType="2" status="1" permCode="sys:dict:delete"/>
+            </data>
+            <data resId="operatorLog" resName="系统操作日志" resType="1" status="1" resUri="#/operatorLog"
+                  permCode="sys:operatorLog:*" resIcon="fa fa-history"/>
+            <data resId="configParam" resName="系统配置" resType="1" status="1" resUri="#/configParam"
+                  permCode="sys:configParam" resIcon="fa fa-tachometer"/>
+            <data resId="sysVariable" resName="系统变量管理" resType="1" status="1" resUri="#/sysVariable"
+                  permCode="sys:variable:get">
+                <data resId="sysVariableCreate" resName="新增系统变量" resType="2" status="1" permCode="sys:variable:post"/>
+                <data resId="sysVariableUpdate" resName="更新系统变量" resType="2" status="1" permCode="sys:variable:put"/>
+                <data resId="sysVariableDelete" resName="删除系统变量" resType="2" status="1" permCode="sys:variable:delete"/>
+            </data>
+        </data>
+    </data>
+    <data resId="proReport" resName="汇报演示" resType="0" status="1" resIcon="fa fa-bar-chart" resUri="/report/index"
+          target="_blank" permCode="report:*"/>
+
+</datas>

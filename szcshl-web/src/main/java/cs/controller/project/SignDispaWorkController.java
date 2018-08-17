@@ -10,14 +10,19 @@ import cs.domain.project.SignDispaWork;
 import cs.domain.project.SignDispaWork_;
 import cs.domain.sys.Header;
 import cs.model.PageModelDto;
+import cs.model.expert.AchievementDeptDetailDto;
+import cs.model.expert.AchievementDetailDto;
 import cs.model.expert.AchievementSumDto;
 import cs.model.project.SignDispaWorkDto;
 import cs.model.sys.HeaderDto;
+import cs.model.topic.TopicMaintainDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.project.SignDispaWorkRepo;
 import cs.service.expert.ExpertSelectedService;
 import cs.service.project.SignDispaWorkService;
 import cs.service.sys.HeaderService;
+import cs.service.topic.TopicInfoService;
+import cs.service.topic.TopicMaintainService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -28,6 +33,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.*;
 import static com.sn.framework.common.StringUtil.GBK;
@@ -54,6 +64,9 @@ public class SignDispaWorkController {
 
     @Autowired
     private SignDispaWorkRepo signDispaWorkRepo;
+
+    @Autowired
+    private TopicMaintainService topicMaintainService;
 
 
     //@RequiresPermissions("signView#getSignList#post")
@@ -253,6 +266,302 @@ public class SignDispaWorkController {
     @ResponseBody
     public ResultMsg getAchievementSum(@RequestBody AchievementSumDto achievementSumDto){
         return expertSelectedService.findAchievementSum(achievementSumDto);
+
+       // return null;
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "员工业绩统计表导出" , path = "exportAchievementSum" , method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.OK)
+    public void exportPersonalAchievement(HttpServletResponse resp, @RequestBody AchievementSumDto achievementSumDto){
+        ServletOutputStream sos = null;
+        InputStream is = null ;
+        try{
+            ResultMsg resultMsg = expertSelectedService.findAchievementSum(achievementSumDto);
+            Map<String , Object> dataMap = new HashMap<>();
+            Map<String,Object> resultMap = (Map<String,Object>) resultMsg.getReObj();
+           if(Validate.isObject(resultMap.get("level"))){
+               Integer level = (Integer) resultMap.get("level");
+               if(level == 0){
+                   dataMap.put("topicDetailList", topicMaintainService.findTopicAll(SessionUtil.getUserId()));
+               }
+           }
+           List<AchievementSumDto> achievementSumDtoList = (List<AchievementSumDto> )resultMap.get("achievementSumList");
+           if(achievementSumDtoList.size() > 0){
+               if(achievementSumDtoList.size() == 2){
+                   dataMap.put("assistDoc",achievementSumDtoList.get(0));
+                   dataMap.put("mainDoc",achievementSumDtoList.get(1));
+               }else {
+                   AchievementSumDto temp = new AchievementSumDto();
+                   temp.setDisSum(0);
+                   temp.setExtraRateSum(BigDecimal.ZERO);
+                   temp.setIsmainuser("0");
+                   temp.setExtravalueSum(BigDecimal.ZERO);
+                   temp.setAuthorizevalueSum(BigDecimal.ZERO);
+                   temp.setDeclarevalueSum(BigDecimal.ZERO);
+                  if("9".equals(achievementSumDtoList.get(0).getIsmainuser())){
+                      dataMap.put("assistDoc",temp);
+                      dataMap.put("mainDoc",achievementSumDtoList.get(0));
+                   }else if("0".equals(achievementSumDtoList.get(0).getIsmainuser())){
+                      dataMap.put("mainDoc",temp);
+                      dataMap.put("assistDoc",achievementSumDtoList.get(0));
+                  }
+               }
+
+           }
+            dataMap.put("userName",SessionUtil.getDisplayName());
+            dataMap.put("dept",SessionUtil.getUserInfo().getOrg().getName());
+            dataMap.put("year",achievementSumDto.getYear());
+            String[] quarterArr = getMonthByQuarterFlag(achievementSumDto.getQuarter());
+            dataMap.put("beginMonth",quarterArr[0]);
+            dataMap.put("endMonth",quarterArr[1]);
+            String[] date = DateUtils.converToString(new Date(),"").split("-");
+            dataMap.put("currentYear",date[0]);
+            dataMap.put("currentMonth",date[1].charAt(0)=='0'?date[1].charAt(1):date[1]);
+            dataMap.put("currentDay",date[2].charAt(0)=='0'?date[2].charAt(1):date[2]);
+            String path = SysFileUtil.getUploadPath() + File.separator + Tools.generateRandomFilename() + Constant.Template.WORD_SUFFIX.getKey();
+            File file = TemplateUtil.createDoc(dataMap , Constant.Template.ACHIEVEMENT_DETAIL.getKey() , path);
+            String fileName = "员工业绩统计表.doc" ;
+            ResponseUtils.setResponeseHead(Constant.Template.WORD_SUFFIX.getKey() , resp);
+            resp.setHeader("Content-Disposition", "attachment; filename="
+                    + new String(fileName.getBytes("GB2312"), "ISO8859-1"));
+            int bytesum = 0 , byteread = 0 ;
+            is = new FileInputStream(file);
+            sos = resp.getOutputStream();
+            byte[] buffer = new byte[1024];
+            while ( (byteread = is.read(buffer)) != -1) {
+                bytesum += byteread; //字节数 文件大小
+                sos.write(buffer, 0, byteread);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (sos != null) {
+                try {
+                    sos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "部门业绩统计表导出" , path = "exportDeptAchievementSum" , method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.OK)
+    public void exportDeptAchievement(HttpServletResponse resp, @RequestBody AchievementDeptDetailDto achievementSumDto){
+        ServletOutputStream sos = null;
+        InputStream is = null ;
+        try{
+            ResultMsg resultMsg = expertSelectedService.findDeptAchievementDetail(achievementSumDto);
+            Map<String , Object> dataMap = new HashMap<>();
+            Map<String,Object> resultMap = (Map<String,Object>) resultMsg.getReObj();
+           List<AchievementDeptDetailDto> achievementDeptDetailList = new ArrayList<AchievementDeptDetailDto>();
+           if(Validate.isObject(resultMap.get("achievementDeptDetailList"))){
+               achievementDeptDetailList = (List<AchievementDeptDetailDto> )resultMap.get("achievementDeptDetailList");
+           }
+            dataMap.put("achievementDeptDetailList",achievementDeptDetailList);
+            dataMap.put("year",achievementSumDto.getYear());
+            dataMap.put("dept",achievementSumDto.getDeptNames());
+            String[] date = DateUtils.converToString(new Date(),"").split("-");
+            dataMap.put("currentYear",date[0]);
+            dataMap.put("currentMonth",date[1].charAt(0)=='0'?date[1].charAt(1):date[1]);
+            dataMap.put("currentDay",date[2].charAt(0)=='0'?date[2].charAt(1):date[2]);
+            String path = SysFileUtil.getUploadPath() + File.separator + Tools.generateRandomFilename() + Constant.Template.WORD_SUFFIX.getKey();
+            File file = TemplateUtil.createDoc(dataMap , Constant.Template.ACHIEVEMENT_DEPT_DETAIL.getKey() , path);
+            String fileName = "部门业绩统计表.doc" ;
+            ResponseUtils.setResponeseHead(Constant.Template.WORD_SUFFIX.getKey() , resp);
+            resp.setHeader("Content-Disposition", "attachment; filename="
+                    + new String(fileName.getBytes("GB2312"), "ISO8859-1"));
+            int bytesum = 0 , byteread = 0 ;
+            is = new FileInputStream(file);
+            sos = resp.getOutputStream();
+            byte[] buffer = new byte[1024];
+            while ( (byteread = is.read(buffer)) != -1) {
+                bytesum += byteread; //字节数 文件大小
+                sos.write(buffer, 0, byteread);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (sos != null) {
+                try {
+                    sos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "课题研究及其他业务导出" , path = "exportTopicMaintainInfo" , method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.OK)
+    public void exportTopicMaintainInfo(HttpServletResponse resp,@RequestParam(required = true) String userId){
+        ServletOutputStream sos = null;
+        InputStream is = null ;
+        try{
+            List<TopicMaintainDto> topicMaintainList = topicMaintainService.findTopicAll(userId);
+            Map<String , Object> dataMap = new HashMap<>();
+            dataMap.put("topicMaintainList",topicMaintainList);
+            dataMap.put("userName",SessionUtil.getDisplayName());
+            String[] date = DateUtils.converToString(new Date(),"").split("-");
+            dataMap.put("year",date[0]);
+            dataMap.put("currentYear",date[0]);
+            dataMap.put("currentMonth",date[1].charAt(0)=='0'?date[1].charAt(1):date[1]);
+            dataMap.put("currentDay",date[2].charAt(0)=='0'?date[2].charAt(1):date[2]);
+            String path = SysFileUtil.getUploadPath() + File.separator + Tools.generateRandomFilename() + Constant.Template.WORD_SUFFIX.getKey();
+            File file = TemplateUtil.createDoc(dataMap , Constant.Template.ACHIEVEMENT_TOPIC_MAINTAIN.getKey() , path);
+            String fileName = "课题研究及其他业务一览表.doc" ;
+            ResponseUtils.setResponeseHead(Constant.Template.WORD_SUFFIX.getKey() , resp);
+            resp.setHeader("Content-Disposition", "attachment; filename="
+                    + new String(fileName.getBytes("GB2312"), "ISO8859-1"));
+            int bytesum = 0 , byteread = 0 ;
+            is = new FileInputStream(file);
+            sos = resp.getOutputStream();
+            byte[] buffer = new byte[1024];
+            while ( (byteread = is.read(buffer)) != -1) {
+                bytesum += byteread; //字节数 文件大小
+                sos.write(buffer, 0, byteread);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (sos != null) {
+                try {
+                    sos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "主/协办人项目导出" , path = "exportProReview" , method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.OK)
+    public void exportProReview(HttpServletResponse resp, @RequestBody AchievementSumDto achievementSumDto){
+        ServletOutputStream sos = null;
+        InputStream is = null ;
+        try{
+            ResultMsg resultMsg = expertSelectedService.findAchievementSum(achievementSumDto);
+            Map<String , Object> dataMap = new HashMap<>();
+            Map<String,Object> resultMap = (Map<String,Object>) resultMsg.getReObj();
+            List<AchievementDetailDto> achievementMainList = new ArrayList<AchievementDetailDto>();
+            List<AchievementDetailDto> achievementAssistList = new ArrayList<AchievementDetailDto>();
+            if(Validate.isObject(resultMap.get("achievementMainList"))){
+                achievementMainList = (List<AchievementDetailDto>)resultMap.get("achievementMainList");
+                achievementAssistList = (List<AchievementDetailDto>)resultMap.get("achievementAssistList");
+            }
+            dataMap.put("achievementMainList",achievementMainList);
+            dataMap.put("achievementAssistList",achievementAssistList);
+            dataMap.put("name",SessionUtil.getDisplayName());
+            dataMap.put("year",achievementSumDto.getYear());
+            String[] quarterArr = getMonthByQuarterFlag(achievementSumDto.getQuarter());
+            dataMap.put("beginMonth",quarterArr[0]);
+            dataMap.put("endMonth",quarterArr[1]);
+            String[] date = DateUtils.converToString(new Date(),"").split("-");
+            dataMap.put("currentYear",date[0]);
+            dataMap.put("currentMonth",date[1].charAt(0)=='0'?date[1].charAt(1):date[1]);
+            dataMap.put("currentDay",date[2].charAt(0)=='0'?date[2].charAt(1):date[2]);
+            File file;
+            String fileName = "";
+            String path = SysFileUtil.getUploadPath() + File.separator + Tools.generateRandomFilename() + Constant.Template.WORD_SUFFIX.getKey();
+            if("9".equals(achievementSumDto.getIsMainPro())){
+                file = TemplateUtil.createDoc(dataMap , Constant.Template.ACHIEVEMENT_MAIN_PROREVIEW.getKey() , path);
+                fileName = "主办人评审项目一览表.doc" ;
+            }else{
+                file = TemplateUtil.createDoc(dataMap , Constant.Template.ACHIEVEMENT_ASSIST_PROREVIEW.getKey() , path);
+                fileName = "协办人评审项目一览表.doc" ;
+            }
+
+            ResponseUtils.setResponeseHead(Constant.Template.WORD_SUFFIX.getKey() , resp);
+            resp.setHeader("Content-Disposition", "attachment; filename="
+                    + new String(fileName.getBytes("GB2312"), "ISO8859-1"));
+            int bytesum = 0 , byteread = 0 ;
+            is = new FileInputStream(file);
+            sos = resp.getOutputStream();
+            byte[] buffer = new byte[1024];
+            while ( (byteread = is.read(buffer)) != -1) {
+                bytesum += byteread; //字节数 文件大小
+                sos.write(buffer, 0, byteread);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (sos != null) {
+                try {
+                    sos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+    }
+
+    private String[] getMonthByQuarterFlag(String quarter){
+        String[] quarterArr = new String[2];
+        if(Validate.isString(quarter)){
+            if("0".equals(quarter)){
+                quarterArr[0]="1";
+                quarterArr[1]="12";
+            }else if("1".equals(quarter)){
+                quarterArr[0]="1";
+                quarterArr[1]="3";
+            }else if("2".equals(quarter)){
+                quarterArr[0]="4";
+                quarterArr[1]="6";
+            }else if("3".equals(quarter)){
+                quarterArr[0]="7";
+                quarterArr[1]="9";
+            }else if("4".equals(quarter)){
+                quarterArr[0]="10";
+                quarterArr[1]="12";
+            }
+        }else{
+            quarterArr[0]="1";
+            quarterArr[1]="12";
+        }
+        return  quarterArr;
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "获取部门业绩明细" , path = "getAchievementDeptDetail" , method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg getAchievementDeptDetail(@RequestBody AchievementDeptDetailDto achievementSumDto){
+        return expertSelectedService.findDeptAchievementDetail(achievementSumDto);
     }
 
     @RequiresAuthentication

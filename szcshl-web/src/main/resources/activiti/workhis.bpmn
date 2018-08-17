@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="WORK_HIS_FLOW" name="重做工作方案流程" isExecutable="true">
+    <startEvent id="WPHIS_START" name="开始"></startEvent>
+    <userTask id="WPHIS_XMFZR" name="项目负责人办理" activiti:candidateUsers="${users}"></userTask>
+    <userTask id="WPHIS_BMLD_SPW" name="部长审批" activiti:assignee="${user_bz}"></userTask>
+    <userTask id="WPHIS_FGLD_SPW" name="分管副主任审批" activiti:assignee="${user_fgld}"></userTask>
+    <endEvent id="WPHIS_END" name="结束"></endEvent>
+    <sequenceFlow id="flow1" sourceRef="WPHIS_START" targetRef="WPHIS_XMFZR"></sequenceFlow>
+    <sequenceFlow id="flow2" sourceRef="WPHIS_XMFZR" targetRef="WPHIS_BMLD_SPW"></sequenceFlow>
+    <sequenceFlow id="flow3" sourceRef="WPHIS_BMLD_SPW" targetRef="WPHIS_FGLD_SPW"></sequenceFlow>
+    <sequenceFlow id="flow4" sourceRef="WPHIS_FGLD_SPW" targetRef="WPHIS_END"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_WORK_HIS_FLOW">
+    <bpmndi:BPMNPlane bpmnElement="WORK_HIS_FLOW" id="BPMNPlane_WORK_HIS_FLOW">
+      <bpmndi:BPMNShape bpmnElement="WPHIS_START" id="BPMNShape_WPHIS_START">
+        <omgdc:Bounds height="35.0" width="35.0" x="120.0" y="100.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="WPHIS_XMFZR" id="BPMNShape_WPHIS_XMFZR">
+        <omgdc:Bounds height="55.0" width="105.0" x="240.0" y="90.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="WPHIS_BMLD_SPW" id="BPMNShape_WPHIS_BMLD_SPW">
+        <omgdc:Bounds height="55.0" width="105.0" x="430.0" y="90.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="WPHIS_FGLD_SPW" id="BPMNShape_WPHIS_FGLD_SPW">
+        <omgdc:Bounds height="55.0" width="105.0" x="630.0" y="90.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="WPHIS_END" id="BPMNShape_WPHIS_END">
+        <omgdc:Bounds height="35.0" width="35.0" x="810.0" y="100.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="155.0" y="117.0"></omgdi:waypoint>
+        <omgdi:waypoint x="240.0" y="117.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="345.0" y="117.0"></omgdi:waypoint>
+        <omgdi:waypoint x="430.0" y="117.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="535.0" y="117.0"></omgdi:waypoint>
+        <omgdi:waypoint x="630.0" y="117.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="735.0" y="117.0"></omgdi:waypoint>
+        <omgdi:waypoint x="810.0" y="117.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

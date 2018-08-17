@@ -129,4 +129,8 @@ public class FlowDto {
         super();
     }
 
+    public FlowDto(String dealOption) {
+        this.dealOption = dealOption;
+    }
+
 }

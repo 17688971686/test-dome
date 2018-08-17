@@ -13,6 +13,8 @@
 <div style="display: none;">
 <#include "/expertReview/expert_confirm.html"/>
 </div>
+<!--重写工作方案-->
+<div ng-include src="'${path}/contents/app/sign/reworkWorkPlan.html'"></div>
 
 <style>
     .rating {
@@ -40,6 +42,7 @@
         color: gold;
     }
 </style>
+
 <!--S 上传附件弹窗 -->
 <div id="commonUploadWindow" style="margin:0px 20px 0px 10px;background:white;display:none;">
     <input type="file" id="sysfileinput" name="file" multiple="multiple" class="file-loading"/>

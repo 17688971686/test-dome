@@ -1,8 +1,6 @@
 package cs.domain.sys;
 
 import cs.common.constants.Constant;
-import cs.service.sys.SMSLogService;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -18,32 +16,33 @@ public class SMSLog {
     /**
      * 用户名
      */
-    @Column(columnDefinition = "varchar(64)")
+    @Column(columnDefinition = "varchar(4000)")
 	private String userName;
+
     /**
      * 短信用户名
      */
-    @Column(columnDefinition = "varchar(64)")
+    @Column(columnDefinition = "varchar(2000)")
     private String smsUserName;
 
     /**
      * 发送短信手机号码
      */
-    @Column(columnDefinition = "varchar(255)")
+    @Column(columnDefinition = "varchar(4000)")
     private String smsUserPhone;
 
     /**
-     * 是:单个发送还是多个发送
+     * 单个发送还是多个发送(1:表示单，2表示多)
      */
-    @Column(columnDefinition = "varchar(64)")
+    @Column(columnDefinition = "varchar(2)")
     private String manyOrOne;
 
     /**
      * 创建日期
      */
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(columnDefinition = "date NOT NULL")
 	private Date createdDate;
-
 
     /**
      * 短信结果编码
@@ -67,18 +66,21 @@ public class SMSLog {
     /**
      * 信息内容
      */
-    @Column(columnDefinition = "varchar(255)")
+    @Column(columnDefinition = "varchar(4000)")
 	private String message;
+
     /**
      * 自定义信息内容
      */
-    @Column(columnDefinition = "varchar(255)")
+    @Column(columnDefinition = "varchar(4000)")
     private String customMessage;
+
     /**
      * 业务ID
      */
-    @Column(columnDefinition = "varchar(64)")
+    @Column(columnDefinition = "varchar(1024)")
 	private String buninessId;
+
     /**
      *
      */
@@ -87,8 +89,9 @@ public class SMSLog {
 
     /**
      */
-    @Column(columnDefinition = "varchar(64)")
+    @Column(columnDefinition = "varchar(512)")
     private String projectName;
+
     /**
      * IP地址
      */
@@ -96,11 +99,45 @@ public class SMSLog {
     private String ipAdd;
 
     /**
+     * 是否已经调用发送短信接口:结果（9：表示成功。0：表示失败）
+     */
+    @Column(columnDefinition = "varchar(2)")
+    private String isCallApi;
+
+    /**
      * 暂时界面使用:结果（9：表示成功。0：表示失败）
      */
     @Column(columnDefinition = "varchar(2)")
     private String result;
 
+
+    /**
+     * 修改时间
+     */
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(columnDefinition = "date")
+    private Date modifiedDate;
+    /**
+     * 创建人
+     */
+    @Column(columnDefinition = "varchar(64)")
+    private String createdBy;
+
+    public Date getModifiedDate() {
+        return modifiedDate;
+    }
+
+    public void setModifiedDate(Date modifiedDate) {
+        this.modifiedDate = modifiedDate;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
 
     public String getSmsUserName() {
         return smsUserName;
@@ -230,9 +267,15 @@ public class SMSLog {
         this.result = result;
     }
 
+    public String getIsCallApi() {
+        return isCallApi;
+    }
 
+    public void setIsCallApi(String isCallApi) {
+        this.isCallApi = isCallApi;
+    }
 
-    public  void setObject(String userName,String smsUserPhone,String projectName, String filecode, String resultCode, String type, String infoType, String seekContent, boolean success){
+    public  void setObject(String userName, String smsUserPhone, String projectName, String filecode, String resultCode, String type, String infoType, String seekContent, boolean success){
         this.setId(UUID.randomUUID().toString());
         this.setCreatedDate(new Date());
         this.setProjectName(projectName);

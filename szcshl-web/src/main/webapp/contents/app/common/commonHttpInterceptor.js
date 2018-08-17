@@ -31,7 +31,6 @@
      * @param data      响应数据
      */
     function errorHandle(bsWin, status, data) {
-        // debugger;
         switch (status) {
             case 500:
                 bsWin.error("系统内部错误!");

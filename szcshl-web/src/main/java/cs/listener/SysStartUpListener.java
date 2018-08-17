@@ -1,5 +1,7 @@
 package cs.listener;
 
+import cs.common.cache.CacheManager;
+import cs.common.cache.ICache;
 import cs.common.utils.Validate;
 import cs.domain.sys.Quartz;
 import cs.service.meeting.MeetingRoomService;
@@ -13,7 +15,10 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
+import java.net.InetAddress;
 import java.util.List;
+
+import static cs.common.cache.CacheConstant.IP_CACHE;
 
 /**
  * 系统启动完成监听
@@ -53,6 +58,9 @@ public class SysStartUpListener implements ApplicationListener {
                         }
                         logger.info("\n==                 启动定时器成功！             ==");
                     }
+                    ICache cache = CacheManager.getCache();
+                    InetAddress myip= InetAddress.getLocalHost();
+                    cache.put(IP_CACHE,myip.getHostAddress());
                 } catch (Exception e) {
                     logger.info("\n==启动定执行方法异常："+e.getMessage());
                     e.printStackTrace();

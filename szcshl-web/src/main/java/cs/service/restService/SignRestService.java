@@ -9,6 +9,7 @@ import cs.model.project.CommentDto;
 import cs.model.project.DispatchDocDto;
 import cs.model.project.SignDto;
 import cs.model.project.WorkProgramDto;
+import cs.model.sys.SysFileDto;
 
 import java.util.List;
 import java.util.Map;
@@ -41,7 +42,7 @@ public interface SignRestService {
      * @param sign
      * @return
      */
-    ResultMsg setToFGW(SignDto sign, WorkProgramDto mainWP, DispatchDocDto dispatchDoc, String fgwUrl, Map<String,CommentDto> commentDtoMap);
+    ResultMsg setToFGW(SignDto sign, WorkProgramDto mainWP, DispatchDocDto dispatchDoc, String fgwUrl, String localUrl, Map<String,CommentDto> commentDtoMap, List<SysFileDto> sysFileDtoList);
 
     /**
      * 获取回传给委里的接口地址
@@ -49,13 +50,23 @@ public interface SignRestService {
      */
     String getReturnUrl();
 
+    /**
+     * 获取本地
+     * @return
+     */
+    String getLocalUrl();
+
     /***
      * 获取委里预签收接口地址
      * @return
      */
     String getPreReturnUrl();
 
-    public List<User> getListUser(String type);
-
-
+    /**
+     * 项目批复文件
+     * @param signDto
+     * @param b
+     * @return
+     */
+    ResultMsg signProjAppr(SignDto signDto, boolean b);
 }

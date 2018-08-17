@@ -10,22 +10,13 @@
         <p class="h3">
             <strong>深圳市政府投资项目评审中心<br/>项目发文审批表</strong>
         </p>
-        <p>
-            <span style="padding: 5px 10px;float: left;">
-            发文方式：
-            <select ng-model="vm.dispatchDoc.dispatchWay" name="dispatchWay" id="dispatchWay"
-                    ng-change="vm.sigleProject()" ng-disabled="vm.showFlag.isReveiwDS">
-                <option value="1">单个发文</option>
-            </select>
-        </span>
-        <!--
+        <p style="text-align: left;">
         <span>
             发文方式：
             <select ng-model="vm.dispatchDoc.dispatchWay" name="dispatchWay" id="dispatchWay"
-                    ng-change="vm.sigleProject()" ng-disabled="vm.showFlag.isReveiwDS">
-                <option ng-repeat="x in DICT.DISPATCH_WAY.dicts | orderBy:'dictSort':false"
-                        value="{{x.dictKey}}"
-                        ng-selected="vm.dispatchDoc.dispatchWay==x.dictKey">{{x.dictName}}</option>
+                    ng-change="vm.sigleProject()" ng-disabled="vm.showFlag.isReveiwDS"><!-- 如果是合并发文次项目，则不允许修改 -->
+                <option value="1" ng-selected="vm.dispatchDoc.dispatchWay==1">单个发文</option>
+                <option value="2" ng-selected="vm.dispatchDoc.dispatchWay==2">合并发文</option>
             </select>
         </span>
         <span ng-show="vm.dispatchDoc.dispatchWay == 2" style="margin-left:10px;">
@@ -39,7 +30,6 @@
                     ng-show="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject == 9"
                     ng-hide="vm.dispatchDoc.dispatchWay == 1 || vm.dispatchDoc.isMainProject == 0">关联项目</button>
         </span>
-        -->
         <span style="padding: 5px 10px;float:right;">发文类型： <span class="required">*</span>
 		  		<select ng-model="vm.dispatchDoc.dispatchType" name="dispatchType" id="dispatchType" data-val="true"
                         data-val-required="必填">
@@ -81,7 +71,10 @@
 
         <td class="text-center">紧密程度</td>
         <td>
-            {{vm.dispatchDoc.urgentLevel}}
+            <select ng-model="vm.dispatchDoc.urgentLevel" name="urgentLevel" id="urgentLevel" class="form-control input-xm ">
+                <option ng-repeat="x in DICT.BAOMI.dicts"  ng-selected="vm.model.urgencydegree == x.dictName"
+                        value="{{x.dictName}}">{{x.dictName}}</option>
+            </select>
         </td>
     </tr>
 

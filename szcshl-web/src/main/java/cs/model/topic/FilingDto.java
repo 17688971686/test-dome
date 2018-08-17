@@ -64,6 +64,7 @@ public class FilingDto extends BaseDto {
     private Date filingDate;
     private TopicInfoDto topicInfoDto;
     private String topicId;
+    private String isGdy;
 
     /**
      * 拟补充资料函列表
@@ -72,7 +73,7 @@ public class FilingDto extends BaseDto {
 
     public FilingDto() {
     }
-   
+
     public String getId() {
         return id;
     }
@@ -442,5 +443,13 @@ public class FilingDto extends BaseDto {
 
     public void setRegisterFileDto(List<AddRegisterFileDto> registerFileDto) {
         this.registerFileDto = registerFileDto;
+    }
+
+    public String getIsGdy() {
+        return isGdy;
+    }
+
+    public void setIsGdy(String isGdy) {
+        this.isGdy = isGdy;
     }
 }

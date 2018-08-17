@@ -67,8 +67,8 @@
                 业务处理
             </td>
             <td>
-                档案归还日期：<input ng-change="vm.isTime()"  type="text" kendo-date-picker k-format="'yyyy-MM-dd'"  class="form-control input-sm "
-                             ng-model="vm.flow.businessMap.RETURNDATE" />
+                档案归还日期：<input ng-change="vm.isTime()" type="text" kendo-date-picker k-format="'yyyy-MM-dd'" min="vm.minDate"
+                              class="form-control input-sm"  ng-model="vm.flow.businessMap.RETURNDATE" />
             </td>
         </tr>
         </tbody>

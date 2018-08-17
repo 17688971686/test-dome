@@ -15,7 +15,7 @@
         vm.confirmEPListReplace = [];                   //已经调整过的聘请专家列表（已经经过确认的专家）
         vm.matchEPMap = {};                             //保存符合条件的专家信息
         vm.selectIds = [],                              //已经抽取的专家信息ID（用于排除查询）
-        vm.businessId = $state.params.businessId;       //专家评审方案业务ID
+            vm.businessId = $state.params.businessId;       //专家评审方案业务ID
         vm.minBusinessId = $state.params.minBusinessId; //专家抽取方案业务ID
         vm.businessType = $state.params.businessType;   //专家业务类型
         vm.taskId = $state.params.taskId;               //任务ID
@@ -23,9 +23,9 @@
         vm.isback = $state.params.isback;               //用来判断返回的是否是维护页面的工作方案
         vm.processInstanceId = $state.params.processInstanceId; //流程实例ID
         vm.isSuperUser = isSuperUser;
-        vm.saveNewExpertFlag = 0;   //保存新专家标志
-        vm.reviewType = $state.params.reviewType; //评审方式
-
+        vm.saveNewExpertFlag = 0;                       //保存新专家标志
+        vm.reviewType = $state.params.reviewType;       //评审方式
+        vm.showLastDraf = true;                         //显示上次抽取的专家
         //S 查看专家详细
         vm.findExportDetail = function (id) {
             expertSvc.getExpertById(id, function (data) {
@@ -146,7 +146,7 @@
                 if (!angular.isUndefined(vm.expertReview.expertSelectedDtoList) && angular.isArray(vm.expertReview.expertSelectedDtoList)) {
                     vm.autoSelectedEPList = [];
                     var isShowAutoExpert = false;
-                    if(vm.expertReview.extractInfo){
+                    if(vm.expertReview.extractInfo && vm.showLastDraf){
                         isShowAutoExpert = true;
                     }
                     $.each(vm.expertReview.expertSelectedDtoList, function (i, sep) {
@@ -198,44 +198,47 @@
 
         //保存自选的专家
         vm.saveSelfExpert = function (admin) {
-            var isAdmin = admin;
             var selectIds = common.getKendoCheckId('#selfExpertGrid');
             if (selectIds.length == 0) {
                 bsWin.alert("请先选择专家！");
             } else {
-                var selExpertIdArr = [];
-                $.each(selectIds, function (i, obj) {
-                    selExpertIdArr.push(obj.value);
-                });
-                expertReviewSvc.saveSelfExpert(vm.businessId, vm.minBusinessId, vm.businessType, selExpertIdArr.join(","), vm.expertReview.id, vm.isCommit, function (data) {
-                    if (data.flag || data.reCode == 'ok') {
-                        //更新专家评审费用
-                        if(vm.businessType == "SIGN"){
-                            workprogramSvc.updateWPExpertCost(vm.minBusinessId);
-                        }
-                        //如果是普通用户，还要删除之前选择的专家，因为他只能选一个
-                        if (!"9" == data.reObj.moreExpert) {
-                            var ids = [];
-                            $.each(vm.confirmEPList, function (i, obj) {
-                                if (obj.selectType == '2') {
-                                    ids.push(obj.id);
-                                }
-                            })
-                            vm.reFleshAfterRemove(ids);
-                        }
+                if(!admin && selectIds.length > 1){
+                    bsWin.alert("自选专家只能选择一个！");
+                }else{
+                    var selExpertIdArr = [];
+                    $.each(selectIds, function (i, obj) {
+                        selExpertIdArr.push(obj.value);
+                    });
+                    expertReviewSvc.saveSelfExpert(vm.businessId, vm.minBusinessId, vm.businessType, selExpertIdArr.join(","), vm.expertReview.id, vm.isCommit, function (data) {
+                        if (data.flag || data.reCode == 'ok') {
+                            //更新专家评审费用
+                            if(vm.businessType == "SIGN"){
+                                workprogramSvc.updateWPExpertCost(vm.minBusinessId);
+                            }
+                            //如果是普通用户，还要删除之前选择的专家，因为他只能选一个
+                            if (!"9" == data.reObj.moreExpert) {
+                                var ids = [];
+                                $.each(vm.confirmEPList, function (i, obj) {
+                                    if (obj.selectType == '2') {
+                                        ids.push(obj.id);
+                                    }
+                                })
+                                vm.reFleshAfterRemove(ids);
+                            }
 
-                        if (!vm.expertReview.id) {
-                            vm.expertReview.id = data.idCode;
+                            if (!vm.expertReview.id) {
+                                vm.expertReview.id = data.idCode;
+                            }
+                            //刷新
+                            vm.reFleshSelEPInfo(data.reObj.selectedDtoList);
+                            bsWin.success("操作成功！", function () {
+                                window.parent.$("#selfExpertDiv").data("kendoWindow").close();
+                            });
+                        } else {
+                            bsWin.error(data.reMsg);
                         }
-                        //刷新
-                        vm.reFleshSelEPInfo(data.reObj.selectedDtoList);
-                        bsWin.success("操作成功！", function () {
-                            window.parent.$("#selfExpertDiv").data("kendoWindow").close();
-                        });
-                    } else {
-                        bsWin.error(data.reMsg);
-                    }
-                });
+                    });
+                }
             }
         }
 
@@ -342,7 +345,8 @@
                         if (!vm.expertReview.id) {
                             vm.expertReview.id = data.idCode;
                         }
-                        vm.reFleshSelEPInfo(data.reObj);
+                        vm.reFleshSelEPInfo(data.reObj.selectedDtoList);
+
                         bsWin.success("操作成功！", function () {
                             window.parent.$("#outExpertDiv").data("kendoWindow").close();
                         });
@@ -440,19 +444,25 @@
                                 })
                             }
                             if (ids.length > 0) {
-                                expertConditionSvc.deleteSelConditions(ids.join(","), vm.isCommit, function (data) {
-                                    if (data.flag || data.reCode == 'ok') {
-                                        //更新专家评审费用
-                                        if(vm.businessType == "SIGN"){
-                                            workprogramSvc.updateWPExpertCost(vm.minBusinessId);
+                                if(vm.expertReview.id){
+                                    expertConditionSvc.deleteSelConditions(vm.expertReview.id,ids.join(","), vm.isCommit, function (data) {
+                                        if (data.flag || data.reCode == 'ok') {
+                                            //更新专家评审费用
+                                            if(vm.businessType == "SIGN"){
+                                                workprogramSvc.updateWPExpertCost(vm.minBusinessId);
+                                            }
+                                            bsWin.success("操作成功！", function () {
+                                                vm.init(vm.businessId, vm.minBusinessId);
+                                            });
+                                        } else {
+                                            bsWin.error(data.reMsg);
                                         }
-                                        bsWin.success("操作成功！", function () {
-                                            vm.init(vm.businessId, vm.minBusinessId);
-                                        });
-                                    } else {
-                                        bsWin.error(data.reMsg);
-                                    }
-                                });
+                                    });
+                                }else{
+                                    bsWin.success("操作成功！", function () {
+                                        vm.init(vm.businessId, vm.minBusinessId);
+                                    });
+                                }
                             } else {
                                 bsWin.success("操作成功！");
                             }
@@ -548,8 +558,10 @@
                                 if(vm.businessType == "SIGN"){
                                     workprogramSvc.updateWPExpertCost(vm.minBusinessId);
                                 }
+                                vm.showLastDraf = false;
                                 //刷新页面抽取的专家
                                 vm.reFleshSelEPInfo(data.reObj.autoEPList);
+
                                 //抽取结果数组
                                 vm.autoSelectedEPList = [];
                                 vm.autoSelectedEPList = data.reObj.autoEPList;
@@ -559,7 +571,6 @@
                                 vm.showAutoExpertWin();
                                 //显示抽取效果
                                 expertReviewSvc.validateAutoExpert(data.reObj.allEPList, vm);
-                                vm.init(vm.businessId, vm.minBusinessId);
 
                             } else {
                                 bsWin.error(data.reMsg);
@@ -608,15 +619,13 @@
                     condition.push(con);
                 }
             })
-            if (condition[0].selectIndex >= 3) {
-                bsWin.alert("该条件已经进行了3次抽取，不能再继续抽取！");
-                return;
-            }
             //先确认是否已经保存
-            expertReviewSvc.checkCondition(condition[0].id, function (data) {
+            expertReviewSvc.checkCondition(id, function (data) {
                 if (data && data.id) {
                     expertReviewSvc.queryAutoExpert(false,condition, vm.minBusinessId, vm.expertReview.id, function (data) {
                         if (data.flag || data.reCode == 'ok') {
+                            //再次抽取，不用显示上次抽取的专家
+                            vm.showLastDraf = false;
                             //更新专家评审费用
                             if(vm.businessType == "SIGN"){
                                 workprogramSvc.updateWPExpertCost(vm.minBusinessId);
@@ -690,15 +699,19 @@
 
         //确定实际参加会议的专家
         vm.affirmJoinExpert = function () {
-            $("#confirmJoinExpert").kendoWindow({
-                width: "960px",
-                height: "600px",
-                title: "参加评审会专家确认",
-                visible: false,
-                modal: true,
-                closable: true,
-                actions: ["Pin", "Minimize", "Maximize", "Close"]
-            }).data("kendoWindow").center().open();
+            if(vm.expertReview && vm.expertReview.expertSelectedDtoList){
+                vm.confirmEPList = vm.expertReview.expertSelectedDtoList;
+                $("#confirmJoinExpert").kendoWindow({
+                    width: "960px",
+                    height: "600px",
+                    title: "参加评审会专家确认",
+                    visible: false,
+                    modal: true,
+                    closable: true,
+                    actions: ["Pin", "Minimize", "Maximize", "Close"]
+                }).data("kendoWindow").center().open();
+            }
+
         }
 
         //拟聘请专家信息返回
@@ -709,8 +722,8 @@
             }
             if (vm.isback) {
                 $state.go('MaintainProjectEdit',{
-                        signid: vm.businessId,
-                        processInstanceId:vm.processInstanceId
+                    signid: vm.businessId,
+                    processInstanceId:vm.processInstanceId
                 });
             } else {
                 $state.go('flowWPEdit', {
@@ -807,7 +820,7 @@
                                 }
                                 bsWin.alert("删除成功！", function () {
                                     vm.removeSelectEP = false;
-                                   //重新查询专家
+                                    //重新查询专家
                                     vm.init(vm.businessId, vm.minBusinessId);
                                 });
                             } else {
@@ -833,7 +846,7 @@
                         for (var i = 0; i < isCheck.length; i++) {
                             ids.push(isCheck[i].value);
                         }
-                        expertReviewSvc.affirmAutoExpert(vm.minBusinessId, vm.businessType, ids.join(","), '9', function (data) {
+                        expertReviewSvc.affirmAutoExpert(vm.expertReview.id,vm.minBusinessId, vm.businessType, ids.join(","), '9', function (data) {
                             if (data.flag || data.reCode == 'ok') {
                                 //更新专家评审费用
                                 if(vm.businessType == "SIGN"){

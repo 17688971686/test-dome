@@ -20,8 +20,10 @@
             getSignList: getSignList,   //项目查询统计
             initSignList: initSignList, //初始化項目查詢統計
             // <!-- 以下是首页方法-->
-            initWelComePage: initWelComePage,           //初始化首页方法
-            /* initAnnountment: initAnnountment,	    //初始化通知公告栏
+            getHomeInfo: getHomeInfo,                   //初始化首页待办任务和通知公告方法
+            getHomeProjInfo:getHomeProjInfo,            //获取首页统计信息
+            getHomeMeetInfo:getHomeMeetInfo,            //获取首页会议和调研时间统计信息
+        /* initAnnountment: initAnnountment,	    //初始化通知公告栏
              findendTasks: findendTasks,                //已办项目列表
              findtasks: findtasks,                      //待办项目列表
              findHomePluginFile :findHomePluginFile,    //获取首页安装文件*/
@@ -87,10 +89,10 @@
         //end excelExport
 
         //S_初始化首页方法
-        function initWelComePage(callBack) {
+        function getHomeInfo(callBack) {
             var httpOptions = {
                 method: "post",
-                url: rootPath + "/admin/initWelComePage"
+                url: rootPath + "/admin/getHomeInfo"
             }
             var httpSuccess = function success(response) {
                 if (callBack != undefined && typeof callBack == 'function') {
@@ -102,7 +104,43 @@
                 httpOptions: httpOptions,
                 success: httpSuccess
             });
-        }//E_initWelComePage
+        }//E_getHomeInfo
+
+        //S_首页项目统计信息
+        function getHomeProjInfo(callBack) {
+            var httpOptions = {
+                method: "post",
+                url: rootPath + "/admin/getHomeProjInfo"
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//E_getHomeProjInfo
+
+        //S_首页会议和调研时间统计
+        function getHomeMeetInfo(callBack) {
+            var httpOptions = {
+                method: "post",
+                url: rootPath + "/admin/getHomeMeetInfo"
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//E_getHomeProjInfo
 
         //begin countWorakday
         function countWorakday(vm) {
@@ -382,7 +420,6 @@
                     template: function (item) {
                         if (item.surplusDays != undefined) {
                             return item.surplusDays;
-                            // return (item.surplusDays > 0) ? item.surplusDays : 0;
                         } else {
                             return "";
                         }
@@ -472,8 +509,17 @@
         //判断是否显示处理按钮（主要针对合并评审项目,部长审核和分管领导审核两个环节）
         function checkCanEdit(item) {
             var isDetailBt = (item.processState == 2) ? true : false;
+            var reviewNode = ["SIGN_BMLD_SPW1","SIGN_FGLD_SPW1"];
+            var mergeDisNode = ["SIGN_QRFW","SIGN_BMLD_QRFW","SIGN_FGLD_QRFW","SIGN_ZR_QRFW"];
+            //合并评审
             if (!isDetailBt) {
-                if (item.reviewType && (item.reviewType == 0 || item.reviewType == '0') && (item.nodeDefineKey == 'SIGN_BMLD_SPW1' || item.nodeDefineKey == 'SIGN_FGLD_SPW1')) {
+                if (item.reviewType && (item.reviewType == 0 || item.reviewType == '0') && ($.inArray(item.nodeDefineKey, reviewNode) >= 0)) {
+                    isDetailBt = true;
+                }
+            }
+            //合并发文
+            if (!isDetailBt) {
+                if (item.mergeDis && item.mergeDis == 2 && item.mergeDisMain == 0 && ($.inArray(item.nodeDefineKey, mergeDisNode) >= 0) ) {
                     isDetailBt = true;
                 }
             }
@@ -1394,7 +1440,7 @@
                     title: "操作",
                     width: "15%",
                     template: function (item) {
-                        return common.format($('#columnBtns').html(), item.businessKey, item.processKey, item.taskId, item.instanceId);
+                        return common.format($('#columnBtns').html(), item.businessKey, item.processKey, item.taskId, item.instanceId,"vm.deleteTask('"+item.instanceId+"')");
                     }
                 }
             ];
@@ -1422,28 +1468,29 @@
 
         //S_所有在办任务
         function doingTaskGrid(vm) {
-            /*      var dataSource = new kendo.data.DataSource({
-                      type: 'odata',
-                      transport: common.kendoGridConfig().transport(rootPath + "/flow/queryAgendaTask", $('#doingTaskForm')),
-                      schema: {
-                          data: "value",
-                          total: function (data) {
-                              return data['count'];
-                          },
-                          model: {
-                              id: "taskId"
-                          }
-                      },
-                      serverPaging: true,
-                      serverSorting: true,
-                      serverFiltering: true,
-                      pageSize: 10,
-                      sort: {
-                          field: "createTime",
-                          dir: "desc"
-                      }
-                  });*/
-            var dataSource = common.kendoGridDataSource(rootPath + "/flow/queryAgendaTask", $("#doingTaskForm"), vm.queryParams.page, vm.queryParams.pageSize, vm.gridParams);
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(rootPath + "/flow/queryAgendaTask",$("#doingTaskForm"),vm.gridParams,false),
+                schema: common.kendoGridConfig().schema({
+                    id: "id",
+                    fields: {
+                        createdDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: false,
+                serverSorting: false,
+                serverFiltering: false,
+                pageSize : vm.queryParams.pageSize||10,
+                page:vm.queryParams.page||1,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
+            });
+
+            //var dataSource = common.kendoGridDataSource(rootPath + "/flow/queryAgendaTask", $("#doingTaskForm"), vm.queryParams.page, vm.queryParams.pageSize, vm.gridParams);
             var columns = [
                 {
                     field: "",

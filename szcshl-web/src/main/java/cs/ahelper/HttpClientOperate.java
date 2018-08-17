@@ -4,9 +4,9 @@ package cs.ahelper;
  * Created by shenning on 2017/10/15.
  */
 
+import cs.common.constants.SysConstants;
 import cs.common.utils.Validate;
 import org.apache.http.Consts;
-import org.apache.http.Header;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.RequestConfig;
@@ -28,6 +28,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -127,7 +128,7 @@ public class HttpClientOperate implements BeanFactoryAware{
             // 设置2个post参数，一个是scope、一个是q
             List<NameValuePair> parameters = new ArrayList<NameValuePair>(0);
             for(String key : params.keySet()){
-                parameters.add(new BasicNameValuePair(key, params.get(key)));
+                parameters.add(new BasicNameValuePair(key, URLEncoder.encode(params.get(key), SysConstants.UTF8)));
             }
             // 构造一个form表单式的实体
             UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(parameters, Consts.UTF_8);

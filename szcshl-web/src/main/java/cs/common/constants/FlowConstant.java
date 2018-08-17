@@ -8,6 +8,18 @@ public class FlowConstant {
 
     /***************  流程名称  ****************/
     /**
+     * 重写工作方案流程
+     */
+    public final static String WORK_HIS_FLOW = "WORK_HIS_FLOW";
+    /**
+     * 重写工作方案流程环节名称
+     */
+    public static final String WPHIS_XMFZR = "WPHIS_XMFZR";            //负责人填报
+    public static final String WPHIS_BMLD_SPW = "WPHIS_BMLD_SPW";      //部长审批
+    public static final String WPHIS_FGLD_SPW = "WPHIS_FGLD_SPW";      //分管领导审批
+
+
+    /**
      * 项目签收流程
      */
     public final static String SIGN_FLOW = "FINAL_SIGN_FLOW";           //项目签收流程
@@ -15,7 +27,7 @@ public class FlowConstant {
      * 项目签收流程环节名称
      */
     public static final String FLOW_SIGN_ZR = "SIGN_ZR";                //填报
-    public static final String FLOW_SIGN_QS = "SIGN_QS";                 //签收
+    public static final String FLOW_SIGN_QS = "SIGN_QS";                //签收
     public static final String FLOW_SIGN_ZHB = "SIGN_ZHB";              //综合部审批
     public static final String FLOW_SIGN_FGLD_FB = "SIGN_FGLD_FB";      //分管副主任审批
     public static final String FLOW_SIGN_BMFB1 = "SIGN_BMFB1";          //部门分办1
@@ -89,6 +101,7 @@ public class FlowConstant {
      * 拟补充资料函流程
      */
     public final static String FLOW_SUPP_LETTER = "FLOW_SUPP_LETTER";
+
     /**
      * 拟补充资料函流程环节
      */
@@ -158,10 +171,12 @@ public class FlowConstant {
             return value;
         }
     }
+
     /**
      *课题研究流程
      */
     public final static String TOPIC_FLOW = "TOPIC_FLOW";
+
     /**
      *图书采购流程
      */
@@ -177,6 +192,7 @@ public class FlowConstant {
     public static final String TOPIC_BZSH_JH = "TOPIC_BZSH_JH";          //部长审核
     public static final String TOPIC_FGLD_JH = "TOPIC_FGLD_JH";          //副主任审核
     public static final String TOPIC_ZRSH_JH = "TOPIC_ZRSH_JH";          //主任审定
+    public static final String TOPIC_KTFZR = "TOPIC_KTFZR";              //课题负责人
     public static final String TOPIC_BFGW = "TOPIC_BFGW";                //报发改委审批
     public static final String TOPIC_LXDW = "TOPIC_LXDW";                //联系合作单位
     public static final String TOPIC_QDHT = "TOPIC_QDHT";                //签订合同
@@ -198,8 +214,8 @@ public class FlowConstant {
     public static final String TOPIC_YFZL = "TOPIC_YFZL";                //印发资料
     public static final String TOPIC_ZLGD = "TOPIC_ZLGD";                //资料归档
     public static final String TOPIC_BZSH_GD = "TOPIC_BZSH_GD";          //部长审核归档
+    public static final String TOPIC_KTFZR_QR = "TOPIC_KTFZR_QR";        //课题负责人确认
     public static final String TOPIC_GDY_QR = "TOPIC_GDY_QR";            //归档员确认
-
 
     /*************** E 课题研究流程 环节名称  ****************/
 
@@ -397,9 +413,24 @@ public class FlowConstant {
             case ANNOUNT_MENT_FLOW:
                 resultValue = "【通知公告流程】";
                 break;
+            case WORK_HIS_FLOW:
+                resultValue = "【重写工作方案流程】";
+                break;
             default:
                     ;
         }
         return resultValue;
     }
+
+    /***************************   流程回退参数 begin  **************************/
+    /**
+     * 回退环节
+     */
+    public static final String FLOW_BACK_NODEKEY = "FLOW_BACK_NODEKEY";
+
+    /**
+     * 用户人
+     */
+    public static final String FLOW_BACK_USER = "FLOW_BACK_USER";
+    /***************************   合并发文参数 end  **************************/
 }

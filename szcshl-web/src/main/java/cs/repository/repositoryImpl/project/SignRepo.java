@@ -71,7 +71,12 @@ public interface SignRepo extends IRepository<Sign, String> {
      * @return
      */
     SignDto findReviewDayBySignId(String signId);
-
+    /**
+     * 通过fileCode查询 sign对象
+     * @param signDto
+     * @return
+     */
+    SignDto findSignByFileCode(SignDto signDto);
     /**
      * 保存评审工作日维护的信息
      * @param signDto

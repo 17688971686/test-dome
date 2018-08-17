@@ -3,8 +3,8 @@
 
     angular.module('app').factory('workprogramSvc', workprogram);
 
-    workprogram.$inject = ['$http', '$state', '$rootScope'];
-    function workprogram($http, $state, $rootScope) {
+    workprogram.$inject = ['$http', '$state', '$rootScope','sysfileSvc'];
+    function workprogram($http, $state, $rootScope,sysfileSvc) {
         var url_company = rootPath + "/company";
         var service = {
             initPage: initPage,				            //初始化页面参数
@@ -26,18 +26,124 @@
             updateReviewType: updateReviewType,         //工作方案由专家评审会改成专家函评
             updateWPExpertCost : updateWPExpertCost,    //更新工作方案中拟评审专家评审费
             initFlowWP : initFlowWP,                    //初始化流程工作方案
+            initBaseInfo : initBaseInfo,                //初始化项目基本信息
+            saveBaseInfo : saveBaseInfo,                //保存项目基本信息
+            getProjBranchInfo : getProjBranchInfo,      //获取项目的分支信息
+            reStartWorkFlow : reStartWorkFlow,          //发起重做工作方案流程
+            initFlowDeal : initFlowDeal,                //初始化重做工作方案流程
         };
 
         return service;
 
+        //初始化重做工作方案流程信息
+        function initFlowDeal(vm,$scope,isLoadFile){
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/workprogram/initDealFlow",
+                params: {
+                    wpId : vm.businessKey,
+                },
+            }
+            var httpSuccess = function success(response) {
+                vm.model = {};
+                if(response.data.SignDto){
+                    vm.model = response.data.SignDto;
+                    //加载项目附件
+                    if(isLoadFile){
+                        sysfileSvc.findByMianId(vm.model.signid,function(data){
+                            if(data && data.length > 0){
+                                vm.showFlag.tabSysFile = true;
+                                vm.sysFileList = data;
+                                sysfileSvc.initZtreeClient(vm,$scope);//树形图
+                            }
+                        });
+                    }
+                }
+                vm.model.workProgramDtoList = [];
+                if(response.data.WorkProgramDto){
+                    vm.model.workProgramDtoList.push(response.data.WorkProgramDto);
+                    vm.branchId = response.data.WorkProgramDto.branchId;
+                }
+                if(response.data.WorkProgramHisDtoList){
+                    vm.WorkProgramHisDtoList = response.data.WorkProgramHisDtoList;
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
+        function reStartWorkFlow(signId,branchIds,callBack){
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/workprogram/startReWorkFlow",
+                params: {
+                    signId : signId,
+                    brandIds : branchIds
+                },
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
+        function getProjBranchInfo(signId,callBack){
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/flow/getBranchInfo",
+                params: {
+                    signId : signId,
+                },
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
+        function initBaseInfo(signId,callBack){
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/workprogram/initBaseInfo",
+                params: {
+                    signId : signId,
+                },
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
         //初始化流程工作方案
-        function initFlowWP(signId,taskId,callBack){
+        function initFlowWP(signId,taskId,branchId,callBack){
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/workprogram/initFlowWP",
                 params: {
                     signId : signId,
-                    taskId : taskId
+                    taskId : taskId,
+                    branchId : branchId
                 },
             }
             var httpSuccess = function success(response) {
@@ -412,7 +518,7 @@
         }//S_初始化页面参数
 
         //S_初始化页面参数
-        function workMaintainList(vm) {
+        function workMaintainList(vm,callBack) {
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/workprogram/html/workMaintainList",
@@ -421,59 +527,8 @@
                 }
             }
             var httpSuccess = function success(response) {
-                if (response.data != null && response.data != "") {
-                    vm.work = response.data.eidtWP;//主办
-                    vm.assistant = response.data.WPList;//协办
-                    //初始化部门，得到数组
-                    if (vm.work.reviewOrgName) {
-                        vm.reviewOrgName = vm.work.reviewOrgName.split(",");
-                        vm.work.orgName = vm.reviewOrgName[0];
-                    }
-                    vm.model.workProgramDtoList = {};
-                    if (vm.assistant && vm.assistant.length > 0) {
-                        vm.model.workProgramDtoList = response.data.WPList;
-                        //有协办部门的时候，才显示总投资金额
-                        //重新赋值个各个工作方案的所属部门
-                        for (var i = 0; i < vm.assistant.length; i++) {
-                            vm.assistant[i].orgName = vm.reviewOrgName[vm.assistant[i].branchId - 1];
-                        }
-                    }
-
-                    //如果没有赋值，则初始化一种类型，否则按照默认的类型
-                    //因为合并评审次项目是不可以修改的
-                    if (!vm.work.reviewType) {
-                        vm.work.reviewType = "自评";
-                    }
-                    if (!vm.work.isSigle) {
-                        vm.work.isSigle = '单个评审';
-                    }
-
-                    //如果选了专家，并且评审费有变动，则更改
-                    if (vm.work.expertDtoList && vm.work.expertDtoList.length > 0) {
-                        if (!vm.work.expertCost || vm.work.expertCost < 1000 * (vm.work.expertDtoList.length)) {
-                            vm.work.expertCost = 1000 * (vm.work.expertDtoList.length);
-                        }
-                    }
-
-                    //如果存在多个分支的情况，则显示项目总投资
-                    if (response.data.showTotalInvestment == '9' || response.data.showTotalInvestment == 9){
-                        vm.showTotalInvestment = true;
-                    }else{
-                        vm.showTotalInvestment = false;
-                    }
-
-                    if (vm.work.branchId == "1") {
-                        findCompanys(vm);//查找主管部门
-                    }
-                    vm.work.signId = $state.params.signid;		//收文ID(重新赋值)
-                    if (vm.work.projectType) {
-                        vm.work.projectTypeDicts = $rootScope.topSelectChange(vm.work.projectType, $rootScope.DICT.PROJECTTYPE.dicts)
-                    }
-
-                    //如果是合并评审次项目，则不允许修改
-                    if (vm.work.isSigle == "合并评审" && (vm.work.isMainProject == "0" || vm.work.isMainProject == 0)) {
-                        vm.businessFlag.isReveiwAWP = true;
-                    }
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
                 }
             }
             common.http({
@@ -494,6 +549,28 @@
                 params: {
                     isNeedWorkProgram: isNeedWorkProgram
                 }
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess,
+                onError: function (response) {
+                    isCommit = false;
+                }
+            });
+        }//E_保存操作
+
+        function saveBaseInfo(work, isCommit, callBack) {
+            isCommit = true;
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/workprogram/saveBaseInfo",
+                data: work,
             }
             var httpSuccess = function success(response) {
                 if (callBack != undefined && typeof callBack == 'function') {

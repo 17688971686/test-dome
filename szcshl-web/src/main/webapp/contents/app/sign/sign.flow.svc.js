@@ -98,17 +98,30 @@
                     }
                     vm.showFlag.businessTr = true;
                     vm.showFlag.nodeWorkProgram = true;
+
                     vm.businessFlag.isFinishWP = vm.flow.businessMap.isFinishWP;
+                    vm.businessFlag.isNeedWP = vm.flow.businessMap.isNeedWP;
+
                     //已经在做工作方案，则显示
-                    if(vm.model.processState >= 2 && vm.model.workProgramDtoList){
-                        $.each(vm.model.workProgramDtoList,function(i,wp){
-                            if(wp.branchId ==  vm.businessFlag.curBranchId){
-                                vm.businessFlag.editEPReviewId = wp.expertReviewId;
+                    if(vm.model.processState >= 2 ){
+                        if(vm.businessFlag.curBranchId == '1' && vm.model.projBaseInfoDto){
+                            $("#show_baseinfo_a").click();
+                        }else{
+                            if(vm.model.workProgramDtoList && vm.model.workProgramDtoList.length > 0){
+                                $.each(vm.model.workProgramDtoList,function(i,wp){
+                                    if(wp.branchId ==  vm.businessFlag.curBranchId){
+                                        vm.businessFlag.editEPReviewId = wp.expertReviewId;
+                                    }
+                                })
+                                vm.businessFlag.editExpertSC = true;        //显示专家评分按钮
+                                vm.showFlag.tabWorkProgram = true;
                             }
-                        })
-                        vm.businessFlag.editExpertSC = true;        //显示专家评分按钮
-                        vm.showFlag.tabWorkProgram = true;
+                        }
+                    }
+                    if(vm.businessFlag.isFinishWP){
                         $("#show_workprogram_a").click();
+                    }else{
+                        $("#show_sign_a").click();
                     }
                     break;
                 //部长审核工作方案
@@ -338,10 +351,10 @@
                 case flowcommon.getSignFlowNode().SIGN_XMFZR2:
                 case flowcommon.getSignFlowNode().SIGN_XMFZR3:
                 case flowcommon.getSignFlowNode().SIGN_XMFZR4:
-                    if(vm.businessFlag.isNeedWP == 9 && vm.businessFlag.isFinishWP == false){
+                    /*if(vm.businessFlag.isNeedWP == 9 && vm.businessFlag.isFinishWP == false){
                         resultObj.resultTag = false;
                         resultObj.resultMsg = "您还没有完成工作方案，不能进行下一步操作！";
-                    }
+                    }*/
                     vm.flow.businessMap.IS_NEED_WP = vm.businessFlag.isNeedWP;
                     break;
                 //部长审核工作方案

@@ -1,6 +1,7 @@
 package cs.domain.party;
 
 import cs.domain.DomainBase;
+import org.springframework.stereotype.Controller;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -65,13 +66,13 @@ public class PartyManager extends DomainBase {
     private String pmCategory;
 
     /**
-     * 所在党支部
+     * 现所在党组织
      */
     @Column(columnDefinition = "VARCHAR(255)")
     private String pmPartyBranch;
 
     /**
-     * 加入党组织日期
+     * 入党日期
      */
 //    @Temporal(TemporalType.DATE)
     @Column(columnDefinition ="DATE" )
@@ -244,6 +245,42 @@ public class PartyManager extends DomainBase {
      */
     @Column(columnDefinition = "VARCHAR(255)")
     private String outflowToUnitType;
+
+    /**
+     * 入党介绍人
+     */
+    @Column(columnDefinition = "VARCHAR(255)")
+    private String introducer;
+
+    /**
+     * 组织关系是否在我委
+     */
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String isInOrg;
+
+    /**
+     * 转入党组织日期
+     */
+    @Column(columnDefinition = "DATE")
+    private Date joinOrgDate;
+
+    /**
+     * 参加工作时间
+     */
+    @Column(columnDefinition = "DATE")
+    private Date joinWorkDate;
+
+    /**
+     * 是否在编
+     */
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String isEnrolled;
+
+    /**
+     * 转出党组织日期
+     */
+    @Column(columnDefinition = "date")
+    private Date outOrgDate;
 
     public String getPmId() {
         return pmId;
@@ -541,6 +578,51 @@ public class PartyManager extends DomainBase {
         this.outflowToUnitType = outflowToUnitType;
     }
 
+    public String getIntroducer() {
+        return introducer;
+    }
 
+    public void setIntroducer(String introducer) {
+        this.introducer = introducer;
+    }
 
+    public String getIsInOrg() {
+        return isInOrg;
+    }
+
+    public void setIsInOrg(String isInOrg) {
+        this.isInOrg = isInOrg;
+    }
+
+    public Date getJoinOrgDate() {
+        return joinOrgDate;
+    }
+
+    public void setJoinOrgDate(Date joinOrgDate) {
+        this.joinOrgDate = joinOrgDate;
+    }
+
+    public Date getJoinWorkDate() {
+        return joinWorkDate;
+    }
+
+    public void setJoinWorkDate(Date joinWorkDate) {
+        this.joinWorkDate = joinWorkDate;
+    }
+
+    public String getIsEnrolled() {
+        return isEnrolled;
+    }
+
+    public void setIsEnrolled(String isEnrolled) {
+        this.isEnrolled = isEnrolled;
+    }
+
+    public Date getOutOrgDate() {
+        return outOrgDate;
+    }
+
+    public void setOutOrgDate(Date outOrgDate) {
+        this.outOrgDate = outOrgDate;
+    }
 }

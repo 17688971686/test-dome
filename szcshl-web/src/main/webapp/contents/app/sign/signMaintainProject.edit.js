@@ -6,8 +6,7 @@
     MaintainProjectEdit.$inject = ['pauseProjectSvc', 'signSvc', '$state', 'flowSvc', '$scope', 'sysfileSvc',
         'addRegisterFileSvc', 'bsWin' , 'orgSvc' , 'userSvc'];
 
-    function MaintainProjectEdit(pauseProjectSvc, signSvc, $state, flowSvc, $scope, sysfileSvc,
-                                 addRegisterFileSvc, bsWin , orgSvc , userSvc) {
+    function MaintainProjectEdit(pauseProjectSvc, signSvc, $state, flowSvc, $scope, sysfileSvc, addRegisterFileSvc, bsWin , orgSvc , userSvc) {
         var vm = this;
         vm.title = "维护项目修改";
         vm.model = {};
@@ -16,6 +15,8 @@
         vm.isHaveWork = false;
         vm.isHaveDis = false;
         vm.isHaveFile = false;
+        vm.isHaveBaseInfo = false;
+        vm.isHaveNoWP = false;
         vm.signWorkList = {};
         //初始化附件上传控件
         vm.initFileUpload = function () {
@@ -65,16 +66,23 @@
                     vm.isHaveFile = true;
                 }
                 if (vm.model.workProgramDtoList) {
-                    vm.isHaveWork = true;
-                    for (var i = 0; i < vm.model.workProgramDtoList.length; i++) {
-                        if (vm.model.workProgramDtoList[i].branchId == "1") {
-                            vm.work = vm.model.workProgramDtoList[i];//主的工作方案
-                            //初始化第二负责人
-                            // if (vm.work.secondChargeUserName) {
-                            //     vm.secondChargeUserName = vm.work.secondChargeUserName.split(",")
-                            // }
+                    var wpLength = vm.model.workProgramDtoList.length;
+                    if(wpLength > 0){
+                        vm.isHaveWork = true;
+                        for (var i = 0; i < wpLength; i++) {
+                            if (vm.model.workProgramDtoList[i].branchId == "1") {
+                                vm.work = vm.model.workProgramDtoList[i];//主的工作方案
+                            }
                         }
                     }
+                }
+                //是否有项目基本信息
+                if(vm.model.projBaseInfoDto){
+                    vm.isHaveBaseInfo = true;
+                }
+                //即没有工作方案，也没有项目基本信息
+                if(!vm.isHaveWork && !vm.isHaveBaseInfo){
+                    vm.isHaveNoWP = true;
                 }
 
                 //评审部门，主办部门 + 协办部门
@@ -89,7 +97,6 @@
                 if(vm.model.aUserName){
                     vm.secondChargeUserName = vm.model.aUserName.split(",")
                 }
-
                 //5、附件
                 sysfileSvc.findByMianId(vm.model.signid, function (data) {
                     if (data && data.length > 0) {
@@ -98,7 +105,6 @@
                         sysfileSvc.initZtreeClient(vm, $scope);//树形图
                     }
                 });
-
             });
             vm.initFileUpload();
         }
@@ -114,6 +120,10 @@
             }else{
                 bsWin.alert("该项目没有工作方案！");
             }
+        }
+        //跳转到项目基本信息编辑页
+        vm.addBaseInfo = function(){
+            $state.go('initProjBase', {signid: vm.model.signid,isadmin:true});
         }
         // E_跳转到 工作方案 编辑页面
 
@@ -321,7 +331,6 @@
          * 添加评审部门弹框
          */
         vm.addReviewDept = function(){
-
             $("#addReviewDeptWindow").kendoWindow({
                 width: "600px",
                 height: "400px",
@@ -353,20 +362,6 @@
          * 保存添加的评审部门
          */
         vm.saveReviewDept = function(orgId , orgName){
-
-            // var isCheck = $("input[selectType='assist']:checked");
-
-            // if(isCheck.length == 0){
-            //     bsWin.alert("请选择添加的部门！");
-            // }else{
-            //     var ids = [];
-            //     var names = [];
-            //     for(var i = 0 ; i < isCheck.length ; i++){
-            //         ids.push(isCheck[i].value);
-            //         names.push(isCheck[i].name)
-            //     }
-            //     var idStr = ids.join(',');
-            //     var nameStr = names.join(',');
             signSvc.addAOrg(  orgId , vm.model.signid  , function(data){
                 if(data.flag || data.reCode == 'ok'){
                     bsWin.alert(data.reMsg);
@@ -475,7 +470,6 @@
          * 是否能自选多个专家
          */
         vm.addMoreExp = function(){
-
             var selected = $("#isMoreExpert").is(':checked');
             if(selected){
                 bsWin.confirm("确认能自选多个专家？" , function(){
@@ -494,7 +488,32 @@
                     });
                 });
             }
+        }
 
+        //是否已经发送委里
+        vm.updateFGWState = function(){
+            var checkedValue = $("#isSendFGW").is(':checked');
+            if(checkedValue){
+                bsWin.confirm("该项目已经回传委里？" , function(){
+                    signSvc.updateFGWState(vm.model.signid , "9" , function(data){
+                        if(data.flag || data.reCode == 'ok'){
+                            bsWin.alert("操作成功");
+                        }else{
+                            bsWin.alert(data.reMsg);
+                        }
+                    });
+                });
+            }else{
+                bsWin.confirm("确定更改？" , function(){
+                    signSvc.updateFGWState(vm.model.signid , "0" , function(data){
+                        if(data.flag || data.reCode == 'ok'){
+                            bsWin.alert("操作成功");
+                        }else{
+                            bsWin.alert(data.reMsg);
+                        }
+                    });
+                });
+            }
         }
     }
 })();

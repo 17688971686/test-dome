@@ -1,0 +1,36 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+
+<div class="well well-sm" style="background:white;">
+    <div class="toolbar" style="background:#a3d0e4;">
+        推送记录
+    </div>
+    <div class="well well-sm">
+        <table class="table">
+            <tr>
+                <td>
+                    <form>
+                        <span class="help-inline" >委内收文编号</span>
+                        <input type="text" maxlength="10"  name="filecode" id="filecode" placeholder="请输入" onkeyup="this.value=this.value.toUpperCase()">
+                        <button class="btn btn-sm btn-primary" ng-click="vm.getSignInfo()"><span class="glyphicon glyphicon-search"></span>通过收文编号获取项目信息</button>
+                    </form>
+                </td>
+                <td>
+                    <form id="logform" name="logform">
+                        <span class="help-inline">操作日期：</span>
+                        <input type="text" style="width: 120px;" kendo-date-picker k-format="'yyyy-MM-dd'" operator="ge" name="createdDate">
+                        至
+                        <input type="text" style="width: 120px;" kendo-date-picker k-format="'yyyy-MM-dd'" operator="le" name="createdDate">
+
+                        <button class="btn btn-sm btn-primary" ng-click="vm.queryLog()"><span class="glyphicon glyphicon-search"></span>查询</button>
+                        <button class="btn btn-sm btn-primary" ng-click="vm.formReset()"><span class="glyphicon glyphicon-repeat"></span>重置</button>
+
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
+</div>

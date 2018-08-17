@@ -14,14 +14,15 @@
                 <td><input name="topicName" type="text" operator="like" ng-model="vm.searchModel.topicName" class="form-control input-sm "/></td>
                 <td class="formAlignRight">合作单位：</td>
                 <td><input name="cooperator" type="text" operator="like" ng-model="vm.searchModel.cooperator"  class="form-control input-sm "/></td>
-                <td class="formAlignRight">是否委里立项：</td>
+                <td class="formAlignRight">是否发送委里：</td>
                 <td>
-                    <select name="fgwlx" operator="eq" ng-model="vm.searchModel.fgwlx">
+                    <select name="sendFgw" operator="eq" ng-model="vm.searchModel.sendFgw">
                         <option value="">请选择</option>
                         <option value="9">是</option>
-                        <option value="0">否</option>
+                        <option value="1">否</option>
                     </select>
                 </td>
+
                 <td>
                     <button class="btn btn-sm btn-primary" ng-click="vm.searchForm()" ng-disabled="vm.isSubmit"><span
                             class="glyphicon glyphicon-search"></span>查询

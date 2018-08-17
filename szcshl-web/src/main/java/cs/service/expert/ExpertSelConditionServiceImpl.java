@@ -4,6 +4,7 @@ import cs.common.constants.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.SessionUtil;
+import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import cs.domain.expert.*;
 import cs.domain.project.WorkProgram;
@@ -95,16 +96,28 @@ public class ExpertSelConditionServiceImpl implements ExpertSelConditionService 
      */
     @Override
     @Transactional
-    public ResultMsg delete(String ids) {
-        ResultMsg resultMsg = null;
+    public ResultMsg delete(String reviewId,String ids) {
         try{
-            expertSelConditionRepo.deleteById(ExpertSelCondition_.id.getName(), ids);
-            expertSelectedRepo.deleteById(ExpertSelected_.conditionId.getName(),ids);
-            resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(),"删除成功！");
+            ExpertReview expertReview = expertReviewRepo.findById(reviewId);
+            if(Validate.isObject(expertReview)){
+                int cSize = Validate.isList(expertReview.getExpertSelConditionList())?expertReview.getExpertSelConditionList().size():0;
+                int delLength = StringUtil.getSplit(ids,",").size();
+                //如果是清空抽取条件，则可以重新进行抽取
+                if(cSize > 0 && cSize == delLength){
+                    expertReview.setSelectIndex(null);
+                    expertReview.setExtractInfo(null);
+                    expertReview.setFinishExtract(null);
+                    expertReview.setState(null);
+                    expertReviewRepo.save(expertReview);
+                }
+                expertSelConditionRepo.deleteById(ExpertSelCondition_.id.getName(), ids);
+                expertSelectedRepo.deleteById(ExpertSelected_.conditionId.getName(),ids);
+            }
+            return ResultMsg.ok("删除成功！");
         }catch (Exception e){
-            resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"删除失败！");
+            log.error("删除专家抽取条件异常："+e.getMessage());
+            return ResultMsg.error("删除异常，错误问题已记录，请联系系统管理员处理！");
         }
-        return resultMsg;
     }
 
     /**

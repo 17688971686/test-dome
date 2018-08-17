@@ -104,8 +104,8 @@ public class MonthlyNewsletter extends DomainBase {
 	private String remark;
 
     //数据迁移数据新加的字段
-	@Column(columnDefinition="int")
-	private int bgId;
+	@Column(columnDefinition="int ")
+	private Integer bgId;
 
 	public String getId() {
 		return id;
@@ -262,11 +262,11 @@ public class MonthlyNewsletter extends DomainBase {
 		this.businessId = businessId;
 	}
 
-    public int getBgId() {
+    public Integer getBgId() {
         return bgId;
     }
 
-    public void setBgId(int bgId) {
+    public void setBgId(Integer bgId) {
         this.bgId = bgId;
     }
 }

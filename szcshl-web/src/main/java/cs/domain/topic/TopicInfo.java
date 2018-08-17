@@ -5,6 +5,7 @@ import cs.domain.DomainBase;
 import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 课题研究基本信息
@@ -114,6 +115,46 @@ public class TopicInfo extends DomainBase {
      */
     @OneToOne(mappedBy = "topicInfo", fetch = FetchType.LAZY,orphanRemoval=true)
     private Filing filing;
+
+    /**
+     * 类别
+     */
+    @Column(columnDefinition="VARCHAR(1)")
+    private String topicType;
+
+    /**
+     * 预计完成时间
+     */
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column
+    @JSONField(format = "yyyy-MM-dd")
+    private Date planFinishTime;
+
+    /**
+     * 结题方式
+     */
+    @Column(columnDefinition="VARCHAR(1)")
+    private String endTopicFlag;
+
+    /**
+     * 审定时间
+     */
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column
+    @JSONField(format = "yyyy-MM-dd")
+    private Date approvedDate;
+
+    /**
+     * 合同信息
+     */
+    @OneToMany(mappedBy = "topicInfo", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
+    @JSONField(serialize = false)
+    private List<Contract> contractList;
+
+    /**
+     * 业绩课题是否维护 9 已经维护
+     */
+    private String isMaintain;
 
     public String getId() {
         return id;
@@ -249,5 +290,53 @@ public class TopicInfo extends DomainBase {
 
     public void setTopicCode(String topicCode) {
         this.topicCode = topicCode;
+    }
+
+    public String getTopicType() {
+        return topicType;
+    }
+
+    public void setTopicType(String topicType) {
+        this.topicType = topicType;
+    }
+
+    public Date getPlanFinishTime() {
+        return planFinishTime;
+    }
+
+    public void setPlanFinishTime(Date planFinishTime) {
+        this.planFinishTime = planFinishTime;
+    }
+
+    public String getEndTopicFlag() {
+        return endTopicFlag;
+    }
+
+    public void setEndTopicFlag(String endTopicFlag) {
+        this.endTopicFlag = endTopicFlag;
+    }
+
+    public Date getApprovedDate() {
+        return approvedDate;
+    }
+
+    public void setApprovedDate(Date approvedDate) {
+        this.approvedDate = approvedDate;
+    }
+
+    public List<Contract> getContractList() {
+        return contractList;
+    }
+
+    public void setContractList(List<Contract> contractList) {
+        this.contractList = contractList;
+    }
+
+    public String getIsMaintain() {
+        return isMaintain;
+    }
+
+    public void setIsMaintain(String isMaintain) {
+        this.isMaintain = isMaintain;
     }
 }

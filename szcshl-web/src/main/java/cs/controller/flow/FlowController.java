@@ -2,17 +2,15 @@ package cs.controller.flow;
 
 import cs.ahelper.LogMsg;
 import cs.ahelper.MudoleAnnotation;
-import cs.common.constants.Constant;
+import cs.common.constants.Constant.MsgType;
 import cs.common.constants.Constant.MsgCode;
 import cs.common.constants.FlowConstant;
 import cs.common.ResultMsg;
-import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.flow.HiProcessTask;
 import cs.domain.flow.RuProcessTask;
 import cs.domain.flow.RuTask;
 import cs.domain.project.SignDispaWork;
-import cs.domain.sys.Log;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.flow.Node;
@@ -32,8 +30,6 @@ import cs.service.project.WorkProgramService;
 import cs.service.reviewProjectAppraise.AppraiseService;
 import cs.service.rtx.RTXService;
 import cs.service.sys.AnnountmentService;
-import cs.service.sys.LogService;
-import cs.service.sys.SMSContent;
 import cs.service.sys.UserService;
 import cs.service.topic.TopicInfoService;
 import org.activiti.bpmn.model.BpmnModel;
@@ -81,9 +77,6 @@ public class FlowController {
     private FlowService flowService;
     @Autowired
     private TaskService taskService;
-
-    @Autowired
-    private SMSContent smsContent;
 
     @Autowired
     @Qualifier("signFlowImpl")
@@ -137,8 +130,6 @@ public class FlowController {
     private MonthlyNewsletterService monthlyNewsletterService;
     @Autowired
     private AnnountmentService annountmentService;
-    @Autowired
-    private LogService logService;
     @Autowired
     private UserService userService;
     @Autowired
@@ -450,14 +441,13 @@ public class FlowController {
     @RequestMapping(name = "流程提交", path = "commit", method = RequestMethod.POST)
     @LogMsg(module = "流程提交",logLevel = "1")
     @ResponseBody
+    @Transactional(rollbackFor = {Exception.class})
     public ResultMsg flowCommit(@RequestBody FlowDto flowDto){
         ResultMsg resultMsg = null;
         String errorMsg = "";
         String module="";
-        String businessKey = "";
         ProcessInstance processInstance = null;
-        //判断是任务还是项目
-        String projectOrTask = "";
+        boolean isProj = false;
         try{
             processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(flowDto.getProcessInstanceId()).singleResult();
             Task task = null;
@@ -467,55 +457,48 @@ public class FlowController {
                 task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
             }
             if (task == null) {
-                return new ResultMsg(false, MsgCode.ERROR.getValue(), "该流程已被处理！");
+                return ResultMsg.error("该流程已处理！");
             }
             if (task.isSuspended()) {
-                return new ResultMsg(false, MsgCode.ERROR.getValue(), "项目已暂停，不能进行操作！");
+                return ResultMsg.error("项目已暂停，不能进行提交操作！");
             }
             module = processInstance.getProcessDefinitionKey();
-            businessKey = processInstance.getBusinessKey();
 
             switch (module){
                 case FlowConstant.SIGN_FLOW:
-                    projectOrTask="项目";
+                    isProj = true;
                     resultMsg = signService.dealFlow(processInstance, task,flowDto);
                     break;
+                case FlowConstant.WORK_HIS_FLOW:
+                    resultMsg = workProgramService.dealFlow(processInstance, task,flowDto);
+                    break;
                 case FlowConstant.TOPIC_FLOW:
-                    projectOrTask="任务";
                     resultMsg = topicInfoService.dealFlow(processInstance, task,flowDto);
                     break;
                 //图书流程，已给委里处理
                 case FlowConstant.BOOKS_BUY_FLOW:
-                    projectOrTask="任务";
                     resultMsg = bookBuyBusinessService.dealFlow(processInstance, task,flowDto);
                     break;
                 //固定资产，已给委里处理
                 case FlowConstant.ASSERT_STORAGE_FLOW:
-                    projectOrTask="任务";
                     resultMsg = assertStorageBusinessService.dealFlow(processInstance,task,flowDto);
                     break;
                 case FlowConstant.PROJECT_STOP_FLOW:
-                    projectOrTask="任务";
                     resultMsg = projectStopService.dealFlow(processInstance, task,flowDto);
                     break;
                 case FlowConstant.FLOW_ARCHIVES:
-                    projectOrTask="任务";
                     resultMsg = archivesLibraryService.dealFlow(processInstance, task,flowDto);
                     break;
                 case FlowConstant.FLOW_APPRAISE_REPORT:
-                    projectOrTask="任务";
                     resultMsg = appraiseService.dealFlow(processInstance, task,flowDto);
                     break;
                 case FlowConstant.FLOW_SUPP_LETTER:
-                    projectOrTask="任务";
                     resultMsg = addSuppLetterService.dealSignSupperFlow(processInstance, task,flowDto);
                     break;
                 case FlowConstant.MONTHLY_BULLETIN_FLOW:
-                    projectOrTask="任务";
                     resultMsg = monthlyNewsletterService.dealSignSupperFlow(processInstance, task,flowDto);
                     break;
                 case FlowConstant.ANNOUNT_MENT_FLOW:
-                    projectOrTask="任务";
                     resultMsg = annountmentService.dealSignSupperFlow(processInstance, task,flowDto);
                     break;
                 default:
@@ -524,43 +507,31 @@ public class FlowController {
         }catch (Exception e){
             errorMsg = e.getMessage();
             log.info("流程提交异常："+errorMsg);
-            resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"操作异常，错误信息已记录，请联系管理员查看！");
+            resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"操作异常，错误信息已记录，请联系管理员查看！异常信息："+errorMsg);
         }
-        /*//添加日记记录
-        Log log = new Log();
-        log.setCreatedDate(new Date());
-        log.setUserName(SessionUtil.getDisplayName());
-        log.setLogCode(resultMsg.getReCode());
-        log.setBuninessId(businessKey);
-        log.setMessage(resultMsg.getReMsg()+errorMsg);
-        log.setModule(Constant.LOG_MODULE.FLOWCOMMIT.getValue()+FlowConstant.getFLowNameByFlowKey(module) );
-        log.setResult(resultMsg.isFlag()? Constant.EnumState.YES.getValue(): Constant.EnumState.NO.getValue());
-        log.setLogger(this.getClass().getName()+".flowCommit");
-        //优先级别高
-        log.setLogLevel(Constant.EnumState.PROCESS.getValue());
-        logService.save(log);*/
         //腾讯通消息处理
-        rtxService.dealPoolRTXMsg(flowDto.getTaskId(),resultMsg,processInstance,smsContent.get(projectOrTask,processInstance.getName()));
+        rtxService.dealPoolRTXMsg(flowDto.getTaskId(),resultMsg,processInstance.getName(),isProj? MsgType.project_type.name(): MsgType.task_type.name());
         return resultMsg;
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "流程回退", path = "rollbacklast", method = RequestMethod.POST)
-    public @ResponseBody ResultMsg rollBackLast(@RequestBody FlowDto flowDto) {
+    @ResponseBody
+    @Transactional
+    public ResultMsg rollBackLast(@RequestBody FlowDto flowDto) {
         ResultMsg resultMsg = flowService.rollBackLastNode(flowDto);
         return resultMsg;
     }
 
-
     @RequiresAuthentication
     @Transactional
     @RequestMapping(name = "激活流程", path = "active/{businessKey}", method = RequestMethod.POST)
-    public @ResponseBody ResultMsg activeFlow(@PathVariable("businessKey") String businessKey) {
+    @ResponseBody
+    public ResultMsg activeFlow(@PathVariable("businessKey") String businessKey) {
         log.info("流程激活成功！businessKey=" + businessKey);
         return flowService.restartFlow(businessKey);
     }
 
-    @Deprecated
     /**
      * 流程挂起
      * @param businessKey
@@ -578,21 +549,45 @@ public class FlowController {
     @RequiresAuthentication
     @Transactional
     @RequestMapping(name = "终止流程", path = "deleteFLow", method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public ResultMsg deleteFlow(@RequestParam FlowDto flowDto) {
-        ResultMsg resultMsg = null;
+    @ResponseBody
+    public ResultMsg deleteFlow(@RequestParam String processInstanceId,String comment) {
+        ResultMsg resultMsg =  ResultMsg.error("操作失败，没有对应的流程！");
         //流程实例
-        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(flowDto.getProcessInstanceId()).singleResult();
+        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
         switch (processInstance.getProcessDefinitionKey()){
             case FlowConstant.SIGN_FLOW:
                 resultMsg = signService.endFlow(processInstance.getBusinessKey());
                 break;
+            case FlowConstant.WORK_HIS_FLOW:
+                resultMsg = workProgramService.endFlow(processInstance.getBusinessKey());
+                break;
+            case FlowConstant.TOPIC_FLOW:
+                resultMsg = topicInfoService.endFlow(processInstance.getBusinessKey());
+                break;
+            case FlowConstant.PROJECT_STOP_FLOW:
+                resultMsg = projectStopService.endFlow(processInstance.getBusinessKey());
+                break;
+            case FlowConstant.FLOW_ARCHIVES:
+                resultMsg = archivesLibraryService.endFlow(processInstance.getBusinessKey());
+                break;
+            case FlowConstant.FLOW_APPRAISE_REPORT:
+                resultMsg = appraiseService.endFlow(processInstance.getBusinessKey());
+                break;
+            case FlowConstant.FLOW_SUPP_LETTER:
+                resultMsg = addSuppLetterService.endFlow(processInstance.getBusinessKey());
+                break;
+            case FlowConstant.MONTHLY_BULLETIN_FLOW:
+                resultMsg = monthlyNewsletterService.endFlow(processInstance.getBusinessKey());
+                break;
+            case FlowConstant.ANNOUNT_MENT_FLOW:
+                resultMsg = annountmentService.endFlow(processInstance.getBusinessKey());
+                break;
             default:
-                resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"操作失败，没有对应的流程！");
+                ;
         }
         //成功再删除流程
         if(resultMsg.isFlag()){
-            runtimeService.deleteProcessInstance(processInstance.getId(), flowDto.getDealOption());
+            runtimeService.deleteProcessInstance(processInstance.getId(), comment);
         }
         log.info("流程终止成功！businessKey=" + processInstance.getBusinessKey());
         return resultMsg;
@@ -638,6 +633,9 @@ public class FlowController {
             case FlowConstant.ANNOUNT_MENT_FLOW:
                 resultPage = "annountMent/flow/flowDeal";
                 break;
+            case FlowConstant.WORK_HIS_FLOW:
+                resultPage = "workprogram/flow/flowDeal";
+                break;
             default:
                 ;
         }
@@ -677,6 +675,9 @@ public class FlowController {
             case FlowConstant.ANNOUNT_MENT_FLOW:
                 resultPage = "annountMent/flow/flowDetail";
                 break;
+            case FlowConstant.WORK_HIS_FLOW:
+                resultPage = "workprogram/flow/flowDetail";
+                break;
             default:
                 ;
         }
@@ -705,7 +706,7 @@ public class FlowController {
                 resultPage = "reviewProjectAppraise/flowEnd";
                 break;
             case FlowConstant.FLOW_SUPP_LETTER:
-                resultPage = "addSuppLetter/letterFlowEnd";
+                resultPage = "";
                 break;
             case FlowConstant.MONTHLY_BULLETIN_FLOW:
                 resultPage = "monthlyNewsletter/flow/flowDeal";
@@ -715,6 +716,9 @@ public class FlowController {
                 break;
             case FlowConstant.BOOKS_BUY_FLOW:
                 resultPage = "bookBuyBusiness/flowEnd";
+                break;
+            case FlowConstant.WORK_HIS_FLOW:
+                resultPage = "workprogram/flow/flowEnd";
                 break;
             default:
                 ;
@@ -727,4 +731,12 @@ public class FlowController {
     public List<Map<String, Object>> getProc(){
         return  flowService.getProc();
     }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "获取重写工作方案分支", path = "getBranchInfo", method = RequestMethod.POST)
+    @ResponseBody
+    public List<Map<String,Object>> getReWorkBranch(@RequestParam String signId) {
+        return flowService.getBranchInfo(signId);
+    }
+
 }

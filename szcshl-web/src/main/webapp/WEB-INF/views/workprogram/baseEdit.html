@@ -14,7 +14,7 @@
     <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.iscommit"><span
             class="glyphicon glyphicon-ok"></span>保存
     </button>
-    <button class="btn btn-sm btn-danger" ng-click="back();"><span class="glyphicon glyphicon-chevron-left"></span>返回
+    <button class="btn btn-sm btn-danger" ng-click="vm.goBack();"><span class="glyphicon glyphicon-chevron-left"></span>返回
     </button>
 </div>
 
@@ -35,62 +35,82 @@
             </tr>
             <tr>
                 <td style="width:150px;" class="text-center">行业类别<span class="required">*</span></td>
-                <td>
+                <td style="width: 30%;">
                     <select ng-model="vm.work.industryType" name="industryType" id="industryType" data-val="true"
                             data-val-required="必填">
                         <option value="">请选择</option>
-                        <option ng-repeat="x in DICT.INDUSTRYTYPE.dicts" value="{{x.dictKey}}" ng-selected="vm.work.industryType == x.dictKey">{{x.dictName}}</option>
+                        <option ng-repeat="x in DICT.INDUSTRYTYPE.dicts" value="{{x.dictName}}" ng-selected="vm.work.industryType == x.dictName">{{x.dictName}}</option>
                     </select>
                     <span data-valmsg-for="industryType" data-valmsg-replace="true" class="errors"></span>
                 </td>
                 <td style="width:150px;" class="text-center">项目类别<span class="required">*</span></td>
                 <td>
                     <select ng-model="vm.work.projectType" name="projectType" id="projectType" data-val="true"
-                    ng-change="vm.projectTypes=topSelectChange(vm.work.projectType,DICT.PROJECTTYPE.dicts)"
-                            data-val-required="必填">
+                        ng-change="vm.projectTypes=topSelectChange(vm.work.projectType,DICT.PROJECTTYPE.dicts)" data-val-required="必填">
                         <option value="">请选择</option>
-                        <option ng-repeat="x in DICT.PROJECTTYPE.dicts" value="{{x.dictKey}}" ng-selected="vm.work.projectType == x.dictKey">{{x.dictName}}</option>
+                        <option ng-repeat="x in DICT.PROJECTTYPE.dicts" value="{{x.dictName}}" ng-selected="vm.work.projectType == x.dictName">{{x.dictName}}</option>
                     </select>
                     <span data-valmsg-for="projectType" data-valmsg-replace="true" class="errors"></span>
 
-                    <select ng-model="vm.work.projectSubType" name="projectSubType" id="projectSubType" data-val="true"
-                            data-val-required="必填">
+                    <select ng-model="vm.work.projectSubType" name="projectSubType" id="projectSubType"
+                            data-val="true" data-val-required="必填" >
                         <option value="">请选择</option>
-                        <option ng-repeat="x in vm.projectTypes" value="{{x.dictKey}}" ng-selected="vm.work.projectSubType == x.dictKey">{{x.dictName}}</option>
+                        <option ng-repeat="x in vm.projectTypes" value="{{x.dictName}}" ng-selected="vm.work.projectSubType == x.dictName">{{x.dictName}}</option>
                     </select>
                     <span data-valmsg-for="projectSubType" data-valmsg-replace="true" class="errors"></span>
                 </td>
             </tr>
             <tr>
-                <td style="width:150px;" class="text-center">联系人<span class="required">*</span></td>
-                <td>
-                    <input class="form-control input-sm "
-                           ng-model="vm.work.contactPerson" id="contactPerson" name="contactPerson" data-val="true"
+                <td class="text-center" >来文单位</td>
+                <td >
+                    <input type="text" maxlength="200" class="form-control input-sm " value="{{vm.work.sendFileUnit}}"
+                           ng-model="vm.work.sendFileUnit" id="sendFileUnit" name="sendFileUnit" data-val="true"
                            data-val-required="必填">
-                    <span data-valmsg-for="contactPerson" data-valmsg-replace="true" class="errors"></span>
                 </td>
-                <td style="width:150px;" class="text-center">手机<span class="required">*</span></td>
-                <td>
-                    <input type="text" style="width:30%;" class="form-control input-sm "
-                           ng-model="vm.work.contactPersonPhone" name="contactPersonPhone" data-val="true"
-                           data-val-digits="手机号码只能为数字" data-val-required="必填">
-                    <span data-valmsg-for="contactPersonPhone" data-valmsg-replace="true" class="errors"></span>
+                <td style="width:10%;" class="text-center">来文单位联系人</td>
+                <td >
+                    <input type="text" maxlength="100" class="form-control input-sm " value="{{vm.work.sendFileUser}}"
+                           ng-model="vm.work.sendFileUser" id="sendFileUser" name="sendFileUser">
                 </td>
             </tr>
             <tr>
-                <td style="width:150px;" class="text-center">电话<span class="required">*</span></td>
+                <td class="text-center" >主管部门<span class="required">*</span></td>
+                <td colspan="3">
+                    <select ng-model="vm.work.mainDeptName" name="mainDeptName" style="width:220px;height:26px;" data-val="true" data-val-required="请选择项目阶段">
+                        <option value="">请选择</option>
+                        <option ng-repeat="x in DICT.MAIN_DEPT.dicts" ng-selected="vm.work.mainDeptName == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
+                    </select>
+                    <input type="text" ng-model="vm.work.mainDeptName" name="mainDeptName" id="mainDeptName" style="width:200px;height:26px;margin-left:-224px;">
+
+                    <span data-valmsg-for="mainDeptName" data-valmsg-replace="true" class="errors" style="margin-left:20px;"></span>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:150px;" class="text-center">联系人</td>
+                <td>
+                    <input class="form-control input-sm "
+                           ng-model="vm.work.contactPerson" id="contactPerson" name="contactPerson">
+                    <span data-valmsg-for="contactPerson" data-valmsg-replace="true" class="errors"></span>
+                </td>
+                <td style="width:150px;" class="text-center">电话</td>
                 <td>
                     <input type="text" style="width:30%;" class="form-control input-sm "
-                           ng-model="vm.work.contactPersonTel" id="contactPersonTel" name="contactPersonTel"
-                           data-val-digits="电话号码只能为数字" data-val="true" data-val-required="必填">
+                           ng-model="vm.work.contactPersonTel" id="contactPersonTel" name="contactPersonTel">
                     <span data-valmsg-for="contactPersonTel" data-valmsg-replace="true" class="errors"></span>
                 </td>
-                <td style="width:150px;" class="text-center">传真<span class="required">*</span></td>
+            </tr>
+            <tr>
+                <td style="width:150px;" class="text-center">传真</td>
                 <td>
                     <input type="text" style="width:30%;" class="form-control input-sm "
-                           ng-model="vm.work.contactPersonFax" name="contactPersonFax" id="contactPersonFax"
-                           data-val-digits="传真只能为数字" data-val="true" data-val-required="必填">
+                           ng-model="vm.work.contactPersonFax" name="contactPersonFax" id="contactPersonFax">
                     <span data-valmsg-for="contactPersonFax" data-valmsg-replace="true" class="errors"></span>
+                </td>
+                <td style="width:150px;" class="text-center">手机</td>
+                <td>
+                    <input type="text" style="width:30%;" class="form-control input-sm "
+                           ng-model="vm.work.contactPersonPhone" name="contactPersonPhone">
+                    <span data-valmsg-for="contactPersonPhone" data-valmsg-replace="true" class="errors"></span>
                 </td>
             </tr>
             </tbody>

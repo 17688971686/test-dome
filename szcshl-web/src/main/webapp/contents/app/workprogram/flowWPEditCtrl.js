@@ -16,6 +16,7 @@
 
         vm.signid =  $state.params.signid;		//收文ID
         vm.taskid = $state.params.taskid;		//任务ID，用户区分是自己的工作方案，还是代办的工作方案
+        vm.branchId = $state.params.branchId;   //分支ID
 
         vm.work.signId = $state.params.signid;
         vm.work.id = "";
@@ -34,7 +35,7 @@
         activate();
         function activate() {
             vm.showAll = true;
-            workprogramSvc.initFlowWP(vm.work.signId,vm.taskid,function(data){
+            workprogramSvc.initFlowWP(vm.work.signId,vm.taskid,$state.params.branchId,function(data){
                 vm.work = data.eidtWP;
                 //如果没有赋值，则初始化一种类型，否则按照默认的类型
                 //因为合并评审次项目是不可以修改的
@@ -343,7 +344,6 @@
         }
 
         vm.create = function () {
-            /* var id = $("#work_program_form").find('div[class="ng-scope"]').attr("id");*/
             common.initJqValidation($("#work_program_form"));
             var isValid = $("#work_program_form").valid();
             if (isValid) {

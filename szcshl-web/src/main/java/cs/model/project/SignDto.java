@@ -210,7 +210,7 @@ public class SignDto extends BaseDto {
     private String proSugEledocCopy;
 
     //申报投资
-    private Double appalyInvestment;
+    private BigDecimal appalyInvestment;
 
     //建议书相关会议纪要份数
     private Integer sugMeetCount;
@@ -764,6 +764,11 @@ public class SignDto extends BaseDto {
      * 是否能自选多个专家
      */
     private String isMoreExpert;
+
+    /**
+     * 项目基本信息
+     */
+    private ProjBaseInfoDto projBaseInfoDto;
 
     public String getIsMoreExpert() {
         return isMoreExpert;
@@ -1357,11 +1362,11 @@ public class SignDto extends BaseDto {
         this.proSugEledocCopy = proSugEledocCopy;
     }
 
-    public Double getAppalyInvestment() {
+    public BigDecimal getAppalyInvestment() {
         return appalyInvestment;
     }
 
-    public void setAppalyInvestment(Double appalyInvestment) {
+    public void setAppalyInvestment(BigDecimal appalyInvestment) {
         this.appalyInvestment = appalyInvestment;
     }
 
@@ -2652,5 +2657,13 @@ public class SignDto extends BaseDto {
 
     public void setMainDeptContactPhone(String mainDeptContactPhone) {
         this.mainDeptContactPhone = mainDeptContactPhone;
+    }
+
+    public ProjBaseInfoDto getProjBaseInfoDto() {
+        return projBaseInfoDto;
+    }
+
+    public void setProjBaseInfoDto(ProjBaseInfoDto projBaseInfoDto) {
+        this.projBaseInfoDto = projBaseInfoDto;
     }
 }

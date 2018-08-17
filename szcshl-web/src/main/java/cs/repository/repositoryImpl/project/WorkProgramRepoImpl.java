@@ -1,9 +1,12 @@
 package cs.repository.repositoryImpl.project;
 
+import cs.common.HqlBuilder;
 import cs.common.constants.Constant;
 import cs.common.constants.FlowConstant;
-import cs.common.HqlBuilder;
-import cs.common.utils.*;
+import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.DateUtils;
+import cs.common.utils.SessionUtil;
+import cs.common.utils.Validate;
 import cs.domain.expert.ExpertSelected_;
 import cs.domain.meeting.RoomBooking;
 import cs.domain.meeting.RoomBooking_;
@@ -13,8 +16,8 @@ import cs.model.meeting.RoomBookingDto;
 import cs.model.project.ProMeetDto;
 import cs.model.project.WorkProgramDto;
 import cs.repository.AbstractRepository;
-import cs.repository.repositoryImpl.expert.ExpertNewInfoRepo;
-import cs.repository.repositoryImpl.expert.ExpertRepo;
+import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
+import cs.repository.repositoryImpl.expert.ExpertSelConditionRepo;
 import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import org.hibernate.Criteria;
@@ -35,12 +38,13 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram,String> 
     @Autowired
     private RoomBookingRepo roomBookingRepo;
     @Autowired
-    private ExpertRepo expertRepo;
-    @Autowired
-    private ExpertNewInfoRepo expertNewInfoRepo;
-    @Autowired
     private ExpertSelectedRepo expertSelectedRepo;
-
+    @Autowired
+    private ExpertSelConditionRepo expertSelConditionRepo;
+    @Autowired
+    private ExpertReviewRepo expertReviewRepo;
+    @Autowired
+    private SignBranchRepo signBranchRepo;
     /**
      * 根据收文编号，查询对应工作方案
      *
@@ -62,14 +66,18 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram,String> 
      *
      * @param signId
      * @param branchId
+     * @param isBaseInfo
      * @return
      */
     @Override
-    public WorkProgram findBySignIdAndBranchId(String signId, String branchId) {
+    public WorkProgram findBySignIdAndBranchId(String signId, String branchId, boolean isBaseInfo) {
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" from " + WorkProgram.class.getSimpleName() + " where " + WorkProgram_.sign.getName() + "." + Sign_.signid.getName() + " =:signId ");
         hqlBuilder.setParam("signId", signId);
         hqlBuilder.append(" and " + WorkProgram_.branchId.getName() + " =:branchId ").setParam("branchId", branchId);
+        if(isBaseInfo){
+            hqlBuilder.append(" and " + WorkProgram_.baseInfo.getName() + " =:wpstate ").setParam("wpstate", Constant.EnumState.YES.getValue());
+        }
         List<WorkProgram> wpList = findByHql(hqlBuilder);
         if (Validate.isList(wpList)) {
             return wpList.get(0);
@@ -386,6 +394,33 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram,String> 
             proAmMeetDtoList.add(proMeetDto);
         }
         return proAmMeetDtoList;
+    }
+
+    @Override
+    public void removeWPCascade(String signId,String brandId) {
+        WorkProgram workProgram = findBySignIdAndBranchId(signId,brandId,false);
+        if(Validate.isObject(workProgram) && Validate.isString(workProgram.getId())){
+            //1、删除会议室
+            roomBookingRepo.deleteByBusinessId(workProgram.getId());
+            //2、删除专家抽取等信息
+            expertSelectedRepo.deleteByBusinessId(workProgram.getId());
+            //3、删除专家抽取条件
+            expertSelConditionRepo.deleteByBusinessId(workProgram.getId());
+            //4、判断专家抽取方案，如果只有一个，则删除
+            int bCount = signBranchRepo.countNeedWP(signId);
+            if(bCount == 1){
+                expertReviewRepo.deleteByBusinessId(signId);
+            }
+            //5、删除工作方案
+            HqlBuilder sqlBuilder = HqlBuilder.create();
+            sqlBuilder.append(" delete from cs_work_program where signid =:signid and branchId =:branchId and (baseInfo is null or baseInfo !=:bstate )");
+            sqlBuilder.setParam("signid", signId);
+            sqlBuilder.setParam("branchId", brandId);
+            sqlBuilder.setParam("bstate", Constant.EnumState.YES.getValue());
+            executeSql(sqlBuilder);
+        }
+
+        signBranchRepo.isNeedWP(signId,brandId, Constant.EnumState.NO.getValue());
     }
 
 }

@@ -3,6 +3,7 @@ package cs.controller.sys;
 import com.alibaba.fastjson.JSON;
 import cs.ahelper.LogMsg;
 import cs.ahelper.MudoleAnnotation;
+import cs.ahelper.projhelper.ProjUtil;
 import cs.common.constants.Constant;
 import cs.common.constants.FlowConstant;
 import cs.common.utils.*;
@@ -12,6 +13,7 @@ import cs.domain.sys.User;
 import cs.model.sys.UserDto;
 import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
 import cs.repository.repositoryImpl.flow.RuTaskRepo;
+import cs.repository.repositoryImpl.project.SignPrincipalRepo;
 import cs.service.flow.FlowService;
 import cs.service.project.SignPrincipalService;
 import cs.service.project.SignService;
@@ -37,6 +39,7 @@ import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static cs.common.constants.FlowConstant.*;
 import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
 @Controller
@@ -67,6 +70,8 @@ public class AdminController {
     private SignPrincipalService signPrincipalService;
     @Autowired
     private WorkProgramService workProgramService;
+    @Autowired
+    private SignPrincipalRepo signPrincipalRepo;
 
     //@RequiresPermissions("admin#index#get")
     @RequiresAuthentication
@@ -131,15 +136,11 @@ public class AdminController {
 
 
     @RequiresAuthentication
-    @RequestMapping(name = "初始化个人首页", path = "initWelComePage", method = RequestMethod.POST)
+    @RequestMapping(name = "初始化个人首页", path = "getHomeInfo", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> initWelComePage(HttpServletRequest request) throws ParseException, IOException, ClassNotFoundException {
+    public Map<String, Object> getHomeInfo(HttpServletRequest request) throws ParseException, IOException, ClassNotFoundException {
         Map<String, Object> resultMap = new HashMap<String, Object>();
         boolean isSuper = SUPER_ACCOUNT.equals(SessionUtil.getLoginName()) ? true : false;
-        String curUserId = SessionUtil.getUserId();
-        String LINE_SIGN_LIST_FLAG = "lineSign";
-        String ISDISPLAY = "isdisplay";
-        String PROTASKLIST = "proTaskList";
         //admin用户不用查询待办信息
         if (!isSuper) {
             //2、查询个人待办任务
@@ -149,8 +150,20 @@ public class AdminController {
         //3、查询通知公告
         resultMap.put("annountmentList", annService.getHomePageAnnountment());
         //4、查询办结任务
-        resultMap.put("endTaskList", flowService.queryMyEndTasks());
-        //5、查询可以查看的项目，包括待办和图表数据
+        //resultMap.put("endTaskList", flowService.queryMyEndTasks());
+        return resultMap;
+    }
+    @RequiresAuthentication
+    @RequestMapping(name = "获取首页项目统计信息", path = "getHomeProjInfo", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> getHomeProjInfo(HttpServletRequest request) throws ParseException, IOException, ClassNotFoundException {
+        boolean isSuper = SUPER_ACCOUNT.equals(SessionUtil.getLoginName()) ? true : false;
+        String curUserId = SessionUtil.getUserId();
+        String LINE_SIGN_LIST_FLAG = "lineSign";
+        String ISDISPLAY = "isdisplay";
+        String PROTASKLIST = "proTaskList";
+
+        Map<String, Object> resultMap = new HashMap<String, Object>();
         Map<String, Object> authMap = userService.getUserSignAuth();
         Integer authFlag = new Integer(authMap.get("leaderFlag").toString());
         List<String> orgIdList = (List<String>) authMap.get("orgIdList");
@@ -163,11 +176,17 @@ public class AdminController {
                 List<RuProcessTask> userProcessList = new ArrayList<>();
                 for (int i = 0; i < totalCount; i++) {
                     RuProcessTask rt = authRuSignTask.get(i);
+                    //合并评审环节
+                    List<String> mergeReview = Arrays.asList(FLOW_SIGN_BMLD_SPW1, FLOW_SIGN_FGLD_SPW1);
+                    //合并发文环节
+                    List<String> mergeDisNode = Arrays.asList(FLOW_SIGN_QRFW, FLOW_SIGN_BMLD_QRFW,FLOW_SIGN_FGLD_QRFW,FLOW_SIGN_ZR_QRFW);
                     //过滤掉合并项目的次项目
-                    if (rt.getReviewType() == null || "".equals(rt.getReviewType()) || Constant.EnumState.YES.getValue().equals(rt.getReviewType())
-                            || (Constant.EnumState.NO.getValue().equals(rt.getReviewType())
-                            && !FlowConstant.FLOW_SIGN_BMLD_SPW1.equals(rt.getNodeDefineKey()) && !FlowConstant.FLOW_SIGN_FGLD_SPW1.equals(rt.getNodeDefineKey()))
-                            ) {
+                    if ((!Validate.isString(rt.getReviewType()) || ProjUtil.isMergeRVMainTask(rt.getReviewType())
+                         || (ProjUtil.isMergeRVAssistTask(rt.getReviewType()) && !mergeReview.contains(rt.getNodeDefineKey()))
+                        )&& ( !Validate.isString(rt.getMergeDis()) || Constant.MergeType.DIS_SINGLE.getValue().equals(rt.getMergeDis())
+                            || (ProjUtil.isMergeDis(rt.getMergeDis()) && ProjUtil.isMain(rt.getMergeDisMain()))
+                            || (ProjUtil.isMergeDis(rt.getMergeDis()) && !ProjUtil.isMain(rt.getMergeDisMain()) && !mergeDisNode.contains(rt.getNodeDefineKey())))
+                    ) {
                         if (curUserId.equals(rt.getAssignee())
                                 || (rt.getAssigneeList() != null && rt.getAssigneeList().indexOf(curUserId) > -1)) {
 
@@ -201,15 +220,25 @@ public class AdminController {
                 Collections.sort(authRuSignTask, new Comparator<RuProcessTask>() {
                     @Override
                     public int compare(RuProcessTask r1, RuProcessTask r2) {
-                        Float r1Day = r1.getSurplusDays() == null ? 0f : r1.getSurplusDays();
-                        Float r2Day = r2.getSurplusDays() == null ? 0f : r2.getSurplusDays();
-                        if (r1Day == r2Day) {
+                        if (r1.getSurplusDays() == null && r2.getSurplusDays() == null) {
                             return 0;
-                        } else if (r1Day > r2Day) {
+                        }
+                        if (r1.getSurplusDays() == null) {
+                            return -1;
+                        }
+                        if (r2.getSurplusDays() == null) {
+                            return 1;
+                        }
+                        return r1.getSurplusDays().compareTo(r2.getSurplusDays());
+                        /*if (r1.getSurplusDays() == r2.getSurplusDays()) {
+
+                            return 0;
+                        } else if (r1.getSurplusDays() > r2.getSurplusDays()) {
+
                             return 1;
                         } else {
                             return -1;
-                        }
+                        }*/
                     }
                 });
                 List<String> existList = new ArrayList<>();
@@ -222,11 +251,9 @@ public class AdminController {
                         existList = new ArrayList<>();
                     }
                 }
-
                 //过滤掉已发文的项目
                 authRuSignTask = authRuSignTask.stream().filter(x -> (x.getSignDate() != null && x.getSignprocessState() < Constant.SignProcessState.END_DIS_NUM.getValue())).collect(Collectors.toList());
                 int totalLength = authRuSignTask.size();
-                int doingNum = 0 , dipathOverNum = 0  , stopNum = 0 , weekNum = 0 ; //(在办项目 ， 发文超期 ， 暂停 ， 少于3个工作日)
                 //线性图
                 List<RuProcessTask> lineList = new ArrayList<>();
                 for (int i = 0; i < totalLength; i++) {
@@ -236,27 +263,22 @@ public class AdminController {
                     } else {
                         existList.add(rpt.getBusinessKey());
                         lineList.add(rpt);
-                        //如果有所属部门 ， 则根据所在的部门进行统计
-                        if(Validate.isList(orgIdList) ){
-                            //如果不是部长，则通过部门获取
-                            if(authFlag != 3){
-                                for(String orgName : orgIdList){
-                                    if (orgName.equals(rpt.getmOrgId())){
-                                        doingNum ++ ;
-                                    }
-                                }
-                            }else{
-                                //如果是部长或者组长，通过所管下的人员获取
-                                OrgDept orgDpet = orgDeptService.findOrgDeptById(orgIdList.get(0));
-                                if(userService.checkIsMainSigUser(orgDpet.getType(), orgIdList.get(0), rpt.getMainUserId())){
-                                    doingNum ++ ;
-                                }
-                            }
-                        }else{
+                    }
+                }
+                resultMap.put(LINE_SIGN_LIST_FLAG, lineList);
+                //柱状图
+                existList = new ArrayList<>();
+                Map<String, Map<String, Object>> histogramMap = getCountMap(authFlag, resultMap, authRuSignTask, authMap, orgIdList, existList);
+                resultMap.put("histogram", histogramMap);
 
-                                doingNum = authRuSignTask.size();
-                        }
-                        switch (rpt.getLightState()){
+                //(在办项目 ， 发文超期 ， 暂停 ， 少于3个工作日)
+                int doingNum = 0 , dipathOverNum = 0  , stopNum = 0 , weekNum = 0 ;
+                Map<String,Object> countTaskMap = histogramMap.get("COUNT_TASK_MAP");
+                if(Validate.isMap(countTaskMap)){
+                    for (Map.Entry<String, Object> entry : countTaskMap.entrySet()) {
+                        RuProcessTask countRT = (RuProcessTask) entry.getValue();
+                        doingNum ++ ;
+                        switch (countRT.getLightState()){
                             case "6":
                                 dipathOverNum ++ ;
                                 break;
@@ -268,17 +290,14 @@ public class AdminController {
                                 break;
                             default: break;
                         }
-                        resultMap.put("DOINGNUM" ,doingNum );
-                        resultMap.put("DISPATHOVERNUM" , dipathOverNum);
-                        resultMap.put("STOPNUM" , stopNum);
-                        resultMap.put("WEEKNUM" , weekNum);
                     }
+                    resultMap.put("DOINGNUM" ,doingNum );
+                    resultMap.put("DISPATHOVERNUM" , dipathOverNum);
+                    resultMap.put("STOPNUM" , stopNum);
+                    resultMap.put("WEEKNUM" , weekNum);
                 }
-                resultMap.put(LINE_SIGN_LIST_FLAG, lineList);
-                //柱状图
-                existList = new ArrayList<>();
-                Map<String, Map<String, Object>> histogramMap = getCountMap(authFlag, resultMap, authRuSignTask, authMap, orgIdList, existList);
-                resultMap.put("histogram", histogramMap);
+                //把统计的去掉
+                histogramMap.remove("COUNT_TASK_MAP");
             } else {
                 resultMap.put(ISDISPLAY, true);
             }
@@ -286,7 +305,14 @@ public class AdminController {
             resultMap.put(PROTASKLIST, null);
             resultMap.put(ISDISPLAY, true);
         }
-        //6. 当前日起往后的5个工作日的调研和会议统计信息
+        return resultMap;
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "获取首页会议和调研统计信息", path = "getHomeMeetInfo", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> getHomeMeetInfo(HttpServletRequest request) throws ParseException, IOException, ClassNotFoundException {
+        Map<String, Object> resultMap = new HashMap<String, Object>();
         resultMap.put("proMeetInfo",workProgramService.findProMeetInfo());
         return resultMap;
     }
@@ -334,20 +360,36 @@ public class AdminController {
         } else if (authFlag == 3) {
             String userId = SessionUtil.getUserId();
             String orgId = orgIdList.get(0);
-            OrgDept orgDpet = orgDeptService.findOrgDeptById(orgId);
-            List<RuProcessTask> resultList = new ArrayList<>();
-            //如果是部长，还要筛选出当前待办人是否是他管辖部门的人
-            for (RuProcessTask rt : authRuSignTask) {
-                if (userService.checkIsMainSigUser(orgDpet.getType(), orgId, rt.getMainUserId())) {
-                    resultList.add(rt);
+            //如果是部长，主办协办都要显示
+            for(RuProcessTask rt : authRuSignTask){
+                //如果还没分办，则要显示自己
+                List<User> userList = signPrincipalRepo.getPrinUserList(rt.getBusinessKey(), orgId);
+                if(Validate.isList(userList)){
+                    boolean isMainUser = false;
+                    String mainUserId = rt.getMainUserId();
+                    if(Validate.isString(mainUserId)){
+                        for(User user : userList){
+                            if(mainUserId.equals(user.getId())){
+                                isMainUser = true;
+                                break;
+                            }
+                        }
+                    }
+                    if(isMainUser){
+                        setMapValue(dataMap, mainUserId, rt, existList, orgId);
+                    }else{
+                        setMapValue(dataMap, "部门协办", rt, existList, orgId);
+                    }
+                }else{
+                    if(FLOW_SIGN_BMFB1.equals(rt.getNodeDefineKey()) ||FLOW_SIGN_BMFB2.equals(rt.getNodeDefineKey())
+                            ||FLOW_SIGN_BMFB3.equals(rt.getNodeDefineKey()) ||FLOW_SIGN_BMFB4.equals(rt.getNodeDefineKey())){
+                        setMapValue(dataMap, "未分办", rt, existList, orgId);
+                    }else{
+                        setMapValue(dataMap, userId, rt, existList, orgId);
+                    }
                 }
             }
-            //筛选出第一负责人的任务
-            if (Validate.isList(resultList)) {
-                for (RuProcessTask rpt : resultList) {
-                    setMapValue(dataMap, rpt.getMainUserId(), rpt, existList, orgId);
-                }
-            }
+
             if (Validate.isObject(resultMap)) {
                 resultMap.put("XTYPE", "USER");
             }
@@ -355,11 +397,30 @@ public class AdminController {
         //遍历map,如果是部长则查人员，否则查部门
         Map<String, Map<String, Object>> histogramMap = new LinkedHashMap<>();
         if (authFlag == 3) {
+            Map<String, Object> deptMap = null,notDealMap = null;
             for (Map.Entry<String, Map<String, Object>> entry : dataMap.entrySet()) {
-                User user = userService.getCacheUserById(entry.getKey());
-                Map<String, Object> runTaskInfoMap = entry.getValue();
-                runTaskInfoMap.put("HISTOGRAM_NAME", user.getDisplayName());
-                histogramMap.put(user.getDisplayName(), runTaskInfoMap);
+                //如果是人才显示人名，统计数量的不显示
+                if(!"COUNT_TASK_MAP".equals(entry.getKey())){
+                    if("部门协办".equals(entry.getKey())){
+                        deptMap = entry.getValue();
+                    }else if("未分办".equals(entry.getKey())){
+                        notDealMap = entry.getValue();
+                    }else{
+                        User user = userService.getCacheUserById(entry.getKey());
+                        Map<String, Object> runTaskInfoMap = entry.getValue();
+                        runTaskInfoMap.put("HISTOGRAM_NAME", user.getDisplayName());
+                        histogramMap.put(user.getDisplayName(), runTaskInfoMap);
+                    }
+
+                }
+            }
+            if(Validate.isMap(deptMap)){
+                deptMap.put("HISTOGRAM_NAME", "部门协办");
+                histogramMap.put("部门协办", deptMap);
+            }
+            if(Validate.isMap(notDealMap)){
+                notDealMap.put("HISTOGRAM_NAME", "未分办");
+                histogramMap.put("未分办", notDealMap);
             }
         } else {
             List<OrgDept> allOrgDept = authMap.get("allOrgDeptList") == null ? orgDeptService.queryAll() : (List<OrgDept>) authMap.get("allOrgDeptList");
@@ -409,14 +470,21 @@ public class AdminController {
                 histogramMap.put("未分办", runTaskInfoMap);
             }
         }
-
+        //在办项目统计信息
+        if(dataMap.get("COUNT_TASK_MAP") != null){
+            histogramMap.put("COUNT_TASK_MAP",dataMap.get("COUNT_TASK_MAP"));
+        }
         return histogramMap;
     }
 
     private void setMapValue(Map<String, Map<String, Object>> dataMap, String key, RuProcessTask runTask, List<String> existKey, String orgId) {
         Map<String, Object> runTaskInfoMap = dataMap.get(key);
         List<RuProcessTask> runTaskList = null;
-        String mergeKey = key + runTask.getBusinessKey();
+        //业务ID
+        String businessKey = runTask.getBusinessKey();
+
+        //key+业务ID 确保唯一
+        String mergeKey = key + businessKey;
         int count = 0;
         boolean haveNew = false;
         if (runTaskInfoMap == null) {
@@ -429,9 +497,6 @@ public class AdminController {
                 haveNew = true;
                 runTaskList = (List<RuProcessTask>) runTaskInfoMap.get("TASK_LIST");
                 count = Integer.parseInt(runTaskInfoMap.get("COUNT").toString()) + 1;
-            }
-            if(Constant.signEnumState.DISPAOVER.getValue().equals( runTask.getLightState())){
-
             }
         }
         if (haveNew) {
@@ -447,7 +512,13 @@ public class AdminController {
             dataMap.put(key, runTaskInfoMap);
             existKey.add(mergeKey);
         }
-
+        //计算在办项目个数
+        Map<String,Object> countTaskMap = dataMap.get("COUNT_TASK_MAP");
+        if(countTaskMap == null){
+            countTaskMap = new HashMap<>();
+        }
+        countTaskMap.put(businessKey,runTask);
+        dataMap.put("COUNT_TASK_MAP",countTaskMap);
     }
 
     @RequiresPermissions("admin#gtasks#get")

@@ -100,9 +100,9 @@
         FLOW_ARCHIVES : "FLOW_ARCHIVES",                //档案归档流程
         FLOW_APPRAISE_REPORT : "FLOW_APPRAISE_REPORT",  //优秀评审报告申报流程
         FLOW_SUPP_LETTER : "FLOW_SUPP_LETTER",          //拟补充资料函流程
-        MONTHLY_BULLETIN_FLOW : "MONTHLY_BULLETIN_FLOW", //月报简报流程
-        ANNOUNT_MENT_FLOW : "ANNOUNT_MENT_FLOW" //通知公告流程
-
+        MONTHLY_BULLETIN_FLOW : "MONTHLY_BULLETIN_FLOW",//月报简报流程
+        ANNOUNT_MENT_FLOW : "ANNOUNT_MENT_FLOW",        //通知公告流程
+        WORK_HIS_FLOW : "WORK_HIS_FLOW",                //重做工作方案
     }
 
     var service = {

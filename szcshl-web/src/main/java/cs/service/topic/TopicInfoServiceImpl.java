@@ -10,17 +10,12 @@ import cs.domain.project.AddRegisterFile;
 import cs.domain.project.AddRegisterFile_;
 import cs.domain.sys.OrgDept;
 import cs.domain.sys.User;
-import cs.domain.topic.Filing;
-import cs.domain.topic.TopicInfo;
-import cs.domain.topic.TopicInfo_;
-import cs.domain.topic.WorkPlan;
+import cs.domain.topic.*;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertReviewDto;
 import cs.model.flow.FlowDto;
 import cs.model.project.AddRegisterFileDto;
-import cs.model.topic.FilingDto;
-import cs.model.topic.TopicInfoDto;
-import cs.model.topic.WorkPlanDto;
+import cs.model.topic.*;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.repository.repositoryImpl.flow.FlowPrincipalRepo;
@@ -28,9 +23,7 @@ import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.project.AddRegisterFileRepo;
 import cs.repository.repositoryImpl.sys.OrgDeptRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
-import cs.repository.repositoryImpl.topic.FilingRepo;
-import cs.repository.repositoryImpl.topic.TopicInfoRepo;
-import cs.repository.repositoryImpl.topic.WorkPlanRepo;
+import cs.repository.repositoryImpl.topic.*;
 import cs.service.flow.FlowService;
 import cs.service.rtx.RTXSendMsgPool;
 import org.activiti.engine.ProcessEngine;
@@ -41,10 +34,10 @@ import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.*;
 
 import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
+
 
 /**
  * Description: 课题研究 业务操作实现类
@@ -82,6 +75,10 @@ public class TopicInfoServiceImpl implements TopicInfoService {
     private RoomBookingRepo roomBookingRepo;
     @Autowired
     private FlowService flowService;
+    @Autowired
+    private ContractRepo contractRepo;
+    @Autowired
+    private TopicMaintainRepo topicMaintainRepo;
 
     @Override
     public PageModelDto<TopicInfoDto> get(ODataObj odataObj) {
@@ -157,6 +154,24 @@ public class TopicInfoServiceImpl implements TopicInfoService {
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功", record);
     }
 
+    /***
+     * 更新课题信息
+     * @param record
+     * @return
+     */
+    @Override
+    public ResultMsg updateTopic(TopicInfoDto record){
+        TopicInfo domain = new TopicInfo();
+        BeanCopierUtils.copyProperties(record, domain);
+        Date now = new Date();
+        domain.setCreatedBy(SessionUtil.getUserId());
+        domain.setModifiedBy(SessionUtil.getUserId());
+        domain.setCreatedDate(now);
+        domain.setModifiedDate(now);
+        topicInfoRepo.save(domain);
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功", record);
+    }
+
     /**
      * 发起流程
      *
@@ -220,6 +235,18 @@ public class TopicInfoServiceImpl implements TopicInfoService {
         TopicInfoDto modelDto = new TopicInfoDto();
         TopicInfo domain = topicInfoRepo.findById(id);
         BeanCopierUtils.copyProperties(domain, modelDto);
+
+        //合同
+        if (Validate.isList(domain.getContractList())) {
+            List<Contract> contractList = domain.getContractList();
+            List<ContractDto> contractDtoList = new ArrayList<>(domain.getContractList().size());
+            contractList.forEach(contract -> {
+                ContractDto contractDto = new ContractDto();
+                BeanCopierUtils.copyProperties(contract, contractDto);
+                contractDtoList.add(contractDto);
+            });
+            modelDto.setContractDtoList(contractDtoList);
+        }
         //工作方案
         if (domain.getWorkPlan() != null) {
             WorkPlan workPlan = domain.getWorkPlan();
@@ -288,6 +315,17 @@ public class TopicInfoServiceImpl implements TopicInfoService {
         }
         TopicInfoDto topicInfoDto = new TopicInfoDto();
         BeanCopierUtils.copyProperties(topicInfo, topicInfoDto);
+        //合同
+        if (Validate.isList(topicInfo.getContractList())) {
+            List<Contract> contractList = topicInfo.getContractList();
+            List<ContractDto> contractDtoList = new ArrayList<>(topicInfo.getContractList().size());
+            contractList.forEach(contract -> {
+                ContractDto contractDto = new ContractDto();
+                BeanCopierUtils.copyProperties(contract, contractDto);
+                contractDtoList.add(contractDto);
+            });
+            topicInfoDto.setContractDtoList(contractDtoList);
+        }
         //获取项目负责人
         List<FlowPrincipal> list = flowPrincipalRepo.getFlowPrinInfoByBusiId(id);
         if (Validate.isList(list)) {
@@ -351,26 +389,12 @@ public class TopicInfoServiceImpl implements TopicInfoService {
                 break;
             //主任审核计划
             case FlowConstant.TOPIC_ZRSH_JH:
-                topicInfo = topicInfoRepo.findById(TopicInfo_.id.getName(), businessId);
-                //如果送发改委
-                if (Constant.EnumState.YES.getValue().equals(topicInfo.getSendFgw()) || topicInfo.getSendFgw() == null) {
-                    variables = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_ADMIN.getValue(),SUPER_ACCOUNT);
-                    variables.put(FlowConstant.FlowParams.SEND_FGW.getValue(), true);
-                    //下一环节还是自己处理
-                    if (assigneeValue.equals(SessionUtil.getUserId())) {
-                        isNextUser = true;
-                        nextNodeKey = FlowConstant.TOPIC_BFGW;
-                    }
-
-                } else {
-                    variables = findPrinUser(businessId, assigneeValue);
-                    variables.put(FlowConstant.FlowParams.SEND_FGW.getValue(), false);
-                }
+                variables = findMainPrinUser(businessId, assigneeValue);
                 break;
-            //报发改委
+      /*      //报发改委
             case FlowConstant.TOPIC_BFGW:
                 variables = findPrinUser(businessId, assigneeValue);
-                break;
+                break;*/
 
            /* //联系合作单位
             case FlowConstant.TOPIC_LXDW :
@@ -389,7 +413,7 @@ public class TopicInfoServiceImpl implements TopicInfoService {
                 variables = findPrinUser(businessId,assigneeValue);
                 break;*/
             //提出成果鉴定会
-            case FlowConstant.TOPIC_GZFA:
+/*            case FlowConstant.TOPIC_GZFA:
                 workPlan = workPlanRepo.findById("topId", businessId);
                 if (workPlan == null || !Validate.isString(workPlan.getId())) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "您还没完成工作方案，不能进行下一步操作！");
@@ -397,19 +421,24 @@ public class TopicInfoServiceImpl implements TopicInfoService {
                 //更改预定会议室状态
                 roomBookingRepo.updateStateByBusinessId(workPlan.getId(), Constant.EnumState.PROCESS.getValue());
                 variables = findOrgLeader(businessId, false, assigneeValue);
+                break;*/
+            //课题负责人选结题
+            case FlowConstant.TOPIC_KTFZR:
+                topicInfo = topicInfoRepo.findById(TopicInfo_.id.getName(), businessId);
+                if(!Validate.isString(topicInfo.getEndTopicFlag())){
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请设置结题方式！");
+                }
+                if(!Validate.isString(topicInfo.getSendFgw())){
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请设置是否报委务会审定！");
+                }
+                variables = findOrgLeader(businessId, false, assigneeValue);
                 break;
             //部长审核方案
             case FlowConstant.TOPIC_BZSH_FA:
-                workPlan = workPlanRepo.findById("topId", businessId);
-                workPlan.setDirectorName(SessionUtil.getDisplayName());
-                workPlan.setDirectorOption(flowDto.getDealOption());
-                workPlan.setDirectorDate(new Date());
-                workPlanRepo.save(workPlan);
                 variables = findOrgLeader(businessId, true, assigneeValue);
                 break;
             //分管副主任审核方案
             case FlowConstant.TOPIC_FGLD_FA:
-                variables = findOrgLeader(businessId, true, assigneeValue);
                 dealUserList = userRepo.findUserByRoleName(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue());
                 if (!Validate.isList(dealUserList)) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先设置【" + Constant.EnumFlowNodeGroupName.DIRECTOR.getValue() + "】角色用户！");
@@ -422,39 +451,55 @@ public class TopicInfoServiceImpl implements TopicInfoService {
                     isNextUser = true;
                     nextNodeKey = FlowConstant.TOPIC_ZRSH_FA;
                 }
-                workPlan = workPlanRepo.findById("topId", businessId);
-                workPlan.setLeaderName(SessionUtil.getDisplayName());
-                workPlan.setLeaderOption(flowDto.getDealOption());
-                workPlan.setLeaderDate(new Date());
-                workPlanRepo.save(workPlan);
                 break;
             //主任审定
             case FlowConstant.TOPIC_ZRSH_FA:
-                variables = findPrinUser(businessId, assigneeValue);
-
-                workPlan = workPlanRepo.findById("topId", businessId);
-                workPlan.setMleaderName(SessionUtil.getDisplayName());
-                workPlan.setMleaderOption(flowDto.getDealOption());
-                workPlan.setMleaderDate(new Date());
-                workPlanRepo.save(workPlan);
-
-                //更改预定会议室状态
-                roomBookingRepo.updateStateByBusinessId(workPlan.getId(), Constant.EnumState.YES.getValue());
+                topicInfo = topicInfoRepo.findById(TopicInfo_.id.getName(), businessId);
+                topicInfo.setApprovedDate(new Date());
+                topicInfoRepo.save(topicInfo);
+                variables = findMainPrinUser(businessId, assigneeValue);
                 break;
-            /*//召开成果鉴定会
-            case FlowConstant.TOPIC_CGJD :
-                variables = findPrinUser(businessId,assigneeValue);
-                break;*/
-            //完成课题报告
-            case FlowConstant.TOPIC_KTBG:
+            //课题负责人确认
+            case FlowConstant.TOPIC_KTFZR_QR:
+                dealUserList = userRepo.findUserByRoleName(Constant.EnumFlowNodeGroupName.FILER.getValue());
+                if (!Validate.isList(dealUserList)) {
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先设置【" + Constant.EnumFlowNodeGroupName.FILER.getValue() + "】角色用户！");
+                }
+                filing = filingRepo.findById("topId", businessId);
+                if (filing == null || !Validate.isString(filing.getId())) {
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "您还没完成课题归档，不能进行下一步操作！");
+                }
+                topicInfo = topicInfoRepo.findById(TopicInfo_.id.getName(), businessId);
+                topicInfoRepo.save(topicInfo);
+                dealUser = dealUserList.get(0);
+                assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
+                variables = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_GDY.getValue(), assigneeValue);
+                //下一环节还是自己处理
+                if (assigneeValue.equals(SessionUtil.getUserId())) {
+                    isNextUser = true;
+                    nextNodeKey = FlowConstant.TOPIC_ZLGD;
+                }
+                break;
+            //归档员确认
+            case FlowConstant.TOPIC_ZLGD:
+            /*    filing = filingRepo.findById("topId", businessId);
+                filingRepo.save(filing);*/
+                topicInfo = topicInfoRepo.findById(TopicInfo_.id.getName(), businessId);
+                topicInfo.setState(Constant.EnumState.YES.getValue());
+                topicInfoRepo.save(topicInfo);
+                break;
+            default:
+                ;
+                //完成课题报告
+      /*      case FlowConstant.TOPIC_KTBG:
                 variables = findOrgLeader(businessId, false, assigneeValue);
-                break;
-            //部长审核
-            case FlowConstant.TOPIC_BZSH_BG:
+                break;*/
+                //部长审核
+          /*  case FlowConstant.TOPIC_BZSH_BG:
                 variables = findOrgLeader(businessId, true, assigneeValue);
-                break;
-            //分管副主任审核
-            case FlowConstant.TOPIC_FGLD_BG:
+                break;*/
+                //分管副主任审核
+         /*   case FlowConstant.TOPIC_FGLD_BG:
                 dealUserList = userRepo.findUserByRoleName(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue());
                 if (!Validate.isList(dealUserList)) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先设置【" + Constant.EnumFlowNodeGroupName.DIRECTOR.getValue() + "】角色用户！");
@@ -501,13 +546,13 @@ public class TopicInfoServiceImpl implements TopicInfoService {
             //主任审核
             case FlowConstant.TOPIC_ZRSH_JT:
                 variables = findPrinUser(businessId, assigneeValue);
-                break;
+                break;*/
             /*//印发资料
             case FlowConstant.TOPIC_YFZL :
                 variables = findMainPrinUser(businessId,assigneeValue);
                 break;*/
-            //资料归档
-            case FlowConstant.TOPIC_ZLGD:
+                //资料归档
+            /*case FlowConstant.TOPIC_ZLGD:
                 filing = filingRepo.findById("topId", businessId);
                 if (filing == null || !Validate.isString(filing.getId())) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "您还没完成课题归档，不能进行下一步操作！");
@@ -542,19 +587,7 @@ public class TopicInfoServiceImpl implements TopicInfoService {
                 filing = filingRepo.findById("topId", businessId);
                 filing.setDirector(SessionUtil.getDisplayName());
                 filingRepo.save(filing);
-                break;
-            //归档员确认
-            case FlowConstant.TOPIC_GDY_QR:
-                filing = filingRepo.findById("topId", businessId);
-                filing.setFilingUser(SessionUtil.getDisplayName());
-                filingRepo.save(filing);
-
-                topicInfo = topicInfoRepo.findById(TopicInfo_.id.getName(), businessId);
-                topicInfo.setState(Constant.EnumState.YES.getValue());
-                topicInfoRepo.save(topicInfo);
-                break;
-            default:
-                ;
+                break;*/
         }
 
         taskService.addComment(task.getId(), processInstance.getId(), (flowDto == null) ? "" : flowDto.getDealOption());    //添加处理信息
@@ -697,4 +730,188 @@ public class TopicInfoServiceImpl implements TopicInfoService {
         resultMap = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER.getValue(), assigneeValue);
         return resultMap;
     }
+
+    /***
+     * 保存合同信息
+     * @param contractDtoList
+     * @return
+     */
+    @Override
+    public ResultMsg saveContractDetailList(ContractDto[] contractDtoList) {
+        List<Contract> contractList = new ArrayList<Contract>();
+        TopicInfo topicInfo = null;
+        if (Validate.isString(contractDtoList[0].getTopicId())) {
+            topicInfo = topicInfoRepo.findById(TopicInfo_.id.getName(), contractDtoList[0].getTopicId());
+        }
+        for (int i = 0, l = contractDtoList.length; i < l; i++) {
+            Contract contract = new Contract();
+            ContractDto contractDto = contractDtoList[i];
+            BeanCopierUtils.copyProperties(contractDto, contract);
+            contract.setContractId(UUID.randomUUID().toString());
+            contract.setCreatedBy(SessionUtil.getDisplayName());
+            contract.setCreatedDate(new Date());
+            contract.setModifiedBy(SessionUtil.getDisplayName());
+            contract.setModifiedDate(new Date());
+            if (Validate.isString(contractDto.getTopicId())) {
+                if (Validate.isObject(topicInfo)) {
+                    contract.setTopicInfo(topicInfo);
+                }
+            }
+            contractList.add(contract);
+        }
+        if (contractList.size() > 0) {
+            if (null != topicInfo.getContractList()){
+                topicInfo.getContractList().clear();
+                topicInfo.getContractList().addAll(contractList);
+            }else{
+                topicInfo.setContractList(contractList);
+            }
+            topicInfoRepo.save(topicInfo);
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "保存成功！", topicInfo);
+        }else{
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"没有分录数据，无法保存！");
+        }
+
+    }
+
+    /**
+     * 保存课题维护信息
+     * @param topicMaintainDtoArray
+     * @return
+     */
+    @Override
+    public ResultMsg saveTopicDetailList(TopicMaintainDto[] topicMaintainDtoArray){
+        List<TopicMaintain> topicList = new ArrayList<TopicMaintain>();
+        TopicInfo topicInfo = null;
+
+        for (int i = 0, l = topicMaintainDtoArray.length; i < l; i++) {
+            TopicMaintain topicMaintain = new TopicMaintain();
+            TopicMaintainDto topicMaintainDto = topicMaintainDtoArray[i];
+            BeanCopierUtils.copyProperties(topicMaintainDto, topicMaintain);
+            if(!Validate.isString(topicMaintain.getId())){
+                topicMaintain.setId(UUID.randomUUID().toString());
+                if(Validate.isString(topicMaintain.getTopicId())){
+                    topicInfo = topicInfoRepo.getById(topicMaintain.getTopicId());
+                    if(Validate.isObject(topicInfo)){
+                        topicInfo.setIsMaintain("9");
+                        topicInfoRepo.save(topicInfo);
+                    }
+                }
+            }
+            topicMaintain.setUserId(SessionUtil.getUserId());
+            topicMaintain.setCreatedBy(SessionUtil.getDisplayName());
+            topicMaintain.setCreatedDate(new Date());
+            topicMaintain.setModifiedBy(SessionUtil.getDisplayName());
+            topicMaintain.setModifiedDate(new Date());
+
+            topicList.add(topicMaintain);
+        }
+        if (topicList.size() > 0) {
+            topicMaintainRepo.bathUpdate(topicList);
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "保存成功！", topicList);
+        }else{
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"没有分录数据，无法保存！");
+        }
+    }
+
+    /**
+     * 删除流程业务处理
+     * @param businessKey
+     * @return
+     */
+    @Override
+    public ResultMsg endFlow(String businessKey) {
+        TopicInfo topicInfo = topicInfoRepo.findById(TopicInfo_.id.getName(),businessKey);
+        if(Validate.isObject(topicInfo)){
+            if(!SessionUtil.getUserId().equals(topicInfo.getCreatedBy()) && !SUPER_ACCOUNT.equals(SessionUtil.getLoginName())){
+                return ResultMsg.error("您无权进行删除流程操作！");
+            }
+            topicInfo.setState(Constant.EnumState.FORCE.getValue());
+            topicInfoRepo.save(topicInfo);
+        }
+        return ResultMsg.ok("操作成功！");
+    }
+
+
+    /**
+     * 删除合同
+     * @param ids
+     * @return
+     */
+
+    @Override
+    @Transactional
+    public ResultMsg deleteContract(String ids) {
+        try{
+            if(Validate.isString(ids)){
+                if(ids.contains(",")){
+                    String idsArr[] = ids.split(",");
+                    for(String id : idsArr){
+                        delExistContractInfo(id);
+                    }
+                }else{
+                    delExistContractInfo(ids);
+                }
+            }
+
+        }catch (Exception e){
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"保存失败，数据异常");
+        }
+        return new ResultMsg(false, Constant.MsgCode.OK.getValue(),"操作成功！");
+    }
+
+    /**
+     * 删除课题维护信息
+     * @param ids
+     * @return
+     */
+    @Override
+    @Transactional
+    public ResultMsg deleteTopicMaintain(String ids) {
+        try{
+            if(Validate.isString(ids)){
+                if(ids.contains(",")){
+                    String idsArr[] = ids.split(",");
+                    for(String id : idsArr){
+                        delExistTopicInfo(id);
+                    }
+                }else{
+                    delExistTopicInfo(ids);
+                }
+            }
+
+        }catch (Exception e){
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"保存失败，数据异常");
+        }
+        return new ResultMsg(false, Constant.MsgCode.OK.getValue(),"操作成功！");
+    }
+
+    private boolean delExistContractInfo(String id){
+        boolean flag = false;
+        Contract contract = contractRepo.findById(Contract_.contractId.getName(), id);
+        if (null != contract){
+            contractRepo.delete(contract);
+            flag = true;
+        }
+        return  flag;
+    }
+
+    private boolean delExistTopicInfo(String id){
+        boolean flag = false;
+        TopicMaintain topicMaintain = topicMaintainRepo.findById(TopicMaintain_.id.getName(), id);
+        if (null != topicMaintain){
+            topicMaintainRepo.delete(topicMaintain);
+            flag = true;
+        }
+        if(Validate.isString(topicMaintain.getTopicId())){
+            TopicInfo topicInfo = topicInfoRepo.getById(topicMaintain.getTopicId());
+            if(Validate.isObject(topicInfo)){
+                topicInfo.setIsMaintain("0");
+                topicInfoRepo.save(topicInfo);
+            }
+        }
+
+        return  flag;
+    }
+
 }

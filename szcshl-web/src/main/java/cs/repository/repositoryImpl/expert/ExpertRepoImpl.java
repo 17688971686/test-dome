@@ -50,13 +50,14 @@ public class ExpertRepoImpl extends AbstractRepository<Expert, String> implement
     }
 
     /**
-     * 查询所有重名的专家
+     * 查询所有重名的专家(不包含已删除的专家)
      * @return
      */
     @Override
     public List<Expert> findAllRepeat() {
         Criteria criteria = getExecutableCriteria();
-        criteria.add(Restrictions.sqlRestriction(" name IN (SELECT name FROM CS_EXPERT GROUP BY  name  HAVING COUNT (name) > 1)"));
+        criteria.add(Restrictions.ne(Expert_.state.getName(),"0"));
+        criteria.add(Restrictions.sqlRestriction(" name IN (SELECT ce.name FROM CS_EXPERT ce where ce.state != '0' GROUP BY  ce.name  HAVING COUNT (ce.name) > 1)"));
         criteria.addOrder(Order.desc(Expert_.name.getName()));
 
         return criteria.list();

@@ -91,6 +91,17 @@
                 </div>
             </td>
         </tr>
+            <tr>
+                <td class="text-center" style="vertical-align: middle;">项目负责人<br>拟稿意见</td>
+                <td colspan="3" style="min-height: 50px;">
+                    第一负责人意见：
+                    <div ng-bind-html="vm.dispatchDoc.mianChargeSuggest | trust2Html"></div>
+                </td>
+                <td colspan="3" style="min-height: 30px;">
+                    第二负责人意见：
+                    <div ng-bind-html="vm.dispatchDoc.secondChargeSuggest | trust2Html"></div>
+                </td>
+            </tr>
         <tr>
             <td class="text-center" style="vertical-align: middle;">部长审核意见</td>
             <td colspan="6" >

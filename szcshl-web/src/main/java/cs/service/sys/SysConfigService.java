@@ -38,10 +38,4 @@ public interface SysConfigService {
      */
     SysConfigDto findByDataKey(String value);
 
-    /**
-     * 从数据库查询
-     * @param type
-     * @return
-     */
-    List<SysConfigDto> findListBykey(String type);
 }

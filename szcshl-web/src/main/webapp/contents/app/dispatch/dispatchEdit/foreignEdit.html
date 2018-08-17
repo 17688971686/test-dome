@@ -10,14 +10,26 @@
         <p class="h3">
             <strong>深圳市政府投资项目评审中心<br>项目发文审批表</strong>
         </p>
-        <p>
-             <span style="padding: 5px 10px;float: left;">
-              发文方式：
+        <p style="text-align: left;">
+             <span>
+                发文方式：
                 <select ng-model="vm.dispatchDoc.dispatchWay" name="dispatchWay" id="dispatchWay"
-                        ng-change="vm.sigleProject()" ng-disabled="vm.showFlag.isReveiwDS">
-                    <option value="1">单个发文</option>
+                        ng-change="vm.sigleProject()" ng-disabled="vm.showFlag.isReveiwDS"><!-- 如果是合并发文次项目，则不允许修改 -->
+                    <option value="1" ng-selected="vm.dispatchDoc.dispatchWay==1">单个发文</option>
+                    <option value="2" ng-selected="vm.dispatchDoc.dispatchWay==2">合并发文</option>
                 </select>
-             </span>
+            </span>
+            <span ng-show="vm.dispatchDoc.dispatchWay == 2" style="margin-left:10px;">
+                <input type="radio" ng-model="vm.dispatchDoc.isMainProject" ng-disabled="vm.showFlag.isReveiwDS"
+                       ng-value="9" ng-checked="vm.dispatchDoc.isMainProject==9">主项目
+
+                <input type="radio" ng-model="vm.dispatchDoc.isMainProject" ng-disabled="vm.showFlag.isReveiwDS"
+                       ng-value="0" ng-checked="vm.dispatchDoc.isMainProject==0">次项目
+
+                <button class="btn btn-xs btn-default" ng-click="vm.gotoMergePage()" ng-disabled="vm.isCommit"
+                        ng-show="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject == 9"
+                        ng-hide="vm.dispatchDoc.dispatchWay == 1 || vm.dispatchDoc.isMainProject == 0">关联项目</button>
+            </span>
             <span style="padding: 5px 10px;float:right;">发文类型： <span class="required">*</span>
 		  		<select ng-model="vm.dispatchDoc.dispatchType" name="dispatchType" id="dispatchType" data-val="true"
                         data-val-required="必填">
@@ -51,10 +63,20 @@
 
     <tr>
         <td class="text-center">秘密等级</td>
-        <td> {{vm.dispatchDoc.secretLevel}}</td>
+        <td>
+            <select ng-model="vm.dispatchDoc.secretLevel" name="secretLevel" id="secretLevel" class="form-control input-xm ">
+                <option ng-repeat="x in DICT.SECRECTLEVEL.dicts"  ng-selected="vm.model.secrectlevel == x.dictName"
+                        value="{{x.dictName}}">{{x.dictName}}</option>
+            </select>
+        </td>
 
         <td class="text-center">紧急程度</td>
-        <td>{{vm.dispatchDoc.urgentLevel}}</td>
+        <td>
+            <select ng-model="vm.dispatchDoc.urgentLevel" name="urgentLevel" id="urgentLevel" class="form-control input-xm ">
+                <option ng-repeat="x in DICT.BAOMI.dicts"  ng-selected="vm.model.urgencydegree == x.dictName"
+                        value="{{x.dictName}}">{{x.dictName}}</option>
+            </select>
+            </td>
 
         <td class="text-center">是否有其他阶段关联</td>
         <td>

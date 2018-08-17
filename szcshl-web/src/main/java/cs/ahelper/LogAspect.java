@@ -177,11 +177,6 @@ public class LogAspect {
                     ResultMsg resultMsg = (ResultMsg) resultObj;
                     if(resultMsg.isFlag()){
                         resultState = Constant.EnumState.YES.getValue();
-                    }else {
-                        resultState = Constant.EnumState.NO.getValue();
-                        if(SZEC_SIGN_05.equals(resultMsg.getReCode())){
-                            resultState = Constant.EnumState.YES.getValue();
-                        }
                     }
                     log.setLogCode(resultMsg.getReCode());
                 }

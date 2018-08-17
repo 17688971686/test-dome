@@ -94,7 +94,7 @@ public class ExpertSelectedController {
     }
 
     @RequiresAuthentication
-    //@RequiresPermissions("expertSelected#expertCostTotal#post")
+    //@RequiresPermissions("expertSelected#projectCostTotal#post")
     @RequestMapping(name = "项目评审费统计", path = "projectCostTotal", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg projectCostTotal(@RequestBody ProjectReviewCostDto projectReviewCostDto) {
@@ -118,7 +118,7 @@ public class ExpertSelectedController {
     }
 
     @RequiresAuthentication
-    //@RequiresPermissions("expertSelected#expertCostTotal#post")
+    //@RequiresPermissions("expertSelected#proReviewConditionCount#post")
     @RequestMapping(name = "项目评审情况统计", path = "proReviewConditionCount", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg proCostClassifyTotal(@RequestBody ProReviewConditionDto proReviewConditionDto) {
@@ -126,7 +126,7 @@ public class ExpertSelectedController {
     }
 
     @RequiresAuthentication
-    //@RequiresPermissions("expertSelected#expertCostTotal#post")
+    //@RequiresPermissions("expertSelected#expertReviewCondCount#post")
     @RequestMapping(name = "专家评审情况综合统计", path = "expertReviewCondCount", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg expertReviewCondTotal(@RequestBody ExpertReviewConSimpleDto expertReviewConSimpleDto) {
@@ -134,7 +134,7 @@ public class ExpertSelectedController {
     }
 
     @RequiresAuthentication
-    //@RequiresPermissions("expertSelected#expertCostTotal#post")
+    //@RequiresPermissions("expertSelected#expertReviewCompliCount#post")
     @RequestMapping(name = "专家评审情况不规则统计", path = "expertReviewCompliCount", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg expertReviewCompliCount(@RequestBody ExpertReviewConSimpleDto expertReviewConSimpleDto) {
@@ -143,7 +143,7 @@ public class ExpertSelectedController {
 
 
     @RequiresAuthentication
-    //@RequiresPermissions("expertSelected#expertCostTotal#post")
+    //@RequiresPermissions("expertSelected#expertReviewCondDetailCount#post")
     @RequestMapping(name = "专家评审情况详细统计", path = "expertReviewCondDetailCount", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg expertReviewCondDetailTotal(@RequestBody ExpertReviewCondDto expertReviewCondDto) {

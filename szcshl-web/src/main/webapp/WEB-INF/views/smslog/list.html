@@ -6,22 +6,25 @@
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
         <li>系统管理员</li>
-        <li class="active">短信管理</li>
+        <li class="active">{{vm.title}}</li>
     </ol>
     <div class="well well-sm">
-        <form id="logform" name="logform">
-            <span class="help-inline">所属模块：</span>
-            <input type="text"  operator="like" name="module" id="module" >
-            <span class="help-inline">操作类型(发文/收文/代办)：</span>
-            <input type="text"  operator="like" name="userName" id="userName" >
+        <form id="smsLogform" name="smsLogform">
+            <span class="help-inline">类型：</span>
+            <!--<input type="text"  operator="like" name="smsLogType" id="smsLogType" >-->
+            <select operator="" name="smsLogType" id="smsLogType" >
+                <option value="">请选择</option>
+                <option ng-repeat="x in vm.select" value="{{x.smsLogType}}">{{x.smsLogTypeName}}</option>
+            </select>
+
             <span class="help-inline">操作日期：</span>
             <input type="text" style="width: 120px;" kendo-date-picker k-format="'yyyy-MM-dd'" operator="ge" name="createdDate">
             至
             <input type="text" style="width: 120px;" kendo-date-picker k-format="'yyyy-MM-dd'" operator="le" name="createdDate">
-
             <button class="btn btn-sm btn-primary" ng-click="vm.querySMSLog()"><span class="glyphicon glyphicon-search"></span>查询</button>
             <button class="btn btn-sm btn-primary" ng-click="vm.formSMSReset()"><span class="glyphicon glyphicon-repeat"></span>重置</button>
-            <button class="btn btn-sm btn-primary" ng-click="vm.seenSMSInfo()"><span class="glyphicon glyphicon-repeat"></span>发送短信</button>
+            <!--<button class="btn btn-sm btn-primary" ng-click="vm.seenSMSInfo()"><span class="glyphicon glyphicon-repeat"></span>发送短信</button>-->
+            <!--<a class="btn btn-sm btn-primary" href="#/orgEdit/">发送短信</a>-->
         </form>
     </div>
 

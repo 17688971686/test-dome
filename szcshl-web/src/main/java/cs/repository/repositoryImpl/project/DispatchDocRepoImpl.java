@@ -1,19 +1,19 @@
 package cs.repository.repositoryImpl.project;
 
-import java.util.List;
-
-import cs.common.constants.Constant;
 import cs.common.HqlBuilder;
+import cs.common.constants.Constant;
 import cs.common.utils.Validate;
+import cs.domain.project.DispatchDoc;
+import cs.domain.project.DispatchDoc_;
+import cs.domain.project.Sign_;
+import cs.repository.AbstractRepository;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import cs.domain.project.DispatchDoc;
-import cs.domain.project.DispatchDoc_;
-import cs.domain.project.Sign_;
-import cs.repository.AbstractRepository;
+import java.math.BigDecimal;
+import java.util.List;
 
 import static cs.common.constants.Constant.DEVICE_BILL_HOMELAND;
 import static cs.common.constants.Constant.DEVICE_BILL_IMPORT;
@@ -93,5 +93,33 @@ public class DispatchDocRepoImpl extends AbstractRepository<DispatchDoc, String>
             sqlBuilder.setParam("dispatchStage1",DEVICE_BILL_HOMELAND).setParam("dispatchStage2",DEVICE_BILL_IMPORT);
         }
         return returnIntBySql(sqlBuilder);
+    }
+
+    @Override
+    public void updateDisApprValue(String disId, BigDecimal apprValue) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" update cs_dispatch_doc set " + DispatchDoc_.approveValue.getName() + " =:approveValue " );
+        sqlBuilder.setParam("approveValue", apprValue);
+        sqlBuilder.append("where id =:disId");
+        sqlBuilder.setParam("disId",disId);
+        executeSql(sqlBuilder);
+    }
+
+    @Override
+    public void updateMergeDisFileNum(String signId,String fileNum, int maxSeq) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" update cs_dispatch_doc set " + DispatchDoc_.fileNum.getName() + " =:fileNum ").setParam("fileNum", fileNum);
+        sqlBuilder.append(" ," + DispatchDoc_.fileSeq.getName() + " =:fileSeq").setParam("fileSeq", maxSeq);
+        sqlBuilder.append(" where signId in (select mergeId from cs_sign_merge where signId = :signId ");
+        sqlBuilder.setParam("signId", signId);
+        sqlBuilder.append(" and mergeType =:mergeType )").setParam("mergeType", Constant.MergeType.DISPATCH.getValue());
+        executeSql(sqlBuilder);
+    }
+
+    @Override
+    public List<DispatchDoc> findMergeDisInfo(String mainSignId) {
+        Criteria criteria = getExecutableCriteria();
+        criteria.add(Restrictions.sqlRestriction(" {alias}.signid in (select MERGEID from CS_SIGN_MERGE where SIGNID = '"+mainSignId+"' and MERGETYPE = '"+ Constant.MergeType.DIS_MERGE.getValue()+"') "));
+        return criteria.list();
     }
 }

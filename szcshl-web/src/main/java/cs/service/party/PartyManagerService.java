@@ -1,9 +1,12 @@
 package cs.service.party;
 
 import cs.common.ResultMsg;
+import cs.domain.party.PartyManager;
 import cs.model.PageModelDto;
 import cs.model.party.PartyManagerDto;
 import cs.repository.odata.ODataObj;
+
+import java.util.List;
 
 /**
  * Created by MCL
@@ -30,4 +33,36 @@ public interface PartyManagerService {
      * @return
      */
     ResultMsg findPartyById(String pmId);
+
+    /**
+     * 更新党员信息
+     * @param partyManagerDto
+     * @return
+     */
+    ResultMsg updateParty(PartyManagerDto partyManagerDto);
+
+    /**
+     * 删除党员信息
+     * @param pmId
+     */
+    void deleteParty(String pmId);
+
+    /**
+     * 批量保存
+     * @param partyManagerList
+     */
+    void batchSave(List<PartyManager> partyManagerList);
+
+    /**
+     * 通过身份证号判断该党员是否已经存在
+     * @param pmIDCard
+     * @return
+     */
+    Boolean existByIdCar(String pmIDCard);
+
+    /**
+     * 保存党务信息
+     * @param partyManager
+     */
+    void saveParty(PartyManager partyManager);
 }

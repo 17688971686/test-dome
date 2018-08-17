@@ -18,4 +18,8 @@ public class CacheConstant {
      * 会议室缓存
      */
     public final static String MEETING_CACHE = "MEETING_CACHE";
+    /**
+     * IP地址缓存key
+     */
+    public final static String IP_CACHE = "LOCAL_IP_ADDR";
 }

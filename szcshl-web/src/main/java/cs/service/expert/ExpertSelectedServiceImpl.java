@@ -7,6 +7,8 @@ import cs.common.utils.*;
 import cs.domain.expert.*;
 import cs.domain.financial.FinancialManager;
 import cs.domain.financial.FinancialManager_;
+import cs.domain.sys.OrgDept;
+import cs.domain.sys.OrgDept_;
 import cs.domain.sys.User;
 import cs.model.PageModelDto;
 import cs.model.expert.*;
@@ -16,6 +18,8 @@ import cs.repository.odata.ODataObj;
 import cs.repository.odata.ODataObjFilterStrategy;
 import cs.repository.repositoryImpl.expert.*;
 import cs.repository.repositoryImpl.financial.FinancialManagerRepo;
+import cs.repository.repositoryImpl.sys.OrgDeptRepo;
+import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.service.project.SignPrincipalService;
 import cs.service.sys.UserService;
 import org.hibernate.Criteria;
@@ -50,6 +54,10 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
     private UserService userService;
     @Autowired
     private ExpertRepo expertRepo;
+    @Autowired
+    private OrgDeptRepo orgDeptRepo;
+    @Autowired
+    private UserRepo userRepo;
 
 
     @Override
@@ -230,20 +238,23 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
         if (!Validate.isString(expertCostDto.getMonth())) {
             expertCostDto.setMonth(String.valueOf(DateUtils.getCurMonth()));
         }
-        String monthValue = String.format("%02d", Integer.parseInt(expertCostDto.getMonth()));
+        int year = Integer.parseInt(expertCostDto.getYear());
+        int month = Integer.parseInt(expertCostDto.getMonth());
+        String monthValue = String.format("%02d", month);
+        int maxDate = DateUtils.getMaxDayOfMonth(year, month);
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append(" SELECT e.name, e.idcard, e.userphone, me.reviewcost AS reviewcost, me.reviewtaxes AS reviewtaxes, ye.reviewcost AS yreviewcost, ye.reviewtaxes AS yreviewtaxes ");
         sqlBuilder.append(" FROM (  SELECT s.EXPERTID, SUM (s.reviewcost) reviewcost, SUM (s.reviewtaxes) reviewtaxes ");
         sqlBuilder.append(" FROM cs_expert_selected s, cs_expert_review r ");
         sqlBuilder.append(" WHERE s.expertreviewid = r.id AND s.isconfrim = '9' AND s.isjoin = '9' AND r.paydate IS NOT NULL ");
-        sqlBuilder.append(" AND TO_CHAR (r.paydate, 'yyyy-mm') = :monthValue GROUP BY s.expertid) me, ");
+        sqlBuilder.append(" AND TO_CHAR (r.reviewDate, 'yyyy-mm') = :monthValue GROUP BY s.expertid) me, ");
         sqlBuilder.setParam("monthValue", expertCostDto.getYear() + "-" + monthValue);
         sqlBuilder.append(" cs_expert e, ");
         sqlBuilder.append(" (  SELECT s.EXPERTID, SUM (s.reviewcost) reviewcost, SUM (s.reviewtaxes) reviewtaxes ");
         sqlBuilder.append(" FROM cs_expert_selected s, cs_expert_review r ");
         sqlBuilder.append(" WHERE s.expertreviewid = r.id AND s.isconfrim = '9' AND s.isjoin = '9' AND r.paydate IS NOT NULL ");
-        sqlBuilder.append(" AND TO_CHAR (r.paydate, 'yyyy') = :yearValue GROUP BY s.expertid) ye ");
-        sqlBuilder.setParam("yearValue", expertCostDto.getYear());
+        sqlBuilder.append(" AND TO_CHAR (r.reviewDate, 'yyyy') = :yearValue AND r.reviewDate <= to_date(:yearDate,'yyyy-mm-dd') GROUP BY s.expertid) ye ");
+        sqlBuilder.setParam("yearValue", expertCostDto.getYear()).setParam("yearDate", expertCostDto.getYear() + "-" + monthValue + "-" + maxDate);
         sqlBuilder.append(" where me.EXPERTID = e.EXPERTID and me.EXPERTID = ye.EXPERTID order by E.EXPERTNO ");
 
         List<Object[]> expertCostCountDtoList = expertCostCountRepo.getObjectArray(sqlBuilder);
@@ -457,8 +468,11 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
         sqlBuilder.append(" SELECT sdk.signid,sdk.projectcode, sdk.projectname, sdk.builtcompanyname, sdk.reviewstage, ");
         sqlBuilder.append(" sdk.appalyInvestment, sdk.authorizevalue, sdk.signdate, sdk.MORGNAME,sdk.ALLPRIUSER, ");
         sqlBuilder.append(" CFM.CHARGENAME,CFM.CHARGE,CFM.STAGECOUNT,CFM.PAYMENTDATA ");
-        sqlBuilder.append(" FROM SIGN_DISP_WORK sdk, CS_FINANCIAL_MANAGER cfm ");
-        sqlBuilder.append(" WHERE CFM.BUSINESSID = SDK.SIGNID AND  sdk.signState <> :signState AND CFM.CHARGETYPE = :chargeType AND CFM.PAYMENTDATA is not null  ");
+        sqlBuilder.append(" FROM SIGN_DISP_WORK sdk, CS_FINANCIAL_MANAGER cfm,CS_SIGN sg ");
+        sqlBuilder.append(" WHERE sdk.signid = sg.signid  ");
+        /*sqlBuilder.append("AND sg.isSendFileRecord =:fileState ");
+        sqlBuilder.setParam("fileState", Constant.EnumState.YES.getValue());*/
+        sqlBuilder.append(" AND CFM.BUSINESSID = SDK.SIGNID AND  sdk.signState <> :signState AND CFM.CHARGETYPE = :chargeType AND CFM.PAYMENTDATA is not null  ");
         sqlBuilder.setParam("signState", Constant.EnumState.DELETE.getValue()).setParam("chargeType", Constant.EnumState.PROCESS.getValue());
 
         //查询条件
@@ -507,7 +521,7 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
                 Object[] projectReviewCost = projectReviewCostList.get(i);
                 String signId = projectReviewCost[0].toString();
                 if (!oldSignid.equals(signId)) {
-                    if(i>0){
+                    if (i > 0) {
                         reviewCostDto.setFinancialManagerDtoList(financialManagerDtoList);
                         reviewCostDto.setTotalCost(totalCost);
                         totalCost = BigDecimal.ZERO;
@@ -536,13 +550,13 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
                     reviewCostDto.setPayDate(projectReviewCost[13] == null ? null : (Date) projectReviewCost[13]);
                 }
                 FinancialManagerDto financialManagerDto = new FinancialManagerDto();
-                financialManagerDto.setChargeName(projectReviewCost[10] == null ? null :projectReviewCost[10].toString());
+                financialManagerDto.setChargeName(projectReviewCost[10] == null ? null : projectReviewCost[10].toString());
                 financialManagerDto.setCharge(projectReviewCost[11] == null ? null : (BigDecimal) projectReviewCost[11]);
                 financialManagerDtoList.add(financialManagerDto);
                 //计算总数
-                totalCost = Arith.safeAdd(totalCost,projectReviewCost[11] == null ?  BigDecimal.ZERO : (BigDecimal) projectReviewCost[11]);
+                totalCost = Arith.safeAdd(totalCost, projectReviewCost[11] == null ? BigDecimal.ZERO : (BigDecimal) projectReviewCost[11]);
                 //最后一个
-                if (i == l-1) {
+                if (i == l - 1) {
                     reviewCostDto.setFinancialManagerDtoList(financialManagerDtoList);
                     reviewCostDto.setTotalCost(totalCost);
                     totalCost = BigDecimal.ZERO;
@@ -593,7 +607,7 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
         sqlBuilder.append("on s.signid = f.businessid  ");
         sqlBuilder.append("LEFT JOIN ( SELECT o.id oid, o.name oname, B.SIGNID bsignid FROM V_ORG_DEPT o, CS_SIGN_BRANCH b  WHERE O.ID = B.ORGID AND B.ISMAINBRABCH = '9') mo  ");
         sqlBuilder.append("ON s.signid = mo.bsignid  ");
-        sqlBuilder.append("where r.paydate is not null  ");
+        sqlBuilder.append("where f.paymentdata is not null  ");
         sqlBuilder.append("and f.chargename is not null ");
 
         sqlBuilder1.append("select f.chargename,sum(f.charge) from cs_sign s  ");
@@ -605,12 +619,12 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
         sqlBuilder1.append("on s.signid = f.businessid  ");
         sqlBuilder1.append("LEFT JOIN ( SELECT o.id oid, o.name oname, B.SIGNID bsignid FROM V_ORG_DEPT o, CS_SIGN_BRANCH b  WHERE O.ID = B.ORGID AND B.ISMAINBRABCH = '9') mo  ");
         sqlBuilder1.append("ON s.signid = mo.bsignid  ");
-        sqlBuilder1.append("where r.paydate is not null  ");
-        sqlBuilder1.append("and f.chargename is not null  ");
-        if (null != projectReviewCostDto) {
+        sqlBuilder1.append("where s.isSendFileRecord =:fileState ");
+        sqlBuilder1.setParam("fileState", Constant.EnumState.YES.getValue());
+        sqlBuilder1.append("and  f.paymentdata is not null and f.chargename is not null  ");
 
+        if (null != projectReviewCostDto) {
             if (StringUtil.isNotEmpty(projectReviewCostDto.getChargeName())) {
-                //sqlBuilder.append("and f.chargename = '"+projectReviewCostDto.getChargeName()+"' ");
                 sqlBuilder1.append("and f.chargename = '" + projectReviewCostDto.getChargeName() + "' ");
             }
 
@@ -630,13 +644,13 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
             }
 
             if (StringUtil.isNotEmpty(projectReviewCostDto.getBeginTime())) {
-                sqlBuilder.append("and r.paydate >= to_date('" + projectReviewCostDto.getBeginTime() + "', 'yyyy-mm-dd hh24:mi:ss') ");
-                sqlBuilder1.append("and r.paydate >= to_date('" + projectReviewCostDto.getBeginTime() + "', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and  f.paymentdata >= to_date('" + projectReviewCostDto.getBeginTime() + "', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder1.append("and  f.paymentdata >= to_date('" + projectReviewCostDto.getBeginTime() + "', 'yyyy-mm-dd hh24:mi:ss') ");
             }
 
             if (StringUtil.isNotEmpty(projectReviewCostDto.getEndTime())) {
-                sqlBuilder.append("and r.paydate <= to_date('" + projectReviewCostDto.getEndTime() + "', 'yyyy-mm-dd hh24:mi:ss') ");
-                sqlBuilder1.append("and r.paydate <= to_date('" + projectReviewCostDto.getEndTime() + "', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and  f.paymentdata <= to_date('" + projectReviewCostDto.getEndTime() + "', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder1.append("and  f.paymentdata <= to_date('" + projectReviewCostDto.getEndTime() + "', 'yyyy-mm-dd hh24:mi:ss') ");
             }
 
             if (StringUtil.isNotEmpty(projectReviewCostDto.getDeptName())) {
@@ -844,6 +858,7 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
 
     /**
      * 评审费发送
+     *
      * @param projectReviewCostDto
      * @return
      */
@@ -855,13 +870,13 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
         sqlBuilder.append(" CFM.CHARGENAME,CFM.CHARGE,CFM.STAGECOUNT,CFM.PAYMENTDATA ");
         sqlBuilder.append(" FROM SIGN_DISP_WORK sdk LEFT JOIN CS_FINANCIAL_MANAGER cfm on CFM.BUSINESSID = SDK.SIGNID ");
         sqlBuilder.append(" WHERE sdk.signState !=:signState1 and sdk.signState !=:signState2 ");
-        sqlBuilder.setParam("signState1",Constant.EnumState.STOP.getValue());
-        sqlBuilder.setParam("signState2",Constant.EnumState.DELETE.getValue());
+        sqlBuilder.setParam("signState1", Constant.EnumState.STOP.getValue());
+        sqlBuilder.setParam("signState2", Constant.EnumState.DELETE.getValue());
         sqlBuilder.append(" AND (sdk.isassistproc is null or sdk.isassistproc = :assistproc) ");
-        sqlBuilder.setParam("assistproc",Constant.EnumState.NO.getValue());
+        sqlBuilder.setParam("assistproc", Constant.EnumState.NO.getValue());
         sqlBuilder.append(" AND CFM.CHARGETYPE = :chageType AND CFM.CHARGENAME = :chageName AND CFM.PAYMENTDATA IS NOT NULL ");
-        sqlBuilder.setParam("chageType",Constant.EnumState.PROCESS.getValue());
-        sqlBuilder.setParam("chageName","专家评审费");
+        sqlBuilder.setParam("chageType", Constant.EnumState.PROCESS.getValue());
+        sqlBuilder.setParam("chageName", "专家评审费");
 
         //查询条件
         if (Validate.isObject(projectReviewCostDto)) {
@@ -1082,25 +1097,77 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
     public ResultMsg findAchievementSum(AchievementSumDto achievementSumDto) {
         Map<String, Object> resultMap = new HashMap<>();
         Map<String, Object> levelMap = userService.getUserLevel();
-        resultMap.put("achievementSumList", expertSelectedRepo.findAchievementSum(achievementSumDto, levelMap));
+        Integer level = 0;
+        List<OrgDept> orgDeptList = new ArrayList<OrgDept>();
+        if(null != levelMap && null!= levelMap.get("leaderFlag")){
+            level = (Integer) levelMap.get("leaderFlag");
+            if(level == 0){
+
+            }else if(level == 1){
+                orgDeptList = orgDeptRepo.findAll();
+
+            }else if(level == 2){
+                Criteria criteria = orgDeptRepo.getExecutableCriteria();
+                criteria.add(Restrictions.eq(OrgDept_.sLeaderID.getName(),SessionUtil.getUserId()));
+                orgDeptList = criteria.list();
+            }else if(level == 3){
+                Criteria criteria = orgDeptRepo.getExecutableCriteria();
+                criteria.add(Restrictions.eq(OrgDept_.directorID.getName(),SessionUtil.getUserId()));
+                orgDeptList = criteria.list();
+            }else if(level == 4){
+                Criteria criteria = orgDeptRepo.getExecutableCriteria();
+                criteria.add(Restrictions.eq(OrgDept_.directorID.getName(),SessionUtil.getUserId()));
+                orgDeptList = criteria.list();
+            }
+        }
+        resultMap.put("achievementSumList", expertSelectedRepo.findAchievementSum(achievementSumDto, levelMap,orgDeptList));
         achievementSumDto.setIsmainuser("9");
-        resultMap.put("achievementMainList", expertSelectedRepo.findAchievementDetail(achievementSumDto, levelMap));
+        resultMap.put("achievementMainList", expertSelectedRepo.findAchievementDetail(achievementSumDto, levelMap,orgDeptList));
         achievementSumDto.setIsmainuser("0");
-        resultMap.put("achievementAssistList", expertSelectedRepo.findAchievementDetail(achievementSumDto, levelMap));
+        resultMap.put("achievementAssistList", expertSelectedRepo.findAchievementDetail(achievementSumDto, levelMap,orgDeptList));
+
+        resultMap.put("orgDeptList",orgDeptList);
+        resultMap.put("level", level);
+        if(Validate.isString(achievementSumDto.getUserId())){
+            resultMap.put("userId", achievementSumDto.getUserId());
+            User user = userRepo.findById(achievementSumDto.getUserId());
+            resultMap.put("deptName",user.getOrg().getName());
+        }else{
+            resultMap.put("userId", SessionUtil.getUserId());
+        }
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", resultMap);
 
     }
 
-    /**
+    @Override
+    public ResultMsg findAchievementDetail(AchievementSumDto achievementSumDto, Map<String, Object> levelMap) {
+        return null;
+    }
+
+/*    *//**
      * 业绩明细
+     *
+     * @param achievementSumDto
+     * @return
+     *//*
+    @Override
+    public ResultMsg findAchievementDetail(AchievementSumDto achievementSumDto, Map<String, Object> levelMap) {
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("achievementDetailList", expertSelectedRepo.findAchievementDetail(achievementSumDto, levelMap));
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", resultMap);
+    }*/
+
+    /**
+     * 部门业绩明细
      *
      * @param achievementSumDto
      * @return
      */
     @Override
-    public ResultMsg findAchievementDetail(AchievementSumDto achievementSumDto, Map<String, Object> levelMap) {
+    public ResultMsg findDeptAchievementDetail(AchievementDeptDetailDto achievementSumDto) {
         Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("achievementDetailList", expertSelectedRepo.findAchievementDetail(achievementSumDto, levelMap));
+        Map<String, Object> levelMap = userService.getUserLevel();
+        resultMap.put("achievementDeptDetailList", expertSelectedRepo.findDeptAchievementDetail(achievementSumDto, levelMap));
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", resultMap);
     }
 

@@ -1,0 +1,117 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+
+
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a href="#/agendaTasks">任务待办</a></li>
+        <li class="active">{{vm.title}}</li>
+    </ol>
+
+    <ul id="myTab" class="nav nav-tabs">
+        <li><a data-toggle="tab" for-div="div_proj">项目信息</a></li>
+        <li class="active"><a data-toggle="tab" for-div="busi_baseinfo">工作方案信息</a></li>
+        <li><a data-toggle="tab" for-div="busi_old_wp">原工作方案信息</a></li>
+        <li ng-show="vm.showFlag.tabSysFile"><a data-toggle="tab" for-div="flow_upload_file">附件列表</a></li>
+        <li><a data-toggle="tab" for-div="flow_diagram">流程图</a></li>
+        <li><a data-toggle="tab" for-div="flow_history">处理记录</a></li>
+    </ul>
+
+    <div class="tab-content" style="background:white;">
+        <div class="tab-pane fade" style="background:white;" id="div_proj">
+            <!-- S 项目建议书/可行性研究报告  -->
+            <div  ng-if="vm.model.reviewstage=='项目建议书'|| vm.model.reviewstage=='可行性研究报告' || vm.model.reviewstage=='其它'" >
+                <div ng-include src="'${path}/contents/app/sign/signDetail/detail.html'"></div>
+            </div>
+            <!-- E 项目建议书/可行性研究报告  -->
+
+            <!-- S 资金申请报告  -->
+            <div  ng-if="vm.model.reviewstage=='资金申请报告'" >
+                <div ng-include src="'${path}/contents/app/sign/signDetail/capitalAppReportDetail.html'"></div>
+            </div>
+            <!-- E 资金申请报告  -->
+
+            <!-- S 设备清单（国产）/设备清单（进口）  -->
+            <div  ng-if="vm.model.reviewstage=='设备清单（国产）' || vm.model.reviewstage=='设备清单（进口）'" >
+                <div ng-include src="'${path}/contents/app/sign/signDetail/equipmenDomesticDetail.html'"></div>
+            </div>
+            <!-- E 设备清单（进口）/设备清单（进口）  -->
+
+            <!-- S 进口设备 -->
+            <div  ng-if="vm.model.reviewstage=='进口设备'" >
+                <div ng-include src="'${path}/contents/app/sign/signDetail/foreignEquipmenDetail.html'"></div>
+            </div>
+            <!-- E 进口设备 -->
+
+            <!-- S 项目概算  -->
+            <div  ng-if="vm.model.reviewstage=='项目概算'" >
+                <div ng-include src="'${path}/contents/app/sign/signDetail/projectBudgetDetail.html'"></div>
+            </div>
+            <!-- E 项目概算  -->
+        </div><!-- end tab -->
+
+        <div class="tab-pane fade in active" style="background:white;" id="busi_baseinfo">
+            <!-- （包含：主、次项目）项目建议书/可行性研究报告/项目概算/其它  -->
+            <div ng-if="vm.model.reviewstage=='项目建议书'|| vm.model.reviewstage=='可行性研究报告'  ||vm.model.reviewstage=='项目概算' || vm.model.reviewstage=='其它'">
+                <div ng-include src="'${path}/contents/app/workprogram/workprogramDetail/all_details.html'"></div>
+            </div>
+
+            <!--S  资金申请报告  包含：主项目、次项目 -->
+            <div  ng-if="vm.model.reviewstage=='资金申请报告'">
+                <div ng-include src="'${path}/contents/app/workprogram/workprogramDetail/capitalAppReportDetail.html'"></div>
+            </div>
+            <!--S  资金申请报告  包含：主项目、次项目 -->
+
+            <!--S  进口设备  包含：主项目、次项目 -->
+            <div  ng-if="vm.model.reviewstage=='进口设备'" >
+                <div ng-include src="'${path}/contents/app/workprogram/workprogramDetail/foregnDetail.html'"></div>
+            </div>
+            <!--E  进口设备  包含：主项目、次项目 -->
+
+            <!-- 设备清单（国产） 包含：主项目、次项目 -->
+            <div  ng-if="vm.model.reviewstage=='设备清单（国产）' ||vm.model.reviewstage=='设备清单（进口）'" >
+                <div ng-include src="'${path}/contents/app/workprogram/workprogramDetail/mainDomesticDetail.html'"></div>
+            </div>
+        <!-- 引入工作方案模板-->
+        </div><!-- end tab -->
+
+        <div class="tab-pane fade" style="background:white;" id="busi_old_wp">
+            <div ng-if="vm.WorkProgramHisDtoList" ng-repeat = "w in vm.WorkProgramHisDtoList">
+                <div ng-if="w.workreviveStage=='项目建议书' || w.workreviveStage=='可行性研究报告' || w.workreviveStage=='项目概算' || w.workreviveStage=='其它'">
+                    <div ng-include src="'${path}/contents/app/workprogram/history/all_details.html'"></div>
+                </div>
+
+                <!--S  资金申请报告  包含：主项目、次项目 -->
+                <div  ng-if="w.workreviveStage=='资金申请报告'">
+                    <div ng-include src="'${path}/contents/app/workprogram/history/capitalAppReportDetail.html'"></div>
+                </div>
+                <!--S  资金申请报告  包含：主项目、次项目 -->
+
+                <!--S  进口设备  包含：主项目、次项目 -->
+                <div  ng-if="w.workreviveStage=='进口设备'" >
+                    <div ng-include src="'${path}/contents/app/workprogram/history/foregnDetail.html'"></div>
+                </div>
+                <!--E  进口设备  包含：主项目、次项目 -->
+
+                <!-- 设备清单（国产） 包含：主项目、次项目 -->
+                <div  ng-if="w.workreviveStage=='设备清单（国产）' || w.workreviveStage=='设备清单（进口）'" >
+                    <div  ng-include src="'${path}/contents/app/workprogram/history/mainDomesticDetail.html'"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade well well-sm" style="background:white;" id="flow_upload_file">
+            <div ng-include src="'${path}/contents/app/sysFile/uploadFilelist.html'"></div>
+        </div><!-- 上传附件列表 -->
+
+        <div class="tab-pane fade well well-sm" style="background:white;" id="flow_diagram">
+            <img style="" ng-src="{{vm.picture}}">
+        </div><!-- end tab -->
+
+        <div class="tab-pane fade well well-sm" style="background:white;" id="flow_history" >
+            <div class="grid" kendo-grid="grid" k-options="vm.historygrid"
+                 k-data-source="vm.historygrid.dataSource"></div>
+        </div>
+        <!-- end tab -->
+    </div>
+</div>

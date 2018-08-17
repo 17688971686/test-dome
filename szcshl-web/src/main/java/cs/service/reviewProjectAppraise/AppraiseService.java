@@ -59,4 +59,11 @@ public interface AppraiseService {
      * @return
      */
     ResultMsg dealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto);
+
+    /**
+     * 结束流程
+     * @param businessKey
+     * @return
+     */
+    ResultMsg endFlow(String businessKey);
 }

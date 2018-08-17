@@ -36,6 +36,8 @@
          * 费用录入弹出框
          */
         vm.addCostWindow = function(object){
+
+
             vm.signAssistCostCounList = {};
             vm.expertSelectedDtoList = {};
             vm.signAssistCost = {};

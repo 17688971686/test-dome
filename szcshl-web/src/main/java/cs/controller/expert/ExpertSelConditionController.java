@@ -67,8 +67,8 @@ public class ExpertSelConditionController {
     //@RequiresPermissions("expertSelCondition##delete")
     @RequestMapping(name = "删除记录", path = "", method = RequestMethod.DELETE)
     @ResponseBody
-    public ResultMsg delete(@RequestParam(required = true)String ids) {
-	    return expertSelConditionService.delete(ids);
+    public ResultMsg delete(@RequestParam(required = true)String ids,@RequestParam String reviewId) {
+	    return expertSelConditionService.delete(reviewId,ids);
     }
 
     @RequiresAuthentication

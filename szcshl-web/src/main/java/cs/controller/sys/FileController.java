@@ -37,6 +37,7 @@ import cs.repository.repositoryImpl.sys.SysFileRepo;
 import cs.service.archives.ArchivesLibraryService;
 import cs.service.expert.ExpertService;
 import cs.service.project.*;
+import cs.service.restService.SignRestService;
 import cs.service.sys.LogService;
 import cs.service.sys.SysFileService;
 import cs.service.topic.TopicInfoService;
@@ -140,6 +141,8 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     @Autowired
     private ExpertSelectedRepo expertSelectedRepo;
 
+    @Autowired
+    private SignRestService signRestService;
 
     @Override
     public void setServletContext(ServletContext servletContext) {
@@ -633,7 +636,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
             case "WORKPROGRAM":
                 WorkProgramDto workProgramDto = workProgramService.initWorkProgramById(businessId);
-//                  SignDto signDto =  signService.findById(workProgramDto.getSignId(), true);
+//                  SignDto signDto123 =  signService.findById(workProgramDto.getSignId(), true);
 //                    WorkProgram workProgram = new WorkProgram();
 //                    BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto, workProgram);
                 if (!Validate.isString(workProgramDto.getIsHaveEIA())) {
@@ -641,7 +644,8 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 }
                 Map<String, Object> workData = TemplateUtil.entryAddMap(workProgramDto);
 
-                List<ExpertSelectedDto> expertSelectedDtoLists = expertSelectedRepo.findByBusinessId(workProgramDto.getId());
+//                List<ExpertSelectedDto> expertSelectedDtoLists = expertSelectedRepo.findByBusinessId(workProgramDto.getId());
+                List<ExpertSelectedDto> expertSelectedDtoLists = workProgramDto.getExpertSelectedDtoList();
                 List<ExpertDto> expertDtoList = workProgramDto.getExpertDtoList();
                 ExpertDto[] expertDtos = new ExpertDto[10];
 
@@ -874,7 +878,21 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
                 } else if (stageType.equals(Constant.RevireStageKey.KEY_REPORT.getValue())) {
                     //资金
+                    List<SignDto> signDtoList = signDto.getAssociateSignDtoList();
+                    List<DispatchDocDto> dispatchList = new ArrayList<DispatchDocDto>();
+                    List<DispatchDocDto> dispatchViewList = new ArrayList<DispatchDocDto>();
+                    if (null != signDtoList) {
+                        for (int i = 0; i < signDtoList.size(); i++) {
+                            if (null != signDtoList.get(i).getDispatchDocDto()) {
+                                dispatchList.add(signDtoList.get(i).getDispatchDocDto());
+                            }
+                        }
+                    }
                     dispatchData.put("wpTile", "资金申请报告发文审批表");
+
+                    dispatchViewList.add(getDispatchStage("资金申请报告", dispatchList));
+                    dispatchData.put("dispatchList", dispatchViewList);
+
                     file = TemplateUtil.createDoc(dispatchData, Template.APPLY_REPORT_DISPATCHDOC.getKey(), path);
 
                 } else if (stageType.equals(Constant.RevireStageKey.KEY_DEVICE.getValue())) {
@@ -971,9 +989,11 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                         }
                     }
 
-                    String[] projectNames = expertReview.getReviewTitle().split("》");
-                    expertData.put("projectName", projectNames.length > 0 ? projectNames[0].substring(1, projectNames[0].length()) : expertReview.getReviewTitle());
-
+//                    String[] projectNames = expertReview.getReviewTitle().split("》");
+//                    expertData.put("projectName", projectNames.length > 0 ? projectNames[0].substring(1, projectNames[0].length()) : expertReview.getReviewTitle());
+                    String reviewTitle = expertReview.getReviewTitle();
+                    expertData.put("projectName" , reviewTitle);
+                    expertData.put("projectName2" , reviewTitle.replaceAll("专家" , "外地专家"));
                     if (isSplit) {
                         expertData.put("expertList", expertSelectedList1);
                         expertData.put("expertList2", expertSelectedList2);
@@ -1182,7 +1202,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             int bytesum = 0;
             int byteread = 0;
             inStream = new FileInputStream(file); //读入原文件
-             ouputStream = response.getOutputStream();
+            ouputStream = response.getOutputStream();
             byte[] buffer = new byte[1444];
             while ( (byteread = inStream.read(buffer)) != -1) {
                 bytesum += byteread; //字节数 文件大小
@@ -1259,7 +1279,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 openType = "doc";
         }
         model.addAttribute("fileType", openType);
-        String fileUrl = sysFileService.getLocalUrl();
+        String fileUrl = signRestService.getLocalUrl();
         if (fileUrl.endsWith("/")) {
             fileUrl = fileUrl.substring(0, fileUrl.lastIndexOf("/"));
         }

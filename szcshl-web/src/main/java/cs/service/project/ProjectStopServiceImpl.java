@@ -7,6 +7,8 @@ import cs.common.ResultMsg;
 import cs.common.utils.*;
 import cs.domain.project.*;
 import cs.domain.sys.User;
+import cs.domain.topic.TopicInfo;
+import cs.domain.topic.TopicInfo_;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.project.ProjectStopDto;
@@ -33,6 +35,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+
+import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
 /**
  * @author ldm
@@ -67,8 +71,11 @@ public class ProjectStopServiceImpl implements ProjectStopService {
     @Transactional
     public List<ProjectStopDto> findProjectStopBySign(String signId) {
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("select ps from " + ProjectStop.class.getSimpleName() + " ps where ps." + ProjectStop_.sign.getName() + "." + Sign_.signid.getName() + "=:signId" + " order by  createdDate desc");
+        hqlBuilder.append("select ps from " + ProjectStop.class.getSimpleName() + " ps where ps." + ProjectStop_.sign.getName() + "." + Sign_.signid.getName() + "=:signId");
+       hqlBuilder.append(" and " + ProjectStop_.approveStatus.getName() +"=:approveStatus ");
+        hqlBuilder.append("  order by  createdDate desc");
         hqlBuilder.setParam("signId", signId);
+        hqlBuilder.setParam("approveStatus" , Constant.EnumState.NO.getValue());
         List<ProjectStop> psList = projectStopRepo.findByHql(hqlBuilder);
         List<ProjectStopDto> projectStopDtoList = new ArrayList<>();
         for (ProjectStop pt : psList) {
@@ -127,15 +134,22 @@ public class ProjectStopServiceImpl implements ProjectStopService {
             if (!Validate.isObject(projectStop.getExpectpausedays())) {
                 return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，没填写预计暂停天数！");
             }
-            Date now = new Date();
-            projectStop.setCreatedBy(SessionUtil.getDisplayName());
-            projectStop.setCreatedDate(now);
-            projectStop.setModifiedBy(SessionUtil.getDisplayName());
-            projectStop.setModifiedDate(now);
-            projectStop.setStopid(UUID.randomUUID().toString());
-            //设置默认值
-            projectStop.setIsactive(Constant.EnumState.NO.getValue());
-            projectStop.setApproveStatus(Constant.EnumState.NO.getValue());//默认处于：未处理环节
+            if (Validate.isString(projectStopDto.getStopid())) {
+                projectStop = projectStopRepo.findById(projectStopDto.getStopid());
+                BeanCopierUtils.copyPropertiesIgnoreNull(projectStopDto, projectStop);
+                projectStopRepo.save(projectStop);
+            }else{
+                Date now = new Date();
+                projectStop.setCreatedBy(SessionUtil.getDisplayName());
+                projectStop.setCreatedDate(now);
+                projectStop.setModifiedBy(SessionUtil.getDisplayName());
+                projectStop.setModifiedDate(now);
+                projectStop.setStopid(UUID.randomUUID().toString());
+                //设置默认值
+                projectStop.setIsactive(Constant.EnumState.NO.getValue());
+                projectStop.setApproveStatus(Constant.EnumState.NO.getValue());//默认处于：未处理环节
+            }
+
 
             //1、启动流程
             ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(FlowConstant.PROJECT_STOP_FLOW, projectStop.getStopid(),
@@ -189,7 +203,7 @@ public class ProjectStopServiceImpl implements ProjectStopService {
                 return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，没填写预计暂停天数！");
             }
             Date now = new Date();
-            projectStop.setCreatedBy(SessionUtil.getDisplayName());
+            projectStop.setCreatedBy(SessionUtil.getUserId());
             projectStop.setCreatedDate(now);
             projectStop.setModifiedBy(SessionUtil.getDisplayName());
             projectStop.setModifiedDate(now);
@@ -333,7 +347,7 @@ public class ProjectStopServiceImpl implements ProjectStopService {
             case FlowConstant.FLOW_STOP_FZR:
                 String directorId = SessionUtil.getUserInfo().getOrg().getOrgDirector();
                 assigneeValue = userService.getTaskDealId(directorId, agentTaskList, FlowConstant.FLOW_STOP_BZ_SP);
-                variables = ActivitiUtil.setAssigneeValue(FlowConstant.SignFlowParams.USER_FGLD1.getValue(), assigneeValue);
+                variables = ActivitiUtil.setAssigneeValue(FlowConstant.SignFlowParams.USER_BZ1.getValue(), assigneeValue);
                 break;
             //部长审批
             case FlowConstant.FLOW_STOP_BZ_SP:
@@ -469,6 +483,19 @@ public class ProjectStopServiceImpl implements ProjectStopService {
             return signList.get(0);
         }
         return null;
+    }
+
+    @Override
+    public ResultMsg endFlow(String businessKey) {
+        ProjectStop projectStop = projectStopRepo.findById(ProjectStop_.stopid.getName(),businessKey);
+        if(Validate.isObject(projectStop)){
+            if(!SessionUtil.getUserId().equals(projectStop.getCreatedBy()) && !SUPER_ACCOUNT.equals(SessionUtil.getLoginName())){
+                return ResultMsg.error("您无权进行删除流程操作！");
+            }
+            projectStop.setApproveStatus(Constant.EnumState.FORCE.getValue());
+            projectStopRepo.save(projectStop);
+        }
+        return ResultMsg.ok("操作成功！");
     }
 
 }

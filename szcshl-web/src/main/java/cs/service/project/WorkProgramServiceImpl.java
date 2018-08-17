@@ -1,20 +1,20 @@
 package cs.service.project;
 
+import cs.ahelper.projhelper.ProjUtil;
+import cs.ahelper.projhelper.WorkPGUtil;
+import cs.common.RandomGUID;
+import cs.common.ResultMsg;
 import cs.common.constants.Constant;
 import cs.common.constants.Constant.EnumState;
 import cs.common.constants.FlowConstant;
-import cs.common.HqlBuilder;
-import cs.common.ResultMsg;
+import cs.common.constants.SysConstants;
 import cs.common.utils.*;
-import cs.domain.expert.Expert;
-import cs.domain.expert.ExpertReview_;
-import cs.domain.expert.ExpertSelCondition_;
-import cs.domain.expert.ExpertSelected_;
+import cs.domain.expert.*;
 import cs.domain.meeting.RoomBooking;
 import cs.domain.meeting.RoomBooking_;
 import cs.domain.project.*;
 import cs.domain.sys.*;
-import cs.domain.sys.Ftp_;
+import cs.model.flow.FlowDto;
 import cs.model.project.ProMeetDto;
 import cs.model.project.ProMeetShow;
 import cs.model.project.WorkProgramDto;
@@ -23,23 +23,39 @@ import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.repository.repositoryImpl.expert.ExpertSelConditionRepo;
 import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
-import cs.repository.repositoryImpl.project.*;
+import cs.repository.repositoryImpl.project.SignBranchRepo;
+import cs.repository.repositoryImpl.project.SignMergeRepo;
+import cs.repository.repositoryImpl.project.SignRepo;
+import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import cs.repository.repositoryImpl.sys.FtpRepo;
-import cs.repository.repositoryImpl.sys.OrgRepo;
+import cs.repository.repositoryImpl.sys.OrgDeptRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
+import cs.service.history.WorkProgramHisService;
+import cs.service.rtx.RTXSendMsgPool;
 import cs.service.sys.SysFileService;
+import cs.service.sys.UserService;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static cs.common.constants.FlowConstant.*;
+import static cs.common.constants.IgnoreProps.BASE_IGNORE_PROPS;
+import static cs.common.constants.SysConstants.SEPARATE_COMMA;
+import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
 @Service
 public class WorkProgramServiceImpl implements WorkProgramService {
@@ -59,10 +75,6 @@ public class WorkProgramServiceImpl implements WorkProgramService {
     @Autowired
     private SignPrincipalService signPrincipalService;
     @Autowired
-    private AssistUnitRepo assistUnitRepo;
-    @Autowired
-    private OrgRepo orgRepo;
-    @Autowired
     private SignBranchRepo signBranchRepo;
     @Autowired
     private SignMergeRepo signMergeRepo;
@@ -79,7 +91,19 @@ public class WorkProgramServiceImpl implements WorkProgramService {
     @Autowired
     private FtpRepo ftpRepo;
     @Autowired
+    private WorkProgramHisService workProgramHisService;
+    @Autowired
+    private RuntimeService runtimeService;
+    @Autowired
+    private ProcessEngine processEngine;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private AgentTaskService agentTaskService;
+    @Autowired
     private UserRepo userRepo;
+    @Autowired
+    private OrgDeptRepo orgDeptRepo;
     /**
      * 保存工作方案
      *
@@ -110,19 +134,19 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                         return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，当前评审方式为合并评审次项目，请在主工作方案中挑选此工作方案为次工作方案再保存！");
                     }
                 }
-                workProgram = workProgramRepo.findById(WorkProgram_.id.getName() ,workProgramDto.getId());
-                BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto, workProgram);
+                workProgram = workProgramRepo.findById(WorkProgram_.id.getName(), workProgramDto.getId());
+                BeanUtils.copyProperties(workProgramDto, workProgram,BASE_IGNORE_PROPS);
 
             } else {
                 workProgram = new WorkProgram();
                 BeanCopierUtils.copyProperties(workProgramDto, workProgram);
                 workProgram.setId(UUID.randomUUID().toString());
-                workProgram.setCreatedBy(SessionUtil.getUserInfo().getId());
+                workProgram.setCreatedBy(SessionUtil.getUserId());
                 workProgram.setCreatedDate(now);
                 workProgram.setStudyQuantum(workProgramDto.getStudyQuantum());//调研时间段
             }
 
-            workProgram.setModifiedBy(SessionUtil.getUserInfo().getId());
+            workProgram.setModifiedBy(SessionUtil.getDisplayName());
             workProgram.setModifiedDate(now);
             //设置关联对象
             Sign sign = workProgram.getSign();
@@ -145,8 +169,11 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 workProgram.setExpertCost(null);
                 workProgram.setLetterDate(null);
             }
-            workProgramRepo.save(workProgram);
 
+            workProgram.setBaseInfo(EnumState.NO.getValue());
+            workProgramRepo.save(workProgram);
+            //更改分支状态
+            signBranchRepo.isNeedWP(sign.getSignid(),workProgram.getBranchId(),EnumState.YES.getValue());
             //用于返回页面
             workProgramDto.setId(workProgram.getId());
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", workProgramDto);
@@ -160,19 +187,19 @@ public class WorkProgramServiceImpl implements WorkProgramService {
      * 根据收文ID初始化 用户待处理的工作方案
      */
     @Override
-    public Map<String, Object> initWorkProgram(String signId,String taskId) {
+    public Map<String, Object> initWorkProgram(String signId, String taskId,String brandId) {
         Map<String, Object> resultMap = new HashMap<>();
         WorkProgramDto workProgramDto = new WorkProgramDto();
         String curUserId = SessionUtil.getUserId();
         List<User> priUserList = null;
         //分支
-        String branchIndex = "";
-        //是否代办
-        boolean isTaskTask = false;
-        Task task = taskService.createTaskQuery().taskId(taskId).active().singleResult();
-        String taskBrandIndex = task.getTaskDefinitionKey().substring(task.getTaskDefinitionKey().length()-1);
-        boolean isMainBrand = taskBrandIndex.equals(FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue());
-
+        String branchIndex = brandId;
+        String mainBranchId = FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue();
+        if(Validate.isString(taskId)){
+            Task task = taskService.createTaskQuery().taskId(taskId).active().singleResult();
+            branchIndex = task.getTaskDefinitionKey().substring(task.getTaskDefinitionKey().length() - 1);
+        }
+        boolean isMainBrand = ProjUtil.isMainBranch(branchIndex);
         //1、根据收文ID查询出所有的工作方案ID
         Criteria criteria = workProgramRepo.getExecutableCriteria();
         criteria.createAlias(WorkProgram_.sign.getName(), WorkProgram_.sign.getName());
@@ -180,58 +207,61 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         List<WorkProgram> wpList = criteria.list();
         //2、是否有当前用户负责的工作方案
         boolean isHaveCurUserWP = false;
-        WorkProgram mainW = new WorkProgram();
+        WorkProgram mainW = null;
         if (Validate.isList(wpList)) {
             int totalL = wpList.size();
             //遍历第一遍，先找出主分支工作方案
             for (int i = 0; i < totalL; i++) {
                 WorkProgram wp = wpList.get(i);
-                if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(wp.getBranchId())) {
+                if (ProjUtil.isMainBranch(wp.getBranchId())) {
                     mainW = wp;
                     break;
                 }
             }
-            List<WorkProgramDto> wpDtoList = new ArrayList<>();
-            for (int i = 0; i < totalL; i++) {
-                WorkProgram wp = wpList.get(i);
-                branchIndex = wp.getBranchId();
-                boolean isBrandUser = false;
-
-                if(taskBrandIndex.equals(branchIndex)){
-                    priUserList =  signPrincipalService.getSignPriUser(signId,branchIndex);
-                    for(User user : priUserList){
-                        //当前处理人是代人人的时候也要考虑进去
-                        if(user.getId().equals(curUserId) || curUserId.equals(user.getTakeUserId())){
-                            isBrandUser = true;
-                            break;
+            if (!isMainBrand) {
+                wpList = wpList.stream().filter(item -> (!Validate.isString(item.getBaseInfo()) || !EnumState.YES.getValue().equals(item.getBaseInfo()))).collect(Collectors.toList());
+            }
+            if (Validate.isList(wpList)) {
+                totalL = wpList.size();
+                List<WorkProgramDto> wpDtoList = new ArrayList<>();
+                for (int i = 0; i < totalL; i++) {
+                    WorkProgram wp = wpList.get(i);
+                    boolean isBrandUser = false;
+                    if (branchIndex.equals(wp.getBranchId())) {
+                        priUserList = signPrincipalService.getSignPriUser(signId, branchIndex);
+                        for (User user : priUserList) {
+                            //当前处理人是代人人的时候也要考虑进去
+                            if (user.getId().equals(curUserId) || curUserId.equals(user.getTakeUserId())) {
+                                isBrandUser = true;
+                                break;
+                            }
                         }
                     }
-                }
 
-                //如果是当前分支用户或者代办用户
-                if(isBrandUser){
-                    BeanCopierUtils.copyProperties(wp, workProgramDto);
-                    if (Validate.isString(mainW.getId()) && !FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(wp.getBranchId())) {
-                        WorkProgramDto mainWPDto = new WorkProgramDto();
-                        BeanCopierUtils.copyProperties(mainW, mainWPDto);
-                        workProgramDto.setMainWorkProgramDto(mainWPDto);
+                    //如果是当前分支用户或者代办用户
+                    if (isBrandUser) {
+                        BeanCopierUtils.copyProperties(wp, workProgramDto);
+                        if (Validate.isString(mainW.getId()) && !ProjUtil.isMainBranch(wp.getBranchId())) {
+                            WorkProgramDto mainWPDto = new WorkProgramDto();
+                            BeanCopierUtils.copyProperties(mainW, mainWPDto);
+                            workProgramDto.setMainWorkProgramDto(mainWPDto);
+                        }
+                        workProgramRepo.initWPMeetingExp(workProgramDto, wp);
+                        isHaveCurUserWP = true;
+                    } else {
+                        WorkProgramDto wpDto = new WorkProgramDto();
+                        BeanCopierUtils.copyProperties(wp, wpDto);
+                        if (Validate.isString(mainW.getId()) && !ProjUtil.isMainBranch(wp.getBranchId())) {
+                            WorkProgramDto mainWPDto = new WorkProgramDto();
+                            BeanCopierUtils.copyProperties(mainW, mainWPDto);
+                            wpDto.setMainWorkProgramDto(mainWPDto);
+                        }
+                        workProgramRepo.initWPMeetingExp(wpDto, wp);
+                        wpDtoList.add(wpDto);
                     }
-                    workProgramRepo.initWPMeetingExp(workProgramDto, wp);
-                    isHaveCurUserWP = true;
-                }else{
-                    WorkProgramDto wpDto = new WorkProgramDto();
-                    BeanCopierUtils.copyProperties(wp, wpDto);
-                    if (Validate.isString(mainW.getId()) && !FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(wp.getBranchId())) {
-                        WorkProgramDto mainWPDto = new WorkProgramDto();
-                        BeanCopierUtils.copyProperties(mainW, mainWPDto);
-                        wpDto.setMainWorkProgramDto(mainWPDto);
-                    }
-                    workProgramRepo.initWPMeetingExp(wpDto, wp);
-                    wpDtoList.add(wpDto);
                 }
-
+                resultMap.put("WPList", wpDtoList);
             }
-            resultMap.put("WPList", wpDtoList);
         }
         //3、如果还没填报工作方案，则初始化
         if (isHaveCurUserWP == false) {
@@ -239,13 +269,13 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             Sign sign = signRepo.findById(Sign_.signid.getName(), signId);
             //取第一分支的负责人
             boolean isMainFlowPri = false;
-            if(isMainBrand && Validate.isList(priUserList)){
-            }else{
-                priUserList= signPrincipalService.getSignPriUser(signId,FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue());
+            if (isMainBrand && Validate.isList(priUserList)) {
+            } else {
+                priUserList = signPrincipalService.getSignPriUser(signId, mainBranchId);
             }
-            for(User user : priUserList){
-                //当前处理人是代人人的时候也要考虑进去
-                if(user.getId().equals(curUserId) || curUserId.equals(user.getTakeUserId())){
+            for (User user : priUserList) {
+                //当前处理人是代办人的时候也要考虑进去
+                if (user.getId().equals(curUserId) || curUserId.equals(user.getTakeUserId())) {
                     isMainFlowPri = true;
                     break;
                 }
@@ -254,9 +284,9 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             workProgramDto.setProjectName(sign.getProjectname());
             workProgramDto.setBuildCompany(sign.getBuiltcompanyName());
             workProgramDto.setDesignCompany(sign.getDesigncompanyName());
-            workProgramDto.setAppalyInvestment(sign.getDeclaration());
+            workProgramDto.setAppalyInvestment(sign.getAppalyInvestment());
             workProgramDto.setWorkreviveStage(sign.getReviewstage());
-            workProgramDto.setBranchId(taskBrandIndex);
+            workProgramDto.setBranchId(branchIndex);
             //默认名称
             workProgramDto.setTitleName(sign.getReviewstage() + Constant.WORKPROGRAM_NAME);
             workProgramDto.setTitleDate(new Date());
@@ -269,7 +299,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             if (isMainFlowPri) {
                 //判断是否是分办给多个部门办理，如果是，则显示申报总投资金额
                 if (signBranchRepo.countBranch(sign.getSignid()) > 1) {
-                    workProgramDto.setTotalInvestment(sign.getDeclaration());
+                    workProgramDto.setTotalInvestment(sign.getAppalyInvestment());
                     resultMap.put("showTotalInvestment", EnumState.YES.getValue());
                 }
                 copySignCommonInfo(workProgramDto, sign);
@@ -300,7 +330,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 
 
     /**
-     * 根据收文ID查询
+     * 工作方案维护查询
      */
     @Override
     public Map<String, Object> workMaintainList(String signId) {
@@ -310,41 +340,43 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         criteria.createAlias(WorkProgram_.sign.getName(), WorkProgram_.sign.getName());
         criteria.add(Restrictions.eq(WorkProgram_.sign.getName() + "." + Sign_.signid.getName(), signId));
         List<WorkProgram> wpList = criteria.list();
-        WorkProgramDto workProgramDto = new WorkProgramDto();
 
         //2、是否有当前用户负责的工作方案
         WorkProgram mainW = new WorkProgram();
         //工作方案个数
         if (Validate.isList(wpList)) {
             int totalL = wpList.size();
-            resultMap.put("showTotalInvestment", (totalL)>1?"9":"0");
             //遍历第一遍，先找出主分支工作方案
             for (int i = 0; i < totalL; i++) {
                 WorkProgram wp = wpList.get(i);
-                if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(wp.getBranchId())) {
+                if (ProjUtil.isMainBranch(wp.getBranchId())) {
                     mainW = wp;
                     break;
                 }
             }
-            List<WorkProgramDto> wpDtoList = new ArrayList<>();
-            for (int i = 0; i < totalL; i++) {
-                WorkProgram wp = wpList.get(i);
-                WorkProgramDto wpDto = new WorkProgramDto();
-                BeanCopierUtils.copyProperties(wp, wpDto);
-                if (Validate.isString(mainW.getId()) && !FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(wp.getBranchId())) {
-                    WorkProgramDto mainWPDto = new WorkProgramDto();
-                    BeanCopierUtils.copyProperties(mainW, mainWPDto);
-                    wpDto.setMainWorkProgramDto(mainWPDto);
-                } else {
-                    BeanCopierUtils.copyProperties(wp, workProgramDto);
-                    workProgramRepo.initWPMeetingExp(workProgramDto, wp);
+            wpList = wpList.stream().filter(item -> (!Validate.isString(item.getBaseInfo()) || !EnumState.YES.getValue().equals(item.getBaseInfo()))).collect(Collectors.toList());
+            if (Validate.isList(wpList)) {
+                totalL = wpList.size();
+                resultMap.put("showTotalInvestment", (totalL) > 1 ? "9" : "0");
+                List<WorkProgramDto> wpDtoList = new ArrayList<>();
+                for (int i = 0; i < totalL; i++) {
+                    WorkProgram wp = wpList.get(i);
+                    WorkProgramDto wpDto = new WorkProgramDto();
+                    BeanCopierUtils.copyProperties(wp, wpDto);
+                    if (Validate.isString(mainW.getId()) && !FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(wp.getBranchId())) {
+                        WorkProgramDto mainWPDto = new WorkProgramDto();
+                        BeanCopierUtils.copyProperties(mainW, mainWPDto);
+                        wpDto.setMainWorkProgramDto(mainWPDto);
+                    } else {
+                        BeanCopierUtils.copyProperties(wp, wpDto);
+                    }
+                    workProgramRepo.initWPMeetingExp(wpDto, wp);
+                    wpDto.setSignId(signId);
+                    wpDtoList.add(wpDto);
                 }
-                workProgramRepo.initWPMeetingExp(wpDto, wp);
-                wpDtoList.add(wpDto);
+                resultMap.put("WPList", wpDtoList);
             }
-            resultMap.put("WPList", wpDtoList);
         }
-        resultMap.put("eidtWP", workProgramDto);
         return resultMap;
     }
 
@@ -361,7 +393,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         workProgramDto.setSendFileUnit(Constant.SEND_FILE_UNIT);
         workProgramDto.setSendFileUser(sign.getMainDeptUserName());
         //获取评审部门
-        workProgramDto.setReviewOrgName(signBranchRepo.getOrgDeptNameBySignId(sign.getSignid()));
+        workProgramDto.setReviewOrgName(signBranchRepo.getOrgDeptNameBySignId(sign.getSignid(), null));
         //项目第一负责人
         User mainUser = signPrincipalService.getMainPriUser(sign.getSignid());
         if (mainUser != null && Validate.isString(mainUser.getId())) {
@@ -373,6 +405,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 
     /**
      * 通过业务ID判断是不是主分支
+     *
      * @param signId
      * @return
      */
@@ -383,6 +416,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 
     /**
      * 更新工作方案专家评审费用
+     *
      * @param wpId
      */
     @Override
@@ -490,22 +524,21 @@ public class WorkProgramServiceImpl implements WorkProgramService {
     @Override
     @Transactional
     public ResultMsg deleteBySignId(String signId) {
-        SignPrincipal signPrincipal = signPrincipalService.getPrincipalInfo(SessionUtil.getUserInfo().getId(), signId);
-        if (signPrincipal == null) {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "您不是项目负责人，不能对工作方案进行操作！");
-        }
-        HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append(" delete from cs_work_program where signid =:signid and branchId =:branchId ");
-        sqlBuilder.setParam("signid", signId);
-        sqlBuilder.setParam("branchId", signPrincipal.getFlowBranch());
-        int result = workProgramRepo.executeSql(sqlBuilder);
-        //不需要做工作方案
-        signBranchRepo.isNeedWP(signId, signPrincipal.getFlowBranch(), EnumState.NO.getValue());
-        if (result < 0) {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "您不是项目负责人，不能对工作方案进行操作！");
-        } else {
+        try {
+            SignPrincipal signPrincipal = signPrincipalService.getPrincipalInfo(SessionUtil.getUserInfo().getId(), signId);
+            if (signPrincipal == null) {
+                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "您不是项目负责人，不能对工作方案进行操作！");
+            }
+            //删除工作方案及会议、专家抽取信息
+            workProgramRepo.removeWPCascade(signId, signPrincipal.getFlowBranch());
+            //不需要做工作方案
+            signBranchRepo.isNeedWP(signId, signPrincipal.getFlowBranch(), EnumState.NO.getValue());
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+        } catch (Exception e) {
+            log.error("删除工作方案信息异常：" + e.getMessage());
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作异常！异常信息已记录，请联系系统管理员处理！");
         }
+
     }
 
     /**
@@ -519,18 +552,14 @@ public class WorkProgramServiceImpl implements WorkProgramService {
     }
 
     /**
-     * TODO:目前只是做一个简单的模板生成，后期再完善
      * 生成会前准备材料
-     *
      * @param signId
      * @return
      */
     @Override
     @Transactional
     public ResultMsg createMeetingDoc(String signId) {
-
         String result = "";
-
         Sign sign = signRepo.findById(Sign_.signid.getName(), signId);
         if (sign == null || StringUtil.isEmpty(sign.getSignid())) {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，该项目已被删除");
@@ -559,29 +588,29 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                         return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "文件服务器无法连接，文件无法生成，请联系管理员处理", null);
                     }
                     //2.1 生成签到表
-                    try{
+                    try {
                         SysFile sysFile1 = CreateTemplateUtils.createtTemplateSignIn(f, sign, workProgram);
                         if (sysFile1 != null && Validate.isString(sysFile1.getSysFileId())) {
                             saveFile.add(sysFile1);
                         }
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         result += result.length() > 0 ? ",签到表" : "签到表";
                     }
 
 
                     //2.2 生成主持人稿
-                    try{
+                    try {
                         String expertGl = expertRepo.findExpertGlByBusiness(workProgram.getId());
                         SysFile sysFile2 = CreateTemplateUtils.createTemplateCompere(f, sign, workProgram, expertList, expertGl);
                         if (sysFile2 != null && Validate.isString(sysFile2.getSysFileId())) {
                             saveFile.add(sysFile2);
                         }
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         result += result.length() > 0 ? ",主持人手稿" : "主持人手稿";
                     }
 
                     //2.3 会议议程
-                    try{
+                    try {
                         List<SysFile> sList = CreateTemplateUtils.createTemplateMeeting(f, sign, workProgram, roomBookings);
                         if (sList != null && sList.size() > 0) {
                             for (SysFile sysFile : sList) {
@@ -590,48 +619,48 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                                 }
                             }
                         }
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         result += result.length() > 0 ? ",会议议程" : "会议议程";
                     }
 
                     //2.4 邀请函
-                    try{
-                        SysFile invitation = CreateTemplateUtils.createTemplateInvitation(f, sign, workProgram, expertList, user, roomBookings ,  secondUserList);
+                    try {
+                        SysFile invitation = CreateTemplateUtils.createTemplateInvitation(f, sign, workProgram, expertList, user, roomBookings, secondUserList);
                         if (invitation != null && Validate.isString(invitation.getSysFileId())) {
                             saveFile.add(invitation);
                         }
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         result += result.length() > 0 ? ",邀请函" : "邀请函";
                     }
 
 
                     //2.5 会议通知
-                    try{
-                        SysFile notice = CreateTemplateUtils.createTemplateNotice(f, sign, workProgram, user, roomBookings , secondUserList);
+                    try {
+                        SysFile notice = CreateTemplateUtils.createTemplateNotice(f, sign, workProgram, user, roomBookings, secondUserList);
                         if (notice != null && Validate.isString(notice.getSysFileId())) {
                             saveFile.add(notice);
                         }
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         result += result.length() > 0 ? ",会议通知" : "会议通知";
                     }
 
                     //专家评审意见书
-                    try{
+                    try {
                         SysFile expertReviewIdea = CreateTemplateUtils.createTemplateExpertReviewIdea(f, sign, workProgram);
                         if (expertReviewIdea != null && Validate.isString(expertReviewIdea.getSysFileId())) {
                             saveFile.add(expertReviewIdea);
                         }
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         result += result.length() > 0 ? ",评审意见书" : "评审意见书";
                     }
 
                     //相关单位会议通知
-                    try{
-                        SysFile notice = CreateTemplateUtils.createTemplateUnitNotice(f, sign, workProgram, user, roomBookings , secondUserList);
+                    try {
+                        SysFile notice = CreateTemplateUtils.createTemplateUnitNotice(f, sign, workProgram, user, roomBookings, secondUserList);
                         if (notice != null && Validate.isString(notice.getSysFileId())) {
                             saveFile.add(notice);
                         }
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         result += result.length() > 0 ? ",相关单位会议通知" : "相关单位会议通知";
                     }
 
@@ -675,16 +704,16 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                     workProgramRepo.save(workProgram);
                 }
             }
-        }else{
-            return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "该项目没有工作方案，生成会前准备材料失败。" , null);
+        } else {
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "该项目没有工作方案，生成会前准备材料失败。", null);
         }
 
 
-        if(result.length() > 0){
-            return new ResultMsg(true , Constant.MsgCode.OK.getValue() , result + "生成失败！" , null);
-        }else{
+        if (result.length() > 0) {
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), result + "生成失败！", null);
+        } else {
 
-            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功" , null);
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功", null);
         }
     }
 
@@ -700,10 +729,10 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         WorkProgramDto workDto = new WorkProgramDto();
         workDto.setSignId(work.getSign().getSignid());
         BeanCopierUtils.copyProperties(work, workDto);
-        if (Validate.isString(work.getBranchId()) && !work.getBranchId().equals("1")) {
-            WorkProgram mainWork = workProgramRepo.findBySignIdAndBranchId(work.getSign().getSignid(), "1");
+        String mianBranchId = FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue();
+        if (Validate.isString(work.getBranchId()) && !mianBranchId.equals(work.getBranchId())) {
+            WorkProgram mainWork = workProgramRepo.findBySignIdAndBranchId(work.getSign().getSignid(), mianBranchId, false);
             if (mainWork != null) {
-
                 workDto.setProjectName(mainWork.getProjectName());
                 workDto.setTotalInvestment(mainWork.getTotalInvestment());
                 workDto.setSendFileUnit(mainWork.getSendFileUnit());
@@ -724,7 +753,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 workDto.setSecondChargeUserName(mainWork.getSecondChargeUserName());
             }
         }
-        if (Constant.EnumState.NO.getValue().equals(workDto.getIsMainProject()) && EnumState.NO.equals(workDto.getIsSigle())) {//次项目
+        if (Constant.EnumState.NO.getValue().equals(workDto.getIsMainProject()) && Constant.MergeType.REVIEW_MERGE.getValue().equals(workDto.getIsSigle())) {//次项目
             //查找主项目信息，并且获取主项目的会议室信息和专家信息
             WorkProgram wp = workProgramRepo.findMainReviewWP(workDto.getSignId());
             workProgramRepo.initWPMeetingExp(workDto, wp);
@@ -737,195 +766,563 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 
     /**
      * 获取工作方案调研及会议信息
+     *
      * @return
      */
     @Override
-    public Map<String,Object> findProMeetInfo(){
-        Map resultMap = new HashMap<String,Object>();
+    public Map<String, Object> findProMeetInfo() {
+        Map resultMap = new HashMap<String, Object>();
         List<ProMeetDto> proAmMeetDtoList = workProgramRepo.findAmProMeetInfo();
         List<ProMeetDto> proPmMeetDtoList = workProgramRepo.findPmProMeetInfo();
-        resultMap.put("proAmMeetDtoList",proAmMeetInfoUpdate(proAmMeetDtoList));
-        resultMap.put("proPmMeetDtoList",proAmMeetInfoUpdate(proPmMeetDtoList));
-        return  resultMap;
+        resultMap.put("proAmMeetDtoList", proAmMeetInfoUpdate(proAmMeetDtoList));
+        resultMap.put("proPmMeetDtoList", proAmMeetInfoUpdate(proPmMeetDtoList));
+        return resultMap;
     }
 
-    private List<ProMeetShow> proAmMeetInfoUpdate(List<ProMeetDto>proMeetDtoList ){
+    /**
+     * 初始化项目基本信息
+     *
+     * @param signId
+     * @return
+     */
+    @Override
+    public WorkProgramDto initBaseInfo(String signId) {
+        WorkProgramDto workProgramDto = new WorkProgramDto();
+        WorkProgram wk = workProgramRepo.findBySignIdAndBranchId(signId, FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue(), false);
+        if (!Validate.isObject(wk)) {
+            Sign sign = signRepo.findById(Sign_.signid.getName(), signId);
+            workProgramDto.setSignId(signId);
+            copySignCommonInfo(workProgramDto, sign);
+            workProgramDto.setProjectName(sign.getProjectname());
+            workProgramDto.setBuildCompany(sign.getBuiltcompanyName());
+            workProgramDto.setDesignCompany(sign.getDesigncompanyName());
+            workProgramDto.setAppalyInvestment(sign.getAppalyInvestment());
+            workProgramDto.setWorkreviveStage(sign.getReviewstage());
+            workProgramDto.setBaseInfo(EnumState.YES.getValue());
+            workProgramDto.setBranchId(FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue());
+            workProgramDto.setSendFileUnit(Constant.SEND_FILE_UNIT);
+            workProgramDto.setSendFileUser(sign.getMainDeptUserName());
+            //默认名称
+            workProgramDto.setTitleName(sign.getReviewstage() + Constant.WORKPROGRAM_NAME);
+            workProgramDto.setTitleDate(new Date());
+        } else {
+            BeanCopierUtils.copyProperties(wk, workProgramDto);
+        }
+        return workProgramDto;
+    }
+
+    @Override
+    public ResultMsg saveBaseInfo(WorkProgramDto workProgramDto) {
+        String wpId = workProgramDto.getId();
+        boolean isNew = false;
+        try {
+            Sign sign = null;
+            WorkProgram workProgram = null;
+            if (Validate.isString(wpId)) {
+                workProgram = workProgramRepo.findById(wpId);
+                sign = workProgram.getSign();
+                BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto, workProgram);
+                workProgram.setSign(sign);
+            } else {
+                isNew = true;
+                workProgram = new WorkProgram();
+                BeanCopierUtils.copyProperties(workProgramDto, workProgram);
+                wpId = (new RandomGUID()).valueAfterMD5;
+                workProgram.setId(wpId);
+                sign = signRepo.findById(Sign_.signid.getName(), workProgramDto.getSignId());
+                workProgram.setSign(sign);
+                workProgram.setCreatedBy(SessionUtil.getUserId());
+                workProgram.setCreatedDate(new Date());
+            }
+            //如果是新增，则为基本信息，因为默认是需要做工作方案的
+            if(isNew){
+                workProgram.setBaseInfo(EnumState.YES.getValue());
+            }else{
+                //如果主分支没有工作方案，则设置为基本信息，有则设置为项目基本信息
+                if (signBranchRepo.checkIsNeedWP(sign.getSignid(), FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue())) {
+                    workProgram.setBaseInfo(EnumState.NO.getValue());
+                } else {
+                    workProgram.setBaseInfo(EnumState.YES.getValue());
+                }
+            }
+            workProgram.setModifiedBy(SessionUtil.getDisplayName());
+            workProgram.setModifiedDate(new Date());
+            workProgramRepo.save(workProgram);
+
+            if(EnumState.YES.getValue().equals(workProgram.getBaseInfo())){
+                signBranchRepo.isNeedWP(sign.getSignid(),workProgram.getBranchId(),EnumState.NO.getValue());
+            }
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), wpId, "保存失败，异常信息已记录，请联系管理员处理！", null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("保存项目基本信息异常：" + e.getMessage());
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "保存失败，异常信息已记录，请联系管理员处理！");
+        }
+    }
+
+
+    @Override
+    @Transactional
+    public ResultMsg startReWorkFlow(String signId, String brandIds) {
+        Sign sign = signRepo.findById(signId);
+        if (sign.getProcessState() > Constant.SignProcessState.END_DIS_NUM.getValue()) {
+            return ResultMsg.error("已经发文的项目，不能再进行修改！");
+        }
+        List<String> brandIdList = StringUtil.getSplit(brandIds, SysConstants.SEPARATE_COMMA);
+        int startCount = brandIdList.size();
+        if(startCount == 0){
+            return ResultMsg.error("请选择要重做的工作方案！");
+        }
+        //工作方案留痕
+        List<WorkProgram> workProgramList = sign.getWorkProgramList();
+        WorkProgram mainWP = ProjUtil.filterMainWP(workProgramList);
+        if(Validate.isList(workProgramList)){
+            //检验选择的工作方案是否已经发起流程，并且未完成
+            ResultMsg checkResult = checkWorkFlow(brandIdList,workProgramList);
+            if(!checkResult.isFlag()){
+                return checkResult;
+            }
+        }
+
+        List<WorkProgram> reWorkList = new ArrayList<>();
+        //初始化工作方案
+        for (int i=0;i<startCount;i++) {
+            String brandId = brandIdList.get(i);
+            WorkProgram newWP = new WorkProgram();
+            boolean isNew = true;
+            for (WorkProgram wp : workProgramList) {
+                if (brandId.equals(wp.getBranchId())) {
+                    BeanCopierUtils.copyProperties(wp,newWP);
+                    if(!ProjUtil.isMainBranch(wp.getBranchId())){
+                        //如果不是主工作方案，还要把主工作方案的数据拷贝过来
+                        if(Validate.isObject(mainWP)){
+                            ProjUtil.copyMainWPProps(mainWP,wp);
+                        }
+                    }
+                    workProgramHisService.copyWorkProgram(wp, sign.getSignid());
+                    WorkPGUtil.create(newWP).resetLeaderOption().resetMinisterOption();
+                    isNew = false;
+                }
+            }
+            if(isNew){
+                newWP = initWP(sign,ProjUtil.isMainBranch(brandId));
+            }
+            signBranchRepo.resetBranchState( sign.getSignid(), brandId);
+            newWP.setBranchId(brandId);
+            newWP.setId(new RandomGUID().valueAfterMD5);
+            newWP.setBaseInfo(null);
+            reWorkList.add(newWP);
+        }
+
+        //发起流程
+        String orgName = "";
+        String assigneeValue = "";
+        String allAssigneeValue = "";
+        List<AgentTask> agentTaskList = null;
+
+        for (WorkProgram workProgram : reWorkList) {
+            agentTaskList = new ArrayList<>();
+            assigneeValue = "";
+            //获取待处理人
+            List<User> dealUserList = signPrincipalService.getSignPriUser( sign.getSignid(), workProgram.getBranchId());
+            for (User user : dealUserList) {
+                String userId = userService.getTaskDealId(user, agentTaskList, WPHIS_XMFZR);
+                assigneeValue = StringUtil.joinString(assigneeValue, SEPARATE_COMMA, userId);
+            }
+            //启动流程
+            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(FlowConstant.WORK_HIS_FLOW, workProgram.getId(),
+                    ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USERS.getValue(), assigneeValue));
+            //设置流程实例名称
+            orgName = signBranchRepo.getOrgDeptNameBySignId( sign.getSignid(), workProgram.getBranchId());
+            processEngine.getRuntimeService().setProcessInstanceName(processInstance.getId(), ProjUtil.getReFlowName(sign.getProjectname()));
+            //所有的处理人
+            allAssigneeValue += assigneeValue;
+
+            workProgram.setProcessInstanceId(processInstance.getId());
+        }
+        workProgramRepo.bathUpdate(reWorkList);
+        //放入腾讯通消息缓冲池
+        RTXSendMsgPool.getInstance().sendReceiverIdPool(sign.getSignid(), allAssigneeValue);
+
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功",ProjUtil.getReFlowName(sign.getProjectname()));
+    }
+
+    private ResultMsg checkWorkFlow(List<String> brandIdList, List<WorkProgram> workProgramList) {
+        for(String brandId : brandIdList){
+            for(WorkProgram workProgram : workProgramList){
+                if(brandId.equals(workProgram.getBranchId()) && flowWork(workProgram.getProcessInstanceId())){
+                    return ResultMsg.error("分支["+workProgram.getBranchId()+"]的工作方案正在重做，不能重复发起！");
+                }
+            }
+        }
+        return ResultMsg.ok("ok");
+    }
+
+    private boolean flowWork(String processInstanceId) {
+        if(Validate.isString(processInstanceId) &&
+                Validate.isObject(runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult())){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public ResultMsg dealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto) {
+        String assigneeValue = "",                                  //环节处理人
+               curUserId = SessionUtil.getUserId();                 //当前用户ID
+        WorkProgram wk = workProgramRepo.findById(processInstance.getBusinessKey());
+        Sign sign = wk.getSign();
+        WorkPGUtil workPGUtil = WorkPGUtil.create(wk);
+
+        List<AgentTask> agentTaskList = new ArrayList<>();
+        Map<String, Object> variables = new HashMap<>();
+        switch (task.getTaskDefinitionKey()) {
+            case WPHIS_XMFZR:
+                //项目负责人填报环节
+                //主流程要第一负责才能进行下一步操作
+                if (ProjUtil.isMainBranch(wk.getBranchId())) {
+                    User mainUser = userRepo.getCacheUserById(sign.getmUserId());
+                    if (!curUserId.equals(mainUser.getId()) && !curUserId.equals(mainUser.getTakeUserId())) {
+                        return ResultMsg.error("您不是第一负责人，不能进行下一步操作！");
+                    }
+
+                    //是否合并评审主项目
+                    boolean isMergeMain = workPGUtil.isMergeWP() && workPGUtil.isMainWP();
+                    //单个评审或者合并评审主项目；如果是专家评审会，则要选择专家和会议室
+                    boolean needCheck = workPGUtil.isReviewWP() && (!workPGUtil.isMergeWP() || isMergeMain);
+                    if (needCheck) {
+                        if (expertRepo.countByBusinessId(wk.getId()) == 0) {
+                            return ResultMsg.error("您选择的评审方式是【" + wk.getReviewType() + "】，但是还没有选择专家，请先选择专家！");
+                        }
+                        if (Constant.MergeType.REVIEW_MEETING.getValue().equals(wk.getReviewType()) && !roomBookingRepo.isHaveBookMeeting(wk.getId())) {
+                            return ResultMsg.error("您选择的评审方式是【" + wk.getReviewType() + "】，但是还没有选择会议室，请先预定会议室！");
+                        }
+                    }
+                    //如果没有合并其他项目，则不准提交
+                    if (isMergeMain && !signMergeRepo.isHaveMerge(sign.getSignid(), Constant.MergeType.WORK_PROGRAM.getValue())) {
+                        return ResultMsg.error("工作方案您选择的是合并评审主项目，您还没有设置关联项目，不能提交到下一步！");
+                    }
+                    //如果合并评审次项目没提交，不能进行下一步操作
+                    if (!signRepo.isMergeSignEndWP(sign.getSignid())) {
+                        return ResultMsg.error("合并评审次项目还未提交审批，主项目不能提交审批！");
+                    }
+                }
+
+                OrgDept orgDept = orgDeptRepo.queryBySignBranchId(sign.getSignid(), wk.getBranchId());
+                if (orgDept == null || !Validate.isString(orgDept.getDirectorID())) {
+                    return ResultMsg.error("请设置该分支的部门负责人！");
+                }
+                assigneeValue = userService.getTaskDealId(orgDept.getDirectorID(), agentTaskList,WPHIS_BMLD_SPW);
+
+                variables.put(FlowConstant.FlowParams.USER_BZ.getValue(),assigneeValue);
+                //更改预定会议室状态
+                roomBookingRepo.updateStateByBusinessId(wk.getId(), EnumState.PROCESS.getValue());
+                //完成分支工作方案
+                signBranchRepo.finishWP(sign.getSignid(), wk.getBranchId());
+                break;
+            case WPHIS_BMLD_SPW:
+                //部长审批环节
+                boolean isAgentTask = agentTaskService.isAgentTask(task.getId(),curUserId); //是否为代办任务
+                workPGUtil.setMinisterOption(flowDto.getDealOption(),new Date(),ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask));
+                workProgramRepo.save(wk);
+                //设定下一环节处理人【主分支哪个领导安排部门工作方案则由他审批，次分支则按按照部门所在领导审批】
+                if(ProjUtil.isMainBranch(wk.getBranchId())){
+                    assigneeValue = userService.getTaskDealId(sign.getLeaderId(), agentTaskList,WPHIS_FGLD_SPW);
+                }else{
+                    assigneeValue = userService.getTaskDealId(SessionUtil.getUserInfo().getOrg().getOrgSLeader(), agentTaskList,WPHIS_FGLD_SPW);
+                }
+                variables.put(FlowConstant.FlowParams.USER_FGLD.getValue(), assigneeValue);
+                break;
+            case WPHIS_FGLD_SPW:
+                //分管领导审批环节
+                boolean isAgentTask2 = agentTaskService.isAgentTask(task.getId(),curUserId); //是否为代办任务
+                workPGUtil.setLeaderOption(flowDto.getDealOption(),new Date(),ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask2));
+                workProgramRepo.save(wk);
+                //完成分支的工作方案
+                signBranchRepo.updateFinishState(sign.getSignid(), wk.getBranchId(),EnumState.YES.getValue());
+                //更改预定会议室状态
+                roomBookingRepo.updateStateByBusinessId(wk.getId(), EnumState.YES.getValue());
+                //更新评审会时间
+                ExpertReview expertReview = expertReviewRepo.findById(ExpertReview_.businessId.getName(), sign.getSignid());
+                if (expertReview != null) {
+                    //以主工作方案为准，工作方案不做工作方案，则任选一个
+                    if (ProjUtil.isMainBranch(wk.getBranchId()) || expertReview.getReviewDate() == null) {
+                        //如果是专家评审会，获取评审会日期
+                        if (Constant.MergeType.REVIEW_MEETING.getValue().equals(wk.getReviewType())) {
+                            expertReview.setReviewDate(roomBookingRepo.getMeetingDateByBusinessId(wk.getId()));
+                            //如果是专家函评，取函评日期并修改专家默认评审方式为函评
+                        } else {
+                            expertReview.setReviewDate(wk.getLetterDate());
+                            expertSelectedRepo.updateExpertSelectState(wk.getId(), ExpertSelected_.isLetterRw.getName(), EnumState.YES.getValue());
+                        }
+                        expertReviewRepo.save(expertReview);
+                    }
+                }
+                break;
+             default:
+                    ;
+        }
+        taskService.addComment(task.getId(), processInstance.getId(), flowDto.getDealOption());    //添加处理信息
+        if (flowDto.isEnd()) {
+            taskService.complete(task.getId());
+        } else {
+            taskService.complete(task.getId(), variables);
+        }
+        //下一环节人发送短信
+        if(Validate.isString(assigneeValue)){
+            RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
+        }
+        //如果是代办，还要更新环节名称和任务ID
+        if (Validate.isList(agentTaskList)) {
+            agentTaskService.updateAgentInfo(agentTaskList,processInstance.getId(),processInstance.getName());
+        }
+        return ResultMsg.ok("操作成功！");
+    }
+
+    /**
+     * 停止流程
+     * @param businessKey
+     * @return
+     */
+    @Override
+    public ResultMsg endFlow(String businessKey) {
+        WorkProgram wp = workProgramRepo.findById(WorkProgram_.id.getName(),businessKey);
+        if(Validate.isObject(wp)){
+            if(!SessionUtil.getUserId().equals(wp.getCreatedBy()) && !SUPER_ACCOUNT.equals(SessionUtil.getLoginName())){
+                return ResultMsg.error("你无权进行删除流程操作");
+            }
+        }
+        return ResultMsg.ok("操作成功！");
+    }
+
+    /**
+     * 初始化工作方案信息
+     * @param sign
+     * @param mainBranch 是否主工作方案
+     * @return
+     */
+    private WorkProgram initWP(Sign sign, boolean mainBranch) {
+        WorkProgram wp = new WorkProgram();
+        //项目基本信息
+        wp.setProjectName(sign.getProjectname());
+        wp.setBuildCompany(sign.getBuiltcompanyName());
+        wp.setDesignCompany(sign.getDesigncompanyName());
+        wp.setAppalyInvestment(sign.getAppalyInvestment());
+        wp.setWorkreviveStage(sign.getReviewstage());
+        wp.setTitleName(sign.getReviewstage() + Constant.WORKPROGRAM_NAME);
+        wp.setTitleDate(new Date());
+        wp.setIsHaveSuppLetter(sign.getIsHaveSuppLetter() == null ? Constant.EnumState.NO.getValue() : sign.getIsHaveSuppLetter());
+        wp.setSuppLetterDate(sign.getSuppLetterDate());
+        if(mainBranch){
+            //来文单位默认全部是：深圳市发展和改革委员会，可改...
+            //联系人，就是默认签收表的那个主办处室联系人，默认读取过来但是这边可以给他修改，和主办处室联系人都是独立的两个字段
+            wp.setSendFileUnit(Constant.SEND_FILE_UNIT);
+            wp.setSendFileUser(sign.getMainDeptUserName());
+            //获取评审部门
+            wp.setReviewOrgName(signBranchRepo.getOrgDeptNameBySignId(sign.getSignid(), null));
+            //项目第一负责人
+            User mainUser = signPrincipalService.getMainPriUser(sign.getSignid());
+            if (mainUser != null && Validate.isString(mainUser.getId())) {
+                wp.setMianChargeUserName(mainUser.getDisplayName());
+            }
+            //项目其它负责人
+            wp.setSecondChargeUserName(signPrincipalService.getAllSecondPriUserName(sign.getSignid()));
+            //是否合并评审主项目
+            boolean isMergeMain = signMergeRepo.isHaveMerge(sign.getSignid(), Constant.MergeType.WORK_PROGRAM.getValue());
+            if(isMergeMain){
+
+            }else{
+                //判断是否是关联次项目
+                boolean isMerge = signMergeRepo.checkIsMerege(sign.getSignid(), Constant.MergeType.WORK_PROGRAM.getValue());
+                if (isMerge) {
+                    WorkProgram mainWP = workProgramRepo.findMainReviewWP(sign.getSignid());
+                    if (mainWP != null) {
+                        wp.setReviewType(mainWP.getReviewType());           //评审方式要跟主项目一致
+                    }
+                    wp.setIsSigle(Constant.MergeType.REVIEW_MERGE.getValue());
+                    wp.setIsMainProject(EnumState.NO.getValue());
+                }
+            }
+
+        }
+        return wp;
+    }
+
+    private List<ProMeetShow> proAmMeetInfoUpdate(List<ProMeetDto> proMeetDtoList) {
         List<ProMeetShow> proMeetShowList = new ArrayList<ProMeetShow>();
         String[] dateArr = initMeetDateArr();
         ProMeetShow proMeetShow = new ProMeetShow();
         int temp = 1;
-        for(int i = 0;i < proMeetDtoList.size();i++ ){
-            if(!(temp == proMeetDtoList.get(i).getInnerSeq().intValue())){
+        for (int i = 0; i < proMeetDtoList.size(); i++) {
+            if (!(temp == proMeetDtoList.get(i).getInnerSeq().intValue())) {
                 temp++;
                 proMeetShowList.add(proMeetShow);
                 proMeetShow = new ProMeetShow();
             }
-            if(temp == proMeetDtoList.get(i).getInnerSeq().intValue()){
-                if(dateArr[0].equals(DateUtils.converToString(proMeetDtoList.get(i).getProMeetDate(),""))){
-                    if(StringUtil.isNotBlank(proMeetDtoList.get(i).getRbName())){
-                        proMeetShow.setProName1(proMeetDtoList.get(i).getRbName()+"("+proMeetDtoList.get(i).getAddressName()+")");
-                    }else if(StringUtil.isNotBlank(proMeetDtoList.get(i).getProName())){
-                        proMeetShow.setProName1(proMeetDtoList.get(i).getProName()+"项目调研");
+            if (temp == proMeetDtoList.get(i).getInnerSeq().intValue()) {
+                if (dateArr[0].equals(DateUtils.converToString(proMeetDtoList.get(i).getProMeetDate(), ""))) {
+                    if (StringUtil.isNotBlank(proMeetDtoList.get(i).getRbName())) {
+                        proMeetShow.setProName1(proMeetDtoList.get(i).getRbName() + "(" + proMeetDtoList.get(i).getAddressName() + ")");
+                    } else if (StringUtil.isNotBlank(proMeetDtoList.get(i).getProName())) {
+                        proMeetShow.setProName1(proMeetDtoList.get(i).getProName() + "项目调研");
                     }
-                    if((i+1)== proMeetDtoList.size()){
+                    if ((i + 1) == proMeetDtoList.size()) {
                         proMeetShowList.add(proMeetShow);
                     }
                     continue;
-                }else if(dateArr[1].equals(DateUtils.converToString(proMeetDtoList.get(i).getProMeetDate(),""))){
-                    if(StringUtil.isNotBlank(proMeetDtoList.get(i).getRbName())){
-                        proMeetShow.setProName2(proMeetDtoList.get(i).getRbName()+"("+proMeetDtoList.get(i).getAddressName()+")");
-                    }else if(StringUtil.isNotBlank(proMeetDtoList.get(i).getProName())){
-                        proMeetShow.setProName2(proMeetDtoList.get(i).getProName()+"项目调研");
+                } else if (dateArr[1].equals(DateUtils.converToString(proMeetDtoList.get(i).getProMeetDate(), ""))) {
+                    if (StringUtil.isNotBlank(proMeetDtoList.get(i).getRbName())) {
+                        proMeetShow.setProName2(proMeetDtoList.get(i).getRbName() + "(" + proMeetDtoList.get(i).getAddressName() + ")");
+                    } else if (StringUtil.isNotBlank(proMeetDtoList.get(i).getProName())) {
+                        proMeetShow.setProName2(proMeetDtoList.get(i).getProName() + "项目调研");
                     }
-                    if((i+1)== proMeetDtoList.size()){
+                    if ((i + 1) == proMeetDtoList.size()) {
                         proMeetShowList.add(proMeetShow);
                     }
                     continue;
-                }else if(dateArr[2].equals(DateUtils.converToString(proMeetDtoList.get(i).getProMeetDate(),""))){
-                    if(StringUtil.isNotBlank(proMeetDtoList.get(i).getRbName())){
-                        proMeetShow.setProName3(proMeetDtoList.get(i).getRbName()+"("+proMeetDtoList.get(i).getAddressName()+")");
-                    }else if(StringUtil.isNotBlank(proMeetDtoList.get(i).getProName())){
-                        proMeetShow.setProName3(proMeetDtoList.get(i).getProName()+"项目调研");
+                } else if (dateArr[2].equals(DateUtils.converToString(proMeetDtoList.get(i).getProMeetDate(), ""))) {
+                    if (StringUtil.isNotBlank(proMeetDtoList.get(i).getRbName())) {
+                        proMeetShow.setProName3(proMeetDtoList.get(i).getRbName() + "(" + proMeetDtoList.get(i).getAddressName() + ")");
+                    } else if (StringUtil.isNotBlank(proMeetDtoList.get(i).getProName())) {
+                        proMeetShow.setProName3(proMeetDtoList.get(i).getProName() + "项目调研");
                     }
-                    if((i+1)== proMeetDtoList.size()){
+                    if ((i + 1) == proMeetDtoList.size()) {
                         proMeetShowList.add(proMeetShow);
                     }
                     continue;
-                }else if(dateArr[3].equals(DateUtils.converToString(proMeetDtoList.get(i).getProMeetDate(),""))){
-                    if(StringUtil.isNotBlank(proMeetDtoList.get(i).getRbName())){
-                        proMeetShow.setProName4(proMeetDtoList.get(i).getRbName()+"("+proMeetDtoList.get(i).getAddressName()+")");
-                    }else if(StringUtil.isNotBlank(proMeetDtoList.get(i).getProName())){
-                        proMeetShow.setProName4(proMeetDtoList.get(i).getProName()+"项目调研");
+                } else if (dateArr[3].equals(DateUtils.converToString(proMeetDtoList.get(i).getProMeetDate(), ""))) {
+                    if (StringUtil.isNotBlank(proMeetDtoList.get(i).getRbName())) {
+                        proMeetShow.setProName4(proMeetDtoList.get(i).getRbName() + "(" + proMeetDtoList.get(i).getAddressName() + ")");
+                    } else if (StringUtil.isNotBlank(proMeetDtoList.get(i).getProName())) {
+                        proMeetShow.setProName4(proMeetDtoList.get(i).getProName() + "项目调研");
                     }
-                    if((i+1)== proMeetDtoList.size()){
+                    if ((i + 1) == proMeetDtoList.size()) {
                         proMeetShowList.add(proMeetShow);
                     }
                     continue;
-                }else if(dateArr[4].equals(DateUtils.converToString(proMeetDtoList.get(i).getProMeetDate(),""))){
-                    if(StringUtil.isNotBlank(proMeetDtoList.get(i).getRbName())){
-                        proMeetShow.setProName5(proMeetDtoList.get(i).getRbName()+"("+proMeetDtoList.get(i).getAddressName()+")");
-                    }else if(StringUtil.isNotBlank(proMeetDtoList.get(i).getProName())){
-                        proMeetShow.setProName5(proMeetDtoList.get(i).getProName()+"项目调研");
+                } else if (dateArr[4].equals(DateUtils.converToString(proMeetDtoList.get(i).getProMeetDate(), ""))) {
+                    if (StringUtil.isNotBlank(proMeetDtoList.get(i).getRbName())) {
+                        proMeetShow.setProName5(proMeetDtoList.get(i).getRbName() + "(" + proMeetDtoList.get(i).getAddressName() + ")");
+                    } else if (StringUtil.isNotBlank(proMeetDtoList.get(i).getProName())) {
+                        proMeetShow.setProName5(proMeetDtoList.get(i).getProName() + "项目调研");
                     }
-                    if((i+1)== proMeetDtoList.size()){
+                    if ((i + 1) == proMeetDtoList.size()) {
                         proMeetShowList.add(proMeetShow);
                     }
                     continue;
                 }
-            }else{
-                if(dateArr[0].equals(DateUtils.converToString(proMeetDtoList.get(i).getProMeetDate(),""))){
-                    if(proMeetShowList.size() > 0){
-                        for(int j = 0;j < proMeetShowList.size();j++){
-                            if(StringUtil.isBlank(proMeetShowList.get(j).getProName1())) {
-                                proMeetShowList.get(j).setProName1(proMeetDtoList.get(i).getProName()+"项目调研");
+            } else {
+                if (dateArr[0].equals(DateUtils.converToString(proMeetDtoList.get(i).getProMeetDate(), ""))) {
+                    if (proMeetShowList.size() > 0) {
+                        for (int j = 0; j < proMeetShowList.size(); j++) {
+                            if (StringUtil.isBlank(proMeetShowList.get(j).getProName1())) {
+                                proMeetShowList.get(j).setProName1(proMeetDtoList.get(i).getProName() + "项目调研");
                                 break;
                             }
-                            if((j+1) == proMeetShowList.size()){
+                            if ((j + 1) == proMeetShowList.size()) {
                                 proMeetShow = new ProMeetShow();
-                                proMeetShow.setProName1(proMeetDtoList.get(i).getProName()+"项目调研");
+                                proMeetShow.setProName1(proMeetDtoList.get(i).getProName() + "项目调研");
                                 proMeetShowList.add(proMeetShow);
                                 break;
                             }
                         }
-                    }else{
+                    } else {
                         proMeetShow = new ProMeetShow();
-                        proMeetShow.setProName1(proMeetDtoList.get(i).getProName()+"项目调研");
+                        proMeetShow.setProName1(proMeetDtoList.get(i).getProName() + "项目调研");
                         proMeetShowList.add(proMeetShow);
 
                     }
-                }else if(dateArr[1].equals(DateUtils.converToString(proMeetDtoList.get(i).getProMeetDate(),""))){
-                    if(proMeetShowList.size() > 0){
-                        for(int j = 0;j < proMeetShowList.size();j++){
-                            if(StringUtil.isBlank(proMeetShowList.get(j).getProName2())) {
-                                proMeetShowList.get(j).setProName2(proMeetDtoList.get(i).getProName()+"项目调研");
+                } else if (dateArr[1].equals(DateUtils.converToString(proMeetDtoList.get(i).getProMeetDate(), ""))) {
+                    if (proMeetShowList.size() > 0) {
+                        for (int j = 0; j < proMeetShowList.size(); j++) {
+                            if (StringUtil.isBlank(proMeetShowList.get(j).getProName2())) {
+                                proMeetShowList.get(j).setProName2(proMeetDtoList.get(i).getProName() + "项目调研");
                                 break;
                             }
-                            if((j+1) == proMeetShowList.size()){
+                            if ((j + 1) == proMeetShowList.size()) {
                                 proMeetShow = new ProMeetShow();
-                                proMeetShow.setProName2(proMeetDtoList.get(i).getProName()+"项目调研");
+                                proMeetShow.setProName2(proMeetDtoList.get(i).getProName() + "项目调研");
                                 proMeetShowList.add(proMeetShow);
                                 break;
                             }
                         }
-                    }else{
+                    } else {
                         proMeetShow = new ProMeetShow();
-                        proMeetShow.setProName2(proMeetDtoList.get(i).getProName()+"项目调研");
+                        proMeetShow.setProName2(proMeetDtoList.get(i).getProName() + "项目调研");
                         proMeetShowList.add(proMeetShow);
                     }
-                }else if(dateArr[2].equals(DateUtils.converToString(proMeetDtoList.get(i).getProMeetDate(),""))){
-                    if(proMeetShowList.size() > 0){
-                        for(int j = 0;j < proMeetShowList.size();j++){
-                            if(StringUtil.isBlank(proMeetShowList.get(j).getProName3())) {
-                                proMeetShowList.get(j).setProName3(proMeetDtoList.get(i).getProName()+"项目调研");
+                } else if (dateArr[2].equals(DateUtils.converToString(proMeetDtoList.get(i).getProMeetDate(), ""))) {
+                    if (proMeetShowList.size() > 0) {
+                        for (int j = 0; j < proMeetShowList.size(); j++) {
+                            if (StringUtil.isBlank(proMeetShowList.get(j).getProName3())) {
+                                proMeetShowList.get(j).setProName3(proMeetDtoList.get(i).getProName() + "项目调研");
                                 break;
                             }
-                            if((j+1) == proMeetShowList.size()){
+                            if ((j + 1) == proMeetShowList.size()) {
                                 proMeetShow = new ProMeetShow();
-                                proMeetShow.setProName3(proMeetDtoList.get(i).getProName()+"项目调研");
+                                proMeetShow.setProName3(proMeetDtoList.get(i).getProName() + "项目调研");
                                 proMeetShowList.add(proMeetShow);
                                 break;
                             }
                         }
-                    }else{
+                    } else {
                         proMeetShow = new ProMeetShow();
-                        proMeetShow.setProName3(proMeetDtoList.get(i).getProName()+"项目调研");
+                        proMeetShow.setProName3(proMeetDtoList.get(i).getProName() + "项目调研");
                         proMeetShowList.add(proMeetShow);
                     }
-                }else if(dateArr[3].equals(DateUtils.converToString(proMeetDtoList.get(i).getProMeetDate(),""))){
-                    if(proMeetShowList.size() > 0){
-                        for(int j = 0;j < proMeetShowList.size();j++){
-                            if(StringUtil.isBlank(proMeetShowList.get(j).getProName4())) {
-                                proMeetShowList.get(j).setProName4(proMeetDtoList.get(i).getProName()+"项目调研");
+                } else if (dateArr[3].equals(DateUtils.converToString(proMeetDtoList.get(i).getProMeetDate(), ""))) {
+                    if (proMeetShowList.size() > 0) {
+                        for (int j = 0; j < proMeetShowList.size(); j++) {
+                            if (StringUtil.isBlank(proMeetShowList.get(j).getProName4())) {
+                                proMeetShowList.get(j).setProName4(proMeetDtoList.get(i).getProName() + "项目调研");
                                 break;
                             }
-                            if((j+1) == proMeetShowList.size()){
+                            if ((j + 1) == proMeetShowList.size()) {
                                 proMeetShow = new ProMeetShow();
-                                proMeetShow.setProName4(proMeetDtoList.get(i).getProName()+"项目调研");
+                                proMeetShow.setProName4(proMeetDtoList.get(i).getProName() + "项目调研");
                                 proMeetShowList.add(proMeetShow);
                                 break;
                             }
                         }
-                    }else{
+                    } else {
                         proMeetShow = new ProMeetShow();
-                        proMeetShow.setProName4(proMeetDtoList.get(i).getProName()+"项目调研");
+                        proMeetShow.setProName4(proMeetDtoList.get(i).getProName() + "项目调研");
                         proMeetShowList.add(proMeetShow);
                     }
-                }else if(dateArr[4].equals(DateUtils.converToString(proMeetDtoList.get(i).getProMeetDate(),""))){
-                    if(proMeetShowList.size() > 0){
-                        for(int j = 0;j < proMeetShowList.size();j++){
-                            if(StringUtil.isBlank(proMeetShowList.get(j).getProName5())) {
-                                proMeetShowList.get(j).setProName5(proMeetDtoList.get(i).getProName()+"项目调研");
+                } else if (dateArr[4].equals(DateUtils.converToString(proMeetDtoList.get(i).getProMeetDate(), ""))) {
+                    if (proMeetShowList.size() > 0) {
+                        for (int j = 0; j < proMeetShowList.size(); j++) {
+                            if (StringUtil.isBlank(proMeetShowList.get(j).getProName5())) {
+                                proMeetShowList.get(j).setProName5(proMeetDtoList.get(i).getProName() + "项目调研");
                                 break;
                             }
-                            if((j+1) == proMeetShowList.size()){
+                            if ((j + 1) == proMeetShowList.size()) {
                                 proMeetShow = new ProMeetShow();
-                                proMeetShow.setProName5(proMeetDtoList.get(i).getProName()+"项目调研");
+                                proMeetShow.setProName5(proMeetDtoList.get(i).getProName() + "项目调研");
                                 proMeetShowList.add(proMeetShow);
                                 break;
                             }
                         }
-                    }else{
+                    } else {
                         proMeetShow = new ProMeetShow();
-                        proMeetShow.setProName5(proMeetDtoList.get(i).getProName()+"项目调研");
+                        proMeetShow.setProName5(proMeetDtoList.get(i).getProName() + "项目调研");
                         proMeetShowList.add(proMeetShow);
                     }
                 }
 
             }
         }
-
         return proMeetShowList;
-
     }
 
     /***
      * 初始化日期数组
      * @return
      */
-    private String[]  initMeetDateArr(){
+    private String[] initMeetDateArr() {
         String dateStr[] = new String[5];
-        for(int i = 0;i < dateStr.length;i++){
-            dateStr[i] = DateUtils.converToString(DateUtils.addDay(new Date(),i),"");
+        for (int i = 0; i < dateStr.length; i++) {
+            dateStr[i] = DateUtils.converToString(DateUtils.addDay(new Date(), i), "");
         }
         return dateStr;
     }

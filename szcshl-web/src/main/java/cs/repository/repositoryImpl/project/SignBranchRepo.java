@@ -25,11 +25,11 @@ public interface SignBranchRepo extends IRepository<SignBranch, String> {
     boolean checkFinishWP(String signId,String branchId);
 
     /**
-     * 完成分支流程
+     * 更新分支流程状态
      * @param signId
      * @param branchId
      */
-    void finishBranch(String signId,String branchId);
+    void updateFinishState(String signId,String branchId,String state);
     /**
      * 分支是否需要工作方案
      * @param signId
@@ -38,6 +38,12 @@ public interface SignBranchRepo extends IRepository<SignBranch, String> {
      */
     void isNeedWP(String signId,String branchId,String state);
 
+    /**
+     * 校验是否需要工作方案
+     * @param signId
+     * @param branchId
+     * @return
+     */
     boolean checkIsNeedWP(String signId,String branchId);
 
     /**
@@ -90,7 +96,13 @@ public interface SignBranchRepo extends IRepository<SignBranch, String> {
 
     User findMainSLeader(String signId);
 
-    List<OrgDept> getOrgDeptBySignId(String signId);
+    /**
+     * 根据项目ID和分支ID查询部门信息
+     * @param signId
+     * @param branchId
+     * @return
+     */
+    List<OrgDept> getOrgDeptBySignId(String signId,String branchId);
 
     /**
      * 根据部门ID和项目ID，查询所在分支信息
@@ -119,5 +131,20 @@ public interface SignBranchRepo extends IRepository<SignBranch, String> {
      * @param signid
      * @return
      */
-    String getOrgDeptNameBySignId(String signid);
+    String getOrgDeptNameBySignId(String signid,String branchId);
+
+    /**
+     * 统计需要做工作方案的分支
+     * @param signid
+     * @return
+     */
+    int countNeedWP(String signid);
+
+    /**
+     * 根据项目ID和分支ID查询分支信息
+     * @param signId
+     * @param branchId
+     * @return
+     */
+    SignBranch findBySignIdAndBranchId(String signId,String branchId);
 }

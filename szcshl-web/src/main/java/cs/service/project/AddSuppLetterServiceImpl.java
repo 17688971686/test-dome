@@ -35,6 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
 import static cs.common.constants.SysConstants.SEPARATE_COMMA;
+import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
 
 /**
@@ -560,6 +561,19 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
     @Override
     public ResultMsg checkIsApprove(String signId, String fileType) {
         return addSuppLetterRepo.checkIsApprove(signId, fileType);
+    }
+
+    @Override
+    public ResultMsg endFlow(String businessKey) {
+        AddSuppLetter addSuppLetter = addSuppLetterRepo.findById(AddSuppLetter_.id.getName(),businessKey);
+        if(Validate.isObject(addSuppLetter)){
+            if(!SessionUtil.getUserId().equals(addSuppLetter.getCreatedBy()) && !SUPER_ACCOUNT.equals(SessionUtil.getLoginName())){
+                return ResultMsg.error("您无权进行删除流程操作！");
+            }
+            addSuppLetter.setAppoveStatus(Constant.EnumState.FORCE.getValue());
+            addSuppLetterRepo.save(addSuppLetter);
+        }
+        return ResultMsg.ok("操作成功！");
     }
 
     @Override

@@ -154,4 +154,10 @@ public interface ExpertSelectedService {
 	 * @return
 	 */
 	ResultMsg findAchievementDetail(AchievementSumDto achievementSumDto,Map<String,Object> levelMap);
+
+	/**
+	 * 部门业绩明细
+	 * @return
+	 */
+	ResultMsg findDeptAchievementDetail(AchievementDeptDetailDto achievementSumDto);
 }

@@ -92,6 +92,42 @@
     </div>
 </div>
 
+<!--通知公告card-->
+<div class="cared">
+    <div class="row">
+        <div class="col-xs-12 ">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title"><img src="${path}/contents/images/cardel.png"/> 公告通知</h3>
+                    <a class="box-tools pull-right" href="#/annountmentYet" ui-sref="annountmentYet"><span
+                            class="glyphicon glyphicon-tags cs-icon-r"></span>查看更多<span
+                            class="glyphicon glyphicon-play " style="color:#80c269"></span></a>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body no-padding">
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <th style="width:15px"><span class="fa fa-commenting"></span></th>
+                            <th>最新通告</th>
+                            <th style="width: 180px" align="center">发布日期</th>
+                            <th style="width: 100px">发布人</th>
+                        </tr>
+                        <tr ng-repeat="x in vm.annountmentList|limitTo:3">
+                            <td>{{$index +1}}</td>
+                            <td><span ng-if="x.isStick == 9" class="label label-primary">置顶</span>  <a href="#/annountmentDetail/{{x.anId}}">{{x.anTitle}}</a></td>
+                            <td><span class="badge bg-green">{{x.issueDate | date}}</span></td>
+                            <td>{{x.issueUser}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.box-body -->
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- begin 在办项目详情 -->
 <div class="cared" style="margin-bottom: 15px;">
     <div class="row">
@@ -256,7 +292,7 @@
 <!-- end 图表显示 -->
 
 <!-- begin 当前日起往后的5个工作日的调研和会议统计信息-->
-<div class="cared" ng-show="vm.proAmMeetDtoList.length > 0 || vm.proPmMeetDtoList.length > 0">
+<div class="cared" ng-show="(vm.proAmMeetDtoList && vm.proAmMeetDtoList.length > 0) || (vm.proPmMeetDtoList && vm.proPmMeetDtoList.length > 0)">
     <div class="row">
         <div class="col-xs-12">
             <div class="box" style="border:none;min-height:0px;">
@@ -303,38 +339,3 @@
     </div>
 </div>
 <!-- end 在办项目详情 -->
-
-<div class="cared">
-    <div class="row">
-        <div class="col-xs-12 ">
-            <div class="box">
-                <div class="box-header">
-                    <h3 class="box-title"><img src="${path}/contents/images/cardel.png"/> 公告通知</h3>
-                    <a class="box-tools pull-right" href="#/annountment" ui-sref="annountment"><span
-                            class="glyphicon glyphicon-tags cs-icon-r"></span>查看更多<span
-                            class="glyphicon glyphicon-play " style="color:#80c269"></span></a>
-                </div>
-                <!-- /.box-header -->
-                <div class="box-body no-padding">
-                    <table class="table">
-                        <tbody>
-                        <tr>
-                            <th style="width:15px"><span class="fa fa-commenting"></span></th>
-                            <th>最新通告</th>
-                            <th style="width: 180px" align="center">发布日期</th>
-                            <th style="width: 100px">发布人</th>
-                        </tr>
-                        <tr ng-repeat="x in vm.annountmentList|limitTo:5">
-                            <td>{{$index +1}}</td>
-                            <td><span ng-if="x.isStick == 9" class="label label-primary">置顶</span>  <a href="#/annountmentDetail/{{x.anId}}">{{x.anTitle}}</a></td>
-                            <td><span class="badge bg-green">{{x.issueDate | date}}</span></td>
-                            <td>{{x.issueUser}}</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <!-- /.box-body -->
-            </div>
-        </div>
-    </div>
-</div>

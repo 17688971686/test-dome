@@ -1,14 +1,12 @@
 package cs.service.sys;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import cs.common.constants.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.DateUtils;
 import cs.common.utils.SessionUtil;
+import cs.common.utils.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -130,4 +128,35 @@ public class WorkdayServiceImpl implements WorkdayService {
         return workdayRepo.getBetweenTimeDay(startDate , endDate);
     }
 
+    /**
+     * 判断当天是否是工作日
+     * @param date
+     * @return
+     */
+    @Override
+    public boolean isWorkDay(Date date) {
+        boolean isWorkDay = true;
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+            isWorkDay = false;
+        }
+        Date startDate = DateUtils.addDay(date,-1);
+        Date endDate = DateUtils.addDay(date,1);
+        List<Workday> workdayList = getBetweenTimeDay(startDate,endDate);
+        if(Validate.isList(workdayList)){
+            for(Workday workday : workdayList){
+                if(DateUtils.converToString(date,DateUtils.DATE_PATTERN).equals(DateUtils.converToString(workday.getDates(),DateUtils.DATE_PATTERN))){
+                    //是周末，但是已经调整为工作日
+                    if(!isWorkDay && "2".equals(workday.getStatus())){
+                        isWorkDay = true;
+                    //是工作日，但是已经将工作日改为休息日
+                    }else if(isWorkDay && "1".equals(workday.getStatus())){
+                        isWorkDay = false;
+                    }
+                }
+            }
+        }
+        return isWorkDay;
+    }
 }

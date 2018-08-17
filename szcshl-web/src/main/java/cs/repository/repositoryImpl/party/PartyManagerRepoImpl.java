@@ -1,5 +1,6 @@
 package cs.repository.repositoryImpl.party;
 
+import cs.common.HqlBuilder;
 import cs.common.constants.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
@@ -16,6 +17,7 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Property;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -114,5 +116,51 @@ public class PartyManagerRepoImpl extends AbstractRepository<PartyManager, Strin
        PartyManagerDto partyManagerDto = new PartyManagerDto();
        BeanCopierUtils.copyPropertiesIgnoreNull(partyManager , partyManagerDto);
         return new ResultMsg(true , Constant.MsgCode.OK.getValue()  , "查询成功" , partyManagerDto);
+    }
+
+    /**
+     * 更新党员信息
+     * @param partyManagerDto
+     * @return
+     */
+    @Override
+    public ResultMsg updateParty(PartyManagerDto partyManagerDto) {
+
+        PartyManager partyManager = findById(PartyManager_.pmId.getName() , partyManagerDto.getPmId());
+        BeanCopierUtils.copyPropertiesIgnoreNull(partyManagerDto , partyManager);
+        partyManager.setModifiedDate(new Date());
+        partyManager.setModifiedBy(SessionUtil.getDisplayName());
+
+        save(partyManager);
+
+        return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "更新成功" , null);
+    }
+
+    /**
+     * 删除党员信息
+     * @param pmId
+     */
+    @Override
+    public void deleteParty(String pmId) {
+        deleteById(PartyManager_.pmId.getName() , pmId);
+    }
+
+
+    /**
+     * 通过身份证号判断该党员是否已经存在
+     * @param pmIdCard
+     * @return
+     */
+    @Override
+    @Transactional
+    public Boolean existByIdCar(String pmIdCard) {
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append("select pmId from cs_party_manager where pmIDCard = '" + pmIdCard + "'");
+        int index = this.executeSql(hqlBuilder);
+        if(index > 0){
+            return true ;
+        }else{
+            return false;
+        }
     }
 }

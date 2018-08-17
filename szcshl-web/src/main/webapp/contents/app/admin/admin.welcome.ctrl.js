@@ -193,27 +193,26 @@
 
         function activate() {
             initProMeetDate();
-            adminSvc.initWelComePage(function (data) {
+            //获取首页待办任务和通知公告方法
+            adminSvc.getHomeInfo(function (data) {
+                if (data.annountmentList) {
+                    vm.annountmentList = data.annountmentList;
+                }
+                if (data.comTaskList) {
+                    vm.agendaTaskList = data.comTaskList;
+                }
+            });
+
+            //获取首页项目统计信息
+            adminSvc.getHomeProjInfo(function (data) {
                 vm.hidePreTable = true;
                 vm.isdisplays = true;
                 if (data) {
                     if (data.proTaskList) {
                         vm.tasksList = data.proTaskList;
                     }
-                    if (data.comTaskList) {
-                        vm.agendaTaskList = data.comTaskList;
-                    }
                     if (data.endTaskList) {
                         vm.endTasksList = data.endTaskList;
-                    }
-                    if (data.annountmentList) {
-                        vm.annountmentList = data.annountmentList;
-                    }
-                    if(data.proMeetInfo.proAmMeetDtoList){
-                        vm.proAmMeetDtoList = data.proMeetInfo.proAmMeetDtoList;
-                    }
-                    if(data.proMeetInfo.proPmMeetDtoList){
-                        vm.proPmMeetDtoList = data.proMeetInfo.proPmMeetDtoList;
                     }
                     if(data.DOINGNUM){
                         vm.doingNum = data.DOINGNUM;
@@ -288,6 +287,16 @@
                     //显示柱状图信息
                 }
             });
+
+            //获取首页会议和调研信息
+            adminSvc.getHomeMeetInfo(function (data) {
+                if(data.proMeetInfo.proAmMeetDtoList){
+                    vm.proAmMeetDtoList = data.proMeetInfo.proAmMeetDtoList;
+                }
+                if(data.proMeetInfo.proPmMeetDtoList){
+                    vm.proPmMeetDtoList = data.proMeetInfo.proPmMeetDtoList;
+                }
+            });
         }
 
         /**
@@ -301,7 +310,8 @@
             }
 
             for(var i=0; i < vm.timeArr.length; i++){
-                vm.timeHeadArr.push(getNewDayStr(vm.timeArr[i]));
+                vm.timeHeadArr.push(getNewDayStr(vm.timeArr[i]) +"("+getWeek(vm.timeArr[i])+")");
+
             }
         }
 
@@ -317,8 +327,7 @@
                 pastYear = pastDate.getFullYear(),
                 pastMonth = pastDate.getMonth() + 1,
                 pastDay = pastDate.getDate();
-
-            return pastYear + '-' + pastMonth + '-' + pastDay;
+            return pastYear + '-' + pastMonth + '-' + pastDay ;
         }
 
         function getNewDayStr(dateTemp) {
@@ -338,6 +347,29 @@
                 myweekday = "0" + myweekday;
             }
             return (myyear.toString() + "-" + mymonth.toString() + "-" + myweekday.toString());
+        }
+
+        /**
+         * 根据日期字符串获取星期几
+         *
+         */
+        function getWeek(dateString){
+            var date;
+            if(isNull(dateString)){
+                date = new Date;
+            }else{
+                var dateArray = dateString.split("-");
+                date = new Date(dateArray[0], parseInt(dateArray[1]-1), dateArray[2]);
+            }
+            var dayIndex = date.getDay();
+            return "星期" + "日一二三四五六".charAt(dayIndex);
+        }
+
+        function isNull(object){
+            if(object == null || typeof object == "undefined"){
+                return true;
+            }
+            return false;
         }
     }
 })();

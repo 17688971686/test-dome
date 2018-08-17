@@ -1,0 +1,73 @@
+server:
+  port: 8888
+  context-path: /
+  display-name: szecbm-web
+
+logging.file: ${sn.multipart.disk-path}\logs\${server.display-name}_${spring.profiles.active}.log
+
+spring:
+  profiles.active: @packaging.environment@
+  jmx.default-domain: ${server.display-name}
+  aop:
+    auto: true
+    proxy-target-class: false
+  datasource:
+    druid:
+      stat-view-servlet:
+#        login-username: admin
+#        login-password: Passw0rd
+        url-pattern: /druid/*
+      filter:
+        stat:
+          db-type: oracle
+          log-slow-sql: true
+          slow-sql-millis: 200
+  output:
+      ansi:
+        enabled: DETECT
+#  cache:
+#    type: ehcache
+#    ehcache:
+#      config: classpath:ehcache.xml
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    #json转换日期的时区设置
+    time-zone: GMT+8
+    default-property-inclusion: non_null
+  freemarker:
+    cache: false
+    request-context-attribute: request
+    expose-request-attributes: true
+    expose-session-attributes: true
+
+  #JPA 配置项:
+  jpa:
+    database: oracle
+    database-platform: com.sn.framework.core.database.MyOracleDialect
+      # 显示操作的sql语句
+    show-sql: true
+    # 是否根据数据映射实体自动生成表
+    generate-ddl: true
+    hibernate:
+      # Hibernate ddl auto (create, create-drop, update)
+      ddl-auto: ${spring.jpa.generate-ddl?update:none}
+      # 自动生成表、字段的命名规则
+      naming.strategy: org.hibernate.cfg.ImprovedNamingStrategy
+    properties:
+      # 禁掉hibernate的校验
+      javax.persistence.validation.mode: none
+      hibernate.dialect: ${spring.jpa.database-platform}
+
+
+# shiro权限配置
+sn:
+  multipart:
+    disk-path: C:\Users\Administrator\Desktop\upload
+  default-password: gxbs.2018
+
+security.basic.enabled: false
+management.security.enabled: false
+
+system:
+  sysfile:
+    enableip: 192.168.1.30

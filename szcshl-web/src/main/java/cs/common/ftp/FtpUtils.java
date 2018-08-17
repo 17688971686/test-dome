@@ -177,7 +177,6 @@ public class FtpUtils {
                 if(is == null || ftp.getReplyCode() == FTPReply.FILE_UNAVAILABLE){
                     return false;
                 }
-
                 if(is != null){
                     is.close();
                     ftp.completePendingCommand();

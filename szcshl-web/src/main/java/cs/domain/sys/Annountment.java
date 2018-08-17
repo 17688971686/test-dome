@@ -135,7 +135,7 @@ public class Annountment extends DomainBase {
     private String processInstanceId;
 
     /**
-     * 审批状态：0部长审批,1副主任审批,2主任审批,9审批完成
+     * 审批状态：0部长审批,1副主任审批,2主任审批,9审批完成,8:强制结束
      */
     @Column(columnDefinition = "VARCHAR(2)")
     private String appoveStatus;
