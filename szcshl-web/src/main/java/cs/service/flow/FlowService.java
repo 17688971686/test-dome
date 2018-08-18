@@ -73,13 +73,14 @@ public interface FlowService {
      * 查询主页上的办结任务
      * @return
      */
-    List<TaskDto> queryMyEndTasks();
+    /*List<TaskDto> queryMyEndTasks();*/
 
     /**
      * 查询主页上的待办任务
      * @return
      */
     List<RuTask> queryMyHomeAgendaTask();
+
 
     PageModelDto<RuProcessTask> queryPersonTasks(ODataObj oDataObj);
 
@@ -196,4 +197,11 @@ public interface FlowService {
      * @return
      */
     ResultMsg dealMerDisFlow(ProcessInstance processInstance, Task task, DispatchDoc dp, String nodeName, FlowDto flowDto, boolean isAgentTask) throws Exception;
+
+    /**
+     * 办结任务
+     * @param odataObj
+     * @return
+     */
+    PageModelDto<TaskDto> queryEndTasks(ODataObj odataObj);
 }
