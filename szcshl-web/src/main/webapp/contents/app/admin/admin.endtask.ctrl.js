@@ -1,13 +1,12 @@
 (function () {
     'use strict';
 
-    angular.module('app').controller('adminEndTaskCtrl', allDoTask);
+    angular.module('app').controller('adminEndTaskCtrl', endTask);
 
-    allDoTask.$inject = ['adminSvc', '$state', '$rootScope'];
+    endTask.$inject = ['adminSvc', '$state', '$rootScope'];
 
-    function allDoTask(adminSvc, $state, $rootScope) {
+    function endTask(adminSvc, $state, $rootScope) {
         var vm = this;
-
         //获取到当前的列表
         vm.stateName = $state.current.name;
         //查询参数
@@ -46,7 +45,7 @@
                 if (preView.queryParams) {
                     vm.queryParams = preView.queryParams;
                 }
-                adminSvc.doingTaskGrid(vm);
+                adminSvc.endTaskGrid(vm);
                 //清除返回页面数据
                 $rootScope.view[vm.stateName] = undefined;
             } else {

@@ -708,7 +708,7 @@ public class FlowController {
                 resultPage = "reviewProjectAppraise/flowEnd";
                 break;
             case FlowConstant.FLOW_SUPP_LETTER:
-                resultPage = "";
+                resultPage = "addSuppLetter/letterFlowEnd";
                 break;
             case FlowConstant.MONTHLY_BULLETIN_FLOW:
                 resultPage = "monthlyNewsletter/flow/flowEnd";

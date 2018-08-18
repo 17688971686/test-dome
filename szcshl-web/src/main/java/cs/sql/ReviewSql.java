@@ -3,7 +3,7 @@ package cs.sql;
 import cs.common.HqlBuilder;
 
 /**
- * Created by Administrator on 2018/7/20 0020.
+ * Created by ldm on 2018/7/20 0020.
  */
 public class ReviewSql {
 
