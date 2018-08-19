@@ -23,9 +23,7 @@
         vm.tableParams = {};
    /*     projectManagerSvc.findOrgUser(function(data){
             vm.principalUsers = data;
-
         });*/
-
         //获取项目列表
         projectManagerSvc.rsTableControl(vm);
 

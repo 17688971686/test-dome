@@ -72,4 +72,8 @@ public interface IUserService extends ISService<UserDto> {
 
      List<UserDto> findUserByOrgId();
 
+    /**
+     * 重置所有用户的账号密码
+     */
+    void resetAllUserPwd();
 }

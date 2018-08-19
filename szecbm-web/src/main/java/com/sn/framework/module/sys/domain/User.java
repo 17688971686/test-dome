@@ -16,7 +16,6 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "cs_sys_user")
-@Data
 public class User extends DomainBase {
 
     private static final long serialVersionUID = 8890972428818069739L;
@@ -120,4 +119,151 @@ public class User extends DomainBase {
     private Set<Role> roles = new HashSet<>();
 
 
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getUserSalt() {
+        return userSalt;
+    }
+
+    public void setUserSalt(String userSalt) {
+        this.userSalt = userSalt;
+    }
+
+    public Date getChangePasswordDate() {
+        return changePasswordDate;
+    }
+
+    public void setChangePasswordDate(Date changePasswordDate) {
+        this.changePasswordDate = changePasswordDate;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public String getUseState() {
+        return useState;
+    }
+
+    public void setUseState(String useState) {
+        this.useState = useState;
+    }
+
+    public int getLoginFailCount() {
+        return loginFailCount;
+    }
+
+    public void setLoginFailCount(int loginFailCount) {
+        this.loginFailCount = loginFailCount;
+    }
+
+    public Date getLastLoginDate() {
+        return lastLoginDate;
+    }
+
+    public void setLastLoginDate(Date lastLoginDate) {
+        this.lastLoginDate = lastLoginDate;
+    }
+
+    public String getMobileNumber() {
+        return mobileNumber;
+    }
+
+    public void setMobileNumber(String mobileNumber) {
+        this.mobileNumber = mobileNumber;
+    }
+
+    public Integer getHideMobile() {
+        return hideMobile;
+    }
+
+    public void setHideMobile(Integer hideMobile) {
+        this.hideMobile = hideMobile;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public int getUserDataType() {
+        return userDataType;
+    }
+
+    public void setUserDataType(int userDataType) {
+        this.userDataType = userDataType;
+    }
+
+    public Organ getOrgan() {
+        return organ;
+    }
+
+    public void setOrgan(Organ organ) {
+        this.organ = organ;
+    }
+
+    public Integer getSuperUser() {
+        return superUser;
+    }
+
+    public void setSuperUser(Integer superUser) {
+        this.superUser = superUser;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
 }

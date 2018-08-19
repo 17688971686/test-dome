@@ -1,5 +1,9 @@
 package com.sn.framework.module.sys.controller;
 
+import com.sn.framework.module.sys.domain.OrgDept;
+import com.sn.framework.module.sys.repo.IOrgDeptRepo;
+import com.sn.framework.module.sys.repo.impl.OrgDeptRepoImpl;
+import com.sn.framework.module.sys.service.IOrgDeptService;
 import com.sn.framework.odata.impl.jpa.OdataJPA;
 import com.sn.framework.core.web.PageModelDto;
 import com.sn.framework.module.sys.domain.Resource;
@@ -27,6 +31,15 @@ public class OrganController {
 
     @Autowired
     private IOrganService organService;
+
+    @Autowired
+    private IOrgDeptService orgDeptService;
+
+    @RequestMapping(name = "获取部门和组别信息", path = "findAllOrgDept", method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    public List<OrgDept> findAllOrgDept() {
+        return orgDeptService.findAll();
+    }
 
     @RequestMapping(name = "获取机构数据", path = "", method = RequestMethod.GET)
     @ResponseBody

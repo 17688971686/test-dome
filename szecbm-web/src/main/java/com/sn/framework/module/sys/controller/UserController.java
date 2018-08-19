@@ -66,7 +66,7 @@ public class UserController {
     @ResponseBody
     public List<UserDto> findUsersByOrgId() {
         User curUser = SessionUtil.getUserInfo();
-        if(curUser.getOrgan() != null || "admin".equals(curUser.getUsername())){
+        if(curUser.getOrgan() != null || USER_KEY_ADMIN.equals(curUser.getUsername())){
             return userService.findUserByOrgId();
         }
         return null;
@@ -111,6 +111,13 @@ public class UserController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void resetPwd(@RequestBody String userId) {
         userService.resetPwd(userId);
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "重置所有用户的账号密码", path = "resetAllUserPwd", method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void resetAllUserPwd() {
+        userService.resetAllUserPwd();
     }
 
     @RequestMapping(name = "获取用户资源数据", path = "resources", method = RequestMethod.GET)

@@ -1,5 +1,6 @@
 package com.sn.framework.module.sys.repo.impl;
 
+import com.sn.framework.core.common.Validate;
 import com.sn.framework.core.repo.impl.AbstractRepository;
 import com.sn.framework.module.sys.domain.Organ;
 import com.sn.framework.module.sys.domain.Organ_;
@@ -12,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
+
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
@@ -59,7 +60,7 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements IU
 
     @Override
     public Set<String> getUserRoles(String username) {
-        Query query = entityManager.createQuery("SELECT r.roleName FROM User u INNER JOIN u.roles r WHERE u.username=?");
+        Query query = entityManager.createQuery("SELECT r.roleName FROM User u INNER JOIN u.roles r WHERE u.username= ?");
         List<String> roleNames = query.setParameter(1, username).getResultList();
         return new HashSet<>(roleNames);
     }
@@ -90,32 +91,27 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements IU
         return null;
     }
 
-
-
     @Override
-    public List<User> getUserByOrganId(String organId) {
-            CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-            CriteriaQuery query = builder.createQuery(User.class);
-            Root<User> root = query.from(User.class);
+    public List<User> getUserByOrganId(String organId, boolean queryAll) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery query = builder.createQuery(User.class);
+        Root<User> root = query.from(User.class);
+        Predicate predicate = null;
+        if (Validate.isString(organId)) {
             Join<User, ?> organJoin = root.join("organ", JoinType.LEFT);
-            query.where(builder.equal(organJoin.get("organId"), organId));
-            List<User> userList = entityManager.createQuery(query.select(root)).getResultList();
-           return userList;
+            predicate = builder.and(builder.equal(organJoin.get(Organ_.organId.getName()), organId));
+        }
+        if (queryAll) {
+            if (null == predicate) {
+                predicate = builder.and(builder.equal(root.get(User_.useState.getName()), "1"));
+            } else {
+                predicate = builder.and(builder.equal(root.get(User_.useState.getName()), "1"), predicate);
+            }
+        }
+        query.where(predicate);
+        List<User> userList = entityManager.createQuery(query.select(root)).getResultList();
+        return userList;
     }
 
-//    @Override
-//    public List<Resource> getUserResources(String username, String status) { // 查询资源类型小于2的数据，即非按钮的资源
-//        String hql = "SELECT rs FROM User u INNER JOIN u.roles r INNER JOIN r.resources rs WHERE u.username=? AND rs.resType<2";
-//        if (StringUtil.isNoneBlank(status)) {
-//            hql += " AND rs.status=?";
-//        }
-//        hql += " ORDER BY rs.itemOrder ASC";
-//        Query query = entityManager.createQuery(hql);
-//        query.setParameter(1, username);
-//        if (StringUtil.isNoneBlank(status)) {
-//            query.setParameter(2, status);
-//        }
-//        return query.getResultList();
-//    }
 
 }
