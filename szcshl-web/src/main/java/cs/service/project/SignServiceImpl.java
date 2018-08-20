@@ -2503,7 +2503,7 @@ public class SignServiceImpl implements SignService {
         //只能是生成发文编号后的项目
         sqlBuilder.append(" and s." + SignDispaWork_.processState.getName() + " >= " + Constant.SignProcessState.END_DIS_NUM.getValue() + " ");
         //排除已经进行了关联的项目
-        sqlBuilder.append(" and s.signid not in( select ASSOCIATE_SIGNID from CS_ASSOCIATE_SIGN) ");
+        /*sqlBuilder.append(" and s.signid not in( select ASSOCIATE_SIGNID from CS_ASSOCIATE_SIGN) ");*/
         //项目建议书 或资金申请
         if (Constant.STAGE_SUG.equals(reviewstage) || Constant.APPLY_REPORT.equals(reviewstage)) {
             sqlBuilder.append(" and s." + SignDispaWork_.reviewstage.getName() + "=:reviewStage ");
