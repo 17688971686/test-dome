@@ -51,7 +51,7 @@ public class PolicyRepoImpl extends AbstractRepository<Policy, String> implement
         PageModelDto<PolicyDto> pageModelDto = new PageModelDto<>();
         Criteria criteria = this.getExecutableCriteria();
         criteria = oDataObj.buildFilterToCriteria(criteria);
-        criteria.add(Restrictions.eq(Policy_.standardPId.getName() , standardId));
+//        criteria.add(Restrictions.eq(Policy_.standardPId.getName() , standardId));
         criteria.add(Restrictions.eq(Policy_.stardandType.getName() , Constant.libraryType.FILE_TYPE.getValue()));
         List<Policy> policyList = criteria.list();
         List<PolicyDto> policyDtoList = new ArrayList<>();

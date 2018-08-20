@@ -386,11 +386,9 @@
         }
 
         vm.initFileList = function(fileId){
+            vm.standardId = fileId;
             policySvc.findFileById(fileId , function(data){
                 vm.fileList = data;
-                // vm.fileUrl = vm.fileLibrary.fileUrl;
-                // vm.fileName = vm.fileLibrary.fileName;
-                // vm.initFileUpload();
             });
         }
 

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.util.List;
 
@@ -44,8 +45,16 @@ public class PolicyController {
 
     @RequestMapping(name = "通过ID查询文件" , path = "findFileById" , method = RequestMethod.POST)
     @ResponseBody
-    public PageModelDto<PolicyDto> findFileById(@RequestParam  ODataObj oDataObj  , @RequestParam  String standardId){
-        return policyService.findFileById(oDataObj , standardId);
+    public PageModelDto<PolicyDto> findFileById(HttpServletRequest request, @RequestParam  String standardId){
+        ODataObj oDataObj = null;
+        PageModelDto<PolicyDto> pageModelDto = new PageModelDto<>();
+        try {
+            oDataObj = new ODataObj(request);
+            pageModelDto = policyService.findFileById(oDataObj , standardId);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return pageModelDto;
 
     }
 }
