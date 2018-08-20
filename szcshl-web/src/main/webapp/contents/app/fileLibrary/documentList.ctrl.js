@@ -34,6 +34,16 @@
             sysfileSvc.downloadFile(sysFileId);
         }
 
+        /**
+         * 点击左边导航栏，右边定位指定内容到顶部
+         * @param key
+         */
+        vm.animate = function(index){
+            $("html, body").animate({
+                scrollTop: $("#div_" + index ).offset().top }, {duration: 500,easing: "swing"});
+            return false;
+        }
+
 
     }
 })();
