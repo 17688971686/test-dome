@@ -270,7 +270,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
             dispatch.setPrintCount(5);
             dispatch.setBranchCount(sign.getBranchCount());
             //发文标题
-            String fileTitle = "深圳市投资项目评审中心关于";
+            String fileTitle = COMPANY_NAME+"关于";
             fileTitle += sign.getProjectname() == null ? "" : sign.getProjectname();
             if (Constant.STAGE_BUDGET.equals(sign.getReviewstage())) {
                 fileTitle += "项目的总概算的审核意见";

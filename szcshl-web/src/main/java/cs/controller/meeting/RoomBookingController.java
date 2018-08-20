@@ -26,6 +26,8 @@ import java.io.*;
 import java.text.ParseException;
 import java.util.List;
 
+import static cs.common.constants.Constant.COMPANY_NAME;
+
 
 @Controller
 @RequestMapping(name = "会议室预定", path = "room")
@@ -99,7 +101,7 @@ public class RoomBookingController {
         InputStream is = null;
         ServletOutputStream out = null;
         if (!Validate.isString(fileName)) {
-            fileName = "深圳市政府投资项目评审中心会议安排";
+            fileName = COMPANY_NAME+"会议安排";
         }
         try {
 //            String title = new String(fileName.getBytes("ISO-8859-1"),"UTF-8");
