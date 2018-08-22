@@ -121,17 +121,17 @@
 </head>
 <body ng-app="app" ng-controller="fileCtrl">
 <div id="fileTab">
-    <#--<ul class="nav-tabs" >
-        <li ng-repeat="div_id in vm.ids" class="active" >
-            <a title="{{vm.key[$index]}}" ng-click="vm.animate(div_id)" aria-controls="{{div_id}}" role="tab" data-toggle="tab">{{vm.key[$index]}}</a>
+    <ul class="nav-tabs" >
+        <li ng-repeat="(key , value) in vm.data" class="active" >
+            <a title="{{key}}" id="a_{{$index}}"  ng-click="vm.animate($index)" aria-controls="{{key}}" role="tab" data-toggle="tab">{{key}}</a>
         </li>
-    </ul>-->
+    </ul>
 
 
     <!-- Tab panes -->
     <div class="tab-content">
-        <div ng-repeat="(key , value) in vm.data">
-        <div role="tabpanel" class="tab-pane"  >
+        <div ng-repeat="(key , value) in vm.data" >
+        <div role="tabpanel" class="tab-pane" id="div_{{$index}}">
             <h1 class="heading">{{key}}</h1>
             <div ng-repeat="x in value" class="heading-box">
                 <h2 class="two">{{x.fileName}}</h2>
