@@ -64,10 +64,10 @@
             });
 
             //用户
-            roomCountSvc.findAllUsers(vm,function (data) {
+            /*roomCountSvc.findAllUsers(vm,function (data) {
                 vm.userlist = {};
                 vm.userlist = data;
-            });
+            });*/
         }
 
         //重置
