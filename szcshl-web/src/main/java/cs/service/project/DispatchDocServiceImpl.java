@@ -273,7 +273,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
             String fileTitle = COMPANY_NAME+"关于";
             fileTitle += sign.getProjectname() == null ? "" : sign.getProjectname();
             if (Constant.STAGE_BUDGET.equals(sign.getReviewstage())) {
-                fileTitle += "项目的总概算的审核意见";
+                fileTitle += "项目总概算的审核意见";
             } else {
                 fileTitle += "项目的评审意见";
             }
