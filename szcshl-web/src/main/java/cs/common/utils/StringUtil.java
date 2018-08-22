@@ -219,6 +219,9 @@ public class StringUtil extends StringUtils {
                 .collect(Collectors.toList());  // collect the output and convert streams to a list
 
         result1.forEach(System.out::println); // output "spring", "node"
+
+        int yearNameL = "2018".length();
+        System.out.println(getSubString("2018",yearNameL-2,yearNameL));
     }
 
 

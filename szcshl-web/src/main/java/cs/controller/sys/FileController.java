@@ -1097,7 +1097,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 expertOfferDataMap.put("sendCcieDate", expertOffer.getSendCcieDate());
                 expertOfferDataMap.put("period", expertOffer.getPeriod());
                 expertOfferDataMap.put("expertNo", expertOffer.getExpert().getExpertNo());
-                expertOfferDataMap.put("fafang", "深圳市政府投资项目评审中心");
+                expertOfferDataMap.put("fafang", COMPANY_NAME);
 
                 file = TemplateUtil.createDoc(expertOfferDataMap, Template.EXPERTOFFER.getKey(), path);
                 break;

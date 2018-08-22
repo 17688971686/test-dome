@@ -190,33 +190,36 @@
         });
     }
 
-    projectManagerEditCtrl.$inject = ["$scope", "projectManagerSvc","$state","bsWin"];
+    projectManagerEditCtrl.$inject = ["$scope", "projectManagerSvc", "$state", "bsWin"];
 
-    function projectManagerEditCtrl($scope,projectManagerSvc,$state,bsWin) {
+    function projectManagerEditCtrl($scope, projectManagerSvc, $state, bsWin) {
         $scope.csHide("cjgl");
         var vm = this;
-         vm.model = {};
-         vm.model.id = $state.params.id;
-         vm.flag = $state.params.flag;
-         vm.attachments = [];
+        vm.model = {};
+        vm.model.id = $state.params.id;
+        vm.flag = $state.params.flag;
+        vm.attachments = [];
 
         /**
          * 初始化附件上传
          */
-        projectManagerSvc.initUploadConfig(vm,"relateAttach",function (data) {
+        projectManagerSvc.initUploadConfig(vm, "relateAttach", function (data) {
             vm.attachments = vm.attachments.concat(JSON.parse(data));
         });
 
-        projectManagerSvc.findOrgUser(function(data){
+        projectManagerSvc.findOrgUser(function (data) {
             vm.principalUsers = data;
         });
-         if (vm.model.id) {
+        projectManagerSvc.findAllOrgDelt(function (data) {
+            vm.orgDeptList = data;
+        });
 
+        if (vm.model.id) {
             projectManagerSvc.findGovernmentInvestProjectById(vm, function () {
                 /**
                  * 查询附件列表
                  */
-               projectManagerSvc.getAttachments(vm, {
+                projectManagerSvc.getAttachments(vm, {
                     "businessId": vm.model.id
                 }, function (data) {
                     angular.forEach(vm.attachments.concat(data), function (o, i) {
@@ -224,9 +227,9 @@
                     });
                 });
             });
-        }else{
-             projectManagerSvc.createUUID(vm);
-         }
+        } else {
+            projectManagerSvc.createUUID(vm);
+        }
 
 
         /**
@@ -241,8 +244,8 @@
         /**
          * 日期比较
          */
-        function compareDate (d1,d2) {
-            return ((new Date(d1.replace(/-/g,"\/"))) > (new Date(d2.replace(/-/g,"\/"))));
+        function compareDate(d1, d2) {
+            return ((new Date(d1.replace(/-/g, "\/"))) > (new Date(d2.replace(/-/g, "\/"))));
         }
 
 
@@ -255,7 +258,7 @@
         vm.save = function () {
             util.initJqValidation();
             var isValid = $('form').valid();
-            if(isValid){
+            if (isValid) {
                 var selUser = []
                 var selUserName = []
                 $('#principalUser_ul input[selectType="assistUser"]:checked').each(function () {
@@ -277,9 +280,9 @@
         };
 
         //检查项目负责人
-        vm.checkPrincipal = function(){
+        vm.checkPrincipal = function () {
             var selUserId = $("#mainUser").val();
-            if(selUserId){
+            if (selUserId) {
                 $('#principalUser_ul input[selectType="assistUser"]').each(
                     function () {
                         var value = $(this).attr("value");
@@ -322,9 +325,7 @@
         vm.tableParams = {};
    /*     projectManagerSvc.findOrgUser(function(data){
             vm.principalUsers = data;
-
         });*/
-
         //获取项目列表
         projectManagerSvc.rsTableControl(vm);
 
@@ -365,7 +366,6 @@
         var attachments_url = util.formatUrl("sys/sysfile");
 
         return {
-
             bsTableControlForManagement: function (vm, searchUrl, filter) {
                 vm.bsTableControlForManagement = {
                     options: util.getTableFilterOption({
@@ -420,8 +420,7 @@
                             field: 'reviewStage',
                             title: '评审阶段',
                             width: 100,
-                            filterControl: 'dict',
-                            filterData: 'DICT.REVIEWSTAGE.dicts.PRO_STAGE'
+                            filterControl: 'input',
                         }, {
                             field: 'proUnit',
                             title: '项目单位',
@@ -432,8 +431,7 @@
                             field: 'reviewDept',
                             title: '评审部门',
                             width: 90,
-                            filterControl: 'dict',
-                            filterData: 'DICT.DEPT.dicts.TRANSACT_DEPARTMENT'
+                            filterControl: 'input',
                         }, {
                             field: 'mainUserName',
                             title: '第一负责人',
@@ -511,9 +509,7 @@
                             formatter: '<a href="#/projectManageView/{{row.id}}/view" style="color:blue">{{row.projectName}}</a>'
                         }, {
                             field: 'reviewStage',
-                            title: '评审阶段',
-                            filterControl: 'dict',
-                            filterData: 'DICT.REVIEWSTAGE.dicts.PRO_STAGE',
+                            title: '评审阶段2222',
                             width: 100,
                         }, {
                             field: 'proUnit',
@@ -523,8 +519,7 @@
                             field: 'reviewDept',
                             title: '评审部门',
                             width: 90,
-                            filterControl: 'dict',
-                            filterData: 'DICT.DEPT.dicts.TRANSACT_DEPARTMENT'
+                            filterControl: 'input',
                         }, {
                             field: 'mainUserName',
                             title: '第一负责人',
@@ -801,6 +796,11 @@
                 $http.get(url_user + "/findUsersByOrgId").success(function (data) {
                     fn(data)
                 });
+            },
+            findAllOrgDelt : function(fn){
+                $http.get("sys/organ/findAllOrgDept").success(function (data) {
+                    fn(data)
+                });
             }
         }
     }
@@ -834,6 +834,10 @@
 
         projectManagerSvc.findOrgUser(function(data){
             vm.principalUsers = data;
+        });
+
+        projectManagerSvc.findAllOrgDelt(function(data){
+            vm.orgDeptList = data;
         });
         /**
          * 初始化附件上传

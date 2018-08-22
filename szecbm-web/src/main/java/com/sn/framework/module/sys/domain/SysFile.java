@@ -13,7 +13,6 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "cs_sys_file")
-@Data
 public class SysFile extends DomainBase {
     //主键
     @Id
@@ -98,5 +97,101 @@ public class SysFile extends DomainBase {
 
     public SysFile() {
 
+    }
+
+    public String getSysFileId() {
+        return sysFileId;
+    }
+
+    public void setSysFileId(String sysFileId) {
+        this.sysFileId = sysFileId;
+    }
+
+    public String getBusinessId() {
+        return businessId;
+    }
+
+    public void setBusinessId(String businessId) {
+        this.businessId = businessId;
+    }
+
+    public String getFileUrl() {
+        return fileUrl;
+    }
+
+    public void setFileUrl(String fileUrl) {
+        this.fileUrl = fileUrl;
+    }
+
+    public String getShowName() {
+        return showName;
+    }
+
+    public void setShowName(String showName) {
+        this.showName = showName;
+    }
+
+    public Long getFileSize() {
+        return fileSize;
+    }
+
+    public void setFileSize(Long fileSize) {
+        this.fileSize = fileSize;
+    }
+
+    public String getFileType() {
+        return fileType;
+    }
+
+    public void setFileType(String fileType) {
+        this.fileType = fileType;
+    }
+
+    public String getMainId() {
+        return mainId;
+    }
+
+    public void setMainId(String mainId) {
+        this.mainId = mainId;
+    }
+
+    public String getMainType() {
+        return mainType;
+    }
+
+    public void setMainType(String mainType) {
+        this.mainType = mainType;
+    }
+
+    public String getSysfileType() {
+        return sysfileType;
+    }
+
+    public void setSysfileType(String sysfileType) {
+        this.sysfileType = sysfileType;
+    }
+
+    public String getSysBusiType() {
+        return sysBusiType;
+    }
+
+    public void setSysBusiType(String sysBusiType) {
+        this.sysBusiType = sysBusiType;
+    }
+
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
+    }
+
+    public Ftp getFtp() {
+        return ftp;
+    }
+
+    public void setFtp(Ftp ftp) {
+        this.ftp = ftp;
     }
 }

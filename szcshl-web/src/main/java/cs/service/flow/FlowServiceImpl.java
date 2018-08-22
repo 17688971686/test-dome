@@ -20,7 +20,9 @@ import cs.model.flow.FlowDto;
 import cs.model.flow.Node;
 import cs.model.flow.TaskDto;
 import cs.model.project.CommentDto;
+import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
+import cs.repository.odata.ODataObjFilterStrategy;
 import cs.repository.repositoryImpl.flow.HiProcessTaskRepo;
 import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
 import cs.repository.repositoryImpl.flow.RuTaskRepo;
@@ -695,7 +697,7 @@ public class FlowServiceImpl implements FlowService {
      *
      * @return
      */
-    @Override
+    /*@Override
     public List<TaskDto> queryMyEndTasks() {
         HistoryService historyService = processEngine.getHistoryService();
         HistoricProcessInstanceQuery hq = historyService.createHistoricProcessInstanceQuery().finished();
@@ -718,7 +720,7 @@ public class FlowServiceImpl implements FlowService {
             });
         }
         return list;
-    }
+    }*/
 
     @Override
     public List<RuTask> queryMyHomeAgendaTask() {
@@ -1237,7 +1239,7 @@ public class FlowServiceImpl implements FlowService {
      */
     @Override
     public List<Map<String, Object>> getProc() {
-        List<Map<String, Object>> list = jdbcTemplate.queryForList("SELECT arp.NAME_,arp.KEY_ FROM act_re_procdef arp  GROUP BY arp.NAME_,arp.KEY_");
+        List<Map<String, Object>> list = jdbcTemplate.queryForList("SELECT arp.NAME_,arp.KEY_ FROM act_re_procdef arp where arp.KEY_ != 'FINAL_SIGN_FLOW' GROUP BY arp.NAME_,arp.KEY_");
         return list;
     }
 
@@ -1598,6 +1600,56 @@ public class FlowServiceImpl implements FlowService {
             agentTaskService.updateAgentInfo(agentTaskList, processInstance.getId(), processInstance.getName());
         }
         return returnMsg;
+    }
+
+    @Override
+    public PageModelDto<TaskDto> queryEndTasks(ODataObj odataObj) {
+        PageModelDto<TaskDto> resultPage = new PageModelDto<>();
+
+        HistoryService historyService = processEngine.getHistoryService();
+        HistoricProcessInstanceQuery hq = historyService.createHistoricProcessInstanceQuery().finished();
+        if(!SUPER_ACCOUNT.equals(SessionUtil.getLoginName())){
+            hq = hq.involvedUser(SessionUtil.getUserId());
+        }
+        hq = hq.processDefinitionKeyNotIn(Arrays.asList("FINAL_SIGN_FLOW"));
+        if (Validate.isList(odataObj.getFilter())) {
+            Object value;
+            for (ODataFilterItem item : odataObj.getFilter()) {
+                value = item.getValue();
+                if (null == value) {
+                    continue;
+                }
+                switch (item.getField()){
+                    case "flowKey":
+                        hq = hq.processDefinitionKey(value.toString());
+                        break;
+                    case "flowName":
+                        hq = hq.processInstanceNameLike("%"+value.toString()+"%");
+                        break;
+                }
+            }
+        }
+        resultPage.setCount(Integer.parseInt(String.valueOf(hq.count())));
+        List<HistoricProcessInstance> historicList = hq.orderByProcessInstanceEndTime().desc().listPage(odataObj.getSkip(), odataObj.getTop());
+        List<TaskDto> list = new ArrayList<TaskDto>(historicList == null ? 0 : historicList.size());
+        if (historicList != null && historicList.size() > 0) {
+            historicList.forEach(h -> {
+                TaskDto taskDto = new TaskDto();
+                taskDto.setBusinessKey(h.getBusinessKey());
+                taskDto.setFlowName(h.getName());
+                taskDto.setProcessInstanceId(h.getId());
+                taskDto.setProcessVariables(h.getProcessVariables());
+                taskDto.setProcessDefinitionId(h.getProcessDefinitionId());
+                taskDto.setCreateDate(h.getStartTime());
+                taskDto.setEndDate(h.getEndTime());
+                taskDto.setDurationInMillis(h.getDurationInMillis());
+                taskDto.setDurationTime(ActivitiUtil.formatTime(h.getDurationInMillis()));
+                taskDto.setFlowKey(h.getProcessDefinitionId().substring(0, h.getProcessDefinitionId().indexOf(":")));
+                list.add(taskDto);
+            });
+        }
+        resultPage.setValue(list);
+        return resultPage;
     }
 
     /**

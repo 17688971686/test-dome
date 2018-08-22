@@ -78,16 +78,25 @@
                     controller: 'adminCtrl',
                     controllerAs: 'vm'
                 })
+                //个人待办任务
                 .state('agendaTasks', {
                     url: '/agendaTasks',
                     templateUrl: rootPath + '/admin/agendaTasks.html',
                     controller: 'adminAgendaCtrl',
                     controllerAs: 'vm'
                 })
+                //在办任务
                 .state('doingTasks', {
                     url: '/doingTasks',
                     templateUrl: rootPath + '/admin/doingTasks.html',
                     controller: 'adminDoTaskCtrl',
+                    controllerAs: 'vm'
+                })
+                //已办结任务
+                .state('endTasks', {
+                    url: '/endTasks',
+                    templateUrl: rootPath + '/admin/endTasks.html',
+                    controller: 'adminEndTaskCtrl',
                     controllerAs: 'vm'
                 })
                 //begin#流程公共页面

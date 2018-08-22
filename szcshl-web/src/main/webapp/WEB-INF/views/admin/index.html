@@ -211,23 +211,24 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         </a>
                         <ul class="treeview-menu">
                             <li><a href="javascript:void(0)" ui-sref="welcome"><i class="fa fa-home" aria-hidden="true"></i>主页</a></li>
-
                             <@shiro.hasPermission name="admin#gtasks#get">
-                            <li><a href="javascript:void(0)" ui-sref="gtasks"><i class="fa fa-flag-o"></i>待办项目<span class="label label-danger" id="DO_SIGN_COUNT">0</span></a></li>
-                        </@shiro.hasPermission>
-                        <@shiro.hasPermission name="admin#dtasks#get">
-                    <li><a href="javascript:void(0)" ui-sref="dtasks"> <i class="glyphicon glyphicon-tasks"></i>在办项目</a></li>
-                </@shiro.hasPermission>
-
-                <@shiro.hasPermission name="admin#agendaTasks#get">
-                <li><a href="javascript:void(0)" ui-sref="agendaTasks"><i class="fa fa-flag-o"></i>待办任务<span class="label label-danger" id="DO_TASK_COUNT">0</span></a></li>
-            </@shiro.hasPermission>
-            <@shiro.hasPermission name="admin#doingTasks#get">
-            <li><a href="javascript:void(0)" ui-sref="doingTasks"><i class="glyphicon glyphicon-tasks"></i>在办任务</a></li>
-        </@shiro.hasPermission>
-</ul>
-</li>
-</@shiro.hasPermission>
+                                <li><a href="javascript:void(0)" ui-sref="gtasks"><i class="fa fa-flag-o"></i>待办项目<span class="label label-danger" id="DO_SIGN_COUNT">0</span></a></li>
+                            </@shiro.hasPermission>
+                            <@shiro.hasPermission name="admin#dtasks#get">
+                                <li><a href="javascript:void(0)" ui-sref="dtasks"> <i class="glyphicon glyphicon-tasks"></i>在办项目</a></li>
+                            </@shiro.hasPermission>
+                            <@shiro.hasPermission name="admin#agendaTasks#get">
+                                <li><a href="javascript:void(0)" ui-sref="agendaTasks"><i class="fa fa-flag-o"></i>待办任务<span class="label label-danger" id="DO_TASK_COUNT">0</span></a></li>
+                            </@shiro.hasPermission>
+                            <@shiro.hasPermission name="admin#doingTasks#get">
+                                <li><a href="javascript:void(0)" ui-sref="doingTasks"><i class="glyphicon glyphicon-tasks"></i>在办任务</a></li>
+                            </@shiro.hasPermission>
+                            <@shiro.hasPermission name="admin#endTasks#get">
+                                <li><a href="javascript:void(0)" ui-sref="endTasks"><i class="glyphicon glyphicon-floppy-disk"></i>办结任务</a></li>
+                            </@shiro.hasPermission>
+                        </ul>
+                    </li>
+                    </@shiro.hasPermission>
 
 <!-- start 项目管理-->
 <@shiro.hasPermission name="permission#sign">

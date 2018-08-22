@@ -496,4 +496,8 @@ public class SNKit {
         exportExcel(filename, templateName, request, response, params, null);
     }
 
+    public static void main(String[] args){
+        String password = decodePwd("admin","admin","1023ca3b7d3adaa82a8eca715bc4a4ca");
+        System.out.println(password);
+    }
 }

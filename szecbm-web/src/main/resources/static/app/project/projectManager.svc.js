@@ -11,7 +11,6 @@
         var attachments_url = util.formatUrl("sys/sysfile");
 
         return {
-
             bsTableControlForManagement: function (vm, searchUrl, filter) {
                 vm.bsTableControlForManagement = {
                     options: util.getTableFilterOption({
@@ -66,8 +65,7 @@
                             field: 'reviewStage',
                             title: '评审阶段',
                             width: 100,
-                            filterControl: 'dict',
-                            filterData: 'DICT.REVIEWSTAGE.dicts.PRO_STAGE'
+                            filterControl: 'input',
                         }, {
                             field: 'proUnit',
                             title: '项目单位',
@@ -78,8 +76,7 @@
                             field: 'reviewDept',
                             title: '评审部门',
                             width: 90,
-                            filterControl: 'dict',
-                            filterData: 'DICT.DEPT.dicts.TRANSACT_DEPARTMENT'
+                            filterControl: 'input',
                         }, {
                             field: 'mainUserName',
                             title: '第一负责人',
@@ -157,9 +154,7 @@
                             formatter: '<a href="#/projectManageView/{{row.id}}/view" style="color:blue">{{row.projectName}}</a>'
                         }, {
                             field: 'reviewStage',
-                            title: '评审阶段',
-                            filterControl: 'dict',
-                            filterData: 'DICT.REVIEWSTAGE.dicts.PRO_STAGE',
+                            title: '评审阶段2222',
                             width: 100,
                         }, {
                             field: 'proUnit',
@@ -169,8 +164,7 @@
                             field: 'reviewDept',
                             title: '评审部门',
                             width: 90,
-                            filterControl: 'dict',
-                            filterData: 'DICT.DEPT.dicts.TRANSACT_DEPARTMENT'
+                            filterControl: 'input',
                         }, {
                             field: 'mainUserName',
                             title: '第一负责人',
@@ -445,6 +439,11 @@
             },
             findOrgUser: function (fn) {
                 $http.get(url_user + "/findUsersByOrgId").success(function (data) {
+                    fn(data)
+                });
+            },
+            findAllOrgDelt : function(fn){
+                $http.get("sys/organ/findAllOrgDept").success(function (data) {
                     fn(data)
                 });
             }

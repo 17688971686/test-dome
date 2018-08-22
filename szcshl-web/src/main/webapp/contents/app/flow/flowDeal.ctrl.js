@@ -74,11 +74,11 @@
                     break;
                 case flowcommon.getFlowDefinedKey().ASSERT_STORAGE_FLOW:    //资产入库流程
                     assertStorageBusinessSvc.initFlowDeal(vm);
-                    sysFileLoadType = 1;
+                    sysFileLoadType = 2;
                     break;
                 case flowcommon.getFlowDefinedKey().BOOKS_BUY_FLOW:         //图书采购流程
                     bookBuyBusinessSvc.initFlowDeal(vm);
-                    sysFileLoadType = 1;
+                    sysFileLoadType = 2;
                     break;
                 case flowcommon.getFlowDefinedKey().PROJECT_STOP_FLOW:      //项目暂停流程
                     pauseProjectSvc.initFlowDeal(vm);
@@ -99,7 +99,6 @@
                 case flowcommon.getFlowDefinedKey().MONTHLY_BULLETIN_FLOW:  //月报简报流程
                     monthlyMultiyearSvc.initFlowDeal(vm);
                     sysFileLoadType = 1;
-
                     break;
                 case flowcommon.getFlowDefinedKey().ANNOUNT_MENT_FLOW:       //通知公告
                     annountmentSvc.initFlowDeal(vm);

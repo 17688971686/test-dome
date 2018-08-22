@@ -7,7 +7,7 @@
 
     function admin($location, adminSvc) {
         var vm = this;
-        vm.title = '办结事项';
+        vm.title = '办结项目';
              
         activate();
         function activate() {

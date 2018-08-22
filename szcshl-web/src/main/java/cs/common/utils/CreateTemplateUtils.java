@@ -14,6 +14,8 @@ import cs.model.monthly.MonthlyNewsletterDto;
 import java.io.File;
 import java.util.*;
 
+import static cs.common.constants.Constant.COMPANY_NAME;
+
 /**
  * Description: 生成模板并生成附件类
  * Author: mcl
@@ -902,7 +904,7 @@ public class CreateTemplateUtils {
         dataMap.put("contactPerson", user.getDisplayName());//联系人
         dataMap.put("contactPersonTel", user.getUserPhone());//联系电话
         dataMap.put("contactPersonFax", "83642081");//传真
-        dataMap.put("contactPersonAddress", "深圳市政府投资项目评审中心");
+        dataMap.put("contactPersonAddress", COMPANY_NAME);
         dataMap.put("dateStr", DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
         //获得会议信息
         SysFile sysFile = new SysFile();
