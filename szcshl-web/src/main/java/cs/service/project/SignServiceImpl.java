@@ -502,13 +502,14 @@ public class SignServiceImpl implements SignService {
         BeanCopierUtils.copyProperties(sign, signDto);
         //查询所有的属性
         if (queryAll) {
-            if (Validate.isList(sign.getWorkProgramList())) {
+            List<WorkProgram> workProgramList = ProjUtil.filterEnableWP(sign.getWorkProgramList());
+            if (Validate.isList(workProgramList)) {
                 boolean isMergeReview = false;
-                int totalL = sign.getWorkProgramList().size();
+                int totalL = workProgramList.size();
                 WorkProgram workProgram = null;
                 //判断是否是合并评审项目，如果是，则要获取合并评审信息
                 if (totalL == 1) {
-                    workProgram = sign.getWorkProgramList().get(0);
+                    workProgram = workProgramList.get(0);
                     if(!EnumState.YES.getValue().equals(workProgram.getBaseInfo()) ){
                         // 合并评审
                         if (Constant.MergeType.REVIEW_MERGE.getValue().equals(workProgram.getIsSigle())) {
@@ -529,7 +530,7 @@ public class SignServiceImpl implements SignService {
                                 signDto.setWorkProgramDtoList(workProgramDtoList);
                                 //次项目
                             } else {
-                                List<WorkProgramDto> workProgramDtoList = new ArrayList<>(sign.getWorkProgramList().size());
+                                List<WorkProgramDto> workProgramDtoList = new ArrayList<>(totalL);
                                 //查找主项目信息，并且获取主项目的会议室信息和专家信息
                                 WorkProgram wp = workProgramRepo.findMainReviewWP(signid);
                                 WorkProgramDto workProgramDto = new WorkProgramDto();
@@ -550,7 +551,7 @@ public class SignServiceImpl implements SignService {
                     if (totalL > 1) {
                         //遍历第一遍，先找出主分支工作方案
                         for (int i = 0; i < totalL; i++) {
-                            WorkProgram wp = sign.getWorkProgramList().get(i);
+                            WorkProgram wp = workProgramList.get(i);
                             if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(wp.getBranchId())) {
                                 mainW = wp;
                                 break;
@@ -559,7 +560,7 @@ public class SignServiceImpl implements SignService {
                     }
 
                     for (int i = 0; i < totalL; i++) {
-                        workProgram = sign.getWorkProgramList().get(i);
+                        workProgram = workProgramList.get(i);
                         //判断是否是项目基本信息
                         if(EnumState.YES.getValue().equals(workProgram.getBaseInfo())){
                             ProjBaseInfoDto projBaseInfoDto = new ProjBaseInfoDto();
@@ -2913,7 +2914,7 @@ public class SignServiceImpl implements SignService {
         signBranchRepo.executeSql(sqlBuilder2);
 
         //3、删除工作方案、会议室、专家评审方案
-        List<WorkProgram> workProgramList = sign.getWorkProgramList();
+        List<WorkProgram> workProgramList = ProjUtil.filterEnableWP(sign.getWorkProgramList());
         if (Validate.isList(workProgramList)) {
             List<WorkProgram> deleteWPList = new ArrayList<>();
             String deleteWPId = null;             //删除工作方案ID
@@ -3053,10 +3054,11 @@ public class SignServiceImpl implements SignService {
                 } else {
                     SignDto signDto = new SignDto();
                     BeanCopierUtils.copyProperties(sign, signDto);
+                    List<WorkProgram> workProgramList = ProjUtil.filterEnableWP(sign.getWorkProgramList());
                     //只获取主工作方案
-                    if (Validate.isList(sign.getWorkProgramList())) {
+                    if (Validate.isList(workProgramList)) {
                         List<WorkProgramDto> workProgramDtoList = new ArrayList<>();
-                        WorkProgram mainWP = sign.getWorkProgramList().stream().filter(item->FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(item.getBranchId())).findFirst().get();
+                        WorkProgram mainWP = workProgramList.stream().filter(item->FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(item.getBranchId())).findFirst().get();
                         if(Validate.isObject(mainWP)){
                             if(EnumState.YES.getValue().equals(mainWP.getBaseInfo())){
 

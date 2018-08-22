@@ -93,4 +93,11 @@ public interface WorkProgramRepo extends IRepository<WorkProgram, String> {
      * @param signId
      */
     void removeWPCascade(String signId,String brandId);
+
+    /**
+     * 更新工作方案状态
+     * @param signId
+     * @param brandIds
+     */
+    void updateWPState(String signId, String brandIds,String state);
 }

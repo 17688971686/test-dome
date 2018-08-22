@@ -2,6 +2,9 @@ package cs.sql;
 
 import cs.ahelper.projhelper.ProjUtil;
 import cs.common.HqlBuilder;
+import cs.common.constants.Constant;
+import cs.domain.project.WorkProgram;
+import cs.domain.project.WorkProgram_;
 
 /**
  * Created by ldm on 2018/7/17 0017.
@@ -100,4 +103,34 @@ public class WorkSql {
     }
 
 
+    /**
+     * 删除工作方案
+     * @param signId
+     * @param brandId
+     * @return
+     */
+    public static HqlBuilder deleteWorkProgran(String signId,String brandId){
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" delete from cs_work_program where signid =:signid and branchId =:branchId and (baseInfo is null or baseInfo !=:bstate )");
+        sqlBuilder.setParam("signid", signId);
+        sqlBuilder.setParam("branchId", brandId);
+        sqlBuilder.setParam("bstate", Constant.EnumState.YES.getValue());
+
+        return sqlBuilder;
+    }
+
+    /**
+     * 更新工作方案状态
+     * @param signId
+     * @param brandIds
+     * @return
+     */
+    public static HqlBuilder updateWPState(String signId, String brandIds,String state) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" update cs_work_program set state = :state where signid =:signid ");
+        sqlBuilder.setParam("state", state);
+        sqlBuilder.setParam("signid", signId);
+        sqlBuilder.bulidPropotyString("and", WorkProgram_.branchId.getName(),brandIds);
+        return sqlBuilder;
+    }
 }

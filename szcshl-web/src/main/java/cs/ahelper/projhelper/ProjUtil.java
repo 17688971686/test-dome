@@ -7,6 +7,7 @@ import cs.domain.project.WorkProgram;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by ldm on 2018/3/6 0006.
@@ -15,6 +16,7 @@ public class ProjUtil {
 
     /**
      * 根据会签数量发送短信
+     *
      * @param valiables
      * @param signNum
      * @return
@@ -168,5 +170,18 @@ public class ProjUtil {
 
     public static String getReFlowName(String projName) {
         return "[" + projName + "]重做工作方案]";
+    }
+
+    /**
+     * 过滤出有效的工作方案
+     *
+     * @param workProgramList
+     * @return
+     */
+    public static List<WorkProgram> filterEnableWP(List<WorkProgram> workProgramList) {
+        if (Validate.isList(workProgramList)) {
+            return workProgramList.stream().filter(item -> Constant.EnumState.YES.getValue().equals(item.getState())).collect(Collectors.toList());
+        }
+        return null;
     }
 }

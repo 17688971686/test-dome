@@ -20,6 +20,7 @@ import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.repository.repositoryImpl.expert.ExpertSelConditionRepo;
 import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
+import cs.sql.WorkSql;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -412,15 +413,20 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram,String> 
                 expertReviewRepo.deleteByBusinessId(signId);
             }
             //5、删除工作方案
-            HqlBuilder sqlBuilder = HqlBuilder.create();
-            sqlBuilder.append(" delete from cs_work_program where signid =:signid and branchId =:branchId and (baseInfo is null or baseInfo !=:bstate )");
-            sqlBuilder.setParam("signid", signId);
-            sqlBuilder.setParam("branchId", brandId);
-            sqlBuilder.setParam("bstate", Constant.EnumState.YES.getValue());
-            executeSql(sqlBuilder);
+            executeSql(WorkSql.deleteWorkProgran(signId,brandId));
         }
 
         signBranchRepo.isNeedWP(signId,brandId, Constant.EnumState.NO.getValue());
+    }
+
+    /**
+     * 更新工作方案状态
+     * @param signId
+     * @param brandIds
+     */
+    @Override
+    public void updateWPState(String signId, String brandIds,String state) {
+        executeSql(WorkSql.updateWPState(signId,brandIds,state));
     }
 
 }

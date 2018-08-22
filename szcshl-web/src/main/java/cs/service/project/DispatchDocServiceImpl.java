@@ -197,7 +197,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
             }
             sign.setDispatchDoc(dispatchDoc);
             // 收文、工作方案(主项目)、发文的报审金额一致
-            List<WorkProgram> workProgrmList = sign.getWorkProgramList();
+            List<WorkProgram> workProgrmList = ProjUtil.filterEnableWP(sign.getWorkProgramList());
             if (Validate.isList(workProgrmList)) {
                 for (WorkProgram workProgram : workProgrmList) {
                     if (workProgram.getBranchId() == FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue()) {
@@ -367,8 +367,8 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 
         //主分支工作方案
         WorkProgram workProgram = null;
-        List<WorkProgram> workProgramList = sign.getWorkProgramList();
-        if (workProgramList != null && workProgramList.size() > 0) {
+        List<WorkProgram> workProgramList = ProjUtil.filterEnableWP(sign.getWorkProgramList());
+        if (Validate.isList(workProgramList)) {
             for (int i = 0; i < workProgramList.size(); i++) {
                 if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(workProgramList.get(i).getBranchId())) {
                     workProgram = workProgramList.get(i);

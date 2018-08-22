@@ -564,26 +564,23 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         if (sign == null || StringUtil.isEmpty(sign.getSignid())) {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，该项目已被删除");
         }
-        if (sign.getWorkProgramList() != null && sign.getWorkProgramList().size() > 0) {
-
-            for (WorkProgram workProgram : sign.getWorkProgramList()) {
+        List<WorkProgram> workProgramList = ProjUtil.filterEnableWP(sign.getWorkProgramList());
+        if (Validate.isList(workProgramList)) {
+            for (WorkProgram workProgram : workProgramList) {
                 if (Constant.MergeType.REVIEW_MEETING.getValue().equals(workProgram.getReviewType())) {
                     sysFileService.deleteByBusinessIdAndBusinessType(signId, Constant.SysFileType.MEETING.getValue() + "(" + workProgram.getBranchId() + ")");
                     //2、生成会前准备材料
                     List<SysFile> saveFile = new ArrayList<>();
-
                     //获得拟聘专家信息
                     List<Expert> expertList = expertRepo.findByBusinessId(workProgram.getId());
-
                     //获取项目第一负责人
                     User user = signPrincipalService.getMainPriUser(signId);
                     //获取所有第二负责人信息
                     List<User> secondUserList = signPrincipalService.getAllSecondPriUser(signId);
-
                     //获得会议信息
                     List<RoomBooking> roomBookings = roomBookingRepo.findByIds(RoomBooking_.businessId.getName(), workProgram.getId(), null);
-                    Ftp f = ftpRepo.findById(Ftp_.ipAddr.getName(), sysFileService.findFtpId());
 
+                    Ftp f = ftpRepo.findById(Ftp_.ipAddr.getName(), sysFileService.findFtpId());
                     if (f == null) {
                         return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "文件服务器无法连接，文件无法生成，请联系管理员处理", null);
                     }
@@ -596,7 +593,6 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                     } catch (Exception e) {
                         result += result.length() > 0 ? ",签到表" : "签到表";
                     }
-
 
                     //2.2 生成主持人稿
                     try {
@@ -874,7 +870,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             return ResultMsg.error("请选择要重做的工作方案！");
         }
         //工作方案留痕
-        List<WorkProgram> workProgramList = sign.getWorkProgramList();
+        List<WorkProgram> workProgramList = ProjUtil.filterEnableWP(sign.getWorkProgramList());
         WorkProgram mainWP = ProjUtil.filterMainWP(workProgramList);
         if(Validate.isList(workProgramList)){
             //检验选择的工作方案是否已经发起流程，并且未完成
@@ -907,7 +903,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             if(isNew){
                 newWP = initWP(sign,ProjUtil.isMainBranch(brandId));
             }
-            signBranchRepo.resetBranchState( sign.getSignid(), brandId);
+            signBranchRepo.resetBranchState(sign.getSignid(), brandId);
             newWP.setBranchId(brandId);
             newWP.setId(new RandomGUID().valueAfterMD5);
             newWP.setBaseInfo(null);
@@ -933,7 +929,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(FlowConstant.WORK_HIS_FLOW, workProgram.getId(),
                     ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USERS.getValue(), assigneeValue));
             //设置流程实例名称
-            orgName = signBranchRepo.getOrgDeptNameBySignId( sign.getSignid(), workProgram.getBranchId());
+            /*orgName = signBranchRepo.getOrgDeptNameBySignId( sign.getSignid(), workProgram.getBranchId());*/
             processEngine.getRuntimeService().setProcessInstanceName(processInstance.getId(), ProjUtil.getReFlowName(sign.getProjectname()));
             //所有的处理人
             allAssigneeValue += assigneeValue;
@@ -941,6 +937,10 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             workProgram.setProcessInstanceId(processInstance.getId());
         }
         workProgramRepo.bathUpdate(reWorkList);
+
+        // 更新工作方案状态
+        workProgramRepo.updateWPState(signId, brandIds,EnumState.NO.getValue());
+
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(sign.getSignid(), allAssigneeValue);
 
