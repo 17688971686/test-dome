@@ -160,6 +160,7 @@ public class Policy extends DomainBase{
     /**
      * 政策指标库的父ID
      */
+    @Column(columnDefinition = "VARCHAR(255)")
     private String standardPId;
 
 

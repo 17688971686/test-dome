@@ -1,4 +1,39 @@
+<div class="toolbar">
+    <button class="btn btn-sm btn-primary" ng-click="vm.fileEdit()">
+        <span class="glyphicon glyphicon-plus"></span>新建文件
+    </button>
+</div>
+
 <div class="well well-sm" style="background:white;">
 
-    <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
+    <table class="table table-bordered" id="associateSignTable" style="margin-top: 5px;">
+        <tr>
+            <td width="5%"></td>
+            <td width="5%">序号</td>
+            <td width="15%">标准号</td>
+            <td width="15%">标准名称</td>
+            <td width="10%">发布日期</td>
+            <td width="10%">实施日期</td>
+            <td width="10%">状态</td>
+        <tr ng-repeat="x in vm.fileList">
+            <td><input type="checkbox"/></td>
+            <td>{{$index + 1}}</td>
+            <td>{{x.standardNo}}</td>
+            <td>{{x.standardName}}</td>
+            <td>{{x.publishDate | date : 'yyyy-MM-dd'}}</td>
+            <td>{{x.implementDate | date : 'yyyy-MM-dd'}}</td>
+            <td>{{x.state}}</td>
+        </tr>
+        <tr>
+            <td colspan="9">
+                <div id="demo5" class="lgx_page_l"  style="clear: both;">
+                    <a lu-page="first">首页</a>
+                    <a lu-page="prev">上一页</a>
+                    <a lu-page="list"></a>
+                    <a lu-page="next">下一页</a>
+                    <a lu-page="last">尾页</a>
+                </div>
+            </td>
+        </tr>
+    </table>
 </div>

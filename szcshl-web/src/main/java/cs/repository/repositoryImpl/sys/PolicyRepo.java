@@ -1,5 +1,6 @@
 package cs.repository.repositoryImpl.sys;
 
+import cs.common.ResultMsg;
 import cs.domain.sys.Policy;
 import cs.model.PageModelDto;
 import cs.model.sys.PolicyDto;
@@ -22,11 +23,15 @@ public interface PolicyRepo extends IRepository<Policy,String> {
 
     /**
      * 通过Id获取文件
-     * @param oDataObj
-     * @param standardId
      * @return
      */
-    PageModelDto<PolicyDto> findFileById(ODataObj oDataObj , String standardId);
+    PageModelDto<PolicyDto> findFileById(String fileId ,  String skip, String size);
+
+    /**
+     * 删除政策指标库
+     * @param idStr
+     */
+    void deletePolicy(String idStr);
 
 
 }

@@ -4,10 +4,10 @@ import cs.ahelper.MudoleAnnotation;
 import cs.common.ResultMsg;
 import cs.model.PageModelDto;
 import cs.model.sys.PolicyDto;
-import cs.repository.odata.ODataObj;
 import cs.service.sys.PolicyService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,16 +45,22 @@ public class PolicyController {
 
     @RequestMapping(name = "通过ID查询文件" , path = "findFileById" , method = RequestMethod.POST)
     @ResponseBody
-    public PageModelDto<PolicyDto> findFileById(HttpServletRequest request, @RequestParam  String standardId){
-        ODataObj oDataObj = null;
+    public PageModelDto<PolicyDto> findFileById(String fileId ,  String skip, String size ){
+     /*   ODataObj oDataObj = null;
         PageModelDto<PolicyDto> pageModelDto = new PageModelDto<>();
         try {
             oDataObj = new ODataObj(request);
-            pageModelDto = policyService.findFileById(oDataObj , standardId);
+            pageModelDto = policyService.findFileById(fileId , skip , size);
         } catch (ParseException e) {
             e.printStackTrace();
-        }
-        return pageModelDto;
+        }*/
+        return policyService.findFileById(fileId , skip , size);
 
     }
+
+    @RequestMapping(name = "删除政策指标库" , path = "deletePolicy" , method = RequestMethod.DELETE)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+     public void deletePolicy(@RequestParam  String idStr){
+        policyService.deletePolicy(idStr);
+     }
 }

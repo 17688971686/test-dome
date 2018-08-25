@@ -26,9 +26,13 @@ public interface PolicyService {
 
     /**
      * 通过id获取文件
-     * @param oDataObj
-     * @param standardId
      * @return
      */
-    PageModelDto<PolicyDto> findFileById(ODataObj oDataObj , String standardId);
+    PageModelDto<PolicyDto> findFileById(String fileId ,  String skip, String size);
+
+    /**
+     * 删除政策指标库
+     * @param idStr
+     */
+    void deletePolicy(String idStr);
 }

@@ -46,6 +46,44 @@
             });
         }
 
+        /**
+         * 初始化文件列表
+         * @param fileId
+         */
+        vm.initFileList = function(fileId){
+            vm.standardId = fileId;
+            if(!vm.exist){
+                vm.page = lgx.page.init({
+                    id: "demo5", get: function (o) {
+                        var skip ;
+                        //oracle的分页不一样。
+                        if (o.skip != 0) {
+                            skip = o.skip + 1
+                        } else {
+                            skip = o.skip
+                        }
+                        vm.price ={};
+
+                        vm.price.skip = skip;//页码
+                        vm.price.size = o.size + o.skip;//页数
+                        policySvc.findFileByIdGrid(vm, function (data) {
+                            vm.fileList = [];
+                            if(vm.fileList){
+                                vm.fileList = data.value;
+                                vm.page.callback(data.count);//请求回调时传入总记录数
+                            }
+                            vm.exist = true;
+
+                        });
+                    }
+                });
+            }else{
+                vm.page.selPage(1);
+            }
+        }
+
+
+
         activate();
         function activate(){
             policySvc.initFileFolder($scope,function(data){
@@ -91,15 +129,15 @@
                     vm.parentFileId = treeNode.id;
                     vm.initFileList(vm.parentFileId);
                     /*if(treeNode.stardandType == "FOLDER" ){
-                        vm.policyList = [];
-                        if(treeNode.children){
-                            vm.policyList = treeNode.children;
-                        }
-                        $scope.$apply();
-                    }
-                    if(treeNode.stardandType == "FILE"){
-                        vm.fileEdit(vm.parentFileId);
-                    }*/
+                     vm.policyList = [];
+                     if(treeNode.children){
+                     vm.policyList = treeNode.children;
+                     }
+                     $scope.$apply();
+                     }
+                     if(treeNode.stardandType == "FILE"){
+                     vm.fileEdit(vm.parentFileId);
+                     }*/
                 };
 
                 //删除节点
@@ -169,7 +207,7 @@
                 });
             });
             vm.initFileUpload();
-
+            vm.initFileList('');
         }
 
         /**
@@ -207,35 +245,24 @@
         }
 
         /**
-         * 删除文件夹
+         * 删除政策指标库
          */
         vm.deleteFolder = function(){
             var zTree = $.fn.zTree.getZTreeObj("zTree");
             var nodes = zTree.getCheckedNodes();
             if(nodes != undefined && nodes.length >0){
-                // var ids = [];
                 var idStr = nodes[0].id;
-                //判断是不是选择的是父节点，如果有选择子节点，则默认传递子节点的id进行删除
-                // if (nodes.length == 1 ){
-                //     idStr = nodes[0].id;
-                // }else{
-                //     for(var i=1 ; i<nodes.length ; i++){
-                //         ids.push(nodes[i].id);
-                //     }
-                //     idStr = ids.join(',');
-                // }
-
-                bsWin.confirm("删除的文件将无法恢复，确认删除？" , function(){
-                    fileLibrarySvc.deleteRootDirectory(idStr , function(data){
-                        if(data.flag || data.reCode == 'ok'){
-                            bsWin.success("操作成功！");
-                            $state.go('policyLibrary',{},{reload:true});
-                        }else{
-                            bsWin.error(data.reMsg);
-                        }
-
+                bsWin.confirm("所有子文件将被删除，确认删除？" , function(){
+                    policySvc.deletePolicy(idStr , function(data){
+                        bsWin.alert("删除成功!");
+                        //刷新树
+                       var zTree =  $.fn.zTree.getZTreeObj("zTree");
+                       console.log(zTree);
+                        zTree.reAsyncChildNodes(null, "refresh");
                     });
                 });
+            }else{
+                bsWin.alert("请选择删除数据!");
             }
         }
 
@@ -276,7 +303,7 @@
                 fileLibrarySvc.saveFile(vm, function (data) {
                     if (data.flag || data.reCode == 'ok') {
                         bsWin.alert("保存成功！", function () {
-                           /* window.parent.$("#qualityEdit").data("kendoWindow").close();*/
+                            /* window.parent.$("#qualityEdit").data("kendoWindow").close();*/
                             vm.isUpdate=true;
                             activate();
                             vm.policyList.push(data.reObj);
@@ -366,7 +393,7 @@
         }
 
         /**
-         * 保存
+         * 保存政策指标库
          */
         vm.create = function(){
             common.initJqValidation($('#policyform'));
@@ -374,8 +401,16 @@
             if (isValid) {
                 policySvc.createPolicy(vm.fileLibrary, function (data) {
                     if (data.flag || data.reCode == 'ok') {
-                        vm.fileLibrary = data.reObj;
+                        //1、先记录当前文件类型,以及父Id 2、清空对象 3、初始化文件类型,以及父Id
+                        vm.stardandType = vm.fileLibrary.stardandType;
+                        vm.standardPId = vm.fileLibrary.standardPId;
+                        vm.fileLibrary = {};
+                        vm.fileLibrary.stardandType = vm.stardandType;
+                        vm.fileLibrary.standardPId = vm.standardPId;
                         bsWin.alert("操作成功！");
+                        //刷新树
+                        var zTree =  $.fn.zTree.getZTreeObj("zTree");
+                        zTree.reAsyncChildNodes(null, "refresh");
                     } else {
                         bsWin.alert(data.reMsg);
                     }
@@ -385,12 +420,6 @@
             }
         }
 
-        vm.initFileList = function(fileId){
-            vm.standardId = fileId;
-            policySvc.findFileById(fileId , function(data){
-                vm.fileList = data;
-            });
-        }
 
     }
 })();

@@ -68,12 +68,19 @@ public class PolicyServiceImpl implements PolicyService {
 
     /**
      * 通过ID获取文件
-     * @param oDataObj
-     * @param standardId
      * @return
      */
     @Override
-    public PageModelDto<PolicyDto> findFileById(ODataObj oDataObj, String standardId) {
-        return policyRepo.findFileById(oDataObj , standardId);
+    public PageModelDto<PolicyDto> findFileById(String fileId ,  String skip, String size) {
+        return policyRepo.findFileById(fileId , skip , size);
+    }
+
+    /**
+     * 删除政策指标库
+     * @param idStr
+     */
+    @Override
+    public void deletePolicy(String idStr) {
+        policyRepo.deletePolicy(idStr);
     }
 }
