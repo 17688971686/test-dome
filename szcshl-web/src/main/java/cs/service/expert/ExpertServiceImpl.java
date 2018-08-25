@@ -215,6 +215,7 @@ public class ExpertServiceImpl implements ExpertService {
                 //专家编码，系统自动生成
                 expert.setExpertNo(String.format("%06d", Integer.valueOf(findMaxNumber()) + 1));
                 expert.setInputPerson(SessionUtil.getDisplayName());
+                expert.setApplyDate(new Date());
                 expert.setCreatedDate(new Date());
                 //统一用用户编号，跟旧系统一致
                 expert.setCreatedBy(updateNo);

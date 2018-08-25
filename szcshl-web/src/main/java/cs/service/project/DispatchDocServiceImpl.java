@@ -204,10 +204,11 @@ public class DispatchDocServiceImpl implements DispatchDocService {
                         workProgram.setAppalyInvestment(dispatchDocDto.getDeclareValue());
                     }
                 }
+//                sign.setWorkProgramList(workProgrmList);
             }
             sign.setAppalyInvestment(dispatchDocDto.getDeclareValue());
             sign.setAuthorizeValue(dispatchDocDto.getAuthorizeValue());
-            sign.setWorkProgramList(workProgrmList);
+
             dispatchDoc.setSign(sign);
             //重新设置发文里的金额
             dispatchDoc.setDeclareValue(dispatchDocDto.getDeclareValue()); //申报
