@@ -35,6 +35,10 @@ public class HomeController {
 		return this.ctrlName + "/login";
 	}
 
+	@RequestMapping(name = "更新日志", path = "changelog")
+	public String changelog() {
+		return this.ctrlName + "/changelog";
+	}
     /**
      * 腾讯通测试
      * http://172.18.225.26:8000/sendnotify.cgi?msg=hello&receiver=%E4%BD%86%E9%BE%99

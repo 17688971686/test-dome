@@ -134,6 +134,7 @@
                 /api/** =anon
                 /sys/init =anon
                 /testRTX =anon
+                /changelog=anon
                 <!--接口-->
                 /intfc/** =anon
                 /file/printPreview/** =anon
