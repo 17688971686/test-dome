@@ -7,9 +7,11 @@ import cs.common.constants.Constant;
 import cs.common.constants.FlowConstant;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.Validate;
+import cs.domain.history.WorkProgramHis;
 import cs.domain.project.Sign;
 import cs.domain.project.Sign_;
 import cs.domain.project.WorkProgram;
+import cs.domain.project.WorkProgram_;
 import cs.model.history.WorkProgramHisDto;
 import cs.model.project.SignDto;
 import cs.model.project.WorkProgramDto;
@@ -149,36 +151,73 @@ public class WorkProgramController {
     @ResponseBody
     public Map<String,Object> initDealFlow(String wpId){
         Map<String,Object> resultMap = new HashMap<>();
-        //查询工作方案信息
-        WorkProgram workProgram = workProgramRepo.findById(wpId);
         WorkProgramDto workProgramDto = new WorkProgramDto();
-        BeanCopierUtils.copyProperties(workProgram, workProgramDto);
-        workProgramRepo.initWPMeetingExp(workProgramDto, workProgram);
+        Sign sign = null;
+        String signId = "",brandId = "";
+        /**
+         * 查询工作方案信息
+         * 1、如果通过工作方案ID可以获取得到工作方案信息，
+         * 2、如果通过工作方案ID获取不到项目，说明项目已经变为历史记录，得从历史记录中查询
+         */
+        try {
+            WorkProgram workProgram = workProgramRepo.findById(wpId);
+            if(Validate.isObject(workProgram) && Validate.isString(workProgram.getId())){
+                BeanCopierUtils.copyProperties(workProgram, workProgramDto);
+                workProgramRepo.initWPMeetingExp(workProgramDto, workProgram);
+                //项目信息
+                sign = workProgram.getSign();
+            }else{
+                WorkProgramHis his = workProgramHisService.findById(wpId);
+                if(Validate.isObject(his) && Validate.isString(his.getId())){
+                    BeanCopierUtils.copyProperties(his, workProgramDto);
+                    workProgramHisService.initWPMeetingExp(workProgramDto, his);
+                }
 
-        //项目信息
-        Sign sign = workProgram.getSign();
+                if(Validate.isString(his.getSignId())){
+                    sign = signRepo.findById(Sign_.signid.getName(),his.getSignId());
+                }
+            }
+        }catch (Exception e){
+            WorkProgramHis his = workProgramHisService.findById(wpId);
+            if(Validate.isObject(his) && Validate.isString(his.getId())){
+                BeanCopierUtils.copyProperties(his, workProgramDto);
+                workProgramHisService.initWPMeetingExp(workProgramDto, his);
+            }
+
+            if(Validate.isString(his.getSignId())){
+                sign = signRepo.findById(Sign_.signid.getName(),his.getSignId());
+            }
+        }
+
         if(Validate.isObject(sign) && Validate.isString(sign.getSignid())){
             SignDto signDto = new SignDto();
             BeanCopierUtils.copyProperties(sign,signDto);
             resultMap.put("SignDto",signDto);
+            signId = sign.getSignid();
         }
 
-        //如果不是主工作方案，还要查询主工作方案信息
-        if(!ProjUtil.isMainBranch(workProgram.getBranchId())){
-            WorkProgram mainWP = workProgramRepo.findBySignIdAndBranchId(workProgram.getSign().getSignid(), FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue(), false);
-            if(Validate.isObject(mainWP)){
-                WorkProgramDto mainWPDto = new WorkProgramDto();
-                BeanCopierUtils.copyProperties(mainWP,mainWPDto);
-                workProgramDto.setMainWorkProgramDto(mainWPDto);
+        if(Validate.isObject(workProgramDto)){
+            brandId = workProgramDto.getBranchId();
+        }
+
+        if(Validate.isString(signId) && Validate.isString(brandId)){
+            //如果不是主工作方案，还要查询主工作方案信息
+            if(!ProjUtil.isMainBranch(brandId)){
+                WorkProgram mainWP = workProgramRepo.findBySignIdAndBranchId(signId, FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue(), false);
+                if(Validate.isObject(mainWP)){
+                    WorkProgramDto mainWPDto = new WorkProgramDto();
+                    BeanCopierUtils.copyProperties(mainWP,mainWPDto);
+                    workProgramDto.setMainWorkProgramDto(mainWPDto);
+                }
+            }
+            resultMap.put("WorkProgramDto",workProgramDto);
+            //历史工作方案记录
+            List<WorkProgramHisDto> wpHisDtoList = workProgramHisService.findBySignAndBranch(signId,brandId);
+            if(Validate.isList(wpHisDtoList)){
+                resultMap.put("WorkProgramHisDtoList",wpHisDtoList);
             }
         }
 
-        resultMap.put("WorkProgramDto",workProgramDto);
-        //历史工作方案记录
-        List<WorkProgramHisDto> wpHisDtoList = workProgramHisService.findBySignAndBranch(sign.getSignid(),workProgram.getBranchId());
-        if(Validate.isList(wpHisDtoList)){
-            resultMap.put("WorkProgramHisDtoList",wpHisDtoList);
-        }
         return resultMap;
     }
     @RequiresAuthentication

@@ -1,17 +1,21 @@
 package cs.service.history;
 
-import cs.common.constants.SysConstants;
 import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.DateUtils;
 import cs.common.utils.Validate;
 import cs.domain.expert.ExpertReview;
-import cs.domain.history.ExpertReviewHis;
-import cs.domain.history.RoomBookingHis;
-import cs.domain.history.WorkProgramHis;
+import cs.domain.history.*;
 import cs.domain.meeting.RoomBooking;
 import cs.domain.meeting.RoomBooking_;
 import cs.domain.project.WorkProgram;
 import cs.domain.project.WorkProgram_;
+import cs.model.expert.ExpertDto;
+import cs.model.expert.ExpertSelectedDto;
+import cs.model.history.ExpertSelectedHisDto;
+import cs.model.history.RoomBookingHisDto;
 import cs.model.history.WorkProgramHisDto;
+import cs.model.meeting.RoomBookingDto;
+import cs.model.project.WorkProgramDto;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.repository.repositoryImpl.expert.ExpertSelConditionRepo;
 import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
@@ -21,7 +25,6 @@ import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import cs.sql.MeettingSql;
 import cs.sql.ReviewSql;
 import cs.sql.WorkSql;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -167,5 +170,41 @@ public class WorkProgramHisServiceImpl implements WorkProgramHisService {
             return resultList;
         }
         return null;
+    }
+
+    @Override
+    public WorkProgramHis findById(String wpId) {
+        return workProgramHisRepo.findById(wpId);
+    }
+
+    @Override
+    public void initWPMeetingExp(WorkProgramDto workProgramDto, WorkProgramHis his) {
+        //1、初始化会议室预定情况
+        List<RoomBookingHis> roomBookings = roomBookingHisRepo.findByIds(RoomBooking_.businessId.getName(), his.getId(), null);
+        if (Validate.isList(roomBookings)) {
+            List<RoomBookingDto> roomBookingDtos = new ArrayList<>(roomBookings.size());
+            roomBookings.forEach(r -> {
+                RoomBookingDto rbDto = new RoomBookingDto();
+                BeanCopierUtils.copyProperties(r, rbDto);
+                rbDto.setBeginTimeStr(DateUtils.converToString(rbDto.getBeginTime(), "HH:mm"));
+                rbDto.setEndTimeStr(DateUtils.converToString(rbDto.getEndTime(), "HH:mm"));
+                roomBookingDtos.add(rbDto);
+            });
+            workProgramDto.setRoomBookingDtos(roomBookingDtos);
+        }
+        //2、拟聘请专家
+        List<ExpertSelectedHis> expertSelectedList = expertSelectedHisRepo.findByIds(ExpertSelectedHis_.businessId.getName(),his.getId(), null);
+        if(Validate.isList(expertSelectedList)){
+            List<ExpertSelectedDto> expertSelectedHisDtoList = new ArrayList<>();
+            expertSelectedList.forEach(x -> {
+                ExpertSelectedDto expertSelectedDto = new ExpertSelectedDto();
+                BeanCopierUtils.copyProperties(x, expertSelectedDto);
+                ExpertDto expertDto = new ExpertDto();
+                BeanCopierUtils.copyProperties(x.getExpert(), expertDto);
+                expertSelectedDto.setExpertDto(expertDto);
+                expertSelectedHisDtoList.add(expertSelectedDto);
+            });
+            workProgramDto.setExpertSelectedDtoList(expertSelectedHisDtoList);
+        }
     }
 }

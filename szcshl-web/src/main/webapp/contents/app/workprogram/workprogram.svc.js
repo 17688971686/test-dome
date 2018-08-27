@@ -41,7 +41,7 @@
                 method: 'post',
                 url: rootPath + "/workprogram/initDealFlow",
                 params: {
-                    wpId : vm.businessKey,
+                    wpId : vm.businessKey
                 },
             }
             var httpSuccess = function success(response) {

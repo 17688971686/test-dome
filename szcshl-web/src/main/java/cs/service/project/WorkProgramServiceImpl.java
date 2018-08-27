@@ -844,6 +844,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             }
             workProgram.setModifiedBy(SessionUtil.getDisplayName());
             workProgram.setModifiedDate(new Date());
+            workProgram.setState(EnumState.YES.getValue());
             workProgramRepo.save(workProgram);
 
             if(EnumState.YES.getValue().equals(workProgram.getBaseInfo())){

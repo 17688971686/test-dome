@@ -3,7 +3,6 @@ package cs.sql;
 import cs.ahelper.projhelper.ProjUtil;
 import cs.common.HqlBuilder;
 import cs.common.constants.Constant;
-import cs.domain.project.WorkProgram;
 import cs.domain.project.WorkProgram_;
 
 /**
@@ -32,7 +31,7 @@ public class WorkSql {
         sqlBuilder.append(" EXPERTTYPE,EXPERTSEQ,ISCONFRIM,ISJOIN,ISLETTERRW,ISSPLIT,");
         sqlBuilder.append(" MAJORBIG,MAJORSMALL,ONECOST,REMARK,REVIEWCOST, REVIEWTAXES,");
         sqlBuilder.append(" SCORE,SELECTINDEX,SELECTTYPE,TOTALCOST,EXPERTREVIEWID,EXPERTID)");
-        sqlBuilder.append(" SELECT sel.ID,sel.BUSINESSID,sel.COMPOSITESCORE,sel.COMPOSITESCOREEND,");
+        sqlBuilder.append(" SELECT sys_guid(),sel.BUSINESSID,sel.COMPOSITESCORE,sel.COMPOSITESCOREEND,");
         sqlBuilder.append(" sel.CONDITIONID,sel.CREATEBY,sel.DESCRIBES,sel.EXPERTTYPE,sel.EXPERTSEQ,");
         sqlBuilder.append(" sel.ISCONFRIM,sel.ISJOIN,sel.ISLETTERRW,sel.ISSPLIT,sel.MAJORBIG,");
         sqlBuilder.append(" sel.MAJORSMALL,sel.ONECOST,sel.REMARK,sel.REVIEWCOST,sel.REVIEWTAXES,");
@@ -49,7 +48,7 @@ public class WorkSql {
         sqlBuilder.append(" INSERT INTO CS_HIS_EXPERT_REVIEW (ID,CREATEDBY,CREATEDDATE,MODIFIEDBY,MODIFIEDDATE,BUSINESSID,");
         sqlBuilder.append(" BUSINESSTYPE,EXPRETCOUNT,EXTRACTINFO,FINISHEXTRACT,PAYDATE,REVIEWCOST,REVIEWDATE,");
         sqlBuilder.append(" REVIEWTAXES,REVIEWTITLE,SELECTINDEX,STATE,TOTALCOST) ");
-        sqlBuilder.append(" SELECT cer.ID,cer.CREATEDBY,cer.CREATEDDATE,cer.MODIFIEDBY,cer.MODIFIEDDATE,cer.BUSINESSID,");
+        sqlBuilder.append(" SELECT sys_guid(),cer.CREATEDBY,cer.CREATEDDATE,cer.MODIFIEDBY,cer.MODIFIEDDATE,cer.BUSINESSID,");
         sqlBuilder.append(" cer.BUSINESSTYPE,cer.EXPRETCOUNT,cer.EXTRACTINFO,cer.FINISHEXTRACT,cer.PAYDATE,cer.REVIEWCOST,");
         sqlBuilder.append(" cer.REVIEWDATE,cer.REVIEWTAXES,cer.REVIEWTITLE,cer.SELECTINDEX,cer.STATE,cer.TOTALCOST");
         sqlBuilder.append(" FROM CS_EXPERT_REVIEW cer WHERE cer.ID = :reviewId ");
@@ -62,7 +61,7 @@ public class WorkSql {
         sqlBuilder.append(" INSERT INTO CS_HIS_EXPERT_CONDITION (ID,ALTERNATIVENUM,BUSINESSID,COMPOSITESCORE,");
         sqlBuilder.append(" COMPOSITESCOREEND, CREATEBY,EXPERTTYPE,MAJORBIG,MAJORSMALL,OFFICIALNUM,");
         sqlBuilder.append(" SELECTINDEX,SORT,EXPERTREVIEWID)");
-        sqlBuilder.append(" SELECT sec.ID,sec.ALTERNATIVENUM,sec.BUSINESSID,sec.COMPOSITESCORE,sec.COMPOSITESCOREEND,");
+        sqlBuilder.append(" SELECT sys_guid(),sec.ALTERNATIVENUM,sec.BUSINESSID,sec.COMPOSITESCORE,sec.COMPOSITESCOREEND,");
         sqlBuilder.append(" sec.CREATEBY,sec.EXPERTTYPE,sec.MAJORBIG,sec.MAJORSMALL,sec.OFFICIALNUM,sec.SELECTINDEX,");
         sqlBuilder.append(" sec.SORT,sec.EXPERTREVIEWID FROM CS_EXPERT_CONDITION sec WHERE sec.BUSINESSID = :businessId");
         sqlBuilder.setParam("businessId",businessId);
@@ -142,7 +141,7 @@ public class WorkSql {
      */
     public static HqlBuilder updateSeleBusinessId(String oldBusinessId, String newBusinessId) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append(" UPDATE CS_HIS_EXPERT_SELECTED SET BUSINESSID = :newBusinessid where BUSINESSID = :oldBusinessId ");
+        sqlBuilder.append(" UPDATE CS_EXPERT_SELECTED SET BUSINESSID = :newBusinessid where BUSINESSID = :oldBusinessId ");
         sqlBuilder.setParam("newBusinessid",newBusinessId).setParam("oldBusinessId",oldBusinessId);
         return sqlBuilder;
     }
