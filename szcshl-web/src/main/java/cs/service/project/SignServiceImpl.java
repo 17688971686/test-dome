@@ -47,10 +47,7 @@ import cs.service.sys.CompanyService;
 import cs.service.sys.SysConfigService;
 import cs.service.sys.UserService;
 import cs.service.sys.WorkdayService;
-import cs.sql.FileRecordSql;
-import cs.sql.ProjSql;
-import cs.sql.ReviewSql;
-import cs.sql.WorkSql;
+import cs.sql.*;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
@@ -505,13 +502,14 @@ public class SignServiceImpl implements SignService {
         BeanCopierUtils.copyProperties(sign, signDto);
         //查询所有的属性
         if (queryAll) {
-            if (Validate.isList(sign.getWorkProgramList())) {
+            List<WorkProgram> workProgramList = ProjUtil.filterEnableWP(sign.getWorkProgramList());
+            if (Validate.isList(workProgramList)) {
                 boolean isMergeReview = false;
-                int totalL = sign.getWorkProgramList().size();
+                int totalL = workProgramList.size();
                 WorkProgram workProgram = null;
                 //判断是否是合并评审项目，如果是，则要获取合并评审信息
                 if (totalL == 1) {
-                    workProgram = sign.getWorkProgramList().get(0);
+                    workProgram = workProgramList.get(0);
                     if(!EnumState.YES.getValue().equals(workProgram.getBaseInfo()) ){
                         // 合并评审
                         if (Constant.MergeType.REVIEW_MERGE.getValue().equals(workProgram.getIsSigle())) {
@@ -532,7 +530,7 @@ public class SignServiceImpl implements SignService {
                                 signDto.setWorkProgramDtoList(workProgramDtoList);
                                 //次项目
                             } else {
-                                List<WorkProgramDto> workProgramDtoList = new ArrayList<>(sign.getWorkProgramList().size());
+                                List<WorkProgramDto> workProgramDtoList = new ArrayList<>(totalL);
                                 //查找主项目信息，并且获取主项目的会议室信息和专家信息
                                 WorkProgram wp = workProgramRepo.findMainReviewWP(signid);
                                 WorkProgramDto workProgramDto = new WorkProgramDto();
@@ -553,7 +551,7 @@ public class SignServiceImpl implements SignService {
                     if (totalL > 1) {
                         //遍历第一遍，先找出主分支工作方案
                         for (int i = 0; i < totalL; i++) {
-                            WorkProgram wp = sign.getWorkProgramList().get(i);
+                            WorkProgram wp = workProgramList.get(i);
                             if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(wp.getBranchId())) {
                                 mainW = wp;
                                 break;
@@ -562,7 +560,7 @@ public class SignServiceImpl implements SignService {
                     }
 
                     for (int i = 0; i < totalL; i++) {
-                        workProgram = sign.getWorkProgramList().get(i);
+                        workProgram = workProgramList.get(i);
                         //判断是否是项目基本信息
                         if(EnumState.YES.getValue().equals(workProgram.getBaseInfo())){
                             ProjBaseInfoDto projBaseInfoDto = new ProjBaseInfoDto();
@@ -816,7 +814,8 @@ public class SignServiceImpl implements SignService {
         OrgDept orgDept = null;                     //部门和小组
         boolean isNextUser = false,                 //是否是下一环节处理人（主要是处理领导审批，目前主要有三个地方，部长审批工作方案，部长审批发文和分管领导审批发文）
                 isAgentTask = agentTaskService.isAgentTask(task.getId(),curUserId),
-                isMergeDisTask = false;             //是否合并发文任务
+                isMergeDisTask = false,             //是否合并发文任务
+                isCompeleteSign = true;             //是否完成所有会签
         List<AgentTask> agentTaskList = new ArrayList<>();
         //取得之前的环节处理人信息
         Map<String, Object> variables = new HashMap<>();
@@ -1444,7 +1443,9 @@ public class SignServiceImpl implements SignService {
                             variables.put(FlowConstant.SignFlowParams.USER_BZ1.getValue(), assigneeValue);
                         }
                         flowDto.setDealOption(flowDto.getDealOption() + "【审批结果：核稿无误】");
-                        //如果不同意，则流程回到发文申请环节
+
+                        isCompeleteSign = ProjUtil.checkSignComplete(taskService.getVariables(task.getId()),1);
+                    //如果不同意，则流程回到发文申请环节
                     } else {
                         variables.put(FlowConstant.SignFlowParams.HAVE_XB.getValue(), null);
                         variables.put(FlowConstant.SignFlowParams.XMFZR_SP.getValue(), false);
@@ -1468,6 +1469,7 @@ public class SignServiceImpl implements SignService {
                     assigneeValue = getMainDirecotr(signid, agentTaskList, FLOW_SIGN_BMLD_QRFW);
                     variables.put(FlowConstant.SignFlowParams.USER_BZ1.getValue(), assigneeValue);
                     flowDto.setDealOption(flowDto.getDealOption() + "【审批结果：核稿无误】");
+                    isCompeleteSign = ProjUtil.checkSignComplete(taskService.getVariables(task.getId()),1);
                 //如果不同意，则回退到发文环节
                 } else {
                     variables.put(FlowConstant.SignFlowParams.XBBZ_SP.getValue(), false);
@@ -1885,7 +1887,7 @@ public class SignServiceImpl implements SignService {
                 }
             }
 
-            if (isNextUser == false) {
+            if (isNextUser == false && isCompeleteSign) {
                 //放入腾讯通消息缓冲池
                 RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
             }
@@ -1986,6 +1988,8 @@ public class SignServiceImpl implements SignService {
         signRepo.executeSql(WorkSql.updateHisFlowName(sign.getSignid(),newProjectName));
         //存档项目名称
         signRepo.executeSql(FileRecordSql.updateProjNameSql(sign.getSignid(),newProjectName));
+        //会议名称修改
+        signRepo.executeSql(MeettingSql.updateProjNameSql(sign.getSignid(),newProjectName));
     }
 
     /**
@@ -2500,7 +2504,7 @@ public class SignServiceImpl implements SignService {
         //只能是生成发文编号后的项目
         sqlBuilder.append(" and s." + SignDispaWork_.processState.getName() + " >= " + Constant.SignProcessState.END_DIS_NUM.getValue() + " ");
         //排除已经进行了关联的项目
-        sqlBuilder.append(" and s.signid not in( select ASSOCIATE_SIGNID from CS_ASSOCIATE_SIGN) ");
+        /*sqlBuilder.append(" and s.signid not in( select ASSOCIATE_SIGNID from CS_ASSOCIATE_SIGN) ");*/
         //项目建议书 或资金申请
         if (Constant.STAGE_SUG.equals(reviewstage) || Constant.APPLY_REPORT.equals(reviewstage)) {
             sqlBuilder.append(" and s." + SignDispaWork_.reviewstage.getName() + "=:reviewStage ");
@@ -2910,7 +2914,7 @@ public class SignServiceImpl implements SignService {
         signBranchRepo.executeSql(sqlBuilder2);
 
         //3、删除工作方案、会议室、专家评审方案
-        List<WorkProgram> workProgramList = sign.getWorkProgramList();
+        List<WorkProgram> workProgramList = ProjUtil.filterEnableWP(sign.getWorkProgramList());
         if (Validate.isList(workProgramList)) {
             List<WorkProgram> deleteWPList = new ArrayList<>();
             String deleteWPId = null;             //删除工作方案ID
@@ -3050,10 +3054,11 @@ public class SignServiceImpl implements SignService {
                 } else {
                     SignDto signDto = new SignDto();
                     BeanCopierUtils.copyProperties(sign, signDto);
+                    List<WorkProgram> workProgramList = ProjUtil.filterEnableWP(sign.getWorkProgramList());
                     //只获取主工作方案
-                    if (Validate.isList(sign.getWorkProgramList())) {
+                    if (Validate.isList(workProgramList)) {
                         List<WorkProgramDto> workProgramDtoList = new ArrayList<>();
-                        WorkProgram mainWP = sign.getWorkProgramList().stream().filter(item->FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(item.getBranchId())).findFirst().get();
+                        WorkProgram mainWP = workProgramList.stream().filter(item->FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(item.getBranchId())).findFirst().get();
                         if(Validate.isObject(mainWP)){
                             if(EnumState.YES.getValue().equals(mainWP.getBaseInfo())){
 

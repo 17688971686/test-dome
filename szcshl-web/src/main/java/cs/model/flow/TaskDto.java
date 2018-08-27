@@ -28,7 +28,9 @@ public class TaskDto {
     private String parentTaskId;
     //流程实例ID
     private String processInstanceId;
+
     private String processDefinitionId;
+
     private String taskDefinitionKey;
     //开始日期
     @JSONField(format = "yyyy-MM-dd")

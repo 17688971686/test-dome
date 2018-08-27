@@ -1811,20 +1811,20 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         criteria.add(Restrictions.eq(ExpertSelected_.isConfrim.getName(), Constant.EnumState.YES.getValue()));
         criteria.add(Restrictions.eq(ExpertSelected_.isJoin.getName(), Constant.EnumState.YES.getValue()));
         criteria.addOrder(Property.forName(ExpertSelected_.expertSeq.getName()).asc());
+
         List<ExpertSelected> expertSelectedList = criteria.list();
         List<ExpertSelectedDto> expertSelectedDtoList = new ArrayList<>();
-        if (Validate.isString(businessID)) {
-            if (expertSelectedList != null && expertSelectedList.size() > 0) {
-                expertSelectedList.forEach(x -> {
-                    ExpertSelectedDto expertSelectedDto = new ExpertSelectedDto();
-                    BeanCopierUtils.copyProperties(x, expertSelectedDto);
-                    ExpertDto expertDto = new ExpertDto();
+        if (Validate.isList(expertSelectedList)) {
+            expertSelectedList.forEach(x -> {
+                ExpertSelectedDto expertSelectedDto = new ExpertSelectedDto();
+                BeanCopierUtils.copyProperties(x, expertSelectedDto);
+                ExpertDto expertDto = new ExpertDto();
+                if(Validate.isObject(x.getExpert())){
                     BeanCopierUtils.copyProperties(x.getExpert(), expertDto);
                     expertSelectedDto.setExpertDto(expertDto);
-                    expertSelectedDtoList.add(expertSelectedDto);
-                });
-            }
-
+                }
+                expertSelectedDtoList.add(expertSelectedDto);
+            });
         }
         return expertSelectedDtoList;
     }

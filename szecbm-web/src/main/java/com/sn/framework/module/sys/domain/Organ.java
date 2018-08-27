@@ -18,7 +18,6 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "cs_sys_organ")
-@Data
 public class Organ extends DomainBase {
 
     private static final long serialVersionUID = -3935935708897224976L;
@@ -79,15 +78,39 @@ public class Organ extends DomainBase {
     @Column(name = "remark")
     private String remark;
     /**
-     * 主要领导
+     * 部长
      */
-    @Column
+    @Column(length = 64)
     private String organLead;
+
     /**
-     * 分管员
+     * 部长ID
      */
-    @Column
+    @Column(length = 64)
+    private String organLeadId;
+    /**
+     * 分管领导
+     */
+    @Column(length = 64)
     private String organManage;
+
+    /**
+     * 分管领导ID
+     */
+    @Column(length = 64)
+    private String organManageId;
+
+    /**
+     * 主任
+     */
+    @Column(length = 64)
+    private String orgMLeader;
+
+    /**
+     * 主任ID
+     */
+    @Column(length = 64)
+    private String orgMLeaderId;
     /**
      * 主要领导电话
      */
@@ -133,4 +156,175 @@ public class Organ extends DomainBase {
         this.parentId = parentId;
     }
 
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public String getOrganId() {
+        return organId;
+    }
+
+    public void setOrganId(String organId) {
+        this.organId = organId;
+    }
+
+    public String getOrganCode() {
+        return organCode;
+    }
+
+    public void setOrganCode(String organCode) {
+        this.organCode = organCode;
+    }
+
+    public String getOrganName() {
+        return organName;
+    }
+
+    public void setOrganName(String organName) {
+        this.organName = organName;
+    }
+
+    public String getShortName() {
+        return shortName;
+    }
+
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
+    }
+
+    public String getOrganRel() {
+        return organRel;
+    }
+
+    public void setOrganRel(String organRel) {
+        this.organRel = organRel;
+    }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
+
+    public String getOrganType() {
+        return organType;
+    }
+
+    public void setOrganType(String organType) {
+        this.organType = organType;
+    }
+
+    public String getOrganNature() {
+        return organNature;
+    }
+
+    public void setOrganNature(String organNature) {
+        this.organNature = organNature;
+    }
+
+    public String getOrganRegion() {
+        return organRegion;
+    }
+
+    public void setOrganRegion(String organRegion) {
+        this.organRegion = organRegion;
+    }
+
+    public int getOrganDataType() {
+        return organDataType;
+    }
+
+    public void setOrganDataType(int organDataType) {
+        this.organDataType = organDataType;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public String getOrganLead() {
+        return organLead;
+    }
+
+    public void setOrganLead(String organLead) {
+        this.organLead = organLead;
+    }
+
+    public String getOrganLeadId() {
+        return organLeadId;
+    }
+
+    public void setOrganLeadId(String organLeadId) {
+        this.organLeadId = organLeadId;
+    }
+
+    public String getOrganManage() {
+        return organManage;
+    }
+
+    public void setOrganManage(String organManage) {
+        this.organManage = organManage;
+    }
+
+    public String getOrganManageId() {
+        return organManageId;
+    }
+
+    public void setOrganManageId(String organManageId) {
+        this.organManageId = organManageId;
+    }
+
+    public String getOrgMLeader() {
+        return orgMLeader;
+    }
+
+    public void setOrgMLeader(String orgMLeader) {
+        this.orgMLeader = orgMLeader;
+    }
+
+    public String getOrgMLeaderId() {
+        return orgMLeaderId;
+    }
+
+    public void setOrgMLeaderId(String orgMLeaderId) {
+        this.orgMLeaderId = orgMLeaderId;
+    }
+
+    public String getLeadPhone() {
+        return leadPhone;
+    }
+
+    public void setLeadPhone(String leadPhone) {
+        this.leadPhone = leadPhone;
+    }
+
+    public String getManagePhone() {
+        return managePhone;
+    }
+
+    public void setManagePhone(String managePhone) {
+        this.managePhone = managePhone;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
+
+    public Set<Resource> getResources() {
+        return resources;
+    }
+
+    public void setResources(Set<Resource> resources) {
+        this.resources = resources;
+    }
 }

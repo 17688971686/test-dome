@@ -11,7 +11,6 @@
         var attachments_url = util.formatUrl("sys/sysfile");
 
         return {
-
             bsTableControlForManagement: function (vm, searchUrl, filter) {
                 vm.bsTableControlForManagement = {
                     options: util.getTableFilterOption({
@@ -66,8 +65,7 @@
                             field: 'reviewStage',
                             title: '评审阶段',
                             width: 100,
-                            filterControl: 'dict',
-                            filterData: 'DICT.REVIEWSTAGE.dicts.PRO_STAGE'
+                            filterControl: 'input',
                         }, {
                             field: 'proUnit',
                             title: '项目单位',
@@ -78,8 +76,7 @@
                             field: 'reviewDept',
                             title: '评审部门',
                             width: 90,
-                            filterControl: 'dict',
-                            filterData: 'DICT.DEPT.dicts.TRANSACT_DEPARTMENT'
+                            filterControl: 'input',
                         }, {
                             field: 'mainUserName',
                             title: '第一负责人',
@@ -130,26 +127,9 @@
             rsTableControl : function rsTableControl(vm) {
                 vm.rsTableControl = {
                     options: util.getTableOption({
-                 /*       queryParams: function (params) {
-                            var filters = params.filter;
-                            var me = this,
-                                _params = {
-                                    "$skip": params.offset,
-                                    "$top": params.limit,
-                                    "$orderby": !params.sort ? me.defaultSort : (params.sort + " " + params.order),
-                                    "$filter": filters.length ==0 ? "" :$.toOdataFilter({
-                                        logic:"and",
-                                        filters:filters
-                                    })
-                                };
-                            if (me.pagination) {
-                                _params["$inlinecount"] = "allpages";
-                            }
-                            vm.tableParams = _params;
-                            return _params;
-                        },*/
                         url: url_management + ("/proInfo" || ""),
                         defaultSort: "createdDate desc",
+                        filterForm:"#filterForm",
                         columns: [{
                             title: '序号',
                             switchable: false,
@@ -174,9 +154,7 @@
                             formatter: '<a href="#/projectManageView/{{row.id}}/view" style="color:blue">{{row.projectName}}</a>'
                         }, {
                             field: 'reviewStage',
-                            title: '评审阶段',
-                            filterControl: 'dict',
-                            filterData: 'DICT.REVIEWSTAGE.dicts.PRO_STAGE',
+                            title: '评审阶段2222',
                             width: 100,
                         }, {
                             field: 'proUnit',
@@ -186,8 +164,7 @@
                             field: 'reviewDept',
                             title: '评审部门',
                             width: 90,
-                            filterControl: 'dict',
-                            filterData: 'DICT.DEPT.dicts.TRANSACT_DEPARTMENT'
+                            filterControl: 'input',
                         }, {
                             field: 'mainUserName',
                             title: '第一负责人',
@@ -239,6 +216,7 @@
                         options: util.getTableOption({
                             url: url_management + ("/cancelInfo" || ""),
                             defaultSort: "createdDate desc",
+                            filterForm:"#filterForm",
                             columns: [{
                                 title: '序号',
                                 switchable: false,
@@ -461,6 +439,11 @@
             },
             findOrgUser: function (fn) {
                 $http.get(url_user + "/findUsersByOrgId").success(function (data) {
+                    fn(data)
+                });
+            },
+            findAllOrgDelt : function(fn){
+                $http.get("sys/organ/findAllOrgDept").success(function (data) {
                     fn(data)
                 });
             }

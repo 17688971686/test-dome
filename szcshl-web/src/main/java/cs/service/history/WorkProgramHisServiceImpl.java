@@ -18,6 +18,7 @@ import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
 import cs.repository.repositoryImpl.history.*;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
+import cs.sql.ReviewSql;
 import cs.sql.WorkSql;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -60,8 +61,8 @@ public class WorkProgramHisServiceImpl implements WorkProgramHisService {
         BeanCopierUtils.copyProperties(workProgram,workProgramHis);
         workProgramHis.setSignId(signId);
         workProgramHisRepo.save(workProgramHis);
-        //用hql删除
-        workProgramRepo.deleteById(WorkProgram_.id.getName(),workProgram.getId());
+        //用hql删除(原有的工作方案不删除)
+        //workProgramRepo.deleteById(WorkProgram_.id.getName(),workProgram.getId());
 
         //2、会议预定留痕
         List<String> idList = new ArrayList<>();
@@ -75,28 +76,30 @@ public class WorkProgramHisServiceImpl implements WorkProgramHisService {
             }).collect(Collectors.toList());
             roomBookingHisRepo.bathUpdate(roomBookingHisList);
         }
-        if(Validate.isList(idList)){
+
+       /* 原有记录不删除
+       if(Validate.isList(idList)){
             roomBookingRepo.deleteById(RoomBooking_.id.getName(),StringUtils.join(idList.toArray(), SysConstants.SEPARATE_COMMA));
-        }
+        }*/
 
         boolean isHaveExpertReview = false;
         ExpertReviewHis expertReviewHis = null;
         //3、专家抽取方案
         ExpertReview expertReview = expertReviewRepo.findByBusinessId(signId);
-        if(Validate.isObject(expertReview)){
+        if(Validate.isObject(expertReview) && Validate.isString(expertReview.getId())){
             isHaveExpertReview = true;
             expertReviewHis = expertReviewHisRepo.findByBusinessId(signId);
             if(!Validate.isObject(expertReviewHis) || !Validate.isString(expertReviewHis.getId())){
-                expertReviewHis = new ExpertReviewHis();
-                BeanCopierUtils.copyProperties(expertReview,expertReviewHis);
-                expertReviewHis.setId(null);
-                expertReviewHisRepo.save(expertReviewHis);
+                expertSelectedHisRepo.executeSql(WorkSql.copyExpertReview(expertReview.getId()));
             }
+            //重置评审方案整体抽取方案（包括专家抽取，评审费发放等）
+            expertReviewRepo.executeSql(ReviewSql.resetAllExtract(expertReview.getId()));
         }
         if(isHaveExpertReview){
             //直接通过语句复制
             expertSelectedHisRepo.executeSql(WorkSql.copyExpertSelected(workProgram.getId()));
-            expertSelectedRepo.deleteByBusinessId(workProgram.getId());
+           /* 原有记录不删除
+           expertSelectedRepo.deleteByBusinessId(workProgram.getId());*/
 
             //4、选择的专家留痕
             /*List<ExpertSelected> expertSelectedList = expertSelectedRepo.findAllByBusinessId(workProgram.getId());
@@ -116,7 +119,8 @@ public class WorkProgramHisServiceImpl implements WorkProgramHisService {
             }*/
 
             expertSelConditionHisRepo.executeSql(WorkSql.copyExpertCondition(workProgram.getId()));
-            expertSelConditionRepo.deleteByBusinessId(workProgram.getId());
+            /*原有记录不删除
+            expertSelConditionRepo.deleteByBusinessId(workProgram.getId());*/
 
             //5、抽取条件留痕
            /* List<ExpertSelCondition> expertSelConditionList = expertSelConditionRepo.findAllByBusinessId(workProgram.getId());
@@ -131,7 +135,6 @@ public class WorkProgramHisServiceImpl implements WorkProgramHisService {
                 expertSelConditionRepo.deleteByBusinessId(workProgram.getId());
             }*/
         }
-
         return true;
     }
 

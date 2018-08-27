@@ -62,8 +62,8 @@ spring:
 # shiro权限配置
 sn:
   multipart:
-    disk-path: C:\Users\Administrator\Desktop\upload
-  default-password: gxbs.2018
+    disk-path: D:\upload
+  default-password: 1
 
 security.basic.enabled: false
 management.security.enabled: false

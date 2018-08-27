@@ -12,6 +12,7 @@
             etasksGrid: etasksGrid,		                //办结项目
             dtasksGrid: dtasksGrid,                     //在办项目
             doingTaskGrid: doingTaskGrid,               //在办任务
+            endTaskGrid : endTaskGrid,                  //办结任务
             personMainTasksGrid: personMainTasksGrid,   //个人经办项目
             countWorakday: countWorakday,	            //计算工作日
             agendaTaskGrid: agendaTaskGrid,             //个人待办任务（除项目流程外）
@@ -23,10 +24,6 @@
             getHomeInfo: getHomeInfo,                   //初始化首页待办任务和通知公告方法
             getHomeProjInfo:getHomeProjInfo,            //获取首页统计信息
             getHomeMeetInfo:getHomeMeetInfo,            //获取首页会议和调研时间统计信息
-        /* initAnnountment: initAnnountment,	    //初始化通知公告栏
-             findendTasks: findendTasks,                //已办项目列表
-             findtasks: findtasks,                      //待办项目列表
-             findHomePluginFile :findHomePluginFile,    //获取首页安装文件*/
             excelExport: excelExport,                   //项目统计导出
             statisticalGrid: statisticalGrid,           //(停用)
             workName: workName,                         //获取流程列表
@@ -159,83 +156,6 @@
             });
 
         }//end countWorakday
-
-        //begin initAnnountment
-        /*function initAnnountment(vm) {
-         vm.i = 1;
-         var httpOptions = {
-         method: "get",
-         url: rootPath + "/annountment/getHomePageAnnountment"
-         }
-
-         var httpSuccess = function success(response) {
-         vm.annountmentList = response.data;
-         }
-
-         common.http({
-         vm: vm,
-         $http: $http,
-         httpOptions: httpOptions,
-         success: httpSuccess
-         });
-
-         }*///end initAnnountment
-
-        //S_获取本地安装包
-        /*function findHomePluginFile(vm){
-         var httpOptions = {
-         method: "post",
-         url: rootPath + "/file/listHomeFile"
-         }
-         var httpSuccess = function success(response) {
-         vm.pluginFileList = {};
-         vm.pluginFileList = response.data;
-         }
-         common.http({
-         vm: vm,
-         $http: $http,
-         httpOptions: httpOptions,
-         success: httpSuccess
-         });
-         }*///E_findHomePluginFile
-
-        //查找待办
-        /* function findtasks(vm) {
-         var httpOptions = {
-         method: "post",
-         url: rootPath + "/flow/getMyHomeTasks"
-         }
-         var httpSuccess = function success(response) {
-         vm.tasksList = {};
-         vm.tasksList = response.data;
-         }
-         common.http({
-         vm: vm,
-         $http: $http,
-         httpOptions: httpOptions,
-         success: httpSuccess
-         });
-         }*/
-
-        //查找已办
-        /*function findendTasks(vm) {
-         vm.endTasksList = {};
-         var httpOptions = {
-         method: "post",
-         url: rootPath + "/flow/getMyHomeEndTask"
-         }
-
-         var httpSuccess = function success(response) {
-         vm.endTasksList = response.data;
-         }
-
-         common.http({
-         vm: vm,
-         $http: $http,
-         httpOptions: httpOptions,
-         success: httpSuccess
-         });
-         }*/
 
         //begin initFile
         function initFile(vm) {
@@ -1466,30 +1386,127 @@
             };
         }//E_agendaTaskGrid
 
+        //S_个人经办办结任务
+        function endTaskGrid(vm){
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(rootPath + "/flow/queryEndTask",$("#endTaskForm"),vm.gridParams,false),
+                schema: common.kendoGridConfig().schema({
+                    id: "id",
+                    fields: {
+                        createdDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize : vm.queryParams.pageSize||10,
+                page:vm.queryParams.page||1,
+                sort: {
+                    field: "endDate",
+                    dir: "desc"
+                }
+            });
+            var columns = [
+                {
+                    field: "",
+                    title: "序号",
+                    template: "<span class='row-number'></span>",
+                    width: 50,
+                },
+                {
+                    field: "",
+                    title: "任务名称",
+                    filterable: false,
+                    width: "30%",
+                    template: function (item) {
+                        return '<a ng-click="vm.saveView()" href="#/flowEnd/' + item.businessKey + '/' + item.flowKey + '/' + item.processInstanceId + '" >' + item.flowName + '</a>';
+                    }
+                },
+                {
+                    field: "createDate",
+                    title: "流程开始时间",
+                    width: "20%",
+                    filterable: false
+                },
+                {
+                    field: "endDate",
+                    title: "流程结束时间",
+                    width: "15%",
+                    filterable: false,
+                },
+                {
+                    field: "durationTime",
+                    title: "总处理时长",
+                    width: "25%",
+                    filterable: false,
+                },
+                {
+                    field: "",
+                    title: "流程类别",
+                    width: "25%",
+                    filterable: false,
+                    template:function(item){
+                        var flowKeyNmae = "";
+                        if(vm.workName){
+                            vm.workName.forEach(function (flow, index) {
+                                if(flow.KEY_ == item.flowKey){
+                                    flowKeyNmae = flow.NAME_;
+                                }
+                            });
+                        }
+                        return flowKeyNmae;
+                    }
+                },
+
+                {
+                    field: "",
+                    title: "操作",
+                    width: "10%",
+                    template: function (item) {
+                        return common.format($('#columnBtns').html(), item.businessKey, item.flowKey, item.processInstanceId);
+                    }
+                }
+            ];
+            // End:column
+            vm.gridOptions = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                resizable: true,
+                pageable: common.kendoGridConfig(vm.queryParams).pageable,
+                dataBound: common.kendoGridConfig(vm.queryParams).dataBound,
+            };
+        }
+
         //S_所有在办任务
         function doingTaskGrid(vm) {
-            /*      var dataSource = new kendo.data.DataSource({
-                      type: 'odata',
-                      transport: common.kendoGridConfig().transport(rootPath + "/flow/queryAgendaTask", $('#doingTaskForm')),
-                      schema: {
-                          data: "value",
-                          total: function (data) {
-                              return data['count'];
-                          },
-                          model: {
-                              id: "taskId"
-                          }
-                      },
-                      serverPaging: true,
-                      serverSorting: true,
-                      serverFiltering: true,
-                      pageSize: 10,
-                      sort: {
-                          field: "createTime",
-                          dir: "desc"
-                      }
-                  });*/
-            var dataSource = common.kendoGridDataSource(rootPath + "/flow/queryAgendaTask", $("#doingTaskForm"), vm.queryParams.page, vm.queryParams.pageSize, vm.gridParams);
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(rootPath + "/flow/queryAgendaTask",$("#doingTaskForm"),vm.gridParams,false),
+                schema: common.kendoGridConfig().schema({
+                    id: "id",
+                    fields: {
+                        createdDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: false,
+                serverSorting: false,
+                serverFiltering: false,
+                pageSize : vm.queryParams.pageSize||10,
+                page:vm.queryParams.page||1,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
+            });
+
+            //var dataSource = common.kendoGridDataSource(rootPath + "/flow/queryAgendaTask", $("#doingTaskForm"), vm.queryParams.page, vm.queryParams.pageSize, vm.gridParams);
             var columns = [
                 {
                     field: "",
@@ -1542,7 +1559,7 @@
                     title: "操作",
                     width: "10%",
                     template: function (item) {
-                        return common.format($('#columnBtns').html(), item.businessKey, item.processKey, item.taskId, item.instanceId);
+                        return common.format($('#columnBtns').html(), item.businessKey, item.processKey, item.taskId, item.instanceId,"vm.deleteTask('"+item.instanceId+"')");
                     }
                 }
             ];

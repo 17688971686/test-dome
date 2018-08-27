@@ -30,6 +30,7 @@
                         columns: [{
                             title: '行号',
                             switchable: false,
+                            align: "center",
                             width: 50,
                             formatter: function (value, row, index) {
                                 var state = vm.bsTableControl.state;
@@ -40,11 +41,11 @@
                                 }
                             }
                         }, {
-                            checkbox: true
+                            checkbox: true,
+                            align: "center"
                         }, {
                             field: 'username',
                             title: '用户名',
-                            sortable: true,
                             width: 150,
                             filterControl: "input",
                             filterOperator: "like"
@@ -62,30 +63,22 @@
                             width: 200,
                             filterControl: "input",
                             filterOperator: "like"
-                        }, {
-                            field: 'useState',
-                            title: '状态',
-                            width: 100,
-                            align: "center",
-                            filterControl: "input",
-                            filterOperator: "like",
-                            formatter: '<span ng-if="row.useState == 1" class="bg-green">启用</span><span ng-if="row.useState != 1"  class="bg-red">禁用</span>'
-                            // formatter: function (value, row, index) {
-                            //     return value == 1 ? '<span class="bg-green">启用</span>' : '<span class="bg-red">禁用</span>';
-                            // }
-                        }, {
+                        },  {
                             field: 'lastLoginDate',
                             title: '最后登录时间',
-                            width: 160,
+                            width: 120,
                             sortable: true,
                             filterControl: "datepicker",
                             filterOperator: "gt"
                         }, {
-                            field: 'remark',
-                            title: '备注',
+                            field: 'useState',
+                            title: '状态',
+                            width: 60,
+                            align: "center",
                             filterControl: "input",
-                            filterOperator: "like"
-                        }, {
+                            filterOperator: "like",
+                            formatter: '<span ng-if="row.useState == 1" class="bg-green">启用</span><span ng-if="row.useState != 1"  class="bg-red">禁用</span>'
+                        },{
                             field: '',
                             title: '操作',
                             width: 200,

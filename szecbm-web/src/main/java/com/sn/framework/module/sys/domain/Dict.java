@@ -11,7 +11,6 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "cs_sys_dict", uniqueConstraints = {@UniqueConstraint(columnNames = {"parentId", "dictKey"}), @UniqueConstraint(columnNames = {"parentId", "dictName"})})
-@Data
 public class Dict extends DomainBase {
 
     @Id
@@ -48,4 +47,60 @@ public class Dict extends DomainBase {
      */
     @Column
     private String remark;
+
+    public String getDictId() {
+        return dictId;
+    }
+
+    public void setDictId(String dictId) {
+        this.dictId = dictId;
+    }
+
+    public String getDictName() {
+        return dictName;
+    }
+
+    public void setDictName(String dictName) {
+        this.dictName = dictName;
+    }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
+
+    public String getDictKey() {
+        return dictKey;
+    }
+
+    public void setDictKey(String dictKey) {
+        this.dictKey = dictKey;
+    }
+
+    public int getDictState() {
+        return dictState;
+    }
+
+    public void setDictState(int dictState) {
+        this.dictState = dictState;
+    }
+
+    public int getDictType() {
+        return dictType;
+    }
+
+    public void setDictType(int dictType) {
+        this.dictType = dictType;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
 }

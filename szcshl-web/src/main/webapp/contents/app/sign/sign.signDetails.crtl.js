@@ -59,25 +59,22 @@
                         vm.assistPlanSign = data;
                     })
                 }
-
-                //通过评估部门的个数来控制总投资字段
-                if(vm.model.workProgramDtoList && vm.model.workProgramDtoList.length >0) {
-                    var orgStr;
-                    if (vm.model.workProgramDtoList[0].branchId == '1' || vm.model.workProgramDtoList[0].branchId == '1') {
-                        orgStr = vm.model.workProgramDtoList[0].reviewOrgName;
-                    } else {
-                        orgStr = vm.model.workProgramDtoList[0].mainWorkProgramDto.reviewOrgName;
-                    }
-                    if (orgStr != '' && orgStr.split(',').length > 1) {
-
-                        vm.showTotalInvestment = true;
-                    }
-                }
-
                 //归档
                 if (vm.model.fileRecordDto) {
                     vm.showFlag.tabFilerecord = true;
                     vm.fileRecord = vm.model.fileRecordDto;
+                }
+                //通过评估部门的个数来控制总投资字段
+                if(vm.model.workProgramDtoList && vm.model.workProgramDtoList.length >0) {
+                    var orgStr;
+                    if (vm.model.workProgramDtoList[0].branchId == 1) {
+                        orgStr = vm.model.workProgramDtoList[0].reviewOrgName;
+                    } else {
+                        orgStr = vm.model.workProgramDtoList[0].mainWorkProgramDto.reviewOrgName;
+                    }
+                    if (orgStr && orgStr.split(',').length > 1) {
+                        vm.showTotalInvestment = true;
+                    }
                 }
 
                 //初始化专家评分
@@ -118,7 +115,6 @@
                     sysfileSvc.initZtreeClient(vm, $scope);//树形图
                 }
             });
-
         }
 
         //签收模板打印

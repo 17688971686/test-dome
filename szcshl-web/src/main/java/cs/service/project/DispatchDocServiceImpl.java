@@ -197,7 +197,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
             }
             sign.setDispatchDoc(dispatchDoc);
             // 收文、工作方案(主项目)、发文的报审金额一致
-            List<WorkProgram> workProgrmList = sign.getWorkProgramList();
+            List<WorkProgram> workProgrmList = ProjUtil.filterEnableWP(sign.getWorkProgramList());
             if (Validate.isList(workProgrmList)) {
                 for (WorkProgram workProgram : workProgrmList) {
                     if (workProgram.getBranchId() == FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue()) {
@@ -270,10 +270,10 @@ public class DispatchDocServiceImpl implements DispatchDocService {
             dispatch.setPrintCount(5);
             dispatch.setBranchCount(sign.getBranchCount());
             //发文标题
-            String fileTitle = "深圳市投资项目评审中心关于";
+            String fileTitle = COMPANY_NAME+"关于";
             fileTitle += sign.getProjectname() == null ? "" : sign.getProjectname();
             if (Constant.STAGE_BUDGET.equals(sign.getReviewstage())) {
-                fileTitle += "项目的总概算的审核意见";
+                fileTitle += "项目总概算的审核意见";
             } else {
                 fileTitle += "项目的评审意见";
             }
@@ -367,8 +367,8 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 
         //主分支工作方案
         WorkProgram workProgram = null;
-        List<WorkProgram> workProgramList = sign.getWorkProgramList();
-        if (workProgramList != null && workProgramList.size() > 0) {
+        List<WorkProgram> workProgramList = ProjUtil.filterEnableWP(sign.getWorkProgramList());
+        if (Validate.isList(workProgramList)) {
             for (int i = 0; i < workProgramList.size(); i++) {
                 if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(workProgramList.get(i).getBranchId())) {
                     workProgram = workProgramList.get(i);

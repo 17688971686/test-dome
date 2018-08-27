@@ -179,21 +179,19 @@
                 <tr class="hidetr changeTr">
                     <td class="text-right">项目负责人</td>
                     <td colspan="3">
-                        <select class="form-controls select-sm" ng-model="vm.displayName" ng-change="vm.fztype='全部'" >
-                            <option value="">请选择</option>
-                            <option ng-repeat="r in vm.userlist" value="{{r.displayName}}">{{r.displayName}}</option>
-                        </select>
+                        <input  type="text"
+                               ng-model="vm.project.displayName" style="width: 100px;padding: 4px 8px;color: #000;background-color: #fff;font-size: 14px;"/>
                         &nbsp;
-                        <select class="form-controls select-sm" ng-model="vm.fztype">
+                        <select class="form-controls select-sm" ng-model="vm.project.fztype">
                             <option value="">请选择</option>
                             <option value="全部">全部</option>
                             <option value="第一负责人">第一负责人</option>
                             <option value="第二负责人">第二负责人</option>
                         </select>
-                        <input ng-if="vm.fztype=='第一负责人'" operator="eq" name="mUserName"  value="{{vm.displayName}}" hidden/>
-                        <input ng-if="vm.fztype=='第二负责人'" operator="like" name="aUserName"  value="{{vm.displayName}}" hidden/>
-                        <input ng-if="vm.fztype=='全部'" operator="like" name="allPriUser"   value="{{vm.displayName}}" hidden/>
-                        <input ng-if="vm.fztype==' '" operator="like" name="allPriUser"   value="{{vm.displayName}}" hidden/>
+                        <input ng-if="vm.project.fztype=='第一负责人'" operator="eq" name="mUserName"  value="{{vm.project.displayName}}" hidden/>
+                        <input ng-if="vm.project.fztype=='第二负责人'" operator="like" name="aUserName"  value="{{vm.project.displayName}}" hidden/>
+                        <input ng-if="vm.project.fztype=='全部'" operator="like" name="allPriUser"   value="{{vm.project.displayName}}" hidden/>
+                        <input ng-if="vm.project.fztype==' '" operator="like" name="allPriUser"   value="{{vm.project.displayName}}" hidden/>
                     </td>
                     <td class="text-right" >项目类型</td>
                     <td colspan="3">

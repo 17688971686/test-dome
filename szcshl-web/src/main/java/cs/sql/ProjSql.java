@@ -20,4 +20,11 @@ public class ProjSql {
         sqlBuilder.setParam("newName",newName).setParam("processInstanceId",processInstanceId);
         return sqlBuilder;
     }
+
+    public static String ProjCountSql(){
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append(" case reviewstage when '项目建议书' then 1 when '可行性研究报告' then 2 when '项目概算' then 3 ");
+        stringBuffer.append(" when '资金申请报告' then 4  when '进口设备' then 5  when '设备清单（国产）'then  6  when '设备清单（进口）'then 7 else 8 end ");
+        return stringBuffer.toString();
+    }
 }

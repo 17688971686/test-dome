@@ -30,6 +30,7 @@ import java.util.*;
 
 import static com.sn.framework.common.StringUtil.SEPARATE_COMMA;
 import static com.sn.framework.core.Constants.CACHE_KEY_SYS_RESOURCE;
+import static com.sn.framework.core.Constants.USER_KEY_ADMIN;
 
 /**
  * 用户信息  业务实现类
@@ -304,10 +305,10 @@ public class UserServiceImpl extends SServiceImpl<IUserRepo, User, UserDto> impl
     @Override
     public List<UserDto> findUserByOrgId() {
         List<User> userList =  new ArrayList<>();
-        if("admin".equals(SessionUtil.getUserInfo().getUsername())){
-           userList = baseRepo.findAll();
+        if(USER_KEY_ADMIN.equals(SessionUtil.getUserInfo().getUsername())){
+           userList = baseRepo.getUserByOrganId(null,true);
         }else{
-          userList = baseRepo.getUserByOrganId(SessionUtil.getUserInfo().getOrgan().getOrganId());
+          userList = baseRepo.getUserByOrganId(SessionUtil.getUserInfo().getOrgan().getOrganId(),true);
         }
 
        if(userList.size()> 0){
@@ -315,6 +316,22 @@ public class UserServiceImpl extends SServiceImpl<IUserRepo, User, UserDto> impl
        }else{
            return null;
        }
+
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void resetAllUserPwd() {
+        List<User> userList = baseRepo.findAll();
+        if(Validate.isList(userList)){
+            for(User user:userList){
+                if(!USER_KEY_ADMIN.equals(user.getUsername())){
+                    user.setPassword(DEFAULT_PASSWORD);
+                    SNKit.decodePwd(user, shiroProperties.isEncryption());
+                    baseRepo.save(user);
+                }
+            }
+        }
 
     }
 }

@@ -407,9 +407,9 @@ public class ReflectionUtils {
             fieldList.addAll(Arrays.asList(current.getDeclaredFields()));
             current = current.getSuperclass(); //得到父类,然后赋给自己
         }
-        for (Field f : fieldList) {
+        /*for (Field f : fieldList) {
             System.out.println("getAllFields---"+f.getName());
-        }
+        }*/
         return fieldList;
     }
 }

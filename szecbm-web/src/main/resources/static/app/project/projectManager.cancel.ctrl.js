@@ -22,8 +22,13 @@
         var vm = this;
         vm.model = {};
         vm.tableParams = {};
+
         //获取项目列表
         projectManagerSvc.bsTableCancelManagement(vm);
+
+        vm.filterSearch = function(){
+            $('#listTable').bootstrapTable('refresh');
+        }
 
         //导出项目信息
         vm.expProinfo = function () {

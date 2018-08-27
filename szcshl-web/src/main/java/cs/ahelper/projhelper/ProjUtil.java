@@ -6,6 +6,8 @@ import cs.common.utils.Validate;
 import cs.domain.project.WorkProgram;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by ldm on 2018/3/6 0006.
@@ -13,12 +15,29 @@ import java.util.List;
 public class ProjUtil {
 
     /**
+     * 根据会签数量发送短信
+     *
+     * @param valiables
+     * @param signNum
+     * @return
+     */
+    public static boolean checkSignComplete(Map<String, Object> valiables, int signNum) {
+        if (!valiables.containsKey("nrOfInstances") || !valiables.containsKey("nrOfCompletedInstances")) {
+            return false;
+        }
+        Integer nrOfInstances = (Integer) valiables.get("nrOfInstances"),
+                nrOfCompletedInstances = (Integer) valiables.get("nrOfCompletedInstances");
+        return (nrOfInstances - nrOfCompletedInstances) == signNum ? true : false;
+    }
+
+    /**
      * 判断是否是主分支
+     *
      * @param branchId
      * @return
      */
-    public static boolean isMainBranch(String branchId){
-        if(Validate.isString(branchId) && FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchId)){
+    public static boolean isMainBranch(String branchId) {
+        if (Validate.isString(branchId) && FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchId)) {
             return true;
         }
         return false;
@@ -26,11 +45,12 @@ public class ProjUtil {
 
     /**
      * 是否合并评审
+     *
      * @param isSigle
      * @return
      */
-    public static boolean isMergeReview(String isSigle){
-        if(Validate.isString(isSigle) && Constant.MergeType.REVIEW_MERGE.getValue().equals(isSigle)){
+    public static boolean isMergeReview(String isSigle) {
+        if (Validate.isString(isSigle) && Constant.MergeType.REVIEW_MERGE.getValue().equals(isSigle)) {
             return true;
         }
         return false;
@@ -40,11 +60,12 @@ public class ProjUtil {
     /**
      * 是否合并评审主项目
      * 9表示合并评审主项目，0表示合并评审次项目
+     *
      * @param reviewType
      * @return
      */
-    public static boolean isMergeRVMainTask(String reviewType){
-        if(Validate.isString(reviewType) && Constant.EnumState.YES.getValue().equals(reviewType)){
+    public static boolean isMergeRVMainTask(String reviewType) {
+        if (Validate.isString(reviewType) && Constant.EnumState.YES.getValue().equals(reviewType)) {
             return true;
         }
         return false;
@@ -53,22 +74,25 @@ public class ProjUtil {
     /**
      * 是否合并评审次项目
      * 9表示合并评审主项目，0表示合并评审次项目
+     *
      * @param reviewType
      * @return
      */
-    public static boolean isMergeRVAssistTask(String reviewType){
-        if(Validate.isString(reviewType) && Constant.EnumState.NO.getValue().equals(reviewType)){
+    public static boolean isMergeRVAssistTask(String reviewType) {
+        if (Validate.isString(reviewType) && Constant.EnumState.NO.getValue().equals(reviewType)) {
             return true;
         }
         return false;
     }
+
     /**
      * 是否合并发文
+     *
      * @param disWay
      * @return
      */
-    public static boolean isMergeDis(String disWay){
-        if(Validate.isString(disWay) && Constant.MergeType.DIS_MERGE.getValue().equals(disWay)){
+    public static boolean isMergeDis(String disWay) {
+        if (Validate.isString(disWay) && Constant.MergeType.DIS_MERGE.getValue().equals(disWay)) {
             return true;
         }
         return false;
@@ -76,11 +100,12 @@ public class ProjUtil {
 
     /**
      * 是否主项目
+     *
      * @param mainFlag
      * @return
      */
-    public static boolean isMain(String mainFlag){
-        if(Validate.isString(mainFlag) && Constant.EnumState.YES.getValue().equals(mainFlag)){
+    public static boolean isMain(String mainFlag) {
+        if (Validate.isString(mainFlag) && Constant.EnumState.YES.getValue().equals(mainFlag)) {
             return true;
         }
         return false;
@@ -88,11 +113,12 @@ public class ProjUtil {
 
     /**
      * 获取主工作方案
+     *
      * @param wpList
      * @return
      */
-    public static WorkProgram filterMainWP(List<WorkProgram> wpList){
-        if(!Validate.isList(wpList)){
+    public static WorkProgram filterMainWP(List<WorkProgram> wpList) {
+        if (!Validate.isList(wpList)) {
             return null;
         }
         WorkProgram workProgram = wpList.stream().filter(item -> FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(item.getBranchId())).findFirst().get();
@@ -101,6 +127,7 @@ public class ProjUtil {
 
     /**
      * 拷贝主工作方案的公共属性到分支对象
+     *
      * @param mainWP
      * @param wp
      */
@@ -141,7 +168,20 @@ public class ProjUtil {
         wp.setSecondChargeUserName(mainWP.getSecondChargeUserName());
     }
 
-    public static String getReFlowName(String projName){
-        return "["+projName+"]重做工作方案]";
+    public static String getReFlowName(String projName) {
+        return "[" + projName + "]重做工作方案]";
+    }
+
+    /**
+     * 过滤出有效的工作方案
+     *
+     * @param workProgramList
+     * @return
+     */
+    public static List<WorkProgram> filterEnableWP(List<WorkProgram> workProgramList) {
+        if (Validate.isList(workProgramList)) {
+            return workProgramList.stream().filter(item -> Constant.EnumState.YES.getValue().equals(item.getState())).collect(Collectors.toList());
+        }
+        return null;
     }
 }

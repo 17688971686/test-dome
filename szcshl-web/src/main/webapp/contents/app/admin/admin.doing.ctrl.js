@@ -3,9 +3,9 @@
 
     angular.module('app').controller('adminDoingCtrl', admin);
 
-    admin.$inject = ['$location', 'adminSvc', 'flowSvc','pauseProjectSvc','bsWin','signSvc','$state','$rootScope'];
+    admin.$inject = ['$location', 'adminSvc', 'flowSvc','pauseProjectSvc','bsWin','signSvc','$state','$rootScope' , 'addSuppLetterQuerySvc'];
 
-    function admin($location, adminSvc, flowSvc,pauseProjectSvc,bsWin,signSvc,$state,$rootScope) {
+    function admin($location, adminSvc, flowSvc,pauseProjectSvc,bsWin,signSvc,$state,$rootScope , addSuppLetterQuerySvc) {
         var vm = this;
         vm.title = '在办项目';
         vm.model = {};
@@ -144,5 +144,26 @@
                 }
             });
         }
+
+
+        //S_链接到拟补充资料函
+        vm.addSuppLetter = function (signId) {
+            vm.signid = signId;
+            addSuppLetterQuerySvc.checkIsApprove(vm.signid,"1",function(data){
+                if(data.flag || data.reCode == 'ok'){
+                    $state.go('addSupp', {businessId: vm.signid, businessType: "SIGN"});
+                }else{
+                    bsWin.confirm({
+                        title: "询问提示",
+                        message: "该项目还有拟补充资料函未审批完成，确定要新增拟补充资料函么？如果要修改拟补充资料函，请到“查询统计”->“拟补充资料函查询”菜单进行修改即可！",
+                        onOk: function () {
+                            $state.go('addSupp', {businessId: vm.signid, businessType: "SIGN"});
+                        }
+                    });
+                }
+            });
+
+
+        }// E_跳转到 拟补充资料函 编辑页面
     }
 })();

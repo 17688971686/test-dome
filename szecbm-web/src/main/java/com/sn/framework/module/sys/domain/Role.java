@@ -14,7 +14,6 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "cs_sys_role")
-@Data
 public class Role extends DomainBase {
 
     private static final long serialVersionUID = -6567523716293168913L;
@@ -59,4 +58,64 @@ public class Role extends DomainBase {
             inverseJoinColumns = @JoinColumn(name = "res_id"))
     private Set<Resource> resources = new HashSet<>();
 
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public String getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(String roleId) {
+        this.roleId = roleId;
+    }
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public String getRoleState() {
+        return roleState;
+    }
+
+    public void setRoleState(String roleState) {
+        this.roleState = roleState;
+    }
+
+    public int getRoleDataType() {
+        return roleDataType;
+    }
+
+    public void setRoleDataType(int roleDataType) {
+        this.roleDataType = roleDataType;
+    }
+
+    public Set<Resource> getResources() {
+        return resources;
+    }
+
+    public void setResources(Set<Resource> resources) {
+        this.resources = resources;
+    }
 }

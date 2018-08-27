@@ -51,15 +51,23 @@
             }else {
                 adminSvc.gtasksGrid(vm);
             }
-
         }
 
         /**
-         * 查询
+         * 查询(因为不是后端分页，所以前端过滤就可以了)
          */
         vm.querySign = function(){
-            vm.gridOptions.dataSource._skip=0;
-            vm.gridOptions.dataSource.read();
+            var filters = [];
+            if(vm.model.projectName){
+                filters.push({field:'projectName',operator:'contains',value:vm.model.projectName});
+            }
+            if(vm.model.reviewStage){
+                filters.push({field:'reviewStage',operator:'contains',value:vm.model.reviewStage});
+            }
+            if(vm.model.nodeNameValue){
+                filters.push({field:'nodeNameValue',operator:'contains',value:vm.model.nodeNameValue});
+            }
+            vm.gridOptions.dataSource.filter(filters);
         }
 
         /**

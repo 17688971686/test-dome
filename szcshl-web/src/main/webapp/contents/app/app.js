@@ -78,16 +78,25 @@
                     controller: 'adminCtrl',
                     controllerAs: 'vm'
                 })
+                //个人待办任务
                 .state('agendaTasks', {
                     url: '/agendaTasks',
                     templateUrl: rootPath + '/admin/agendaTasks.html',
                     controller: 'adminAgendaCtrl',
                     controllerAs: 'vm'
                 })
+                //在办任务
                 .state('doingTasks', {
                     url: '/doingTasks',
                     templateUrl: rootPath + '/admin/doingTasks.html',
                     controller: 'adminDoTaskCtrl',
+                    controllerAs: 'vm'
+                })
+                //已办结任务
+                .state('endTasks', {
+                    url: '/endTasks',
+                    templateUrl: rootPath + '/admin/endTasks.html',
+                    controller: 'adminEndTaskCtrl',
                     controllerAs: 'vm'
                 })
                 //begin#流程公共页面
@@ -495,49 +504,48 @@
                 controller: 'adminSignListCtrl',
                 controllerAs: 'vm'
             })//end#signList
-                .state('projectStopInfo', { //项目暂停表单（多个）
-                    url: '/projectStopInfo/:signId',
-                    templateUrl: rootPath + '/projectStop/html/projectStopInfo.html',
-                    controller: 'projectStopInfoCtrl',
-                    controllerAs: 'vm'
-                })//end#signList
-                .state('selectHeader', {
-                    url: '/selectHeader',
-                    templateUrl: rootPath + '/sign/html/selectHeader.html',
-                    controller: 'selectHeaderCtrl',
-                    controllerAs: 'vm'
-
-                })
-                .state('signGetBack', {//项目取回
-                    url: '/signGetBack',
-                    templateUrl: rootPath + '/sign/html/signGetBack.html',
-                    controller: 'signGetBackCtrl',
-                    controllerAs: 'vm'
-                })
-                .state('pauseProject', { //项目暂停审批
-                    url: '/pauseProject',
-                    templateUrl: rootPath + '/projectStop/html/pauseProjectList.html',
-                    controller: 'pauseProjectCtrl',
-                    controllerAs: 'vm'
-                })
-                .state('projectStopForm', { //项目暂停表单
-                    url: '/projectStopForm/:signId/:stopId',
-                    templateUrl: rootPath + '/projectStop/html/projectStopForm.html',
-                    controller: 'projectStopFormCtrl',
-                    controllerAs: 'vm'
-                })
-                .state('projectStopFormEdit', { //编辑项目暂停表单
-                    url: '/projectStopFormEdit/:stopId',
-                    templateUrl: rootPath + '/projectStop/html/projectStopForm.html',
-                    controller: 'projectStopFormEditCtrl',
-                    controllerAs: 'vm'
-                })
-                .state('reserveAdd', {	//新增预签收
-                    url: '/reserveAdd',
-                    templateUrl: rootPath + '/sign/html/reserveAdd.html',
-                    controller: 'signReserveAddCtrl',
-                    controllerAs: 'vm'
-                }).state('reserveList', {	//预签收列表
+            .state('projectStopInfo', { //项目暂停表单（多个）
+                url: '/projectStopInfo/:signId',
+                templateUrl: rootPath + '/projectStop/html/projectStopInfo.html',
+                controller: 'projectStopInfoCtrl',
+                controllerAs: 'vm'
+            })//end#signList
+            .state('selectHeader', {
+                url: '/selectHeader',
+                templateUrl: rootPath + '/sign/html/selectHeader.html',
+                controller: 'selectHeaderCtrl',
+                controllerAs: 'vm'
+            })
+            .state('signGetBack', {//项目取回
+                url: '/signGetBack',
+                templateUrl: rootPath + '/sign/html/signGetBack.html',
+                controller: 'signGetBackCtrl',
+                controllerAs: 'vm'
+            })
+            .state('pauseProject', { //项目暂停审批
+                url: '/pauseProject',
+                templateUrl: rootPath + '/projectStop/html/pauseProjectList.html',
+                controller: 'pauseProjectCtrl',
+                controllerAs: 'vm'
+            })
+            .state('projectStopForm', { //项目暂停表单
+                url: '/projectStopForm/:signId/:stopId',
+                templateUrl: rootPath + '/projectStop/html/projectStopForm.html',
+                controller: 'projectStopFormCtrl',
+                controllerAs: 'vm'
+            })
+            .state('projectStopFormEdit', { //编辑项目暂停表单
+                url: '/projectStopFormEdit/:stopId',
+                templateUrl: rootPath + '/projectStop/html/projectStopForm.html',
+                controller: 'projectStopFormEditCtrl',
+                controllerAs: 'vm'
+            })
+            .state('reserveAdd', {	//新增预签收
+                url: '/reserveAdd',
+                templateUrl: rootPath + '/sign/html/reserveAdd.html',
+                controller: 'signReserveAddCtrl',
+                controllerAs: 'vm'
+            }).state('reserveList', {	//预签收列表
                 url: '/reserveList',
                 templateUrl: rootPath + '/sign/html/reserveList.html',
                 controller: 'signReserveCtrl',
@@ -1023,6 +1031,12 @@
                     url: '/policyList/:parentId',
                     templateUrl: rootPath + '/fileLibrary/html/policyList.html',
                     controller: 'policyListCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('documentLibrary', { //文件指标库
+                    url: '/documentLibrary',
+                    templateUrl: rootPath + '/fileLibrary/html/documentList.html',
+                    controller: 'documentListCtrl',
                     controllerAs: 'vm'
                 })
                 .state('policyLibrary.policyEdit', {//新建文件

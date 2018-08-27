@@ -23,6 +23,7 @@ import cs.service.project.SignDispaWorkService;
 import cs.service.sys.HeaderService;
 import cs.service.topic.TopicInfoService;
 import cs.service.topic.TopicMaintainService;
+import cs.sql.ProjSql;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -156,11 +157,7 @@ public class SignDispaWorkController {
             ServletOutputStream sos = resp.getOutputStream();
             List<HeaderDto> headerDtoList = headerService.findHeaderList("项目类型", Constant.EnumState.YES.getValue());//选中的表字段
             List<Header> headerList = headerService.findHeaderByType("项目类型");//所有 表字段
-
-            String orderStr = "case reviewstage when '项目建议书' then 1 when '可行性研究报告' then 2 when '项目概算' then 3" +
-                    " when '资金申请报告' then 4  when '进口设备' then 5  when '设备清单（国产）'then  6  when '设备清单（进口）'then 7" +
-                    " else 8 end ";
-            List<SignDispaWork> signDispaWorkList =signDispaWorkRepo.findByIds(SignDispaWork_.signid.getName() , signIds,orderStr);
+            List<SignDispaWork> signDispaWorkList =signDispaWorkRepo.findByIds(SignDispaWork_.signid.getName() , signIds, ProjSql.ProjCountSql());
 
             String[] headerPair ;
             if(headerDtoList.size()>0) {
@@ -197,10 +194,10 @@ public class SignDispaWorkController {
     public void excelExport2(HttpServletResponse resp,HttpServletRequest request, @RequestParam(required = true) String signIds) {
         Map<String, Object> resultMap = new HashMap<String, Object>();
         try {
-            String orderStr = "case reviewstage when '项目建议书' then 1 when '可行性研究报告' then 2 when '项目概算' then 3" +
+           /* String orderStr = "case reviewstage when '项目建议书' then 1 when '可行性研究报告' then 2 when '项目概算' then 3" +
                     " when '资金申请报告' then 4  when '进口设备' then 5  when '设备清单（国产）'then  6  when '设备清单（进口）'then 7" +
-                    " else 8 end ";
-            List<SignDispaWork> signDispaWorkList =signDispaWorkRepo.findByIds(SignDispaWork_.signid.getName() , signIds,orderStr);
+                    " else 8 end ";*/
+            List<SignDispaWork> signDispaWorkList =signDispaWorkRepo.findByIds(SignDispaWork_.signid.getName() , signIds,ProjSql.ProjCountSql());
             resultMap.put("proCountList", signDispaWorkList);
             Map<String, Object> funcs = new HashMap<>(2);
             funcs.put("proUtils", new ExcelJxlsUtls());

@@ -67,12 +67,12 @@ public class SignFlowBackImpl implements IFlowBack {
             //第二负责人回退到归档环节
             case FlowConstant.FLOW_SIGN_DSFZR_QRGD:
                 backActivitiId = FlowConstant.FLOW_SIGN_GD;
-                dealUserParam = SignFlowParams.USER_BZ1.getValue();
+                dealUserParam = SignFlowParams.USER_FZR1.getValue();
                 break;
             //最终归档(回退到第一负责人处理)
             case FlowConstant.FLOW_SIGN_QRGD:
                 backActivitiId = FlowConstant.FLOW_SIGN_GD;
-                dealUserParam = SignFlowParams.USER_BZ1.getValue();
+                dealUserParam = SignFlowParams.USER_FZR1.getValue();
                 break;
             default:
                 ;

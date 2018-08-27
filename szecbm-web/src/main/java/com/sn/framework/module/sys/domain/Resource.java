@@ -15,7 +15,6 @@ import java.util.List;
  */
 @Entity
 @Table(name = "cs_sys_resource")
-@Data
 public class Resource extends DomainBase {
 
     @Id
@@ -73,4 +72,107 @@ public class Resource extends DomainBase {
     @ManyToMany(mappedBy = "resources")
     private List<Organ> organs = new ArrayList<>();
 
+    public String getResId() {
+        return resId;
+    }
+
+    public void setResId(String resId) {
+        this.resId = resId;
+    }
+
+    public String getResName() {
+        return resName;
+    }
+
+    public void setResName(String resName) {
+        this.resName = resName;
+    }
+
+    public Integer getResType() {
+        return resType;
+    }
+
+    public void setResType(Integer resType) {
+        this.resType = resType;
+    }
+
+    public String getResUri() {
+        return resUri;
+    }
+
+    public void setResUri(String resUri) {
+        this.resUri = resUri;
+    }
+
+    public String getResIcon() {
+        return resIcon;
+    }
+
+    public void setResIcon(String resIcon) {
+        this.resIcon = resIcon;
+    }
+
+    public String getTarget() {
+        return target;
+    }
+
+    public void setTarget(String target) {
+        this.target = target;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public int getDataType() {
+        return dataType;
+    }
+
+    public void setDataType(int dataType) {
+        this.dataType = dataType;
+    }
+
+    public String getPermCode() {
+        return permCode;
+    }
+
+    public void setPermCode(String permCode) {
+        this.permCode = permCode;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
+
+    public List<Organ> getOrgans() {
+        return organs;
+    }
+
+    public void setOrgans(List<Organ> organs) {
+        this.organs = organs;
+    }
 }

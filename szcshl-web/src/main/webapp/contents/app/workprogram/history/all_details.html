@@ -171,7 +171,7 @@
         <td class="text-center" style="width:5%;">专家类别</td>
         <td class="text-center" style="width:15%;">备注</td>
     </tr>
-    <tr ng-repeat="x in w.expertSelectedHisDtoList track by $index"
+    <tr ng-repeat="x in w.expertSelectedHisDtoList | filter:{isConfrim:'9',isJoin:'9'} track by $index"
         ng-show="w.expertSelectedHisDtoList && w.expertSelectedHisDtoList.length > 0">
         <td class="text-center" colspan="2">{{x.expertDto.name}}</td>
         <td class="text-center">{{x.expertDto.comPany}}</td>

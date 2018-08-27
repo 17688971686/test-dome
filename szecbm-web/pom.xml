@@ -267,7 +267,6 @@
     <profiles>
         <profile>
             <id>jar</id>
-
             <properties>
                 <packaging.type>jar</packaging.type>
                 <packaging.environment>dev</packaging.environment>
@@ -285,54 +284,7 @@
                 </dependency>
             </dependencies>
         </profile>
-        <profile>
-            <id>war_jar</id>
 
-            <properties>
-                <packaging.type>war</packaging.type>
-                <packaging.environment>dev</packaging.environment>
-            </properties>
-
-            <build>
-                <plugins>
-                    <!--  package jar on package -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-jar-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <!--  install jar to local repository -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-install-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <phase>install</phase>
-                                <goals>
-                                    <goal>install-file</goal>
-                                </goals>
-                                <configuration>
-                                    <packaging>jar</packaging>
-                                    <artifactId>${project.artifactId}</artifactId>
-                                    <groupId>${project.groupId}</groupId>
-                                    <version>${project.version}</version>
-                                    <file>
-                                        ${project.build.directory}/${project.artifactId}.jar
-                                    </file>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
         <profile>
             <id>war</id>
             <activation>

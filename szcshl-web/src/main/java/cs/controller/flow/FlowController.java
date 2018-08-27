@@ -216,8 +216,8 @@ public class FlowController {
     //@RequiresPermissions("flow#html/endTasks#post")
     @RequiresAuthentication
     @RequestMapping(name = "办结项目", path = "html/endTasks", method = RequestMethod.POST)
-    public @ResponseBody
-    PageModelDto<SignDispaWork> endTasks(HttpServletRequest request) throws ParseException {
+    @ResponseBody
+    public PageModelDto<SignDispaWork> endTasks(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<SignDispaWork> pageModelDto = flowService.queryETasks(odataObj);
         return pageModelDto;
@@ -233,10 +233,12 @@ public class FlowController {
 
     //@RequiresPermissions("flow#getMyHomeEndTask#post")
     @RequiresAuthentication
-    @RequestMapping(name = "获取主页上的办结任务", path = "getMyHomeEndTask", method = RequestMethod.POST)
+    @RequestMapping(name = "获取个人经办的办结任务", path = "queryEndTask", method = RequestMethod.POST)
     @ResponseBody
-    public List<TaskDto> getMyHomeEndTask() {
-        return flowService.queryMyEndTasks();
+    public PageModelDto<TaskDto> queryEndTask(HttpServletRequest request) throws ParseException {
+        ODataObj odataObj = new ODataObj(request);
+        PageModelDto<TaskDto> pageModelDto = flowService.queryEndTasks(odataObj);
+        return pageModelDto;
     }
 
     @RequiresAuthentication
@@ -706,13 +708,13 @@ public class FlowController {
                 resultPage = "reviewProjectAppraise/flowEnd";
                 break;
             case FlowConstant.FLOW_SUPP_LETTER:
-                resultPage = "";
+                resultPage = "addSuppLetter/letterFlowEnd";
                 break;
             case FlowConstant.MONTHLY_BULLETIN_FLOW:
-                resultPage = "monthlyNewsletter/flow/flowDeal";
+                resultPage = "monthlyNewsletter/flow/flowEnd";
                 break;
             case FlowConstant.ANNOUNT_MENT_FLOW:
-                resultPage = "annountMent/flow/flowDeal";
+                resultPage = "annountMent/flow/flowEnd";
                 break;
             case FlowConstant.BOOKS_BUY_FLOW:
                 resultPage = "bookBuyBusiness/flowEnd";

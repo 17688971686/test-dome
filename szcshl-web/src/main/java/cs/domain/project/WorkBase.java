@@ -235,6 +235,12 @@ public class WorkBase extends DomainBase {
     @Column(columnDefinition = "varchar(2)")
     private String baseInfo;
 
+    /**
+     * 工作方案状态9：有效，0无效
+     */
+    @Column(columnDefinition = "varchar(2) default '9'")
+    private String state;
+
     public String getId() {
         return id;
     }
@@ -657,5 +663,13 @@ public class WorkBase extends DomainBase {
 
     public void setBaseInfo(String baseInfo) {
         this.baseInfo = baseInfo;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 }
