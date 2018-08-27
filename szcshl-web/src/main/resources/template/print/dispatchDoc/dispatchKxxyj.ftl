@@ -2664,7 +2664,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>投资匡算及资金来源</w:t>
+                                        <w:t>投资估算及资金来源</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>

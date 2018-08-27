@@ -30,7 +30,7 @@ public class ExpertSignServiceImpl implements ExpertSignService {
     public List<ExpertSignDto> reviewProject(String expertId) {
         Criteria criteria = expertSignRepo.getExecutableCriteria();
         criteria.add(Restrictions.eq(ExpertSign_.expertId.getName(),expertId));
-        criteria.addOrder(Order.desc(ExpertSign_.reviewDate.getName()));
+        criteria.addOrder(Order.desc(ExpertSign_.signdate.getName()));
         List<ExpertSign> expertSignList = criteria.list();
         List<ExpertSignDto> resultList = new ArrayList<>();
         if(Validate.isList(expertSignList)){

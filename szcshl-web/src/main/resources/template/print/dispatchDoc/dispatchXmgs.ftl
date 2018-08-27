@@ -2327,7 +2327,13 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>投资匡算及资金来源</w:t>
+
+                                        <#if dispatch.dispatchStage?? && dispatch.dispatchStage == "项目建议书" >
+                                            <w:t>投资匡算及资金来源</w:t>
+                                        <#elseif dispatch.dispatchStage?? && dispatch.dispatchStage == "可行性研究报告" >
+                                            <w:t>投资估算及资金来源</w:t>
+                                        </#if>
+
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -3151,7 +3157,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>投资匡算及资金来源</w:t>
+                                        <w:t>投资概算及资金来源</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>

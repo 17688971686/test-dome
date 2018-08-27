@@ -65,7 +65,7 @@
     </ol>
 
     <!-- 流程处理页面 -->
-    <div ng-include src="'${path}/contents/app/sign/newFlowDeal.html'"></div>
+    <div ng-include src="'${path}/contents/app/sign/newFlowDeal.html'" ng-hide="vm.isFileRecord"></div>
 
     <!--财务办理-->
     <div id="signCostWindow" style="background:white;display: none;">
