@@ -1,8 +1,5 @@
 package com.sn.framework.core.ftp;
 
-import lombok.Data;
-
-@Data
 public class FtpClientConfig {
 
     private String host;
@@ -14,6 +11,62 @@ public class FtpClientConfig {
     private int transType;
     private String chartset;
     private String ftpRoot;
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public int getTransType() {
+        return transType;
+    }
+
+    public void setTransType(int transType) {
+        this.transType = transType;
+    }
+
+    public String getChartset() {
+        return chartset;
+    }
+
+    public void setChartset(String chartset) {
+        this.chartset = chartset;
+    }
+
+    public String getFtpRoot() {
+        return ftpRoot;
+    }
+
+    public void setFtpRoot(String ftpRoot) {
+        this.ftpRoot = ftpRoot;
+    }
 
     public FtpClientConfig() {
     }

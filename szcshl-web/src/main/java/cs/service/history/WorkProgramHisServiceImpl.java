@@ -18,6 +18,7 @@ import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
 import cs.repository.repositoryImpl.history.*;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
+import cs.sql.MeettingSql;
 import cs.sql.ReviewSql;
 import cs.sql.WorkSql;
 import org.apache.commons.lang3.StringUtils;
@@ -55,14 +56,14 @@ public class WorkProgramHisServiceImpl implements WorkProgramHisService {
     private ExpertSelConditionHisRepo expertSelConditionHisRepo;
 
     @Override
-    public boolean copyWorkProgram(WorkProgram workProgram,String signId) throws RuntimeException {
+    public boolean copyWorkProgram(WorkProgram workProgram,String signId,String newWorkProgramId) throws RuntimeException {
         //1、工作方案留痕
         WorkProgramHis workProgramHis = new WorkProgramHis();
         BeanCopierUtils.copyProperties(workProgram,workProgramHis);
         workProgramHis.setSignId(signId);
         workProgramHisRepo.save(workProgramHis);
         //用hql删除(原有的工作方案不删除)
-        //workProgramRepo.deleteById(WorkProgram_.id.getName(),workProgram.getId());
+        workProgramRepo.deleteById(WorkProgram_.id.getName(),workProgram.getId());
 
         //2、会议预定留痕
         List<String> idList = new ArrayList<>();
@@ -81,6 +82,8 @@ public class WorkProgramHisServiceImpl implements WorkProgramHisService {
        if(Validate.isList(idList)){
             roomBookingRepo.deleteById(RoomBooking_.id.getName(),StringUtils.join(idList.toArray(), SysConstants.SEPARATE_COMMA));
         }*/
+       //更新业务ID
+        roomBookingRepo.executeSql(MeettingSql.updateBusinessId(workProgram.getId(),newWorkProgramId));
 
         boolean isHaveExpertReview = false;
         ExpertReviewHis expertReviewHis = null;
@@ -98,6 +101,8 @@ public class WorkProgramHisServiceImpl implements WorkProgramHisService {
         if(isHaveExpertReview){
             //直接通过语句复制
             expertSelectedHisRepo.executeSql(WorkSql.copyExpertSelected(workProgram.getId()));
+            //更新业务ID
+            expertSelectedRepo.executeSql(WorkSql.updateSeleBusinessId(workProgram.getId(),newWorkProgramId));
            /* 原有记录不删除
            expertSelectedRepo.deleteByBusinessId(workProgram.getId());*/
 
@@ -119,6 +124,8 @@ public class WorkProgramHisServiceImpl implements WorkProgramHisService {
             }*/
 
             expertSelConditionHisRepo.executeSql(WorkSql.copyExpertCondition(workProgram.getId()));
+            //更新业务ID
+            expertSelConditionRepo.executeSql(WorkSql.updateConditionBusinessId(workProgram.getId(),newWorkProgramId));
             /*原有记录不删除
             expertSelConditionRepo.deleteByBusinessId(workProgram.getId());*/
 

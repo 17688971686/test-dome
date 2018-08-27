@@ -13,4 +13,17 @@ public class MeettingSql {
         sqlBuilder.setParam("newName",newName).setParam("signId",signId);
         return sqlBuilder;
     }
+
+    /**
+     * 更新业务ID
+     * @param oldBusinessId
+     * @param newBusinessId
+     * @return
+     */
+    public static HqlBuilder updateBusinessId(String oldBusinessId, String newBusinessId) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" UPDATE CS_ROOM_BOOKING SET BUSINESSID = :newBusinessid where BUSINESSID = :oldBusinessId ");
+        sqlBuilder.setParam("newBusinessid",newBusinessId).setParam("oldBusinessId",oldBusinessId);
+        return sqlBuilder;
+    }
 }

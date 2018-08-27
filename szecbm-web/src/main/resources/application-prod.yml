@@ -5,10 +5,10 @@ logging:
 spring:
   datasource:
     driver-class-name: oracle.jdbc.OracleDriver
-    url: jdbc:oracle:thin:@192.168.1.30:1521:orcl
-    username: szec_bm
-    password: szecPassword
+    url: jdbc:oracle:thin:@172.30.36.217:1521:orcl
+    username: szec_secret
+    password: szec368863
 
 system:
   sysfile:
-    enableip: 192.168.1.30
+    enableip: 172.30.26.218

@@ -13,7 +13,7 @@ public interface WorkProgramHisService{
      * @param workProgram
      * @return
      */
-    boolean copyWorkProgram(WorkProgram workProgram,String signId) throws RuntimeException;
+    boolean copyWorkProgram(WorkProgram workProgram,String signId,String newWorkProgramId) throws RuntimeException;
 
     /**
      * 根据项目ID和分支，查询历史信息

@@ -133,4 +133,24 @@ public class WorkSql {
         sqlBuilder.bulidPropotyString("and", WorkProgram_.branchId.getName(),brandIds);
         return sqlBuilder;
     }
+
+    /**
+     * 更新专家抽取的业务ID
+     * @param oldBusinessId
+     * @param newBusinessId
+     * @return
+     */
+    public static HqlBuilder updateSeleBusinessId(String oldBusinessId, String newBusinessId) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" UPDATE CS_HIS_EXPERT_SELECTED SET BUSINESSID = :newBusinessid where BUSINESSID = :oldBusinessId ");
+        sqlBuilder.setParam("newBusinessid",newBusinessId).setParam("oldBusinessId",oldBusinessId);
+        return sqlBuilder;
+    }
+
+    public static HqlBuilder updateConditionBusinessId(String oldBusinessId, String newBusinessId) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" UPDATE CS_EXPERT_CONDITION SET BUSINESSID = :newBusinessid where BUSINESSID = :oldBusinessId ");
+        sqlBuilder.setParam("newBusinessid",newBusinessId).setParam("oldBusinessId",oldBusinessId);
+        return sqlBuilder;
+    }
 }

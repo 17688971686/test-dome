@@ -50,7 +50,6 @@ public class SysFileController {
     @Value("${system.sysfile.enableip}")
     private String enabledIP;
 
-
    @Autowired
     private ISysFileRepo sysFileRepo;
 

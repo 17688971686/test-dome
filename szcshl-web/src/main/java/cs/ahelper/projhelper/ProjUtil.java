@@ -169,7 +169,7 @@ public class ProjUtil {
     }
 
     public static String getReFlowName(String projName) {
-        return "[" + projName + "]重做工作方案]";
+        return "[" + projName + "]重做工作方案";
     }
 
     /**

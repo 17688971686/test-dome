@@ -1,7 +1,6 @@
 package cs.domain.project;
 
 import cs.domain.DomainBase;
-
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;

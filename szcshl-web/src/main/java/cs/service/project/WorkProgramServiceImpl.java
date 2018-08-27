@@ -895,25 +895,24 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                             ProjUtil.copyMainWPProps(mainWP,wp);
                         }
                     }
-                    workProgramHisService.copyWorkProgram(wp, sign.getSignid());
+                    newWP.setId(new RandomGUID().valueAfterMD5);
+                    workProgramHisService.copyWorkProgram(wp, sign.getSignid(),newWP.getId());
                     WorkPGUtil.create(newWP).resetLeaderOption().resetMinisterOption();
                     isNew = false;
                 }
             }
             if(isNew){
                 newWP = initWP(sign,ProjUtil.isMainBranch(brandId));
+                newWP.setId(new RandomGUID().valueAfterMD5);
             }
             signBranchRepo.resetBranchState(sign.getSignid(), brandId);
             newWP.setBranchId(brandId);
-            newWP.setId(new RandomGUID().valueAfterMD5);
             newWP.setBaseInfo(null);
             reWorkList.add(newWP);
         }
 
         //发起流程
-        String orgName = "";
-        String assigneeValue = "";
-        String allAssigneeValue = "";
+        String assigneeValue = "",allAssigneeValue = "";
         List<AgentTask> agentTaskList = null;
 
         for (WorkProgram workProgram : reWorkList) {
@@ -929,7 +928,6 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(FlowConstant.WORK_HIS_FLOW, workProgram.getId(),
                     ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USERS.getValue(), assigneeValue));
             //设置流程实例名称
-            /*orgName = signBranchRepo.getOrgDeptNameBySignId( sign.getSignid(), workProgram.getBranchId());*/
             processEngine.getRuntimeService().setProcessInstanceName(processInstance.getId(), ProjUtil.getReFlowName(sign.getProjectname()));
             //所有的处理人
             allAssigneeValue += assigneeValue;
@@ -937,9 +935,6 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             workProgram.setProcessInstanceId(processInstance.getId());
         }
         workProgramRepo.bathUpdate(reWorkList);
-
-        // 更新工作方案状态
-        workProgramRepo.updateWPState(signId, brandIds,EnumState.NO.getValue());
 
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(sign.getSignid(), allAssigneeValue);
