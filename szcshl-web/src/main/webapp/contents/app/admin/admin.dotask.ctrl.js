@@ -3,9 +3,9 @@
 
     angular.module('app').controller('adminDoTaskCtrl', allDoTask);
 
-    allDoTask.$inject = ['adminSvc','$state','$rootScope'];
+    allDoTask.$inject = ['adminSvc','$state','$rootScope','bsWin','flowSvc'];
 
-    function allDoTask(adminSvc,$state,$rootScope) {
+    function allDoTask(adminSvc,$state,$rootScope,bsWin,flowSvc) {
         var vm = this;
         vm.title = '在办任务';
         vm.isSuperUser = isSuperUser;
@@ -49,6 +49,30 @@
             }
 
             adminSvc.workName(vm);
+        }
+
+        /**
+         * 删除流程，
+         * @param processInstanId
+         */
+        vm.deleteTask = function(processInstanId){
+            if(processInstanId){
+                bsWin.confirm("是否删除任务，删除数据不可恢复，操作请慎重！", function () {
+                    flowSvc.deleteFlow(processInstanId,"删除任务",function(data){
+                        if(data.flag || data.reCode == 'ok'){
+                            bsWin.alert("操作成功！",function(){
+                                vm.gridOptions.dataSource.read();
+                            });
+                        }else{
+                            bsWin.alert(data.reMsg);
+                        }
+                    });
+                })
+            }else{
+                bsWin.alert("该流程已删除！",function(){
+                    activate();
+                });
+            }
         }
     }
 })();
