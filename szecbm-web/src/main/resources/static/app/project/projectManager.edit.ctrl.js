@@ -24,15 +24,10 @@
         vm.flag = $state.params.flag;
         vm.attachments = [];
 
-        /**
-         * 初始化附件上传
-         */
-        projectManagerSvc.initUploadConfig(vm, "relateAttach", function (data) {
-            vm.attachments = vm.attachments.concat(JSON.parse(data));
-        });
 
         projectManagerSvc.findOrgUser(function (data) {
             vm.principalUsers = data;
+            vm.initFileUpload();
         });
         projectManagerSvc.findAllOrgDelt(function (data) {
             vm.orgDeptList = data;
@@ -43,16 +38,40 @@
                 /**
                  * 查询附件列表
                  */
-                projectManagerSvc.getAttachments(vm, {
+         /*       projectManagerSvc.getAttachments(vm, {
                     "businessId": vm.model.id
                 }, function (data) {
                     angular.forEach(vm.attachments.concat(data), function (o, i) {
                         vm.attachments = vm.attachments.concat(o);
                     });
-                });
+                });*/
             });
         } else {
             projectManagerSvc.createUUID(vm);
+        }
+
+        //初始化附件上传控件
+        vm.initFileUpload = function(){
+            if (!vm.model.id) {
+                //监听ID，如果有新值，则自动初始化上传控件
+                $scope.$watch("vm.model.id", function (newValue, oldValue) {
+                    if (newValue && newValue != oldValue && !vm.initUploadOptionSuccess) {
+                        vm.initFileUpload();
+                    }
+                });
+            }
+            vm.sysFile = {
+                businessId: vm.model.id,
+                mainId: "",
+                mainType: "",
+                sysfileType: "",
+                sysBusiType: "",
+                detailBt: "detail_file_bt",
+            };
+            projectManagerSvc.initUploadOptions({
+                inputId: "sysfileinput",
+                vm: vm
+            });
         }
 
 

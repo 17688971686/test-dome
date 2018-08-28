@@ -26,30 +26,31 @@
 
         projectManagerSvc.findOrgUser(function(data){
             vm.principalUsers = data;
+            vm.initFileUpload();
         });
 
         projectManagerSvc.findAllOrgDelt(function(data){
             vm.orgDeptList = data;
         });
-        /**
+  /*      /!**
          * 初始化附件上传
-         */
+         *!/
         projectManagerSvc.initUploadConfig(vm,"relateAttach",function (data) {
             vm.attachments = vm.attachments.concat(JSON.parse(data));
-        });
+        });*/
          if (vm.model.id) {
 
             projectManagerSvc.findGovernmentInvestProjectById(vm, function () {
-                /**
+        /*        /!**
                  * 查询附件列表
-                 */
+                 *!/
                projectManagerSvc.getAttachments(vm, {
                     "businessId": vm.model.id
                 }, function (data) {
                     angular.forEach(vm.attachments.concat(data), function (o, i) {
                         vm.attachments = vm.attachments.concat(o);
                     });
-                });
+                });*/
                 if(vm.flag == 'cancel' || vm.flag == 'normal'){
                     if(vm.flag == 'cancel'){
                         vm.model.status = '2';
@@ -71,6 +72,30 @@
          */
         function compareDate (d1,d2) {
             return ((new Date(d1.replace(/-/g,"\/"))) > (new Date(d2.replace(/-/g,"\/"))));
+        }
+
+        //初始化附件上传控件
+        vm.initFileUpload = function(){
+            if (!vm.model.id) {
+                //监听ID，如果有新值，则自动初始化上传控件
+                $scope.$watch("vm.model.id", function (newValue, oldValue) {
+                    if (newValue && newValue != oldValue && !vm.initUploadOptionSuccess) {
+                        vm.initFileUpload();
+                    }
+                });
+            }
+            vm.sysFile = {
+                businessId: vm.model.id,
+                mainId: "",
+                mainType: "",
+                sysfileType: "",
+                sysBusiType: "",
+                detailBt: "detail_file_bt",
+            };
+            projectManagerSvc.initUploadOptions({
+                inputId: "sysfileinput",
+                vm: vm
+            });
         }
 
     }

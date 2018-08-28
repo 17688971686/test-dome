@@ -421,6 +421,184 @@
                     }
                 });
             },
+            // S 初始化上传附件控件
+            /**
+             * options 属性 options.vm.sysFile 一定要有，这个是附件对象
+             *  uploadBt : 上传按钮
+             *  detailBt : 查看按钮
+             *  inputId : "sysfileinput",
+             *  mainType : 主要业务模块，业务的根目录
+             * @param options
+             */
+            initUploadOptions: function (options) {
+            options.vm.initUploadOptionSuccess = false;
+            //options.vm.sysFile 为定义好的附件对象
+            var sysFileDefaults = {
+                width: "70%",
+                height: "460px",
+                uploadBt: "upload_file_bt",
+                detailBt: "detail_file_bt",
+                inputId: "sysfileinput",
+                mainType: "ProAttachment",
+                sysBusiType: "",
+                showBusiType: true,
+            };
+            if (!options.vm.sysFile) {
+                bsWin.alert("初始化附件控件失败，请先定义附件对象！");
+                return;
+            }
+            if (options.sysBusiType) {
+                sysFileDefaults.sysBusiType = options.sysBusiType;
+            }
+            if (options.width) {
+                sysFileDefaults.width = options.width;
+            }
+            if (options.height) {
+                sysFileDefaults.height = options.height;
+            }
+
+            //是否显示业务下来框
+            if (angular.isUndefined(options.vm.sysFile.showBusiType)) {
+                options.vm.sysFile.showBusiType = sysFileDefaults.showBusiType;
+            }
+
+                //附件下载方法
+                options.vm.downloadSysFile = function (id) {
+                    downloadFile(id);
+                }
+                //附件删除方法
+                options.vm.delSysFile = function (id) {
+                    bsWin.confirm({
+                        title: "询问提示",
+                        message: "确认删除么？",
+                        onOk: function () {
+                            delSysFile(id, function (data) {
+                                bsWin.alert(data.reMsg || "删除成功！");
+                                $.each(options.vm.sysFilelists, function (i, sf) {
+                                    if (!angular.isUndefined(sf) && sf.sysFileId == id) {
+                                        options.vm.sysFilelists.splice(i, 1);
+                                    }
+                                })
+                            });
+                        }
+                    });
+                }
+
+            options.vm.clickUploadBt = function () {
+                if (!options.vm.sysFile.businessId) {
+                    bsWin.alert("请先保存业务数据！");
+                } else {
+                    //B、清空上一次的上传文件的预览窗口
+                    options.vm.sysFile.sysBusiType="";
+                    //E、清空上一次的上传文件的预览窗口
+                    angular.element('#sysfileinput').fileinput('clear');
+                    $("#commonUploadWindow").kendoWindow({
+                        width: sysFileDefaults.width,
+                        height: sysFileDefaults.height,
+                        title: "附件上传",
+                        visible: false,
+                        modal: true,
+                        closable: true,
+                    }).data("kendoWindow").center().open();
+                }
+            }
+
+                options.vm.clickDetailBt = function () {
+                    if (!options.vm.sysFile.businessId) {
+                        bsWin.alert("请先保存业务数据！");
+                        return;
+                    } else {
+                        findByBusinessId(options.vm.sysFile.businessId, function (data) {
+                            options.vm.sysFilelists = [];
+                            options.vm.sysFilelists = data;
+                            $("#commonQueryWindow").kendoWindow({
+                                width: "50%",
+                                height: "500px",
+                                title: "附件上传列表",
+                                visible: false,
+                                modal: true,
+                                closable: true,
+                                actions: ["Pin", "Minimize", "Maximize", "Close"]
+                            }).data("kendoWindow").center().open();
+                        });
+                    }
+                }
+
+                //有业务数据才能初始化
+                if (options.vm.sysFile.businessId) {
+                    var projectfileoptions = {
+                        language: 'zh',
+                        allowedPreviewTypes: ['image'],
+                        allowedFileExtensions: ['sql', 'exe', 'lnk'],//修改过，改为了不支持了。比如不支持.sql的
+                        maxFileSize: 0,     //文件大小不做限制
+                        showRemove: false,
+                        previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+                        uploadAsync: false, //同步上传
+                        enctype : 'multipart/form-data',
+                        uploadUrl: attachments_url+"/fileUpload",// 默认上传ftp服务器 /file/fileUploadLocal 为上传到本地服务
+                        previewFileIconSettings: {
+                            'doc': '<i class="fa fa-file-word-o text-primary"></i>',
+                            'xls': '<i class="fa fa-file-excel-o text-success"></i>',
+                            'ppt': '<i class="fa fa-file-powerpoint-o text-danger"></i>',
+                            'docx': '<i class="fa fa-file-word-o text-primary"></i>',
+                            'xlsx': '<i class="fa fa-file-excel-o text-success"></i>',
+                            'pptx': '<i class="fa fa-file-powerpoint-o text-danger"></i>',
+                            'pdf': '<i class="fa fa-file-pdf-o text-danger"></i>',
+                            'zip': '<i class="fa fa-file-archive-o text-muted"></i>',
+                        },
+                        uploadExtraData: function (previewId, index) {
+                            var result = {};
+                            result.businessId = options.vm.sysFile.businessId;
+                            result.mainId = options.vm.sysFile.mainId || "";
+                            result.mainType = options.vm.sysFile.mainType || sysFileDefaults.mainType;
+                            result.sysfileType = options.vm.sysFile.sysfileType || "";
+                            result.sysBusiType = options.vm.sysFile.sysBusiType || sysFileDefaults.sysBusiType;
+                            return result;
+                        }
+                    };
+
+                    var filesCount = 0;
+                    $("#" + options.inputId || sysFileDefaults.inputId).fileinput(projectfileoptions)
+                    //附件选择
+                        .on("filebatchselected", function (event, files) {
+                            filesCount = files.length;
+                            //console.log("附件选择:" + filesCount);
+                        })
+                        //上传前
+                        .on('filepreupload', function (event, data, previewId, index) {
+                            var form = data.form, files = data.files, extra = data.extra,
+                                response = data.response, reader = data.reader;
+                            //console.log("附件上传前:" + files);
+                        })
+                        /*//异步上传返回结果处理
+                         .on("fileuploaded", function (event, data, previewId, index) {
+                         projectfileoptions.sysBusiType = options.vm.sysFile.sysBusiType;
+                         if (filesCount == (index + 1)) {
+                         if (options.uploadSuccess != undefined && typeof options.uploadSuccess == 'function') {
+                         options.uploadSuccess(event, data, previewId, index);
+                         }
+                         }
+                         })*/
+                        //同步上传错误处理
+                        .on('filebatchuploaderror', function(event, data, msg) {
+                            console.log("同步上传错误");
+                            // get message
+                            //alert(msg);
+                        })
+                        //同步上传返回结果处理
+                        .on("filebatchuploadsuccess", function (event, data, previewId, index) {
+                            if (options.uploadSuccess != undefined && typeof options.uploadSuccess == 'function') {
+                                options.uploadSuccess(event, data, previewId, index);
+                            }
+                        });
+
+                    //表示初始化控件成功
+                    options.vm.initUploadOptionSuccess = true;
+                }
+
+
+        },
+        // E 初始化上传附件控件
             /**
              * 获取UUID:附件上传id
              * @param vm
@@ -447,6 +625,40 @@
                     fn(data)
                 });
             }
+        }
+
+        //根据主业务获取所有的附件信息
+        function findByBusinessId(businessId, callBack) {
+            $http.get(attachments_url + "/findByBusinessId?businessId="+businessId).success(function (data) {
+                callBack(data);
+            });
+        }
+
+        // 系统文件下载
+        function downloadFile(id) {
+            $http.get(attachments_url + "/fileSysCheck?sysFileId="+id).success(function (response) {
+                var downForm = $("#szecSysFileDownLoadForm");
+                downForm.attr("target","");
+                downForm.attr("method","get");
+                if (response.flag || response.reCode == 'ok') {
+                    downForm.attr("action",attachments_url + "/fileDownload");
+                    downForm.find("input[name='sysfileId']").val(id);
+                    downForm.submit();//表单提交
+                } else {
+                    downForm.attr("action","");
+                    downForm.find("input[name='sysfileId']").val("");
+                    bsWin.error(response.reMsg);
+                }
+            });
+
+        }
+
+
+        // S 删除系统文件,自己实现回调方法
+        function delSysFile(sysFileId, callBack) {
+            $http.get(attachments_url + "/deleteSysFile?sysFileId="+sysFileId).success(function (data) {
+                callBack(data);
+            });
         }
     }
 

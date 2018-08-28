@@ -173,105 +173,46 @@
 
 </table>
 
-    <#if isEdit>
-    <#--附件上传begin-->
-    <div>
-        <table style="width:100%;" class="table table-bordered table-striped">
-            <tr>
-                <td colspan="2" style="background:#3c8dbc;color:#fff">项目附件</td>
-            </tr>
-            <tbody>
-            <tr>
-                <td>
-                    <table style="width: 98%;" class="table table-bordered table-striped">
-                        <tbody>
-                        <tr>
-                            <td>
-                                <div>
-                                    <span style="padding: 10px 15px; line-height: 24px; display: inline-block; color: #ff1822;">
-                                        注意：请严格按照以下附件类型上传正确的文件<br>
-                                        允许上传的文件类型：图片(.jpg,.gif,.png),文档<br>
-                                    </span><br>
-                                    <span class="p1" style="color: #ff1822;">（文件大小不能超过40M）</span>
-                                    <input name="files" type="file" id="relateAttach">
-                                </div>
-                                <ul class="list-group">
-                                    <li class="list-group-item" ng-repeat="x in vm.attachments">
-                                        <i class="fa fa-file"></i> {{x.showName}}
-                                        <button class="btn btn-xs btn-danger" type="button"
-                                                ng-click="vm.removeFile(x.sysFileId, $index);" title="删除">删除
-                                        </button>
-                                    </li>
-                                </ul>
-                            </td>
-                            <td colspan="2">
-                        </tr>
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    </#if>
-<#--附件上传End-->
 
-<#--附件下载-->
-    <#if !isEdit>
-    <div class="bg-info text-info title">文件查看</div>
-    <div style="display: block;">
-        <table style="width:100%;" class="table table-bordered table-striped">
-            <tbody>
-            <tr>
-                <td>
-                <span id="modal-302564" href="#modal-container-pro" role="button"
-                      class="btn btn-sm btn-primary" data-toggle="modal">文件下载（所有附件）</span>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    <#--</div>-->
-        <!--  弹框开始 -->
-        <div class="modal fade" id="modal-container-pro" role="dialog"
-             aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal"
-                                aria-hidden="true">×
-                        </button>
-                        <h4 class="modal-title" id="myModalLabel">
-                            文件列表
-                        </h4>
-                    </div>
-                    <div class="modal-body">
+<!--S 上传附件弹窗 -->
+<div id="commonUploadWindow" style="margin:0px 20px 0px 10px;background:white;display:none;">
+    <span style="margin-top: 20px;"></span>
+    <input type="file" id="sysfileinput" name="file" multiple="multiple" class="file-loading"/>
+</div>
+<!--E 上传附件弹窗 -->
 
-                        <div class="container">
-                            <div class="row clearfix">
-                                <div class="col-md-12 column">
-                                    <ul>
-                                        <li class="p-blue" ng-repeat="x in vm.attachments">
-                                            <a href="${path}/sys/sysfile/fileDownload?sysfileId={{x.sysFileId}}"
-                                               target="_blank">
-                                                <i class="fa fa-file"></i>
-                                                {{x.showName}}
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">
-                            关闭
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    </#if>
-<!-- 弹框结束 -->
-<#--附件下载-->
+
+<!-- S 附件上传列表 -->
+<div id="commonQueryWindow" class="well well-sm" style="background:white;display:none;">
+    <p>
+    </p>
+    <table class="table table-bordered">
+        <tr>
+            <td style="width: 250px;" align="center" bgcolor="#eeeeee">文件名称</td>
+            <td style="width: 80px;" align="center" bgcolor="#eeeeee">文件大小</td>
+          <#--  <td style="width: 120px;" align="center" bgcolor="#eeeeee">附件类型</td>-->
+            <td style="width: 100px;" align="center" bgcolor="#eeeeee">上传人</td>
+            <td style="width: 150px;" align="center" bgcolor="#eeeeee">时间</td>
+            <td style="width: 100px;" align="center" bgcolor="#eeeeee">操作</td>
+        </tr>
+        <tr ng-repeat="x in vm.sysFilelists ">
+            <td >
+                <i class="fa fa-file-image-o" aria-hidden="true" ng-show="x.fileType =='.png' || x.fileType =='.jpg' || x.fileType =='.gif'"></i>
+                <i class="fa fa-file-word-o" aria-hidden="true" ng-show="x.fileType =='.docx' || x.fileType =='.doc'"></i>
+                <i class="fa fa-file-excel-o" aria-hidden="true" ng-show="x.fileType =='.xlsx' || x.fileType =='.xls'"></i>
+                <i class="fa fa-file-pdf-o" aria-hidden="true" ng-show="x.fileType =='.pdf'"></i>
+                <a ng-click="vm.commonDownloadSysFile(x.sysFileId)">{{ x.showName }}</a>
+            </td>
+            <td style="text-align: center;">{{ x.fileSizeStr }}</td>
+        <#--    <td style="text-align: center;">{{ x.sysBusiType }}</td>-->
+            <td style="text-align: center;">{{ x.createdBy }}</td>
+            <td style="text-align: center;">{{ x.createdDate }}</td>
+            <td style="text-align: center;">
+                <button ng-click="vm.downloadSysFile(x.sysFileId)" id="linksbtn" class="btn btn-xs btn-primary"><i class="fa fa-cloud-download" aria-hidden="true"></i>下载</button>
+                <button   <#if !isEdit>style="display: none" </#if> class="btn btn-xs btn-danger" ng-click="vm.delSysFile(x.sysFileId)"><i class="fa fa-times" aria-hidden="true"></i>删除</button>
+            </td>
+        </tr>
+    </table>
+</div>
+<!-- E 附件上传列表 -->
 </#macro>

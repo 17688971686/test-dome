@@ -70,25 +70,19 @@ public class SysFileController {
         return sysfileDto;
     }
 
-    /**
-     * @param request
-     * @param
-     * @param businessId        业务ID
-     * @param mainId            主ID
-     * @param sysfileType       附件模块类型
-     * @param sysBusiType       附件业务类型
-     * @return
-     * @throws IOException
-     */
+
     @RequiresAuthentication
     @RequestMapping(name = "文件上传", path = "fileUpload", method = RequestMethod.POST)
     @ResponseBody
-    public List<SysFile> upload(HttpServletRequest request,  List<MultipartFile> files,String sysFileId,
-                             String businessId, String mainId, String mainType,
+    public ResultMsg upload(HttpServletRequest request, @RequestParam(name = "file") MultipartFile[] multipartFileList,
+                            @RequestParam(required = true) String businessId, String mainId, String mainType,
                             String sysfileType, String sysBusiType) {
-        ResultMsg resultMsg = new ResultMsg(false, Constants.ReCode.ERROR.name(), "");
-        List<SysFile> attachmentList = new ArrayList<>();
-        Assert.notEmpty(files, "请选择要上传的附件");
+        ResultMsg resultMsg = new ResultMsg(false, "error", "");
+        if (multipartFileList == null || multipartFileList.length == 0) {
+            resultMsg = new ResultMsg(false, "error", "请选择要上传的附件");
+            return resultMsg;
+        }
+        StringBuffer errorMsg = new StringBuffer();
         try {
             String relativeFileUrl = SysFileUtil.generatRelativeUrl(mainType, mainId, sysBusiType, null);
             Ftp f = ftpRepo.getByIP(enabledIP);
@@ -103,21 +97,19 @@ public class SysFileController {
                     relativeFileUrl = File.separator + k.getFtpRoot() + relativeFileUrl + File.separator;
                 }
             }
-
-            for (MultipartFile multipartFile : files) {
+            for (MultipartFile multipartFile : multipartFileList) {
                 String fileName = multipartFile.getOriginalFilename();
                 if (fileName.indexOf(".") == -1) {
-                    throw new SnRuntimeException("附件【" + fileName + "】没有后缀名，无法上传到文件服务器！");
+                    errorMsg.append("附件【" + fileName + "】没有后缀名，无法上传到文件服务器！");
+                    continue;
                 }
                 String fileType = fileName.substring(fileName.lastIndexOf("."), fileName.length());
                 //统一转成小写
                 fileType = fileType.toLowerCase();
                 String uploadFileName = "";
-                //SysFile sysFile = sysFileService.isExistFile(relativeFileUrl, fileName);
-                SysFile sysFile = null;
+                SysFile sysFile = sysFileRepo.isExistFile(relativeFileUrl, fileName);
                 //如果附件已存在
-                if (StringUtil.isNotBlank(sysFileId)) {
-                    sysFile = sysFileRepo.getById(sysFileId);
+                if (null != sysFile) {
                     String fileUrl = sysFile.getFileUrl();
                     String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
                     if (relativeFileUrl.equals(removeRelativeUrl)) {
@@ -133,26 +125,27 @@ public class SysFileController {
                         sysFile.setModifiedBy(SessionUtil.getDisplayName());
                         sysFile.setModifiedDate(new Date());
                         sysFileService.save(sysFile);
+                        resultMsg = new ResultMsg(true, "ok", "文件上传成功！");
                     } else {
-                        sysFile = sysFileService.saveToFtp(multipartFile.getSize(), fileName, businessId, fileType,
+                        resultMsg = sysFileService.saveToFtp(multipartFile.getSize(), fileName, businessId, fileType,
                                 relativeFileUrl + File.separator + uploadFileName, mainId, mainType, sysfileType, sysBusiType, f);
                     }
-                    attachmentList.add(sysFile);
                 } else {
-                    throw new SnRuntimeException("附件【" + fileName + "】上传失败，无法上传到文件服务器！");
+                    errorMsg.append("附件【" + fileName + "】上传失败，无法上传到文件服务器！");
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
-            throw new SnRuntimeException("附件上传失败，连接ftp服务失败，请核查！");
+            resultMsg = new ResultMsg(false, "error", "附件上传失败，连接ftp服务失败，请核查！");
         } finally {
 
         }
-        return attachmentList;
+        resultMsg.setReMsg(resultMsg.getReMsg() + errorMsg.toString());
+        return resultMsg;
     }
 
     @RequiresAuthentication
-    @RequestMapping(name = "ftp文件校验", path = "fileSysCheck", method = RequestMethod.POST)
+    @RequestMapping(name = "ftp文件校验", path = "fileSysCheck", method = RequestMethod.GET)
     @ResponseBody
     public ResultMsg checkFtpFile(@RequestParam(required = true) String sysFileId) {
         ResultMsg resultMsg;
@@ -272,4 +265,13 @@ public class SysFileController {
     public void delete(@RequestParam(required = true) String sysFileId) {
         sysFileService.deleteByFileId(sysFileId);
     }
+
+
+    @RequiresAuthentication
+    @RequestMapping(name = "删除系统文件", path = "deleteSysFile", method = RequestMethod.GET)
+    @ResponseBody
+    public ResultMsg deleteSysFile(@RequestParam String sysFileId) {
+        return sysFileService.deleteByFileId(sysFileId);
+    }
+
 }

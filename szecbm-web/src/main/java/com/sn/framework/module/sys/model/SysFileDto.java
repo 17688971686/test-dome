@@ -19,4 +19,16 @@ public class SysFileDto extends SysFile {
     public SysFileDto(String sysFileId, String businessId, String fileUrl, String showName, Long fileSize, String fileType, String mainId, String mainType, String sysfileType, String sysBusiType, Ftp ftp) {
         super(sysFileId, businessId, fileUrl, showName, fileSize, fileType, mainId, mainType, sysfileType, sysBusiType, ftp);
     }
+    /**
+     * 文件大小，主要用于显示
+     */
+    private String fileSizeStr;
+
+    public String getFileSizeStr() {
+        return fileSizeStr;
+    }
+
+    public void setFileSizeStr(String fileSizeStr) {
+        this.fileSizeStr = fileSizeStr;
+    }
 }

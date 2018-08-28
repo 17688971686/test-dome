@@ -3,6 +3,7 @@ package com.sn.framework.module.sys.helper;
 import com.google.common.collect.Lists;
 import com.sn.framework.core.common.Validate;
 import com.sn.framework.core.util.BeanCopierUtils;
+import com.sn.framework.core.util.SysFileUtil;
 import com.sn.framework.module.sys.domain.SysFile;
 import com.sn.framework.module.sys.model.SysFileDto;
 
@@ -38,6 +39,7 @@ public class SysFileHelper {
         if (Validate.isList(sysFileList)) {
             sysFileDtoList = sysFileList.stream().map(item->{
                 SysFileDto sysFileDto = new SysFileDto();
+                sysFileDto.setFileSizeStr(SysFileUtil.getFileSize(item.getFileSize()));
                 BeanCopierUtils.copyPropertiesIgnoreProps(item,sysFileDto);
                 return sysFileDto;
             }).collect(Collectors.toList());

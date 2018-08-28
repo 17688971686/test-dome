@@ -3,6 +3,7 @@ package com.sn.framework.module.sys.service.impl;
 import com.sn.framework.core.common.ResultMsg;
 import com.sn.framework.core.common.SessionUtil;
 import com.sn.framework.core.service.impl.SServiceImpl;
+import com.sn.framework.core.util.BeanCopierUtils;
 import com.sn.framework.module.sys.domain.Ftp;
 import com.sn.framework.module.sys.domain.SysFile;
 import com.sn.framework.module.sys.helper.SysFileHelper;
@@ -39,7 +40,7 @@ public class SysFileServiceImpl extends SServiceImpl<ISysFileRepo, SysFile, SysF
 
     @Override
     @Transactional
-    public SysFile saveToFtp(long size, String fileName, String businessId, String fileType, String relativeFileUrl, String mainId, String mainType, String sysfileType, String sysBusiType, Ftp ftp) {
+    public ResultMsg saveToFtp(long size, String fileName, String businessId, String fileType, String relativeFileUrl, String mainId, String mainType, String sysfileType, String sysBusiType, Ftp ftp) {
         try {
             SysFile sysFile = new SysFile();
             sysFile.setSysFileId(UUID.randomUUID().toString());
@@ -59,7 +60,11 @@ public class SysFileServiceImpl extends SServiceImpl<ISysFileRepo, SysFile, SysF
             sysFile.setModifiedDate(now);
             sysFile.setFtp(ftp);
             baseRepo.save(sysFile);
-            return sysFile;
+
+            //先保存成功，
+            SysFileDto sysFileDto = new SysFileDto();
+            BeanCopierUtils.copyProperties(sysFile,sysFileDto);
+            return new ResultMsg(true, "ok","文件上传成功！",sysFileDto);
 
         } catch (Exception e) {
             return null;
