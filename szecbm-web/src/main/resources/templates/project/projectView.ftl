@@ -24,6 +24,7 @@
                  <button ng-if="vm.flag=='cancelView'" class="btn btn-sm btn-primary" ui-sref="projectManageCancel">
                     <span class="glyphicon glyphicon-chevron-left"></span> 返回
                 </button>
+                <button class="btn btn-sm btn-primary" ng-click="vm.clickDetailBt();" id="detail_file_bt">查看附件</button>
             </div>
         <#include "projectEditInfo.ftl">
         <@projectEditInfo isEdit=false></@projectEditInfo>

@@ -24,6 +24,8 @@
                 <button class="btn btn-sm btn-success" ng-click="vm.save()" ng-show="vm.isSubmit">
                     <span class="glyphicon glyphicon-ok"></span> 更新
                 </button>
+                <button class="btn btn-sm btn-primary" ng-click="vm.clickUploadBt();" id="upload_file_bt">上传附件</button>
+                <button class="btn btn-sm btn-primary" ng-click="vm.clickDetailBt();" id="detail_file_bt">查看附件</button>
             </div>
 
         <#include "projectEditInfo.ftl">

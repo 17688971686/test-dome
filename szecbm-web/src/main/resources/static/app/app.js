@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    angular.module('myApp', ['ui.router', 'angular-loading-bar', "bsTable", "sn.common"]).config(appConfig).run(appRun).controller('indexCtrl', indexCtrl);
+    angular.module('myApp', ['ui.router', 'kendo.directives','angular-loading-bar', "bsTable", "sn.common"]).config(appConfig).run(appRun).controller('indexCtrl', indexCtrl);
 
     indexCtrl.$inject = ['$scope', '$state', '$http', '$compile', "snBaseUtils"];
 

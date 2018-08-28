@@ -42,7 +42,7 @@ public interface ISysFileService extends ISService<SysFileDto> {
      * @param ftp
      * @return
      */
-    SysFile saveToFtp(long size, String fileName, String businessId, String fileType, String relativeFileUrl,
+    ResultMsg saveToFtp(long size, String fileName, String businessId, String fileType, String relativeFileUrl,
                         String mainId, String mainType, String sysfileType, String sysBusiType, Ftp ftp);
 
     /**
@@ -77,4 +77,5 @@ public interface ISysFileService extends ISService<SysFileDto> {
      */
 
      ResultMsg deleteByFileId(String sysFileId);
+
 }

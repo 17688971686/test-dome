@@ -189,7 +189,9 @@
         </section>
         <!-- /.sidebar -->
     </aside>
-
+    <form id="szecSysFileDownLoadForm" style="display:none;" >
+        <input name="sysfileId" type="hidden">
+    </form>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper content-wrapper-all" ui-view style="padding-top: 5px;min-height:895px;"></div>
     <!-- /.content-wrapper
@@ -204,6 +206,7 @@
 <!-- ./wrapper -->
 
 <!--angular1.2.30-->
+
 <script src="${path}/libs/jsencrypt/jsencrypt.min.js"></script>
 <script src="${path}/libs/jquery/jquery.min.js"></script>
 <script src="${path}/libs/bootstrap/customize/js/bootstrap.min.js"></script>
@@ -225,7 +228,16 @@
 <script src="${path}/libs/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
 <script src="${path}/libs/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
 <!--datetimepicker-->
-
+<!-- kendo -->
+<link href="${path}/libs/kendoui/kendo.common.min.css" rel="stylesheet"/>
+<link href="${path}/libs/kendoui/kendo.blueopal.min.css"  rel="stylesheet"/>
+<script src="${path}/libs/kendoui/kendo.all.min.js"></script>
+<script src="${path}/libs/kendoui/kendo.message.zh-CN.js"></script>
+<script src="${path}/libs/kendoui/kendo.culture.zh-CN.min.js"></script>
+<!-- 文件上传 -->
+<script src="${path}/libs/fileinput/fileinput.js"></script>
+<script src="${path}/libs/fileinput/zh.js"></script>
+<link rel="stylesheet" href="${path}/libs/fileinput/fileinput.css">
 <!-- <script>
   $.widget.bridge('uibutton', $.ui.button);
 </script> -->
