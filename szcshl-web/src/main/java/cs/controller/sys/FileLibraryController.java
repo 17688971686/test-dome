@@ -132,13 +132,6 @@ public class FileLibraryController {
         return policyService.get(odataObj);
     }
 
-   @RequiresAuthentication
-    @RequestMapping(name = "创建政策指标库", path = "", method = RequestMethod.POST)
-    @ResponseBody
-    public ResultMsg post(@RequestBody PolicyDto record) {
-        return policyService.save(record);
-    }
-
     /**
      * begin html
      */

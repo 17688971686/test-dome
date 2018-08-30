@@ -1,0 +1,100 @@
+
+<div class="toolbar">
+    <button class="btn btn-sm btn-success" ng-click="vm.fileEdit()" ng-show="vm.showAddFile">
+        <span class="glyphicon glyphicon-plus"></span>新建文件
+    </button>
+    <button class="btn btn-sm btn-primary" ng-click="vm.queryPolicy()">
+        <span class="glyphicon glyphicon-search"></span>查询
+    </button>
+
+</div>
+
+<div class="well well-sm" style="background:white;">
+
+    <div class="well well-sm">
+        <form id="policyForm" name="policyForm">
+            <table style="width: 100%;">
+                <tr>
+                    <td class="text-right">标准名称：</td>
+                    <td>
+                        <input class="form-control input-xm " name="standardName" id="standardName" ng-model="vm.search.standardName"/>
+                    </td>
+                    <td class="text-right">标准组织：</td>
+                    <td>
+                        <input class="form-control input-xm " name="standardOrg" id="standardOrg"  ng-model="vm.search.standardOrg"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-right">CCS分类：</td>
+                    <td>
+                        <input class="form-control input-xm " name="cCSType" id="cCSType" ng-model="vm.search.cCSType"/>
+                    </td>
+                    <td class="text-right">ICS分类：</td>
+                    <td>
+                        <input class="form-control input-xm " name="iCSType" id="iCSType" ng-model="vm.search.iCSType"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-right">发布日期</td>
+                    <td >
+                        <input type="text" name="publishDateBegin" style="width:45%;min-width: 115px;max-width: 150px;"  ng-model="vm.search.publishDateBegin"
+                               class="form-control input-xm " kendo-date-picker k-format="'yyyy-MM-dd'">
+                        至
+                        <input type="text" name="publishDateEnd" style="width:45%;min-width: 115px;max-width: 150px;"  ng-model="vm.search.publishDateEnd"
+                               class="form-control input-xm " kendo-date-picker k-format="'yyyy-MM-dd'">
+                    </td>
+                    <td class="text-right">实施文日期</td>
+                    <td >
+                        <input type="text" name="implementDateBegin"  style="width:45%;min-width: 115px;max-width: 150px;" ng-model="vm.search.implementDateBegin"
+                               class="form-control input-xm " kendo-date-picker k-format="'yyyy-MM-dd'">
+                        至
+                        <input type="text" name="implementDateEnd" style="width:45%;min-width: 115px;max-width: 150px;" ng-model="vm.search.implementDateEnd"
+                               class="form-control input-xm " kendo-date-picker k-format="'yyyy-MM-dd'">
+                    </td>
+                </tr>
+            </table>
+
+        </form>
+    </div>
+    <div>
+        <table class="table table-bordered"  style="margin-top: 5px;">
+            <tr>
+                <td width="5%"></td>
+                <td width="5%">序号</td>
+                <td width="15%">标准号</td>
+                <td width="15%">标准名称</td>
+                <td width="10%">发布日期</td>
+                <td width="10%">实施日期</td>
+                <td width="10%">状态</td>
+                <td width="10%">操作</td>
+            <tr ng-repeat="x in vm.fileList">
+                <td><input type="checkbox"/></td>
+                <td>{{$index + 1}}</td>
+                <td><a ng-click="vm.policyLibraryEdit(x.id)">{{x.standardNo}}</a></td>
+                <td><a ng-click="vm.policyLibraryEdit(x.id)">{{x.standardName}}</a></td>
+                <td>{{x.publishDate | date : 'yyyy-MM-dd'}}</td>
+                <td>{{x.implementDate | date : 'yyyy-MM-dd'}}</td>
+                <td >
+                    <span ng-if="x.state == '1'">生效</span>
+                    <span ng-if="x.state == '9'">删除</span>
+                    <span ng-if="!x.state || x.state != '1' || x.state == '9'">未生效</span>
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-primary" ng-click="vm.updatePolicyFile(x.id)">编辑</button>
+                    <button class="btn btn-sm btn-danger" ng-click="vm.deletePolicyFile(x.id)">删除</button>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="9">
+                    <div id="demo5" class="lgx_page_l"  style="clear: both;">
+                        <a lu-page="first">首页</a>
+                        <a lu-page="prev">上一页</a>
+                        <a lu-page="list"></a>
+                        <a lu-page="next">下一页</a>
+                        <a lu-page="last">尾页</a>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

@@ -2,9 +2,9 @@
     'use strict';
     angular.module('app').controller('policyCtrl',policy);
 
-    policy.$inject=['$scope','$state','$location','fileLibrarySvc' , 'bsWin' , '$interval' , 'sysfileSvc'];
+    policy.$inject=['$scope','$state','$location','fileLibrarySvc' , 'bsWin' , '$interval' , 'sysfileSvc' , 'policySvc'];
 
-    function policy($scope,$state,$location,fileLibrarySvc , bsWin , $interval , sysfileSvc){
+    function policy($scope,$state,$location,fileLibrarySvc , bsWin , $interval , sysfileSvc , policySvc){
         var vm = this;
         // vm.title="";
         vm.parentId = $state.params.parentId;
@@ -12,6 +12,8 @@
         vm.fileLibrary={};
         vm.fileLibrary.fileType = "POLICY";//初始化文件库类型 - 政策标准文件库
         vm.fileType = "POLICY";
+        vm.showPolicyList = true;
+        vm.search;
 
         //初始化附件上传控件
         vm.initFileUpload = function(){
@@ -45,9 +47,51 @@
             });
         }
 
-        activate();
-        function activate(){
-            fileLibrarySvc.initFileFolder(vm ,$scope,function(data){
+        /**
+         * 初始化文件列表
+         * @param fileId
+         */
+        vm.initFileList = function(){
+            vm.showAddPolicyLibrary = false;
+            vm.showPolicyList = true;
+            vm.showPolicyDetail = false;
+            if(!vm.exist){
+                vm.page = lgx.page.init({
+                    id: "demo5", get: function (o) {
+                        var skip ;
+                        vm.price ={};
+
+                        //oracle的分页不一样。
+                        if (o.skip != 0) {
+                            skip = o.skip + 1
+                        } else {
+                            skip = o.skip
+                        }
+
+                        vm.price.skip = skip;//页码
+                        vm.price.size = o.size + o.skip;//页数
+                        policySvc.findFileByIdGrid(vm, function (data) {
+                            vm.fileList = [];
+                            if(vm.fileList){
+                                vm.fileList = data.value;
+                                vm.page.callback(data.count);//请求回调时传入总记录数
+
+                            }
+
+                        });
+                    }
+                });
+                vm.exist = true;
+            }else{
+                vm.page.selPage(1);
+            }
+        }
+
+        /**
+         * 初始化树
+         */
+        vm.initZtree = function(){
+            policySvc.initFileFolder($scope,function(data){
                 var zTreeObj;
                 var setting = {
                     check: {
@@ -60,11 +104,11 @@
                         // editNameSelectAll: true,//设置编辑时
                         showRenameBtn : false, //不显示编辑按钮
                         showRemoveBtn : false,//显示删除按钮
-                        showAddBtn : true ,
+                        showAddBtn : false ,
                         removeTitle : "删除节点",//设置删除按钮标题
                     },
                     view: {
-                        addHoverDom: addHoverDom, // 添加节点方法
+                        // addHoverDom: addHoverDom, // 添加节点方法
                         removeHoverDom: removeHoverDom, // 删除节点方法
                         dblClickExpand: true , //双击节点 自动展开子节点
 
@@ -81,23 +125,15 @@
                         },
                         showTitle:true, //是否显示节点title信息提示 默认为true
                         key: {
-                            title:"fileName" //设置title提示信息对应的属性名称 也就是节点相关的某个属性
+                            title:"standardName" //设置title提示信息对应的属性名称 也就是节点相关的某个属性
                         }
                     }
                 };
                 function zTreeOnClick(event, treeId, treeNode) {
-                    // $state.go('policyLibrary.policyList',{parentId : treeNode.id});
-                    vm.parentFileId = treeNode.fileId;
-                    if(treeNode.fileNature == "FOLDER" ){
-                        vm.policyList = [];
-                        if(treeNode.children){
-                            vm.policyList = treeNode.children;
-                        }
-                        $scope.$apply();
-                    }
-                    if(treeNode.fileNature == "FILE"){
-                        vm.fileEdit(vm.parentFileId);
-                    }
+                    vm.parentFileId = treeNode.id;
+                    vm.showAddFile = true;
+                    vm.standardId = vm.parentFileId;
+                    vm.initFileList();
                 };
 
                 //删除节点
@@ -110,7 +146,7 @@
                 //添加节点
                 function addHoverDom(treeId,treeNode){
                     //判断，如果是文件夹，才有新增按钮,只能到四级
-                    if(treeNode.fileNature == 'FOLDER'  && treeNode.level < 2 ) {
+                    if(treeNode.stardandType == 'FOLDER'  && treeNode.level < 2 ) {
                         var sObj = $("#" + treeNode.tId + "_span");
                         if (treeNode.editNameFlag || $("#addBtn_" + treeNode.tId).length > 0) return;
                         var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
@@ -135,11 +171,11 @@
                         var pId = null;
                         var returnObj = x;
                         returnObj = x;
-                        returnObj.id = x.fileId;
-                        returnObj.name = x.fileName;
-                        returnObj.pId = x.parentFileId;
+                        returnObj.id = x.id;
+                        returnObj.name = x.standardName;
+                        returnObj.pId = x.standardPId;
 
-                        if(x.fileNature == 'FOLDER'){
+                        if(x.stardandType == 'FOLDER'){
                             returnObj.icon = rootPath+"/contents/libs/zTree/css/zTreeStyle/img/diy/7.png";
                         }
                         return returnObj;
@@ -166,32 +202,33 @@
                     }
                 });
             });
-            vm.initFileUpload();
+        }
 
+
+        activate();
+        function activate(){
+            vm.initFileList();
+            vm.initZtree();
+            vm.initFileUpload();
         }
 
         /**
-         * 新建文件夹弹出窗
+         * 政策指标库文件夹添加操作
          * */
         vm.addFolderWindow=function(fileId){
             vm.fileLibrary = {};
-            vm.fileLibrary.fileType = "POLICY";
+            //初设化是文件夹类型
+            vm.fileLibrary.stardandType = "FOLDER";
             if(fileId != undefined){
-                vm.fileLibrary.parentFileId = fileId;
+                vm.fileLibrary.standardPId = fileId;
             }
-            $("#addRootFolder").kendoWindow({
-                width: "500px",
-                height: "300px",
-                title: "新建文件夹",
-                visible: false,
-                modal: true,
-                closable: true,
-                actions: ["Pin", "Minimize", "Maximize", "close"]
-            }).data("kendoWindow").center().open();
+            vm.showAddPolicyLibrary = true;
+            vm.showPolicyList = false;
+            vm.showPolicyDetail = false;
         }
 
         /**
-         * 保存新建文件夹
+         * 保存新建文件夹 - 作废
          */
         vm.saveRootFolder = function(){
             if (vm.fileLibrary.fileName != undefined) {
@@ -211,50 +248,40 @@
         }
 
         /**
-         * 删除文件夹
+         * 删除政策指标库
          */
         vm.deleteFolder = function(){
             var zTree = $.fn.zTree.getZTreeObj("zTree");
             var nodes = zTree.getCheckedNodes();
             if(nodes != undefined && nodes.length >0){
-                // var ids = [];
                 var idStr = nodes[0].id;
-                //判断是不是选择的是父节点，如果有选择子节点，则默认传递子节点的id进行删除
-                // if (nodes.length == 1 ){
-                //     idStr = nodes[0].id;
-                // }else{
-                //     for(var i=1 ; i<nodes.length ; i++){
-                //         ids.push(nodes[i].id);
-                //     }
-                //     idStr = ids.join(',');
-                // }
-
-                bsWin.confirm("删除的文件将无法恢复，确认删除？" , function(){
-                    fileLibrarySvc.deleteRootDirectory(idStr , function(data){
-                        if(data.flag || data.reCode == 'ok'){
-                            bsWin.success("操作成功！");
-                            $state.go('policyLibrary',{},{reload:true});
-                        }else{
-                            bsWin.error(data.reMsg);
-                        }
-
+                bsWin.confirm("所有子文件将被删除，确认删除？" , function(){
+                    policySvc.deletePolicy(idStr , function(data){
+                        bsWin.alert("删除成功!");
+                        activate();
                     });
                 });
+            }else{
+                bsWin.alert("请选择删除数据!");
             }
         }
 
         /**
-         * 新建文件 或 更新文件 操作
+         *新增（更新）政策指标库文件操作
          */
         vm.fileEdit = function(fileId ){
             vm.isUpdate = false;
             vm.fileId = fileId;
             vm.fileLibrary = {};
             vm.sysFilelists = {};
-            vm.fileLibrary.fileType = "POLICY";
+            vm.fileLibrary.stardandType = "FILE"; //初始化政策指标库类型
+            vm.fileLibrary.standardPId  = vm.parentFileId; //初始化父Id
+            vm.showAddPolicyLibrary = true;
+            vm.showPolicyList = false;
+            vm.showPolicyDetail = false;
             if(vm.fileId){
                 vm.isUpdate=true;
-                fileLibrarySvc.findFileById(vm.fileId , function(data){
+                policySvc.findFileById(vm.fileId , function(data){
                     vm.fileLibrary = data;
                     vm.fileUrl = vm.fileLibrary.fileUrl;
                     vm.fileName = vm.fileLibrary.fileName;
@@ -264,19 +291,10 @@
                     vm.sysFilelists = data;
                 });
             }
-            $("#qualityEdit").kendoWindow({
-                width: "800px",
-                height: "500px",
-                title: "文件编辑",
-                visible: false,
-                modal: true,
-                closable: true,
-                actions: ["Pin", "Minimize", "Maximize", "close"]
-            }).data("kendoWindow").center().open();
         }
 
         /**
-         * 保存新建文件
+         * 保存新建文件 -作废
          */
         vm.createFile=function(){
             vm.fileLibrary.parentFileId = vm.parentFileId;
@@ -286,7 +304,7 @@
                 fileLibrarySvc.saveFile(vm, function (data) {
                     if (data.flag || data.reCode == 'ok') {
                         bsWin.alert("保存成功！", function () {
-                           /* window.parent.$("#qualityEdit").data("kendoWindow").close();*/
+                            /* window.parent.$("#qualityEdit").data("kendoWindow").close();*/
                             vm.isUpdate=true;
                             activate();
                             vm.policyList.push(data.reObj);
@@ -304,7 +322,7 @@
         }
 
         /**
-         * 更新文件
+         * 更新文件 -作废
          */
         vm.updateFile = function (){
             fileLibrarySvc.updateFile(vm , function(data){
@@ -321,7 +339,7 @@
         }
 
         /**
-         * 删除文件
+         * 删除文件 - 作废
          * @param fileId
          */
         vm.del = function(fileId){
@@ -366,5 +384,148 @@
                 })
             });
         }
+
+        /**
+         * 返回列表页
+         */
+        vm.goBack = function(){
+                vm.showAddPolicyLibrary = false;
+                vm.showPolicyList = true;
+                vm.showPolicyDetail = false;
+            activate();
+        }
+
+        /**
+         * 保存政策指标库
+         */
+        vm.create = function(){
+            common.initJqValidation($('#policyform'));
+            var isValid = $('#policyform').valid();
+            if (isValid) {
+                policySvc.createPolicy(vm.fileLibrary, function (data) {
+                    if (data.flag || data.reCode == 'ok') {
+
+                        //1、先记录当前文件类型,以及父Id 2、清空对象 3、初始化文件类型,以及父Id
+                        // vm.stardandType = vm.fileLibrary.stardandType;
+                        // vm.standardPId = vm.fileLibrary.standardPId;
+                        // vm.fileLibrary = {};
+                        // vm.fileLibrary.stardandType = vm.stardandType;
+                        // vm.fileLibrary.standardPId = vm.standardPId;
+                        bsWin.alert("操作成功！" , function(){
+                            vm.fileId = data.reObj.id;
+                            vm.fileLibrary.id =  data.reObj.id;
+                            vm.update = true;
+                            vm.initFileUpload();
+                            vm.initZtree();
+                        });
+                        // activate();
+                    } else {
+                        bsWin.alert(data.reMsg);
+                    }
+                });
+            }else{
+                bsWin.alert("页面未填报完整或者为正确，请检查！");
+            }
+        }
+
+        /**
+         * 查看详情
+         * @param fileId
+         */
+        vm.policyLibraryEdit = function(fileId){
+            vm.showPolicyList = false;
+            vm.showPolicyDetail = true;
+            vm.fileId = fileId;
+            policySvc.findByPolicyId(vm , function(data){
+                vm.policy = data;
+            });
+
+        }
+
+
+        /**
+         * 更新政策指标库，跳转页面
+         */
+        vm.updatePolicy = function(){
+            var zTree = $.fn.zTree.getZTreeObj("zTree");
+            var nodes = zTree.getCheckedNodes();
+            if(nodes != undefined && nodes.length >0){
+                var idStr = nodes[0].id;
+                vm.fileId = idStr;
+                vm.update = true;
+                vm.showAddPolicyLibrary = true;
+                vm.showPolicyList = false;
+                vm.showPolicyDetail = false;
+                policySvc.findByPolicyId(vm , function(data){
+
+                    vm.fileLibrary = data;
+                });
+
+            }else{
+                bsWin.alert("请选择要更新的数据!");
+            }
+        }
+
+        /**
+         * 保存，更新政策指标库
+         */
+        vm.updatePolicySave = function(){
+            common.initJqValidation($('#policyform'));
+            var isValid = $('#policyform').valid();
+            if (isValid) {
+                policySvc.createPolicy(vm.fileLibrary, function (data) {
+                    if (data.flag || data.reCode == 'ok') {
+                        bsWin.alert("操作成功！" , function(){
+                            vm.fileLibrary.id =  data.reObj.id;
+                            vm.update = true;
+                            // activate();
+                            vm.initZtree();
+                        });
+
+                    } else {
+                        bsWin.alert(data.reMsg);
+                    }
+                });
+            }else{
+                bsWin.alert("页面未填报完整或者为正确，请检查！");
+            }
+        }
+
+        /**
+         * 查询
+         */
+        vm.queryPolicy = function(){
+            vm.initFileList();
+        }
+
+        /**
+         * 更新指标库文件，跳转页面
+         * @param policyId
+         */
+        vm.updatePolicyFile = function(policyId){
+            vm.showAddPolicyLibrary = true;
+            vm.showPolicyList = false;
+            vm.showPolicyDetail = false;
+            vm.fileId = policyId;
+            policySvc.findByPolicyId(vm , function(data){
+
+                vm.fileLibrary = data;
+            });
+        }
+
+        /**
+         * 删除指标库文件
+         * @param policyId
+         */
+        vm.deletePolicyFile = function(policyId){
+            bsWin.confirm("删除的数据无法恢复，确定删除？" , function(){
+                policySvc.deletePolicy(policyId , function(data){
+                    bsWin.alert("删除成功!");
+                    activate();
+                });
+            })
+
+        }
+
     }
 })();

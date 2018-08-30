@@ -1,0 +1,146 @@
+
+<div class="well well-sm" style="background:white;" id="addPolicyLibrary">
+    <div class="toolbar">
+        <button ng-click="vm.goBack()" class="btn btn-sm btn-primary">返回</button>
+        <button class="btn btn-sm btn-primary" ng-click="vm.clickDetailBt();" id="detail_file_bt">查看附件</button>
+    </div>
+    <form id="policyform" name="policyform">
+        <table class="table table-bordered">
+            <caption class="text-center"><h3><strong>新增政策指标库</strong></h3></caption>
+            <tr>
+                <td class="text-right" style="width:15%;max-width:180px;">标准号：</td>
+                <td>
+                    {{vm.policy.standardNo}}
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right">中文名称：</td>
+                <td>
+                   {{vm.policy.standardName}}
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right">英文名称：</td>
+                <td>
+                    {{vm.policy.standardEnglishName}}
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text-right">标准组织：</td>
+                <td>
+                   {{vm.policy.standardOrg}}
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text-right">语种：</td>
+                <td>
+                    <select class="form-control input-sm "  ng-model="vm.policy.languageType"
+                            id="languageType" name="languageType" data-val="true" data-val-required="必填"  style="width:90%">
+                        <option value="">请选择</option>
+                        <option value="1" ng-checked="vm.policy.languageType == 1 ">中文</option>
+                        <option value="2" ng-checked="vm.policy.languageType == 2 ">英文</option>
+                    </select>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text-right">CCS分类：</td>
+                <td>
+                    {{vm.policy.cCSType}}
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text-right">ICS分类：</td>
+                <td>
+                   {{vm.policy.iCSType}}
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right">发布日期：</td>
+                <td>
+                    {{vm.policy.publishDate}}
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right">实施日期： </td>
+                <td>
+                   {{vm.policy.implementDate}}
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text-right">作废日期：</td>
+                <td>
+                    {{vm.policy.cancelDate}}
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text-right">标准摘要：</td>
+                <td>
+                    {{vm.policy.standardSummary}}
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text-right">发布单位：</td>
+                <td>
+                    {{vm.policy.publishUnit}}
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text-right">归口单位：</td>
+                <td>
+                    {{vm.policy.belongUnit}}
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text-right">起草单位：</td>
+                <td>
+                    {{vm.policy.draftUnit}}
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text-right">起草人：</td>
+                <td>
+                    {{vm.policy.draftPerson}}
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text-right">出处：</td>
+                <td>
+                    {{vm.policy.rootFrom}}
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text-right">备案号：</td>
+                <td>
+                    {{vm.policy.fillingNo}}
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text-right">简评：</td>
+                <td>
+                    {{vm.policy.briefComment}}
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text-right">备注：</td>
+                <td >
+                    {{vm.policy.remark}}
+                </td>
+            </tr>
+        </table>
+    </form>
+
+</div>
