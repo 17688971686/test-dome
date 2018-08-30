@@ -50,6 +50,27 @@
                 vm.model.showDiv = showDiv;
         	})
 
+            //初始化附件控件
+            vm.sysFile = {
+                businessId: $state.params.signid,
+                mainId: $state.params.signid,
+                mainType: sysfileSvc.mainTypeValue().SIGN,
+                sysfileType: sysfileSvc.mainTypeValue().FILLSIGN,
+            };
+            sysfileSvc.initUploadOptions({
+                inputId: "sysfileinput",
+                vm: vm,
+                uploadSuccess: function () {
+                    sysfileSvc.findByMianId(vm.model.signid, function (data) {
+                        if (data && data.length > 0) {
+                            vm.showFlag.tabSysFile = true;
+                            vm.sysFileList = data;
+                            sysfileSvc.initZtreeClient(vm, $scope);//树形图
+                        }
+                    });
+                }
+            });
+
             //初始化流程信息
             flowSvc.initFlowData(vm);
             // 初始化业务信息
