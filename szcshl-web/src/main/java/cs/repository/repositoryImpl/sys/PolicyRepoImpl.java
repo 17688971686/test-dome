@@ -47,9 +47,10 @@ public class PolicyRepoImpl extends AbstractRepository<Policy, String> implement
      * @return
      */
     @Override
-    public PageModelDto<PolicyDto> findFileById(String fileId ,  String skip, String size){
+    public PageModelDto<PolicyDto> findFileById(String fileId ,  String skip, String size , String search){
 
         PageModelDto<PolicyDto> pageModelDto = new PageModelDto<>();
+        try{
        /* Criteria criteria = this.getExecutableCriteria();
         criteria = oDataObj.buildFilterToCriteria(criteria);
 //        criteria.add(Restrictions.eq(Policy_.standardPId.getName() , standardId));
@@ -71,8 +72,74 @@ public class PolicyRepoImpl extends AbstractRepository<Policy, String> implement
         HqlBuilder sql2 = HqlBuilder.create();
 
         sql.append("select * from ( select p.* , rownum as num from cs_policy p where p."+ Policy_.stardandType.getName() +"=:stardandType");
-
         sql2.append("select count(id) from cs_policy p where  p."+ Policy_.stardandType.getName() +"=:stardandType");
+
+        String[] searchStr = null;
+        if(Validate.isString(search)){
+
+           searchStr = search.substring( 1 , search.length()-1).split(",");
+       }
+
+        if(Validate.isString(searchStr) ){
+            for(String str : searchStr){
+                String[] searchArr = str.split(":");
+                String searchName = searchArr[0].substring(1 , searchArr[0].length() - 1);
+                String searchValue = searchArr[1].substring(1 , searchArr[1].length() - 1);
+                //中文乱码处理
+                if (searchValue.equals(new String(searchValue.getBytes("iso8859-1"), "iso8859-1"))) {
+
+                    searchValue = new String(searchValue.getBytes("iso8859-1"), "UTF-8");
+                }
+                if(Validate.isString(searchValue)){
+                    switch(searchName){
+                        case "standardName":
+                            sql.append(" and standardName like '%" + searchValue + "%' ");
+                            sql2.append(" and standardName like '%" + searchValue + "%' ");
+                            break;
+
+                        case  "standardOrg" :
+                            sql.append(" and standardOrg like '%" + searchValue + "%' ");
+                            sql2.append(" and standardOrg like '%" + searchValue + "%' ");
+                            break;
+
+                        case  "cCSType" :
+                            sql.append(" and cCSType like '%" + searchValue + "%' ");
+                            sql2.append(" and cCSType like '%" + searchValue + "%' ");
+                            break;
+
+                        case  "iCSType" :
+                            sql.append(" and iCSType like '%" + searchValue + "%' ");
+                            sql2.append(" and iCSType like '%" + searchValue + "%' ");
+                            break;
+
+                        case  "publishDateBegin" :
+                            sql.append(" and publishDate >=to_date('" + searchValue + " 00:00:00', 'yyyy-mm-dd hh24:mi:ss')");
+                            sql2.append(" and publishDate >=to_date('" + searchValue + " 00:00:00', 'yyyy-mm-dd hh24:mi:ss')");
+                            break;
+
+                        case  "publishDateEnd" :
+                            sql.append(" and publishDate <=to_date('" + searchValue + " 00:00:00', 'yyyy-mm-dd hh24:mi:ss')");
+                            sql2.append(" and publishDate <=to_date('" + searchValue + " 00:00:00', 'yyyy-mm-dd hh24:mi:ss')");
+                            break;
+
+                        case  "implementDateBegin" :
+                            sql.append(" and implementDate >=to_date('" + searchValue + " 00:00:00', 'yyyy-mm-dd hh24:mi:ss')");
+                            sql2.append(" and implementDate >=to_date('" + searchValue + " 00:00:00', 'yyyy-mm-dd hh24:mi:ss')");
+                            break;
+
+                        case  "implementDateEnd" :
+                            sql.append(" and implementDate <=to_date('" + searchValue + " 00:00:00', 'yyyy-mm-dd hh24:mi:ss')");
+                            sql2.append(" and implementDate <=to_date('" + searchValue + " 00:00:00', 'yyyy-mm-dd hh24:mi:ss')");
+                            break;
+
+                        default: break;
+                    }
+                }
+
+            }
+        }
+
+
 
         if(Validate.isString(fileId)){
             sql.append(" and p.standardPId =:standardPId");
@@ -106,8 +173,14 @@ public class PolicyRepoImpl extends AbstractRepository<Policy, String> implement
 
 
 
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return pageModelDto;
     }
+
+
 
     /**
      * 删除政策指标库
@@ -116,11 +189,31 @@ public class PolicyRepoImpl extends AbstractRepository<Policy, String> implement
     @Override
     public void deletePolicy(String idStr) {
         if(Validate.isString(idStr)){
-                HqlBuilder sql = HqlBuilder.create();
-                sql.append(" delete from cs_policy  where id in ( '" + idStr.replaceAll("," , "','") + "')");
-                sql.append(" or standardPId in ('" + idStr.replaceAll("," , "','") + "')");
+            HqlBuilder sql = HqlBuilder.create();
+            sql.append(" delete from cs_policy  where id in ( '" + idStr.replaceAll("," , "','") + "')");
+            sql.append(" or standardPId in ('" + idStr.replaceAll("," , "','") + "')");
 
-              this.executeSql(sql);
+            this.executeSql(sql);
         }
+    }
+
+
+    /**
+     * 通过ID获取政策指标库内容
+     * @param policyId
+     * @return
+     */
+    @Override
+    public PolicyDto findByPolicyId(String policyId) {
+
+        PolicyDto policyDto = new PolicyDto();
+
+        if(Validate.isString(policyId)){
+            Policy policy = this.findById(Policy_.id.getName() , policyId);
+            if(Validate.isObject(policy)){
+                BeanCopierUtils.copyProperties(policy , policyDto);
+            }
+        }
+        return policyDto;
     }
 }

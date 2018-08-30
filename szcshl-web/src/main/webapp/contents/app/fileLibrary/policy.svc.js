@@ -8,6 +8,7 @@
             createPolicy : createPolicy, //创建政策指标库
             findFileByIdGrid : findFileByIdGrid , // 通过id查询文件
             deletePolicy : deletePolicy , //删除政策指标库
+            findByPolicyId : findByPolicyId , //通过ID获取政策指标库
         }
 
         return service;
@@ -64,6 +65,7 @@
                     fileId: vm.standardId,
                     skip: vm.price.skip,
                     size: vm.price.size,
+                    search : JSON.stringify(vm.search),
                 },
             }).then(function (r) {
                 if (typeof callBack == 'function') {
@@ -94,6 +96,28 @@
             });
         }
         //end deletePolicy
+
+        //beign findByPolicyId
+        function findByPolicyId( vm , callBack){
+            var httpOptions = {
+                method : "post",
+                url : rootPath + "/policy/findByPolicyId",
+                params : {policyId : vm.fileId}
+            }
+
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof  callBack  == 'function'){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            })
+        }
+        //end findByPolicyId
 
     }
 })();

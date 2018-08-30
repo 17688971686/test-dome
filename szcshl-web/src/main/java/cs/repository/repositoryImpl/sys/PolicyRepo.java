@@ -25,13 +25,20 @@ public interface PolicyRepo extends IRepository<Policy,String> {
      * 通过Id获取文件
      * @return
      */
-    PageModelDto<PolicyDto> findFileById(String fileId ,  String skip, String size);
+    PageModelDto<PolicyDto> findFileById(String fileId ,  String skip, String size , String search);
 
     /**
      * 删除政策指标库
      * @param idStr
      */
     void deletePolicy(String idStr);
+
+    /**
+     * 通过ID获取政策指标库内容
+     * @param policyId
+     * @return
+     */
+    PolicyDto findByPolicyId(String policyId);
 
 
 }

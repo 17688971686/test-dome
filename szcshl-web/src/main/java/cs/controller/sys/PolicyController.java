@@ -45,7 +45,7 @@ public class PolicyController {
 
     @RequestMapping(name = "通过ID查询文件" , path = "findFileById" , method = RequestMethod.POST)
     @ResponseBody
-    public PageModelDto<PolicyDto> findFileById(String fileId ,  String skip, String size ){
+    public PageModelDto<PolicyDto> findFileById(String fileId ,  String skip, String size  , String search){
      /*   ODataObj oDataObj = null;
         PageModelDto<PolicyDto> pageModelDto = new PageModelDto<>();
         try {
@@ -54,7 +54,7 @@ public class PolicyController {
         } catch (ParseException e) {
             e.printStackTrace();
         }*/
-        return policyService.findFileById(fileId , skip , size);
+        return policyService.findFileById(fileId , skip , size , search);
 
     }
 
@@ -62,5 +62,12 @@ public class PolicyController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
      public void deletePolicy(@RequestParam  String idStr){
         policyService.deletePolicy(idStr);
+     }
+
+
+     @RequestMapping(name = "通过ID获取政策指标库内容" , path = "findByPolicyId" , method = RequestMethod.POST)
+     @ResponseBody
+     public PolicyDto findByPolicyId(@RequestParam  String policyId){
+         return policyService.findByPolicyId(policyId);
      }
 }

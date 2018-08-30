@@ -5,7 +5,8 @@
         <li class="active">新增政策指标库</li>
     </ol>-->
     <div class="toolbar">
-        <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-ok"></span>保存</button>
+        <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-hide="vm.update"><span class="glyphicon glyphicon-ok"></span>保存</button>
+        <button class="btn btn-sm btn-success" ng-click="vm.updatePolicySave()" ng-show="vm.update"><span class="glyphicon glyphicon-ok"></span>更新</button>
         <button ng-click="vm.goBack()" class="btn btn-sm btn-primary">返回</button>
         <flow-file-button></flow-file-button>   <!--附件上传按钮-->
     </div>
@@ -15,7 +16,7 @@
             <tr>
                 <td class="text-right" style="width:15%;max-width:180px;">标准号： <span class="required">*</span></td>
                 <td>
-                    <input  type="text" maxlength="128" class="form-control input-sm " ng-model="vm.fileLibrary.standardNo"
+                    <input  type="text" maxlength="128" class="form-control input-xm " ng-model="vm.fileLibrary.standardNo"
                             id="standardNo" name="standardNo" data-val="true"  data-val-required="必填" data-val-length-max="128" style="width:90%">
                     <span data-valmsg-for="standardNo" data-valmsg-replace="true" class="errors"></span>
                 </td>
@@ -23,7 +24,7 @@
             <tr>
                 <td class="text-right">中文名称： <span class="required">*</span></td>
                 <td>
-                    <input  type="text" maxlength="256" class="form-control input-sm "  ng-model="vm.fileLibrary.standardName"
+                    <input  type="text" maxlength="256" class="form-control input-xm "  ng-model="vm.fileLibrary.standardName"
                             id="standardName" name="standardName" data-val="true" data-val-required="必填" data-val-length-max="256" style="width:90%">
                     <span data-valmsg-for="standardName" data-valmsg-replace="true" class="errors"></span>
                 </td>
@@ -31,7 +32,7 @@
             <tr>
                 <td class="text-right">英文名称：</td>
                 <td>
-                    <input  type="text" maxlength="256" class="form-control input-sm "  ng-model="vm.fileLibrary.standardEnglishName"
+                    <input  type="text" maxlength="256" class="form-control input-xm "  ng-model="vm.fileLibrary.standardEnglishName"
                             id="standardEnglishName" name="standardEnglishName" data-val="true"  data-val-length-max="256" style="width:90%">
                 </td>
             </tr>
@@ -39,7 +40,7 @@
             <tr>
                 <td class="text-right">标准组织： <span class="required">*</span></td>
                 <td>
-                    <input  type="text" maxlength="256" class="form-control input-sm "  ng-model="vm.fileLibrary.standardOrg"
+                    <input  type="text" maxlength="256" class="form-control input-xm "  ng-model="vm.fileLibrary.standardOrg"
                             id="standardOrg" name="standardOrg" data-val="true" data-val-required="必填" data-val-length-max="256"style="width:90%">
                     <span data-valmsg-for="standardOrg" data-valmsg-replace="true" class="errors"></span>
                 </td>
@@ -48,48 +49,44 @@
             <tr>
                 <td class="text-right">语种： <span class="required">*</span></td>
                 <td>
-                    <select class="form-control input-sm "  ng-model="vm.fileLibrary.languageType"
+                    <select class="form-control input-xm "  ng-model="vm.fileLibrary.languageType"
                             id="languageType" name="languageType" data-val="true" data-val-required="必填"  style="width:90%">
                         <option value="">请选择</option>
                         <option value="1">中文</option>
                         <option value="2">英文</option>
                     </select>
-                   <#-- <input  type="text" maxlength="256" class="form-control input-sm "  ng-model="vm.fileLibrary.languageType"
-                            id="languageType" name="languageType" data-val="true" data-val-required="必填" data-val-length-max="256" style="width:90%">-->
                     <span data-valmsg-for="languageType" data-valmsg-replace="true" class="errors"></span>
                 </td>
             </tr>
 
             <tr>
-                <td class="text-right">CCS分类： <span class="required">*</span></td>
+                <td class="text-right">CCS分类：</td>
                 <td>
-                    <input  type="text" maxlength="256" class="form-control input-sm "  ng-model="vm.fileLibrary.cCSType"
-                            id="cCSType" name="cCSType" data-val="true" data-val-required="必填" data-val-length-max="256" style="width:90%">
-                    <span data-valmsg-for="cCSType" data-valmsg-replace="true" class="errors"></span>
+                    <input  type="text" maxlength="256" class="form-control input-xm "  ng-model="vm.fileLibrary.cCSType"
+                            id="cCSType" name="cCSType" data-val-length-max="256" style="width:90%">
                 </td>
             </tr>
 
             <tr>
-                <td class="text-right">ICS分类： <span class="required">*</span></td>
+                <td class="text-right">ICS分类： </td>
                 <td>
-                    <input  type="text" maxlength="256" class="form-control input-sm "  ng-model="vm.fileLibrary.iCSType"
-                            id="iCSType" name="iCSType" data-val="true" data-val-required="必填" data-val-length-max="256" style="width:90%">
-                    <span data-valmsg-for="iCSType" data-valmsg-replace="true" class="errors"></span>
+                    <input  type="text" maxlength="256" class="form-control input-xm "  ng-model="vm.fileLibrary.iCSType"
+                            id="iCSType" name="iCSType"  data-val-length-max="256" style="width:90%">
                 </td>
             </tr>
             <tr>
                 <td class="text-right">发布日期： <span class="required">*</span></td>
                 <td>
-                    <input  type="text" kendo-date-picker k-format="'yyyy-MM-dd'" class="form-control input-sm "
-                           ng-model="vm.fileLibrary.publishDate" name="publishDate">
+                    <input  type="text" kendo-date-picker k-format="'yyyy-MM-dd'" class="form-control input-xm "
+                           ng-model="vm.fileLibrary.publishDate" name="publishDate" data-val="true" data-val-required="必填">
                     <span data-valmsg-for="publishDate" data-valmsg-replace="true" class="errors"></span>
                 </td>
             </tr>
             <tr>
                 <td class="text-right">实施日期： <span class="required">*</span></td>
                 <td>
-                    <input type="text" kendo-date-picker k-format="'yyyy-MM-dd'" class="form-control input-sm "
-                           ng-model="vm.fileLibrary.implementDate" name="implementDate">
+                    <input type="text" kendo-date-picker k-format="'yyyy-MM-dd'" class="form-control input-xm "
+                           ng-model="vm.fileLibrary.implementDate" name="implementDate" data-val="true" data-val-required="必填">
                     <span data-valmsg-for="implementDate" data-valmsg-replace="true" class="errors"></span>
                 </td>
             </tr>
@@ -97,8 +94,8 @@
             <tr>
                 <td class="text-right">作废日期：<span class="required">*</span></td>
                 <td>
-                    <input type="text" kendo-date-picker k-format="'yyyy-MM-dd'" class="form-control input-sm "
-                           ng-model="vm.fileLibrary.cancelDate" name="cancelDate">
+                    <input type="text" kendo-date-picker k-format="'yyyy-MM-dd'" class="form-control input-xm "
+                           ng-model="vm.fileLibrary.cancelDate" name="cancelDate" data-val="true" data-val-required="必填">
                     <span data-valmsg-for="cancelDate" data-valmsg-replace="true" class="errors"></span>
                 </td>
             </tr>
@@ -106,7 +103,7 @@
             <tr>
                 <td class="text-right">标准摘要：</td>
                 <td>
-                    <input  type="text" maxlength="256" class="form-control input-sm "  ng-model="vm.fileLibrary.standardSummary"
+                    <input  type="text" maxlength="256" class="form-control input-xm "  ng-model="vm.fileLibrary.standardSummary"
                             id="standardSummary" name="standardSummary" data-val="true"  data-val-length-max="256" style="width:90%">
                     <span data-valmsg-for="standardSummary" data-valmsg-replace="true" class="errors"></span>
                 </td>
@@ -115,7 +112,7 @@
             <tr>
                 <td class="text-right">发布单位：</td>
                 <td>
-                    <input  type="text" maxlength="256" class="form-control input-sm "  ng-model="vm.fileLibrary.publishUnit"
+                    <input  type="text" maxlength="256" class="form-control input-xm "  ng-model="vm.fileLibrary.publishUnit"
                             id="publishUnit" name="publishUnit" data-val="true"  data-val-length-max="256" style="width:90%">
                 </td>
             </tr>
@@ -123,7 +120,7 @@
             <tr>
                 <td class="text-right">归口单位：</td>
                 <td>
-                    <input  type="text" maxlength="256" class="form-control input-sm "  ng-model="vm.fileLibrary.belongUnit"
+                    <input  type="text" maxlength="256" class="form-control input-xm "  ng-model="vm.fileLibrary.belongUnit"
                             id="belongUnit" name="belongUnit" data-val="true"  data-val-length-max="256" style="width:90%">
                 </td>
             </tr>
@@ -131,7 +128,7 @@
             <tr>
                 <td class="text-right">起草单位：</td>
                 <td>
-                    <input  type="text" maxlength="256" class="form-control input-sm "  ng-model="vm.fileLibrary.draftUnit"
+                    <input  type="text" maxlength="256" class="form-control input-xm "  ng-model="vm.fileLibrary.draftUnit"
                             id="draftUnit" name="draftUnit" data-val="true"  data-val-length-max="256" style="width:90%">
                     <span data-valmsg-for="draftUnit" data-valmsg-replace="true" class="errors"></span>
                 </td>
@@ -140,7 +137,7 @@
             <tr>
                 <td class="text-right">起草人：</td>
                 <td>
-                    <input  type="text" maxlength="256" class="form-control input-sm "  ng-model="vm.fileLibrary.draftPerson"
+                    <input  type="text" maxlength="256" class="form-control input-xm "  ng-model="vm.fileLibrary.draftPerson"
                             id="draftPerson" name="draftPerson" data-val="true" data-val-length-max="256" style="width:90%">
                 </td>
             </tr>
@@ -148,7 +145,7 @@
             <tr>
                 <td class="text-right">出处：</td>
                 <td>
-                    <input  type="text" maxlength="256" class="form-control input-sm "  ng-model="vm.fileLibrary.rootFrom"
+                    <input  type="text" maxlength="256" class="form-control input-xm "  ng-model="vm.fileLibrary.rootFrom"
                             id="rootFrom" name="rootFrom" data-val="true" data-val-length-max="256" style="width:90%">
                 </td>
             </tr>
@@ -156,7 +153,7 @@
             <tr>
                 <td class="text-right">备案号： <span class="required">*</span></td>
                 <td>
-                    <input  type="text" maxlength="256" class="form-control input-sm "  ng-model="vm.fileLibrary.fillingNo"
+                    <input  type="text" maxlength="256" class="form-control input-xm "  ng-model="vm.fileLibrary.fillingNo"
                             id="fillingNo" name="fillingNo" data-val="true" data-val-required="必填" data-val-length-max="256" style="width:90%">
                     <span data-valmsg-for="fillingNo" data-valmsg-replace="true" class="errors"></span>
                 </td>
@@ -165,7 +162,7 @@
             <tr>
                 <td class="text-right">简评：</td>
                 <td>
-                    <input  type="text" maxlength="256" class="form-control input-sm "  ng-model="vm.fileLibrary.briefComment"
+                    <input  type="text" maxlength="256" class="form-control input-xm "  ng-model="vm.fileLibrary.briefComment"
                             id="briefComment" name="briefComment" data-val="true"  data-val-length-max="256" style="width:90%">
                 </td>
             </tr>
@@ -174,7 +171,7 @@
                 <td class="text-right">备注：</td>
                 <td >
                     <textarea cols="100" rows="5"  name="remark" id="remark" ng-model="vm.fileLibrary.remark" maxlength="512"
-                              class="form-control input-sm " style="width:90%" ></textarea>
+                              class="form-control input-xm " style="width:90%" ></textarea>
                 </td>
             </tr>
         </table>
