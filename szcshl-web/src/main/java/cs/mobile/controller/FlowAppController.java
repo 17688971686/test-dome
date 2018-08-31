@@ -6,6 +6,7 @@ import cs.common.constants.Constant;
 import cs.common.constants.FlowConstant;
 import cs.common.utils.Validate;
 import cs.domain.sys.Log;
+import cs.domain.sys.User;
 import cs.mobile.service.FlowAppService;
 import cs.mobile.service.IFlowApp;
 import cs.mobile.service.WorkDynamicService;
@@ -51,7 +52,7 @@ import java.util.List;
 
 /**
  * Description: 移动端 控制层
- * author: hjm
+ * author: zsl
  * Date: 2018-3-1 15:33:41
  */
 @Controller
@@ -171,10 +172,7 @@ public class FlowAppController {
                     projectOrTask="任务";
                     resultMsg = topicInfoService.dealFlow(processInstance, task,flowDto);
                     break;
-                case FlowConstant.BOOKS_BUY_FLOW:
-                    projectOrTask="任务";
-                    resultMsg = flowAppService.bookDealFlow(processInstance, task,flowDto,userDto);
-                    break;
+
                 case FlowConstant.ASSERT_STORAGE_FLOW:
                     projectOrTask="任务";
                     resultMsg = assertStorageBusinessService.dealFlow(processInstance,task,flowDto);
@@ -232,11 +230,11 @@ public class FlowAppController {
 
     @RequestMapping(name = "获取流程处理信息", path = "flowNodeInfo", method = RequestMethod.POST)
     public @ResponseBody
-    FlowDto flowNodeInfo(@RequestParam(required = true) String taskId,  String processInstanceId,String userid) {
+    FlowDto flowNodeInfo(@RequestParam(required = true) String taskId,  String processInstanceId,String username) {
         FlowDto flowDto = new FlowDto();
         flowDto.setProcessInstanceId(processInstanceId);
         flowDto.setEnd(false);
-
+        User u = userService.findByName(username);
         //获取当前任务数据
         Task task = taskService.createTaskQuery().taskId(taskId).active().singleResult();
         if (Validate.isObject(task)) {
@@ -259,7 +257,7 @@ public class FlowAppController {
              */
             switch (processInstance.getProcessDefinitionKey()){
                 case FlowConstant.SIGN_FLOW:
-                    flowDto.setBusinessMap(signFlowAppImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey(),userid));
+                    flowDto.setBusinessMap(signFlowAppImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey(),u.getId()));
                     break;
                 case FlowConstant.TOPIC_FLOW:
                     flowDto.setBusinessMap(topicFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));

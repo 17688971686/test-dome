@@ -24,18 +24,7 @@ export default class SignInScreen extends React.Component {
     constructor(props) {
         super(props);
         const me = this;
-        me.state = {username: 'admin', password: 'admin', rsaKey: ''};
-        axios.post("/rsaKey").then((res) => {
-            // console.log("获取 rsaKey 成功", res);
-            if (res.status == 200) {
-                me.setState({rsaKey: res.data});
-            } else {
-                Alert.alert("服务器异常");
-            }
-        }).catch((error) => {
-            console.error(error);
-            Alert.alert("服务器异常");
-        })
+        me.state = {username: '', password: '', rsaKey: ''};
     }
 
     render() {
@@ -87,14 +76,18 @@ export default class SignInScreen extends React.Component {
         const encrypt = new JSEncrypt();
         const me = this;
         encrypt.setPublicKey(me.state.rsaKey || "");
-        axios.post("/getToken", {
-            username: encrypt.encrypt(un),
-            password: encrypt.encrypt(pd)
+        axios({
+            url: "/login/signin",
+            method: "post",
+            params: {
+                username: un,
+                password: pd
+            }
         }).then((res) => {
-            console.log(res);
             const data = res.data || {};
-            if (res.status == 200 && data.status == "SUCCESS") {
-                AsyncStorage.setItem('userToken', data.message || "");
+            const userToken = data.reObj || "";
+            if (res.status == 200 && data.reCode == 'ok') {
+                AsyncStorage.setItem('userToken', userToken);
                 me.props.navigation.navigate('AuthLoading');
             } else {
                 Alert.alert("登录失败！");

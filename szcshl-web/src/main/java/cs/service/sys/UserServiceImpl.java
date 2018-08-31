@@ -798,6 +798,39 @@ public class UserServiceImpl implements UserService {
         return resultMap;
     }
 
+
+    /**
+     * 查询用户级别
+     *
+     * @return
+     */
+    @Override
+    public String getUserLevel(User u) {
+        //定义领导标识参数（0表示普通用户，1表示主任，2表示分管领导，3表示部长或者组长）
+        String leaderFlag = SUPER_ACCOUNT.equals(u.getLoginName()) ? "1" : "0";
+        if (leaderFlag.equals("0")) {
+            //查询所有的部门和组织
+            List<OrgDept> allOrgDeptList = orgDeptService.queryAll();
+            for (OrgDept od : allOrgDeptList) {
+                if (leaderFlag.equals("0")) {
+                    if (u.getId().equals(od.getDirectorID())) {
+                        leaderFlag = "3";
+                    }
+                    if (u.getId().equals(od.getsLeaderID())) {
+                        leaderFlag = "2";
+                    }
+                    if (u.getId().equals(od.getmLeaderID())) {
+                        leaderFlag = "1";
+                    }
+
+                }
+            }
+        }
+
+        return leaderFlag;
+
+    }
+
     /**
      * 验证用户是否是部长下的管理人员
      *

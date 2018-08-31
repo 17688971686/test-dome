@@ -601,15 +601,49 @@ public class FlowServiceImpl implements FlowService {
         return resultList;
     }
 
+
+
     /**
-     * 根据用户ID查询待办任务
-     *
-     * @param userId
+     * app个人待办项目
+     * @param odataObj
+     * @param
      * @return
      */
     @Override
-    public List<RuProcessTask> findRuProcessTaskByUserId(String userId) {
-        String curUserId = SessionUtil.getUserId();
+    public List<RuProcessTask> queryAgendaTaskForApp(ODataObj odataObj,String curUserId) {
+        Criteria criteria = ruProcessTaskRepo.getExecutableCriteria();
+        if (odataObj != null) {
+            criteria = odataObj.buildFilterToCriteria(criteria);
+        }
+        criteria.addOrder(Order.desc(RuProcessTask_.signDate.getName()));
+         List<RuProcessTask> runProcessList = null;
+        runProcessList = findRuProcessTaskByUserId(curUserId);
+        //过滤掉已删除的项目
+        List<RuProcessTask> resultList = runProcessList.stream().filter((RuProcessTask rb) -> !(Constant.EnumState.DELETE.getValue()).equals(rb.getSignState()))
+                .collect(Collectors.toList());
+            //合并评审项目处理
+            resultList.forEach(rl -> {
+                //如果是合并评审主项目，则查询次项目，如果是合并评审次项目，则查询主项目
+                if (Constant.EnumState.YES.getValue().equals(rl.getReviewType())) {
+                    rl.setReviewSignDtoList(signService.findReviewSign(rl.getBusinessKey()));
+                } else if (Constant.EnumState.NO.getValue().equals(rl.getReviewType())) {
+                    rl.setReviewSignDtoList(signService.findMainReviewSign(rl.getBusinessKey()));
+                }
+            });
+        return resultList;
+    }
+
+    /**
+     * 根据用户ID查询待办任务
+     *
+     * @param curUserId
+     * @return
+     */
+    @Override
+    public List<RuProcessTask> findRuProcessTaskByUserId(String curUserId) {
+        if(!Validate.isString(curUserId)) {
+            curUserId = SessionUtil.getUserId();
+        }
         Criteria criteria = ruProcessTaskRepo.getExecutableCriteria();
         //排除合并评审阶段的次项目数据
         Disjunction disj = Restrictions.disjunction();
