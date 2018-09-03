@@ -23,17 +23,17 @@ public class LoginCtrl{
     @Autowired
     private UserService userService;
 
-    @RequestMapping(name = "手机登录", path = "signin", method = {RequestMethod.POST,RequestMethod.GET})
+    @RequestMapping(name = "手机登录", path = "signin", method = RequestMethod.POST)
     @ResponseBody
-    public ResultMsg signIn(@RequestParam String loginName, @RequestParam String password){
-        User user = userService.findByName(loginName);
+    public ResultMsg signIn(@RequestParam String username, @RequestParam String password){
+        User user = userService.findByName(username);
         if(!Validate.isObject(user)){
             return ResultMsg.error("账号密码不正确！");
         }
         if(!password.trim().equals(user.getPassword())){
             return ResultMsg.error("账号密码不正确！");
         }
-        String userToken = TokenUtil.getUserToken(loginName);
+        String userToken = TokenUtil.getUserToken(username);
         user.setToken(userToken);
         userService.saveUser(user);
         ResultMsg resultMsg = ResultMsg.ok("登录成功！");

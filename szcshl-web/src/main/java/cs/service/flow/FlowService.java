@@ -44,6 +44,13 @@ public interface FlowService {
     List<RuProcessTask> queryRunProcessTasks(ODataObj odataObj, boolean isUserDeal, Integer powerFlag, List<String> mngOrgIdList);
 
     /**
+     * app个人待办项目
+     * @param odataObj
+     * @return
+     */
+    List<RuProcessTask> queryAgendaTaskForApp(ODataObj odataObj,String curUserId);
+
+    /**
      * 根据用户ID查询待办项目
      * @param userId
      * @return

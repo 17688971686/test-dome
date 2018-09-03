@@ -154,4 +154,11 @@ public interface UserService {
      */
     String getTaskDealId(User user,List<AgentTask> agentTaskList,String nodeKey);
 
+    /**
+     * 获取用户等级
+     * @param u
+     * @return
+     */
+    String getUserLevel(User u);
+
 }
