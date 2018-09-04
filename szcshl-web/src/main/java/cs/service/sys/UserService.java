@@ -161,4 +161,13 @@ public interface UserService {
      */
     String getUserLevel(User u);
 
+    /**
+     * 用户验证
+     * @param u
+     * @return
+     */
+    Map<String, Object>  getUserAuthForApp(User u);
+
+
+
 }

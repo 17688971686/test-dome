@@ -105,10 +105,10 @@ public class ProgramTaskController {
         String PROTASKLIST = "proTaskList";
 
         Map<String, Object> resultMap = new HashMap<String, Object>();
-        Map<String, Object> authMap = userService.getUserSignAuth();
+        Map<String, Object> authMap = userService.getUserAuthForApp(u);
         Integer authFlag = new Integer(authMap.get("leaderFlag").toString());
         List<String> orgIdList = (List<String>) authMap.get("orgIdList");
-        List<RuProcessTask> authRuSignTask = flowService.queryRunProcessTasks(null, false, authFlag, orgIdList);
+        List<RuProcessTask> authRuSignTask = flowService.queryRunTasksForApp(null, false, authFlag, orgIdList,curUserId);
         if (Validate.isList(authRuSignTask)) {
             int totalCount = authRuSignTask.size();
             //1、过滤出当前用户待办的项目
