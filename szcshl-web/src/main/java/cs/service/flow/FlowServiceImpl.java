@@ -604,6 +604,72 @@ public class FlowServiceImpl implements FlowService {
 
 
     /**
+     * 在办任务查询(改成前端分页,后端分页效率太低)
+     * （个人只能查询个人的，部长（组长）可以查询部门下人员办理的，分管领导可以查询分管部门办理的）
+     *
+     * @param odataObj
+     * @param isUserDeal 是否为个人待办
+     * @return
+     */
+    @Override
+    public List<RuProcessTask> queryRunTasksForApp(ODataObj odataObj, boolean isUserDeal, Integer leaderFlag, List<String> orgIdList,String curUserId) {
+        Criteria criteria = ruProcessTaskRepo.getExecutableCriteria();
+        if (odataObj != null) {
+            criteria = odataObj.buildFilterToCriteria(criteria);
+        }
+        criteria.addOrder(Order.desc(RuProcessTask_.signDate.getName()));
+        List<RuProcessTask> runProcessList = null;
+        //在办任务也包含待办任务，所以要加上这个条件
+        if (isUserDeal) {
+            runProcessList = findRuProcessTaskByUserId(curUserId);
+        } else {
+            if (leaderFlag != 1) {
+                Disjunction dis2 = Restrictions.disjunction();
+                dis2.add(Restrictions.eq(RuProcessTask_.assignee.getName(), curUserId));
+                dis2.add(Restrictions.like(RuProcessTask_.assigneeList.getName(), "%" + curUserId + "%"));
+                //只要是经办人就能查看
+                String querySql = " (SELECT COUNT (ID_) FROM ACT_HI_IDENTITYLINK act WHERE act.USER_ID_ = ? AND act.PROC_INST_ID_ = {alias}.PROCESSINSTANCEID) > 0 ";
+                dis2.add(Restrictions.sqlRestriction(querySql, curUserId, StringType.INSTANCE));
+
+                if (leaderFlag == 2 && Validate.isList(orgIdList)) {
+                    //分管领导，查询所管辖的部门
+                    for (String orgId : orgIdList) {
+                        dis2.add(Restrictions.or(Restrictions.eq(RuProcessTask_.mOrgId.getName(), orgId), Restrictions.like(RuProcessTask_.aOrgId.getName(), "%" + orgId + "%")));
+                    }
+                } else if (leaderFlag == 3 && Validate.isList(orgIdList)) {
+                    //部长
+                    String orgId = orgIdList.get(0);
+                    dis2.add(Restrictions.eq(RuProcessTask_.mOrgId.getName(), orgId));
+                    dis2.add(Restrictions.like(RuProcessTask_.aOrgId.getName(), "%" + orgId + "%"));
+                    //如果是部长或组长，并且是项目负责人时，还需用户ID查询
+                    dis2.add(Restrictions.eq(RuProcessTask_.mainUserId.getName(), curUserId));
+                    dis2.add(Restrictions.like(RuProcessTask_.aUserId.getName(), "%" + curUserId + "%"));
+                }
+                criteria.add(dis2);
+                criteria.addOrder(Order.desc(RuProcessTask_.createTime.getName()));
+            }
+            runProcessList = criteria.list();
+        }
+        //过滤掉已删除的项目
+        List<RuProcessTask> resultList = runProcessList.stream().filter((RuProcessTask rb) -> !(Constant.EnumState.DELETE.getValue()).equals(rb.getSignState()))
+                .collect(Collectors.toList());
+        if (isUserDeal) {
+            //合并评审项目处理
+            resultList.forEach(rl -> {
+                //如果是合并评审主项目，则查询次项目，如果是合并评审次项目，则查询主项目
+                if (Constant.EnumState.YES.getValue().equals(rl.getReviewType())) {
+                    rl.setReviewSignDtoList(signService.findReviewSign(rl.getBusinessKey()));
+                } else if (Constant.EnumState.NO.getValue().equals(rl.getReviewType())) {
+                    rl.setReviewSignDtoList(signService.findMainReviewSign(rl.getBusinessKey()));
+                }
+            });
+        }
+        return resultList;
+    }
+
+
+
+    /**
      * app个人待办项目
      * @param odataObj
      * @param

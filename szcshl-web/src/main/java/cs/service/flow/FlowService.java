@@ -211,4 +211,15 @@ public interface FlowService {
      * @return
      */
     PageModelDto<TaskDto> queryEndTasks(ODataObj odataObj);
+
+    /**
+     * 待办任务查询
+     * @param odataObj
+     * @param isUserDeal
+     * @param leaderFlag
+     * @param orgIdList
+     * @param curUserId
+     * @return
+     */
+    List<RuProcessTask> queryRunTasksForApp(ODataObj odataObj, boolean isUserDeal, Integer leaderFlag, List<String> orgIdList,String curUserId);
 }

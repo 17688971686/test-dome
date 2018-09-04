@@ -35,6 +35,10 @@ public class LoginCtrl{
         }
         String userToken = TokenUtil.getUserToken(username);
         user.setToken(userToken);
+        String level = userService.getUserLevel(user);
+        if("0".equals("level")){
+            return ResultMsg.error("普通用户没有权限登录！");
+        }
         userService.saveUser(user);
         ResultMsg resultMsg = ResultMsg.ok("登录成功！");
         resultMsg.setIdCode(userToken);

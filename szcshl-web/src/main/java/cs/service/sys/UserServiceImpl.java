@@ -800,6 +800,57 @@ public class UserServiceImpl implements UserService {
 
 
     /**
+     * 获取用户查看待办任务
+     *
+     * @return
+     */
+    @Override
+    public Map<String, Object> getUserAuthForApp(User u) {
+        Map<String, Object> resultMap = new HashMap<>();
+        //分管的部门ID
+        List<String> orgIdList = null;
+        String curUserId = u.getId();
+        //定义领导标识参数（0表示普通用户，1表示主任，2表示分管领导，3表示部长或者组长）
+        Integer leaderFlag = SUPER_ACCOUNT.equals(u.getLoginName()) ? 1 : 0;
+        if (leaderFlag == 0) {
+            //查询所有的部门和组织
+            List<OrgDept> allOrgDeptList = orgDeptService.queryAll();
+            resultMap.put("allOrgDeptList", allOrgDeptList);
+            for (OrgDept od : allOrgDeptList) {
+                if (leaderFlag == 0) {
+                    if (curUserId.equals(od.getDirectorID())) {
+                        leaderFlag = 3;
+                        orgIdList = new ArrayList<>(1);
+                        orgIdList.add(od.getId());
+                    }
+                    if (curUserId.equals(od.getsLeaderID())) {
+                        leaderFlag = 2;
+                        if (orgIdList == null) {
+                            orgIdList = new ArrayList<>();
+                        }
+                        orgIdList.add(od.getId());
+                    }
+                    if (curUserId.equals(od.getmLeaderID())) {
+                        leaderFlag = 1;
+                        orgIdList.clear();
+                    }
+                    //分管领导分管多个部门
+                } else if (leaderFlag == 2 && curUserId.equals(od.getsLeaderID())) {
+                    orgIdList.add(od.getId());
+                }
+                if (leaderFlag == 1 || leaderFlag == 3) {
+                    break;
+                }
+            }
+        }
+        resultMap.put("leaderFlag", leaderFlag);
+        resultMap.put("orgIdList", orgIdList);
+
+        return resultMap;
+    }
+
+
+    /**
      * 查询用户级别
      *
      * @return
