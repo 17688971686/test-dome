@@ -79,10 +79,6 @@ public class ProgramTaskController {
             if(!Validate.isObject(u)){
                 return pageModelDto;
             }
-            String userLevel = userService.getUserLevel(u);
-            if(userLevel.equals("0")){
-                return pageModelDto;
-            }
             curUserId = u.getId();
         }
         List<RuProcessTask> resultList = flowService.queryAgendaTaskForApp(odataObj,curUserId);
@@ -97,8 +93,10 @@ public class ProgramTaskController {
     @ResponseBody
     public ResultMsg getHomeProjInfo(HttpServletRequest request) throws ParseException, IOException, ClassNotFoundException {
         String name = request.getParameter("username");
-        boolean isSuper = SUPER_ACCOUNT.equals(SessionUtil.getLoginName()) ? true : false;
         User u = userService.findByName(name);
+        if(!Validate.isObject(u)){
+            return ResultMsg.error("该用户不存在！");
+        }
         String curUserId = u.getId();
         String LINE_SIGN_LIST_FLAG = "lineSign";
         String ISDISPLAY = "isdisplay";
@@ -109,6 +107,7 @@ public class ProgramTaskController {
         Integer authFlag = new Integer(authMap.get("leaderFlag").toString());
         List<String> orgIdList = (List<String>) authMap.get("orgIdList");
         List<RuProcessTask> authRuSignTask = flowService.queryRunTasksForApp(null, false, authFlag, orgIdList,curUserId);
+        boolean isSuper = SUPER_ACCOUNT.equals(u.getLoginName()) ? true : false;
         if (Validate.isList(authRuSignTask)) {
             int totalCount = authRuSignTask.size();
             //1、过滤出当前用户待办的项目

@@ -213,6 +213,12 @@ public class RuProcessTask {
     private String mergeDisMain;
 
     /**
+     * 委内收文编号
+     */
+    @Column
+    private String filecode;
+
+    /**
      * 合并评审项目
      */
     //这是此注解后该属性不会数据持久化
@@ -553,5 +559,13 @@ public class RuProcessTask {
 
     public void setMergeDisMain(String mergeDisMain) {
         this.mergeDisMain = mergeDisMain;
+    }
+
+    public String getFilecode() {
+        return filecode;
+    }
+
+    public void setFilecode(String filecode) {
+        this.filecode = filecode;
     }
 }

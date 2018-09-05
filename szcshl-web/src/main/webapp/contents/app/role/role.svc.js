@@ -145,18 +145,21 @@
 			var isValid = $('form').valid();
 			if (isValid && vm.isRoleExist == false) {
 				vm.isSubmit = true;
-				
 				// zTree
 				var nodes = getZtreeChecked();
-               var nodes_role = $linq(nodes).where(function (x) { return x.isParent == false; }).select(function (x) { return { id: x.id, name: x.name,path:x.path,method:x.method }; }).toArray();
-               vm.model.resources = nodes_role;   
-	               
+                var nodes_role = $linq(nodes).where(function (x) {
+                    return true;
+                }).select(function (x) {
+                    return { id: x.id, name: x.name,path:x.path,method:x.method };
+                }).toArray();
+
+               vm.model.resources = nodes_role;
+
 				var httpOptions = {
 					method : 'post',
 					url : url_role,
 					data : vm.model
 				}
-
 				var httpSuccess = function success(response) {				
 					
 					common.requestSuccess({
