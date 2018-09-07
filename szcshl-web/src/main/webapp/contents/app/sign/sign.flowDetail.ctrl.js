@@ -3,9 +3,9 @@
 
     angular.module('app').controller('signFlowDetailCtrl', sign);
 
-    sign.$inject = ['sysfileSvc','signSvc','$state','flowSvc','signFlowSvc','$scope','templatePrintSvc' , 'expertReviewSvc'];
+    sign.$inject = ['sysfileSvc','signSvc','$state','flowSvc','signFlowSvc','$scope','templatePrintSvc' , 'expertReviewSvc' , 'expertSvc'];
 
-    function sign(sysfileSvc,signSvc,$state,flowSvc,signFlowSvc,$scope,templatePrintSvc , expertReviewSvc) {
+    function sign(sysfileSvc,signSvc,$state,flowSvc,signFlowSvc,$scope,templatePrintSvc , expertReviewSvc , expertSvc) {
         var vm = this;
         vm.title = "项目流程信息";
         vm.model = {};
@@ -234,6 +234,13 @@
 
         }
 
+        /**
+         * 查看专家信息
+         * @param expertId
+         */
+        vm.checkExpertDetail = function(expertId){
+            expertSvc.queryExpertDetail(vm , expertId);
+        }
 
     }
 })();

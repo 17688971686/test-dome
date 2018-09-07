@@ -26,6 +26,7 @@
             expertScoreHis : expertScoreHis,	//专家评分统计
 			reviewProjectGrid : reviewProjectGrid,  //专家评审项目列表
             expertPrint : expertPrint,  //专家评审模板打印
+            queryExpertDetail : queryExpertDetail , //查看专家详情弹框
 		};
 		return service;
 
@@ -806,6 +807,28 @@
             };*/
 		}
 		//end reviewProjectGrid
+
+		//begin queryExpertDetail
+		function queryExpertDetail(vm , expertId){
+			vm.id = expertId;
+            getExpertById(vm.id, function (data) {
+                vm.expert = data;
+                $("#queryExportDetails").kendoWindow({
+                    width: "80%",
+                    height: "620px",
+                    title: "专家详细信息",
+                    visible: false,
+                    modal: true,
+                    open:function(){
+                        $("#expertPhotoSrc").attr("src", rootPath + "/expert/transportImg?expertId=" + vm.expert.expertID + "&t=" + Math.random());
+
+                    },
+                    closable: true,
+                    actions: ["Pin", "Minimize", "Maximize", "Close"]
+                }).data("kendoWindow").center().open();
+            });
+		}
+		//end queryExpertDetail
 	}
 
 })();

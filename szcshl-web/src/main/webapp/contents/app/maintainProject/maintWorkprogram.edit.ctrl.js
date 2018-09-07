@@ -3,9 +3,9 @@
 
     angular.module('app').controller('maintWorkprogramEditCtrl', mainworkprogram);
 
-    mainworkprogram.$inject = ['workprogramSvc', '$state', 'bsWin', 'sysfileSvc', '$scope', '$window', '$rootScope', 'signSvc'];
+    mainworkprogram.$inject = ['workprogramSvc', '$state', 'bsWin', 'sysfileSvc', '$scope', '$window', '$rootScope', 'signSvc' , 'expertSvc'];
 
-    function mainworkprogram(workprogramSvc, $state, bsWin, sysfileSvc, $scope, $window, $rootScope, signSvc) {
+    function mainworkprogram(workprogramSvc, $state, bsWin, sysfileSvc, $scope, $window, $rootScope, signSvc , expertSvc) {
         var vm = this;
         vm.work = {};						//创建一个form对象
         vm.model = {};                      //项目对象
@@ -322,6 +322,14 @@
             } else {
                 bsWin.alert("操作失败，有红色*号的选项为必填项，请按要求填写！");
             }
+        }
+
+        /**
+         * 查看专家信息
+         * @param expertId
+         */
+        vm.checkExpertDetail = function(expertId){
+            expertSvc.queryExpertDetail(vm , expertId);
         }
     }
 })();

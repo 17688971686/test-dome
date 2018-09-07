@@ -5,10 +5,10 @@
 
     sign.$inject = ['sysfileSvc', 'signSvc', 'dispatchSvc', '$state', 'flowSvc', 'signFlowSvc', 'ideaSvc',
         'workprogramSvc', 'expertReviewSvc', '$scope', 'bsWin', 'financialManagerSvc', 'addSuppLetterQuerySvc',
-        'addCostSvc', 'templatePrintSvc', 'companySvc'];
+        'addCostSvc', 'templatePrintSvc', 'companySvc' , 'expertSvc'];
 
     function sign(sysfileSvc, signSvc, dispatchSvc, $state, flowSvc, signFlowSvc, ideaSvc, workprogramSvc,
-                  expertReviewSvc, $scope, bsWin, financialManagerSvc, addSuppLetterQuerySvc, addCostSvc, templatePrintSvc, companySvc) {
+                  expertReviewSvc, $scope, bsWin, financialManagerSvc, addSuppLetterQuerySvc, addCostSvc, templatePrintSvc, companySvc , expertSvc) {
 
         var vm = this;
         vm.title = "项目流程处理";
@@ -1412,6 +1412,14 @@
             if (isValid) {
                 expertReviewSvc.saveSplit(vm);
             }
+        }
+
+        /**
+         * 查看专家信息
+         * @param expertId
+         */
+        vm.checkExpertDetail = function(expertId){
+            expertSvc.queryExpertDetail(vm , expertId);
         }
 
     }
