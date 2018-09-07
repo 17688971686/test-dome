@@ -90,7 +90,7 @@ export default class SignInScreen extends React.Component {
                 AsyncStorage.setItem('userToken', userToken);
                 me.props.navigation.navigate('AuthLoading');
             } else {
-                Alert.alert("登录失败！");
+                Alert.alert(data.reMsg);
             }
         }).catch((error) => {
             console.error(error);

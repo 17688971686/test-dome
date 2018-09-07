@@ -5,11 +5,13 @@ import cs.common.ResultMsg;
 import cs.common.constants.Constant;
 import cs.common.constants.FlowConstant;
 import cs.common.utils.Validate;
+import cs.domain.flow.HiProcessTask;
 import cs.domain.sys.Log;
 import cs.domain.sys.User;
 import cs.mobile.service.FlowAppService;
 import cs.mobile.service.IFlowApp;
 import cs.mobile.service.WorkDynamicService;
+import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.flow.Node;
 import cs.model.sys.UserDto;
@@ -41,10 +43,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -312,6 +311,17 @@ public class FlowAppController {
         }
 
         return flowDto;
+    }
+
+
+    @RequestMapping(name = "处理记录", path = "historyInfo", method = RequestMethod.GET)
+    public @ResponseBody
+    PageModelDto<HiProcessTask> findHisActivitiList(@RequestParam String processInstanceId) {
+        List<HiProcessTask> list = flowService.getProcessHistory(processInstanceId);
+        PageModelDto<HiProcessTask> pageModelDto = new PageModelDto<HiProcessTask>();
+        pageModelDto.setCount(list.size());
+        pageModelDto.setValue(list);
+        return pageModelDto;
     }
 
 

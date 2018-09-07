@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+
 /**
  * 手机端用户登录
  * Created by ldm on 2018/7/25 0025.
@@ -26,6 +27,11 @@ public class LoginCtrl{
     @RequestMapping(name = "手机登录", path = "signin", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg signIn(@RequestParam String username, @RequestParam String password){
+        try {
+            username = new String(username.getBytes("ISO-8859-1"),"UTF-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         User user = userService.findByName(username);
         if(!Validate.isObject(user)){
             return ResultMsg.error("账号密码不正确！");
@@ -36,7 +42,7 @@ public class LoginCtrl{
         String userToken = TokenUtil.getUserToken(username);
         user.setToken(userToken);
         String level = userService.getUserLevel(user);
-        if("0".equals("level")){
+        if("0".equals(level)){
             return ResultMsg.error("普通用户没有权限登录！");
         }
         userService.saveUser(user);

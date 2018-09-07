@@ -290,6 +290,12 @@
                     width: 100
                 },
                 {
+                    field: "filecode",
+                    title: "委内收文编号",
+                    filterable: false,
+                    width: 120
+                },
+                {
                     field: "nodeNameValue",
                     title: "当前环节",
                     width: 120,
@@ -641,6 +647,12 @@
                 {
                     field: "reviewStage",
                     title: "项目阶段",
+                    filterable: false,
+                    width: 120
+                },
+                {
+                    field: "filecode",
+                    title: "委内收文编号",
                     filterable: false,
                     width: 120
                 },
