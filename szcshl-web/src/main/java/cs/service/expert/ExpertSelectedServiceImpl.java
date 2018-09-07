@@ -874,9 +874,22 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
         sqlBuilder.setParam("signState2", Constant.EnumState.DELETE.getValue());
         sqlBuilder.append(" AND (sdk.isassistproc is null or sdk.isassistproc = :assistproc) ");
         sqlBuilder.setParam("assistproc", Constant.EnumState.NO.getValue());
-        sqlBuilder.append(" AND CFM.CHARGETYPE = :chageType AND CFM.CHARGENAME = :chageName AND CFM.PAYMENTDATA IS NOT NULL ");
+        sqlBuilder.append(" AND (CFM.ID is null or (CFM.CHARGETYPE = :chageType AND CFM.CHARGENAME = :chageName AND CFM.PAYMENTDATA IS NOT NULL ");
         sqlBuilder.setParam("chageType", Constant.EnumState.PROCESS.getValue());
         sqlBuilder.setParam("chageName", "专家评审费");
+
+        if (Validate.isObject(projectReviewCostDto)) {
+            if (StringUtil.isNotEmpty(projectReviewCostDto.getBeginTime())) {
+                sqlBuilder.append("and CFM.PAYMENTDATA >= to_date(:beginTime, 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.setParam("beginTime", projectReviewCostDto.getBeginTime());
+            }
+
+            if (StringUtil.isNotEmpty(projectReviewCostDto.getEndTime())) {
+                sqlBuilder.append("and CFM.PAYMENTDATA <= to_date(:endTime, 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.setParam("endTime", projectReviewCostDto.getEndTime());
+            }
+        }
+        sqlBuilder.append(" )) ");
 
         //查询条件
         if (Validate.isObject(projectReviewCostDto)) {
@@ -893,16 +906,6 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
             if (StringUtil.isNotEmpty(projectReviewCostDto.getReviewstage())) {
                 sqlBuilder.append("and sdk.reviewstage = :stage ");
                 sqlBuilder.setParam("stage", projectReviewCostDto.getReviewstage());
-            }
-
-            if (StringUtil.isNotEmpty(projectReviewCostDto.getBeginTime())) {
-                sqlBuilder.append("and CFM.PAYMENTDATA >= to_date(:beginTime, 'yyyy-mm-dd hh24:mi:ss') ");
-                sqlBuilder.setParam("beginTime", projectReviewCostDto.getBeginTime());
-            }
-
-            if (StringUtil.isNotEmpty(projectReviewCostDto.getEndTime())) {
-                sqlBuilder.append("and CFM.PAYMENTDATA <= to_date(:endTime, 'yyyy-mm-dd hh24:mi:ss') ");
-                sqlBuilder.setParam("endTime", projectReviewCostDto.getEndTime());
             }
 
             if (StringUtil.isNotEmpty(projectReviewCostDto.getDeptName())) {
