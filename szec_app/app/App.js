@@ -1,7 +1,3 @@
-/**
- * 广西百色重大项目管理系统 App
- * @author: tzg
- */
 
 import React from 'react';
 import {
@@ -15,31 +11,30 @@ import AuthLoadingScreen from './screen/AuthLoadingScreen';
 import SignInScreen from './screen/SignInScreen';
 import HomeScreen from './screen/Home/HomeScreen';
 import MyselfScreen from './screen/Myself/MyselfScreen';
-import ProjectSearchScreen from "./screen/ProjectSearchScreen";
+import ProjectSearchScreen from "./screen/ProjectSearch/ProjectSearchScreen";
 import LeadProScreen from "./screen/LeadProScreen";
 import Icon from 'react-native-vector-icons/Ionicons';
 import BasicInfoScreen from "./screen/Myself/BasicInfoScreen";
 import SetUpScreen from "./screen/Myself/SetUpScreen";
 import ProjectManagementScreen from "./screen/Home/ProjectManagementScreen";
 import SignupProjectScreen from "./screen/Home/SignupProjectScreen";
-import SearchScreen from "./screen/SearchScreen";
+import ProDetailsScreen from "./screen/ProDetailsScreen";
 
 
 /*Tab导航器*/
 const TabNavigator = createBottomTabNavigator(
     {
-        Home: {
-            screen: HomeScreen,
+        leadpro: {
+            screen: LeadProScreen,
             navigationOptions: {
-                title: '首页',
+                title: '项目审批',
                 tabBarIcon: ({tintColor, focused}) => (
                     <Icon
-                        name={focused ? 'ios-home' : 'ios-home-outline'}
+                        name={focused ? 'ios-ribbon' : 'ios-ribbon-outline'}
                         size={26}
                         style={{color: tintColor}}
                     />
                 ),
-
             }
         },
         Project: {
@@ -55,17 +50,18 @@ const TabNavigator = createBottomTabNavigator(
                 ),
             }
         },
-        leadpro: {
-            screen: LeadProScreen,
+        Home: {
+            screen: HomeScreen,
             navigationOptions: {
-                title: '项目审批',
+                title: '首页',
                 tabBarIcon: ({tintColor, focused}) => (
                     <Icon
-                        name={focused ? 'ios-ribbon' : 'ios-ribbon-outline'}
+                        name={focused ? 'ios-home' : 'ios-home-outline'}
                         size={26}
                         style={{color: tintColor}}
                     />
                 ),
+
             }
         },
         My: {
@@ -96,7 +92,7 @@ const RouteConfigs = {
     SignupProjectScreen:SignupProjectScreen,
     BasicInfoScreen: BasicInfoScreen,
     SetUpScreen: SetUpScreen,
-    SearchScreen:SearchScreen
+    ProDetailsScreen:ProDetailsScreen
 
 };
 
@@ -136,8 +132,7 @@ export default class App extends React.Component {
     initAxios = () => {
         // axios 全局配置
         axios.defaults.baseURL = 'http://192.168.1.20:8080/szcshl-web/api';
-        // axios.defaults.baseURL = 'http://192.168.1.8:8080/gxbspms/api';
-        axios.defaults.headers.common['TOKEN'] = "";
+        axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
         axios.defaults.headers.common['clientId'] = DeviceInfo.getUniqueID();
 
         // // 添加请求拦截器

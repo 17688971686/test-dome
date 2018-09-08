@@ -14,160 +14,175 @@ import {
     ActivityIndicator,
     TouchableOpacity
 } from "react-native";
+import axios from 'axios'
 
-
-type Props = {};
 export default class ProjectScreen extends React.Component {
-    constructor(props){
+    constructor(props) {
         super(props);
-        this.state={
-            isLoading:false,
-            projectData:this.props.projectData,
+        this.state = {
+            isLoading: false,
+            totalNum: 0,
+            pageIndex: 0,
+            api: this.props.api,
+            pageSize: this.props.pageSize || 10,
+            projectData: [],
         }
     }
+
     /*为每个item生产唯一的key*/
-    _extraUniqueKey(item , index){
-        return "index"+index+item;
+    _extraUniqueKey(item, index) {
+        return "index" + index + item;
     }
-    componentWillReceiveProps(nextProps){
-        console.log(nextProps);
-        this.setState({
-            projectData:nextProps.projectData,
-        })
+
+    _loadData(pageIndex) {
+        if (this.state.projectData.length <= this.state.totalNum) {
+            axios.get(this.state.api, {
+                params: {
+                    "$top": this.state.pageSize,
+                    "$skip": this.state.pageSize * pageIndex,
+                }
+            })
+                .then(res => {
+                    console.log(res);
+                    this.setState({
+                        totalNum: res.data.count,
+                        projectData: pageIndex ? this.state.projectData.concat(res.data.value) : res.data.value,
+                    })
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        }
     }
-    enIndicator(){
-        return(
-            this.state.projectData.length < this.props.totalNum ?
-            <View>
-                <ActivityIndicator
-                    size={'large'}
-                    animating={true}
-                />
-            </View>
-            :
-            <View>
-                <Text>到底啦</Text>
-            </View>
+
+    componentWillMount() {
+        this._loadData(this.state.pageIndex);
+    }
+
+    enIndicator() {
+        return (
+            this.state.projectData.length < this.state.totalNum ?
+                <View>
+                    <ActivityIndicator
+                        size={'large'}
+                        animating={true}
+                    />
+                </View>
+                :
+                <View style={styles.noMore}>
+                    <Text>到底啦,没有更多数据了</Text>
+                </View>
         )
 
     }
 
-    _loadMore(){
-        if(this.state.projectData.length < this.props.totalNum){
-            setTimeout(()=>{
-                this.setState({
-                    projectData:this.state.projectData.concat(this.props.loadMore())
-                })
-            },1000)
-        }
-    }
-    _renderItem(item){
-        return(
-            <View style={styles.item}>
-                <Text style={styles.itemName}>{item.itemName}</Text>
+    _renderItem(item) {
+        return (
+            <TouchableOpacity style={styles.item} activeOpacity={1}
+                              onPress={() => this.props.navigation.navigate('ProDetailsScreen', {
+                                  signId: item.signid,
+                                  projectName:item.projectname,
+                                  processInstanceId:item.processInstanceId
+                              })}>
+                <Text style={styles.itemName} activeOpacity={1}>{item.projectname}</Text>
                 <View style={styles.itemView}>
-                    <Text style={styles.itemText}>项目阶段：</Text>
-                    <Text>项目概算</Text>
+                    <Text style={styles.itemText}>评审阶段：</Text>
+                    <Text>{item.reviewstage}</Text>
                 </View>
                 <View style={styles.itemView}>
-                    <Text style={styles.itemText}>当前环节：</Text>
-                    <Text>项目概算</Text>
+                    <Text style={styles.itemText}>申报投资：</Text>
+                    <Text>100万</Text>
                 </View>
                 <View style={styles.itemView}>
                     <Text style={styles.itemText}>签收时间：</Text>
-                    <Text>2018-05-05</Text>
+                    <Text>{item.signdate}</Text>
                 </View>
                 <View style={styles.itemView}>
                     <Text style={styles.itemText}>剩余工作日：</Text>
-                    <Text>8</Text>
+                    <Text>{item.surplusdays}</Text>
                 </View>
-                <TouchableOpacity activeOpacity={0.8} style={styles.more}>
-                    <Text style={{color:'#fff',lineHeight:30,alignSelf:'center'}}>项目审批</Text>
-                </TouchableOpacity>
-            </View>
+            </TouchableOpacity>
         )
     }
+
     render() {
         return (
-            <View style={styles.container}>
-                <FlatList
-                    style={styles.itemsView}
-                    keyExtractor = {this._extraUniqueKey}
-                    data={this.state.projectData}
-                    renderItem={({item}) => this._renderItem(item)}
-                    refreshControl={
-                        <RefreshControl
-                            title={'Loading'} //IOS
-                            colors={['orange','green']} //android
-                            tintColor={['orange']} //IOS
-                            refreshing={this.state.isLoading}
-                            onRefresh={()=> {
-                                this.setState({
-                                    projectData:this.props.onRefresh()
-                                })
-                            }}
-                        />
-                    }
-                    ListFooterComponent={()=> this.enIndicator()}
-                    onEndReachedThreshold={0.1}
-                    onEndReached={() => {
-                        this._loadMore()
-                    } }
-                />
-            </View>
+            <FlatList
+                style={{width: '100%'}}
+                keyExtractor={this._extraUniqueKey}
+                data={this.state.projectData}
+                renderItem={({item}) => this._renderItem(item)}
+                refreshControl={
+                    <RefreshControl
+                        title={'Loading'} //IOS
+                        colors={['orange', 'green']} //android
+                        tintColor={['orange']} //IOS
+                        refreshing={this.state.isLoading}
+                        onRefresh={() => {
+                            this.setState({
+                                pageIndex: 0
+                            }, () => this._loadData(this.state.pageIndex))
+                        }}
+                    />
+                }
+                ListFooterComponent={() => this.enIndicator()}
+                onEndReachedThreshold={0.1}
+                onEndReached={() => {
+                    this.setState({
+                        pageIndex: this.state.pageIndex + 1
+                    }, () => this._loadData(this.state.pageIndex))
+                }}
+            />
         );
     }
 
 }
 
 const styles = StyleSheet.create({
-    container: {
-        width:'100%',
+    itemsView: {
+        width: '100%'
+    },
+    item: {
+        width: '100%',
+        backgroundColor: '#fff',
+        marginBottom: 15,
+        padding: 15,
+    },
+    itemName: {
+        fontSize: 18,
+        color: '#000',
+        fontWeight: 'bold',
+        marginBottom: 5,
+    },
+    desView: {
+        height: 80,
+    },
+    itemFooter: {
+        height: 50,
         alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor:'#fff',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
     },
-    itemsView:{
-        width:'100%'
+    itemView: {
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        height: 30,
+        alignItems: 'center'
     },
-    item:{
-        width:'100%',
-        backgroundColor:'#eee',
-        marginBottom:15,
-        padding:15,
-        elevation: 4,
+    itemText: {
+        fontSize: 14,
+        color: '#000',
     },
-    itemName:{
-        fontSize:18,
-        color:'#000',
-        fontWeight:'bold',
-        marginBottom:5,
+    more: {
+        paddingLeft: 10,
+        paddingRight: 10,
+        backgroundColor: '#1E5AAF',
+        height: 25,
+        borderRadius: 25
     },
-    desView:{
-        height:80,
-    },
-    itemFooter:{
-        height:50,
-        alignItems:'center',
-        flexDirection:'row',
-        justifyContent:'space-between',
-    },
-    more:{
-        paddingLeft:10,
-        paddingRight:10,
-        backgroundColor:'#1E5AAF',
-        height:30,
-        borderRadius:30,
-        marginTop:15
-    },
-    itemView:{
-        flexDirection:'row',
-        justifyContent:'flex-start',
-        height:30,
-        alignItems:'center'
-    },
-    itemText:{
-        fontSize:14,
-        color:'#000',
+    noMore: {
+        alignItems: 'center',
+        marginBottom: 20,
+        marginTop: 10
     }
 });

@@ -1,151 +1,136 @@
-/**
- * 广西百色重大项目管理系统 市领导联系重大项目（事项）信息
- * @author: tzg
- */
-
 import React from "react";
-import {View,Text,StyleSheet,TouchableOpacity} from "react-native";
-import ProjectListComponent from '../component/ProjectListComponent'
-import Header from '../component/HeaderComponent';
-import DatePicker from '../component/DatePickerComponent'
+import {
+    View,
+    Text,
+    Button,
+    StyleSheet,
+    FlatList,
+    TouchableOpacity,
+    AsyncStorage
+} from "react-native";
+import Header from '../component/HeaderComponent'
+import axios from 'axios'
 
-export default class LeadProScreen extends React.Component {
-    state={
-        projectData:[],
-        totalNum:'',
-    };
-    componentWillMount() {
-        this.setState({
-            totalNum:10,
-            projectData:[{
-                itemName:'田阳地税局新建项目1',
-                itemDescription:'项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述',
-                totalInvestment:'500万',
-                startDate:'2018-08-08',
-            },{
-                itemName:'田阳地税局新建项目2',
-                itemDescription:'项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述',
-                totalInvestment:'800万',
-                startDate:'2018-09-08',
-            },{
-                itemName:'田阳地税局新建项目3',
-                itemDescription:'项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述',
-                totalInvestment:'805万',
-                startDate:'2018-12-08',
-            },{
-                itemName:'田阳地税局新建项目4',
-                itemDescription:'项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述',
-                totalInvestment:'805万',
-                startDate:'2018-12-08',
-            },{
-                itemName:'田阳地税局新建项目5',
-                itemDescription:'项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述',
-                totalInvestment:'805万',
-                startDate:'2018-12-08',
-            }]
-        })
+export default class ProjectScreen extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            data: '',
+            userName:''
+        };
     }
-    _filter(){
-        return(
-            <View style={styles.filterView}>
-                <DatePicker ref='DatePicker'/>
-                <Text style={styles.filterText} onPress={()=>this.refs.DatePicker.refs.DatePicker.onPressDate()}>筛选</Text>
-            </View>
+    componentWillMount() {
+        AsyncStorage.getItem('userName',(error,result)=>{
+           if(!error){
+               this.setState({
+                   userName:result
+               });
+               axios({
+                   url: "/agenda/tasks",
+                   method: "post",
+                   params: {
+                       $skip: 1,
+                       $top: 10,
+                       username: result
+                   },
+               }).then((res) => {
+                   this.setState({
+                       data: res.data.value
+                   })
+               })
+           }else{
+               console.log(error);
+           }
+        });
+
+    }
+
+    _extraUniqueKey(item, index) {
+        return "index" + index + item;
+    }
+
+    _renderItem(item) {
+        const {navigation} = this.props;
+        return (
+            <TouchableOpacity style={styles.item} activeOpacity={1}
+                              onPress={() => navigation.navigate('ProDetailsScreen', {
+                                  taskId: item.taskId,
+                                  signId: item.businessKey,
+                                  projectName: item.projectName,
+                                  processInstanceId: item.processInstanceId,
+                                  userName: this.state.userName,
+                                  approve:true
+                              })}>
+                <Text style={styles.itemName} activeOpacity={1}>{item.projectName}</Text>
+                <View style={styles.itemView}>
+                    <Text style={styles.itemText}>项目阶段：</Text>
+                    <Text>{item.reviewStage}</Text>
+                </View>
+                <View style={styles.itemView}>
+                    <Text style={styles.itemText}>当前环节：</Text>
+                    <Text>{item.nodeNameValue}</Text>
+                </View>
+                <View style={styles.itemView}>
+                    <Text style={styles.itemText}>项目负责人：</Text>
+                    <Text>{item.allPriUser}</Text>
+                </View>
+                <View style={styles.itemView}>
+                    <Text style={styles.itemText}>剩余工作日：</Text>
+                    <Text style={{color: item.surplusDays <= 0 ? 'red' : ''}}>{item.surplusDays}</Text>
+                </View>
+            </TouchableOpacity>
         )
-    };
-    //上拉加载更多方法
-    loadMore=()=>{
-        return projectData=[{
-            itemName:'田阳地税局新建项目11',
-            itemDescription:'项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述',
-            totalInvestment:'500万',
-            startDate:'2018-08-08',
-        },{
-            itemName:'田阳地税局新建项目21',
-            itemDescription:'项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述',
-            totalInvestment:'800万',
-            startDate:'2018-09-08',
-        },{
-            itemName:'田阳地税局新建项目31',
-            itemDescription:'项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述',
-            totalInvestment:'805万',
-            startDate:'2018-12-08',
-        },{
-            itemName:'田阳地税局新建项目41',
-            itemDescription:'项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述',
-            totalInvestment:'805万',
-            startDate:'2018-12-08',
-        },{
-            itemName:'田阳地税局新建项目51',
-            itemDescription:'项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述',
-            totalInvestment:'805万',
-            startDate:'2018-12-08',
-        }]
-    };
-    //刷新数据方法
-    onRefresh=()=>{
-        return onRefreshData=[{
-            itemName:'新数据11',
-            itemDescription:'项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述',
-            totalInvestment:'500万',
-            startDate:'2018-08-08',
-        },{
-            itemName:'新数据1121',
-            itemDescription:'项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述',
-            totalInvestment:'800万',
-            startDate:'2018-09-08',
-        },{
-            itemName:'新数据1131',
-            itemDescription:'项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述',
-            totalInvestment:'805万',
-            startDate:'2018-12-08',
-        },{
-            itemName:'新数据1141',
-            itemDescription:'项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述',
-            totalInvestment:'805万',
-            startDate:'2018-12-08',
-        },{
-            itemName:'新数据1151',
-            itemDescription:'项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述',
-            totalInvestment:'805万',
-            startDate:'2018-12-08',
-        }]
-    };
+    }
+
     render() {
         return (
-            <View style={[styles.container,]}>
-                <Header title={'项目审批'} headerRight={this._filter()}/>
+            <View style={styles.container}>
+                <Header title={'项目审批'}/>
                 <View style={styles.container}>
-                    <ProjectListComponent
-                        projectData={this.state.projectData}
-                        onRefresh={this.onRefresh}
-                        loadMore={this.loadMore}
-                        totalNum={this.state.totalNum}
+                    <FlatList
+                        style={{width: '100%', backgroundColor: '#eee'}}
+                        keyExtractor={this._extraUniqueKey}
+                        data={this.state.data}
+                        renderItem={({item}) => this._renderItem(item)}
                     />
                 </View>
             </View>
-
         );
     }
+
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        width:'100%',
+        width: '100%',
         alignItems: 'center',
+        justifyContent: 'flex-start'
+    },
+    itemsView: {
+        width: '100%'
+    },
+    item: {
+        width: '100%',
+        backgroundColor: '#fff',
+        marginBottom: 15,
+        padding: 15,
+    },
+    itemName: {
+        fontSize: 18,
+        color: '#000',
+        fontWeight: 'bold',
+        marginBottom: 5,
+    },
+    itemView: {
+        flexDirection: 'row',
         justifyContent: 'flex-start',
+        height: 30,
+        alignItems: 'center'
     },
-    filterView:{
-        flexDirection:'row',
-        justifyContent:'flex-end',
-        alignItems:'center'
+    itemText: {
+        fontSize: 14,
+        color: '#000',
     },
-    filterText:{
-        color:'#fff',
-        lineHeight:50,
-    },
-    filterContentView:{
-        height:'100%',
-    },
+
 });
