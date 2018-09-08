@@ -5,9 +5,9 @@
     'use strict';
     angular.module('app').controller('flowWPEditCtrl', flowWPEdit);
 
-    flowWPEdit.$inject = ['workprogramSvc', '$state', 'bsWin', 'sysfileSvc', '$scope','$rootScope'];
+    flowWPEdit.$inject = ['workprogramSvc', '$state', 'bsWin', 'sysfileSvc', '$scope','$rootScope' , 'expertSvc'];
 
-    function flowWPEdit(workprogramSvc, $state, bsWin, sysfileSvc, $scope,$rootScope) {
+    function flowWPEdit(workprogramSvc, $state, bsWin, sysfileSvc, $scope,$rootScope , expertSvc) {
         var vm = this;
         vm.work = {};						//创建一个form对象
         vm.model = {};                      //项目对象
@@ -432,6 +432,14 @@
             } else {
                 bsWin.alert("请先保存当前信息，再继续操作！");
             }
+        }
+
+        /**
+         * 查看专家信息
+         * @param expertId
+         */
+        vm.checkExpertDetail = function(expertId){
+            expertSvc.queryExpertDetail(vm , expertId);
         }
     }
 })();

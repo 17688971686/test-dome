@@ -172,7 +172,9 @@
                 <td class="text-center" style="width:15%;">备注</td>
             </tr>
             <tr ng-repeat="x in w.expertSelectedDtoList track by $index" ng-show="w.expertSelectedDtoList && w.expertSelectedDtoList.length > 0">
-                <td class="text-center" colspan="2">{{x.expertDto.name}}</td>
+                <td class="text-center" colspan="2">
+                    <a ng-click="vm.checkExpertDetail(x.expertDto.expertID)">{{x.expertDto.name}}</a>
+                </td>
                 <td class="text-center">{{x.expertDto.comPany}}</td>
                 <td class="text-center">{{x.expertDto.job}}</td>
                 <td class="text-center">{{x.expertDto.post}}</td>
@@ -395,7 +397,9 @@
                 <td class="text-center" style="width:15%;">备注</td>
             </tr>
             <tr ng-repeat="x in w.expertSelectedDtoList track by $index" ng-show="w.expertSelectedDtoList && w.expertSelectedDtoList.length > 0">
-                <td class="text-center" colspan="2">{{x.expertDto.name}}</td>
+                <td class="text-center" colspan="2">
+                    <a ng-click="vm.checkExpertDetail(x.expertDto.expertID)">{{x.expertDto.name}}</a>
+                </td>
                 <td class="text-center">{{x.expertDto.comPany}}</td>
                 <td class="text-center">{{x.expertDto.job}}</td>
                 <td class="text-center">{{x.expertDto.post}}</td>
