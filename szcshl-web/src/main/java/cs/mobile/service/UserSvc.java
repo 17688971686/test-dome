@@ -12,5 +12,5 @@ public interface UserSvc {
      * @param token
      * @return
      */
-    User findByToken(String token);
+    Object findByToken(String token);
 }
