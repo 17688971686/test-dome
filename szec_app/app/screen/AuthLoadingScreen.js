@@ -15,16 +15,14 @@ export default class AuthLoadingScreen extends Component {
     }
 
     componentDidMount() {
-            SplashScreen.hide();//关闭启动屏幕
-
-
+        SplashScreen.hide();//关闭启动屏幕
     }
-    // Fetch the token from storage then navigate to our appropriate place
+
     toBootstrapAsync = async () => {
         // AsyncStorage.setItem("userToken", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MzUwOTg3NTgsInVzZXJuYW1lIjoiYWRtaW4ifQ.ojfsx-bzXV4Qh2fIlGHe7cZr_9h23WbVMZuZ8rxCLkY");
         const userToken = await AsyncStorage.getItem('userToken'), me = this;
-        // console.log("userToken", userToken);
-        axios.defaults.headers.common['TOKEN'] = userToken || "";
+
+        axios.defaults.headers.common['sysToken'] = userToken || "";
 
         // 添加响应拦截器
         axios.interceptors.response.use((response) => {
@@ -48,18 +46,8 @@ export default class AuthLoadingScreen extends Component {
 
         // this.getUserInfo();
 
-        // This will switch to the App screen or Auth screen and this loading
-        // screen will be unmounted and thrown away.
         this.props.navigation.navigate(userToken ? 'App' : 'Auth');
     };
-
-    // getUserInfo = () => {
-    //     console.log("getUserInfo");
-    //     axios.get('/user').then(function (response) {
-    //         // console.log(response);
-    //         AsyncStorage.setItem('userInfo', JSON.stringify(response.data));
-    //     });
-    // }
 
     toSignOutAsync = async () => {
         await AsyncStorage.clear();

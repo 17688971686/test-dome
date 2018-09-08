@@ -14,7 +14,7 @@ export default class HeaderComponent extends React.Component {
     }
     render() {
         let height =parseInt(this.props.height) || 50,
-            title =this.props.title || '广西百色重大项目管理系统',
+            title =this.props.title || '',
             color = this.props.color || '#fff',
             showBackTitle=this.props.showBackTitle,
             backTitle= this.props.backTitle || <Icon name="ios-arrow-back" size={28} />,

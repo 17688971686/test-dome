@@ -62,25 +62,25 @@ export default class ListScreen extends React.Component {
                         <View style={styles.iconView}>
                             <Icon name='ios-list-box' size={35} color={'#ff9700'}/>
                         </View>
-                        <Text>待办事项</Text>
+                        <Text>待办项目</Text>
                     </TouchableOpacity>
                     <TouchableOpacity activeOpacity={0.8} style={styles.headItem}>
                         <View style={styles.iconView}>
                             <Icon name='ios-list-box' size={35} color={'#15BC83'}/>
                         </View>
-                        <Text>待办事项</Text>
+                        <Text>待办任务</Text>
                     </TouchableOpacity>
                     <TouchableOpacity activeOpacity={0.8} style={styles.headItem}>
                         <View style={styles.iconView}>
                             <Icon name='ios-list-box' size={35} color={'#1E5AAF'}/>
                         </View>
-                        <Text>待办事项</Text>
+                        <Text>项目查询</Text>
                     </TouchableOpacity>
                     <TouchableOpacity activeOpacity={0.8} style={styles.headItem}>
                         <View style={styles.iconView}>
                             <Icon name='ios-list-box' size={35} color={'#FF4800'}/>
                         </View>
-                        <Text>待办事项</Text>
+                        <Text>项目统计</Text>
                     </TouchableOpacity>
                 </View>
                 <ScrollView>

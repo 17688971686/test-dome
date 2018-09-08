@@ -16,70 +16,20 @@ import {
     Picker
 } from "react-native";
 import Icon from 'react-native-vector-icons/Ionicons';
-import ProjectListComponent from '../component/ProjectListComponent'
-import Header from '../component/HeaderComponent'
-import DatePicker from '../component/DatePickerComponent'
+import ProjectListComponent from '../../component/ProjectListComponent'
+import Header from '../../component/HeaderComponent'
 import SideMenu from 'react-native-side-menu';
 
 
 type Props = {};
+
+const api ='/sign/findSignByPage';
 export default class ProjectSearchScreen extends React.Component {
     constructor(props){
         super(props);
         this.state={
-            projectData:[],
-            totalNum:'',
             isOpen:false
         }
-    }
-    componentWillMount() {
-        this.setState({
-            totalNum:15,
-            projectData:[{
-                itemName:'(市层面)田阳地税局新建项目1',
-                itemDescription:'项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述',
-                totalInvestment:'500万',
-                startDate:'2018-08-08',
-            },{
-                itemName:'(市层面)田阳地税局新建项目2',
-                itemDescription:'项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述',
-                totalInvestment:'800万',
-                startDate:'2018-09-08',
-            },{
-                itemName:'(市层面)田阳地税局新建项目3',
-                itemDescription:'项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述',
-                totalInvestment:'805万',
-                startDate:'2018-12-08',
-            },{
-                itemName:'(市层面)田阳地税局新建项目4',
-                itemDescription:'项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述',
-                totalInvestment:'805万',
-                startDate:'2018-12-08',
-            },{
-                itemName:'(市层面)田阳地税局新建项目5',
-                itemDescription:'项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述',
-                totalInvestment:'805万',
-                startDate:'2018-12-08',
-            }]
-        })
-    };
-
-    _Search(){
-        this.setState({
-            isOpen:false,
-            projectData:[{
-                itemName:'搜索结果1',
-                itemDescription:'项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述',
-                totalInvestment:'500万',
-                startDate:'2018-08-08',
-                },{
-                itemName:'搜索结果2',
-                itemDescription:'项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述项目描述',
-                totalInvestment:'500万',
-                startDate:'2018-08-08',
-            }
-            ]
-        })
     }
     _filter(){
         return(
@@ -89,35 +39,7 @@ export default class ProjectSearchScreen extends React.Component {
             </TouchableOpacity>
         )
     };
-    _renderItem(item){
-        return(
-            <View style={styles.item}>
-                <Text style={styles.itemName}>{item.itemName}</Text>
-                <View style={styles.itemView}>
-                    <Text style={styles.itemText}>项目阶段：</Text>
-                    <Text>项目概算</Text>
-                </View>
-                <View style={styles.itemView}>
-                    <Text style={styles.itemText}>当前环节：</Text>
-                    <Text>项目概算</Text>
-                </View>
-                <View style={styles.itemView}>
-                    <Text style={styles.itemText}>签收时间：</Text>
-                    <Text>2018-05-05</Text>
-                </View>
-                <View style={styles.itemView}>
-                    <Text style={styles.itemText}>剩余工作日：</Text>
-                    <Text>8</Text>
-                </View>
-                <TouchableOpacity activeOpacity={0.8} style={styles.more}>
-                    <Text style={{color:'#fff',lineHeight:30,alignSelf:'center'}}>项目审批</Text>
-                </TouchableOpacity>
-            </View>
-        )
-    }
-    _extraUniqueKey(item , index){
-        return "index"+index+item;
-    }
+
     sideMenuContent(){
         return(
             <View style={{flex:1,backgroundColor:'#fff',padding:15}}>
@@ -163,8 +85,6 @@ export default class ProjectSearchScreen extends React.Component {
                 </View>
             </View>
         )
-
-
     }
     render() {
         return (
@@ -176,11 +96,9 @@ export default class ProjectSearchScreen extends React.Component {
                 <View style={styles.container}>
                     <Header title={'项目查询'} headerRight={this._filter()}/>
                     <View style={styles.container}>
-                        <FlatList
-                            style={styles.itemsView}
-                            keyExtractor = {this._extraUniqueKey}
-                            data={this.state.projectData}
-                            renderItem={({item}) => this._renderItem(item)}
+                        <ProjectListComponent
+                            api={api}
+                            navigation={this.props.navigation}
                         />
                     </View>
                 </View>
@@ -198,7 +116,7 @@ const styles = StyleSheet.create({
         width:'100%',
         alignItems: 'center',
         justifyContent: 'flex-start',
-        backgroundColor:'#fff'
+        backgroundColor:'#eee'
     },
     filterView:{
         flexDirection:'row',

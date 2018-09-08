@@ -88,6 +88,7 @@ export default class SignInScreen extends React.Component {
             const userToken = data.reObj || "";
             if (res.status == 200 && data.reCode == 'ok') {
                 AsyncStorage.setItem('userToken', userToken);
+                AsyncStorage.setItem('userName', un);
                 me.props.navigation.navigate('AuthLoading');
             } else {
                 Alert.alert(data.reMsg);
