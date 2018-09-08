@@ -132,7 +132,6 @@ export default class App extends React.Component {
     initAxios = () => {
         // axios 全局配置
         axios.defaults.baseURL = 'http://192.168.1.20:8080/szcshl-web/api';
-        axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
         axios.defaults.headers.common['clientId'] = DeviceInfo.getUniqueID();
 
         // // 添加请求拦截器

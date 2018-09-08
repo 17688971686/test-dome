@@ -34,7 +34,6 @@ export default class HeaderComponent extends React.Component {
             </View>
         );
     }
-
 }
 
 const styles = StyleSheet.create({

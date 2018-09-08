@@ -6,7 +6,8 @@ import {
     StyleSheet,
     FlatList,
     TouchableOpacity,
-    AsyncStorage
+    AsyncStorage,
+    DeviceEventEmitter
 } from "react-native";
 import Header from '../component/HeaderComponent'
 import axios from 'axios'
@@ -16,35 +17,47 @@ export default class ProjectScreen extends React.Component {
         super(props);
         this.state = {
             data: '',
-            userName:''
+            userName: '',
+            reshing:''
         };
     }
     componentWillMount() {
-        AsyncStorage.getItem('userName',(error,result)=>{
-           if(!error){
-               this.setState({
-                   userName:result
-               });
-               axios({
-                   url: "/agenda/tasks",
-                   method: "post",
-                   params: {
-                       $skip: 1,
-                       $top: 10,
-                       username: result
-                   },
-               }).then((res) => {
-                   this.setState({
-                       data: res.data.value
-                   })
-               })
-           }else{
-               console.log(error);
-           }
+        this.loadData();
+        this.deEmitter = DeviceEventEmitter.addListener('Refresh', (Refresh) => {
+            Refresh && this.loadData();
         });
-
     }
-
+    loadData(){
+        AsyncStorage.getItem('userName', (error, result) => {
+            if (!error) {
+                this.setState({
+                    userName: result
+                });
+                axios({
+                    url: "/agenda/tasks",
+                    method: "post",
+                    params: {
+                        $skip: 1,
+                        $top: 10,
+                        username: result
+                    },
+                }).then((res) => {
+                    console.log(1);
+                    this.setState({
+                        data: res.data.value
+                    })
+                })
+                    .catch(error=>{
+                        console.log(error)
+                    })
+            } else {
+                console.log(error);
+            }
+        });
+    }
+    componentWillUnmount() {
+        this.deEmitter.remove();
+    }
     _extraUniqueKey(item, index) {
         return "index" + index + item;
     }
@@ -59,7 +72,7 @@ export default class ProjectScreen extends React.Component {
                                   projectName: item.projectName,
                                   processInstanceId: item.processInstanceId,
                                   userName: this.state.userName,
-                                  approve:true
+                                  approve: true
                               })}>
                 <Text style={styles.itemName} activeOpacity={1}>{item.projectName}</Text>
                 <View style={styles.itemView}>

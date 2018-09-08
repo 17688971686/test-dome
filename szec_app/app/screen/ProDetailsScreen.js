@@ -7,17 +7,15 @@ import {
     FlatList,
     TouchableOpacity,
     Button,
-    TextInput
+    TextInput,
+    Alert,
+    DeviceEventEmitter
 } from "react-native";
 import Header from '../component/HeaderComponent'
+import Icon from 'react-native-vector-icons/Ionicons';
 import ScrollableTabView, {ScrollableTabBar, DefaultTabBar} from 'react-native-scrollable-tab-view';
 import PopupDialog, {SlideAnimation, DialogTitle, DialogButton} from 'react-native-popup-dialog';
 import axios from 'axios'
-
-const slideAnimation = new SlideAnimation({
-    slideFrom: 'bottom',
-});
-
 /*历史记录*/
 import SignHistory from './ProjectSearch/SignHistoryComponent'
 
@@ -272,26 +270,36 @@ class SignDispatch extends Component {
     }
 }
 
+const slideAnimation = new SlideAnimation({
+    slideFrom: 'bottom',
+});
 
 export default class ProDetailsScreen extends Component {
     constructor(props) {
         super(props);
+        const {projectName, taskId, signId, processInstanceId, userName} = this.props.navigation.state.params;
         this.state = {
             projectData: '',
-            approvalOpinion: ''
-        }
+            approvalOpinion: '',
+            projectName: projectName,
+            taskId: taskId,
+            processInstanceId: processInstanceId,
+            userName: userName,
+            signId: signId,
+            curNode: '',
+            curNodeInfo:''
+        };
+
     }
 
     componentWillMount() {
-        const {signId} = this.props.navigation.state.params;
         axios.get('/sign/findSignById', {
             params: {
-                signId: signId,
+                signId: this.state.signId,
                 queryAll: true
             }
         })
             .then(res => {
-                console.log(res);
                 this.setState({
                     projectData: res.data
                 })
@@ -299,18 +307,65 @@ export default class ProDetailsScreen extends Component {
             .catch(error => {
                 console.log(error);
             });
+        /*查询当前节点信息*/
+        axios({
+            url: "/flowApp/flowNodeInfo",
+            method: "post",
+            params: {
+                taskId: this.state.taskId,
+                processInstanceId: this.state.processInstanceId,
+                username: this.state.userName
+            },
+        })
+            .then((res) => {
+                console.log(res);
+                this.setState({
+                    curNodeInfo:res.data,
+                    curNode: res.data.curNode.activitiName
+                })
+            })
+            .catch(error => {
+                console.log(error)
+            })
     }
 
     _approve() {
         return (
             <TouchableOpacity style={styles.filterView} onPress={() => this.popupDialog.show()}>
+                <Icon name={'ios-create-outline'} size={22} color={'#fff'}/>
                 <Text style={styles.filterText}>审批</Text>
             </TouchableOpacity>
         )
     }
-
+    commitData(){
+        Alert.alert(
+            '审批成功',
+            '下一环节:部门领导审批',
+            [
+                {text: 'OK', onPress: () => {this.props.navigation.navigate('leadpro');DeviceEventEmitter.emit('Refresh', true);}}
+            ],
+            { cancelable: false }
+        )
+       /* axios({
+            url: "flowApp/commit",
+            method: "post",
+            params: {
+                flowObj:'',
+                username: this.state.userName
+            },
+        })
+            .then((res) => {
+                console.log(res);
+                this.setState({
+                    curNode: res.data.curNode.activitiName
+                })
+            })
+            .catch(error => {
+                console.log(error)
+            })*/
+    }
     render() {
-        const {projectName, processInstanceId, approve} = this.props.navigation.state.params;
+        const {approve} = this.props.navigation.state.params;
         return (
             <View style={styles.container}>
                 <PopupDialog
@@ -320,7 +375,7 @@ export default class ProDetailsScreen extends Component {
                     }}
                     dialogAnimation={slideAnimation}
                     dialogTitle={<DialogTitle titleTextStyle={styles.titleStyle} titleStyle={styles.dialogTitle}
-                                              title="请输入审批意见"/>}
+                                              title={'当前环节：' + this.state.curNode}/>}
                 >
                     <View style={{justifyContent: 'space-between', flex: 1}}>
                         <TextInput
@@ -330,17 +385,18 @@ export default class ProDetailsScreen extends Component {
                             multiline={true}
                             onChangeText={(approvalOpinion) => this.setState({approvalOpinion})}
                             underlineColorAndroid='transparent'
-                            autoFocus={true}
                         />
                         <View style={{flexDirection: 'row', marginLeft: 10, marginRight: 10, marginBottom: 10}}>
-                            <DialogButton textContainerStyle={styles.conCancel}  activeOpacity={0.9} textStyle={styles.btnCancel} buttonStyle={styles.buttonStyle} text={'取消'}
+                            <DialogButton textContainerStyle={styles.conCancel} activeOpacity={0.9}
+                                          textStyle={styles.btnCancel} buttonStyle={styles.buttonStyle} text={'取消'}
                                           onPress={() => this.popupDialog.dismiss()}/>
-                            <DialogButton textContainerStyle={styles.textCon} activeOpacity={0.9} textStyle={styles.btnText} buttonStyle={styles.buttonStyle} text={'审批'}
-                                          onPress={() => this.popupDialog.dismiss()}/>
+                            <DialogButton textContainerStyle={styles.textCon} activeOpacity={0.9}
+                                          textStyle={styles.btnText} buttonStyle={styles.buttonStyle} text={'审批'}
+                                          onPress={() => this.commitData()}/>
                         </View>
                     </View>
                 </PopupDialog>
-                <Header title={projectName} showBackTitle={true}
+                <Header title={this.state.projectName} showBackTitle={true}
                         navigation={this.props.navigation} fontSize={16} headerRight={approve && this._approve()}/>
                 <ScrollableTabView
                     tabBarActiveTextColor='#1E5AAF'//设置选中Tab的文字颜色。
@@ -350,7 +406,7 @@ export default class ProDetailsScreen extends Component {
                     <SignDetail tabLabel="审批登记" data={this.state.projectData}/>
                     <SignWorkprogram tabLabel="工作方案" data={this.state.projectData.workProgramDtoList}/>
                     <SignDispatch tabLabel="发文信息" data={this.state.projectData.dispatchDocDto}/>
-                    <SignHistory tabLabel="处理记录" processInstanceId={processInstanceId}/>
+                    <SignHistory tabLabel="处理记录" processInstanceId={this.state.processInstanceId}/>
                 </ScrollableTabView>
             </View>
         );
@@ -366,7 +422,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#1E5AAF',
     },
     titleStyle: {
-        color: '#fff'
+        color: '#fff',
+        alignSelf: 'flex-start'
     },
     itemView: {
         width: '100%',
@@ -396,7 +453,7 @@ const styles = StyleSheet.create({
     },
     filterView: {
         flexDirection: 'row',
-        justifyContent: 'flex-end',
+        justifyContent:'center',
         alignItems: 'center'
     },
     filterText: {
@@ -404,8 +461,8 @@ const styles = StyleSheet.create({
         lineHeight: 50,
         marginLeft: 5
     },
-    btnCancel:{
-      fontSize:16
+    btnCancel: {
+        fontSize: 16
     },
     textInputStyle: {
         borderWidth: 1,
@@ -421,18 +478,18 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#fff',
     },
-    textCon:{
-        margin:5,
-        paddingHorizontal:0,
+    textCon: {
+        margin: 5,
+        paddingHorizontal: 0,
         backgroundColor: '#1E5AAF',
-        height:35,
-        borderRadius:5
+        height: 35,
+        borderRadius: 5
     },
-    conCancel:{
+    conCancel: {
         backgroundColor: '#eee',
-        height:35,
-        borderRadius:5,
-        margin:5,
-        paddingHorizontal:0,
+        height: 35,
+        borderRadius: 5,
+        margin: 5,
+        paddingHorizontal: 0,
     }
 });
