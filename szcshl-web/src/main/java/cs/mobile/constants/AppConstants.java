@@ -8,7 +8,7 @@ public class AppConstants {
     /**
      * 手机端的请求
      */
-    public static final String START_URL = "api";
+    public static final String START_URL = "/api";
 
 
 }

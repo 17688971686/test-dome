@@ -16,6 +16,7 @@ import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.project.SignPrincipalRepo;
 import cs.service.flow.FlowService;
 import cs.service.project.SignPrincipalService;
+import cs.service.project.WorkProgramService;
 import cs.service.sys.OrgDeptService;
 import cs.service.sys.UserService;
 import org.apache.log4j.Logger;
@@ -59,6 +60,9 @@ public class ProgramTaskController {
     @Autowired
     private SignPrincipalRepo signPrincipalRepo;
 
+    @Autowired
+    private WorkProgramService workProgramService;
+
     /**
      * 部长以上审批
      * @param request
@@ -71,6 +75,11 @@ public class ProgramTaskController {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<RuProcessTask> pageModelDto = new PageModelDto<RuProcessTask>();
         String name = request.getParameter("username");
+        try {
+            name = new String(name.getBytes("ISO-8859-1"),"UTF-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         String curUserId = "";
         if(!Validate.isString(name)){
             return pageModelDto;
@@ -237,6 +246,8 @@ public class ProgramTaskController {
             resultMap.put(PROTASKLIST, null);
             resultMap.put(ISDISPLAY, true);
         }
+        //获取会议信息
+        resultMap.put("proMeetInfo", workProgramService.findProMeetInfo());
         return new ResultMsg(true,"ok","成功",resultMap);
     }
 
