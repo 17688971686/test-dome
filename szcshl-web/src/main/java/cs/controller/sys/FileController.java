@@ -801,7 +801,11 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
             case "DISPATCHDOC":
                 DispatchDoc dispatchDoc = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
-                SignDto signDto = signService.findById(dispatchDoc.getSign().getSignid(), true);
+                SignDto signDto = null ;
+                if(Validate.isObject(dispatchDoc.getSign())){
+                     signDto = signService.findById(dispatchDoc.getSign().getSignid(), true);
+                }
+
                 Map<String, Object> dispatchData = TemplateUtil.entryAddMap(dispatchDoc);
                 String mianChargeSuggest = dispatchDoc.getMianChargeSuggest();
                 String main = null;
@@ -833,7 +837,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 dispatchData.put("secondChargeSuggest", second);
                 dispatchData.put("ministerSuggesttion", sugge);
                 dispatchData.put("viceDirectorSuggesttion", vice);
-                dispatchData.put("ischangeEstimate", signDto.getIschangeEstimate());//是否调概
+                dispatchData.put("ischangeEstimate", signDto == null ? "" : signDto.getIschangeEstimate());//是否调概
 
                 if (stageType.equals(RevireStageKey.KEY_SUG.getValue())) {
                     //建议书
@@ -841,7 +845,11 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     file = TemplateUtil.createDoc(dispatchData, Template.STAGE_SUG_DISPATCHDOC.getKey(), path);
                 } else if (stageType.equals(RevireStageKey.KEY_STUDY.getValue())) {
                     //可研
-                    List<SignDto> signDtoList = signDto.getAssociateSignDtoList();
+                    List<SignDto> signDtoList = null ;
+                    if(signDto != null ){
+                        signDtoList = signDto.getAssociateSignDtoList();
+                    }
+
                     List<DispatchDocDto> dispatchList = new ArrayList<DispatchDocDto>();
                     List<DispatchDocDto> dispatchViewList = new ArrayList<DispatchDocDto>();
                     if (null != signDtoList) {
@@ -857,7 +865,10 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
                 } else if (stageType.equals(RevireStageKey.KEY_BUDGET.getValue())) {
                     //概算
-                    List<SignDto> signDtoList = signDto.getAssociateSignDtoList();
+                    List<SignDto> signDtoList = null ;
+                    if(signDto != null ){
+                        signDtoList = signDto.getAssociateSignDtoList();
+                    }
                     List<DispatchDocDto> dispatchList = new ArrayList<DispatchDocDto>();
                     List<DispatchDocDto> dispatchViewList = new ArrayList<DispatchDocDto>();
                     if (null != signDtoList) {
@@ -878,7 +889,10 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
                 } else if (stageType.equals(Constant.RevireStageKey.KEY_REPORT.getValue())) {
                     //资金
-                    List<SignDto> signDtoList = signDto.getAssociateSignDtoList();
+                    List<SignDto> signDtoList = null ;
+                    if(signDto != null ){
+                        signDtoList = signDto.getAssociateSignDtoList();
+                    }
                     List<DispatchDocDto> dispatchList = new ArrayList<DispatchDocDto>();
                     List<DispatchDocDto> dispatchViewList = new ArrayList<DispatchDocDto>();
                     if (null != signDtoList) {
@@ -1231,7 +1245,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
      */
     private DispatchDocDto getDispatchStage(String stageName, List<DispatchDocDto> dispatchDocDtoList) {
         DispatchDocDto dispatchDocDto = new DispatchDocDto();
-        if (dispatchDocDtoList.size() > 0) {
+        if (dispatchDocDtoList != null && dispatchDocDtoList.size() > 0) {
             for (int i = 0; i < dispatchDocDtoList.size(); i++) {
                 if (stageName.equals(dispatchDocDtoList.get(i).getDispatchStage())) {
                     return dispatchDocDtoList.get(i);
