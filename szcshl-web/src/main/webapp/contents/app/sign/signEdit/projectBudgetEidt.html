@@ -406,7 +406,7 @@
     <tr>
         <td width="15%" class="text-center" style="vertical-align: middle;">综合部拟办意见</td>
         <td colspan="3">
-            <textarea maxlength="120"  data-val-length-max="120"  data-val="true"   name="comprehensivehandlesug"  ng-change="vm.model.comprehensivehandlesug=countCharacter(vm.model.comprehensivehandlesug,120,'comprehensivehandlesugCountj')"   rows="3"  ng-model="vm.model.comprehensivehandlesug" style="width: 98%">{{ vm.model.comprehensivehandlesug }}</textarea>
+            <textarea maxlength="120"  data-val-length-max="120"  data-val="true"   name="comprehensivehandlesug"  ng-change="vm.model.comprehensivehandlesug=countCharacter(vm.model.comprehensivehandlesug,500,'comprehensivehandlesugCountj')"   rows="3"  ng-model="vm.model.comprehensivehandlesug" style="width: 98%">{{ vm.model.comprehensivehandlesug }}</textarea>
             <span data-valmsg-for="comprehensivehandlesug" data-valmsg-replace="true" class="errors"></span>
             <p id="comprehensivehandlesugCountj" style="text-align: right;"></p>
         </td>
@@ -414,7 +414,7 @@
     <tr>
         <td width="15%" class="text-center" style="vertical-align: middle;">中心领导签批意见</td>
         <td colspan="3">
-            <textarea maxlength="120"  data-val-length-max="120"  data-val="true"  rows="3"  name="leaderhandlesug" id="leaderhandlesug" ng-model="vm.model.leaderhandlesug" ng-change="vm.model.leaderhandlesug=countCharacter(vm.model.leaderhandlesug,120,'leaderhandlesugCountj')"   value="" style="width: 98%">{{vm.model.leaderhandlesug}}</textarea>
+            <textarea maxlength="1000"  data-val-length-max="1000"  data-val="true"  rows="3"  name="leaderhandlesug" id="leaderhandlesug" ng-model="vm.model.leaderhandlesug" ng-change="vm.model.leaderhandlesug=countCharacter(vm.model.leaderhandlesug,1000,'leaderhandlesugCountj')"   value="" style="width: 98%">{{vm.model.leaderhandlesug}}</textarea>
             <span data-valmsg-for="leaderhandlesug" data-valmsg-replace="true" class="errors"></span>
             <p id="leaderhandlesugCountj" style="text-align: right;"></p>
         </td>
@@ -422,7 +422,7 @@
     <tr ng-hide="vm.isControl">
         <td width="15%" class="text-center" style="vertical-align: middle;">部长处理意见</td>
         <td colspan="3">
-            <textarea maxlength="120"  ng-disabled="true"  data-val-length-max="120"  data-val="true" name="ministerhandlesug"  rows="3" ng-model="vm.model.ministerhandlesug" ng-change="vm.model.ministerhandlesug=countCharacter(vm.model.ministerhandlesug,120,'ministerhandlesugCountj')"  ng-model="vm.model.ministerhandlesug" style="width: 98%">{{vm.model.ministerhandlesug}}</textarea>
+            <textarea maxlength="120"  ng-disabled="true"  data-val-length-max="120"  data-val="true" name="ministerhandlesug"  rows="3" ng-model="vm.model.ministerhandlesug" ng-change="vm.model.ministerhandlesug=countCharacter(vm.model.ministerhandlesug,1000,'ministerhandlesugCountj')"  ng-model="vm.model.ministerhandlesug" style="width: 98%">{{vm.model.ministerhandlesug}}</textarea>
             <span data-valmsg-for="ministerhandlesug" data-valmsg-replace="true" class="errors"></span>
             <p id="ministerhandlesugCountj" style="text-align: right;"></p>
         </td>

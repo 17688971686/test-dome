@@ -196,6 +196,11 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
             addSuppLetter.setModifiedDate(now);
             addSuppLetter.setCreatedDate(now);
         }
+        if(!Validate.isObject(addSuppLetter.getSuppLetterTime())){
+            addSuppLetter.setSuppLetterTime(now);
+        }
+        //设置年份和月份
+        addSuppLetter.setFileYear(DateUtils.getYear(addSuppLetter.getSuppLetterTime()));
         addSuppLetterRepo.save(addSuppLetter);
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", addSuppLetter);
     }

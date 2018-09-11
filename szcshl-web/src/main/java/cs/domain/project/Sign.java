@@ -170,7 +170,7 @@ public class Sign extends DomainBase {
     private Date comprehensiveDate;
 
     //中心领导审批意见
-    @Column(columnDefinition = "VARCHAR(255)")
+    @Column(columnDefinition = "VARCHAR(1024)")
     private String leaderhandlesug;
 
     //中心领导ID
