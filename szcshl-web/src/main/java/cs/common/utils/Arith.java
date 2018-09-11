@@ -414,7 +414,7 @@ public class Arith {
      */
     public static BigDecimal countCost(BigDecimal expense) {
         BigDecimal returnCost = BigDecimal.ZERO;
-        if (expense == null || expense.compareTo(BigDecimal.ZERO) == -1) {
+        /*if (expense == null || expense.compareTo(BigDecimal.ZERO) == -1) {
             return returnCost;
         }
         double totalValue = expense.doubleValue();
@@ -428,24 +428,44 @@ public class Arith {
         } else if (totalValue > 50000) {
             returnCost = safeDivide(totalValue * 80 * 40, 10000);
             returnCost = safeSubtract(returnCost, new BigDecimal(7000));
-        }
+        }*/
 
+        /**
+         * 新专家缴税统计（2018-09-11，【但龙】提供计算公式）
+         * X<4000时：（所得额-800）*20%
+         * 	4000≤X≤20000时:所得额*(1-20%)*20%
+         * 	20000＜X≤50000时：所得额*（1-20%）*30%-2000
+         * 	x>50000时，所得额*（1-20%）*40%-7000
+         */
+        if (expense == null || expense.compareTo(BigDecimal.ZERO) == -1) {
+            return returnCost;
+        }
+        double totalValue = expense.doubleValue();
+        if ( totalValue < 4000) {
+            returnCost = safeDivide((totalValue - 800) * 20, 100);
+        } else if (totalValue >= 4000 && totalValue <= 20000) {
+            returnCost = safeDivide(totalValue * 80 * 20, 10000);
+        } else if (totalValue > 20000 && totalValue <= 50000) {
+            returnCost = safeDivide(totalValue * 80 * 30, 10000);
+            returnCost = safeSubtract(returnCost, new BigDecimal(2000));
+        } else if (totalValue > 50000) {
+            returnCost = safeDivide(totalValue * 80 * 40, 10000);
+            returnCost = safeSubtract(returnCost, new BigDecimal(7000));
+        }
         return returnCost;
     }
 
     public static void main(String[] args) {
-        /*System.out.println(countCost(new BigDecimal(500)));
-        System.out.println(countCost(new BigDecimal(800)));
-        System.out.println(countCost(new BigDecimal(900)));
+
         System.out.println(countCost(new BigDecimal(2000)));
         System.out.println(countCost(new BigDecimal(4000)));
         System.out.println(countCost(new BigDecimal(10000)));
         System.out.println(countCost(new BigDecimal(20000)));
         System.out.println(countCost(new BigDecimal(40000)));
         System.out.println(countCost(new BigDecimal(50000)));
-        System.out.println(countCost(new BigDecimal(60000)));*/
+        System.out.println(countCost(new BigDecimal(60000)));
 
         //System.out.println(get2Double(new BigDecimal(60000)));
-        System.out.println((new BigDecimal(6.09)).setScale(2, BigDecimal.ROUND_HALF_UP));
+
     }
 }
