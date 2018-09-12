@@ -1,56 +1,72 @@
-import React ,{Component} from 'react';
-import { View, Text,ScrollView ,WebView, Dimensions,StyleSheet,TouchableOpacity} from 'react-native';
+import React, {Component} from 'react';
+import {View, Text, ScrollView, WebView, Dimensions, StyleSheet, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Header from '../../component/HeaderComponent'
 import ChartComponent from "../../component/ECharts/ChartComponent";
+import axios from 'axios';
 
 
 export default class ListScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            barOPtions:{},
-            pieOptions:{}
+            barOPtions: {},
+            pieOptions: {}
         };
     }
+
     componentDidMount() {
-        this.setState({
-            barOPtions:{
+        axios({
+            url: "/agenda/getHomeProjInfo",
+            method:"post",
+            params: {
+                username: '张一帆'
+            },
+        })
+            .then((res) => {
+                console.log(res);
+            })
+            .catch(error => {
+                console.log(error)
+            });
+        /*this.setState({
+            barOPtions: {
                 title: {
                     text: '',
                 },
                 tooltip: {},
                 legend: {
-                    data:['在办项目']
+                    data: ['在办项目']
                 },
                 xAxis: {
-                    data: ["综合一部","项目一部","项目二","概算一部","未分办"]
+                    data: ["综合一部", "项目一部", "项目二", "概算一部", "未分办"]
                 },
                 yAxis: {},
                 series: [{
                     name: '在办项目',
                     type: 'bar',
-                    data: [10,5, 20, 36, 10]
+                    data: [10, 5, 20, 36, 10]
                 }]
             },
-            pieOptions:{
-                series : [
+            pieOptions: {
+                series: [
                     {
                         name: '访问来源',
                         type: 'pie',
                         radius: '55%',
-                        data:[
-                            {value:20, name:'未分办'},
-                            {value:15, name:'综合一部'},
-                            {value:18, name:'项目一部'},
-                            {value:30, name:'项目二部'},
-                            {value:35, name:'概算一部'}
+                        data: [
+                            {value: 20, name: '未分办'},
+                            {value: 15, name: '综合一部'},
+                            {value: 18, name: '项目一部'},
+                            {value: 30, name: '项目二部'},
+                            {value: 35, name: '概算一部'}
                         ]
                     }
                 ]
             }
-        })
+        })*/
     }
+
     render() {
         const {navigation} = this.props;
         return (
@@ -87,8 +103,8 @@ export default class ListScreen extends React.Component {
                     <View style={styles.chart}>
                         <View style={styles.chartTitle}>
                             <View style={styles.line}/>
-                            <Text style={styles.titleStyle}>在办项目统计</Text>
-                            <TouchableOpacity  onPress={()=>navigation.navigate('ProjectManagementScreen')}>
+                            <Text style={styles.titleStyle}>项目办理情况</Text>
+                            <TouchableOpacity onPress={() => navigation.navigate('ProjectManagementScreen')}>
                                 <Text style={styles.more}>查看更多</Text>
                             </TouchableOpacity>
                         </View>
@@ -103,7 +119,7 @@ export default class ListScreen extends React.Component {
                         <View style={styles.chartTitle}>
                             <View style={styles.line}/>
                             <Text style={styles.titleStyle}>预签收项目统计</Text>
-                            <TouchableOpacity  onPress={()=>navigation.navigate('SignupProjectScreen')}>
+                            <TouchableOpacity onPress={() => navigation.navigate('SignupProjectScreen')}>
                                 <Text style={styles.more}>查看更多</Text>
                             </TouchableOpacity>
                         </View>
@@ -164,15 +180,15 @@ const styles = StyleSheet.create({
         borderBottomColor: '#1E5AAF',
         paddingLeft: 25,
         justifyContent: 'space-between',
-        flexDirection:'row',
-        alignItems:'center',
-        paddingRight:15
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingRight: 15
     },
     titleStyle: {
         fontWeight: 'bold'
     },
     chartView: {
-        paddingTop:10,
+        paddingTop: 10,
         height: 230
     },
     line: {
@@ -182,8 +198,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#1956AD',
         left: 12
     },
-    more:{
-        fontSize:12,
-        color:'#999'
+    more: {
+        fontSize: 12,
+        color: '#999'
     }
 });

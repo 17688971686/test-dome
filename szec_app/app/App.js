@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {
     createBottomTabNavigator,
@@ -19,6 +18,7 @@ import SetUpScreen from "./screen/Myself/SetUpScreen";
 import ProjectManagementScreen from "./screen/Home/ProjectManagementScreen";
 import SignupProjectScreen from "./screen/Home/SignupProjectScreen";
 import ProDetailsScreen from "./screen/ProDetailsScreen";
+import ApproveScreen from "./screen/ApproveScreen";
 
 
 /*Tab导航器*/
@@ -37,19 +37,6 @@ const TabNavigator = createBottomTabNavigator(
                 ),
             }
         },
-        Project: {
-            screen: ProjectSearchScreen,
-            navigationOptions: {
-                title: '项目查询',
-                tabBarIcon: ({tintColor, focused}) => (
-                    <Icon
-                        name={focused ? 'ios-bookmarks' : 'ios-bookmarks-outline'}
-                        size={26}
-                        style={{color: tintColor}}
-                    />
-                ),
-            }
-        },
         Home: {
             screen: HomeScreen,
             navigationOptions: {
@@ -62,6 +49,19 @@ const TabNavigator = createBottomTabNavigator(
                     />
                 ),
 
+            }
+        },
+        Project: {
+            screen: ProjectSearchScreen,
+            navigationOptions: {
+                title: '项目查询',
+                tabBarIcon: ({tintColor, focused}) => (
+                    <Icon
+                        name={focused ? 'ios-bookmarks' : 'ios-bookmarks-outline'}
+                        size={26}
+                        style={{color: tintColor}}
+                    />
+                ),
             }
         },
         My: {
@@ -88,12 +88,12 @@ const TabNavigator = createBottomTabNavigator(
 /*Stack导航器*/
 const RouteConfigs = {
     TabNavigator: TabNavigator,
-    ProjectManagementScreen:ProjectManagementScreen,
-    SignupProjectScreen:SignupProjectScreen,
+    ProjectManagementScreen: ProjectManagementScreen,
+    SignupProjectScreen: SignupProjectScreen,
     BasicInfoScreen: BasicInfoScreen,
     SetUpScreen: SetUpScreen,
-    ProDetailsScreen:ProDetailsScreen
-
+    ProDetailsScreen: ProDetailsScreen,
+    ApproveScreen:ApproveScreen
 };
 
 const StackNavigatorConfig = {
@@ -102,8 +102,6 @@ const StackNavigatorConfig = {
     },
     mode: 'card',
     headerMode: 'screen',
-    cardStyle: {backgroundColor: "#f5f5f5"},
-
 };
 
 const AppStackNavigator = createStackNavigator(RouteConfigs, StackNavigatorConfig);
@@ -133,18 +131,6 @@ export default class App extends React.Component {
         // axios 全局配置
         axios.defaults.baseURL = 'http://192.168.1.20:8080/szcshl-web/api';
         axios.defaults.headers.common['clientId'] = DeviceInfo.getUniqueID();
-
-        // // 添加请求拦截器
-        // axios.interceptors.request.use(function (config) {
-        //     console.log("request", config);
-        //     // 在发送请求之前做些什么
-        //     return config;
-        // }, (error) => {
-        //     console.log("request error", error);
-        //     // 对请求错误做些什么
-        //     return Promise.reject(error);
-        // });
-
     }
 
 }

@@ -7,7 +7,8 @@ import {
     FlatList,
     TouchableOpacity,
     AsyncStorage,
-    DeviceEventEmitter
+    DeviceEventEmitter,
+    RefreshControl
 } from "react-native";
 import Header from '../component/HeaderComponent'
 import axios from 'axios'
@@ -18,16 +19,21 @@ export default class ProjectScreen extends React.Component {
         this.state = {
             data: '',
             userName: '',
-            reshing:''
+            reshing:'',
+            isLoading:false
         };
     }
-    componentWillMount() {
+
+    componentDidMount() {
         this.loadData();
         this.deEmitter = DeviceEventEmitter.addListener('Refresh', (Refresh) => {
             Refresh && this.loadData();
         });
     }
     loadData(){
+        this.setState({
+            isLoading:true
+        });
         AsyncStorage.getItem('userName', (error, result) => {
             if (!error) {
                 this.setState({
@@ -42,9 +48,9 @@ export default class ProjectScreen extends React.Component {
                         username: result
                     },
                 }).then((res) => {
-                    console.log(1);
                     this.setState({
-                        data: res.data.value
+                        data: res.data.value,
+                        isLoading:false
                     })
                 })
                     .catch(error=>{
@@ -74,7 +80,7 @@ export default class ProjectScreen extends React.Component {
                                   userName: this.state.userName,
                                   approve: true
                               })}>
-                <Text style={styles.itemName} activeOpacity={1}>{item.projectName}</Text>
+                <Text style={styles.itemName} numberOfLines={1}>{item.projectName}</Text>
                 <View style={styles.itemView}>
                     <Text style={styles.itemText}>项目阶段：</Text>
                     <Text>{item.reviewStage}</Text>
@@ -89,7 +95,7 @@ export default class ProjectScreen extends React.Component {
                 </View>
                 <View style={styles.itemView}>
                     <Text style={styles.itemText}>剩余工作日：</Text>
-                    <Text style={{color: item.surplusDays <= 0 ? 'red' : ''}}>{item.surplusDays}</Text>
+                    <Text style={{color: item.surplusDays <= 0 ? 'red' : '#333'}}>{item.surplusDays}</Text>
                 </View>
             </TouchableOpacity>
         )
@@ -98,13 +104,26 @@ export default class ProjectScreen extends React.Component {
     render() {
         return (
             <View style={styles.container}>
-                <Header title={'项目审批'}/>
+                <Header
+                    title={'项目审批'}
+                />
                 <View style={styles.container}>
                     <FlatList
                         style={{width: '100%', backgroundColor: '#eee'}}
                         keyExtractor={this._extraUniqueKey}
                         data={this.state.data}
                         renderItem={({item}) => this._renderItem(item)}
+                        refreshControl={
+                            <RefreshControl
+                                title={'Loading'} //IOS
+                                colors={['orange', 'green']} //android
+                                tintColor={['orange']} //IOS
+                                refreshing={this.state.isLoading}
+                                onRefresh={() => {
+                                    this.loadData();
+                                }}
+                            />
+                        }
                     />
                 </View>
             </View>

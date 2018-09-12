@@ -1,7 +1,3 @@
-/**
- * 广西百色重大项目管理系统 用户登录
- * @author: tzg
- */
 import React from "react";
 import {
     AsyncStorage,
@@ -72,7 +68,6 @@ export default class SignInScreen extends React.Component {
             Alert.alert('账号或密码不能为空');
             return false;
         }
-
         const encrypt = new JSEncrypt();
         const me = this;
         encrypt.setPublicKey(me.state.rsaKey || "");
@@ -86,7 +81,7 @@ export default class SignInScreen extends React.Component {
         }).then((res) => {
             const data = res.data || {};
             const userToken = data.reObj || "";
-            if (res.status == 200 && data.reCode == 'ok') {
+            if (res.status === 200 && data.reCode === 'ok') {
                 AsyncStorage.setItem('userToken', userToken);
                 AsyncStorage.setItem('userName', un);
                 me.props.navigation.navigate('AuthLoading');
