@@ -45,6 +45,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -134,11 +135,30 @@ public class FlowAppController {
 
     @RequestMapping(name = "流程提交", path = "commit", method = RequestMethod.POST)
     public @ResponseBody
-    ResultMsg flowCommit(String flowObj,String userName){
+    ResultMsg flowCommit(String flowObj,String username){
         //处理移动端传的对象
         FlowDto flowDto = JSONObject.parseObject(flowObj, FlowDto.class);
+        if(Validate.isObject(flowDto)){
+            String  dealOption = flowDto.getDealOption();
+            try {
+                username = new String(username.getBytes("ISO-8859-1"),"UTF-8");
 
-        UserDto userDto=userService.findUserByName(userName);
+                if(Validate.isString(flowDto.getDealOption())){
+                    dealOption = new String(dealOption.getBytes("ISO-8859-1"),"UTF-8");
+                    flowDto.setDealOption(dealOption);
+                }
+                if(Validate.isObject(flowDto.getCurNode()) && Validate.isString(flowDto.getCurNode().getActivitiName())){
+                    flowDto.getCurNode().setActivitiName(new String(flowDto.getCurNode().getActivitiName().getBytes("ISO-8859-1"),"UTF-8"));
+                }
+                if(Validate.isObject(flowDto.getNextNode()) && Validate.isString(flowDto.getNextNode().get(0).getActivitiName())){
+                    flowDto.getNextNode().get(0).setActivitiName(new String(flowDto.getNextNode().get(0).getActivitiName().getBytes("ISO-8859-1"),"UTF-8"));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+        UserDto userDto=userService.findUserByName(username);
         ResultMsg resultMsg = null;
         String errorMsg = "";
         String module="";
@@ -233,6 +253,11 @@ public class FlowAppController {
         FlowDto flowDto = new FlowDto();
         flowDto.setProcessInstanceId(processInstanceId);
         flowDto.setEnd(false);
+        try {
+            username = new String(username.getBytes("ISO-8859-1"),"UTF-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         User u = userService.findByName(username);
         //获取当前任务数据
         Task task = taskService.createTaskQuery().taskId(taskId).active().singleResult();
