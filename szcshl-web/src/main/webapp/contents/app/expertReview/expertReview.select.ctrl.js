@@ -81,6 +81,7 @@
                     })
                 }
             })
+            // expertReviewSvc.initExpertGrid(vm);
         }
 
         //更新参加未参加状态
@@ -183,6 +184,7 @@
 
         //弹出自选专家框
         vm.showSelfExpertGrid = function () {
+            $("input[name = 'expertID']").val(vm.selectIds);
             vm.selfExpertOptions.dataSource._skip = 0;
             vm.selfExpertOptions.dataSource.read();
             $("#selfExpertDiv").kendoWindow({
@@ -255,8 +257,17 @@
                         $('.confirmDialog').modal('hide');
                         var ids = [];
                         for (var i = 0; i < isCheck.length; i++) {
-                            ids.push(isCheck[i].value);
+                            var obj = JSON.parse(isCheck[i].value);
+                            ids.push(obj.id);
+                            $.each(vm.selectIds , function(j , id){
+
+                                if(obj.expertDto.expertID == id ){
+                                    vm.selectIds.splice(j , 1);
+                                }
+                            })
                         }
+
+
                         expertReviewSvc.delSelectedExpert(vm.expertReview.id, ids.join(','), vm.isCommit, function (data) {
                             if (data.flag || data.reCode == 'ok') {
                                 //更新专家评审费用
@@ -282,6 +293,7 @@
 
         //境外专家
         vm.showOutExpertGrid = function () {
+            $("input[name = 'expertID']").val(vm.selectIds);
             vm.outExpertOptions.dataSource._skip = 0;
             vm.outExpertOptions.dataSource.read();
             $("#outExpertDiv").kendoWindow({
@@ -307,7 +319,14 @@
                     onOk: function () {
                         var ids = [];
                         for (var i = 0; i < isCheck.length; i++) {
-                            ids.push(isCheck[i].value);
+                            var obj = JSON.parse(isCheck[i].value);
+                            ids.push(obj.id);
+                            $.each(vm.selectIds , function(j , id){
+
+                                if(obj.expertDto.expertID == id ){
+                                    vm.selectIds.splice(j , 1);
+                                }
+                            })
                         }
                         expertReviewSvc.delSelectedExpert(vm.expertReview.id, ids.join(','), vm.isCommit, function (data) {
                             if (data.flag || data.reCode == 'ok') {

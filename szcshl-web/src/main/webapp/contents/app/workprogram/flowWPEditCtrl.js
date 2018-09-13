@@ -439,7 +439,46 @@
          * @param expertId
          */
         vm.checkExpertDetail = function(expertId){
-            expertSvc.queryExpertDetail(vm , expertId);
+            vm.expert = [];
+            vm.id = expertId;
+            expertSvc.getExpertById(vm.id, function (data) {
+                vm.expert = data;
+                $("#queryExportDetailsWP").kendoWindow({
+                    width: "80%",
+                    height: "620px",
+                    title: "专家详细信息",
+                    visible: false,
+                    modal: true,
+                    open:function(){
+                        $("#expertPhotoSrc").attr("src", rootPath + "/expert/transportImg?expertId=" + vm.expert.expertID + "&t=" + Math.random());
+                        //tab标签
+                        $("#busi_baseinfoWP").addClass("active").addClass("in").show(500);
+                        $('#myTabExpertWP li').click(function (e) {
+                            $("#busi_baseinfoWP").removeClass("active").removeClass("in");
+                            var aObj = $("a", this);
+                            e.preventDefault();
+                            aObj.tab('show');
+                            var showDiv = aObj.attr("for-div");
+                            // $("#" + showDiv).removeClass("active").removeClass("in");
+                            $("#" + showDiv).addClass("active").addClass("in").show(500);
+                        })
+                        //评审过项目
+                        vm.reviewProjectList2 = [];
+                        expertSvc.reviewProjectGrid(vm.id,function(data){
+                            vm.isLoading = false;
+                            if(data && data.length > 0){
+                                vm.reviewProjectList2 = data;
+                                vm.noData = false;
+                            }else{
+                                vm.noData = true;
+                            }
+
+                        });
+                    },
+                    closable: true,
+                    actions: ["Pin", "Minimize", "Maximize", "Close"]
+                }).data("kendoWindow").center().open();
+            });
         }
     }
 })();

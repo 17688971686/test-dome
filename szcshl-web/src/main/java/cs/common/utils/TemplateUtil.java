@@ -209,6 +209,8 @@ public class TemplateUtil {
                     //如果数据类型是Date类型，则需要转换为yyyy年MM月dd日
                     if(type.equals("class java.util.Date")){
                         dataMap.put(field.getName() , DateUtils.converToString((Date) method.invoke(obj) , "yyyy年MM月dd日"));
+                    }else if(type.equals("class java.lang.String")){
+                        dataMap.put( field.getName() , method.invoke(obj) == null ? "" : method.invoke(obj).toString().replaceAll("<" , "﹤").replaceAll(">" , "﹥"));
                     }else{
                         dataMap.put( field.getName() , method.invoke(obj));
                     }

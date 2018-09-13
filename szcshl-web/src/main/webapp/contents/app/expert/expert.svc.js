@@ -810,10 +810,11 @@
 
 		//begin queryExpertDetail
 		function queryExpertDetail(vm , expertId){
+            vm.expert = [];
 			vm.id = expertId;
             getExpertById(vm.id, function (data) {
                 vm.expert = data;
-                $("#queryExportDetails").kendoWindow({
+                $("#queryExportDetailsS").kendoWindow({
                     width: "80%",
                     height: "620px",
                     title: "专家详细信息",
@@ -821,7 +822,30 @@
                     modal: true,
                     open:function(){
                         $("#expertPhotoSrc").attr("src", rootPath + "/expert/transportImg?expertId=" + vm.expert.expertID + "&t=" + Math.random());
+                        //tab标签
+                        $("#busi_baseinfoS").addClass("active").addClass("in").show(500);
 
+                        $('#myTabExpertS li').click(function (e) {
+                            $("#busi_baseinfoS").removeClass("active").removeClass("in");
+                            var aObj = $("a", this);
+                            e.preventDefault();
+                            aObj.tab('show');
+                            var showDiv = aObj.attr("for-div");
+                            // $("#" + showDiv).removeClass("active").removeClass("in");
+                            $("#" + showDiv).addClass("active").addClass("in").show(500);
+                        })
+                        //评审过项目
+                        vm.reviewProjectList2 = [];
+                        reviewProjectGrid(vm.id,function(data){
+                            vm.isLoading = false;
+                            if(data && data.length > 0){
+                                vm.reviewProjectList2 = data;
+                                vm.noData = false;
+                            }else{
+                                vm.noData = true;
+                            }
+
+                        });
                     },
                     closable: true,
                     actions: ["Pin", "Minimize", "Maximize", "Close"]
