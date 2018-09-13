@@ -102,6 +102,11 @@ public class ProgramTaskController {
     @ResponseBody
     public ResultMsg getHomeProjInfo(HttpServletRequest request) throws ParseException, IOException, ClassNotFoundException {
         String name = request.getParameter("username");
+        try {
+            name = new String(name.getBytes("ISO-8859-1"),"UTF-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         User u = userService.findByName(name);
         if(!Validate.isObject(u)){
             return ResultMsg.error("该用户不存在！");
@@ -119,39 +124,6 @@ public class ProgramTaskController {
         boolean isSuper = SUPER_ACCOUNT.equals(u.getLoginName()) ? true : false;
         if (Validate.isList(authRuSignTask)) {
             int totalCount = authRuSignTask.size();
-            //1、过滤出当前用户待办的项目
-            if (!isSuper) {
-                int filterCount = 0;
-                List<RuProcessTask> userProcessList = new ArrayList<>();
-                for (int i = 0; i < totalCount; i++) {
-                    RuProcessTask rt = authRuSignTask.get(i);
-                    //合并评审环节
-                    List<String> mergeReview = Arrays.asList(FLOW_SIGN_BMLD_SPW1, FLOW_SIGN_FGLD_SPW1);
-                    //合并发文环节
-                    List<String> mergeDisNode = Arrays.asList(FLOW_SIGN_QRFW, FLOW_SIGN_BMLD_QRFW, FLOW_SIGN_FGLD_QRFW, FLOW_SIGN_ZR_QRFW);
-                    //过滤掉合并项目的次项目
-                    if ((!Validate.isString(rt.getReviewType()) || ProjUtil.isMergeRVMainTask(rt.getReviewType())
-                            || (ProjUtil.isMergeRVAssistTask(rt.getReviewType()) && !mergeReview.contains(rt.getNodeDefineKey()))
-                    ) && (!Validate.isString(rt.getMergeDis()) || Constant.MergeType.DIS_SINGLE.getValue().equals(rt.getMergeDis())
-                            || (ProjUtil.isMergeDis(rt.getMergeDis()) && ProjUtil.isMain(rt.getMergeDisMain()))
-                            || (ProjUtil.isMergeDis(rt.getMergeDis()) && !ProjUtil.isMain(rt.getMergeDisMain()) && !mergeDisNode.contains(rt.getNodeDefineKey())))
-                            ) {
-                        if (curUserId.equals(rt.getAssignee())
-                                || (rt.getAssigneeList() != null && rt.getAssigneeList().indexOf(curUserId) > -1)) {
-
-                            RuProcessTask newrt = new RuProcessTask();
-                            BeanCopierUtils.copyProperties(rt, newrt);
-                            userProcessList.add(newrt);
-                            filterCount++;
-                        }
-                    }
-
-                    if (filterCount == 6) {
-                        break;
-                    }
-                }
-                resultMap.put(PROTASKLIST, userProcessList);
-            }
 
             /**
              * 分组统计柱状图和线形图数据
@@ -182,15 +154,6 @@ public class ProgramTaskController {
                     }
                 });
                 List<String> existList = new ArrayList<>();
-                //预签收项目列表
-                List<RuProcessTask> preRuTask = authRuSignTask.stream().filter(x -> (!Validate.isObject(x.getSignDate()))).collect(Collectors.toList());
-                if (Validate.isList(preRuTask)) {
-                    Map<String, Map<String, Object>> preHistogramMap = getCountMap(authFlag, resultMap, preRuTask, authMap, orgIdList, existList);
-                    if (!preHistogramMap.isEmpty()) {
-                        resultMap.put("preHistogram", preHistogramMap);
-                        existList = new ArrayList<>();
-                    }
-                }
                 //过滤掉已发文的项目
                 authRuSignTask = authRuSignTask.stream().filter(x -> (x.getSignDate() != null && x.getSignprocessState() < Constant.SignProcessState.END_DIS_NUM.getValue())).collect(Collectors.toList());
                 int totalLength = authRuSignTask.size();
@@ -206,45 +169,10 @@ public class ProgramTaskController {
                     }
                 }
                 resultMap.put(LINE_SIGN_LIST_FLAG, lineList);
-                //柱状图
-                existList = new ArrayList<>();
-                Map<String, Map<String, Object>> histogramMap = getCountMap(authFlag, resultMap, authRuSignTask, authMap, orgIdList, existList);
-                resultMap.put("histogram", histogramMap);
 
-                //(在办项目 ， 发文超期 ， 暂停 ， 少于3个工作日)
-                int doingNum = 0, dipathOverNum = 0, stopNum = 0, weekNum = 0;
-                Map<String, Object> countTaskMap = histogramMap.get("COUNT_TASK_MAP");
-                if (Validate.isMap(countTaskMap)) {
-                    for (Map.Entry<String, Object> entry : countTaskMap.entrySet()) {
-                        RuProcessTask countRT = (RuProcessTask) entry.getValue();
-                        doingNum++;
-                        switch (countRT.getLightState()) {
-                            case "6":
-                                dipathOverNum++;
-                                break;
-                            case "4":
-                                stopNum++;
-                                break;
-                            case "5":
-                                weekNum++;
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                    resultMap.put("DOINGNUM", doingNum);
-                    resultMap.put("DISPATHOVERNUM", dipathOverNum);
-                    resultMap.put("STOPNUM", stopNum);
-                    resultMap.put("WEEKNUM", weekNum);
-                }
-                //把统计的去掉
-                histogramMap.remove("COUNT_TASK_MAP");
             } else {
                 resultMap.put(ISDISPLAY, true);
             }
-        } else {
-            resultMap.put(PROTASKLIST, null);
-            resultMap.put(ISDISPLAY, true);
         }
         //获取会议信息
         resultMap.put("proMeetInfo", workProgramService.findProMeetInfo());
