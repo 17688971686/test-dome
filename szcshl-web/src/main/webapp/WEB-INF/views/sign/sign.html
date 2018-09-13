@@ -289,6 +289,21 @@
     </div>
 </div>
 
-<div style="display: none;" id="queryExportDetails">
-<#include "/expertReview/expertDetail2.html"/>
+<div style="display: none;" id="queryExportDetailsS">
+
+    <ul id="myTabExpertS" class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" for-div="busi_baseinfoS">专家信息</a></li>
+        <li><a id="show_workprogram_a" data-toggle="tab" for-div="busi_workplanS">评审过项目</a>
+        </li>
+    </ul>
+
+    <div class="tab-content" style="background:white;">
+        <div class="tab-pane fade in active" style="background:white;" id="busi_baseinfoS">
+        <#include "/expertReview/expertDetail2.html"/>
+        </div><!-- end tab -->
+
+        <div class="tab-pane fade" style="background:white;" id="busi_workplanS">
+        <#include "/expert/reviewProjectList2.html"/>
+        </div><!-- end tab -->
+
 </div>

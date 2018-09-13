@@ -354,7 +354,7 @@
             </tr>
             <tr ng-repeat="x in vm.confirmEPList|filter:{selectType:'2',isConfrim:'9'} track by $index">
                 <td align="center">
-                    <input type="checkbox" name="seletedEp" ng-checked="selectExpertList" value="{{x.id}}"/>
+                    <input type="checkbox" name="seletedEp" ng-checked="selectExpertList" value="{{x}}"/>
                 </td>
                 <td align="center"><a ng-click="vm.findExportDetail(x.expertDto.expertID)">{{x.expertDto.name}}</a></td>
                 <td align="center">{{x.expertDto.comPany}}</td>
@@ -471,7 +471,7 @@
             </tr>
             <tr ng-repeat="x in vm.confirmEPList|filter:{selectType:'3',isConfrim:'9'} track by $index ">
                 <td align="center">
-                    <input type="checkbox" name="seletedOutEp" ng-checked="selectOutExpertList" value="{{x.id}}"/>
+                    <input type="checkbox" name="seletedOutEp" ng-checked="selectOutExpertList" value="{{x}}"/>
                 </td>
                 <td align="center"><a ng-click="vm.findExportDetail(x.expertDto.expertID)">{{x.expertDto.name}}</a></td>
                 <td align="center">{{x.expertDto.comPany}}</td>
