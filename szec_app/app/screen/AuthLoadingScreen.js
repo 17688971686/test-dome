@@ -1,5 +1,5 @@
 /**
- * 广西百色重大项目管理系统 判断是否已获取登录凭证
+ * 判断是否已获取登录凭证
  * @author: tzg
  */
 
@@ -7,45 +7,53 @@ import React, {Component} from 'react';
 import {ActivityIndicator, AsyncStorage, StatusBar, StyleSheet, View} from 'react-native';
 import axios from "axios/index";
 import SplashScreen from 'react-native-splash-screen';
+import qs from 'qs';
 
 export default class AuthLoadingScreen extends Component {
     constructor(props) {
         super(props);
         this.toBootstrapAsync();
     }
-
     componentDidMount() {
         SplashScreen.hide();//关闭启动屏幕
     }
 
     toBootstrapAsync = async () => {
-        // AsyncStorage.setItem("userToken", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MzUwOTg3NTgsInVzZXJuYW1lIjoiYWRtaW4ifQ.ojfsx-bzXV4Qh2fIlGHe7cZr_9h23WbVMZuZ8rxCLkY");
         const userToken = await AsyncStorage.getItem('userToken'), me = this;
-
+        const userName = await AsyncStorage.getItem('userName');
         axios.defaults.headers.common['sysToken'] = userToken || "";
+        // 添加请求拦截器
+       /* axios.interceptors.request.use(function (config) {
+            if(config.method === 'post') {
+                let data = qs.parse(config.data);
+                config.data = qs.stringify({
+                    username:userName,
+                    ...data
+                })
+            } else if(config.method === 'get') {
+                config.params = {
+                    username:userName,
+                    ...config.params
+                }
+            }
+            return config;
+        }, function (error) {
+            return Promise.reject(error);
+        });*/
 
         // 添加响应拦截器
         axios.interceptors.response.use((response) => {
-            // 对响应数据做点什么
-            // console.log(response);
             return response;
         }, (error) => {
             if (error.response) {
-                // console.log(error.response);
-                // 授权超时或未授权
-                if (error.response.status == 401) {
+                if (error.response.status === 401) {
                     me.toSignOutAsync();
                 }
             } else {
                 console.log('Error', error.message);
             }
-            // console.log(error.config);
-            // 对响应错误做点什么
             return Promise.reject(error);
         });
-
-        // this.getUserInfo();
-
         this.props.navigation.navigate(userToken ? 'App' : 'Auth');
     };
 

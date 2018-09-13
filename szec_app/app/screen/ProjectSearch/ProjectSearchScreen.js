@@ -94,7 +94,7 @@ export default class ProjectSearchScreen extends React.Component {
                 menuPosition='right'
             >
                 <View style={styles.container}>
-                    <Header title={'项目查询'} headerRight={this._filter()}/>
+                    <Header title={'项目审批'} headerRight={this._filter()}/>
                     <View style={styles.container}>
                         <ProjectListComponent
                             api={api}
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     filterView:{
         flexDirection:'row',
         justifyContent:'flex-end',
-        alignItems:'center'
+        alignItems:'center',
     },
     filterText:{
         color:'#fff',

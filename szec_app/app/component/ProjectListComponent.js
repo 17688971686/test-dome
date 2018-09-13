@@ -43,7 +43,6 @@ export default class ProjectScreen extends React.Component {
                 }
             })
                 .then(res => {
-                    console.log(res);
                     this.setState({
                         totalNum: res.data.count,
                         projectData: pageIndex ? this.state.projectData.concat(res.data.value) : res.data.value,

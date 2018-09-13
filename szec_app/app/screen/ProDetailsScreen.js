@@ -7,19 +7,18 @@ import {
     FlatList,
     TouchableOpacity,
     Button,
-    TextInput
+    TextInput,
+    Alert,
+    DeviceEventEmitter
 } from "react-native";
 import Header from '../component/HeaderComponent'
+import Icon from 'react-native-vector-icons/Ionicons';
 import ScrollableTabView, {ScrollableTabBar, DefaultTabBar} from 'react-native-scrollable-tab-view';
 import PopupDialog, {SlideAnimation, DialogTitle, DialogButton} from 'react-native-popup-dialog';
 import axios from 'axios'
-
-const slideAnimation = new SlideAnimation({
-    slideFrom: 'bottom',
-});
-
 /*历史记录*/
 import SignHistory from './ProjectSearch/SignHistoryComponent'
+import ApproveScreen from "./ApproveScreen";
 
 /*委处理表*/
 class VdealDetail extends Component {
@@ -222,78 +221,89 @@ class SignDispatch extends Component {
     render() {
         const {data} = this.props;
         return (
-            <View style={styles.container}>
-                <View style={styles.itemView}>
-                    <Text style={styles.itemName}>发文方式：</Text>
-                    <Text style={styles.itemText}>{data.dispatchWay && data.dispatchWay === 1 ? "单个发文" : "合并发文"}</Text>
+            data ?
+                <View style={styles.container}>
+                    <View style={styles.itemView}>
+                        <Text style={styles.itemName}>发文方式：</Text>
+                        <Text style={styles.itemText}>{data.dispatchWay === 1 ? "单个发文" : "合并发文"}</Text>
+                    </View>
+                    <View style={styles.itemView}>
+                        <Text style={styles.itemName}>发文类型：</Text>
+                        <Text style={styles.itemText}>{data.dispatchType}</Text>
+                    </View>
+                    <View style={styles.itemView}>
+                        <Text style={styles.itemName}>文件标题：</Text>
+                        <Text style={styles.itemText}>{data.fileTitle}</Text>
+                    </View>
+                    <View style={styles.itemView}>
+                        <Text style={styles.itemName}>发文日期：</Text>
+                        <Text style={styles.itemText}>{data.dispatchDate}</Text>
+                    </View>
+                    <View style={styles.itemView}>
+                        <Text style={styles.itemName}>文号：</Text>
+                        <Text style={styles.itemText}>{data.fileNum}</Text>
+                    </View>
+                    <View style={styles.itemView}>
+                        <Text style={styles.itemName}>秘密等级：</Text>
+                        <Text style={styles.itemText}>{data.secretLevel}</Text>
+                    </View>
+                    <View style={styles.itemView}>
+                        <Text style={styles.itemName}>缓急程度：</Text>
+                        <Text style={styles.itemText}>{data.urgentLevel}</Text>
+                    </View>
+                    <View style={styles.itemView}>
+                        <Text style={styles.itemName}>是否与其他阶段关联：</Text>
+                        <Text style={styles.itemText}>{data.isRelated ? '是' : '否'}</Text>
+                    </View>
+                    <View style={styles.itemView}>
+                        <Text style={styles.itemName}>发行范围：</Text>
+                        <Text style={styles.itemText}>{data.dispatchScope}</Text>
+                    </View>
+                    <View style={styles.itemView}>
+                        <Text style={styles.itemName}>相关说明：</Text>
+                        <Text style={styles.itemText}>{data.description}</Text>
+                    </View>
+                    <View style={styles.itemView}>
+                        <Text style={styles.itemName}>评审意见摘要：</Text>
+                        <Text style={styles.itemText}>{data.reviewAbstract}</Text>
+                    </View>
                 </View>
-                <View style={styles.itemView}>
-                    <Text style={styles.itemName}>发文类型：</Text>
-                    <Text style={styles.itemText}>{data.dispatchType}</Text>
+                :
+                <View style={{height: 50, justifyContent: 'center', alignItems: 'center'}}>
+                    <Text>暂无发文信息</Text>
                 </View>
-                <View style={styles.itemView}>
-                    <Text style={styles.itemName}>文件标题：</Text>
-                    <Text style={styles.itemText}>{data.fileTitle}</Text>
-                </View>
-                <View style={styles.itemView}>
-                    <Text style={styles.itemName}>发文日期：</Text>
-                    <Text style={styles.itemText}>{data.dispatchDate}</Text>
-                </View>
-                <View style={styles.itemView}>
-                    <Text style={styles.itemName}>文号：</Text>
-                    <Text style={styles.itemText}>{data.fileNum}</Text>
-                </View>
-                <View style={styles.itemView}>
-                    <Text style={styles.itemName}>秘密等级：</Text>
-                    <Text style={styles.itemText}>{data.secretLevel}</Text>
-                </View>
-                <View style={styles.itemView}>
-                    <Text style={styles.itemName}>缓急程度：</Text>
-                    <Text style={styles.itemText}>{data.urgentLevel}</Text>
-                </View>
-                <View style={styles.itemView}>
-                    <Text style={styles.itemName}>是否与其他阶段关联：</Text>
-                    <Text style={styles.itemText}>{data.isRelated ? '是' : '否'}</Text>
-                </View>
-                <View style={styles.itemView}>
-                    <Text style={styles.itemName}>发行范围：</Text>
-                    <Text style={styles.itemText}>{data.dispatchScope}</Text>
-                </View>
-                <View style={styles.itemView}>
-                    <Text style={styles.itemName}>相关说明：</Text>
-                    <Text style={styles.itemText}>{data.description}</Text>
-                </View>
-                <View style={styles.itemView}>
-                    <Text style={styles.itemName}>评审意见摘要：</Text>
-                    <Text style={styles.itemText}>{data.reviewAbstract}</Text>
-                </View>
-            </View>
         )
     }
 }
-
-
 export default class ProDetailsScreen extends Component {
     constructor(props) {
         super(props);
+        const {projectName, taskId, signId, processInstanceId, userName} = this.props.navigation.state.params;
         this.state = {
             projectData: '',
-            approvalOpinion: ''
-        }
+            approvalOpinion: '',
+            projectName: projectName,
+            taskId: taskId,
+            processInstanceId: processInstanceId,
+            userName: userName,
+            signId: signId,
+            curNode: '',
+            curNodeInfo: ''
+        };
+
     }
 
-    componentWillMount() {
-        const {signId} = this.props.navigation.state.params;
+    componentDidMount() {
         axios.get('/sign/findSignById', {
             params: {
-                signId: signId,
+                signId: this.state.signId,
                 queryAll: true
             }
         })
             .then(res => {
                 console.log(res);
                 this.setState({
-                    projectData: res.data
+                    projectData: res.data,
                 })
             })
             .catch(error => {
@@ -303,45 +313,23 @@ export default class ProDetailsScreen extends Component {
 
     _approve() {
         return (
-            <TouchableOpacity style={styles.filterView} onPress={() => this.popupDialog.show()}>
+            <TouchableOpacity style={styles.filterView} onPress={() => this.props.navigation.navigate('ApproveScreen',{
+                taskId:this.state.taskId,
+                processInstanceId:this.state.processInstanceId,
+                userName:this.state.userName,
+                isassistflow:this.state.projectData.isassistflow
+            })}>
+                <Icon name={'ios-create-outline'} size={20} color={'#fff'}/>
                 <Text style={styles.filterText}>审批</Text>
             </TouchableOpacity>
         )
     }
-
     render() {
-        const {projectName, processInstanceId, approve} = this.props.navigation.state.params;
+        const {approve} = this.props.navigation.state.params;
         return (
             <View style={styles.container}>
-                <PopupDialog
-                    width={0.95}
-                    ref={(popupDialog) => {
-                        this.popupDialog = popupDialog;
-                    }}
-                    dialogAnimation={slideAnimation}
-                    dialogTitle={<DialogTitle titleTextStyle={styles.titleStyle} titleStyle={styles.dialogTitle}
-                                              title="请输入审批意见"/>}
-                >
-                    <View style={{justifyContent: 'space-between', flex: 1}}>
-                        <TextInput
-                            style={styles.textInputStyle}
-                            clearButtonMode="while-editing"
-                            placeholder="请输入审批意见"
-                            multiline={true}
-                            onChangeText={(approvalOpinion) => this.setState({approvalOpinion})}
-                            underlineColorAndroid='transparent'
-                            autoFocus={true}
-                        />
-                        <View style={{flexDirection: 'row', marginLeft: 10, marginRight: 10, marginBottom: 10}}>
-                            <DialogButton textContainerStyle={styles.conCancel}  activeOpacity={0.9} textStyle={styles.btnCancel} buttonStyle={styles.buttonStyle} text={'取消'}
-                                          onPress={() => this.popupDialog.dismiss()}/>
-                            <DialogButton textContainerStyle={styles.textCon} activeOpacity={0.9} textStyle={styles.btnText} buttonStyle={styles.buttonStyle} text={'审批'}
-                                          onPress={() => this.popupDialog.dismiss()}/>
-                        </View>
-                    </View>
-                </PopupDialog>
-                <Header title={projectName} showBackTitle={true}
-                        navigation={this.props.navigation} fontSize={16} headerRight={approve && this._approve()}/>
+                <Header title={this.state.projectName} showBackTitle={true}
+                        navigation={this.props.navigation} headerRight={approve && this._approve()}/>
                 <ScrollableTabView
                     tabBarActiveTextColor='#1E5AAF'//设置选中Tab的文字颜色。
                     tabBarUnderlineStyle={{backgroundColor: '#1E5AAF', height: 2}}
@@ -350,7 +338,7 @@ export default class ProDetailsScreen extends Component {
                     <SignDetail tabLabel="审批登记" data={this.state.projectData}/>
                     <SignWorkprogram tabLabel="工作方案" data={this.state.projectData.workProgramDtoList}/>
                     <SignDispatch tabLabel="发文信息" data={this.state.projectData.dispatchDocDto}/>
-                    <SignHistory tabLabel="处理记录" processInstanceId={processInstanceId}/>
+                    <SignHistory tabLabel="处理记录" processInstanceId={this.state.processInstanceId}/>
                 </ScrollableTabView>
             </View>
         );
@@ -360,13 +348,7 @@ export default class ProDetailsScreen extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        width: '100%'
-    },
-    dialogTitle: {
-        backgroundColor: '#1E5AAF',
-    },
-    titleStyle: {
-        color: '#fff'
+        width: '100%',
     },
     itemView: {
         width: '100%',
@@ -374,7 +356,8 @@ const styles = StyleSheet.create({
         padding: 10,
         justifyContent: 'flex-start',
         borderBottomWidth: 0.5,
-        borderBottomColor: '#ddd'
+        borderBottomColor: '#ccc',
+        backgroundColor: '#fff'
     },
     itemName: {
         fontSize: 14,
@@ -395,25 +378,18 @@ const styles = StyleSheet.create({
         borderBottomWidth: 0
     },
     filterView: {
+        flex: 1,
         flexDirection: 'row',
         justifyContent: 'flex-end',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     filterText: {
         color: '#fff',
-        lineHeight: 50,
-        marginLeft: 5
     },
-    btnCancel:{
-      fontSize:16
+    btnCancel: {
+        fontSize: 16
     },
-    textInputStyle: {
-        borderWidth: 1,
-        margin: 10,
-        borderColor: '#ddd',
-        height: 100,
-        textAlignVertical: 'top'
-    },
+
     buttonStyle: {
         flex: 1,
     },
@@ -421,18 +397,4 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#fff',
     },
-    textCon:{
-        margin:5,
-        paddingHorizontal:0,
-        backgroundColor: '#1E5AAF',
-        height:35,
-        borderRadius:5
-    },
-    conCancel:{
-        backgroundColor: '#eee',
-        height:35,
-        borderRadius:5,
-        margin:5,
-        paddingHorizontal:0,
-    }
 });
