@@ -1,74 +1,110 @@
 import React, {Component} from 'react';
-import {View, Text, ScrollView, WebView, Dimensions, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, Alert, ScrollView, WebView, Dimensions, StyleSheet, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Header from '../../component/HeaderComponent'
 import ChartComponent from "../../component/ECharts/ChartComponent";
+import ScrollableTabView, {ScrollableTabBar, DefaultTabBar} from 'react-native-scrollable-tab-view';
 import axios from 'axios';
-
 
 export default class ListScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            barOPtions: {},
-            pieOptions: {}
+            lineOPtions: {},
+            data: '',
+            surplusDays: [],
+            lineSign: '',
+            proMeetInfo: ''
         };
     }
 
     componentDidMount() {
         axios({
             url: "/agenda/getHomeProjInfo",
-            method:"post",
+            method: "post",
             params: {
                 username: '张一帆'
             },
         })
             .then((res) => {
-                console.log(res);
+                if (res.data.reCode === 'ok') {
+                    let surplusDays = [], projectName = [];
+                    for (let item of res.data.reObj.lineSign) {
+                        surplusDays.push(item.surplusDays);
+                        projectName.push(item.projectName)
+                    }
+                    let lineOptions = {
+                        title: {
+                            text: '项目办理情况',
+                            textStyle: {
+                                fontSize: 16
+                            },
+                            x: 'center'
+                        },
+                        tooltip: {
+                            trigger: 'axis',
+                            enterable: true,
+                            confine: true,
+                        },
+                        xAxis: {
+                            name: '项目名称',
+                            show: false,
+                            type: 'category',
+                            boundaryGap: false,
+                            data: projectName
+                        },
+                        yAxis: {
+                            type: 'value',
+                            name: '剩余工作日',
+                            axisLabel: {
+                                formatter: '{value}天'
+                            }
+                        },
+                        series: [
+                            {
+                                name: '剩余工作日',
+                                type: 'line',
+                                data: surplusDays,
+                                showAllSymbol: true,
+                                markPoint: {
+                                    data: [
+                                        {type: 'max', name: '最大值'},
+                                        {type: 'min', name: '最小值'}
+                                    ]
+                                },
+                            }
+                        ]
+                    };
+                    console.log(res);
+                    this.setState({
+                        data: res.data.reObj,
+                        proMeetInfo: res.data.reObj.proMeetInfo,
+                        lineOPtions: lineOptions
+                    })
+                }
+
             })
             .catch(error => {
                 console.log(error)
             });
-        /*this.setState({
-            barOPtions: {
-                title: {
-                    text: '',
-                },
-                tooltip: {},
-                legend: {
-                    data: ['在办项目']
-                },
-                xAxis: {
-                    data: ["综合一部", "项目一部", "项目二", "概算一部", "未分办"]
-                },
-                yAxis: {},
-                series: [{
-                    name: '在办项目',
-                    type: 'bar',
-                    data: [10, 5, 20, 36, 10]
-                }]
-            },
-            pieOptions: {
-                series: [
-                    {
-                        name: '访问来源',
-                        type: 'pie',
-                        radius: '55%',
-                        data: [
-                            {value: 20, name: '未分办'},
-                            {value: 15, name: '综合一部'},
-                            {value: 18, name: '项目一部'},
-                            {value: 30, name: '项目二部'},
-                            {value: 35, name: '概算一部'}
-                        ]
-                    }
-                ]
-            }
-        })*/
+    }
+
+    //获取N天后的日期
+    GetDateStr(n) {
+        let dd = new Date();
+        dd.setDate(dd.getDate() + n);//获取AddDayCount天后的日期
+        let m = (dd.getMonth() + 1) < 10 ? "0" + (dd.getMonth() + 1) : (dd.getMonth() + 1);//获取当前月份的日期，不足10补0
+        let d = dd.getDate() < 10 ? "0" + dd.getDate() : dd.getDate();//获取当前几号，不足10补0
+        let w = "星期" + "日一二三四五六".charAt(dd.getDay());
+        return m + '月' + d + '日' + w;
     }
 
     render() {
+        let meetingDate = [];
         const {navigation} = this.props;
+        for (let i = 0; i < 5; i++) {
+            meetingDate.push(this.GetDateStr(i));
+        }
         return (
             <View style={styles.container}>
                 <Header title={'评审系统'}/>
@@ -110,24 +146,30 @@ export default class ListScreen extends React.Component {
                         </View>
                         <View style={styles.chartView}>
                             <ChartComponent
+                                height={280}
                                 ref="charts"
-                                option={this.state.barOPtions}
+                                option={this.state.lineOPtions}
                             />
                         </View>
                     </View>
                     <View style={styles.chart}>
                         <View style={styles.chartTitle}>
                             <View style={styles.line}/>
-                            <Text style={styles.titleStyle}>预签收项目统计</Text>
-                            <TouchableOpacity onPress={() => navigation.navigate('SignupProjectScreen')}>
-                                <Text style={styles.more}>查看更多</Text>
-                            </TouchableOpacity>
+                            <Text style={styles.titleStyle}>调研和会议统计信息</Text>
                         </View>
-                        <View style={styles.chartView}>
-                            <ChartComponent
-                                ref="charts"
-                                option={this.state.pieOptions}
-                            />
+                        <View style={{height: 300, width: '100%'}}>
+                            <ScrollableTabView
+                                initialPage={0}
+                                tabBarActiveTextColor='#1E5AAF'
+                                tabBarUnderlineStyle={{backgroundColor: '#1E5AAF', height: 2}}
+                                renderTabBar={() => <ScrollableTabBar/>}>
+                                {
+                                    meetingDate.map((item, index) => {
+                                        return <MettingInfo proAmMeetDtoList={this.state.proMeetInfo.proAmMeetDtoList}
+                                                            tabLabel={item} index={index + 1} key={index}/>
+                                    })
+                                }
+                            </ScrollableTabView>
                         </View>
                     </View>
                 </ScrollView>
@@ -136,6 +178,34 @@ export default class ListScreen extends React.Component {
         );
     }
 }
+
+class MettingInfo extends Component {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        let amMeetthis = this.props.proAmMeetDtoList;
+        let meetting = [];
+        for (let i in amMeetthis) {
+            meetting.push(<Text>{amMeetthis[i].proName1}</Text>)
+        }
+        return (
+            <View>
+                <View>
+                    <Text>上午</Text>
+                </View>
+                <View>
+                    {meetting}
+                </View>
+                <View>
+                    <Text>下午</Text>
+                </View>
+            </View>
+        )
+    }
+}
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -189,7 +259,7 @@ const styles = StyleSheet.create({
     },
     chartView: {
         paddingTop: 10,
-        height: 230
+        height: 280
     },
     line: {
         position: 'absolute',
