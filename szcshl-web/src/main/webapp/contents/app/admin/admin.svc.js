@@ -869,6 +869,12 @@
                     filterable: false,
                 },
                 {
+                    field: "filecode",
+                    title: "委内收文编号",
+                    filterable: false,
+                    width: 120
+                },
+                {
                     field: "signdate",
                     title: "签收日期",
                     width: 100,

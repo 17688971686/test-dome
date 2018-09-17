@@ -160,4 +160,14 @@ public interface ExpertSelectedService {
 	 * @return
 	 */
 	ResultMsg findDeptAchievementDetail(AchievementDeptDetailDto achievementSumDto);
+
+	/**
+	 *
+	 * @param projectReviewCostDto
+	 * @param skip
+	 * @param size
+	 * @return
+	 */
+	PageModelDto<ProjectReviewCostDto> findProjectRevireCostBak(ProjectReviewCostDto projectReviewCostDto,String skip, String size);
+
 }

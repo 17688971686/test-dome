@@ -24,11 +24,15 @@
         return service;
 
         //begin initfinancial
-        function initfinancial(model , callBack){
+        function initfinancial(vm , callBack){
             var httpOptions = {
                 method : 'post',
                 url : rootPath + '/expertSelected/findProjectReviewCost',
-                data: model
+                data: vm.model,
+                params: {
+                    skip: vm.price.skip,
+                    size: vm.price.size,
+                },
             }
 
             var httpSuccess = function success(response){

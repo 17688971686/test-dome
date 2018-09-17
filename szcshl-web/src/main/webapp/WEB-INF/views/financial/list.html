@@ -2,6 +2,8 @@
 <meta charset="UTF-8">
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+<script src="${path}/contents/libs/util/lgx.page.js"></script>
+<link rel="stylesheet" href="${path}/contents/libs/util/lgx.page.css">
 <!-- 财务办理模块 -->
 <div id="reviewCostWindow" style="background:white;display: none;">
     <#include "/financial/costAdd.html"/>
@@ -73,17 +75,19 @@
         】
     </div>
 
-    <div class="table-responsive" style="max-height: 600px; overflow-y: scroll;">
-        <table class="table table-bordered">
-            <tr class="active">
-                <th class="text-center" style="width:50px"></th>
-                <th class="text-center" style="min-width:50px">序号</th>
-                <th class="text-center" style="width:30%">项目名称</th>
+
+    <div>
+        <table class="table table-bordered"  style="margin-top: 5px;">
+            <tr>
+                <td width="5%"></td>
+                <td width="5%">序号</td>
+                <td width="15%">项目名称</td>
                 <th class="text-center" style="width:20%">建设单位</th>
-                <th class="text-center" style="width:13%">项目阶段</th>
-                <th class="text-center" style="width:10%">项目负责人</th>
+                <td width="15%">项目阶段</td>
+                <td width="10%">项目负责人</td>
                 <th class="text-center" style="width:10%">计划专家费用</th>
                 <th class="text-center" style="width:10%;">付款日期</th>
+
             </tr>
             <tr ng-repeat="s in vm.stageCountList">
                 <td class="text-center">
@@ -115,8 +119,21 @@
                 <td class="text-center">{{s.totalCost}}</td>
                 <td class="text-center">{{s.payDate}}</td>
             </tr>
+            <tr>
+                <td colspan="9">
+                    <div id="demo5" class="lgx_page_l"  style="clear: both;">
+                        <a lu-page="first">首页</a>
+                        <a lu-page="prev">上一页</a>
+                        <a lu-page="list"></a>
+                        <a lu-page="next">下一页</a>
+                        <a lu-page="last">尾页</a>
+                    </div>
+                </td>
+            </tr>
         </table>
     </div>
+
+
 
 </div>
 

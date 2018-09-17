@@ -32,10 +32,34 @@
 
         activate();
         function activate() {
-            //统计评审费信息
-            financialManagerSvc.initfinancial(vm.model , function(data){
-                vm.stageCountList = data;
-            });
+            if(!vm.exist){
+                vm.page = lgx.page.init({
+                    id: "demo5", get: function (o) {
+                        var skip ;
+                        vm.price ={};
+
+                        //oracle的分页不一样。
+                        if (o.skip != 0) {
+                            skip = o.skip + 1
+                        } else {
+                            skip = o.skip
+                        }
+                        vm.price.skip = skip;//页码
+                        vm.price.size = o.size + o.skip;//页数
+                        financialManagerSvc.initfinancial(vm, function (data) {
+                            vm.stageCountList = [];
+                            if(data){
+                                vm.stageCountList = data.value;
+                                vm.page.callback(data.count);//请求回调时传入总记录数
+                            }
+
+                        });
+                    }
+                });
+                vm.exist = true;
+            }else{
+                vm.page.selPage(1);
+            }
             //查询评审部门
             adminSvc.initSignList(function(data){
                 if(data.flag || data.reCode == 'ok'){
@@ -57,9 +81,16 @@
          */
         vm.queryFinancl = function (){
             //统计评审费信息
-            financialManagerSvc.initfinancial(vm.model , function(data){
-                vm.stageCountList = data;
+            financialManagerSvc.initfinancial(vm, function (data) {
+
+                vm.stageCountList = [];
+                if (data) {
+                    vm.stageCountList = data.value;
+                    vm.page.callback(data.count);//请求回调时传入总记录数
+                }
+
             });
+
         }
 
         /**
@@ -68,5 +99,6 @@
         vm.resetQuery = function(){
             vm.model = {};
         }
+
     }
 })();
