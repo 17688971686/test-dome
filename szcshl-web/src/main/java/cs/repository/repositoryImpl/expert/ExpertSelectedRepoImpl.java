@@ -1244,7 +1244,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
     @Override
     public List<ProReviewConditionDto> proReviewConditionDetail(ProReviewConditionDto projectReviewConditionDto) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append("select s.signid, s.reviewstage, s.projectname ,s.isadvanced   from cs_sign s   ");
+        sqlBuilder.append("select s.signid, s.reviewstage, s.projectname ,s.isadvanced ,d.remark   from cs_sign s   ");
         sqlBuilder.append("left join cs_dispatch_doc d  ");
         sqlBuilder.append("on s.signid = d.signid  ");
         sqlBuilder.append("where 1 = 1 ");
@@ -1295,14 +1295,19 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                 }
 
                 if (null != projectReviewCon[2]) {
-                    proReviewConditionDto.setProjectName((String) projectReviewCon[2]);
+                    if(null != projectReviewCon[4]){
+                        proReviewConditionDto.setProjectName(((String) projectReviewCon[2]) + "(" + ((String) projectReviewCon[4]) + ")");
+                    }else{
+                        proReviewConditionDto.setProjectName((String) projectReviewCon[2]);
+                    }
+
                 }else{
                     proReviewConditionDto.setProjectName(null);
                 }
                 if (null != projectReviewCon[3]) {
-                    proReviewConditionDto.setIsadvanced((String) projectReviewCon[3]);
+                   proReviewConditionDto.setIsadvanced((String) projectReviewCon[3]);
                     if(proReviewConditionDto.getIsadvanced().equals("9")){
-                        proReviewConditionDto.setReviewStage(proReviewConditionDto.getReviewStage()+"（提前介入）");
+                        proReviewConditionDto.setReviewStage("提前介入");
                     }
                 }else{
                     proReviewConditionDto.setIsadvanced(null);
@@ -1324,7 +1329,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
     public List<ProReviewConditionDto> getBackDispatchInfo(ProReviewConditionDto projectReviewConditionDto) {
         Map<String, Object> resultMap = new HashMap<>();
         HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append("select s.signid, s.reviewstage, s.projectname ,s.isadvanced   from cs_sign s   ");
+        sqlBuilder.append("select s.signid, s.reviewstage, s.projectname ,s.isadvanced ,d.remark  from cs_sign s   ");
         sqlBuilder.append("left join cs_dispatch_doc d  ");
         sqlBuilder.append("on s.signid = d.signid  ");
         sqlBuilder.append("where 1 = 1 ");
@@ -1375,14 +1380,18 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                 }
 
                 if (null != projectReviewCon[2]) {
-                    proReviewConditionDto.setProjectName((String) projectReviewCon[2]);
+                    if(null != projectReviewCon[4]){
+                        proReviewConditionDto.setProjectName(((String) projectReviewCon[2]) + "(" + ((String) projectReviewCon[4]) + ")");
+                    }else{
+                        proReviewConditionDto.setProjectName((String) projectReviewCon[2]);
+                    }
                 }else{
                     proReviewConditionDto.setProjectName(null);
                 }
                 if (null != projectReviewCon[3]) {
                     proReviewConditionDto.setIsadvanced((String) projectReviewCon[3]);
                     if(proReviewConditionDto.getIsadvanced().equals("9")){
-                        proReviewConditionDto.setReviewStage(proReviewConditionDto.getReviewStage()+"（提前介入）");
+                        proReviewConditionDto.setReviewStage("提前介入");
                     }
                 }else{
                     proReviewConditionDto.setIsadvanced(null);

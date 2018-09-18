@@ -411,7 +411,9 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
                 List<ProReviewConditionDto> proReviewConditionDetailList = new ArrayList<ProReviewConditionDto>();
                 String key = "";
                 for (int j = 0; j < proReviewCondDetailList.size(); j++) {
-                    if (StringUtil.isNotEmpty(proReviewConditionDtoList.get(i).getReviewStage()) && StringUtil.isNotEmpty(proReviewCondDetailList.get(j).getReviewStage()) && proReviewConditionDtoList.get(i).getReviewStage().equals(proReviewCondDetailList.get(j).getReviewStage())) {
+                    if (StringUtil.isNotEmpty(proReviewConditionDtoList.get(i).getReviewStage()) &&
+                            StringUtil.isNotEmpty(proReviewCondDetailList.get(j).getReviewStage()) &&
+                            proReviewConditionDtoList.get(i).getReviewStage().equals(proReviewCondDetailList.get(j).getReviewStage())) {
                         proReviewConditionDetailList.add(proReviewCondDetailList.get(j));
                         key = NumUtils.NumberToChn(i + 1) + "、" + proReviewConditionDtoList.get(i).getReviewStage();
                     }

@@ -759,7 +759,10 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
     public ResultMsg proReviewConditionCount(ProReviewConditionDto projectReviewConditionDto) {
         Map<String, Object> resultMap = new HashMap<>();
         HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append("select s.reviewstage, count(s.projectcode),sum(d.declarevalue)/10000 declarevalue,sum(d.authorizevalue)/10000 authorizevalue,(sum(d.declarevalue) -sum(d.authorizevalue))/10000 ljhj, decode(sum(d.declarevalue),0,0,  round((sum(d.declarevalue) - sum(d.authorizevalue)) / 10000 / (sum(d.declarevalue) / 1000), 5) * 1000) hjl,s.isadvanced   from cs_sign s   ");
+        HqlBuilder sqlBuilder1 = HqlBuilder.create();
+        sqlBuilder.append(" select  case s.isadvanced when '9' then  '提前介入' else s.reviewstage end reviewstage, " +
+                " count(s.projectcode) projectcode,sum(d.declarevalue) declarevalue,sum(d.authorizevalue) authorizevalue," +
+                " s.isadvanced   from cs_sign s   ");
         sqlBuilder.append("left join cs_dispatch_doc d  ");
         sqlBuilder.append("on s.signid = d.signid  ");
         sqlBuilder.append("where 1 = 1 ");
@@ -796,8 +799,14 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
                 sqlBuilder.append("and D.DISPATCHDATE <= to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
             }
         }
-        sqlBuilder.append("group by s.reviewstage,s.isadvanced");
-        List<Object[]> projectReviewConList = expertCostCountRepo.getObjectArray(sqlBuilder);
+        sqlBuilder.append(" group by s.reviewstage,s.isadvanced");
+        sqlBuilder1.append(" select t. reviewstage,sum(t.projectcode),sum(t.declarevalue) / 10000 declarevalue, " +
+                " sum(t.authorizevalue) / 10000 authorizevalue,  (sum(t.declarevalue) - sum(t.authorizevalue)) / 10000 ljhj," +
+                " decode(sum(t.declarevalue), 0, 0,round((sum(t.declarevalue) - sum(t.authorizevalue)) / 10000 / " +
+                " (sum(t.declarevalue) / 1000),  5) * 1000) hjl, t.isadvanced   from  ( ")
+        .append(sqlBuilder.getHqlString())
+        .append(" )t   group by t.reviewstage,t.isadvanced ");
+        List<Object[]> projectReviewConList = expertCostCountRepo.getObjectArray(sqlBuilder1);
         List<ProReviewConditionDto> projectReviewConDtoList = new ArrayList<ProReviewConditionDto>();
 
         if (projectReviewConList.size() > 0) {
@@ -843,9 +852,9 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
                 }
                 if (null != projectReviewCon[6]) {
                     proReviewConditionDto.setIsadvanced((String) projectReviewCon[6]);
-                    if (proReviewConditionDto.getIsadvanced().equals("9")) {
+               /*     if (proReviewConditionDto.getIsadvanced().equals("9")) {
                         proReviewConditionDto.setReviewStage(proReviewConditionDto.getReviewStage() + "（提前介入）");
-                    }
+                    }*/
                 } else {
                     proReviewConditionDto.setIsadvanced(null);
                 }

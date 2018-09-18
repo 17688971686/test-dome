@@ -302,10 +302,7 @@
                         </w:r>
                         <w:r w:rsidR="00C421B9">
                             <w:t>
-                                <#list backDispatchList as backDispatch>
-                                ${backDispatch.projectName!}，
-                                </#list>
-                                建议均作退文处理，涉及金额${backTotal!}亿元，未列入申报投资总额和核减额。除去退文项目，其它${excludeBackPro!}个项目
+                                <#list backDispatchList as backDispatch>${backDispatch.projectName!}，</#list>建议均作退文处理，涉及金额${backTotal!}亿元，未列入申报投资总额和核减额。除去退文项目，其它${excludeBackPro!}个项目
                             </w:t>
                         </w:r>
                         <w:r w:rsidR="00C421B9" w:rsidRPr="00A018BB">
@@ -2498,7 +2495,7 @@
                                 <w:sz w:val="32"/>
                                 <w:szCs w:val="32"/>
                             </w:rPr>
-                            <w:t>${theMonths!}</w:t>
+                            <w:t>${curMonth!}</w:t>
                         </w:r>
                         <w:r w:rsidRPr="006B28C4">
                             <w:rPr>
@@ -3404,7 +3401,7 @@
                                     <w:pPr>
                                         <w:widowControl/>
                                         <w:spacing w:line="560" w:lineRule="exact"/>
-                                        <w:jc w:val="left"/>
+                                        <w:jc w:val="center"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
                                             <w:sz w:val="32"/>
@@ -3440,7 +3437,7 @@
                                     <w:pPr>
                                         <w:widowControl/>
                                         <w:spacing w:line="560" w:lineRule="exact"/>
-                                        <w:jc w:val="left"/>
+                                        <w:jc w:val="center"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
                                             <w:sz w:val="32"/>
@@ -3474,7 +3471,7 @@
                                     <w:pPr>
                                         <w:widowControl/>
                                         <w:spacing w:line="560" w:lineRule="exact"/>
-                                        <w:jc w:val="left"/>
+                                        <w:jc w:val="center"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
                                             <w:sz w:val="32"/>
@@ -3508,7 +3505,7 @@
                                     <w:pPr>
                                         <w:widowControl/>
                                         <w:spacing w:line="560" w:lineRule="exact"/>
-                                        <w:jc w:val="left"/>
+                                        <w:jc w:val="center"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
                                             <w:sz w:val="32"/>
@@ -3543,7 +3540,7 @@
                                     <w:pPr>
                                         <w:widowControl/>
                                         <w:spacing w:line="560" w:lineRule="exact"/>
-                                        <w:jc w:val="left"/>
+                                        <w:jc w:val="center"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
                                             <w:sz w:val="32"/>
@@ -3578,7 +3575,7 @@
                                     <w:pPr>
                                         <w:widowControl/>
                                         <w:spacing w:line="560" w:lineRule="exact"/>
-                                        <w:jc w:val="left"/>
+                                        <w:jc w:val="center"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
                                             <w:sz w:val="32"/>

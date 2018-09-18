@@ -108,8 +108,11 @@
                     </span>
                 </td>
                 <td class="text-center">
-                    <span style='width: 100%;display: inline-block;' ng-class="{'label-info':(s.processState && s.processState == 6), 'label-primary': (s.processState && s.processState ==7 ), 'label-success': (s.processState && s.processState ==8 ), 'label-default': (s.processState && s.processState ==9 )}">
-                    {{$index + 1}}
+                    <span ng-show="vm.price.skip==0" style='width: 100%;display: inline-block;' ng-class="{'label-info':(s.processState && s.processState == 6), 'label-primary': (s.processState && s.processState ==7 ), 'label-success': (s.processState && s.processState ==8 ), 'label-default': (s.processState && s.processState ==9 )}">
+                   {{ $index + 1 }}
+                    </span>
+                    <span ng-show="vm.price.skip > 0" style='width: 100%;display: inline-block;' ng-class="{'label-info':(s.processState && s.processState == 6), 'label-primary': (s.processState && s.processState ==7 ), 'label-success': (s.processState && s.processState ==8 ), 'label-default': (s.processState && s.processState ==9 )}">
+                              {{ $index + vm.price.skip }}
                     </span>
                 </td>
                 <td class="text-center"><a href="" ng-click="vm.showCostWindow(s,'reviewCostWindow')">{{s.projectname}}</a></td>
