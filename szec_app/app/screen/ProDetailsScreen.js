@@ -301,6 +301,7 @@ export default class ProDetailsScreen extends Component {
             }
         })
             .then(res => {
+                console.log(res);
                 this.setState({
                     projectData: res.data,
                 })

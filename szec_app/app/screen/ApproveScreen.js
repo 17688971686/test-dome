@@ -10,7 +10,8 @@ import {
     TextInput,
     Alert,
     DeviceEventEmitter,
-    Image
+    Image,
+    Picker
 } from "react-native";
 import axios from 'axios';
 import Header from '../component/HeaderComponent';
@@ -124,6 +125,7 @@ export default class ApproveScreen extends Component {
             subOrgSelected: arr
         });
     };
+
     renderMainOrgs() {
         let orgView = [], orgs = this.state.mainOrgs;
         for (let i = 0; i < orgs.length; i++) {
@@ -142,6 +144,7 @@ export default class ApproveScreen extends Component {
         }
         return orgView;
     }
+
     renderSubOrgs() {
         let subOrgView = [], orgs = this.state.subOrgs;
         for (let i = 0; i < orgs.length; i++) {
@@ -173,7 +176,7 @@ export default class ApproveScreen extends Component {
             }
             data.businessMap.M_USER_ID = this.state.mainOrgSelected[0].id;
             data.businessMap.A_USER_ID = arrId.join();
-        } else if(this.state.curNodeId === 'SIGN_FGLD_FB') {
+        } else if (this.state.curNodeId === 'SIGN_FGLD_FB') {
             arrName = [this.state.mainOrgSelected[0].name];
             for (let item of this.state.subOrgSelected) {
                 arrName.push(item.name);
@@ -181,12 +184,12 @@ export default class ApproveScreen extends Component {
             }
             data.businessMap.MAIN_ORG = this.state.mainOrgSelected[0].id;
             data.businessMap.ASSIST_ORG = arrId.join();
-        }else{
+        } else {
             for (let item of this.state.subOrgSelected) {
                 arrName.push(item.displayName);
                 arrId.push(item.id)
             }
-            data.businessMap.PRINCIPAL=arrId;
+            data.businessMap.PRINCIPAL = arrId;
         }
         data.dealOption = '请(' + arrName.join() + ')组织评审!';
         this.setState({
@@ -195,14 +198,14 @@ export default class ApproveScreen extends Component {
     }
 
     commitNextStep() {
-       /* if (this.state.mainOrgSelected.length === 0) {
-            alert('请选择主办部门');
-            return;
-        }
-        if (this.state.subOrgSelected.length > 3) {
-            alert('协办部门最多只能选3个');
-            return;
-        }*/
+        /* if (this.state.mainOrgSelected.length === 0) {
+             alert('请选择主办部门');
+             return;
+         }
+         if (this.state.subOrgSelected.length > 3) {
+             alert('协办部门最多只能选3个');
+             return;
+         }*/
         axios({
             url: "flowApp/commit",
             method: "post",
@@ -238,6 +241,51 @@ export default class ApproveScreen extends Component {
             })
     }
 
+    _extraUniqueKey(item, index) {
+        return "index" + index + item;
+    }
+
+    _renderItem(item) {
+        return (
+            <View style={{
+                flexDirection: 'row',
+                height: 40,
+                marginLeft: 10,
+                marginRight: 10,
+                borderBottomColor: '#eee',
+                borderBottomWidth: 1
+            }}>
+                <View style={{
+                    flex: 1,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderLeftWidth: 1,
+                    borderRightWidth: 1,
+                    borderColor: '#eee'
+                }}>
+                    <Text>{item.displayName}</Text>
+                </View>
+                <View style={{
+                    flex: 1,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRightWidth: 1,
+                    borderColor: '#eee'
+                }}>
+                    <Picker
+                        androidmode={'dropdown'}
+                        style={{height: 50, width: '70%'}}
+                        selectedValue={this.state.stage}
+                        onValueChange={(itemValue, itemIndex) => this.setState({stage: itemValue})}>
+                        <Picker.Item label="所有" value="1"/>
+                        <Picker.Item label="土建" value="2"/>
+                        <Picker.Item label="安装" value="3"/>
+                    </Picker>
+                </View>
+            </View>
+        )
+    }
+
     render() {
         let popupDialog = <PopupDialog
             width={0.95}
@@ -251,8 +299,8 @@ export default class ApproveScreen extends Component {
             <ScrollView>
                 <View style={{alignItems: 'center'}}>
                     {
-                        this.state.curNodeId==='SIGN_BMFB2' ||
-                        <View style={{width:'100%'}}>
+                        this.state.curNodeId === 'SIGN_BMFB2' ||
+                        <View style={{width: '100%'}}>
                             <View style={styles.orgView}>
                                 <Text style={{color: '#000', fontSize: 16}}>
                                     {this.state.curNodeId === 'SIGN_FGLD_FB' ? '主办部门' : '第一负责人'}
@@ -265,7 +313,7 @@ export default class ApproveScreen extends Component {
                     }
                     <View style={styles.orgView}>
                         <Text style={{color: '#000', fontSize: 16}}>
-                            {this.state.curNodeId === 'SIGN_FGLD_FB' ? '协办部门':'其他负责人'}
+                            {this.state.curNodeId === 'SIGN_FGLD_FB' ? '协办部门' : '其他负责人'}
                         </Text>
                     </View>
                     <View style={{flexDirection: 'row', flexWrap: 'wrap',}}>
@@ -285,8 +333,8 @@ export default class ApproveScreen extends Component {
         return (
             <View style={styles.container}>
                 {popupDialog}
-                <Header title={this.state.curNode} showBackTitle={true} {...this.props}/>
                 <View style={styles.body}>
+                    <Header title={this.state.curNode} showBackTitle={true} {...this.props}/>
                     <View>
                         <TextInput
                             style={styles.textInputStyle}
@@ -304,21 +352,64 @@ export default class ApproveScreen extends Component {
                         <Icon name='md-add' size={20} style={[styles.iconStyle, {color: 'green', marginRight: 5}]}/>
                         <Text style={{color: 'green'}}>{this.state.choice}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => this.commitNextStep()} style={styles.commitBtn}>
-                        <Text style={{color: '#fff'}}>提交</Text>
-                    </TouchableOpacity>
+                    <View style={{flexDirection: 'row', marginLeft: 10, marginRight: 10, height: 35}}>
+                        <Text style={{
+                            flex: 1,
+                            backgroundColor: '#eee',
+                            borderColor: '#ddd',
+                            borderWidth: 1,
+                            borderRightWidth: 0,
+                            textAlign: 'center',
+                            textAlignVertical: 'center'
+                        }}>项目负责人</Text>
+                        <Text style={{
+                            flex: 1,
+                            backgroundColor: '#eee',
+                            borderColor: '#ddd',
+                            borderWidth: 1,
+                            textAlign: 'center',
+                            textAlignVertical: 'center'
+                        }}>负责分工</Text>
+                    </View>
+                    <FlatList
+                        style={{width: '100%'}}
+                        keyExtractor={this._extraUniqueKey}
+                        data={this.state.mainOrgSelected.concat(this.state.subOrgSelected)}
+                        renderItem={({item}) => this._renderItem(item)}
+                    />
                 </View>
+
             </View>
-        )
+            < View >
+            < TouchableOpacity
+        onPress = {()
+    =>
+        this.commitNextStep()
+    }
+        style = {styles.commitBtn
+    }>
+    <
+        Text
+        style = {
+        {
+            color: '#fff', fontSize
+        :
+            16
+        }
+    }>
+        提交 < /Text>
+    </TouchableOpacity>
+    <
+        /View>
+    </View>
+    )
     }
 }
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-    },
-    body: {
-        padding: 10,
+        justifyContent: 'space-between'
     },
     textInputStyle: {
         borderWidth: 1,
@@ -326,7 +417,8 @@ const styles = StyleSheet.create({
         borderColor: '#ccc',
         height: 100,
         textAlignVertical: 'top',
-        borderRadius: 5
+        borderRadius: 5,
+        margin: 10
     },
     textCon: {
         flex: 1,
@@ -378,17 +470,14 @@ const styles = StyleSheet.create({
     },
     commitBtn: {
         width: '100%',
-        marginTop: 30,
         justifyContent: 'center',
         alignItems: 'center',
-        alignSelf: 'center',
-        height: 40,
-        borderRadius: 5,
+        height: 50,
         backgroundColor: '#1E5AAF'
     },
     addOrgs: {
         width: '100%',
-        height: 50,
+        height: 40,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center'

@@ -129,7 +129,7 @@ export default class App extends React.Component {
 
     initAxios = () => {
         // axios 全局配置
-        axios.defaults.baseURL = 'http://192.168.1.20:8080/szcshl-web/api';
+        axios.defaults.baseURL = 'http://oldking.imwork.net:9877/szcshl-web/api';
         axios.defaults.headers.common['clientId'] = DeviceInfo.getUniqueID();
     }
 
