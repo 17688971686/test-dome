@@ -24,19 +24,6 @@ import ApproveScreen from "./screen/ApproveScreen";
 /*Tab导航器*/
 const TabNavigator = createBottomTabNavigator(
     {
-        leadpro: {
-            screen: LeadProScreen,
-            navigationOptions: {
-                title: '项目审批',
-                tabBarIcon: ({tintColor, focused}) => (
-                    <Icon
-                        name={focused ? 'ios-ribbon' : 'ios-ribbon-outline'}
-                        size={26}
-                        style={{color: tintColor}}
-                    />
-                ),
-            }
-        },
         Home: {
             screen: HomeScreen,
             navigationOptions: {
@@ -49,6 +36,19 @@ const TabNavigator = createBottomTabNavigator(
                     />
                 ),
 
+            }
+        },
+        leadpro: {
+            screen: LeadProScreen,
+            navigationOptions: {
+                title: '项目审批',
+                tabBarIcon: ({tintColor, focused}) => (
+                    <Icon
+                        name={focused ? 'ios-ribbon' : 'ios-ribbon-outline'}
+                        size={26}
+                        style={{color: tintColor}}
+                    />
+                ),
             }
         },
         Project: {
