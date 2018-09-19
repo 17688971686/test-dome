@@ -317,7 +317,8 @@ export default class ProDetailsScreen extends Component {
                 taskId:this.state.taskId,
                 processInstanceId:this.state.processInstanceId,
                 userName:this.state.userName,
-                isassistflow:this.state.projectData.isassistflow
+                isassistflow:this.state.projectData.isassistflow,
+                DIS_ID:this.state.projectData.dispatchDocDto.id || ''
             })}>
                 <Icon name={'ios-create-outline'} size={20} color={'#fff'}/>
                 <Text style={styles.filterText}>审批</Text>

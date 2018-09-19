@@ -25,7 +25,7 @@ const slideAnimation = new SlideAnimation({
 export default class ApproveScreen extends Component {
     constructor(props) {
         super(props);
-        const {isassistflow, taskId, processInstanceId, userName} = this.props.navigation.state.params;
+        const {isassistflow, taskId, processInstanceId, userName,DIS_ID} = this.props.navigation.state.params;
         this.state = {
             curNode: '',
             curNodeInfo: '',
@@ -38,7 +38,9 @@ export default class ApproveScreen extends Component {
             mainOrgSelected: [],
             subOrgSelected: [],
             dealOption: '',
-            choice: ''
+            choice: '',
+            curNodeId: '',
+            DIS_ID:DIS_ID
         }
     }
 
@@ -100,6 +102,10 @@ export default class ApproveScreen extends Component {
         orgs.forEach((item, index) => {
             if (i === index) {
                 arr = [];
+                item.userType = '所有';
+                item.userName = item.displayName;
+                item.isMainUser = 9;
+                item.userId = item.id;
                 item.mainChecked = !item.mainChecked;
                 item.mainChecked ? arr.push(item) : arr.splice(arr.indexOf(item), 1);
             } else {
@@ -116,6 +122,10 @@ export default class ApproveScreen extends Component {
         let arr = this.state.subOrgSelected;
         orgs.forEach((item, index) => {
             if (i === index) {
+                item.userType = '所有';
+                item.isMainUser = 0;
+                item.userId = item.id;
+                item.userName = item.displayName;
                 item.subChecked = !item.subChecked;
                 item.subChecked ? arr.push(item) : arr.splice(arr.indexOf(item), 1);
             }
@@ -168,28 +178,42 @@ export default class ApproveScreen extends Component {
         let data = this.state.curNodeInfo,
             arrName = [],
             arrId = [];
-        if (this.state.curNodeId === 'SIGN_BMFB1') {
-            arrName = [this.state.mainOrgSelected[0].displayName];
+        //如果是项目概算的部门部门分办流程
+        if (this.state.isassistflow === '9' && (this.state.curNodeId === 'SIGN_BMFB1' || this.state.curNodeId === 'SIGN_BMFB2')) {
+            if (this.state.curNodeId === 'SIGN_BMFB1') {
+                arrName = [this.state.mainOrgSelected[0].displayName];
+                arrId.push(this.state.mainOrgSelected[0]);
+            }
             for (let item of this.state.subOrgSelected) {
                 arrName.push(item.displayName);
-                arrId.push(item.id)
-            }
-            data.businessMap.M_USER_ID = this.state.mainOrgSelected[0].id;
-            data.businessMap.A_USER_ID = arrId.join();
-        } else if (this.state.curNodeId === 'SIGN_FGLD_FB') {
-            arrName = [this.state.mainOrgSelected[0].name];
-            for (let item of this.state.subOrgSelected) {
-                arrName.push(item.name);
-                arrId.push(item.id)
-            }
-            data.businessMap.MAIN_ORG = this.state.mainOrgSelected[0].id;
-            data.businessMap.ASSIST_ORG = arrId.join();
-        } else {
-            for (let item of this.state.subOrgSelected) {
-                arrName.push(item.displayName);
-                arrId.push(item.id)
+                arrId.push(item)
             }
             data.businessMap.PRINCIPAL = arrId;
+        } else {
+            if (this.state.curNodeId === 'SIGN_BMFB1') {
+                arrName = [this.state.mainOrgSelected[0].displayName];
+                for (let item of this.state.subOrgSelected) {
+                    arrName.push(item.displayName);
+                    arrId.push(item.id)
+                }
+                data.businessMap.M_USER_ID = this.state.mainOrgSelected[0].id;
+                data.businessMap.A_USER_ID = arrId.join();
+
+            } else if (this.state.curNodeId === 'SIGN_FGLD_FB') {
+                arrName = [this.state.mainOrgSelected[0].name];
+                for (let item of this.state.subOrgSelected) {
+                    arrName.push(item.name);
+                    arrId.push(item.id)
+                }
+                data.businessMap.MAIN_ORG = this.state.mainOrgSelected[0].id;
+                data.businessMap.ASSIST_ORG = arrId.join();
+            } else {
+                for (let item of this.state.subOrgSelected) {
+                    arrName.push(item.displayName);
+                    arrId.push(item.id)
+                }
+                data.businessMap.A_USER_ID = arrId.join();
+            }
         }
         data.dealOption = '请(' + arrName.join() + ')组织评审!';
         this.setState({
@@ -198,93 +222,137 @@ export default class ApproveScreen extends Component {
     }
 
     commitNextStep() {
-        /* if (this.state.mainOrgSelected.length === 0) {
-             alert('请选择主办部门');
-             return;
-         }
-         if (this.state.subOrgSelected.length > 3) {
-             alert('协办部门最多只能选3个');
-             return;
-         }*/
-        axios({
-            url: "flowApp/commit",
-            method: "post",
-            params: {
-                flowObj: this.state.curNodeInfo,
-                username: this.state.userName
-            },
-        })
-            .then((res) => {
-                console.log(res);
-                if (res.status === 200 && res.data.reCode === 'ok') {
-                    Alert.alert(
-                        '操作成功',
-                        '下一环节:' + this.state.curNodeInfo.nextNode[0].activitiName,
-                        [
-                            {text: '确定', onPress: () => this.back()},
-                        ],
-                        {cancelable: false}
-                    )
-                } else {
-                    Alert.alert(
-                        '操作异常',
-                        res.data.reMsg,
-                        [
-                            {text: '确定', onPress: () => this.back()},
-                        ],
-                        {cancelable: false}
-                    )
-                }
+        let data = this.state.curNodeInfo;
+        data.businessMap.DIS_ID = this.state.DIS_ID;
+        this.setState({
+            curNodeInfo:data
+        },()=>{
+            axios({
+                url: "flowApp/commit",
+                method: "post",
+                params: {
+                    flowObj: this.state.curNodeInfo,
+                    username: this.state.userName
+                },
             })
-            .catch(error => {
-                console.log(error)
-            })
+                .then((res) => {
+                    console.log(res);
+                    if (res.status === 200 && res.data.reCode === 'ok') {
+                        Alert.alert(
+                            res.data.reMsg,
+                            '下一环节:' + this.state.curNodeInfo.nextNode[0].activitiName,
+                            [
+                                {text: '确定', onPress: () => this.back()},
+                            ],
+                            {cancelable: false}
+                        )
+                    } else {
+                        Alert.alert(
+                            '操作异常',
+                            res.data.reMsg,
+                            [
+                                {text: '确定', onPress: () => this.popupDialog.dismiss()},
+                            ],
+                            {cancelable: false}
+                        )
+                    }
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+        });
+
     }
 
-    _extraUniqueKey(item, index) {
-        return "index" + index + item;
+    isassistflow() {
+        if (this.state.isassistflow === '9' && (this.state.curNodeId === 'SIGN_BMFB1' || this.state.curNodeId === 'SIGN_BMFB2')) {
+            return (
+                <View>
+                    {
+                        (this.state.mainOrgSelected.length > 0 || this.state.subOrgSelected.length > 0) &&
+                        <View style={{flexDirection: 'row', marginLeft: 10, marginRight: 10, height: 35}}>
+                            <Text style={styles.tableHeaderLeft}>项目负责人</Text>
+                            <Text style={styles.tableHeaderRight}>负责分工</Text>
+                        </View>
+                    }
+                    {this._renderMainItem()}
+                    {this._renderSubItem()}
+                </View>
+            )
+        }
     }
 
-    _renderItem(item) {
-        return (
-            <View style={{
-                flexDirection: 'row',
-                height: 40,
-                marginLeft: 10,
-                marginRight: 10,
-                borderBottomColor: '#eee',
-                borderBottomWidth: 1
-            }}>
-                <View style={{
-                    flex: 1,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    borderLeftWidth: 1,
-                    borderRightWidth: 1,
-                    borderColor: '#eee'
-                }}>
-                    <Text>{item.displayName}</Text>
-                </View>
-                <View style={{
-                    flex: 1,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    borderRightWidth: 1,
-                    borderColor: '#eee'
-                }}>
-                    <Picker
-                        androidmode={'dropdown'}
-                        style={{height: 50, width: '70%'}}
-                        selectedValue={this.state.stage}
-                        onValueChange={(itemValue, itemIndex) => this.setState({stage: itemValue})}>
-                        <Picker.Item label="所有" value="1"/>
-                        <Picker.Item label="土建" value="2"/>
-                        <Picker.Item label="安装" value="3"/>
-                    </Picker>
-                </View>
-            </View>
-        )
+    selectMainUserType(val) {
+        let arr = this.state.mainOrgSelected;
+        arr[0].userType = val;
+        this.setState({
+            mainOrgSelected: arr
+        }, () => console.log(this.state.mainOrgSelected))
     }
+
+    selectSubUserType(val, i) {
+        console.log(val);
+        let arr = this.state.subOrgSelected;
+        arr.forEach((item, index) => {
+            if (i === index) {
+                item.userType = val;
+            }
+        });
+        this.setState({
+            subOrgSelected: arr
+        }, () => console.log(this.state.subOrgSelected))
+    }
+
+    _renderMainItem() {
+        if (this.state.mainOrgSelected.length > 0) {
+            return (
+                <View style={styles.listView}>
+                    <View style={[styles.listVietLeft, {borderRightWidth: 0}]}>
+                        <Text>{this.state.mainOrgSelected[0].displayName}</Text>
+                    </View>
+                    <View style={styles.listVietLeft}>
+                        <Picker
+                            androidmode={'dropdown'}
+                            style={{height: 50, width: '70%'}}
+                            selectedValue={this.state.mainOrgSelected[0].userType}
+                            onValueChange={(itemValue, itemIndex) => this.selectMainUserType(itemValue)}>
+                            <Picker.Item label="所有" value="所有"/>
+                            <Picker.Item label="土建" value="土建"/>
+                            <Picker.Item label="安装" value="安装"/>
+                        </Picker>
+                    </View>
+                </View>
+            )
+        }
+    }
+
+    _renderSubItem() {
+        let subItemArr = [];
+        if (this.state.subOrgSelected.length > 0) {
+            for (let i = 0; i < this.state.subOrgSelected.length; i++) {
+                subItemArr.push(
+                    <View key={i} style={styles.listView}>
+                        <View style={[styles.listVietLeft, {borderRightWidth: 0}]}>
+                            <Text>{this.state.subOrgSelected[i].displayName}</Text>
+                        </View>
+                        <View style={styles.listVietLeft}>
+                            <Picker
+                                androidmode={'dropdown'}
+                                style={{height: 50, width: '70%'}}
+                                selectedValue={this.state.subOrgSelected[i].userType}
+                                onValueChange={(itemValue, itemIndex) => this.selectSubUserType(itemValue, i)}>
+                                <Picker.Item label="所有" value="所有"/>
+                                <Picker.Item label="土建" value="土建"/>
+                                <Picker.Item label="安装" value="安装"/>
+                            </Picker>
+                        </View>
+                    </View>
+                )
+            }
+        }
+        return subItemArr
+    }
+
 
     render() {
         let popupDialog = <PopupDialog
@@ -352,57 +420,15 @@ export default class ApproveScreen extends Component {
                         <Icon name='md-add' size={20} style={[styles.iconStyle, {color: 'green', marginRight: 5}]}/>
                         <Text style={{color: 'green'}}>{this.state.choice}</Text>
                     </TouchableOpacity>
-                    <View style={{flexDirection: 'row', marginLeft: 10, marginRight: 10, height: 35}}>
-                        <Text style={{
-                            flex: 1,
-                            backgroundColor: '#eee',
-                            borderColor: '#ddd',
-                            borderWidth: 1,
-                            borderRightWidth: 0,
-                            textAlign: 'center',
-                            textAlignVertical: 'center'
-                        }}>项目负责人</Text>
-                        <Text style={{
-                            flex: 1,
-                            backgroundColor: '#eee',
-                            borderColor: '#ddd',
-                            borderWidth: 1,
-                            textAlign: 'center',
-                            textAlignVertical: 'center'
-                        }}>负责分工</Text>
-                    </View>
-                    <FlatList
-                        style={{width: '100%'}}
-                        keyExtractor={this._extraUniqueKey}
-                        data={this.state.mainOrgSelected.concat(this.state.subOrgSelected)}
-                        renderItem={({item}) => this._renderItem(item)}
-                    />
+                    {this.isassistflow()}
                 </View>
-
+                <View>
+                    <TouchableOpacity onPress={() => this.commitNextStep()} style={styles.commitBtn}>
+                        <Text style={{color: '#fff', fontSize: 16}}>提交</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
-            < View >
-            < TouchableOpacity
-        onPress = {()
-    =>
-        this.commitNextStep()
-    }
-        style = {styles.commitBtn
-    }>
-    <
-        Text
-        style = {
-        {
-            color: '#fff', fontSize
-        :
-            16
-        }
-    }>
-        提交 < /Text>
-    </TouchableOpacity>
-    <
-        /View>
-    </View>
-    )
+        )
     }
 }
 const styles = StyleSheet.create({
@@ -481,5 +507,38 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    tableHeaderLeft: {
+        flex: 1,
+        backgroundColor: '#eee',
+        borderColor: '#ddd',
+        borderWidth: 1,
+        borderRightWidth: 0,
+        textAlign: 'center',
+        textAlignVertical: 'center'
+    },
+    tableHeaderRight: {
+        flex: 1,
+        backgroundColor: '#eee',
+        borderColor: '#ddd',
+        borderWidth: 1,
+        textAlign: 'center',
+        textAlignVertical: 'center'
+    },
+    listView: {
+        flexDirection: 'row',
+        height: 40,
+        marginLeft: 10,
+        marginRight: 10,
+        borderBottomColor: '#eee',
+        borderBottomWidth: 1
+    },
+    listVietLeft: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderLeftWidth: 1,
+        borderRightWidth: 1,
+        borderColor: '#eee'
     }
 });
