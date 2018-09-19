@@ -10,11 +10,11 @@ import {
     TextInput,
     Alert,
     DeviceEventEmitter,
-    Image
+    Image,
+    Picker
 } from "react-native";
 import axios from 'axios';
 import Header from '../component/HeaderComponent';
-import CheckBox from 'react-native-check-box';
 import Icon from 'react-native-vector-icons/Ionicons';
 import PopupDialog, {SlideAnimation, DialogTitle, DialogButton} from 'react-native-popup-dialog';
 
@@ -34,44 +34,25 @@ export default class ApproveScreen extends Component {
             processInstanceId: processInstanceId,
             userName: userName,
             mainOrgs: [],
-            subOrgs:[],
-            mainOrgSelected:[],
-            subOrgSelected:[],
-            dealOption: ''
+            subOrgs: [],
+            mainOrgSelected: [],
+            subOrgSelected: [],
+            dealOption: '',
+            choice: ''
         }
     }
 
-    commitData() {
-        if(this.state.mainOrgSelected.length===0){
-            alert('请选择主办部门');
-            return;
-        }
-        if(this.state.subOrgSelected.length>3){
-            alert('协办部门最多只能选3个');
-            return;
-        }
-        axios({
-            url: "flowApp/commit",
-            method: "post",
-            params: {
-                flowObj: this.state.curNodeInfo,
-                username: this.state.userName
-            },
-        })
-            .then((res) => {
-                console.log(res);
-                this.setState({})
-            })
-            .catch(error => {
-                console.log(error)
-            })
+    back() {
+        DeviceEventEmitter.emit('Refresh', 'Refresh');
+        this.props.navigation.navigate('leadpro');
     }
 
     componentDidMount() {
+        //查询节点信息
         axios({
             url: "/flowApp/flowNodeInfo",
-            method:"post",
-            params:{
+            method: "post",
+            params: {
                 taskId: this.state.taskId,
                 processInstanceId: this.state.processInstanceId,
                 username: this.state.userName
@@ -79,15 +60,27 @@ export default class ApproveScreen extends Component {
         })
             .then(res => {
                 console.log(res);
-                res.data.businessMap.orgs.forEach((item, index) => {
+                let curNodeInfo = res.data,
+                    curNodeId = curNodeInfo.curNode.activitiId,
+                    orgs = [],
+                    choice = '请选择项目负责人';
+                if (curNodeId === 'SIGN_FGLD_FB') {
+                    choice = '请选择办理部门';
+                    orgs = curNodeInfo.businessMap.orgs;
+                } else if (curNodeId === 'SIGN_BMFB1' || curNodeId === 'SIGN_BMFB2') {
+                    orgs = curNodeInfo.businessMap.users;
+                }
+                orgs.forEach((item) => {
                     item.mainChecked = false;
-                    item.subChecked= false;
+                    item.subChecked = false;
                 });
                 this.setState({
-                    curNodeInfo: res.data,
+                    curNodeInfo: curNodeInfo,
                     curNode: res.data.curNode.activitiName,
-                    mainOrgs: res.data.businessMap.orgs,
-                    subOrgs:res.data.businessMap.orgs,
+                    curNodeId: curNodeId,
+                    mainOrgs: orgs,
+                    subOrgs: orgs,
+                    choice: choice
                 })
             })
             .catch(error => {
@@ -99,87 +92,200 @@ export default class ApproveScreen extends Component {
         let data = Object.assign({}, this.state.curNodeInfo, {dealOption: text});
         this.setState({
             curNodeInfo: data
-        },()=>console.log(this.state.curNodeInfo.dealOption));
+        });
     };
-
-    selectMainOrg = (i)=> {
+    selectMainOrg = (i) => {
         let orgs = this.state.mainOrgs;
         let arr = this.state.mainOrgSelected;
         orgs.forEach((item, index) => {
             if (i === index) {
-                arr=[];
+                arr = [];
                 item.mainChecked = !item.mainChecked;
-                item.mainChecked? arr.push(item.id): arr.splice(arr.indexOf(item.id), 1);
-            }else{
+                item.mainChecked ? arr.push(item) : arr.splice(arr.indexOf(item), 1);
+            } else {
                 item.mainChecked = false;
             }
         });
         this.setState({
-            mainOrgSelected:arr,
+            mainOrgSelected: arr,
             mainOrgs: orgs
         });
     };
-    checkSubOrg = (i)=>{
+    selectSubOrg = (i) => {
         let orgs = this.state.subOrgs;
         let arr = this.state.subOrgSelected;
         orgs.forEach((item, index) => {
             if (i === index) {
                 item.subChecked = !item.subChecked;
-                item.subChecked?arr.push(item.id): arr.splice(arr.indexOf(item.id), 1);
+                item.subChecked ? arr.push(item) : arr.splice(arr.indexOf(item), 1);
             }
         });
         this.setState({
-            subOrgs:orgs,
+            subOrgs: orgs,
             subOrgSelected: arr
         });
     };
-    renderMainOrgs(){
+
+    renderMainOrgs() {
         let orgView = [], orgs = this.state.mainOrgs;
         for (let i = 0; i < orgs.length; i++) {
             orgView.push(
-                <View style={{width: '50%', height:40, borderBottomWidth: 0.5, borderBottomColor: '#ddd',}} key={i}>
-                    <CheckBox
-                        style={styles.checkBox}
-                        onClick={() => this.selectMainOrg(i)}
-                        leftText={orgs[i].name}
-                        isChecked={orgs[i].mainChecked}
-                        checkedImage={<Icon name='ios-checkbox' size={25} style={styles.iconStyle}/>}
-                        unCheckedImage={<Icon name='ios-checkbox-outline' size={25} style={styles.iconStyle}/>}
-                    />
-                </View>
+                <TouchableOpacity activeOpacity={0.1} style={styles.checkBox} onPress={() => this.selectMainOrg(i)}
+                                  key={i}>
+                    <Text>{orgs[i].name || orgs[i].displayName}</Text>
+                    {
+                        orgs[i].mainChecked ?
+                            <Icon name='ios-checkbox' size={25} style={styles.iconStyle}/>
+                            :
+                            <Icon name='ios-checkbox-outline' size={25} style={styles.iconStyle}/>
+                    }
+                </TouchableOpacity>
             )
         }
         return orgView;
     }
-    renderSubOrgs(){
+
+    renderSubOrgs() {
         let subOrgView = [], orgs = this.state.subOrgs;
         for (let i = 0; i < orgs.length; i++) {
             subOrgView.push(
-                <View style={{width: '50%', height:40, borderBottomWidth: 0.5, borderBottomColor: '#ddd',}} key={i+orgs[i].name}>
-                    <CheckBox
-                        style={styles.checkBox}
-                        onClick={() => this.checkSubOrg(i)}
-                        leftText={orgs[i].name}
-                        isChecked={orgs[i].subChecked}
-                        disabled={orgs[i].mainChecked}
-                        checkedImage={<Icon name='ios-checkbox' size={25} style={styles.iconStyle}/>}
-                        unCheckedImage={<Icon name='ios-checkbox-outline' size={25} style={styles.iconStyle}/>}
-                    />
-                </View>
+                <TouchableOpacity activeOpacity={0.1} style={styles.checkBox} onPress={() => this.selectSubOrg(i)}
+                                  key={i}>
+                    <Text>{orgs[i].name || orgs[i].displayName}</Text>
+                    {
+                        orgs[i].subChecked ?
+                            <Icon name='ios-checkbox' size={25} style={styles.iconStyle}/>
+                            :
+                            <Icon name='ios-checkbox-outline' size={25} style={styles.iconStyle}/>
+                    }
+                </TouchableOpacity>
             )
         }
         return subOrgView;
     }
-    setDealOption(){
-        let dealOption = '请（'+this.state.mainOrgSelected.concat(this.state.subOrgSelected)+'）组织评审!';
-        let data = this.state.curNodeInfo;
-        data.dealOption=dealOption;
-        data.businessMap.MAIN_ORG=this.state.mainOrgSelected.join();
-        data.businessMap.ASSIST_ORG=this.state.subOrgSelected.join();
+
+    setDealOption() {
+        let data = this.state.curNodeInfo,
+            arrName = [],
+            arrId = [];
+        if (this.state.curNodeId === 'SIGN_BMFB1') {
+            arrName = [this.state.mainOrgSelected[0].displayName];
+            for (let item of this.state.subOrgSelected) {
+                arrName.push(item.displayName);
+                arrId.push(item.id)
+            }
+            data.businessMap.M_USER_ID = this.state.mainOrgSelected[0].id;
+            data.businessMap.A_USER_ID = arrId.join();
+        } else if (this.state.curNodeId === 'SIGN_FGLD_FB') {
+            arrName = [this.state.mainOrgSelected[0].name];
+            for (let item of this.state.subOrgSelected) {
+                arrName.push(item.name);
+                arrId.push(item.id)
+            }
+            data.businessMap.MAIN_ORG = this.state.mainOrgSelected[0].id;
+            data.businessMap.ASSIST_ORG = arrId.join();
+        } else {
+            for (let item of this.state.subOrgSelected) {
+                arrName.push(item.displayName);
+                arrId.push(item.id)
+            }
+            data.businessMap.PRINCIPAL = arrId;
+        }
+        data.dealOption = '请(' + arrName.join() + ')组织评审!';
         this.setState({
             curNodeInfo: data
-        },()=>console.log(this.state.curNodeInfo));
+        }, () => this.popupDialog.dismiss());
     }
+
+    commitNextStep() {
+        /* if (this.state.mainOrgSelected.length === 0) {
+             alert('请选择主办部门');
+             return;
+         }
+         if (this.state.subOrgSelected.length > 3) {
+             alert('协办部门最多只能选3个');
+             return;
+         }*/
+        axios({
+            url: "flowApp/commit",
+            method: "post",
+            params: {
+                flowObj: this.state.curNodeInfo,
+                username: this.state.userName
+            },
+        })
+            .then((res) => {
+                console.log(res);
+                if (res.status === 200 && res.data.reCode === 'ok') {
+                    Alert.alert(
+                        '操作成功',
+                        '下一环节:' + this.state.curNodeInfo.nextNode[0].activitiName,
+                        [
+                            {text: '确定', onPress: () => this.back()},
+                        ],
+                        {cancelable: false}
+                    )
+                } else {
+                    Alert.alert(
+                        '操作异常',
+                        res.data.reMsg,
+                        [
+                            {text: '确定', onPress: () => this.back()},
+                        ],
+                        {cancelable: false}
+                    )
+                }
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }
+
+    _extraUniqueKey(item, index) {
+        return "index" + index + item;
+    }
+
+    _renderItem(item) {
+        return (
+            <View style={{
+                flexDirection: 'row',
+                height: 40,
+                marginLeft: 10,
+                marginRight: 10,
+                borderBottomColor: '#eee',
+                borderBottomWidth: 1
+            }}>
+                <View style={{
+                    flex: 1,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderLeftWidth: 1,
+                    borderRightWidth: 1,
+                    borderColor: '#eee'
+                }}>
+                    <Text>{item.displayName}</Text>
+                </View>
+                <View style={{
+                    flex: 1,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRightWidth: 1,
+                    borderColor: '#eee'
+                }}>
+                    <Picker
+                        androidmode={'dropdown'}
+                        style={{height: 50, width: '70%'}}
+                        selectedValue={this.state.stage}
+                        onValueChange={(itemValue, itemIndex) => this.setState({stage: itemValue})}>
+                        <Picker.Item label="所有" value="1"/>
+                        <Picker.Item label="土建" value="2"/>
+                        <Picker.Item label="安装" value="3"/>
+                    </Picker>
+                </View>
+            </View>
+        )
+    }
+
     render() {
         let popupDialog = <PopupDialog
             width={0.95}
@@ -189,37 +295,46 @@ export default class ApproveScreen extends Component {
             }}
             dialogAnimation={slideAnimation}
             dialogTitle={<DialogTitle titleTextStyle={styles.titleStyle} titleStyle={styles.dialogTitle}
-                                      title={'选择下一环节办理部门'}/>}>
+                                      title={'请选择'}/>}>
             <ScrollView>
-                <View style={{alignItems:'center'}}>
+                <View style={{alignItems: 'center'}}>
+                    {
+                        this.state.curNodeId === 'SIGN_BMFB2' ||
+                        <View style={{width: '100%'}}>
+                            <View style={styles.orgView}>
+                                <Text style={{color: '#000', fontSize: 16}}>
+                                    {this.state.curNodeId === 'SIGN_FGLD_FB' ? '主办部门' : '第一负责人'}
+                                </Text>
+                            </View>
+                            <View style={{flexDirection: 'row', flexWrap: 'wrap',}}>
+                                {this.renderMainOrgs()}
+                            </View>
+                        </View>
+                    }
                     <View style={styles.orgView}>
-                        <Text style={{color:'#000',fontSize:16}}>主办部门</Text>
-                    </View>
-                    <View style={{flexDirection: 'row', flexWrap: 'wrap',}}>
-                        {this.renderMainOrgs()}
-                    </View>
-                    <View style={styles.orgView}>
-                        <Text style={{color:'#000',fontSize:16}}>协办部门</Text>
+                        <Text style={{color: '#000', fontSize: 16}}>
+                            {this.state.curNodeId === 'SIGN_FGLD_FB' ? '协办部门' : '其他负责人'}
+                        </Text>
                     </View>
                     <View style={{flexDirection: 'row', flexWrap: 'wrap',}}>
                         {this.renderSubOrgs()}
                     </View>
-                    <View style={{flexDirection:'row',marginTop:20}}>
-                        <TouchableOpacity style={styles.conCancel} onPress={()=>this.popupDialog.dismiss()}>
-                            <Text>取消</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.textCon} onPress={()=>this.setDealOption()}>
-                            <Text style={{color:'#fff'}}>确定</Text>
-                        </TouchableOpacity>
-                    </View>
                 </View>
             </ScrollView>
+            <View style={{flexDirection: 'row', backgroundColor: '#eee'}}>
+                <TouchableOpacity style={styles.conCancel} onPress={() => this.popupDialog.dismiss()}>
+                    <Text>取消</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.textCon} onPress={() => this.setDealOption()}>
+                    <Text style={{color: '#fff'}}>确定</Text>
+                </TouchableOpacity>
+            </View>
         </PopupDialog>;
         return (
             <View style={styles.container}>
                 {popupDialog}
-                <Header title={this.state.curNode} showBackTitle={true} {...this.props}/>
                 <View style={styles.body}>
+                    <Header title={this.state.curNode} showBackTitle={true} {...this.props}/>
                     <View>
                         <TextInput
                             style={styles.textInputStyle}
@@ -233,25 +348,68 @@ export default class ApproveScreen extends Component {
                             defaultValue={this.state.curNodeInfo.dealOption}
                         />
                     </View>
-                    <TouchableOpacity onPress={() => this.popupDialog.show()} style={{width:'100%',height:50,justifyContent:'center'}}>
-                        <Text>请选择办理部门</Text>
+                    <TouchableOpacity style={styles.addOrgs} onPress={() => this.popupDialog.show()}>
+                        <Icon name='md-add' size={20} style={[styles.iconStyle, {color: 'green', marginRight: 5}]}/>
+                        <Text style={{color: 'green'}}>{this.state.choice}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={()=>this.commitData()} style={{width:'100%',marginTop:30,justifyContent:'center',
-                        alignItems:'center',alignSelf: 'center',height:40,borderRadius:5,backgroundColor:'#1E5AAF'}}>
-                        <Text style={{color:'#fff'}}>提交</Text>
-                    </TouchableOpacity>
+                    <View style={{flexDirection: 'row', marginLeft: 10, marginRight: 10, height: 35}}>
+                        <Text style={{
+                            flex: 1,
+                            backgroundColor: '#eee',
+                            borderColor: '#ddd',
+                            borderWidth: 1,
+                            borderRightWidth: 0,
+                            textAlign: 'center',
+                            textAlignVertical: 'center'
+                        }}>项目负责人</Text>
+                        <Text style={{
+                            flex: 1,
+                            backgroundColor: '#eee',
+                            borderColor: '#ddd',
+                            borderWidth: 1,
+                            textAlign: 'center',
+                            textAlignVertical: 'center'
+                        }}>负责分工</Text>
+                    </View>
+                    <FlatList
+                        style={{width: '100%'}}
+                        keyExtractor={this._extraUniqueKey}
+                        data={this.state.mainOrgSelected.concat(this.state.subOrgSelected)}
+                        renderItem={({item}) => this._renderItem(item)}
+                    />
                 </View>
+
             </View>
-        )
+            < View >
+            < TouchableOpacity
+        onPress = {()
+    =>
+        this.commitNextStep()
+    }
+        style = {styles.commitBtn
+    }>
+    <
+        Text
+        style = {
+        {
+            color: '#fff', fontSize
+        :
+            16
+        }
+    }>
+        提交 < /Text>
+    </TouchableOpacity>
+    <
+        /View>
+    </View>
+    )
     }
 }
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-    },
-    body: {
-        padding: 10,
+        justifyContent: 'space-between'
     },
     textInputStyle: {
         borderWidth: 1,
@@ -259,12 +417,13 @@ const styles = StyleSheet.create({
         borderColor: '#ccc',
         height: 100,
         textAlignVertical: 'top',
-        borderRadius: 5
+        borderRadius: 5,
+        margin: 10
     },
     textCon: {
-        flex:1,
-        alignItems:'center',
-        justifyContent:'center',
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
         margin: 10,
         paddingHorizontal: 0,
         backgroundColor: '#1E5AAF',
@@ -272,10 +431,10 @@ const styles = StyleSheet.create({
         borderRadius: 5
     },
     conCancel: {
-        flex:1,
-        alignItems:'center',
-        justifyContent:'center',
-        backgroundColor: '#eee',
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#ddd',
         height: 35,
         borderRadius: 5,
         margin: 10,
@@ -291,19 +450,36 @@ const styles = StyleSheet.create({
     iconStyle: {
         color: '#1E5AAF'
     },
-    checkBox:{
-        flex: 1,
+    checkBox: {
+        width: '50%',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        height: 40,
+        borderBottomWidth: 0.5,
+        borderBottomColor: '#ddd',
+        padding: 10,
+    },
+    orgView: {
+        height: 40,
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderBottomColor: '#1E5AAF',
+        borderBottomWidth: 1
+    },
+    commitBtn: {
+        width: '100%',
         justifyContent: 'center',
         alignItems: 'center',
-        paddingLeft: 10,
-        paddingRight: 10
+        height: 50,
+        backgroundColor: '#1E5AAF'
     },
-    orgView:{
-        height:40,
-        width:'100%',
-        alignItems:'center',
-        justifyContent:'center',
-        borderBottomColor:'#1E5AAF',
-        borderBottomWidth:1
+    addOrgs: {
+        width: '100%',
+        height: 40,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 });
