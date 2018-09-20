@@ -49,7 +49,7 @@ public class LoginCtrl{
         if("0".equals(level)){
            boolean flag = agentTaskService.angentUserForApp(username);
            if(!flag){
-               return ResultMsg.error("普通用户没有权限登录！");
+               return ResultMsg.error("没有权限登录！");
            }
         }
         userService.saveUser(user);
