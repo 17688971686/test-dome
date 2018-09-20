@@ -206,12 +206,18 @@ class SignWorkprogram extends Component {
     render() {
         const {data} = this.props;
         return (
-            <FlatList
-                style={{width: '100%'}}
-                keyExtractor={this._extraUniqueKey}
-                data={data}
-                renderItem={({item}) => this._renderItem(item)}
-            />
+            data ?
+                <FlatList
+                    style={{width: '100%'}}
+                    keyExtractor={this._extraUniqueKey}
+                    data={data}
+                    renderItem={({item}) => this._renderItem(item)}
+                />
+                :
+                <View style={{height: 50, justifyContent: 'center', alignItems: 'center'}}>
+                    <Text>暂无工作方案</Text>
+                </View>
+
         )
     }
 }
@@ -275,6 +281,7 @@ class SignDispatch extends Component {
         )
     }
 }
+
 export default class ProDetailsScreen extends Component {
     constructor(props) {
         super(props);
@@ -301,7 +308,6 @@ export default class ProDetailsScreen extends Component {
             }
         })
             .then(res => {
-                console.log(res);
                 this.setState({
                     projectData: res.data,
                 })
@@ -313,18 +319,19 @@ export default class ProDetailsScreen extends Component {
 
     _approve() {
         return (
-            <TouchableOpacity style={styles.filterView} onPress={() => this.props.navigation.navigate('ApproveScreen',{
-                taskId:this.state.taskId,
-                processInstanceId:this.state.processInstanceId,
-                userName:this.state.userName,
-                isassistflow:this.state.projectData.isassistflow,
-                DIS_ID:this.state.projectData.dispatchDocDto.id || ''
+            <TouchableOpacity style={styles.filterView} onPress={() => this.props.navigation.navigate('ApproveScreen', {
+                taskId: this.state.taskId,
+                processInstanceId: this.state.processInstanceId,
+                userName: this.state.userName,
+                isassistflow: this.state.projectData.isassistflow,
+                DIS_ID: this.state.projectData.dispatchDocDto && this.state.projectData.dispatchDocDto.id
             })}>
                 <Icon name={'ios-create-outline'} size={20} color={'#fff'}/>
                 <Text style={styles.filterText}>审批</Text>
             </TouchableOpacity>
         )
     }
+
     render() {
         const {approve} = this.props.navigation.state.params;
         return (
@@ -332,8 +339,10 @@ export default class ProDetailsScreen extends Component {
                 <Header title={this.state.projectName} showBackTitle={true}
                         navigation={this.props.navigation} headerRight={approve && this._approve()}/>
                 <ScrollableTabView
-                    tabBarActiveTextColor='#1E5AAF'//设置选中Tab的文字颜色。
-                    tabBarUnderlineStyle={{backgroundColor: '#1E5AAF', height: 2}}
+                    tabBarInactiveTextColor={'#ddd'}
+                    tabBarActiveTextColor='#fff'//设置选中Tab的文字颜色。
+                    tabBarUnderlineStyle={{backgroundColor: '#fff', height: 2}}
+                    tabBarBackgroundColor='#1E5AAF'
                     renderTabBar={() => <ScrollableTabBar/>}>
                     <VdealDetail tabLabel="委处理表" data={this.state.projectData}/>
                     <SignDetail tabLabel="审批登记" data={this.state.projectData}/>

@@ -24,7 +24,6 @@ export default class SignHistoryComponent extends Component {
             }
         })
             .then(res => {
-                console.log(res);
                 this.setState({
                     data: res.data.value
                 })
@@ -63,19 +62,24 @@ export default class SignHistoryComponent extends Component {
 
     render() {
         return (
-            <FlatList
-                style={{width: '100%', backgroundColor: '#eee'}}
-                keyExtractor={this._extraUniqueKey}
-                data={this.state.data}
-                renderItem={({item}) => this._renderItem(item)}
-            />
+            this.state.data ?
+                <FlatList
+                    style={{width: '100%', backgroundColor: '#eee'}}
+                    keyExtractor={this._extraUniqueKey}
+                    data={this.state.data}
+                    renderItem={({item}) => this._renderItem(item)}
+                />
+                :
+                <View style={{height: 50, justifyContent: 'center', alignItems: 'center'}}>
+                    <Text>暂无处理记录</Text>
+                </View>
         )
     }
 
 }
 const styles = StyleSheet.create({
     container: {
-        padding:10,
+        padding: 10,
         marginBottom: 10,
         backgroundColor: '#fff'
     },

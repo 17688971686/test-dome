@@ -25,7 +25,7 @@ const slideAnimation = new SlideAnimation({
 export default class ApproveScreen extends Component {
     constructor(props) {
         super(props);
-        const {isassistflow, taskId, processInstanceId, userName,DIS_ID} = this.props.navigation.state.params;
+        const {isassistflow, taskId, processInstanceId, userName, DIS_ID} = this.props.navigation.state.params;
         this.state = {
             curNode: '',
             curNodeInfo: '',
@@ -40,7 +40,7 @@ export default class ApproveScreen extends Component {
             dealOption: '',
             choice: '',
             curNodeId: '',
-            DIS_ID:DIS_ID
+            DIS_ID: DIS_ID || ''
         }
     }
 
@@ -75,6 +75,10 @@ export default class ApproveScreen extends Component {
                 orgs.forEach((item) => {
                     item.mainChecked = false;
                     item.subChecked = false;
+                    item.userType = '所有';
+                    item.isMainUser = 0;
+                    item.userId = item.id;
+                    item.userName = item.displayName;
                 });
                 this.setState({
                     curNodeInfo: curNodeInfo,
@@ -97,35 +101,60 @@ export default class ApproveScreen extends Component {
         });
     };
     selectMainOrg = (i) => {
-        let orgs = this.state.mainOrgs;
-        let arr = this.state.mainOrgSelected;
+        let orgs = this.state.mainOrgs,
+            subOrgs = this.state.subOrgs,
+            mainOrgSelected = [],
+            subOrgSelected = this.state.subOrgSelected;
         orgs.forEach((item, index) => {
             if (i === index) {
-                arr = [];
-                item.userType = '所有';
-                item.userName = item.displayName;
                 item.isMainUser = 9;
-                item.userId = item.id;
-                item.mainChecked = !item.mainChecked;
-                item.mainChecked ? arr.push(item) : arr.splice(arr.indexOf(item), 1);
+                item.mainChecked = true;
+                mainOrgSelected.push(item);
+                subOrgs[i].subChecked = false;
+                subOrgSelected.indexOf(item) >= 0 && subOrgSelected.splice(subOrgSelected.indexOf(item), 1);
+
             } else {
                 item.mainChecked = false;
             }
         });
         this.setState({
-            mainOrgSelected: arr,
-            mainOrgs: orgs
+            mainOrgSelected: mainOrgSelected,
+            subOrgs: subOrgs,
+            mainOrgs: orgs,
+            subOrgSelected: subOrgSelected
         });
     };
     selectSubOrg = (i) => {
+        if (this.state.curNodeId === 'SIGN_BMFB1' || this.state.curNodeId === 'SIGN_FGLD_FB') {
+            let tips1= this.state.curNodeId==='SIGN_FGLD_FB'?'请先选择主办部门':'请先选择第一负责人';
+            let tips2= this.state.curNodeId==='SIGN_FGLD_FB'?'该部门已是主办部门':'该负责人已是第一负责人';
+            if (this.state.mainOrgSelected.length === 0) {
+                Alert.alert(
+                    tips1,
+                    '',
+                    [
+                        {text: '确定',},
+                    ],
+                    {cancelable: false}
+                );
+                return
+            }
+            if (this.state.mainOrgs[i].mainChecked) {
+                Alert.alert(
+                    tips2,
+                    '',
+                    [
+                        {text: '确定',},
+                    ],
+                    {cancelable: false}
+                );
+                return
+            }
+        }
         let orgs = this.state.subOrgs;
         let arr = this.state.subOrgSelected;
         orgs.forEach((item, index) => {
             if (i === index) {
-                item.userType = '所有';
-                item.isMainUser = 0;
-                item.userId = item.id;
-                item.userName = item.displayName;
                 item.subChecked = !item.subChecked;
                 item.subChecked ? arr.push(item) : arr.splice(arr.indexOf(item), 1);
             }
@@ -140,7 +169,7 @@ export default class ApproveScreen extends Component {
         let orgView = [], orgs = this.state.mainOrgs;
         for (let i = 0; i < orgs.length; i++) {
             orgView.push(
-                <TouchableOpacity activeOpacity={0.1} style={styles.checkBox} onPress={() => this.selectMainOrg(i)}
+                <TouchableOpacity activeOpacity={0.9} style={styles.checkBox} onPress={() => this.selectMainOrg(i)}
                                   key={i}>
                     <Text>{orgs[i].name || orgs[i].displayName}</Text>
                     {
@@ -159,7 +188,7 @@ export default class ApproveScreen extends Component {
         let subOrgView = [], orgs = this.state.subOrgs;
         for (let i = 0; i < orgs.length; i++) {
             subOrgView.push(
-                <TouchableOpacity activeOpacity={0.1} style={styles.checkBox} onPress={() => this.selectSubOrg(i)}
+                <TouchableOpacity activeOpacity={0.9} style={styles.checkBox} onPress={() => this.selectSubOrg(i)}
                                   key={i}>
                     <Text>{orgs[i].name || orgs[i].displayName}</Text>
                     {
@@ -225,8 +254,8 @@ export default class ApproveScreen extends Component {
         let data = this.state.curNodeInfo;
         data.businessMap.DIS_ID = this.state.DIS_ID;
         this.setState({
-            curNodeInfo:data
-        },()=>{
+            curNodeInfo: data
+        }, () => {
             axios({
                 url: "flowApp/commit",
                 method: "post",
@@ -264,6 +293,7 @@ export default class ApproveScreen extends Component {
 
     }
 
+    //如果是概算的部门分办流程显示项目负责人信息
     isassistflow() {
         if (this.state.isassistflow === '9' && (this.state.curNodeId === 'SIGN_BMFB1' || this.state.curNodeId === 'SIGN_BMFB2')) {
             return (
@@ -287,11 +317,10 @@ export default class ApproveScreen extends Component {
         arr[0].userType = val;
         this.setState({
             mainOrgSelected: arr
-        }, () => console.log(this.state.mainOrgSelected))
+        })
     }
 
     selectSubUserType(val, i) {
-        console.log(val);
         let arr = this.state.subOrgSelected;
         arr.forEach((item, index) => {
             if (i === index) {
@@ -300,7 +329,7 @@ export default class ApproveScreen extends Component {
         });
         this.setState({
             subOrgSelected: arr
-        }, () => console.log(this.state.subOrgSelected))
+        })
     }
 
     _renderMainItem() {
@@ -353,7 +382,16 @@ export default class ApproveScreen extends Component {
         return subItemArr
     }
 
-
+    addOrgs(){
+        if(this.state.curNodeId==='SIGN_FGLD_FB' || this.state.curNodeId === 'SIGN_BMFB1' || this.state.curNodeId === 'SIGN_BMFB2'){
+            return(
+                <TouchableOpacity style={styles.addOrgs} onPress={() => this.popupDialog.show()}>
+                    <Icon name='md-add' size={20} style={[styles.iconStyle, {color: 'green', marginRight: 5}]}/>
+                    <Text style={{color: 'green'}}>{this.state.choice}</Text>
+                </TouchableOpacity>
+            )
+        }
+    }
     render() {
         let popupDialog = <PopupDialog
             width={0.95}
@@ -416,10 +454,7 @@ export default class ApproveScreen extends Component {
                             defaultValue={this.state.curNodeInfo.dealOption}
                         />
                     </View>
-                    <TouchableOpacity style={styles.addOrgs} onPress={() => this.popupDialog.show()}>
-                        <Icon name='md-add' size={20} style={[styles.iconStyle, {color: 'green', marginRight: 5}]}/>
-                        <Text style={{color: 'green'}}>{this.state.choice}</Text>
-                    </TouchableOpacity>
+                    {this.addOrgs()}
                     {this.isassistflow()}
                 </View>
                 <View>
