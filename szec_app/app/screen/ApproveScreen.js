@@ -40,7 +40,8 @@ export default class ApproveScreen extends Component {
             dealOption: '',
             choice: '',
             curNodeId: '',
-            DIS_ID: DIS_ID || ''
+            DIS_ID: DIS_ID || '',
+            AGREE: '9'
         }
     }
 
@@ -71,6 +72,8 @@ export default class ApproveScreen extends Component {
                     orgs = curNodeInfo.businessMap.orgs;
                 } else if (curNodeId === 'SIGN_BMFB1' || curNodeId === 'SIGN_BMFB2') {
                     orgs = curNodeInfo.businessMap.users;
+                } else if(curNodeId === 'SIGN_BMLD_QRFW_XB' ||  curNodeId=== 'SIGN_FGLD_QRFW_XB'){
+                    curNodeInfo.dealOption='核稿无误'
                 }
                 orgs.forEach((item) => {
                     item.mainChecked = false;
@@ -126,8 +129,8 @@ export default class ApproveScreen extends Component {
     };
     selectSubOrg = (i) => {
         if (this.state.curNodeId === 'SIGN_BMFB1' || this.state.curNodeId === 'SIGN_FGLD_FB') {
-            let tips1= this.state.curNodeId==='SIGN_FGLD_FB'?'请先选择主办部门':'请先选择第一负责人';
-            let tips2= this.state.curNodeId==='SIGN_FGLD_FB'?'该部门已是主办部门':'该负责人已是第一负责人';
+            let tips1 = this.state.curNodeId === 'SIGN_FGLD_FB' ? '请先选择主办部门' : '请先选择第一负责人';
+            let tips2 = this.state.curNodeId === 'SIGN_FGLD_FB' ? '该部门已是主办部门' : '该负责人已是第一负责人';
             if (this.state.mainOrgSelected.length === 0) {
                 Alert.alert(
                     tips1,
@@ -253,6 +256,7 @@ export default class ApproveScreen extends Component {
     commitNextStep() {
         let data = this.state.curNodeInfo;
         data.businessMap.DIS_ID = this.state.DIS_ID;
+        data.businessMap.AGREE = this.state.AGREE;
         this.setState({
             curNodeInfo: data
         }, () => {
@@ -382,9 +386,9 @@ export default class ApproveScreen extends Component {
         return subItemArr
     }
 
-    addOrgs(){
-        if(this.state.curNodeId==='SIGN_FGLD_FB' || this.state.curNodeId === 'SIGN_BMFB1' || this.state.curNodeId === 'SIGN_BMFB2'){
-            return(
+    addOrgs() {
+        if (this.state.curNodeId === 'SIGN_FGLD_FB' || this.state.curNodeId === 'SIGN_BMFB1' || this.state.curNodeId === 'SIGN_BMFB2') {
+            return (
                 <TouchableOpacity style={styles.addOrgs} onPress={() => this.popupDialog.show()}>
                     <Icon name='md-add' size={20} style={[styles.iconStyle, {color: 'green', marginRight: 5}]}/>
                     <Text style={{color: 'green'}}>{this.state.choice}</Text>
@@ -392,6 +396,54 @@ export default class ApproveScreen extends Component {
             )
         }
     }
+    auditingRight(){
+        let arr = this.state.curNodeInfo;
+        arr.dealOption='核稿无误';
+        this.setState({
+            AGREE:9,
+            curNodeInfo:arr,
+        })
+    }
+    auditingError(){
+        let arr = this.state.curNodeInfo;
+        arr.dealOption='核稿有误';
+        this.setState({
+            AGREE:0,
+            curNodeInfo:arr,
+        })
+    }
+    auditing() {
+        //如果是协办部门审批发文或者协办副主任审批发文流程 显示核稿按钮
+        if (this.state.curNodeId === 'SIGN_BMLD_QRFW_XB' || this.state.curNodeId === 'SIGN_FGLD_QRFW_XB') {
+            return (
+                <View style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', margin: 10}}>
+                    <TouchableOpacity
+                        style={{flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}
+                        onPress={() => this.auditingRight()}>
+                        <Text style={{marginRight: 5}}>核稿无误</Text>
+                        {
+                            this.state.AGREE ?
+                                <Icon name='ios-checkbox' size={25} style={styles.iconStyle}/>
+                                :
+                                <Icon name='ios-checkbox-outline' size={25} style={styles.iconStyle}/>
+                        }
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={{flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}
+                        onPress={() => this.auditingError()}>
+                        <Text style={{marginRight: 5}}>核稿有误</Text>
+                        {
+                            !this.state.AGREE ?
+                                <Icon name='ios-checkbox' size={25} style={styles.iconStyle}/>
+                                :
+                                <Icon name='ios-checkbox-outline' size={25} style={styles.iconStyle}/>
+                        }
+                    </TouchableOpacity>
+                </View>
+            )
+        }
+    }
+
     render() {
         let popupDialog = <PopupDialog
             width={0.95}
@@ -455,6 +507,7 @@ export default class ApproveScreen extends Component {
                         />
                     </View>
                     {this.addOrgs()}
+                    {this.auditing()}
                     {this.isassistflow()}
                 </View>
                 <View>
