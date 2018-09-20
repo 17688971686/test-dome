@@ -1,9 +1,13 @@
 package cs.mobile.service;
 
 import com.alibaba.fastjson.JSON;
+import cs.ahelper.projhelper.DisUtil;
+import cs.ahelper.projhelper.ProjUtil;
+import cs.ahelper.projhelper.WorkPGUtil;
 import cs.common.constants.Constant;
 import cs.common.constants.FlowConstant;
 import cs.common.ResultMsg;
+import cs.common.constants.SysConstants;
 import cs.common.utils.*;
 import cs.domain.book.BookBuy;
 import cs.domain.book.BookBuyBusiness;
@@ -26,6 +30,7 @@ import cs.repository.repositoryImpl.sys.*;
 import cs.service.flow.FlowService;
 import cs.service.project.*;
 import cs.service.rtx.RTXSendMsgPool;
+import cs.service.sys.UserService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -35,6 +40,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+
+import static cs.common.constants.Constant.EMPTY_STRING;
+import static cs.common.constants.FlowConstant.*;
+import static cs.common.constants.FlowConstant.FLOW_SIGN_ZR_QRFW;
+import static cs.common.constants.SysConstants.SEPARATE_COMMA;
 
 /**
  * Created by Administrator on 2018/2/28.
@@ -87,24 +97,40 @@ public class FlowAppServiceImpl implements FlowAppService {
     @Autowired
     private  AddSuppLetterService addSuppLetterService;
 
+    @Autowired
+    private AgentTaskService agentTaskService;
+
+    @Autowired
+    private UserService userService;
+
     @Override
     @Transactional
     public ResultMsg dealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto, UserDto userDto) throws Exception {
         //参数定义
         String signid = processInstance.getBusinessKey(),
-                businessId = "",                    //前段传过来的业务ID
-                assigneeValue = "",                 //环节处理人
-                branchIndex = "";                   //分支序号
+                businessId = "",                        //前段传过来的业务ID
+                businessValue = "",                     //业务值
+                assigneeValue = "",                     //环节处理人
+                branchIndex = "",                       //分支序号
+                nextNodeKey = "",                       //下一环节名称
+                curUserId = userDto.getId();    //当前用户ID
         Sign sign = null;                           //收文对象
         WorkProgram wk = null;                      //工作方案
         DispatchDoc dp = null;                      //发文
         FileRecord fileRecord = null;               //归档
         List<User> userList = null;                 //用户列表
         List<SignPrincipal> signPriList = null;     //项目负责人
+        List<SignPrincipal> signPriListNew = null;     //项目负责人
         User dealUser = null;                       //处理人
         OrgDept orgDept = null;                     //部门和小组
-        boolean isNextUser = false;                 //是否是下一环节处理人（主要是处理领导审批，目前主要有三个地方，部长审批工作方案，部长审批发文和分管领导审批发文）
-        String nextNodeKey = "";                    //下一环节名称
+        ResultMsg returnResult = null;
+        DisUtil disUtil = null;
+        WorkPGUtil workPGUtil = null;
+        boolean isNextUser = false,                 //是否是下一环节处理人（主要是处理领导审批，目前主要有三个地方，部长审批工作方案，部长审批发文和分管领导审批发文）
+                isAgentTask = agentTaskService.isAgentTask(task.getId(),curUserId),
+                isMergeDisTask = false,             //是否合并发文任务
+                isCompeleteSign = true;             //是否完成所有会签
+        List<AgentTask> agentTaskList = new ArrayList<>();
         //取得之前的环节处理人信息
         Map<String, Object> variables = new HashMap<>();
 
@@ -127,9 +153,12 @@ public class FlowAppServiceImpl implements FlowAppService {
                 if (orgDept == null || !Validate.isString(orgDept.getDirectorID())) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请设置" + orgDept.getName() + "的部门负责人！");
                 }
-                //查询处理人
-                dealUser = userRepo.getCacheUserById(orgDept.getDirectorID());
-                assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
+                int branchCount = 1;
+                //主办部门信息
+                sign.setmOrgId(businessId);
+                sign.setmOrgName(orgDept.getName());
+                //获取处理人
+                assigneeValue = userService.getTaskDealId(orgDept.getDirectorID(), agentTaskList, FlowConstant.FLOW_SIGN_BMFB1);
                 variables.put(FlowConstant.SignFlowParams.USER_BZ1.getValue(), assigneeValue);
                 /******************  一下处理协办部门 ****************/
                 variables.put(FlowConstant.SignFlowParams.BRANCH2.getValue(), false);
@@ -139,12 +168,14 @@ public class FlowAppServiceImpl implements FlowAppService {
                 //协办流程分支
                 if (flowDto.getBusinessMap().get("ASSIST_ORG") != null) {
                     businessId = flowDto.getBusinessMap().get("ASSIST_ORG").toString();
-                    assistOrgIdList = StringUtil.getSplit(businessId, ",");
+                    assistOrgIdList = StringUtil.getSplit(businessId, SysConstants.SEPARATE_COMMA);
                 }
+
                 if (Validate.isList(assistOrgIdList)) {
                     if (assistOrgIdList.size() > 3) {
                         return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "协办部门最多只能选择3个！");
                     }
+                    String aOrgId = "", aOrgName = "";
                     for (int i = 2, l = (assistOrgIdList.size() + 2); i < l; i++) {
                         businessId = assistOrgIdList.get(i - 2);
                         SignBranch signBranch = new SignBranch(signid, String.valueOf(i), Constant.EnumState.YES.getValue(), Constant.EnumState.NO.getValue(), Constant.EnumState.NO.getValue(), businessId, Constant.EnumState.NO.getValue());
@@ -154,52 +185,71 @@ public class FlowAppServiceImpl implements FlowAppService {
                         if (orgDept == null || !Validate.isString(orgDept.getDirectorID())) {
                             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请设置" + orgDept.getName() + "的部门负责人！");
                         }
-                        dealUser = userRepo.getCacheUserById(orgDept.getDirectorID());
-                        String userId = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
-                        assigneeValue += "," + userId;
+                        aOrgId = StringUtil.joinString(aOrgId, SysConstants.SEPARATE_COMMA, businessId);
+                        aOrgName = StringUtil.joinString(aOrgName, SysConstants.SEPARATE_COMMA, orgDept.getName());
+
+                        nextNodeKey = FlowConstant.FLOW_SIGN_BMFB2;
                         switch (i) {
-                            case 2:
-                                variables.put(FlowConstant.SignFlowParams.BRANCH2.getValue(), true);
-                                variables.put(FlowConstant.SignFlowParams.USER_BZ2.getValue(), userId);
-                                break;
                             case 3:
-                                variables.put(FlowConstant.SignFlowParams.BRANCH3.getValue(), true);
-                                variables.put(FlowConstant.SignFlowParams.USER_BZ3.getValue(), userId);
+                                nextNodeKey = FlowConstant.FLOW_SIGN_BMFB3;
                                 break;
                             case 4:
-                                variables.put(FlowConstant.SignFlowParams.BRANCH4.getValue(), true);
-                                variables.put(FlowConstant.SignFlowParams.USER_BZ4.getValue(), userId);
+                                nextNodeKey = FlowConstant.FLOW_SIGN_BMFB4;
                                 break;
                             default:
                                 ;
                         }
+                        String userId = userService.getTaskDealId(orgDept.getDirectorID(), agentTaskList, nextNodeKey);
+                        assigneeValue += SEPARATE_COMMA + userId;
+                        //设置部门分支领导信息
+                        ActivitiUtil.setFlowBrandLead(variables, i, userId);
+                        branchCount++;
                     }
+                    //协办部门信息
+                    sign.setaOrgId(aOrgId);
+                    sign.setaOrgName(aOrgName);
                 }
                 signBranchRepo.bathUpdate(saveBranchList);
                 //更改项目信息
                 sign.setLeaderhandlesug(flowDto.getDealOption());
                 sign.setLeaderDate(new Date());
-                sign.setLeaderId(userDto.getId());
-                sign.setLeaderName(userDto.getDisplayName());
+                if(isAgentTask){
+                    sign.setLeaderId(agentTaskService.getUserId(task.getId(),curUserId));
+                }else{
+                    sign.setLeaderId(curUserId);
+                }
+                sign.setLeaderName(ActivitiUtil.getSignName(userDto.getDisplayName(),isAgentTask));
+                //清空部长审核意见
+                sign.setMinisterhandlesug("");
+                sign.setMinisterDate(null);
+                sign.setMinisterId("");
+                sign.setMinisterName("");
+                //记录总分支数
+                sign.setBranchCount(branchCount);
                 signRepo.save(sign);
+
                 break;
             //部门分办1
             case FlowConstant.FLOW_SIGN_BMFB1:
                 branchIndex = FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue();
+                nextNodeKey = FlowConstant.FLOW_SIGN_XMFZR1;
                 //部门分办2
             case FlowConstant.FLOW_SIGN_BMFB2:
                 if (!Validate.isString(branchIndex)) {
                     branchIndex = FlowConstant.SignFlowParams.BRANCH_INDEX2.getValue();
+                    nextNodeKey = FlowConstant.FLOW_SIGN_XMFZR2;
                 }
                 //部门分办3
             case FlowConstant.FLOW_SIGN_BMFB3:
                 if (!Validate.isString(branchIndex)) {
                     branchIndex = FlowConstant.SignFlowParams.BRANCH_INDEX3.getValue();
+                    nextNodeKey = FlowConstant.FLOW_SIGN_XMFZR3;
                 }
                 //部门分办4
             case FlowConstant.FLOW_SIGN_BMFB4:
                 if (!Validate.isString(branchIndex)) {
                     branchIndex = FlowConstant.SignFlowParams.BRANCH_INDEX4.getValue();
+                    nextNodeKey = FlowConstant.FLOW_SIGN_XMFZR4;
                 }
                 sign = signRepo.findById(Sign_.signid.getName(), signid);
                 //1、如果是协审项目
@@ -208,18 +258,39 @@ public class FlowAppServiceImpl implements FlowAppService {
                         return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请选择项目负责人！");
                     }
                     signPriList = JSON.parseArray(flowDto.getBusinessMap().get("PRINCIPAL").toString(), SignPrincipal.class);
+                    signPriListNew = new ArrayList<SignPrincipal>() ;
                     if (!Validate.isList(signPriList)) {
                         return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请选择项目负责人！");
                     }
+                    String mUserId = sign.getmUserId() == null ? "" : sign.getmUserId(),
+                            mUserName = sign.getmUserName() == null ? "" : sign.getmUserName(),
+                            aUserId = sign.getaUserID() == null ? "" : sign.getaUserID(),
+                            aUserName = sign.getaUserName() == null ? "" : sign.getaUserName();
                     for (int i = 0, l = signPriList.size(); i < l; i++) {
                         SignPrincipal obj = signPriList.get(i);
-                        if (i > 0) {
-                            assigneeValue += ",";
-                        }
-                        assigneeValue += obj.getUserId();
+                        dealUser = userRepo.getCacheUserById(obj.getUserId());
+                        String userId = userService.getTaskDealId(dealUser, agentTaskList,nextNodeKey);
+                        assigneeValue = StringUtil.joinString(assigneeValue, SysConstants.SEPARATE_COMMA, userId);
                         obj.setSignId(signid);
                         obj.setFlowBranch(branchIndex);
+                        obj.setUserType(new String(obj.getUserType().getBytes("ISO-8859-1"),"UTF-8"));
+                        signPriListNew.add(obj);
+                        //设置负责人信息
+                        if (Constant.EnumState.YES.getValue().equals(obj.getIsMainUser())) {
+                            mUserId = obj.getUserId();
+                            mUserName = dealUser.getDisplayName();
+                        } else {
+                            aUserId = StringUtil.joinString(aUserId, SysConstants.SEPARATE_COMMA, obj.getUserId());
+                            aUserName = StringUtil.joinString(aUserName, SysConstants.SEPARATE_COMMA, dealUser.getDisplayName());
+                        }
                     }
+                    signPriList.clear();
+                    signPriList = signPriListNew;
+                    //设置主办人员信息
+                    sign.setmUserId(mUserId);
+                    sign.setmUserName(mUserName);
+                    sign.setaUserID(aUserId);
+                    sign.setaUserName(aUserName);
                     //不是协审项目
                 } else {
                     //主流程处理，一定要有第一负责人
@@ -227,39 +298,39 @@ public class FlowAppServiceImpl implements FlowAppService {
                         if (flowDto.getBusinessMap().get("M_USER_ID") == null) {
                             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请选择第一负责人！");
                         }
-                        businessId = flowDto.getBusinessMap().get("M_USER_ID").toString();
+                        businessValue = flowDto.getBusinessMap().get("M_USER_ID").toString();
                         //查询是否有代办
-                        dealUser = userRepo.getCacheUserById(businessId);
-                        assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
+                        dealUser = userRepo.getCacheUserById(businessValue);
+                        assigneeValue = userService.getTaskDealId(dealUser, agentTaskList,nextNodeKey);
+                        //设置主办人员信息
+                        sign.setmUserId(businessValue);
+                        sign.setmUserName(dealUser.getDisplayName());
 
                         //设置项目负责人
                         signPriList = new ArrayList<>();
-                        //String signId, String userId, String flowBranch, String userType, Integer sort, String isMainUser
-                        SignPrincipal mainPri = new SignPrincipal(signid, dealUser.getId(), branchIndex, "", null, Constant.EnumState.YES.getValue());
+                        SignPrincipal mainPri = new SignPrincipal(signid, businessValue, branchIndex, "", null, Constant.EnumState.YES.getValue());
                         signPriList.add(mainPri);
-
-                        //更改项目信息
-                        sign.setMinisterhandlesug(flowDto.getDealOption());
-                        sign.setMinisterDate(new Date());
-                        sign.setMinisterId(userDto.getId());
-                        sign.setMinisterName(userDto.getDisplayName());
-
                     }
                     //项目负责人
                     if (flowDto.getBusinessMap().get("A_USER_ID") != null) {
-                        businessId = flowDto.getBusinessMap().get("A_USER_ID").toString();
-                        userList = userRepo.getCacheUserListById(businessId);
+                        businessValue = flowDto.getBusinessMap().get("A_USER_ID").toString();
+                        userList = userRepo.getCacheUserListById(businessValue);
                         if (signPriList == null) {
                             signPriList = new ArrayList<>();
                         }
+                        String aUserId = sign.getaUserID() == null ? "" : sign.getaUserID(),
+                                aUserName = sign.getaUserName() == null ? "" : sign.getaUserName();
                         for (User user : userList) {
-                            if (Validate.isString(assigneeValue)) {
-                                assigneeValue += ",";
-                            }
-                            assigneeValue += user.getId();
+                            aUserId = StringUtil.joinString(aUserId, SysConstants.SEPARATE_COMMA, user.getId());
+                            aUserName = StringUtil.joinString(aUserName, SysConstants.SEPARATE_COMMA, user.getDisplayName());
+                            assigneeValue = StringUtil.joinString(assigneeValue, SysConstants.SEPARATE_COMMA, user.getId());
+
                             SignPrincipal secondPri = new SignPrincipal(signid, user.getId(), branchIndex, "", null, Constant.EnumState.NO.getValue());
                             signPriList.add(secondPri);
                         }
+                        //设置协办人员信息
+                        sign.setaUserID(aUserId);
+                        sign.setaUserName(aUserName);
                     } else {
                         //分支流程必须要选择第二负责人
                         if (!FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)) {
@@ -269,70 +340,75 @@ public class FlowAppServiceImpl implements FlowAppService {
                 }
                 //保存项目负责人
                 signPrincipalRepo.bathUpdate(signPriList);
-
-                //查询办理人
-                userList = userRepo.getCacheUserListById(assigneeValue);
-                assigneeValue = "";
-                for (int i = 0, l = userList.size(); i < l; i++) {
-                    dealUser = userList.get(i);
-                    if (i > 0) {
-                        assigneeValue += ",";
-                    }
-                    assigneeValue += Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
+                ActivitiUtil.setFlowPriUser(variables, branchIndex, assigneeValue);
+                //保存处理意见，单个分支按之前的格式，跟多分支的时候，拼接下
+                if (null != sign.getBranchCount() &&  sign.getBranchCount() == 1) {
+                    sign.setMinisterhandlesug(flowDto.getDealOption());
+                } else {
+                    String optionString = Validate.isString(sign.getMinisterhandlesug()) ? (sign.getMinisterhandlesug() + "<br>") : "";
+                    sign.setMinisterhandlesug(optionString + flowDto.getDealOption() + " 签名：" + ActivitiUtil.getSignName(userDto.getDisplayName(),isAgentTask) + "  日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
                 }
-                //设定下一环节处理人
-                if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)) {
-                    variables.put(FlowConstant.SignFlowParams.USER_FZR1.getValue(), assigneeValue);
-                } else if (FlowConstant.SignFlowParams.BRANCH_INDEX2.getValue().equals(branchIndex)) {
-                    variables.put(FlowConstant.SignFlowParams.USER_FZR2.getValue(), assigneeValue);
-                } else if (FlowConstant.SignFlowParams.BRANCH_INDEX3.getValue().equals(branchIndex)) {
-                    variables.put(FlowConstant.SignFlowParams.USER_FZR3.getValue(), assigneeValue);
-                } else if (FlowConstant.SignFlowParams.BRANCH_INDEX4.getValue().equals(branchIndex)) {
-                    variables.put(FlowConstant.SignFlowParams.USER_FZR4.getValue(), assigneeValue);
+                //主办部门意见也保存下
+                if (branchIndex.equals(FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue())) {
+                    sign.setMinisterDate(new Date());
+                    if(isAgentTask){
+                        sign.setMinisterId(agentTaskService.getUserId(task.getId(),curUserId));
+                    }else{
+                        sign.setMinisterId(curUserId);
+                    }
+                    sign.setMinisterName(ActivitiUtil.getSignName(userDto.getDisplayName(),isAgentTask));
                 }
                 //完成部门分办，表示正在做工作方案
                 sign.setProcessState(Constant.SignProcessState.DO_WP.getValue());
+                //更新工作方案中的项目负责人
+                WorkProgram mainwk2 = workProgramRepo.findBySignIdAndBranchId(signid, FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue(), false);
+                if(Validate.isObject(mainwk2)){
+                    mainwk2.setSecondChargeUserName(sign.getaUserName());
+                    mainwk2.setSign(sign);
+                    workProgramRepo.save(mainwk2);
+                }
                 signRepo.save(sign);
                 break;
 
             //部长审批工作方案1
             case FlowConstant.FLOW_SIGN_BMLD_SPW1:
                 branchIndex = FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue();
+                nextNodeKey = FlowConstant.FLOW_SIGN_FGLD_SPW1;
                 //部长审批工作方案1
             case FlowConstant.FLOW_SIGN_BMLD_SPW2:
                 if (!Validate.isString(branchIndex)) {
                     branchIndex = FlowConstant.SignFlowParams.BRANCH_INDEX2.getValue();
+                    nextNodeKey = FlowConstant.FLOW_SIGN_FGLD_SPW2;
                 }
                 //部长审批工作方案1
             case FlowConstant.FLOW_SIGN_BMLD_SPW3:
                 if (!Validate.isString(branchIndex)) {
                     branchIndex = FlowConstant.SignFlowParams.BRANCH_INDEX3.getValue();
+                    nextNodeKey = FlowConstant.FLOW_SIGN_FGLD_SPW3;
                 }
                 //部长审批工作方案4
             case FlowConstant.FLOW_SIGN_BMLD_SPW4:
                 if (!Validate.isString(branchIndex)) {
                     branchIndex = FlowConstant.SignFlowParams.BRANCH_INDEX4.getValue();
+                    nextNodeKey = FlowConstant.FLOW_SIGN_FGLD_SPW4;
                 }
-                if (userDto.getOrgDto() == null) {
+          /*      if (SessionUtil.getUserInfo().getOrg() == null) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "你还没设置所属部门！");
                 }
-                if (!Validate.isString(userDto.getOrgDto().getOrgSLeader())) {
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先设置该部门的分管领导！");
-                }
+                if (!Validate.isString(SessionUtil.getUserInfo().getOrg().getOrgSLeader())) {
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先设置该部门的分管副主任！");
+                }*/
                 //更改工作方案信息
                 wk = workProgramRepo.findBySignIdAndBranchId(signid, branchIndex, false);
-                wk.setMinisterSuggesttion(flowDto.getDealOption());
-                wk.setMinisterDate(new Date());
-                wk.setMinisterName(userDto.getDisplayName());
-
+                workPGUtil = WorkPGUtil.create(wk);
+                workPGUtil.setMinisterOption(flowDto.getDealOption(),new Date(),ActivitiUtil.getSignName(userDto.getDisplayName(),isAgentTask));
                 //如果是主办流程，要判断是否有合并评审方案，有则跟着主项目一起办理
-                if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)) {
-                    if (Constant.MergeType.REVIEW_MERGE.getValue().equals(wk.getIsSigle()) && Constant.EnumState.YES.getValue().equals(wk.getIsMainProject())) {
-                        List<SignMerge> mergeList = signMergeRepo.findByIds(SignMerge_.signId.getName(), signid, null);
+                if (ProjUtil.isMainBranch(branchIndex)) {
+                    if (workPGUtil.isMergeWP() && workPGUtil.isMainWP()) {
+                        List<SignMerge> mergeList = signMergeRepo.findByType(signid, Constant.MergeType.WORK_PROGRAM.getValue());
                         if (Validate.isList(mergeList)) {
                             ResultMsg resultMsg = null;
-                            FlowDto flowDto2 = new FlowDto();
-                            flowDto2.setDealOption(flowDto.getDealOption());
+                            FlowDto flowDto2 = new FlowDto(flowDto.getDealOption());
                             for (SignMerge s : mergeList) {
                                 resultMsg = flowService.dealFlowByBusinessKey(s.getMergeId(), FlowConstant.FLOW_SIGN_BMLD_SPW1, flowDto2, processInstance.getProcessDefinitionKey());
                                 if (resultMsg.isFlag() || Constant.MsgCode.FLOW_INSTANCE_NULL.getValue().equals(resultMsg.getReCode())
@@ -350,29 +426,31 @@ public class FlowAppServiceImpl implements FlowAppService {
 
                 workProgramRepo.save(wk);
 
-                //设定下一环节处理人
-                dealUser = userRepo.getCacheUserById(userDto.getOrgDto().getOrgSLeader());
-                assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
-                //下一环节还是自己
-                if (assigneeValue.equals(userDto.getId())) {
-                    isNextUser = true;
-                }
+                //设定下一环节处理人【主分支哪个领导安排部门工作方案则由他审批，次分支则按按照部门所在领导审批】
                 if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)) {
+                    sign = signRepo.findById(Sign_.signid.getName(), signid);
+                    assigneeValue = userService.getTaskDealId(sign.getLeaderId(), agentTaskList,nextNodeKey);
                     variables.put(FlowConstant.SignFlowParams.USER_FGLD1.getValue(), assigneeValue);
                     nextNodeKey = FlowConstant.FLOW_SIGN_FGLD_SPW1;
                 } else if (FlowConstant.SignFlowParams.BRANCH_INDEX2.getValue().equals(branchIndex)) {
+
+                    assigneeValue = userService.getTaskDealId(userDto.getOrgDto().getOrgSLeader(), agentTaskList,nextNodeKey);
                     variables.put(FlowConstant.SignFlowParams.USER_FGLD2.getValue(), assigneeValue);
                     nextNodeKey = FlowConstant.FLOW_SIGN_FGLD_SPW2;
                 } else if (FlowConstant.SignFlowParams.BRANCH_INDEX3.getValue().equals(branchIndex)) {
+                    assigneeValue = userService.getTaskDealId(userDto.getOrgDto().getOrgSLeader(), agentTaskList,nextNodeKey);
                     variables.put(FlowConstant.SignFlowParams.USER_FGLD3.getValue(), assigneeValue);
                     nextNodeKey = FlowConstant.FLOW_SIGN_FGLD_SPW3;
                 } else if (FlowConstant.SignFlowParams.BRANCH_INDEX4.getValue().equals(branchIndex)) {
+                    assigneeValue = userService.getTaskDealId(userDto.getOrgDto().getOrgSLeader(), agentTaskList,nextNodeKey);
                     variables.put(FlowConstant.SignFlowParams.USER_FGLD4.getValue(), assigneeValue);
                     nextNodeKey = FlowConstant.FLOW_SIGN_FGLD_SPW4;
                 }
-
+                //下一环节还是自己
+                if (assigneeValue.equals(curUserId)) {
+                    isNextUser = true;
+                }
                 break;
-
             //分管副主任审批工作方案
             case FlowConstant.FLOW_SIGN_FGLD_SPW1:
                 branchIndex = FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue();
@@ -393,11 +471,12 @@ public class FlowAppServiceImpl implements FlowAppService {
                 if (dealUser == null) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "项目还没分配主负责人，不能进行下一步操作！请联系主办部门进行负责人分配！");
                 }
-                assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
+                assigneeValue = userService.getTaskDealId(dealUser, agentTaskList, FLOW_SIGN_FW);
                 variables.put(FlowConstant.SignFlowParams.USER_FZR1.getValue(), assigneeValue);
 
                 //更改工作方案审核信息
                 wk = workProgramRepo.findBySignIdAndBranchId(signid, branchIndex, false);
+                workPGUtil = WorkPGUtil.create(wk);
 
                 //如果是主办流程，要判断是否有合并评审方案，有则跟着主项目一起办理
                 if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)) {
@@ -409,12 +488,12 @@ public class FlowAppServiceImpl implements FlowAppService {
                             flowDto2.setDealOption(flowDto.getDealOption());
                             for (SignMerge s : mergeList) {
                                 resultMsg = flowService.dealFlowByBusinessKey(s.getMergeId(), FlowConstant.FLOW_SIGN_FGLD_SPW1, flowDto2, processInstance.getProcessDefinitionKey());
-                                if (resultMsg.isFlag() || Constant.MsgCode.FLOW_INSTANCE_NULL.getValue().equals(resultMsg.getReCode())
+                                boolean isPass = resultMsg.isFlag()
+                                        || Constant.MsgCode.FLOW_INSTANCE_NULL.getValue().equals(resultMsg.getReCode())
                                         || Constant.MsgCode.FLOW_TASK_NULL.getValue().equals(resultMsg.getReCode())
                                         || Constant.MsgCode.FLOW_ACTIVI_NEQ.getValue().equals(resultMsg.getReCode())
-                                        || Constant.MsgCode.FLOW_NOT_MATCH.getValue().equals(resultMsg.getReCode())) {
-
-                                } else {
+                                        || Constant.MsgCode.FLOW_NOT_MATCH.getValue().equals(resultMsg.getReCode());
+                                if (!isPass) {
                                     return resultMsg;
                                 }
                             }
@@ -422,9 +501,7 @@ public class FlowAppServiceImpl implements FlowAppService {
                     }
                 }
 
-                wk.setLeaderSuggesttion(flowDto.getDealOption());
-                wk.setLeaderDate(new Date());
-                wk.setLeaderName(userDto.getDisplayName());
+                workPGUtil.setLeaderOption(flowDto.getDealOption(),new Date(),ActivitiUtil.getSignName(userDto.getDisplayName(),isAgentTask));
                 workProgramRepo.save(wk);
                 //完成分支的工作方案
                 signBranchRepo.updateFinishState(signid, branchIndex, Constant.EnumState.YES.getValue());
@@ -448,148 +525,267 @@ public class FlowAppServiceImpl implements FlowAppService {
                     }
                 }
                 break;
-
             //协办部长审批发文
             case FlowConstant.FLOW_SIGN_BMLD_QRFW_XB:
                 if (flowDto.getBusinessMap().get("AGREE") == null || !Validate.isString(flowDto.getBusinessMap().get("AGREE").toString())) {
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请选择同意或者不同意！");
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先勾选对应的审批结果！");
                 }
+                String dirDealOption = flowDto.getDealOption();
                 //如果同意，则到主办部长审批
                 if (Constant.EnumState.YES.getValue().equals(flowDto.getBusinessMap().get("AGREE").toString())) {
                     variables.put(FlowConstant.SignFlowParams.XBBZ_SP.getValue(), true);
                     //获取主分支的部门领导
-                    assigneeValue = getMainDirecotr(signid);
+                    assigneeValue = getMainDirecotr(signid, agentTaskList, FlowConstant.FLOW_SIGN_BMLD_QRFW);
                     variables.put(FlowConstant.SignFlowParams.USER_BZ1.getValue(), assigneeValue);
-                    flowDto.setDealOption(flowDto.getDealOption() + "【审批结果：通过】");
+                    flowDto.setDealOption(flowDto.getDealOption() + "【审批结果：核稿无误】");
+                    isCompeleteSign = ProjUtil.checkSignComplete(taskService.getVariables(task.getId()),1);
                     //如果不同意，则回退到发文环节
                 } else {
                     variables.put(FlowConstant.SignFlowParams.XBBZ_SP.getValue(), false);
-                    variables = buildMainPriUser(variables, signid, assigneeValue);
-                    flowDto.setDealOption(flowDto.getDealOption() + "【审批结果：不通过】");
+                    //获取第一负责人
+                    assigneeValue = getMainPriUserId(signid, agentTaskList,FlowConstant.FLOW_SIGN_FW);
+                    variables.put(FlowConstant.SignFlowParams.USER_FZR1.getValue(), assigneeValue);
+                    flowDto.setDealOption(flowDto.getDealOption() + "【审批结果：核稿有误】");
                 }
-                break;
-            //部长审批发文
-            case FlowConstant.FLOW_SIGN_BMLD_QRFW:
-                //获取所有分管领导信息
-                userList = signBranchRepo.findAssistSLeader(signid);
-                //排除主办分支的领导
-                if (Validate.isList(userList)) {
-                    orgDept = orgDeptRepo.queryBySignBranchId(signid, FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue());
-                    dealUser = userRepo.getCacheUserById(orgDept.getsLeaderID());
-                    for (int n = 0, l = userList.size(); n < l; n++) {
-                        if ((userList.get(n)).getId().equals(dealUser.getId())) {
-                            userList.remove(n);
-                            break;
-                        }
-                    }
-                }
-                boolean isHaveTwoSLeader = Validate.isList(userList);
-                variables.put(FlowConstant.SignFlowParams.HAVE_XB.getValue(), isHaveTwoSLeader);
-                //如果有协办
-                if (isHaveTwoSLeader) {
-                    assigneeValue = buildUser(userList);
-                    variables.put(FlowConstant.SignFlowParams.USER_XBFGLD_LIST.getValue(), StringUtil.getSplit(assigneeValue, ","));
-                    //没有协办，则流转给主办分管领导审批
-                } else {
-                    assigneeValue = getMainSLeader(signid);
-                    variables.put(FlowConstant.SignFlowParams.USER_FGLD1.getValue(), assigneeValue);
-                    //下一环节还是自己处理
-                    if (assigneeValue.equals(userDto.getId())) {
-                        isNextUser = true;
-                        nextNodeKey = FlowConstant.FLOW_SIGN_FGLD_QRFW;
-                    }
-                }
-
-                //修改发文信息
+                //协办部门的意见也要保存
                 businessId = flowDto.getBusinessMap().get("DIS_ID").toString();
                 dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
-                dp.setMinisterSuggesttion(flowDto.getDealOption());
-                dp.setMinisterDate(new Date());
-                dp.setMinisterName(userDto.getDisplayName());
+                String optionString2 = Validate.isString(dp.getMinisterSuggesttion()) ? (dp.getMinisterSuggesttion() + "<br>") : "";
+                dp.setMinisterSuggesttion(optionString2 + dirDealOption + " 签名：" + ActivitiUtil.getSignName(userDto.getDisplayName(),isAgentTask) + " 日期：" + DateUtils.converToString(new Date(), DateUtils.DATE_PATTERN));
+
                 dispatchDocRepo.save(dp);
+                break;
+            //部长审批发文
+            case FLOW_SIGN_BMLD_QRFW:
+                businessId = flowDto.getBusinessMap().get("DIS_ID").toString();
+                dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
+                disUtil = DisUtil.create(dp);
+                //是否是合并发文项目
+                if(disUtil.isMergeDis()){
+                    if(disUtil.isMainProj()){
+                        isMergeDisTask = true;
+                    }else{
+                        return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"合并发文的项目，只能由主项目进行操作！");
+                    }
+                }
+                if(isMergeDisTask){
+                    //合并发文主项目，另起一个方法处理
+                    returnResult = flowService.dealMerDisFlow(processInstance,task,dp,FLOW_SIGN_BMLD_QRFW,flowDto,isAgentTask);
+                }else{
+                    //获取主办分管领导
+                    sign = signRepo.findById(Sign_.signid.getName(), signid);
+                    User mainLead = userRepo.getCacheUserById(sign.getLeaderId());
+                    //获取所有分管领导信息
+                    userList = signBranchRepo.findAssistSLeader(signid);
+                    //排除主办分支的领导
+                    if (Validate.isList(userList)) {
+                        for (int n = 0, l = userList.size(); n < l; n++) {
+                            if ((userList.get(n)).getId().equals(mainLead.getId())) {
+                                userList.remove(n);
+                                break;
+                            }
+                        }
+                    }
+                    boolean isHaveTwoSLeader = Validate.isList(userList);
+                    variables.put(FlowConstant.SignFlowParams.HAVE_XB.getValue(), isHaveTwoSLeader);
+                    //如果有协办
+                    if (isHaveTwoSLeader) {
+                        //如果只有两个分管领导的情况，当另外一个是兼职主任时，自动跳过协审部长审批环节
+                        if (userList.size() == 1) {
+                            dealUser = userList.get(0);
+                            Set<String> rolesName = userRepo.getUserRoles(dealUser.getLoginName());
+                            //如果是主任角色，自动处理协办分管主任环节信息
+                            boolean isDirector = false;
+                            flowDto.getBusinessMap().put("isDirector", false);
+                            for (Object str : rolesName) {//循环判断是否是部门负责人
+                                if (str.equals(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())) {
+                                    isDirector = true;
+                                    break;
+                                }
+                            }
+                            if (isDirector) {
+                                isNextUser = true;
+                                nextNodeKey = FlowConstant.FLOW_SIGN_FGLD_QRFW_XB;
+                                flowDto.getBusinessMap().put("AGREE", EMPTY_STRING); //暂留空
+                                flowDto.getBusinessMap().put("isDirector", true);
+                            }
+                        }
+                        for (int i = 0, l = userList.size(); i < l; i++) {
+                            String userId = userService.getTaskDealId(userList.get(i).getId(), agentTaskList,FlowConstant.FLOW_SIGN_FGLD_QRFW_XB);
+                            assigneeValue = StringUtil.joinString(assigneeValue, SEPARATE_COMMA, userId);
+                        }
+                        variables.put(FlowConstant.SignFlowParams.USER_XBFGLD_LIST.getValue(), StringUtil.getSplit(assigneeValue, SEPARATE_COMMA));
+
+                        //没有协办，则流转给主办分管领导审批
+                    } else {
+                        assigneeValue = Validate.isString(mainLead.getTakeUserId()) ? mainLead.getTakeUserId() : mainLead.getId();
+                        variables.put(FlowConstant.SignFlowParams.USER_FGLD1.getValue(), assigneeValue);
+                        //下一环节还是自己处理
+                        if (assigneeValue.equals(curUserId)) {
+                            isNextUser = true;
+                            nextNodeKey = FlowConstant.FLOW_SIGN_FGLD_QRFW;
+                        }
+                    }
+
+                    //修改发文信息
+                    if (dp.getBranchCount() == 1) {
+                        dp.setMinisterSuggesttion(flowDto.getDealOption());
+                    } else {
+                        String optionString3 = Validate.isString(dp.getMinisterSuggesttion()) ? (dp.getMinisterSuggesttion() + "<br>") : "";
+                        dp.setMinisterSuggesttion(optionString3 + flowDto.getDealOption() + " 签名：" + ActivitiUtil.getSignName(userDto.getDisplayName(),isAgentTask) + "   日期：" + DateUtils.converToString(new Date(), DateUtils.DATE_PATTERN));
+                    }
+                    //发文日期也要保存下
+                    dp.setMinisterDate(new Date());
+                    dp.setMinisterName(ActivitiUtil.getSignName(userDto.getDisplayName(),isAgentTask));
+                    dispatchDocRepo.save(dp);
+                }
                 break;
             //协办分管领导审批发文
             case FlowConstant.FLOW_SIGN_FGLD_QRFW_XB:
-                if (flowDto.getBusinessMap().get("AGREE") == null || !Validate.isString(flowDto.getBusinessMap().get("AGREE").toString())) {
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请选择同意或者不同意！");
+                Boolean isDirector = (Boolean) flowDto.getBusinessMap().get("isDirector");
+                if (null != isDirector && isDirector) {
+                } else {
+                    if (flowDto.getBusinessMap().get("AGREE") == null || !Validate.isString(flowDto.getBusinessMap().get("AGREE").toString())) {
+                        return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先勾选对应的审批结果！");
+                    }
                 }
                 //如果同意
-                if (Constant.EnumState.YES.getValue().equals(flowDto.getBusinessMap().get("AGREE").toString())) {
+                String agreeString = flowDto.getBusinessMap().get("AGREE").toString();
+                if (Constant.EnumState.YES.getValue().equals(agreeString) || EMPTY_STRING.equals(agreeString)) {
                     variables.put(FlowConstant.SignFlowParams.XBFZR_SP.getValue(), true);
-                    assigneeValue = getMainSLeader(signid);
+                    //获取主办分管领导
+                    sign = signRepo.findById(Sign_.signid.getName(), signid);
+                    assigneeValue = userService.getTaskDealId(sign.getLeaderId(), agentTaskList,FlowConstant.FLOW_SIGN_FGLD_QRFW);
                     variables.put(FlowConstant.SignFlowParams.USER_FGLD1.getValue(), assigneeValue);
+                    if (EMPTY_STRING.equals(agreeString)) {
+                        flowDto.setDealOption(EMPTY_STRING);
+                    }
                     //不同意则回退到发文申请环节
                 } else {
                     variables.put(FlowConstant.SignFlowParams.XBFZR_SP.getValue(), false);
-                    variables = buildMainPriUser(variables, signid, assigneeValue);
-                    flowDto.setDealOption(flowDto.getDealOption() + "【审批结果：不通过】");
+                    //获取第一负责人
+                    assigneeValue = getMainPriUserId(signid, agentTaskList,FlowConstant.FLOW_SIGN_FW);
+                    variables.put(FlowConstant.SignFlowParams.USER_FZR1.getValue(), assigneeValue);
+                    flowDto.setDealOption(flowDto.getDealOption() + "【审批结果：核稿有误】");
                 }
+                //修改发文信息
+                businessId = flowDto.getBusinessMap().get("DIS_ID").toString();
+                dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
+                String vdSugMin = Validate.isString(dp.getViceDirectorSuggesttion()) ? (dp.getViceDirectorSuggesttion() + "<br>") : "";
+                dp.setViceDirectorSuggesttion(vdSugMin + flowDto.getDealOption() + " 签名：" + ActivitiUtil.getSignName(userDto.getDisplayName(),isAgentTask) + "   日期：" + DateUtils.converToString(new Date(), DateUtils.DATE_PATTERN));
+                dp.setMoreLeader(1);
+                dispatchDocRepo.save(dp);
                 break;
-            //分管领导审批发文
+            //主办分管主任审批发文
             case FlowConstant.FLOW_SIGN_FGLD_QRFW:
                 userList = userRepo.findUserByRoleName(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue());
                 if (!Validate.isList(userList)) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先设置【" + Constant.EnumFlowNodeGroupName.DIRECTOR.getValue() + "】角色用户！");
                 }
-                dealUser = userList.get(0);
-                assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
-                variables.put(FlowConstant.SignFlowParams.USER_ZR.getValue(), assigneeValue);
-
-                //修改发文信息
                 businessId = flowDto.getBusinessMap().get("DIS_ID").toString();
                 dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
-                dp.setViceDirectorSuggesttion(flowDto.getDealOption());
-                dp.setViceDirectorDate(new Date());
-                dp.setViceDirectorName(userDto.getDisplayName());
-                dispatchDocRepo.save(dp);
-                //下一环节还是自己处理
-                if (assigneeValue.equals(userDto.getId())) {
-                    isNextUser = true;
-                    nextNodeKey = FlowConstant.FLOW_SIGN_ZR_QRFW;
+                disUtil = DisUtil.create(dp);
+                //是否是合并发文项目
+                if(disUtil.isMergeDis()){
+                    if(disUtil.isMainProj()){
+                        isMergeDisTask = true;
+                    }else{
+                        return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"合并发文的项目，只能由主项目进行操作！");
+                    }
+                }
+                if(isMergeDisTask){
+                    //合并发文主项目，另起一个方法处理
+                    returnResult = flowService.dealMerDisFlow(processInstance,task,dp,FLOW_SIGN_FGLD_QRFW,flowDto,isAgentTask);
+                }else{
+                    dealUser = userList.get(0);
+                    assigneeValue = userService.getTaskDealId(dealUser, agentTaskList, FLOW_SIGN_ZR_QRFW);
+                    variables.put(FlowConstant.SignFlowParams.USER_ZR.getValue(), assigneeValue);
+
+                    //修改发文信息
+                    if (dp.getMoreLeader() == 1) {
+                        String vdSug = Validate.isString(dp.getViceDirectorSuggesttion()) ? (dp.getViceDirectorSuggesttion() + "<br>") : "";
+                        dp.setViceDirectorSuggesttion(vdSug + flowDto.getDealOption() + "  签名：" + ActivitiUtil.getSignName(userDto.getDisplayName(),isAgentTask) + "   日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
+                    } else {
+                        dp.setViceDirectorSuggesttion(flowDto.getDealOption());
+                    }
+                    dp.setViceDirectorDate(new Date());
+                    dp.setViceDirectorName(ActivitiUtil.getSignName(userDto.getDisplayName(),isAgentTask));
+                    dispatchDocRepo.save(dp);
+                    //下一环节还是自己处理
+                    if (assigneeValue.equals(userDto.getId())) {
+                        isNextUser = true;
+                        nextNodeKey = FLOW_SIGN_ZR_QRFW;
+                    }
                 }
                 break;
             //主任审批发文
-            case FlowConstant.FLOW_SIGN_ZR_QRFW:
+            case FLOW_SIGN_ZR_QRFW:
                 businessId = flowDto.getBusinessMap().get("DIS_ID").toString();
                 dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
-                dp.setDirectorSuggesttion(flowDto.getDealOption());
-                dp.setDirectorDate(new Date());
-                dp.setDirectorName(userDto.getDisplayName());
-                dispatchDocRepo.save(dp);
+                disUtil = DisUtil.create(dp);
+                //是否是合并发文项目
+                if(disUtil.isMergeDis()){
+                    if(disUtil.isMainProj()){
+                        isMergeDisTask = true;
+                    }else{
+                        return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"合并发文的项目，只能由主项目进行操作！");
+                    }
+                }
+                if(isMergeDisTask){
+                    //合并发文主项目，另起一个方法处理
+                    returnResult = flowService.dealMerDisFlow(processInstance,task,dp,FLOW_SIGN_ZR_QRFW,flowDto,isAgentTask);
+                }else{
+                    dp.setDirectorSuggesttion(flowDto.getDealOption());
+                    dp.setDirectorDate(new Date());
+                    dp.setDirectorName(ActivitiUtil.getSignName(userDto.getDisplayName(),isAgentTask));
+                    dispatchDocRepo.save(dp);
 
-                //项目负责人生成发文编号
-                variables = buildMainPriUser(variables, signid, assigneeValue);
+                    //获取第一负责人
+                    assigneeValue = getMainPriUserId(signid, agentTaskList,FlowConstant.FLOW_SIGN_FWBH);
+                    variables.put(FlowConstant.SignFlowParams.USER_FZR1.getValue(), assigneeValue);
+                }
+
                 break;
+
             default:
                 ;
         }
 
-        taskService.addComment(task.getId(), processInstance.getId(), flowDto.getDealOption());    //添加处理信息
-        if (flowDto.isEnd()) {
-            taskService.complete(task.getId());
-        } else {
-            taskService.complete(task.getId(), variables);
-            //如果下一环节还是自己
-            if (isNextUser) {
-                List<Task> nextTaskList = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskAssignee(assigneeValue).list();
-                for (Task t : nextTaskList) {
-                    if (nextNodeKey.equals(t.getTaskDefinitionKey())) {
-                        ResultMsg returnMsg = dealFlow(processInstance, t, flowDto, userDto);
-                        if (returnMsg.isFlag() == false) {
-                            return returnMsg;
+        if(isMergeDisTask){
+            //如果是合并发文项目，直接返回处理结果
+            return returnResult;
+        }else{
+            taskService.addComment(task.getId(), processInstance.getId(), flowDto.getDealOption());    //添加处理信息
+            if (flowDto.isEnd()) {
+                taskService.complete(task.getId());
+            } else {
+                taskService.complete(task.getId(), variables);
+                //如果下一环节还是自己
+                if (isNextUser) {
+                    List<Task> nextTaskList = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskAssignee(assigneeValue).list();
+                    for (Task t : nextTaskList) {
+                        if (nextNodeKey.equals(t.getTaskDefinitionKey())) {
+                            ResultMsg returnMsg = dealFlow(processInstance, t, flowDto,userDto);
+                            if (returnMsg.isFlag() == false) {
+                                return returnMsg;
+                            }
+                            break;
                         }
-                        break;
                     }
                 }
             }
-        }
 
-        if (isNextUser == false) {
-            //放入腾讯通消息缓冲池
-            RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
-        }
+            if (isNextUser == false && isCompeleteSign) {
+                //放入腾讯通消息缓冲池
+                RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
+            }
+            //如果是代办，还要更新环节名称和任务ID
+            if (Validate.isList(agentTaskList)) {
+                agentTaskService.updateAgentInfo(agentTaskList,processInstance.getId(),processInstance.getName());
+            }
 
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+        }
     }
 
     /**
@@ -601,6 +797,12 @@ public class FlowAppServiceImpl implements FlowAppService {
         OrgDept orgDept = orgDeptRepo.queryBySignBranchId(signid, FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue());
         User dealUser = userRepo.getCacheUserById(orgDept.getDirectorID());
         return Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
+    }
+
+    @Override
+    public String getMainDirecotr(String signid, List<AgentTask> agentTaskList,String nodeKey) {
+        OrgDept orgDept = orgDeptRepo.queryBySignBranchId(signid, FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue());
+        return userService.getTaskDealId(orgDept.getDirectorID(), agentTaskList,nodeKey);
     }
 
     private String buildUser(List<User> userList) {
@@ -1201,6 +1403,12 @@ public class FlowAppServiceImpl implements FlowAppService {
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+    }
+
+    @Override
+    public String getMainPriUserId(String signid, List<AgentTask> agentTaskList,String nodeKey) {
+        User dealUser = signPrincipalService.getMainPriUser(signid);
+        return userService.getTaskDealId(dealUser, agentTaskList,nodeKey);
     }
 
 }

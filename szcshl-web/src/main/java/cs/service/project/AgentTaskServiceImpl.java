@@ -2,6 +2,7 @@ package cs.service.project;
 
 import cs.common.HqlBuilder;
 import cs.common.RandomGUID;
+import cs.common.constants.FlowConstant;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
@@ -30,6 +31,7 @@ import java.util.List;
  */
 @Service
 public class AgentTaskServiceImpl implements AgentTaskService{
+
     @Autowired
     private UserRepo userRepo;
     @Autowired
@@ -110,4 +112,93 @@ public class AgentTaskServiceImpl implements AgentTaskService{
         criteria.add(Restrictions.eq(AgentTask_.agentUserId.getName(),agentUserId));
         return (AgentTask) criteria.uniqueResult();
     }
+
+    /**
+     * app待办部长以上审批
+     * @param userName
+     * @return
+     */
+    @Override
+    public Boolean angentUserForApp(String userName) {
+        Criteria criteria = agentTaskRepo.getExecutableCriteria();
+        criteria.add(Restrictions.eq(AgentTask_.agentUserName.getName(),userName));
+        List<AgentTask> agentTaskList = criteria.list();
+        String nodeKey = "";
+        boolean flag = false;
+        for(AgentTask agentTask : agentTaskList){
+            nodeKey = agentTask.getNodeKey();
+            if(Validate.isString(agentTask.getNodeKey())){
+                flag = isExistLeaderNode(nodeKey);
+               if(flag){
+                   break;
+               }
+            }
+        }
+        return flag;
+    }
+
+
+    public boolean isExistLeaderNode(String nodeKey){
+        boolean flag = false;
+        switch (nodeKey){
+            case FlowConstant.FLOW_SIGN_FGLD_FB:
+                flag = true;
+                break;
+            case FlowConstant.FLOW_SIGN_BMFB1:
+                flag = true;
+                break;
+            case FlowConstant.FLOW_SIGN_BMFB2:
+                flag = true;
+                break;
+            case FlowConstant.FLOW_SIGN_BMFB3:
+                flag = true;
+                break;
+            case FlowConstant.FLOW_SIGN_BMFB4:
+                flag = true;
+                break;
+            case FlowConstant.FLOW_SIGN_BMLD_SPW1:
+                flag = true;
+                break;
+            case FlowConstant.FLOW_SIGN_BMLD_SPW2:
+                flag = true;
+                break;
+            case FlowConstant.FLOW_SIGN_BMLD_SPW3:
+                flag = true;
+                break;
+            case FlowConstant.FLOW_SIGN_BMLD_SPW4:
+                flag = true;
+                break;
+            case FlowConstant.FLOW_SIGN_FGLD_SPW1:
+                flag = true;
+                break;
+            case FlowConstant.FLOW_SIGN_FGLD_SPW2:
+                flag = true;
+                break;
+            case FlowConstant.FLOW_SIGN_FGLD_SPW3:
+                flag = true;
+                break;
+            case FlowConstant.FLOW_SIGN_FGLD_SPW4:
+                flag = true;
+                break;
+            case FlowConstant.FLOW_SIGN_BMLD_QRFW_XB:
+                flag = true;
+                break;
+            case FlowConstant.FLOW_SIGN_BMLD_QRFW:
+                flag = true;
+                break;
+            case FlowConstant.FLOW_SIGN_FGLD_QRFW_XB:
+                flag = true;
+                break;
+            case FlowConstant.FLOW_SIGN_FGLD_QRFW:
+                flag = true;
+                break;
+            case FlowConstant.FLOW_SIGN_ZR_QRFW:
+                flag = true;
+                break;
+            default:
+                ;
+        }
+        return flag;
+    }
+
 }

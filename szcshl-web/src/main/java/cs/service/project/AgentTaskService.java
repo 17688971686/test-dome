@@ -54,4 +54,6 @@ public interface AgentTaskService {
      * @return
      */
     AgentTask getByTaskId(String taskId,String agentUserId);
+
+    Boolean  angentUserForApp(String userName);
 }
