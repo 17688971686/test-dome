@@ -48,7 +48,7 @@ public class FileRecordRepoImpl  extends AbstractRepository<FileRecord, String> 
          * 根据存档编号：的年份获取当前年份最大序号，而不是根据存档日期获取最大序号（update:2018-08-17）FILENO
          */
         int yearNameL = yearName.length();
-        sqlBuilder.append(" where fileNo like :fileNo ").setParam("fileNo","%seqType%"+ StringUtil.getSubString(yearName,yearNameL-2,yearNameL));
+        sqlBuilder.append(" where fileNo like :fileNo ").setParam("fileNo","%"+seqType+ StringUtil.getSubString(yearName,yearNameL-2,yearNameL)+"%");
         //概算类
         if(Constant.FILE_RECORD_KEY.GD.getValue().equals(seqType)){
             sqlBuilder.append(" and "+FileRecord_.fileReviewstage.getName() +" = :stage ");
