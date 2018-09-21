@@ -4,6 +4,7 @@ import cs.mobile.util.TokenUtil;
 import cs.common.ResultMsg;
 import cs.common.utils.Validate;
 import cs.domain.sys.User;
+import cs.service.project.AgentTaskService;
 import cs.service.sys.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,6 +25,9 @@ public class LoginCtrl{
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private AgentTaskService agentTaskService;
+
     @RequestMapping(name = "手机登录", path = "signin", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg signIn(@RequestParam String username, @RequestParam String password){
@@ -43,7 +47,10 @@ public class LoginCtrl{
         user.setToken(userToken);
         String level = userService.getUserLevel(user);
         if("0".equals(level)){
-            return ResultMsg.error("普通用户没有权限登录！");
+           boolean flag = agentTaskService.angentUserForApp(username);
+           if(!flag){
+               return ResultMsg.error("没有权限登录！");
+           }
         }
         userService.saveUser(user);
         ResultMsg resultMsg = ResultMsg.ok("登录成功！");
