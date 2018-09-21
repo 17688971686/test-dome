@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, Alert, ScrollView, WebView, Dimensions, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, Alert, ScrollView, WebView, Dimensions, StyleSheet, TouchableOpacity,AsyncStorage} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Header from '../../component/HeaderComponent'
 import ChartComponent from "../../component/ECharts/ChartComponent";
@@ -14,24 +14,28 @@ export default class ListScreen extends React.Component {
             data: '',
             surplusDays: [],
             lineSign: '',
-            proMeetInfo: ''
+            proMeetInfo: '',
+            userName:''
         };
-    }
-
-    componentDidMount() {
+    };
+    loadData(){
         axios({
             url: "/agenda/getHomeProjInfo",
             method: "post",
             params: {
-                username: '张一帆'
+                username: this.state.userName
             },
         })
             .then((res) => {
                 if (res.data.reCode === 'ok') {
-                    let surplusDays = [], projectName = [];
+                    let surplusDays = [], projectName = [],dayArr=[];
                     for (let item of res.data.reObj.lineSign) {
                         surplusDays.push(item.surplusDays);
                         projectName.push(item.projectName)
+                    }
+                    for(let item of surplusDays){
+                        item = item < -3 ? -3:item;
+                        dayArr.push(item);
                     }
                     let lineOptions = {
                         title: {
@@ -58,13 +62,15 @@ export default class ListScreen extends React.Component {
                             name: '剩余工作日',
                             axisLabel: {
                                 formatter: '{value}天'
-                            }
+                            },
+                            min:-3,
+                            max:15,
                         },
                         series: [
                             {
                                 name: '剩余工作日',
                                 type: 'line',
-                                data: surplusDays,
+                                data: dayArr,
                                 showAllSymbol: true,
                                 markPoint: {
                                     data: [
@@ -86,6 +92,18 @@ export default class ListScreen extends React.Component {
             .catch(error => {
                 console.log(error)
             });
+    }
+    componentDidMount() {
+        AsyncStorage.getItem('userName', (error, result) => {
+            if (!error) {
+                this.setState({
+                    userName: result
+                },()=>this.loadData());
+            } else {
+                console.log(error);
+            }
+        });
+
     }
 
     //获取N天后的日期
@@ -109,29 +127,17 @@ export default class ListScreen extends React.Component {
                 <Header title={'评审系统'}/>
                 <View style={styles.headerBg}/>
                 <View style={styles.header}>
-                    <TouchableOpacity activeOpacity={0.8} style={styles.headItem}>
+                    <TouchableOpacity activeOpacity={0.8} style={styles.headItem} onPress={()=>this.props.navigation.navigate('leadpro')}>
                         <View style={styles.iconView}>
                             <Icon name='ios-list-box' size={35} color={'#ff9700'}/>
                         </View>
-                        <Text>待办项目</Text>
+                        <Text>项目审批</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity activeOpacity={0.8} style={styles.headItem}>
-                        <View style={styles.iconView}>
-                            <Icon name='ios-list-box' size={35} color={'#15BC83'}/>
-                        </View>
-                        <Text>待办任务</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity activeOpacity={0.8} style={styles.headItem}>
+                    <TouchableOpacity activeOpacity={0.8} style={styles.headItem} onPress={()=>this.props.navigation.navigate('Project')}>
                         <View style={styles.iconView}>
                             <Icon name='ios-list-box' size={35} color={'#1E5AAF'}/>
                         </View>
-                        <Text>项目查询</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity activeOpacity={0.8} style={styles.headItem}>
-                        <View style={styles.iconView}>
-                            <Icon name='ios-list-box' size={35} color={'#FF4800'}/>
-                        </View>
-                        <Text>项目统计</Text>
+                        <Text>项目查询统计</Text>
                     </TouchableOpacity>
                 </View>
                 <View>
@@ -139,9 +145,9 @@ export default class ListScreen extends React.Component {
                         <View style={styles.chartTitle}>
                             <View style={styles.line}/>
                             <Text style={styles.titleStyle}>项目办理情况</Text>
-                            <TouchableOpacity onPress={() => navigation.navigate('ProjectManagementScreen')}>
+                           {/* <TouchableOpacity onPress={() => navigation.navigate('ProjectManagementScreen')}>
                                 <Text style={styles.more}>查看更多</Text>
-                            </TouchableOpacity>
+                            </TouchableOpacity>*/}
                         </View>
                         <View style={styles.chartView}>
                             <ChartComponent

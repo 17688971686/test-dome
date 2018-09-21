@@ -35,11 +35,11 @@ export default class MyselfScreen extends React.Component {
                         <Text style={{color: '#fff', fontSize: 16}}>{this.state.username}</Text>
                     </View>
                 </View>
-                <TouchableOpacity activeOpacity={0.8} style={styles.itemView}
+                {/*<TouchableOpacity activeOpacity={0.8} style={styles.itemView}
                                   onPress={() => navigation.navigate('BasicInfoScreen')}>
                     <Icon style={styles.itemIcon} color={'#15bc83'} name='ios-contact' size={28}/>
                     <Text style={styles.itemText}>账户基本信息</Text>
-                </TouchableOpacity>
+                </TouchableOpacity>*/}
                 <TouchableOpacity activeOpacity={0.8} style={styles.itemView}
                                   onPress={() => navigation.navigate('SetUpScreen')}>
                     <Icon style={styles.itemIcon} color={'#5482c2'} name='ios-cog' size={28}/>
