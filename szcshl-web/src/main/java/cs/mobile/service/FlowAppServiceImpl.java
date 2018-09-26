@@ -273,7 +273,7 @@ public class FlowAppServiceImpl implements FlowAppService {
                         assigneeValue = StringUtil.joinString(assigneeValue, SysConstants.SEPARATE_COMMA, userId);
                         obj.setSignId(signid);
                         obj.setFlowBranch(branchIndex);
-                        obj.setUserType(new String(obj.getUserType().getBytes("ISO-8859-1"),"UTF-8"));
+                       // obj.setUserType(new String(obj.getUserType().getBytes("ISO-8859-1"),"UTF-8"));
                         signPriListNew.add(obj);
                         //设置负责人信息
                         if (Constant.EnumState.YES.getValue().equals(obj.getIsMainUser())) {

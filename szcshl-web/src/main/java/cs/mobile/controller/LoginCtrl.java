@@ -31,11 +31,11 @@ public class LoginCtrl{
     @RequestMapping(name = "手机登录", path = "signin", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg signIn(@RequestParam String username, @RequestParam String password){
-        try {
+     /*   try {
             username = new String(username.getBytes("ISO-8859-1"),"UTF-8");
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
         User user = userService.findByName(username);
         if(!Validate.isObject(user)){
             return ResultMsg.error("账号密码不正确！");
