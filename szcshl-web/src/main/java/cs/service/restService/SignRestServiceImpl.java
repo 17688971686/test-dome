@@ -351,7 +351,7 @@ public class SignRestServiceImpl implements SignRestService {
         dispatchDocService.updateDisApprValue(dispatchDoc.getId(), signDto.getDeclaration());
         boolean isLoginUser = Validate.isString(SessionUtil.getUserId());
         //开始下载pdf
-        checkDownLoadFile(resultMsg, isGetFiles, sign.getSignid(), signDto.getSysFileDtoList(), isLoginUser ? SessionUtil.getUserId() : SUPER_ACCOUNT, Constant.SysFileType.SIGN.getValue(), Constant.SysFileType.TEMOLATE.getValue());
+        checkDownLoadFile(resultMsg, isGetFiles, sign.getSignid(), signDto.getSysFileDtoList(), isLoginUser ? SessionUtil.getUserId() : SUPER_ACCOUNT, Constant.SysFileType.SIGN.getValue(), "委批复文件");
         return resultMsg;
     }
 
