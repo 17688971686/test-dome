@@ -140,7 +140,7 @@ public class FlowAppController {
         FlowDto flowDto = JSONObject.parseObject(flowObj, FlowDto.class);
         if(Validate.isObject(flowDto)){
             String  dealOption = flowDto.getDealOption();
-            try {
+         /*   try {
                 username = new String(username.getBytes("ISO-8859-1"),"UTF-8");
 
                 if(Validate.isString(flowDto.getDealOption())){
@@ -155,7 +155,7 @@ public class FlowAppController {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-            }
+            }*/
 
         }
         UserDto userDto=userService.findUserByName(username);
@@ -253,11 +253,11 @@ public class FlowAppController {
         FlowDto flowDto = new FlowDto();
         flowDto.setProcessInstanceId(processInstanceId);
         flowDto.setEnd(false);
-        try {
+   /*     try {
             username = new String(username.getBytes("ISO-8859-1"),"UTF-8");
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
         User u = userService.findByName(username);
         //获取当前任务数据
         Task task = taskService.createTaskQuery().taskId(taskId).active().singleResult();

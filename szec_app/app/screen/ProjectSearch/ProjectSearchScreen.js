@@ -1,7 +1,4 @@
-/**
- * 广西百色重大项目管理系统 市层面重大项目信息
- * @author: tzg
- */
+
 import React from "react";
 import {
     View,

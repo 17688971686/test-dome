@@ -75,11 +75,11 @@ public class ProgramTaskController {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<RuProcessTask> pageModelDto = new PageModelDto<RuProcessTask>();
         String name = request.getParameter("username");
-        try {
+    /*    try {
             name = new String(name.getBytes("ISO-8859-1"),"UTF-8");
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
         String curUserId = "";
         if(!Validate.isString(name)){
             return pageModelDto;
@@ -102,11 +102,11 @@ public class ProgramTaskController {
     @ResponseBody
     public ResultMsg getHomeProjInfo(HttpServletRequest request) throws ParseException, IOException, ClassNotFoundException {
         String name = request.getParameter("username");
-        try {
+ /*       try {
             name = new String(name.getBytes("ISO-8859-1"),"UTF-8");
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
         User u = userService.findByName(name);
         if(!Validate.isObject(u)){
             return ResultMsg.error("该用户不存在！");
