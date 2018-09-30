@@ -6,7 +6,10 @@ import cs.common.constants.Constant;
 import cs.common.constants.FlowConstant;
 import cs.common.utils.Validate;
 import cs.domain.flow.HiProcessTask;
+import cs.domain.project.SignBranch;
 import cs.domain.sys.Log;
+import cs.domain.sys.OrgDept;
+import cs.domain.sys.OrgDept_;
 import cs.domain.sys.User;
 import cs.mobile.service.FlowAppService;
 import cs.mobile.service.IFlowApp;
@@ -15,6 +18,7 @@ import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.flow.Node;
 import cs.model.sys.UserDto;
+import cs.repository.repositoryImpl.sys.OrgDeptRepo;
 import cs.service.archives.ArchivesLibraryService;
 import cs.service.asserts.assertStorageBusiness.AssertStorageBusinessService;
 import cs.service.book.BookBuyBusinessService;
@@ -24,6 +28,7 @@ import cs.service.flow.IFlow;
 import cs.service.monthly.MonthlyNewsletterService;
 import cs.service.project.AddSuppLetterService;
 import cs.service.project.ProjectStopService;
+import cs.service.project.SignBranchService;
 import cs.service.project.SignService;
 import cs.service.reviewProjectAppraise.AppraiseService;
 import cs.service.rtx.RTXService;
@@ -40,9 +45,11 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.log4j.Logger;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
@@ -130,6 +137,12 @@ public class FlowAppController {
     private RTXService rtxService;
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private OrgDeptRepo orgDeptRepo;
+
+    @Autowired
+    private SignBranchService signBranchService;
 
 
 
@@ -347,6 +360,66 @@ public class FlowAppController {
         pageModelDto.setCount(list.size());
         pageModelDto.setValue(list);
         return pageModelDto;
+    }
+
+
+
+    @RequestMapping(name = "项目重新分办", path = "getBack", method = RequestMethod.POST)
+    @ResponseBody
+    @Transactional
+    public ResultMsg getBack(@RequestParam(required = true) String taskId, String businessKey,String username) {
+        String backActivityId = "", branch = "";
+        UserDto userDto = userService.findUserByName(username);
+        User user = userService.findByName(username);
+        String level = userService.getUserLevel(user);
+        if (Validate.isString(level) && (level.equals("1") || level.equals("2"))) {
+            backActivityId = FlowConstant.FLOW_SIGN_FGLD_FB;
+        } else {
+            OrgDept orgDept = orgDeptRepo.findById(OrgDept_.directorID.getName(),user.getId());
+            if ((Validate.isString(level) && level.equals("3")) || null != orgDept) {
+                //根据当前用户所在部门ID，查询是哪个分支的取回
+                SignBranch signBranch = signBranchService.findByOrgDirector(businessKey, orgDept.getId());
+                if (signBranch != null) {
+                    branch = signBranch.getBranchId();
+                    if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branch)) {
+                        backActivityId = FlowConstant.FLOW_SIGN_BMFB1;
+                    } else if (FlowConstant.SignFlowParams.BRANCH_INDEX2.getValue().equals(branch)) {
+                        backActivityId = FlowConstant.FLOW_SIGN_BMFB2;
+                    } else if (FlowConstant.SignFlowParams.BRANCH_INDEX3.getValue().equals(branch)) {
+                        backActivityId = FlowConstant.FLOW_SIGN_BMFB3;
+                    } else if (FlowConstant.SignFlowParams.BRANCH_INDEX4.getValue().equals(branch)) {
+                        backActivityId = FlowConstant.FLOW_SIGN_BMFB4;
+                    }
+                } else {
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，你没有权限进行此操作！");
+                }
+            }
+        }
+        if (Validate.isString(backActivityId)) {
+            ResultMsg result = null;
+            try {
+                result = flowAppService.callBackProcess(taskId, backActivityId, businessKey, Validate.isString(branch) ? false : true,userDto);
+                //取回成功,则删除相应的分支信息
+                if (result.isFlag()) {
+                    signService.deleteBranchInfo(businessKey, Validate.isString(branch) ? branch : null);
+                }
+                return result;
+            } catch (Exception e) {
+                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "流程回退失败，请联系系统管理员查看！");
+            }
+        } else {
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，你没有权限进行此操作！");
+        }
+    }
+
+
+    @RequestMapping(name = "流程回退", path = "rollbacklast", method = RequestMethod.POST)
+    @ResponseBody
+    @Transactional
+    public ResultMsg rollBackLast(String flowObj) {
+        FlowDto flowDto = JSONObject.parseObject(flowObj, FlowDto.class);
+        ResultMsg resultMsg = flowService.rollBackLastNode(flowDto);
+        return resultMsg;
     }
 
 

@@ -31,10 +31,22 @@ import cs.service.flow.FlowService;
 import cs.service.project.*;
 import cs.service.rtx.RTXSendMsgPool;
 import cs.service.sys.UserService;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.impl.RepositoryServiceImpl;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.impl.pvm.PvmTransition;
+import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
+import org.activiti.engine.impl.pvm.process.TransitionImpl;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.log4j.Logger;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.query.NativeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -102,6 +114,15 @@ public class FlowAppServiceImpl implements FlowAppService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private RuntimeService runtimeService;
+
+    @Autowired
+    private SessionFactory sessionFactory;
+
+    @Autowired
+    private RepositoryService repositoryService;
 
     @Override
     @Transactional
@@ -1409,6 +1430,281 @@ public class FlowAppServiceImpl implements FlowAppService {
     public String getMainPriUserId(String signid, List<AgentTask> agentTaskList,String nodeKey) {
         User dealUser = signPrincipalService.getMainPriUser(signid);
         return userService.getTaskDealId(dealUser, agentTaskList,nodeKey);
+    }
+
+
+    /**
+     * 取回流程
+     *
+     * @param taskId      当前任务ID
+     * @param activityId  取回节点ID
+     * @param businessKey 删除工作方案的singId
+     * @return ResultMsg
+     */
+    @Override
+    public ResultMsg callBackProcess(String taskId, String activityId, String businessKey, boolean allBranch,UserDto userDto) throws Exception {
+        if (!Validate.isString(activityId)) {
+            throw new Exception("目标节点ID为空！");
+        }
+        ProcessInstance ProcessInstance = findProcessInstanceByTaskId(taskId);
+        taskService.addComment(taskId, ProcessInstance.getId(), "【" + userDto.getDisplayName() + "】重新分办");    //添加处理信息
+        if (allBranch) {
+            // 如果是删除所有分支，查找所有并行任务节点，同时取回
+            List<Task> taskList = findTaskListByKey(ProcessInstance.getId());
+            for (Task task : taskList) {
+                if (task.getId().equals(taskId)) {
+                    //取回项目流程
+                    commitProcess(task.getId(), null, activityId);
+                } else {
+                    //删除流程实例
+                    deleteTask(task.getId(), task.getExecutionId());
+                }
+            }
+        } else {
+            //如果只是取回当前任务
+            Task task = taskService.createTaskQuery().taskId(taskId).active().singleResult();
+            if (task != null) {
+                commitProcess(task.getId(), null, activityId);
+            } else {
+                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，该任务已提交！请重新刷新再试!");
+            }
+        }
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+    }
+
+
+
+
+    /**
+     * 根据任务ID获取对应的流程实例
+     *
+     * @param taskId 任务ID
+     * @return
+     * @throws Exception
+     */
+    private ProcessInstance findProcessInstanceByTaskId(String taskId)
+            throws Exception {
+        // 找到流程实例
+        ProcessInstance processInstance = runtimeService
+                .createProcessInstanceQuery().processInstanceId(findTaskById(taskId).getProcessInstanceId()).singleResult();
+        if (processInstance == null) {
+            throw new Exception("流程实例未找到!");
+        }
+        return processInstance;
+    }
+
+    /**
+     * 根据流程实例ID查询所有任务集合
+     *
+     * @param processInstanceId
+     * @return
+     */
+    @Override
+    public List<Task> findTaskListByKey(String processInstanceId) {
+        return taskService.createTaskQuery().processInstanceId(processInstanceId).list();
+    }
+
+
+    /**
+     * @param taskId     当前任务ID
+     * @param variables  流程变量
+     * @param activityId 流程转向执行任务节点ID<br>
+     *                   此参数为空，默认为提交操作
+     * @throws Exception
+     */
+    private void commitProcess(String taskId, Map<String, Object> variables, String activityId) throws Exception {
+        if (variables == null) {
+            variables = new HashMap<String, Object>();
+        }
+        // 跳转节点为空，默认提交操作
+        if (!Validate.isString(activityId)) {
+            taskService.complete(taskId, variables);
+        } else {// 流程转向操作
+            turnTransition(taskId, activityId, variables);
+        }
+    }
+
+    /**
+     * 删除流程任务实例
+     *
+     * @param taskId      任务节点ID
+     * @param executionId 流程实例节点ID
+     */
+    @Override
+    public void deleteTask(String taskId, String executionId) {
+        //直接执行SQL
+        //DELETE FROM act_ru_identitylink WHERE TASK_ID_='135068'(act_ru_task主键)
+        //流程实例,通过EXECUTION_ID_字段和act_ru_execution关联
+        //DELETE FROM act_ru_task WHERE ID_='135068'
+        //任务节点表
+        //DELETE FROM act_ru_execution WHERE ID_='135065'
+        Session session = sessionFactory.getCurrentSession();
+        StringBuffer stringBuffer = new StringBuffer();
+        NativeQuery nativeQuery = null;
+
+        stringBuffer.append("DELETE FROM act_ru_identitylink WHERE TASK_ID_=:taskId");
+        nativeQuery = session.createNativeQuery(stringBuffer.toString());
+        nativeQuery.setParameter("taskId", taskId).executeUpdate();
+
+        stringBuffer.setLength(0);
+        stringBuffer.append("DELETE FROM act_ru_t" +
+                "" +
+                "" +
+                "" +
+                "ask WHERE ID_=:taskId");
+        nativeQuery = session.createNativeQuery(stringBuffer.toString());
+        nativeQuery.setParameter("taskId", taskId).executeUpdate();
+
+        stringBuffer.setLength(0);
+        stringBuffer.append("DELETE FROM act_ru_execution WHERE ID_=:executionId");
+        nativeQuery = session.createNativeQuery(stringBuffer.toString());
+        nativeQuery.setParameter("executionId", executionId).executeUpdate();
+
+    }
+
+
+    /**
+     * 根据任务ID获得任务实例
+     *
+     * @param taskId 任务ID
+     * @return
+     * @throws Exception
+     */
+    private TaskEntity findTaskById(String taskId) throws Exception {
+        TaskEntity task = (TaskEntity) taskService.createTaskQuery().taskId(taskId).singleResult();
+        if (task == null) {
+            throw new Exception("任务实例未找到!");
+        }
+        return task;
+    }
+
+
+    /**
+     * 流程转向操作
+     *
+     * @param taskId     当前任务ID
+     * @param activityId 目标节点任务ID
+     * @param variables  流程变量
+     * @throws Exception
+     */
+    private void turnTransition(String taskId, String activityId,
+                                Map<String, Object> variables) throws Exception {
+        // 当前节点
+        ActivityImpl currActivity = findActivitiImpl(taskId, null);
+        // 清空当前流向
+        List<PvmTransition> oriPvmTransitionList = clearTransition(currActivity);
+
+        // 创建新流向
+        TransitionImpl newTransition = currActivity.createOutgoingTransition();
+        // 目标节点
+        ActivityImpl pointActivity = findActivitiImpl(taskId, activityId);
+        // 设置新流向的目标节点
+        newTransition.setDestination(pointActivity);
+
+        // 执行转向任务
+        taskService.complete(taskId, variables);
+        // 删除目标节点新流入
+        pointActivity.getIncomingTransitions().remove(newTransition);
+
+        // 还原以前流向
+        restoreTransition(currActivity, oriPvmTransitionList);
+    }
+
+
+    /**
+     * 根据任务ID和节点ID获取活动节点 <br>
+     *
+     * @param taskId     任务ID
+     * @param activityId 活动节点ID <br>
+     *                   如果为null或""，则默认查询当前活动节点 <br>
+     *                   如果为"end"，则查询结束节点 <br>
+     * @return
+     * @throws Exception
+     */
+    private ActivityImpl findActivitiImpl(String taskId, String activityId)
+            throws Exception {
+        // 取得流程定义
+        ProcessDefinitionEntity processDefinition = findProcessDefinitionEntityByTaskId(taskId);
+
+        // 获取当前活动节点ID
+        if (!Validate.isString(activityId)) {
+            activityId = findTaskById(taskId).getTaskDefinitionKey();
+        }
+
+        // 根据流程定义，获取该流程实例的结束节点
+        if (activityId.toUpperCase().equals("END")) {
+            for (ActivityImpl activityImpl : processDefinition.getActivities()) {
+                List<PvmTransition> pvmTransitionList = activityImpl
+                        .getOutgoingTransitions();
+                if (pvmTransitionList.isEmpty()) {
+                    return activityImpl;
+                }
+            }
+        }
+
+        // 根据节点ID，获取对应的活动节点
+        ActivityImpl activityImpl = ((ProcessDefinitionImpl) processDefinition).findActivity(activityId);
+
+        return activityImpl;
+    }
+
+
+    /**
+     * 清空指定活动节点流向
+     *
+     * @param activityImpl 活动节点
+     * @return 节点流向集合
+     */
+    private List<PvmTransition> clearTransition(ActivityImpl activityImpl) {
+        // 存储当前节点所有流向临时变量
+        List<PvmTransition> oriPvmTransitionList = new ArrayList<PvmTransition>();
+        // 获取当前节点所有流向，存储到临时变量，然后清空
+        List<PvmTransition> pvmTransitionList = activityImpl
+                .getOutgoingTransitions();
+        for (PvmTransition pvmTransition : pvmTransitionList) {
+            oriPvmTransitionList.add(pvmTransition);
+        }
+        pvmTransitionList.clear();
+
+        return oriPvmTransitionList;
+    }
+
+
+    /**
+     * 还原指定活动节点流向
+     *
+     * @param activityImpl         活动节点
+     * @param oriPvmTransitionList 原有节点流向集合
+     */
+    private void restoreTransition(ActivityImpl activityImpl,
+                                   List<PvmTransition> oriPvmTransitionList) {
+        // 清空现有流向
+        List<PvmTransition> pvmTransitionList = activityImpl
+                .getOutgoingTransitions();
+        pvmTransitionList.clear();
+        // 还原以前流向
+        for (PvmTransition pvmTransition : oriPvmTransitionList) {
+            pvmTransitionList.add(pvmTransition);
+        }
+    }
+
+    /**
+     * 根据任务ID获取流程定义
+     *
+     * @param taskId 任务ID
+     * @return
+     * @throws Exception
+     */
+    private ProcessDefinitionEntity findProcessDefinitionEntityByTaskId(String taskId) throws Exception {
+        // 取得流程定义
+        ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService)
+                .getDeployedProcessDefinition(findTaskById(taskId).getProcessDefinitionId());
+
+        if (processDefinition == null) {
+            throw new Exception("流程定义未找到!");
+        }
+
+        return processDefinition;
     }
 
 }

@@ -1323,7 +1323,11 @@ public class FlowServiceImpl implements FlowService {
         nativeQuery.setParameter("taskId", taskId).executeUpdate();
 
         stringBuffer.setLength(0);
-        stringBuffer.append("DELETE FROM act_ru_task WHERE ID_=:taskId");
+        stringBuffer.append("DELETE FROM act_ru_t" +
+                "" +
+                "" +
+                "" +
+                "ask WHERE ID_=:taskId");
         nativeQuery = session.createNativeQuery(stringBuffer.toString());
         nativeQuery.setParameter("taskId", taskId).executeUpdate();
 
