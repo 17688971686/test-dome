@@ -40,6 +40,7 @@ export default class ProjectScreen extends React.Component {
                 params: {
                     "$top": this.state.pageSize,
                     "$skip": this.state.pageSize * pageIndex,
+                    "$filter" : "signState ne 7 and issign eq 9 "
                 }
             })
                 .then(res => {

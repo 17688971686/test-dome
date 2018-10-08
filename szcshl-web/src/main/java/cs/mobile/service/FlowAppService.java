@@ -49,5 +49,29 @@ public interface FlowAppService {
      */
     ResultMsg suppletterDealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto, UserDto userDto);
 
+    /**
+     * 取回流程
+     * @param taskId    当前任务ID
+     * @param activityId 取回节点ID
+     * @param businessKey 删除工作方案的singId
+     * @param allBranch  是否删除所有分支
+     * @return ResultMsg
+     */
+    ResultMsg callBackProcess(String taskId, String activityId,String businessKey,boolean allBranch,UserDto userDto)throws Exception;
 
+    /**
+     * 根据流程实例ID查询所有任务集合
+     *
+     * @param processInstanceId
+     * @return
+     */
+    List<Task> findTaskListByKey(String processInstanceId);
+
+
+    /**
+     * 删除流程任务实例
+     * @param taskId 任务节点ID
+     * @param executionId 流程实例节点ID
+     * */
+    void deleteTask(String taskId, String executionId);
 }

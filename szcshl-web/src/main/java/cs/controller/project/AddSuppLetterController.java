@@ -8,6 +8,7 @@ import cs.model.PageModelDto;
 import cs.model.project.AddSuppLetterDto;
 import cs.repository.odata.ODataObj;
 import cs.service.project.AddSuppLetterService;
+import cs.service.rtx.RTXService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,9 @@ public class AddSuppLetterController {
     @Autowired
     private AddSuppLetterService addSuppLetterService;
 
+    @Autowired
+    private RTXService rtxService;
+
     @RequiresAuthentication
     //@RequiresPermissions("addSuppLetter#submitSupp#post")
     @RequestMapping(name = "提交拟补充资料函", path = "saveSupp", method = RequestMethod.POST)
@@ -49,7 +53,12 @@ public class AddSuppLetterController {
     @RequestMapping(name = "发起项目拟补充资料函流程", path = "startSignSupperFlow", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg startSignSupperFlow(@RequestParam(required = true) String id) {
-        return addSuppLetterService.startSignSupperFlow(id);
+         ResultMsg resultMsg = addSuppLetterService.startSignSupperFlow(id);
+        if(resultMsg.isFlag()){
+            String procInstName = Validate.isObject(resultMsg.getReObj())?resultMsg.getReObj().toString():"";
+            rtxService.dealPoolRTXMsg(resultMsg.getIdCode(),resultMsg,procInstName,Constant.MsgType.task_type.name());
+        }
+         return resultMsg;
     }
 
     @RequiresAuthentication
