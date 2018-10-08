@@ -1506,8 +1506,18 @@ public class SignServiceImpl implements SignService {
                     //获取主办分管领导
                     sign = signRepo.findById(Sign_.signid.getName(), signid);
                     User mainLead = userRepo.getCacheUserById(sign.getLeaderId());
+                    /*不用协办分管领导审批，只要主办分管领导审批（2018-09-30）*/
+                    assigneeValue = Validate.isString(mainLead.getTakeUserId()) ? mainLead.getTakeUserId() : mainLead.getId();
+                    variables.put(FlowConstant.SignFlowParams.USER_FGLD1.getValue(), assigneeValue);
+                    variables.put(FlowConstant.SignFlowParams.HAVE_XB.getValue(), false);
+                    //下一环节还是自己处理
+                    if (assigneeValue.equals(curUserId)) {
+                        isNextUser = true;
+                        nextNodeKey = FlowConstant.FLOW_SIGN_FGLD_QRFW;
+                    }
                     //获取所有分管领导信息
-                    userList = signBranchRepo.findAssistSLeader(signid);
+                    /*不用协办分管领导审批，只要主办分管领导审批（2018-09-30）*/
+                    /*userList = signBranchRepo.findAssistSLeader(signid);
                     //排除主办分支的领导
                     if (Validate.isList(userList)) {
                         for (int n = 0, l = userList.size(); n < l; n++) {
@@ -1556,7 +1566,7 @@ public class SignServiceImpl implements SignService {
                             isNextUser = true;
                             nextNodeKey = FlowConstant.FLOW_SIGN_FGLD_QRFW;
                         }
-                    }
+                    }*/
 
                     //修改发文信息
                     if (dp.getBranchCount() == 1) {
@@ -1571,7 +1581,7 @@ public class SignServiceImpl implements SignService {
                     dispatchDocRepo.save(dp);
                 }
                 break;
-            //协办分管领导审批发文
+            //协办分管领导审批发文（去掉该环节 2018-09-30）
             case FlowConstant.FLOW_SIGN_FGLD_QRFW_XB:
                 Boolean isDirector = (Boolean) flowDto.getBusinessMap().get("isDirector");
                 if (null != isDirector && isDirector) {
