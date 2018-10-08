@@ -2,11 +2,14 @@ package cs.controller.topic;
 
 import cs.ahelper.MudoleAnnotation;
 import cs.common.ResultMsg;
+import cs.common.constants.Constant;
+import cs.common.utils.Validate;
 import cs.model.PageModelDto;
 import cs.model.topic.ContractDto;
 import cs.model.topic.TopicInfoDto;
 import cs.model.topic.TopicMaintainDto;
 import cs.repository.odata.ODataObj;
+import cs.service.rtx.RTXService;
 import cs.service.topic.TopicInfoService;
 import cs.service.topic.TopicMaintainService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
@@ -36,6 +39,9 @@ public class TopicInfoController {
 
     @Autowired
     private TopicMaintainService topicMaintainService;
+
+    @Autowired
+    private RTXService rtxService;
 
     @RequiresAuthentication
     //@RequiresPermissions("topicInfo#findByOData#post")
@@ -67,7 +73,12 @@ public class TopicInfoController {
     @RequestMapping(name = "发起流程", path = "startFlow", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg startFlow(@RequestBody TopicInfoDto record) {
-        return topicInfoService.startFlow(record);
+        ResultMsg resultMsg = topicInfoService.startFlow(record);
+        if(resultMsg.isFlag()){
+            String procInstName = Validate.isObject(resultMsg.getReObj())?resultMsg.getReObj().toString():"";
+            rtxService.dealPoolRTXMsg(resultMsg.getIdCode(),resultMsg,procInstName, Constant.MsgType.task_type.name());
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication

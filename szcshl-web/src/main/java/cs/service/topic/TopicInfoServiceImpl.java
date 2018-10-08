@@ -181,6 +181,8 @@ public class TopicInfoServiceImpl implements TopicInfoService {
     @Override
     @Transactional
     public ResultMsg startFlow(TopicInfoDto record) {
+        ProcessInstance processInstance = null;
+        Task task = null;
         //1、判断有没有选择项目负责人
         if (!Validate.isString(record.getMainPrinUserId())) {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，请先选择项目负责人！");
@@ -194,23 +196,30 @@ public class TopicInfoServiceImpl implements TopicInfoService {
             if (!Validate.isString(record.getId())) {
                 record.setId(UUID.randomUUID().toString());
             }
-            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(FlowConstant.TOPIC_FLOW, record.getId(),
+             processInstance = runtimeService.startProcessInstanceByKey(FlowConstant.TOPIC_FLOW, record.getId(),
                     ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER.getValue(), SessionUtil.getUserId()));
             processEngine.getRuntimeService().setProcessInstanceName(processInstance.getId(), record.getTopicName());
             //设置状态和实例ID
             record.setProcessInstanceId(processInstance.getId());
             record.setState(Constant.EnumState.PROCESS.getValue());
             //自动跳过填报环节
-            Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
+            task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
             taskService.addComment(task.getId(), processInstance.getId(), "");
             //部长
             OrgDept orgDept = orgDeptRepo.findOrgDeptById(record.getOrgId());
             User directorUser = userRepo.getCacheUserById(orgDept.getDirectorID());
             taskService.complete(task.getId(), ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_BZ.getValue(),
                     Validate.isString(directorUser.getTakeUserId()) ? directorUser.getTakeUserId() : directorUser.getId()));
+            //放入腾讯通消息缓冲池
+            RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), Validate.isString(directorUser.getTakeUserId()) ? directorUser.getTakeUserId() : directorUser.getId());
+        }
+        ResultMsg resultMsg = save(record);
+        if(resultMsg.isFlag()){
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(),task.getId(),"操作成功！",processInstance.getName());
+        }else{
+              return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败！");
         }
 
-        return save(record);
     }
 
     @Override
