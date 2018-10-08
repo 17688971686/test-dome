@@ -2,8 +2,10 @@ package cs.controller.monthly;
 
 import cs.ahelper.MudoleAnnotation;
 import cs.common.ResultMsg;
+import cs.common.constants.Constant;
 import cs.common.utils.DateUtils;
 import cs.common.utils.StringUtil;
+import cs.common.utils.Validate;
 import cs.model.PageModelDto;
 import cs.model.monthly.MonthlyNewsletterDto;
 import cs.model.project.AddSuppLetterDto;
@@ -11,6 +13,7 @@ import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
 import cs.service.monthly.MonthlyNewsletterService;
 import cs.service.project.AddSuppLetterService;
+import cs.service.rtx.RTXService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +46,8 @@ public class MonthlyNewsletterController {
 
     @Autowired
     private AddSuppLetterService addSuppLetterService;
+    @Autowired
+    private RTXService rtxService;
 
     @RequiresAuthentication
     //@RequiresPermissions("monthlyNewsletter#findByOData#post")
@@ -178,7 +183,15 @@ public class MonthlyNewsletterController {
     @RequestMapping(name="发起流程" , path="startFlow" , method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg startFlow(@RequestParam String id){
-        return monthlyNewsletterService.startFlow(id);
+        ResultMsg resultMsg = monthlyNewsletterService.startFlow(id);
+        if(resultMsg.isFlag()){
+            String procInstName = Validate.isObject(resultMsg.getReObj())?resultMsg.getReObj().toString():"";
+            rtxService.dealPoolRTXMsg(resultMsg.getIdCode(),resultMsg,procInstName, Constant.MsgType.task_type.name());
+
+            resultMsg.setIdCode(null);
+            resultMsg.setReObj(null);
+        }
+        return resultMsg;
     }
 
 

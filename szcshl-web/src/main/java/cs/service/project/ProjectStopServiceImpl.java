@@ -150,7 +150,6 @@ public class ProjectStopServiceImpl implements ProjectStopService {
                 projectStop.setApproveStatus(Constant.EnumState.NO.getValue());//默认处于：未处理环节
             }
 
-
             //1、启动流程
             ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(FlowConstant.PROJECT_STOP_FLOW, projectStop.getStopid(),
                     ActivitiUtil.setAssigneeValue(FlowConstant.SignFlowParams.USER.getValue(), SessionUtil.getUserId()));
@@ -174,7 +173,10 @@ public class ProjectStopServiceImpl implements ProjectStopService {
             projectStop.setSign(sign);
             projectStopRepo.save(projectStop);
 
-            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+            //放入腾讯通消息缓冲池
+            RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
+
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(),task.getId(), "操作成功！",processInstance.getName());
         } catch (Exception e) {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "保存失败，错误信息已记录，请联系管理员处理！");
         }

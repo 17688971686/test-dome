@@ -2,9 +2,12 @@ package cs.controller.sys;
 
 import cs.ahelper.MudoleAnnotation;
 import cs.common.ResultMsg;
+import cs.common.constants.Constant;
+import cs.common.utils.Validate;
 import cs.model.PageModelDto;
 import cs.model.sys.AnnountmentDto;
 import cs.repository.odata.ODataObj;
+import cs.service.rtx.RTXService;
 import cs.service.sys.AnnountmentService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -27,6 +30,9 @@ public class AnnountmentController {
     @Autowired
     private AnnountmentService annService;
 
+    @Autowired
+    private RTXService rtxService;
+
     //@RequiresPermissions("annountment#fingByCurUser#post")
     @RequiresAuthentication
     @RequestMapping(name = "获取个人发布的通知公告", path = "fingByCurUser", method = RequestMethod.POST)
@@ -41,7 +47,15 @@ public class AnnountmentController {
     @RequestMapping(name = "发起流程", path = "startFlow", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg startFlow(@RequestParam String id) {
-        return annService.startFlow(id);
+        ResultMsg resultMsg = annService.startFlow(id);
+        if(resultMsg.isFlag()){
+            String procInstName = Validate.isObject(resultMsg.getReObj())?resultMsg.getReObj().toString():"";
+            rtxService.dealPoolRTXMsg(resultMsg.getIdCode(),resultMsg,procInstName, Constant.MsgType.task_type.name());
+
+            resultMsg.setIdCode(null);
+            resultMsg.setReObj(null);
+        }
+        return resultMsg;
     }
 
     //@RequiresPermissions("annountment#findByIssue#post")

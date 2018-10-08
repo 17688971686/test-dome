@@ -2,11 +2,14 @@ package cs.controller.reviewProjectAppraise;
 
 import cs.ahelper.MudoleAnnotation;
 import cs.common.ResultMsg;
+import cs.common.constants.Constant;
+import cs.common.utils.Validate;
 import cs.domain.project.SignDispaWork;
 import cs.model.PageModelDto;
 import cs.model.project.AppraiseReportDto;
 import cs.repository.odata.ODataObj;
 import cs.service.reviewProjectAppraise.AppraiseService;
+import cs.service.rtx.RTXService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +36,9 @@ public class ReviewProjectAppraiseController {
     @Autowired
     private AppraiseService appraiseService;
 
+    @Autowired
+    private RTXService rtxService;
+
     @RequiresAuthentication
     @RequestMapping(name="通过项目ID初始化" , path="initBySignId" , method = RequestMethod.POST)
     @ResponseBody
@@ -52,7 +58,15 @@ public class ReviewProjectAppraiseController {
     @RequestMapping(name="发起流程" , path="startFlow" , method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg startFlow(@RequestParam String id){
-        return appraiseService.startFlow(id);
+        ResultMsg resultMsg = appraiseService.startFlow(id);
+        if(resultMsg.isFlag()){
+            String procInstName = Validate.isObject(resultMsg.getReObj())?resultMsg.getReObj().toString():"";
+            rtxService.dealPoolRTXMsg(resultMsg.getIdCode(),resultMsg,procInstName, Constant.MsgType.task_type.name());
+
+            resultMsg.setIdCode(null);
+            resultMsg.setReObj(null);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication

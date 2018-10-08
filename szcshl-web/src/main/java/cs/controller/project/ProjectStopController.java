@@ -9,6 +9,7 @@ import cs.model.PageModelDto;
 import cs.model.project.ProjectStopDto;
 import cs.repository.odata.ODataObj;
 import cs.service.project.ProjectStopService;
+import cs.service.rtx.RTXService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,6 +27,8 @@ public class ProjectStopController {
 	private String ctrlName="projectStop";
 	@Autowired
 	private ProjectStopService projectStopService;
+	@Autowired
+	private RTXService rtxService;
 
    @RequiresAuthentication
     //@RequiresPermissions("projectStop#findByOData#post")
@@ -66,7 +69,15 @@ public class ProjectStopController {
 	@RequestMapping(name="发起流程", path="savePauseProject" ,method=RequestMethod.POST)
 	@ResponseBody
 	public ResultMsg pauseProject(@RequestBody  ProjectStopDto projectStopDto){
-		return projectStopService.savePauseProject(projectStopDto);
+		ResultMsg resultMsg = projectStopService.savePauseProject(projectStopDto);
+		if(resultMsg.isFlag()){
+			String procInstName = Validate.isObject(resultMsg.getReObj())?resultMsg.getReObj().toString():"";
+			rtxService.dealPoolRTXMsg(resultMsg.getIdCode(),resultMsg,procInstName,Constant.MsgType.task_type.name());
+
+			resultMsg.setIdCode(null);
+			resultMsg.setReObj(null);
+		}
+		return resultMsg;
 	}
 
 	@RequiresAuthentication

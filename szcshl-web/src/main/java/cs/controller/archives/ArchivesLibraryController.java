@@ -5,6 +5,9 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import cs.common.constants.Constant;
+import cs.common.utils.Validate;
+import cs.service.rtx.RTXService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +46,9 @@ public class ArchivesLibraryController {
 
     @Autowired
 	private UserService userService;
-    
+    @Autowired
+    private RTXService rtxService;
+
     @RequiresAuthentication
     //@RequiresPermissions("archivesLibrary#findByOData#post")
     @RequestMapping(name = "获取数据", path = "findByOData", method = RequestMethod.POST)
@@ -67,7 +72,16 @@ public class ArchivesLibraryController {
     @RequestMapping(name = "发起流程", path = "startFlow", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg startFlow(@RequestParam(required = true) String id) {
-        return archivesLibraryService.startFlow(id);
+        ResultMsg resultMsg = archivesLibraryService.startFlow(id);
+        if(resultMsg.isFlag()){
+            String procInstName = Validate.isObject(resultMsg.getReObj())?resultMsg.getReObj().toString():"";
+            rtxService.dealPoolRTXMsg(resultMsg.getIdCode(),resultMsg,procInstName, Constant.MsgType.task_type.name());
+
+            resultMsg.setIdCode(null);
+            resultMsg.setReObj(null);
+        }
+
+        return resultMsg;
     }
 
     @RequiresAuthentication

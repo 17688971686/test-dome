@@ -234,7 +234,7 @@ public class ArchivesLibraryServiceImpl implements ArchivesLibraryService {
         }
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
-        return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！");
+        return new ResultMsg(true, MsgCode.OK.getValue(), task.getId(),"操作成功！", processInstance.getName());
     }
 
     /**
