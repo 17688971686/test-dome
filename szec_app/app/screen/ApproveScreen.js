@@ -25,10 +25,11 @@ const slideAnimation = new SlideAnimation({
 export default class ApproveScreen extends Component {
     constructor(props) {
         super(props);
-        const {isassistflow, taskId, processInstanceId, userName, DIS_ID} = this.props.navigation.state.params;
+        const {isassistflow, taskId, signId, processInstanceId, userName, DIS_ID} = this.props.navigation.state.params;
         this.state = {
             curNode: '',
             curNodeInfo: '',
+            signId: signId,
             isassistflow: isassistflow,
             taskId: taskId,
             processInstanceId: processInstanceId,
@@ -62,7 +63,6 @@ export default class ApproveScreen extends Component {
             }
         })
             .then(res => {
-                console.log(res);
                 let curNodeInfo = res.data,
                     curNodeId = curNodeInfo.curNode.activitiId,
                     orgs = [],
@@ -72,8 +72,8 @@ export default class ApproveScreen extends Component {
                     orgs = curNodeInfo.businessMap.orgs;
                 } else if (curNodeId === 'SIGN_BMFB1' || curNodeId === 'SIGN_BMFB2') {
                     orgs = curNodeInfo.businessMap.users;
-                } else if(curNodeId === 'SIGN_BMLD_QRFW_XB' ||  curNodeId=== 'SIGN_FGLD_QRFW_XB'){
-                    curNodeInfo.dealOption='核稿无误'
+                } else if (curNodeId === 'SIGN_BMLD_QRFW_XB' || curNodeId === 'SIGN_FGLD_QRFW_XB') {
+                    curNodeInfo.dealOption = '核稿无误'
                 }
                 orgs.forEach((item) => {
                     item.mainChecked = false;
@@ -179,7 +179,7 @@ export default class ApproveScreen extends Component {
                         orgs[i].mainChecked ?
                             <Icon name='ios-checkbox' size={25} style={styles.iconStyle}/>
                             :
-                            <Icon name='ios-checkbox-outline' size={25} style={styles.iconStyle}/>
+                            <View style={styles.checkboxView}/>
                     }
                 </TouchableOpacity>
             )
@@ -198,7 +198,7 @@ export default class ApproveScreen extends Component {
                         orgs[i].subChecked ?
                             <Icon name='ios-checkbox' size={25} style={styles.iconStyle}/>
                             :
-                            <Icon name='ios-checkbox-outline' size={25} style={styles.iconStyle}/>
+                            <View style={styles.checkboxView}/>
                     }
                 </TouchableOpacity>
             )
@@ -253,6 +253,7 @@ export default class ApproveScreen extends Component {
         }, () => this.popupDialog.dismiss());
     }
 
+    //流程提交
     commitNextStep() {
         let data = this.state.curNodeInfo;
         data.businessMap.DIS_ID = this.state.DIS_ID;
@@ -295,6 +296,78 @@ export default class ApproveScreen extends Component {
                 })
         });
 
+    }
+
+    //流程回退
+    rollbacklast() {
+        axios({
+            url: "flowApp/rollbacklast",
+            method: "post",
+            params: {
+                flowObj: this.state.curNodeInfo,
+            },
+        })
+            .then((res) => {
+                if (res.status === 200 && res.data.reCode === 'ok') {
+                    Alert.alert(
+                        res.data.reMsg,
+                        '',
+                        [
+                            {text: '确定', onPress: () => this.back()},
+                        ],
+                        {cancelable: false}
+                    )
+                } else {
+                    Alert.alert(
+                        '操作异常',
+                        res.data.reMsg,
+                        [
+                            {text: '确定', onPress: () => this.popupDialog.dismiss()},
+                        ],
+                        {cancelable: false}
+                    )
+                }
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }
+
+    //流程取回
+    getBack() {
+        axios({
+            url: "flowApp/getBack",
+            method: "post",
+            params: {
+                taskId: this.state.taskId,
+                username: this.state.userName,
+                businessKey: this.state.signId
+            },
+        })
+            .then((res) => {
+                if (res.status === 200 && res.data.reCode === 'ok') {
+                    Alert.alert(
+                        res.data.reMsg,
+                        '',
+                        [
+                            {text: '确定', onPress: () => this.back()},
+                        ],
+                        {cancelable: false}
+                    )
+                } else {
+                    Alert.alert(
+                        '操作异常',
+                        res.data.reMsg,
+                        [
+                            {text: '确定', onPress: () => this.popupDialog.dismiss()},
+                        ],
+                        {cancelable: false}
+                    )
+                }
+            })
+            .catch(error => {
+                console.log(error)
+            })
     }
 
     //如果是概算的部门分办流程显示项目负责人信息
@@ -396,22 +469,25 @@ export default class ApproveScreen extends Component {
             )
         }
     }
-    auditingRight(){
+
+    auditingRight() {
         let arr = this.state.curNodeInfo;
-        arr.dealOption='核稿无误';
+        arr.dealOption = '核稿无误';
         this.setState({
-            AGREE:9,
-            curNodeInfo:arr,
+            AGREE: 9,
+            curNodeInfo: arr,
         })
     }
-    auditingError(){
+
+    auditingError() {
         let arr = this.state.curNodeInfo;
-        arr.dealOption='核稿有误';
+        arr.dealOption = '核稿有误';
         this.setState({
-            AGREE:0,
-            curNodeInfo:arr,
+            AGREE: 0,
+            curNodeInfo: arr,
         })
     }
+
     auditing() {
         //如果是协办部门审批发文或者协办副主任审批发文流程 显示核稿按钮
         if (this.state.curNodeId === 'SIGN_BMLD_QRFW_XB' || this.state.curNodeId === 'SIGN_FGLD_QRFW_XB') {
@@ -425,7 +501,7 @@ export default class ApproveScreen extends Component {
                             this.state.AGREE ?
                                 <Icon name='ios-checkbox' size={25} style={styles.iconStyle}/>
                                 :
-                                <Icon name='ios-checkbox-outline' size={25} style={styles.iconStyle}/>
+                                <View style={styles.checkboxView}/>
                         }
                     </TouchableOpacity>
                     <TouchableOpacity
@@ -436,12 +512,57 @@ export default class ApproveScreen extends Component {
                             !this.state.AGREE ?
                                 <Icon name='ios-checkbox' size={25} style={styles.iconStyle}/>
                                 :
-                                <Icon name='ios-checkbox-outline' size={25} style={styles.iconStyle}/>
+                                <View style={styles.checkboxView}/>
                         }
                     </TouchableOpacity>
                 </View>
             )
         }
+    }
+
+    submitBtn() {
+        const submitBtn = [];
+        if (this.state.curNodeId !== 'SIGN_BMFB1' && this.state.curNodeId !== 'SIGN_BMFB2') {
+            submitBtn.push(
+                <TouchableOpacity key={1}
+                    onPress={() =>  Alert.alert(
+                    '确认操作',
+                    '回退流程？',
+                    [
+                        {text:'取消'},
+                        {text: '确定', onPress: () => this.rollbacklast()},
+                    ],
+                    {cancelable: false}
+                )} style={[styles.submitBtn, {
+                    backgroundColor: '#eee',
+                    borderRightWidth: 0.5, borderRightColor: '#aaa'
+                }]}>
+                    <Text style={styles.submitText}>回退</Text>
+                </TouchableOpacity>
+            )
+        }
+        if (this.state.curNodeId === 'SIGN_BMFB1' || this.state.curNodeId === 'SIGN_BMFB2') {
+            submitBtn.push(
+                <TouchableOpacity key={2}
+                                  onPress={() =>  Alert.alert(
+                                      '确认操作',
+                                      '重新分办？',
+                                      [
+                                          {text:'取消'},
+                                          {text: '确定', onPress: () => this.getBack()},
+                                      ],
+                                      {cancelable: false})}
+                                  style={[styles.submitBtn, {backgroundColor: '#eee'}]}>
+                    <Text style={styles.submitText}>取回</Text>
+                </TouchableOpacity>
+            );
+        }
+        submitBtn.push(
+            <TouchableOpacity key={3} onPress={() => this.commitNextStep()} style={[styles.submitBtn, {flex: 2}]}>
+                <Text style={[styles.submitText, {color: '#fff'}]}>提交</Text>
+            </TouchableOpacity>
+        );
+        return submitBtn
     }
 
     render() {
@@ -510,10 +631,8 @@ export default class ApproveScreen extends Component {
                     {this.auditing()}
                     {this.isassistflow()}
                 </View>
-                <View>
-                    <TouchableOpacity onPress={() => this.commitNextStep()} style={styles.commitBtn}>
-                        <Text style={{color: '#fff', fontSize: 16}}>提交</Text>
-                    </TouchableOpacity>
+                <View style={styles.submitBtnView}>
+                    {this.submitBtn()}
                 </View>
             </View>
         )
@@ -582,13 +701,6 @@ const styles = StyleSheet.create({
         borderBottomColor: '#1E5AAF',
         borderBottomWidth: 1
     },
-    commitBtn: {
-        width: '100%',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: 50,
-        backgroundColor: '#1E5AAF'
-    },
     addOrgs: {
         width: '100%',
         height: 40,
@@ -628,5 +740,28 @@ const styles = StyleSheet.create({
         borderLeftWidth: 1,
         borderRightWidth: 1,
         borderColor: '#eee'
+    },
+    submitBtnView: {
+        flexDirection: 'row',
+    },
+    submitBtn: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 50,
+        backgroundColor: '#1E5AAF',
+        borderTopWidth: 0.5,
+        borderTopColor: '#aaa'
+    },
+    submitText: {
+        color: '#000',
+        fontSize: 16,
+    },
+    checkboxView: {
+        borderWidth: 0.5,
+        borderColor: '#333',
+        backgroundColor: '#fff',
+        width: 18,
+        height: 18
     }
 });
