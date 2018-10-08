@@ -60,10 +60,6 @@ public final class SysConstants {
      */
     public static final String SUPER_ACCOUNT = "admin";
 
-    /**
-     * 默认系统管理员名称
-     */
-    public static final String SUPER_NAME = "系统管理员";
 
     /**
      * 系统默认密码

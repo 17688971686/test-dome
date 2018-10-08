@@ -41,6 +41,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
+import static cs.common.constants.Constant.EnumFlowNodeGroupName.SUPER_LEADER;
 import static cs.common.constants.SysConstants.DEFAULT_PASSWORD;
 import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
@@ -756,42 +757,50 @@ public class UserServiceImpl implements UserService {
     @Override
     public Map<String, Object> getUserSignAuth() {
         Map<String, Object> resultMap = new HashMap<>();
+
         String curUserId = SessionUtil.getUserId();
         //分管的部门ID
         List<String> orgIdList = null;
-        //定义领导标识参数（0表示普通用户，1表示主任，2表示分管领导，3表示部长或者组长）
-        Integer leaderFlag = SUPER_ACCOUNT.equals(SessionUtil.getLoginName()) ? 1 : 0;
-        if (leaderFlag == 0) {
-            //查询所有的部门和组织
-            List<OrgDept> allOrgDeptList = orgDeptService.queryAll();
-            resultMap.put("allOrgDeptList", allOrgDeptList);
-            for (OrgDept od : allOrgDeptList) {
-                if (leaderFlag == 0) {
-                    if (curUserId.equals(od.getDirectorID())) {
-                        leaderFlag = 3;
-                        orgIdList = new ArrayList<>(1);
-                        orgIdList.add(od.getId());
-                    }
-                    if (curUserId.equals(od.getsLeaderID())) {
-                        leaderFlag = 2;
-                        if (orgIdList == null) {
-                            orgIdList = new ArrayList<>();
+        Integer leaderFlag = 0;
+        //如果是查看领导，则也要显示统计信息
+        if(SessionUtil.hashRole(SUPER_LEADER.getValue())){
+            leaderFlag = 1;
+        }else{
+            //定义领导标识参数（0表示普通用户，1表示主任，2表示分管领导，3表示部长或者组长）
+            leaderFlag = SUPER_ACCOUNT.equals(SessionUtil.getLoginName()) ? 1 : 0;
+            if (leaderFlag == 0) {
+                //查询所有的部门和组织
+                List<OrgDept> allOrgDeptList = orgDeptService.queryAll();
+                resultMap.put("allOrgDeptList", allOrgDeptList);
+                for (OrgDept od : allOrgDeptList) {
+                    if (leaderFlag == 0) {
+                        if (curUserId.equals(od.getDirectorID())) {
+                            leaderFlag = 3;
+                            orgIdList = new ArrayList<>(1);
+                            orgIdList.add(od.getId());
                         }
+                        if (curUserId.equals(od.getsLeaderID())) {
+                            leaderFlag = 2;
+                            if (orgIdList == null) {
+                                orgIdList = new ArrayList<>();
+                            }
+                            orgIdList.add(od.getId());
+                        }
+                        if (curUserId.equals(od.getmLeaderID())) {
+                            leaderFlag = 1;
+                            orgIdList.clear();
+                        }
+                        //分管领导分管多个部门
+                    } else if (leaderFlag == 2 && curUserId.equals(od.getsLeaderID())) {
                         orgIdList.add(od.getId());
                     }
-                    if (curUserId.equals(od.getmLeaderID())) {
-                        leaderFlag = 1;
-                        orgIdList.clear();
+                    if (leaderFlag == 1 || leaderFlag == 3) {
+                        break;
                     }
-                    //分管领导分管多个部门
-                } else if (leaderFlag == 2 && curUserId.equals(od.getsLeaderID())) {
-                    orgIdList.add(od.getId());
-                }
-                if (leaderFlag == 1 || leaderFlag == 3) {
-                    break;
                 }
             }
         }
+
         resultMap.put("leaderFlag", leaderFlag);
         resultMap.put("orgIdList", orgIdList);
 

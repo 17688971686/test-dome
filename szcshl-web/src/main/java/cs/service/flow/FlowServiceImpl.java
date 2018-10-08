@@ -903,6 +903,7 @@ public class FlowServiceImpl implements FlowService {
         criteria.addOrder(Order.desc(RuTask_.createTime.getName()));
         List<RuTask> runProcessList = criteria.list();
         boolean isHaveAllPermission = SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())
+                ||  SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.SUPER_LEADER.getValue())
                 || SUPER_ACCOUNT.equals(SessionUtil.getLoginName());
         if (isHaveAllPermission) {
             pageModelDto.setCount(runProcessList.size());

@@ -11,7 +11,6 @@ public class Constant {
     /**
      * 超级管理员账号
      */
-    public static final String SUPER_USER = "admin";
     public static final String SUPER_ROLE = "超级管理员";
     public static final String EMPTY_STRING = " ";
 
@@ -304,8 +303,8 @@ public class Constant {
         DIRECTOR("主任"),
         FILER("归档员"),
         DEPT_LEADER("部门负责人"),
-        FINANCIAL("财务人员");
-
+        FINANCIAL("财务人员"),
+        SUPER_LEADER("上级领导");
         private String value;
 
         EnumFlowNodeGroupName(String value) {

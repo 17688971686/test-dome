@@ -231,15 +231,6 @@ public class AdminController {
                             return 1;
                         }
                         return r1.getSurplusDays().compareTo(r2.getSurplusDays());
-                        /*if (r1.getSurplusDays() == r2.getSurplusDays()) {
-
-                            return 0;
-                        } else if (r1.getSurplusDays() > r2.getSurplusDays()) {
-
-                            return 1;
-                        } else {
-                            return -1;
-                        }*/
                     }
                 });
                 List<String> existList = new ArrayList<>();

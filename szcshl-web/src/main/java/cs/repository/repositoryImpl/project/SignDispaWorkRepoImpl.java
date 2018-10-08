@@ -546,8 +546,10 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
          * 归档员也可以查看所有项目（2018-04-28）
          */
         boolean isHaveAuth = SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.FILER.getValue())
-                || SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue()) || SessionUtil.hashRole(SUPER_ROLE)
-                || SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue());
+                || SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())
+                || SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())
+                || SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.SUPER_LEADER.getValue())
+                || SessionUtil.hashRole(SUPER_ROLE);
         if (isHaveAuth) {
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(), null);
         }
