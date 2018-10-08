@@ -67,6 +67,7 @@ export default class ProDetailsScreen extends Component {
                 processInstanceId: this.state.processInstanceId,
                 userName: this.state.userName,
                 isassistflow: this.state.projectData.isassistflow,
+                signId:this.state.signId,
                 DIS_ID: this.state.projectData.dispatchDocDto && this.state.projectData.dispatchDocDto.id
             })}>
                 <Icon name={'ios-create-outline'} size={20} color={'#fff'}/>

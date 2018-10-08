@@ -130,9 +130,9 @@ export default class App extends React.Component {
     initAxios = () => {
         // axios 全局配置
         /*评审内网测试地址*/
-        axios.defaults.baseURL = 'http://172.30.36.217:9090/api';
+        /*axios.defaults.baseURL = 'http://172.30.36.217:9090/api';*/
 
-       /* axios.defaults.baseURL = 'http://192.168.1.20:8080/szcshl-web/api';*/
+        axios.defaults.baseURL = 'http://192.168.1.20:8080/szcshl-web/api';
        /* axios.defaults.baseURL = 'http://192.168.0.170:8080/szcshl-web/api';*/
         axios.defaults.headers.common['clientId'] = DeviceInfo.getUniqueID();
     }
