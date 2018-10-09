@@ -1,11 +1,18 @@
 package cs.mobile.controller;
 
+import cs.common.constants.Constant;
+import cs.common.utils.SessionUtil;
+import cs.common.utils.Validate;
+import cs.domain.flow.RuProcessTask;
+import cs.domain.sys.OrgDept_;
+import cs.domain.sys.User;
 import cs.model.PageModelDto;
 import cs.model.project.SignDispaWorkDto;
 import cs.model.project.SignDto;
 import cs.repository.odata.ODataObj;
 import cs.service.project.SignDispaWorkService;
 import cs.service.project.SignService;
+import cs.service.sys.UserService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 
@@ -29,6 +35,10 @@ public class SignAppController {
     private SignService signService;
     @Autowired
     private SignDispaWorkService signDispaWorkService;
+
+    @Autowired
+    private UserService userService;
+
     /**
      * 根据ID查询项目收文信息
      * @param signId
@@ -47,5 +57,28 @@ public class SignAppController {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<SignDispaWorkDto> pageModelDto = signDispaWorkService.getCommQurySign(odataObj);
         return pageModelDto;
+    }
+
+
+    @RequestMapping(name = "获取项目取回数据", path = "findByGetBack", method = RequestMethod.POST)
+    @ResponseBody
+    public
+    PageModelDto<RuProcessTask> getBackList(HttpServletRequest request) throws ParseException {
+        PageModelDto<RuProcessTask> signDispaWork = new PageModelDto<>();
+        //是否为部长或者小组组长
+        boolean isOrgLeader = false;
+        String username = request.getParameter("username");
+        User user = userService.findByName(username);
+        String level = userService.getUserLevel(user);
+        if ((Validate.isString(level) && level.equals("3")) ) {
+            isOrgLeader = true;
+        } else  if (Validate.isString(level) && (level.equals("1") || level.equals("2"))) {
+            isOrgLeader = false;
+        } else {
+            return signDispaWork;
+        }
+        ODataObj odataObj = new ODataObj(request);
+        signDispaWork = signService.getBackAppList(odataObj, isOrgLeader,user);
+        return signDispaWork;
     }
 }

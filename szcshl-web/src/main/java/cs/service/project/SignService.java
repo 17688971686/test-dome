@@ -6,6 +6,7 @@ import cs.domain.project.AgentTask;
 import cs.domain.project.DispatchDoc;
 import cs.domain.project.Sign;
 import cs.domain.project.SignDispaWork;
+import cs.domain.sys.User;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.project.SignDto;
@@ -356,4 +357,6 @@ public interface SignService {
      * @return
      */
     void updateProjectNameCascade(Sign sign,String newProjectName);
+
+    PageModelDto<RuProcessTask> getBackAppList(ODataObj odataObj, boolean isOrgLeader,User user);
 }
