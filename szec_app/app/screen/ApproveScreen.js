@@ -333,42 +333,6 @@ export default class ApproveScreen extends Component {
             })
     }
 
-    //流程取回
-    getBack() {
-        axios({
-            url: "flowApp/getBack",
-            method: "post",
-            params: {
-                taskId: this.state.taskId,
-                username: this.state.userName,
-                businessKey: this.state.signId
-            },
-        })
-            .then((res) => {
-                if (res.status === 200 && res.data.reCode === 'ok') {
-                    Alert.alert(
-                        res.data.reMsg,
-                        '',
-                        [
-                            {text: '确定', onPress: () => this.back()},
-                        ],
-                        {cancelable: false}
-                    )
-                } else {
-                    Alert.alert(
-                        '操作异常',
-                        res.data.reMsg,
-                        [
-                            {text: '确定', onPress: () => this.popupDialog.dismiss()},
-                        ],
-                        {cancelable: false}
-                    )
-                }
-            })
-            .catch(error => {
-                console.log(error)
-            })
-    }
 
     //如果是概算的部门分办流程显示项目负责人信息
     isassistflow() {
@@ -522,41 +486,60 @@ export default class ApproveScreen extends Component {
 
     submitBtn() {
         const submitBtn = [];
-        if (this.state.curNodeId !== 'SIGN_BMFB1' && this.state.curNodeId !== 'SIGN_BMFB2') {
-            submitBtn.push(
-                <TouchableOpacity key={1}
-                    onPress={() =>  Alert.alert(
-                    '确认操作',
-                    '回退流程？',
-                    [
-                        {text:'取消'},
-                        {text: '确定', onPress: () => this.rollbacklast()},
-                    ],
-                    {cancelable: false}
-                )} style={[styles.submitBtn, {
-                    backgroundColor: '#eee',
-                    borderRightWidth: 0.5, borderRightColor: '#aaa'
-                }]}>
-                    <Text style={styles.submitText}>回退</Text>
-                </TouchableOpacity>
-            )
+        switch (this.state.curNodeId) {
+            case "SIGN_FGLD_FB":
+            //部长审核工作方案
+            case "SIGN_BMLD_SPW1":
+            case "SIGN_BMLD_SPW2":
+            case "SIGN_BMLD_SPW3":
+            case "SIGN_BMLD_SPW4":
+            //分管领导审批工作方案
+            case "SIGN_FGLD_SPW1":
+            case "SIGN_FGLD_SPW2":
+            case "SIGN_FGLD_SPW3":
+            case "SIGN_FGLD_SPW4":
+            //部长审批发文
+            case "SIGN_BMLD_QRFW":
+            //分管领导审批发文
+            case "SIGN_FGLD_QRFW":
+            //主任审批发文
+            case "SIGN_ZR_QRFW":
+                submitBtn.push(
+                    <TouchableOpacity key={1}
+                                      onPress={() =>  Alert.alert(
+                                          '确认操作',
+                                          '回退流程？',
+                                          [
+                                              {text:'取消'},
+                                              {text: '确定', onPress: () => this.rollbacklast()},
+                                          ],
+                                          {cancelable: false}
+                                      )} style={[styles.submitBtn, {
+                        backgroundColor: '#eee',
+                        borderRightWidth: 0.5, borderRightColor: '#aaa'
+                    }]}>
+                        <Text style={styles.submitText}>回退</Text>
+                    </TouchableOpacity>
+                )
+                break;
         }
-        if (this.state.curNodeId === 'SIGN_BMFB1' || this.state.curNodeId === 'SIGN_BMFB2') {
-            submitBtn.push(
-                <TouchableOpacity key={2}
-                                  onPress={() =>  Alert.alert(
-                                      '确认操作',
-                                      '重新分办？',
-                                      [
-                                          {text:'取消'},
-                                          {text: '确定', onPress: () => this.getBack()},
-                                      ],
-                                      {cancelable: false})}
-                                  style={[styles.submitBtn, {backgroundColor: '#eee'}]}>
-                    <Text style={styles.submitText}>取回</Text>
-                </TouchableOpacity>
-            );
-        }
+
+/*        if (this.state.curNodeId === 'SIGN_BMFB1' || this.state.curNodeId === 'SIGN_BMFB2') {
+                submitBtn.push(
+                    <TouchableOpacity key={2}
+                                      onPress={() =>  Alert.alert(
+                                          '确认操作',
+                                          '重新分办？',
+                                          [
+                                              {text:'取消'},
+                                              {text: '确定', onPress: () => this.getBack()},
+                                          ],
+                                          {cancelable: false})}
+                                      style={[styles.submitBtn, {backgroundColor: '#eee'}]}>
+                        <Text style={styles.submitText}>取回</Text>
+                    </TouchableOpacity>
+                );
+        }*/
         submitBtn.push(
             <TouchableOpacity key={3} onPress={() => this.commitNextStep()} style={[styles.submitBtn, {flex: 2}]}>
                 <Text style={[styles.submitText, {color: '#fff'}]}>提交</Text>

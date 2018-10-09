@@ -19,6 +19,9 @@ import ProjectManagementScreen from "./screen/Home/ProjectManagementScreen";
 import SignupProjectScreen from "./screen/Home/SignupProjectScreen";
 import ProDetailsScreen from "./screen/ProDetailsScreen";
 import ApproveScreen from "./screen/ApproveScreen";
+import ProRepeatScreen from "./screen/ProRepeatScreen";
+import ProRepeatDetailScreen from "./screen/ProRepeatDetailScreen";
+
 
 
 /*Tab导航器*/
@@ -93,7 +96,9 @@ const RouteConfigs = {
     BasicInfoScreen: BasicInfoScreen,
     SetUpScreen: SetUpScreen,
     ProDetailsScreen: ProDetailsScreen,
-    ApproveScreen:ApproveScreen
+    ApproveScreen:ApproveScreen,
+    ProRepeatScreen: ProRepeatScreen,
+    ProRepeatDetailScreen: ProRepeatDetailScreen
 };
 
 const StackNavigatorConfig = {

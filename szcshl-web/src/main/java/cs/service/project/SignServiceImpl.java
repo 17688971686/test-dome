@@ -2862,6 +2862,81 @@ public class SignServiceImpl implements SignService {
         return pageModelDto;
     }
 
+
+
+    /**
+     * 项目取回列表（分管领导和部门领导）
+     * 根据不同的角色，获取不同的列表数据
+     *
+     * @param odataObj
+     * @param isOrgLeader 是否部长
+     */
+    @Override
+    public PageModelDto<RuProcessTask> getBackAppList(ODataObj odataObj, boolean isOrgLeader,User user) {
+        /**
+         * 项目流程信息状态
+         * (1:已发起，2:正在做工作方案，3:已完成工作方案，4:正在做发文 5:已完成发文 6:已完成发文编号 7:正在归档，8:已完成归档，9:已确认归档)
+         */
+        PageModelDto<RuProcessTask> pageModelDto = new PageModelDto<RuProcessTask>();
+        Criteria criteria = ruProcessTaskRepo.getExecutableCriteria();
+        criteria = odataObj.buildFilterToCriteria(criteria);
+        //查询正在执行的项目，已经暂停的不能取回，合并评审次项目也不能取回
+        criteria.add(Restrictions.eq(RuProcessTask_.taskState.getName(), EnumState.PROCESS.getValue()));
+        criteria.add(Restrictions.isNull(RuProcessTask_.reviewType.getName()));
+        /*criteria.add(Restrictions.or(
+                Restrictions.isNull(RuProcessTask_.reviewType.getName()),
+                Restrictions.eq(RuProcessTask_.reviewType.getName(), EnumState.YES.getValue()))
+        );*/
+
+        StringBuffer sBuffer = new StringBuffer();
+        //部长回退( 只能在项目负责人办理和部长审批环节取回 )
+        if (isOrgLeader) {
+            criteria.add(Restrictions.or(
+                    Restrictions.eq(RuProcessTask_.signprocessState.getName(), Constant.SignProcessState.DO_WP.getValue()),
+                    Restrictions.eq(RuProcessTask_.signprocessState.getName(), Constant.SignProcessState.END_WP.getValue()))
+            );
+            sBuffer.append(" (ASSIGNEE = '" + SessionUtil.getUserId() + "' OR SUBSTR (NODEDEFINEKEY, -1) = ");
+            sBuffer.append(" (SELECT BRANCHID FROM CS_SIGN_BRANCH WHERE signid = BUSINESSKEY AND orgid = ");
+            sBuffer.append(" (SELECT ID FROM V_ORG_DEPT WHERE DIRECTORID = '" + user.getId() + "'))) ");
+            criteria.add(Restrictions.sqlRestriction(sBuffer.toString()));
+            //除去部门分办环节
+            criteria.add(Restrictions.not(Restrictions.like(RuProcessTask_.nodeDefineKey.getName(), "%" + FlowConstant.FLOW_SIGN_BMFB1.substring(0, FlowConstant.FLOW_SIGN_BMFB1.length() - 1) + "%")));
+            //是副主任，只要没发文，均可取回(只能取自己分管的项目)
+        } else {
+            sBuffer.append(" (SELECT count(cs.signid) FROM cs_sign cs WHERE cs.signid = {alias}.businessKey and cs.leaderId = '" + user.getId() + "') > 0 ");
+            sBuffer.append(" AND ( ( SUBSTR (NODEDEFINEKEY, -1)) = '" + FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue() + "' ");
+            sBuffer.append(" OR ( SUBSTR (NODEDEFINEKEY, -1)) = '" + FlowConstant.SignFlowParams.BRANCH_INDEX2.getValue() + "' ");
+            sBuffer.append(" OR ( SUBSTR (NODEDEFINEKEY, -1)) = '" + FlowConstant.SignFlowParams.BRANCH_INDEX3.getValue() + "' ");
+            sBuffer.append(" OR ( SUBSTR (NODEDEFINEKEY, -1)) = '" + FlowConstant.SignFlowParams.BRANCH_INDEX4.getValue() + "' ) ");
+
+            //合并评审的工作方案，部长没审批时可以回退
+            criteria.add(Restrictions.ge(RuProcessTask_.signprocessState.getName(), Constant.SignProcessState.IS_START.getValue()));
+            criteria.add(Restrictions.le(RuProcessTask_.signprocessState.getName(), Constant.SignProcessState.END_WP.getValue()));
+            criteria.add(Restrictions.sqlRestriction(sBuffer.toString()));
+        }
+
+        Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+        criteria.setProjection(null);
+        // 处理分页
+        if (odataObj.getSkip() > 0) {
+            criteria.setFirstResult(odataObj.getSkip());
+        }
+        if (odataObj.getTop() > 0) {
+            criteria.setMaxResults(odataObj.getTop());
+        }
+        List<RuProcessTask> runProcessList = criteria.list();
+        /*//合并评审项目处理
+        runProcessList.forEach(rl -> {
+            if (Constant.EnumState.YES.getValue().equals(rl.getReviewType())) {
+                rl.setReviewSignDtoList(findReviewSign(rl.getBusinessKey()));
+            }
+        });*/
+
+        pageModelDto.setCount(totalResult);
+        pageModelDto.setValue(runProcessList);
+        return pageModelDto;
+    }
+
     /**
      * 删除相应的分支信息（没有分支ID，则删除全部分支）
      *

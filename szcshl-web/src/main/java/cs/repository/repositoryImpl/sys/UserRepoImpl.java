@@ -347,8 +347,10 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
     public List<User> getCacheUserListById(String userIds) {
         List<User> userList = new ArrayList<>();
         List<String> ids = StringUtil.getSplit(userIds, ",");
-        for (String id : ids) {
-            userList.add(getCacheUserById(id));
+        if(null != ids){
+            for (String id : ids) {
+                userList.add(getCacheUserById(id));
+            }
         }
         return userList;
     }
