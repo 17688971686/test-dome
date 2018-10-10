@@ -121,30 +121,45 @@
 		<tr ng-if="vm.level=='0'">
 			<td colspan="4" style="vertical-align: middle;" class="text-left">二、课题研究及其他业务工作（如完成领导交办的其他业务工作等）</td>
 		</tr>
+		<tr>
+			<td colspan="4">
+				<table class="table table-bordered">
+					<tr ng-if="vm.level=='0'">
+						<td style="width:5%;vertical-align: middle;"  class="text-center">序号</td>
+						<td style="width:15%;vertical-align: middle;"  class="text-center">时间</td>
+						<td colspan="2" style="vertical-align: middle;"  class="text-center">内容</td>
+					</tr>
+					<tr ng-repeat="x in vm.conditions|filter:{businessType:'1'}" ng-if="vm.level=='0'">
+						<td style="width:5%;vertical-align: middle;"  class="text-center">{{$index+1}}</td>
+						<td style="width:15%;vertical-align: middle;"  class="text-center">{{x.endTime}}</td>
+						<td colspan="2" style="vertical-align: middle;"  class="text-center">{{x.topicName}}</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
 
-		<tr ng-if="vm.level=='0'">
-			<td style="width:5%;vertical-align: middle;"  class="text-center">序号</td>
-			<td style="width:15%;vertical-align: middle;"  class="text-center">时间</td>
-			<td colspan="2" style="vertical-align: middle;"  class="text-center">内容</td>
-		</tr>
-		<tr ng-repeat="x in vm.conditions|filter:{businessType:'1'}" ng-if="vm.level=='0'">
-			<td style="width:5%;vertical-align: middle;"  class="text-center">{{$index+1}}</td>
-			<td style="width:15%;vertical-align: middle;"  class="text-center">{{x.endTime}}</td>
-			<td colspan="2" style="vertical-align: middle;"  class="text-center">{{x.topicName}}</td>
-		</tr>
+
 		<tr ng-if="vm.level=='0'">
 			<td colspan="4" style="vertical-align: middle;" class="text-left">三、其他工作（如参与各项集体活动的组织、主持等）</td>
 		</tr>
-		<tr ng-if="vm.level=='0'">
-			<td style="width:5%;vertical-align: middle;"  class="text-center">序号</td>
-			<td style="width:15%;vertical-align: middle;"  class="text-center">时间</td>
-			<td colspan="2" style="vertical-align: middle;"  class="text-center">内容</td>
+
+		<tr>
+			<td colspan="4">
+				<table class="table table-bordered">
+					<tr ng-if="vm.level=='0'">
+						<td style="width:5%;vertical-align: middle;"  class="text-center">序号</td>
+						<td style="width:15%;vertical-align: middle;"  class="text-center">时间</td>
+						<td colspan="2" style="vertical-align: middle;"  class="text-center">内容</td>
+					</tr>
+					<tr ng-repeat="x in vm.conditions|filter:{businessType:'2'}" ng-if="vm.level=='0'">
+						<td style="width:5%;vertical-align: middle;"  class="text-center">{{$index+1}}</td>
+						<td style="width:15%;vertical-align: middle;"  class="text-center">{{x.endTime}}</td>
+						<td colspan="2" style="vertical-align: middle;"  class="text-center">{{x.topicName}}</td>
+					</tr>
+				</table>
+			</td>
 		</tr>
-		<tr ng-repeat="x in vm.conditions|filter:{businessType:'2'}" ng-if="vm.level=='0'">
-			<td style="width:5%;vertical-align: middle;"  class="text-center">{{$index+1}}</td>
-			<td style="width:15%;vertical-align: middle;"  class="text-center">{{x.endTime}}</td>
-			<td colspan="2" style="vertical-align: middle;"  class="text-center">{{x.topicName}}</td>
-		</tr>
+
 
 	</table>
 

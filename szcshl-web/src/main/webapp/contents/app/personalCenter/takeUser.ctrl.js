@@ -71,7 +71,9 @@
                     if(data.flag || data.reCode == 'ok'){
                         vm.model.takeUserId = vm.takeUserId;
                         vm.initTaskUser(vm.takeUserId);
-                        bsWin.alert("操作成功！");
+                        bsWin.alert(data.reMsg);
+                    }else{
+                        bsWin.alert(data.reMsg);
                     }
                 });
             } else {

@@ -625,7 +625,7 @@ public class UserServiceImpl implements UserService {
             userRepo.executeHql(hqlBuilder);
             fleshPostUserCache();
         }
-        return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"选择的用户已经被设置为代办人，不能重复设置其为代办人！");
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
     }
 
     /**

@@ -177,6 +177,7 @@ public class FlowAppController {
         String module="";
         String businessKey = "";
         ProcessInstance processInstance = null;
+        boolean isProj = false;
         //判断是任务还是项目
         String projectOrTask = "";
         try{
@@ -199,6 +200,7 @@ public class FlowAppController {
                 case FlowConstant.SIGN_FLOW:
                     projectOrTask="项目";
                     resultMsg = flowAppService.dealFlow(processInstance, task,flowDto,userDto);
+                    isProj = true;
                     break;
                 case FlowConstant.TOPIC_FLOW:
                     projectOrTask="任务";
@@ -255,7 +257,7 @@ public class FlowAppController {
         log.setLogLevel(Constant.EnumState.PROCESS.getValue());
         logService.save(log);
         //腾讯通消息处理
-        //rtxService.dealPoolRTXMsg(flowDto.getTaskId(),resultMsg,processInstance,smsContent.get(projectOrTask,processInstance.getName()));
+        rtxService.dealPoolRTXMsg(flowDto.getTaskId(),resultMsg,processInstance.getName(),isProj? Constant.MsgType.project_type.name(): Constant.MsgType.task_type.name());
         return resultMsg;
     }
 

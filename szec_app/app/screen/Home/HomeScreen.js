@@ -141,7 +141,7 @@ export default class ListScreen extends React.Component {
                     </TouchableOpacity>
                     <TouchableOpacity activeOpacity={0.8} style={styles.headItem} onPress={()=>this.props.navigation.navigate('ProRepeatScreen')}>
                         <View style={styles.iconView}>
-                            <Icon name='ios-list-box' size={35} color={'#1E5AAF'}/>
+                            <Icon name='ios-list-box' size={35} color={'#94af10'}/>
                         </View>
                         <Text>项目重新分办</Text>
                     </TouchableOpacity>
