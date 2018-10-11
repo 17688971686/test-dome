@@ -511,8 +511,13 @@ public class FlowController {
             log.info("流程提交异常："+errorMsg);
             resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"操作异常，错误信息已记录，请联系管理员查看！异常信息："+errorMsg);
         }
+        String taskId = flowDto.getTaskId();
+        if(Validate.isString(resultMsg.getIdCode())){
+            taskId = resultMsg.getIdCode();
+            resultMsg.setIdCode(null);
+        }
         //腾讯通消息处理
-        rtxService.dealPoolRTXMsg(flowDto.getTaskId(),resultMsg,processInstance.getName(),isProj? MsgType.project_type.name(): MsgType.task_type.name());
+        rtxService.dealPoolRTXMsg(taskId,resultMsg,processInstance.getName(),isProj? MsgType.project_type.name(): MsgType.task_type.name());
         return resultMsg;
     }
 

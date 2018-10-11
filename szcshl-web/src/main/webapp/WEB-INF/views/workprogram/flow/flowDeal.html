@@ -17,7 +17,7 @@
     <ul id="myTab" class="nav nav-tabs">
         <li><a data-toggle="tab" for-div="div_proj">项目信息</a></li>
         <li class="active"><a data-toggle="tab" for-div="busi_baseinfo">工作方案信息</a></li>
-        <li><a data-toggle="tab" for-div="busi_old_wp">原工作方案信息</a></li>
+        <li><a data-toggle="tab" for-div="busi_old_wp" ng-if="vm.WorkProgramHisDtoList && vm.WorkProgramHisDtoList.length > 0">原工作方案信息</a></li>
         <li ng-show="vm.showFlag.tabSysFile"><a data-toggle="tab" for-div="flow_upload_file">附件列表</a></li>
         <li><a data-toggle="tab" for-div="flow_diagram">流程图</a></li>
         <li><a data-toggle="tab" for-div="flow_history">处理记录</a></li>

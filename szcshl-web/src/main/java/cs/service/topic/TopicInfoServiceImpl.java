@@ -620,7 +620,9 @@ public class TopicInfoServiceImpl implements TopicInfoService {
         }
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+
+        //当下一个处理人还是自己的时候，任务ID是已经改变了的，所以这里要返回任务ID
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),task.getId(), "操作成功！",null);
     }
 
     /**

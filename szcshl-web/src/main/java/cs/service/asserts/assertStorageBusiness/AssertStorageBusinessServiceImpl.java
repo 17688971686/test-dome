@@ -22,6 +22,7 @@ import cs.repository.repositoryImpl.asserts.assertStorageBusiness.AssertStorageB
 import cs.repository.repositoryImpl.asserts.goodsDetail.GoodsDetailRepo;
 import cs.repository.repositoryImpl.sys.OrgDeptRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
+import cs.service.rtx.RTXSendMsgPool;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -315,7 +316,10 @@ public class AssertStorageBusinessServiceImpl  implements AssertStorageBusinessS
 				}
 			}
 		}
-		return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+		//放入腾讯通消息缓冲池
+		RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(),assigneeValue);
+		//当下一个处理人还是自己的时候，任务ID是已经改变了的，所以这里要返回任务ID
+		return new ResultMsg(true, Constant.MsgCode.OK.getValue(),task.getId(), "操作成功！",null);
 	}
 	
 }

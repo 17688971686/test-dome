@@ -1638,6 +1638,7 @@ public class SignServiceImpl implements SignService {
                     //合并发文主项目，另起一个方法处理
                     returnResult = flowService.dealMerDisFlow(processInstance,task,dp,FLOW_SIGN_FGLD_QRFW,flowDto,isAgentTask);
                 }else{
+                    //获取主任角色用户
                     dealUser = userList.get(0);
                     assigneeValue = userService.getTaskDealId(dealUser, agentTaskList, FLOW_SIGN_ZR_QRFW);
                     variables.put(FlowConstant.SignFlowParams.USER_ZR.getValue(), assigneeValue);
@@ -1905,8 +1906,8 @@ public class SignServiceImpl implements SignService {
             if (Validate.isList(agentTaskList)) {
                 agentTaskService.updateAgentInfo(agentTaskList,processInstance.getId(),processInstance.getName());
             }
-
-            return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！");
+            //当下一个处理人还是自己的时候，任务ID是已经改变了的，所以这里要返回任务ID
+            return new ResultMsg(true, MsgCode.OK.getValue(), task.getId(),"操作成功！",null);
         }
     }
 

@@ -905,7 +905,10 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             }
             if(isNew){
                 newWP = initWP(sign,ProjUtil.isMainBranch(brandId));
+                newWP.setSign(sign);
                 newWP.setId(new RandomGUID().valueAfterMD5);
+                newWP.setCreatedBy(SessionUtil.getUserId());
+                newWP.setModifiedBy(SessionUtil.getLoginName());
             }
             signBranchRepo.resetBranchState(sign.getSignid(), brandId);
             newWP.setBranchId(brandId);
@@ -1034,6 +1037,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 //分管领导审批环节
                 boolean isAgentTask2 = agentTaskService.isAgentTask(task.getId(),curUserId); //是否为代办任务
                 workPGUtil.setLeaderOption(flowDto.getDealOption(),new Date(),ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask2));
+                wk.setState(EnumState.YES.getValue());
                 workProgramRepo.save(wk);
                 //完成分支的工作方案
                 signBranchRepo.updateFinishState(sign.getSignid(), wk.getBranchId(),EnumState.YES.getValue());
