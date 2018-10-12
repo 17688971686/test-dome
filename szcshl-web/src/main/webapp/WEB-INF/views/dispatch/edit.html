@@ -27,6 +27,7 @@
     <button  ng-if="vm.dispatchDoc.dispatchStage=='其它'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="printFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGEOTHER')">打印预览</button>
     <button  ng-if="vm.dispatchDoc.dispatchStage=='项目概算'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="printFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGEBUDGET')">打印预览</button>
     <button  ng-if="vm.dispatchDoc.dispatchStage=='项目建议书'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="printFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGESUG')">打印预览</button>
+    <button  ng-if="vm.dispatchDoc.dispatchStage=='登记赋码'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="printFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'REGISTERCODE')">打印预览</button>
 
 </div>
 <div class="toolbar" ng-show="vm.isControl">
@@ -44,7 +45,7 @@
     <form id="dispatch_form" name="dispatch_form">
         <!--S 发文编辑页面 -->
         <!-- S 项目建议书  -->
-        <div   ng-show="vm.dispatchDoc.dispatchStage=='项目建议书'">
+        <div   ng-show="vm.dispatchDoc.dispatchStage=='项目建议书' || vm.dispatchDoc.dispatchStage=='登记赋码'">
             <div id="projectEdit_xmjsy" ng-include  src="'${path}/contents/app/dispatch/dispatchEdit/projectEdit.html'"></div>
             <#--<div id="projectEdit_xmjsy_templ" style="display: none;" > <#include "/templatePrint/dispatch/projectDetailXmjys.html"/></div>-->
         </div>

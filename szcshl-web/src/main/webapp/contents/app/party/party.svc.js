@@ -15,6 +15,7 @@
             exportPartyWord : exportPartyWord , //导出党务信息-word模板
             deleteParty : deleteParty , //删除党员信息
             exportSignInSheet : exportSignInSheet , //导出签到表
+            exportPartyInfo : exportPartyInfo , //导出党员信息表
 
         }
         
@@ -32,7 +33,7 @@
             var httpOptions = {
                 method : "post",
                 url : rootPath + "/partyManager/exportSignInSheet",
-                params : {pmIds : pmIds}
+                // params : {pmIds : pmIds}
             }
 
             var httpSuccess = function success(response){
@@ -342,6 +343,34 @@
             };
         }
         //end partyGrid
+
+        //begin exportPartyInfo
+        function exportPartyInfo(){
+
+            var httpOptions = {
+                method : "post",
+                url : rootPath + "/partyManager/exportPartyInfo",
+                headers : {
+                    "contentType" : "application/json;charset=utf-8"
+                },
+                traditional : true,
+                dataType : "json",
+                responseType: 'arraybuffer',
+            }
+
+            var httpSuccess = function success(response){
+                var fileName =  "党员信息表.xls";
+                var fileType ="application/vnd.ms-excel";
+                common.downloadReport(response.data , fileName , fileType);
+            }
+
+            common.http({
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+        }
+        //end exportPartyInfo
 
     }
 })();

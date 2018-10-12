@@ -16,7 +16,10 @@
             <span class="glyphicon glyphicon-repeat"></span>重置
         </button>
         <button class="btn btn-sm btn-success" ng-click="vm.exportSignInSheet()">
-            导出
+            导出签到表
+        </button>
+        <button class="btn btn-sm btn-success" ng-click="vm.exportPartyInfo()">
+            导出党员信息表
         </button>
         <button class="btn btn-sm btn-primary" ng-click="vm.importExcel()">
             批量导入
@@ -111,6 +114,13 @@
             <tr>
                 <td></td>
                 <td><button class="btn btn-xm btn-success" ng-click="vm.importFile()">确认</button></td>
+            </tr>
+            <tr>
+                <td>导入模板文件</td>
+                <td>
+                    <a href="${path}/contents/uploadFile/importPatryTemplate.xlsx"
+                       download="党员信息表(导入模板).xlsx" target="_blank">党员信息表(导入模板)</a>
+                </td>
             </tr>
         </table>
 

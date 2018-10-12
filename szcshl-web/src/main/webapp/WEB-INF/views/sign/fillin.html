@@ -60,7 +60,7 @@
     <form id="sign_fill_form" name="sign_fill_form">
         <!-- S 编辑页面 -->
         <!--S_ 项目建议书/可行性研究报告 -->
-        <div ng-if="vm.model.reviewstage=='项目建议书' || vm.model.reviewstage=='可行性研究报告' || vm.model.reviewstage=='其它'">
+        <div ng-if="vm.model.reviewstage=='项目建议书' || vm.model.reviewstage=='可行性研究报告' || vm.model.reviewstage=='其它' || vm.model.reviewstage=='登记赋码'">
             <div id="sign_fill_xmjys" ng-include src="'${path}/contents/app/sign/signEdit/default.html'"></div>
             <!-- 打印模板-->
             <#--

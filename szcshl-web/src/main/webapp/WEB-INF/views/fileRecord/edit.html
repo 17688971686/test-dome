@@ -17,6 +17,9 @@
 
         <button ng-if="vm.fileRecord.fileReviewstage=='项目建议书'" class="btn btn-sm btn-primary" style="width: 70px;" ng-click="printFile(vm.fileRecord.signId,'FILERECORD' , 'STAGESUG')">打印预览</button>
 
+        <button ng-if="vm.fileRecord.fileReviewstage=='登记赋码'" class="btn btn-sm btn-primary" style="width: 70px;" ng-click="printFile(vm.fileRecord.signId,'FILERECORD' , 'REGISTERCODE')">打印预览</button>
+
+
         <button ng-if="vm.fileRecord.fileReviewstage=='可行性研究报告'" class="btn btn-sm btn-primary" style="width: 70px; " ng-click="printFile(vm.fileRecord.signId,'FILERECORD' , 'STAGESTUDY')">打印预览</button>
 
 
@@ -58,7 +61,7 @@
         </div>-->
     </div>
 
-    <div ng-if="vm.fileRecord.fileReviewstage=='项目建议书'">
+    <div ng-if="vm.fileRecord.fileReviewstage=='项目建议书' || vm.fileRecord.fileReviewstage=='登记赋码'">
         <form id="fileRecord_form" name="fileRecord_form">
             <div id="fileProjcetIdeaEdit_xmjys" ng-include
                  src="'${path}/contents/app/fileRecord/fileRecordEdit/fileProjcetIdeaEdit.html'"></div>

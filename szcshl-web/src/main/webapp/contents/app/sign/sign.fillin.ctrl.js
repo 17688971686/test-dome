@@ -45,7 +45,7 @@
                 });
 
                 //初始化，打印预览的stageType
-                if(vm.model.reviewstage == "项目建议书" || vm.model.reviewstage == "可行性研究报告"){
+                if(vm.model.reviewstage == "项目建议书" || vm.model.reviewstage == "可行性研究报告" || vm.model.reviewstage == "登记赋码"){
                     vm.stageType = "STAGESUG";
                 }
                 else if(vm.model.reviewstage == "资金申请报告"){

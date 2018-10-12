@@ -827,6 +827,7 @@
 
                         $('#myTabExpertS li').click(function (e) {
                             $("#busi_baseinfoS").removeClass("active").removeClass("in");
+                            $("#busi_workplanS").removeClass("active").removeClass("in");
                             var aObj = $("a", this);
                             e.preventDefault();
                             aObj.tab('show');

@@ -515,6 +515,10 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
                     }
 
                     else {
+                       if("fztype".equals(params[0].substring(1, params[0].length() - 1))
+                               || "displayName".equals(params[0].substring(1, params[0].length() - 1))){
+                           continue;
+                        }
 
                         hqlBuilder.append(params[0].substring(1, params[0].length() - 1) + " like '%" + value + "%'");
                     }

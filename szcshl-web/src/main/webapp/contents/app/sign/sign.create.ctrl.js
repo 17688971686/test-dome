@@ -7,7 +7,7 @@
 
     function sign($location, signSvc,$state,bsWin) {
         var vm = this;
-    	vm.model = {};						//创建一个form对象
+        vm.model = {};						//创建一个form对象
         vm.title = '新增收文';        		//标题
 
         vm.create = function () {
@@ -30,6 +30,62 @@
                 });
             }
 
-        };       
+        };
+
+        /**
+         * 提前介入复选框
+         * @constructor
+         */
+        vm.TQJRCheckbox = function(){
+            var flag = $("#isAdvanced").is(':checked');
+            if(flag){
+                if(vm.model.projectname){
+                    vm.model.projectname += "(提前介入)";
+                }else{
+                    vm.model.projectname = "(提前介入)";
+                }
+            }else{
+                if(vm.model.projectname){
+                    vm.model.projectname = vm.model.projectname.replace("(提前介入)" , "");
+                }
+            }
+        }
+
+        /**
+         * 是否调概复选框
+         * @constructor
+         */
+        vm.SFTGCheckbox = function(){
+            var flag = $("#ischangeEstimate").is(':checked');
+            if(flag){
+                if(vm.model.projectname){
+                    vm.model.projectname += "(是否调概)";
+                }else{
+                    vm.model.projectname = "(是否调概)";
+                }
+            }else{
+                if(vm.model.projectname){
+                    vm.model.projectname = vm.model.projectname.replace("(是否调概)" , "");
+                }
+            }
+        }
+
+        /**
+         * 评审阶段为“登记赋码”时，在项目名称后自动添加（登记赋码）
+         */
+        vm.reviewstageSelect = function(){
+            if(vm.model.reviewstage && vm.model.reviewstage == "登记赋码"){
+                if(vm.model.projectname){
+                    vm.model.projectname += "(登记赋码)";
+                }else{
+                    vm.model.projectname = "(登记赋码)";
+                }
+            }else{
+                if(vm.model.projectname){
+                    vm.model.projectname = vm.model.projectname.replace("(登记赋码)" , "");
+                }
+            }
+        }
+
     }
 })();

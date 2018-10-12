@@ -241,6 +241,10 @@ public class PartyManagerDto extends DomainBase{
     @JSONField(format = "yyyy-MM-dd")
     private Date outOrgDate;
 
+    private String pmJoinPartyDateStr;
+
+    private String pmTurnToPatryDateStr;
+
     public String getPmId() {
         return pmId;
     }
@@ -582,5 +586,21 @@ public class PartyManagerDto extends DomainBase{
 
     public void setOutOrgDate(Date outOrgDate) {
         this.outOrgDate = outOrgDate;
+    }
+
+    public String getPmJoinPartyDateStr() {
+        return pmJoinPartyDateStr;
+    }
+
+    public void setPmJoinPartyDateStr(String pmJoinPartyDateStr) {
+        this.pmJoinPartyDateStr = pmJoinPartyDateStr;
+    }
+
+    public String getPmTurnToPatryDateStr() {
+        return pmTurnToPatryDateStr;
+    }
+
+    public void setPmTurnToPatryDateStr(String pmTurnToPatryDateStr) {
+        this.pmTurnToPatryDateStr = pmTurnToPatryDateStr;
     }
 }

@@ -72,8 +72,10 @@
                 <tr>
                     <td class="text-center"   width="10%">组织关系<br/>是否在我委</td>
                     <td colspan="5" class="text-left">
-                        <input type="checkbox"  id="isInOrg" name="isInOrg" ng-model="vm.party.isInOrg"
-                               ng-true-value="9" ng-false-value="0"  ng-checked="vm.party.isInOrg==9" disabled="disabled"/>
+                        <input type="checkbox" name="isInOrg" ng-model="vm.party.isInOrg"
+                               ng-true-value="9"  ng-checked="vm.party.isInOrg==9" disabled="disabled"/>是
+                        <input type="checkbox"  name="isInOrg" ng-model="vm.party.isInOrg"
+                               ng-true-value="0"   ng-checked="!vm.party.isInOrg || vm.party.isInOrg==0" disabled="disabled"/>否
                     </td>
                 </tr>
                 <tr>
@@ -103,8 +105,10 @@
                 <tr>
                     <td class="text-center"   width="10%">是否在编</td>
                     <td colspan="5" class="text-left">
-                        <input type="checkbox"  id="isEnrolled" name="isEnrolled" ng-model="vm.party.isEnrolled"
-                               ng-true-value="9" ng-false-value="0"  ng-checked="vm.party.isEnrolled==9" disabled="disabled"/>
+                        <input type="checkbox" name="isEnrolled" ng-model="vm.party.isEnrolled"
+                               ng-true-value="9"  ng-checked="vm.party.isEnrolled==9" disabled="disabled"/>是
+                        <input type="checkbox" name="isEnrolled" ng-model="vm.party.isEnrolled"
+                               ng-true-value="0"  ng-checked="!vm.party.isEnrolled || vm.party.isEnrolled==0" disabled="disabled"/>否
                     </td>
                 </tr>
                 <tr>

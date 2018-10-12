@@ -364,6 +364,7 @@
                         $("#busi_baseinfoMWP").addClass("active").addClass("in").show(500);
                         $('#myTabExpertMWP li').click(function (e) {
                             $("#busi_baseinfoMWP").removeClass("active").removeClass("in");
+                            $("#busi_workplanMWP").removeClass("active").removeClass("in");
                             var aObj = $("a", this);
                             e.preventDefault();
                             aObj.tab('show');

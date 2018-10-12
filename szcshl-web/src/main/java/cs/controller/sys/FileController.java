@@ -612,8 +612,9 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                         .replaceAll("<p style='text-align:right;'>", "").replaceAll("</p>", ""));
                 if (stageType.equals(RevireStageKey.KEY_SUG.getValue())
                         || stageType.equals(Constant.RevireStageKey.KEY_STUDY.getValue())
-                        || stageType.equals(Constant.RevireStageKey.KEY_OTHER.getValue())) {
-                    //建议书、可研、其他
+                        || stageType.equals(Constant.RevireStageKey.KEY_OTHER.getValue())
+                        || stageType.equals(RevireStageKey.KEY_REGISTERCODE.getValue())) {
+                    //建议书、可研、其他 、登记赋码
                     file = TemplateUtil.createDoc(dataMap, Constant.Template.STAGE_SUG_SIGN.getKey(), path);
                 } else if (stageType.equals(RevireStageKey.KEY_BUDGET.getValue())) {
                     //概算
@@ -674,7 +675,9 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 workData.put("rbDate", rbDate);//评审会时间
                 workData.put("studyBeginTimeStr", DateUtils.getTimeNow(workProgramDto.getStudyBeginTime()));//调研开始时间
                 workData.put("studyEndTimeStr", DateUtils.getTimeNow(workProgramDto.getStudyEndTime()));//调研结束时间
-                if (null != stageType && (stageType.equals("STAGESUG") || stageType.equals("STAGESTUDY") || stageType.equals("STAGEBUDGET") || stageType.equals("STAGEOTHER"))) {
+                if (null != stageType && (stageType.equals("STAGESUG") || stageType.equals("STAGESTUDY")
+                        || stageType.equals("STAGEBUDGET") || stageType.equals("STAGEOTHER")
+                        || stageType.equals("REGISTERCODE"))) {
                     if (stageType.equals("STAGESUG")) {
                         workData.put("wpTile", "项目建议书评审工作方案");
                         workData.put("wpCode", " QR-4.3-02-A3");
@@ -687,6 +690,9 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     } else if (stageType.equals("STAGEBUDGET")) {
                         workData.put("wpTile", "项目概算评审工作方案");
                         workData.put("wpCode", " QR-4.7-01-A2");
+                    }else if (stageType.equals("REGISTERCODE")) {
+                        workData.put("wpTile", "登记赋码评审工作方案");
+                        workData.put("wpCode", "QR-4.3-02-A3");
                     }
                     file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_SUG_WORKPROGRAM.getKey(), path);
                 } else if (null != stageType && stageType.equals("STAGEREPORT")) {
@@ -732,6 +738,10 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 } else if (stageType.equals(Constant.RevireStageKey.KEY_DEVICE.getValue())) {
                     //进口
                     file = TemplateUtil.createDoc(fileData, Template.IMPORT_DEVICE_FILERECORD.getKey(), path);
+
+                }else if (stageType.equals(RevireStageKey.KEY_REGISTERCODE.getValue())) {
+                    //登记赋码
+                    file = TemplateUtil.createDoc(fileData, Template.DJFM_FILERECORD.getKey(), path);
 
                 } else if (stageType.equals(Constant.RevireStageKey.KEY_HOMELAND.getValue())
                         || stageType.equals(Constant.RevireStageKey.KEY_IMPORT.getValue())) {
@@ -843,6 +853,11 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     //建议书
                     dispatchData.put("wpTile", "项目建议书发文审批表");
                     file = TemplateUtil.createDoc(dispatchData, Template.STAGE_SUG_DISPATCHDOC.getKey(), path);
+                }else if(stageType.equals(RevireStageKey.KEY_REGISTERCODE.getValue())){
+                    //登记赋码
+                    dispatchData.put("wpTile", "登记赋码发文审批表");
+                    file = TemplateUtil.createDoc(dispatchData, Template.DJFM_DISPATCHDOC.getKey(), path);
+
                 } else if (stageType.equals(RevireStageKey.KEY_STUDY.getValue())) {
                     //可研
                     List<SignDto> signDtoList = null ;

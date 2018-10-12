@@ -20,6 +20,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -174,8 +175,8 @@ public class ExpertSelectedController {
                 BeanCopierUtils.copyProperties(esd, expertCostDetailDto);
                 BeanCopierUtils.copyProperties(esd.getExpertDto(), expertCostDetailDto);
                 BeanCopierUtils.copyProperties(esd.getExpertReviewDto(), expertCostDetailDto);
-                expertCostDetailDto.setReviewCost(esd.getReviewCost());
-                expertCostDetailDto.setReviewTaxes(esd.getReviewTaxes());
+                expertCostDetailDto.setReviewCost(esd.getReviewCost() == null ? new BigDecimal(0) : esd.getReviewCost());
+                expertCostDetailDto.setReviewTaxes(esd.getReviewTaxes() == null ? new BigDecimal(0) : esd.getReviewTaxes());
                 if (null != esd.getExpertReviewDto() && null != esd.getExpertReviewDto().getReviewDate()) {
                     expertCostDetailDto.setReviewDate(DateUtils.converToString(esd.getExpertReviewDto().getReviewDate(), "yyyy-MM-dd"));
                 }

@@ -17,7 +17,7 @@
     <div class="tab-content" style="background:white;">
         <div class="tab-pane fade" style="background:white;" id="div_proj">
             <!-- S 项目建议书/可行性研究报告  -->
-            <div  ng-if="vm.model.reviewstage=='项目建议书'|| vm.model.reviewstage=='可行性研究报告' || vm.model.reviewstage=='其它'" >
+            <div  ng-if="vm.model.reviewstage=='项目建议书'|| vm.model.reviewstage=='可行性研究报告' || vm.model.reviewstage=='其它' || vm.model.reviewstage=='登记赋码'" >
                 <div id="sign_detail_xmjys" ng-include src="'${path}/contents/app/sign/signDetail/detail.html'"></div>
             </div>
             <!-- E 项目建议书/可行性研究报告  -->
@@ -49,7 +49,7 @@
 
         <div class="tab-pane fade in active" style="background:white;" id="busi_baseinfo">
             <!-- （包含：主、次项目）项目建议书/可行性研究报告/项目概算/其它  -->
-            <div ng-if="vm.model.reviewstage=='项目建议书'|| vm.model.reviewstage=='可行性研究报告'  ||vm.model.reviewstage=='项目概算' || vm.model.reviewstage=='其它'">
+            <div ng-if="vm.model.reviewstage=='项目建议书'|| vm.model.reviewstage=='可行性研究报告'  ||vm.model.reviewstage=='项目概算' || vm.model.reviewstage=='其它' || vm.model.reviewstage=='登记赋码'">
                 <div id="sign_workprogram_xmjys"  ng-include src="'${path}/contents/app/workprogram/workprogramDetail/all_details.html'"></div>
             </div>
 
@@ -75,7 +75,7 @@
         <div class="tab-pane fade" style="background:white;" id="busi_old_wp">
             <!-- 合并发文次项目 -->
             <div ng-if="vm.WorkProgramHisDtoList" ng-repeat = "w in vm.WorkProgramHisDtoList">
-                <div ng-if="w.workreviveStage=='项目建议书' || w.workreviveStage=='可行性研究报告' || w.workreviveStage=='项目概算' || w.workreviveStage=='其它'">
+                <div ng-if="w.workreviveStage=='项目建议书' || w.workreviveStage=='可行性研究报告' || w.workreviveStage=='项目概算' || w.workreviveStage=='其它' || w.workreviveStage=='登记赋码'">
                     <div ng-include src="'${path}/contents/app/workprogram/history/all_details.html'"></div>
                 </div>
 
