@@ -1,7 +1,7 @@
 <meta charset="UTF-8">
 <!-- start 主项目 -->
 <div ng-repeat="w in vm.model.workProgramDtoList"
-     ng-if="(w.workreviveStage=='项目建议书' || w.workreviveStage=='可行性研究报告' || w.workreviveStage=='项目概算' || w.workreviveStage=='其它')&&(w.branchId == '1')">
+     ng-if="(w.workreviveStage=='项目建议书' || w.workreviveStage=='可行性研究报告' || w.workreviveStage=='项目概算' || w.workreviveStage=='其它' || w.workreviveStage=='登记赋码')&&(w.branchId == '1')">
     <a data-toggle="collapse" data-target="#wp_{{$index}}"
        ng-show="(vm.model.workProgramDtoList.length > 1) || vm.showAll">
         [主办工作方案]
@@ -225,6 +225,9 @@
             <button  ng-if="w.workreviveStage=='项目建议书'" class="btn btn-sm btn-primary"
                       ng-click="printFile(w.id,'WORKPROGRAM','STAGESUG')">打印预览
             </button>
+            <button  ng-if="w.workreviveStage=='登记赋码'" class="btn btn-sm btn-primary"
+                     ng-click="printFile(w.id,'WORKPROGRAM','REGISTERCODE')">打印预览
+            </button>
             <button ng-if="w.workreviveStage=='可行性研究报告'" class="btn btn-sm btn-primary"
                      ng-click="printFile(w.id,'WORKPROGRAM','STAGESTUDY')">打印预览
             </button>
@@ -247,7 +250,7 @@
 
 <!-- start 协审项目（项目建议书/可行性研究报告） -->
 <div ng-repeat="w in vm.model.workProgramDtoList | toArray:false | orderBy:'branchId'"  style="margin-top:10px;"
-     ng-if="(w.workreviveStage=='项目建议书' || w.workreviveStage=='可行性研究报告'  || w.workreviveStage=='项目概算' || w.workreviveStage=='其它' || w.workreviveStage=='资金申请报告') && (w.branchId != '1' && w.branchId != 1)">
+     ng-if="(w.workreviveStage=='项目建议书' || w.workreviveStage=='可行性研究报告'  || w.workreviveStage=='项目概算' || w.workreviveStage=='其它' || w.workreviveStage=='资金申请报告' || w.workreviveStage=='登记赋码') && (w.branchId != '1' && w.branchId != 1)">
     <a data-toggle="collapse" data-target="#aswp_{{$index}}"
        ng-show="(vm.model.workProgramDtoList.length > 1) || vm.showAll">
         [协办工作方案]
@@ -453,6 +456,9 @@
         <p style="width: 100%;text-align: center;margin-top:5px;">
             <button ng-if="w.workreviveStage=='项目建议书'" class="btn btn-sm btn-primary"
                     ng-click="printFile(w.id,'WORKPROGRAM','STAGESUG')">打印预览
+            </button>
+            <button  ng-if="w.workreviveStage=='登记赋码'" class="btn btn-sm btn-primary"
+                     ng-click="printFile(w.id,'WORKPROGRAM','REGISTERCODE')">打印预览
             </button>
             <button ng-if="w.workreviveStage=='可行性研究报告'" class="btn btn-sm btn-primary"
                     ng-click="printFile(w.id,'WORKPROGRAM','STAGESTUDY')">打印预览

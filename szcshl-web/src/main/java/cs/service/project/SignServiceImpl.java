@@ -2338,6 +2338,10 @@ public class SignServiceImpl implements SignService {
                 case Constant.IMPORT_DEVICE:
                     configKey = Constant.RevireStageKey.KEY_DEVICE.getValue();
                     break;
+
+                case Constant.REGISTER_CODE :
+                    configKey = RevireStageKey.KEY_REGISTERCODE.getValue();
+                    break;
                 default:
                     configKey = "";
             }
@@ -2515,8 +2519,9 @@ public class SignServiceImpl implements SignService {
         sqlBuilder.append(" and s." + SignDispaWork_.processState.getName() + " >= " + Constant.SignProcessState.END_DIS_NUM.getValue() + " ");
         //排除已经进行了关联的项目
         /*sqlBuilder.append(" and s.signid not in( select ASSOCIATE_SIGNID from CS_ASSOCIATE_SIGN) ");*/
-        //项目建议书 或资金申请
-        if (Constant.STAGE_SUG.equals(reviewstage) || Constant.APPLY_REPORT.equals(reviewstage)) {
+        //项目建议书 或 资金申请 或 登记赋码
+        if (Constant.STAGE_SUG.equals(reviewstage) || Constant.APPLY_REPORT.equals(reviewstage)
+                || Constant.REGISTER_CODE.equals(reviewstage)) {
             sqlBuilder.append(" and s." + SignDispaWork_.reviewstage.getName() + "=:reviewStage ");
             sqlBuilders.setParam("reviewStage", reviewstage);
             sqlBuilder1.setParam("reviewStage", reviewstage);

@@ -460,6 +460,10 @@ public class Constant {
         OTHERS_DISPATCHDOC("print/dispatchDoc/dispatchOther", "其它阶段_发文"),
         OTHERS_FILERECORD("print/filerecord/fileOther", "其它阶段_归档"),
 
+        //登记赋码
+        DJFM_DISPATCHDOC("print/dispatchDoc/dispatchDJFM", "登记赋码_发文"),
+        DJFM_FILERECORD("print/filerecord/fileDJFM", "登记赋码_归档"),
+
         //其它资料
         OTHER_FILE("print/other", "其它资料"),
 
@@ -732,11 +736,13 @@ public class Constant {
     public static final String DEVICE_BILL_HOMELAND = "设备清单（国产）";
     public static final String DEVICE_BILL_IMPORT = "设备清单（进口）";
     public static final String IMPORT_DEVICE = "进口设备";
+    public static final String REGISTER_CODE = "登记赋码";
 
     /**
      * 评审阶段key值
      */
     public static enum RevireStageKey {
+        KEY_REGISTERCODE("REGISTERCODE"), //登记赋码
         KEY_SUG("STAGESUG"),           //项目建议书
         KEY_STUDY("STAGESTUDY"),       //可行性研究报告
         KEY_BUDGET("STAGEBUDGET"),     //项目概算

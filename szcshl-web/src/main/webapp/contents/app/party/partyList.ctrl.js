@@ -82,7 +82,7 @@
          * 导出签到表
          */
         vm.exportSignInSheet = function(){
-            var selectIds = common.getKendoCheckId('.grid');
+            /*var selectIds = common.getKendoCheckId('.grid');
             if (selectIds.length == 0) {
                 bsWin.alert("请选择要导出数据！");
             } else {
@@ -92,7 +92,8 @@
                 }
                 var idStr = ids.join(',');
                 partySvc.exportSignInSheet(idStr);
-            }
+            }*/
+            partySvc.exportSignInSheet();
         }
 
         /**
@@ -169,6 +170,12 @@
             }
         }
 
+        /**
+         * 导出党员信息表-excel
+         */
+        vm.exportPartyInfo = function(){
+                partySvc.exportPartyInfo();
+        }
 
     }
 })();

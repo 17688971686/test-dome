@@ -9,7 +9,7 @@
     <!--S 编辑页面 -->
     <div ng-repeat="wp in vm.workProgramDtoList" class="well well-sm " style="background:white;">
         <!-- S 项目建议书/可行性研究报告 -->
-        <div ng-if="wp.workreviveStage=='项目建议书'|| wp.workreviveStage=='可行性研究报告' || wp.workreviveStage=='项目概算' || wp.workreviveStage=='其它'">
+        <div ng-if="wp.workreviveStage=='项目建议书'|| wp.workreviveStage=='可行性研究报告' || wp.workreviveStage=='项目概算' || wp.workreviveStage=='其它' ||  wp.workreviveStage=='登记赋码'">
             <div ng-if="wp.branchId == '1'">
                 <div id="mainEdit" ng-include
                      src="'${path}/contents/app/workprogram/workprogramEdit/MaintainProject/MaintainEdit.html'"></div>

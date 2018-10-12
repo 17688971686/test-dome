@@ -280,5 +280,8 @@
 <!--<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;"
         ng-click="vm.templatePage('sign_dispatch_xmjys')">打印
 </button>-->
-<button class="form-control btn-sm btn-primary" style="width: 100px; margin: auto;" ng-click="printFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGESUG')">打印预览</button>
+<button ng-if="vm.dispatchDoc.dispatchStage == '项目建议书'" class="form-control btn-sm btn-primary" style="width: 100px; margin: auto;" ng-click="printFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGESUG')">打印预览</button>
+
+
+<button ng-if="vm.dispatchDoc.dispatchStage == '登记赋码'" class="form-control btn-sm btn-primary" style="width: 100px; margin: auto;" ng-click="printFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'REGISTERCODE')">打印预览</button>
 <!--  E 项目建议书-->

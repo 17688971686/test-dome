@@ -33,16 +33,19 @@
             <tr>
                 <td class="text-right">评审阶段： <span class="required">*</span></td>
                 <td colspan="3">
-                    <select ng-model="vm.model.reviewstage"  name="reviewstage" id="reviewstage" data-val="true" data-val-required="请选择项目阶段" >
+                    <select ng-model="vm.model.reviewstage"  name="reviewstage" id="reviewstage" data-val="true"
+                            data-val-required="请选择项目阶段" ng-change="vm.reviewstageSelect()">
                         <option value="">请选择</option>
                         <option ng-repeat="x in DICT.PRO_STAGE.dicts|orderBy:'dictSort'" value="{{x.dictName}}">{{x.dictName}}</option>
                     </select>
-                    <span ng-show="vm.model.reviewstage=='项目建议书'||vm.model.reviewstage=='可行性研究报告'||vm.model.reviewstage=='项目概算'||vm.model.reviewstage=='资金申请报告'" >
-                    	<input class="text-right" type="checkbox" style="width:20px;" ng-model="vm.model.isAdvanced" name="isAdvanced"  ng-true-value="9" ng-false-value="0" > 提前介入
+                    <span ng-show="vm.model.reviewstage=='项目建议书'||vm.model.reviewstage=='可行性研究报告'||vm.model.reviewstage=='项目概算'||vm.model.reviewstage=='资金申请报告' || vm.model.reviewstage=='登记赋码' " >
+                    	<input class="text-right" type="checkbox" style="width:20px;" ng-model="vm.model.isAdvanced"
+                               name="isAdvanced" id="isAdvanced"  ng-true-value="9" ng-false-value="0" ng-change="vm.TQJRCheckbox()"> 提前介入
                     </span>
                     
                     <span ng-show="vm.model.reviewstage=='项目概算'" style="margin-left: 20px;">
-                        <input class="text-right" type="checkbox" style="width:20px;" ng-model="vm.model.ischangeEstimate" name="ischangeEstimate"  ng-true-value="9" ng-false-value="0" > 是否调概
+                        <input class="text-right" type="checkbox" style="width:20px;" ng-model="vm.model.ischangeEstimate"
+                               name="ischangeEstimate" id="ischangeEstimate" ng-true-value="9" ng-false-value="0" ng-change="vm.SFTGCheckbox()" > 是否调概
                     </span>
                 </td>
                 <td><span data-valmsg-for="reviewstage" data-valmsg-replace="true" class="errors"></span></td>

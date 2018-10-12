@@ -7,6 +7,7 @@ import cs.common.constants.Constant;
 import cs.common.utils.*;
 import cs.domain.party.PartyManager;
 import cs.domain.party.PartyManager_;
+import cs.domain.project.SignDispaWork;
 import cs.domain.sys.Dict;
 import cs.domain.sys.SysFile;
 import cs.model.PageModelDto;
@@ -14,6 +15,7 @@ import cs.model.party.PartyManagerDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.party.PartyManageRepo;
 import cs.service.party.PartyManagerService;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,11 +93,11 @@ public class PartyManagerController {
     @RequiresAuthentication
     @RequestMapping(name = "导出签到表" , path = "exportSignInSheet" , method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
-    public void exportSignInSheet(HttpServletResponse resp, @RequestParam String pmIds){
+    public void exportSignInSheet(HttpServletResponse resp){
         ServletOutputStream sos = null;
         InputStream is = null ;
         try{
-            List<PartyManager> partyManagerList = partyManageRepo.findByIds(PartyManager_.pmId.getName() , pmIds , null);
+            List<PartyManager> partyManagerList = partyManageRepo.findAll();
             Map<String , Object> dataMap = new HashMap<>();
             dataMap.put("partyList" , partyManagerList);
             dataMap.put("listSize" , partyManagerList == null ? 0 : partyManagerList.size() );
@@ -245,7 +247,43 @@ public class PartyManagerController {
         return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "数据导入成功!" , returnMsg );
     }
 
+    @RequiresAuthentication
+    @RequestMapping(name = "导出党员信息表" , path = "exportPartyInfo" , method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void exportPartyInfo(HttpServletResponse resp){
+        String fileName = "党员信息表";
+        ExcelTools excelTools = new ExcelTools();
+        try{
+            String title = java.net.URLDecoder.decode(fileName,"UTF-8");
+            ServletOutputStream sos = resp.getOutputStream();
+            List<PartyManager> partyManagerList = partyManageRepo.findAll();
+            List<PartyManagerDto> partyManagerDtoList = new ArrayList<>();
+            if(partyManagerList != null && partyManagerList.size() > 0){
+                for(PartyManager p : partyManagerList){
+                    PartyManagerDto dto = new PartyManagerDto();
+                    BeanCopierUtils.copyPropertiesIgnoreNull( p, dto);
+                    dto.setPmCategory("1".equals(p.getPmCategory() )  ? "正式党员" : ("2".equals(p.getPmCategory() ) ? "预备党员" : "") );
+                    dto.setIsEnrolled(p.getIsEnrolled() == "9" ? "是" : "否");
+                    dto.setPmJoinPartyDateStr(DateUtils.toStringDay(p.getPmJoinPartyDate()));
+                    dto.setPmTurnToPatryDateStr(DateUtils.toStringDay(p.getPmTurnToPatryDate()));
+                    partyManagerDtoList.add(dto);
+                }
+            }
 
+            String[] headerPair = new String[]{"姓名=pmName" , "性别=pmSex" , "身份证号=pmIDCard" , "民族=pmNation" , "学历=pmEducation" , "手机号=pmPhone" , "固定电话=pmTel" , "人员类别=pmCategory" , "入党日期=pmJoinPartyDateStr" , "转正日期=pmTurnToPatryDateStr" , "在编情况=isEnrolled"};
+            HSSFWorkbook wb = excelTools.createExcelBook(title, headerPair, partyManagerDtoList, PartyManagerDto.class);
+            resp.setContentType("application/vnd.ms-excel;charset=GBK");
+            resp.setHeader("Content-type", "application/x-msexcel");
+            resp.setHeader("Content_Length", String.valueOf(wb.getBytes().length));
+            String fileName2 = new String((title + ".xls").getBytes("GB2312"), "ISO-8859-1");
+            resp.setHeader("Content-Disposition", "attachment;filename=" + fileName2);
+            wb.write(sos);
+            sos.flush();
+            sos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @RequiresPermissions("partyManager#html/partyList#get")
     @RequestMapping(name = "党员信息录入页" , path = "html/partyEdit" , method = RequestMethod.GET)

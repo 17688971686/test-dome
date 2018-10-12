@@ -236,7 +236,9 @@
                 </tr>
 
                 <tr style="height:80px;">
-                    <td>投资匡算及资金来源</td>
+                    <td ng-if="dispatchDoc.signDto.reviewstage = '项目建议书'">投资匡算及资金来源</td>
+                    <td ng-if="dispatchDoc.signDto.reviewstage = '可行性研究报告' || dispatchDoc.signDto.reviewstage = '资金申请报告'">投资估算及资金来源</td>
+                    <td ng-if="dispatchDoc.signDto.reviewstage = '项目概算'">投资概算及资金来源</td>
                     <td colspan="6" class="text-left">
                         {{dispatchDoc.fundTotalOrigin}}
                     </td>
@@ -366,7 +368,7 @@
 
 
                 <tr style="height:80px;" ng-if="vm.dispatchDoc.dispatchType=='项目发文'">
-                    <td>投资匡算及资金来源<span class="required">*</span></td>
+                    <td>投资概算及资金来源<span class="required">*</span></td>
                     <td colspan="6">
                         <textarea maxlength="1000" data-val-length-max="1000"
                                   ng-change="vm.dispatchDoc.fundTotalOrigin=countCharacter(vm.dispatchDoc.fundTotalOrigin,1000,'fundTotalOriginCount')"
@@ -379,7 +381,7 @@
                 </tr>
 
                 <tr style="height:80px;" ng-if="vm.dispatchDoc.dispatchType!='项目发文'">
-                    <td>投资匡算及资金来源</td>
+                    <td>投资概算及资金来源</td>
                     <td colspan="6">
                         <textarea maxlength="1000" data-val-length-max="1000"
                                   ng-change="vm.dispatchDoc.fundTotalOrigin=countCharacter(vm.dispatchDoc.fundTotalOrigin,1000,'fundTotalOriginCount')"
