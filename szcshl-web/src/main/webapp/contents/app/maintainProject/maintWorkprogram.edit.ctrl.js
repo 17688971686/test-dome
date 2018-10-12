@@ -77,7 +77,7 @@
                             $state.reload('maintWorkprogramEdit',{signid:$state.params.signid});
                         }
                     });
-                //由专家评审会改成专家函评，并且已经预定了会议室
+                    //由专家评审会改成专家函评，并且已经预定了会议室
                 } else if (data.reviewType == '专家评审会' && wp.reviewType == '专家函评' && wp.roomBookingDtos && wp.roomBookingDtos.length > 0) {
                     bsWin.confirm({
                         title: "询问提示",
@@ -314,11 +314,28 @@
         //维护项目时的工作方案的保存
         vm.createMaintain = function (wp,formId) {
             common.initJqValidation($("#"+formId));
-            var isValid = $($("#"+formId)).valid();
+           var isValid = $($("#"+formId)).valid();
             if (isValid) {
-                workprogramSvc.createWP(wp, false, vm.iscommit,function () {
-                    bsWin.alert("操作成功");
-                });
+                if(!vm.isTime){
+                    if(wp.studyQuantum=="全天") {
+                        wp.studyBeginTime="";
+                        wp.studyEndTime="";
+                    }else{
+                        if($("#studyAllDay").val() && wp.studyBeginTimeStr){
+                            wp.studyBeginTime = $("#studyAllDay").val() + " " + wp.studyBeginTimeStr + ":00";
+
+                        }
+                        if ($("#studyAllDay").val() && wp.studyEndTimeStr) {
+                            wp.studyEndTime = $("#studyAllDay").val() + " " + wp.studyEndTimeStr + ":00";
+                        }
+                    }
+                   workprogramSvc.createWP(wp, false, vm.iscommit, function (data) {
+                        bsWin.alert("操作成功");
+                    });
+                }else{
+                    bsWin.alert("结束时间必须大于开始时间！");
+                }
+
             } else {
                 bsWin.alert("操作失败，有红色*号的选项为必填项，请按要求填写！");
             }

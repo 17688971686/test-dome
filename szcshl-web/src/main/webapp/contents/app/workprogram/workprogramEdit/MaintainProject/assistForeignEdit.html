@@ -144,7 +144,7 @@
             <span ng-if="wp.reviewType == '专家函评'">函评日期</span></td>
         <td colspan="8">
         <span ng-if="wp.reviewType == '专家评审会'">
-            <button class="btn btn-xs btn-primary" ng-click="vm.addTimeStage();"
+            <button class="btn btn-xs btn-primary" ng-click="vm.addTimeStage(wp.id);"
                     ng-hide="wp.isMainProject == 0 && wp.isSigle=='合并评审'">
                 <span class="glyphicon glyphicon-pencil"></span>编辑
             </button>
@@ -177,7 +177,7 @@
     <tr ng-if="!vm.businessFlag.isReveiwAWP" ng-hide="wp.reviewType == '自评' ">
         <td class="text-center">拟聘请专家</td>
         <td colspan="8">
-            <button class="btn btn-xs btn-primary" ng-click="vm.selectExpert();"
+            <button class="btn btn-xs btn-primary" ng-click="vm.selectExpert(wp.id,wp.reviewType,wp.roomBookingDtos);"
                     ng-hide="wp.reviewType == '自评' || (wp.isMainProject == 0 && wp.isSigle=='合并评审')"
                     ng-show="wp.reviewType == '专家函评' || wp.reviewType == '专家评审会' || (wp.isMainProject == 9 && wp.isSigle=='合并评审')">
                 <span class="glyphicon glyphicon-pencil"></span>编辑
