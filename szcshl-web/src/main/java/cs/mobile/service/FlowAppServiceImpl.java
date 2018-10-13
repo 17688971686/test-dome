@@ -786,11 +786,7 @@ public class FlowAppServiceImpl implements FlowAppService {
                     List<Task> nextTaskList = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskAssignee(assigneeValue).list();
                     for (Task t : nextTaskList) {
                         if (nextNodeKey.equals(t.getTaskDefinitionKey())) {
-                            ResultMsg returnMsg = dealFlow(processInstance, t, flowDto,userDto);
-                            if (returnMsg.isFlag() == false) {
-                                return returnMsg;
-                            }
-                            break;
+                            return dealFlow(processInstance, t, flowDto,userDto);
                         }
                     }
                 }
@@ -962,11 +958,7 @@ public class FlowAppServiceImpl implements FlowAppService {
                 List<Task> nextTaskList = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskAssignee(assigneeValue).list();
                 for (Task t : nextTaskList) {
                     if (nextNodeKey.equals(t.getTaskDefinitionKey())) {
-                        ResultMsg returnMsg = bookDealFlow(processInstance, t, flowDto,userDto);
-                        if (returnMsg.isFlag() == false) {
-                            return returnMsg;
-                        }
-                        break;
+                        return bookDealFlow(processInstance, t, flowDto,userDto);
                     }
                 }
             }
@@ -1103,11 +1095,7 @@ public class FlowAppServiceImpl implements FlowAppService {
                 List<Task> nextTaskList = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskAssignee(assigneeValue).list();
                 for(Task t:nextTaskList){
                     if(nextNodeKey.equals(t.getTaskDefinitionKey())){
-                        ResultMsg returnMsg = monthlyDealFlow(processInstance,t,flowDto,userDto);
-                        if(returnMsg.isFlag() == false){
-                            return returnMsg;
-                        }
-                        break;
+                        return monthlyDealFlow(processInstance,t,flowDto,userDto);
                     }
                 }
             }
@@ -1227,11 +1215,7 @@ public class FlowAppServiceImpl implements FlowAppService {
                 List<Task> nextTaskList = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskAssignee(assigneeValue).list();
                 for (Task t : nextTaskList) {
                     if (nextNodeKey.equals(t.getTaskDefinitionKey())) {
-                        ResultMsg returnMsg = annountDealFlow(processInstance, t, flowDto,userDto);
-                        if (returnMsg.isFlag() == false) {
-                            return returnMsg;
-                        }
-                        break;
+                        return annountDealFlow(processInstance, t, flowDto,userDto);
                     }
                 }
             }
@@ -1412,11 +1396,7 @@ public class FlowAppServiceImpl implements FlowAppService {
                 List<Task> nextTaskList = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskAssignee(assigneeValue).list();
                 for(Task t:nextTaskList){
                     if(nextNodeKey.equals(t.getTaskDefinitionKey())){
-                        ResultMsg returnMsg = suppletterDealFlow(processInstance,t,flowDto,userDto);
-                        if(returnMsg.isFlag() == false){
-                            return returnMsg;
-                        }
-                        break;
+                        return suppletterDealFlow(processInstance,t,flowDto,userDto);
                     }
                 }
             }

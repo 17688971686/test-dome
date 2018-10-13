@@ -76,13 +76,13 @@
         vm.reviewstageSelect = function(){
             if(vm.model.reviewstage && vm.model.reviewstage == "登记赋码"){
                 if(vm.model.projectname){
-                    vm.model.projectname += "(登记赋码)";
+                    vm.model.projectname += "(赋码阶段)";
                 }else{
-                    vm.model.projectname = "(登记赋码)";
+                    vm.model.projectname = "(赋码阶段)";
                 }
             }else{
                 if(vm.model.projectname){
-                    vm.model.projectname = vm.model.projectname.replace("(登记赋码)" , "");
+                    vm.model.projectname = vm.model.projectname.replace("(赋码阶段)" , "");
                 }
             }
         }

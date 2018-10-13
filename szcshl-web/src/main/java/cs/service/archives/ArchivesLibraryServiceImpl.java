@@ -425,11 +425,7 @@ public class ArchivesLibraryServiceImpl implements ArchivesLibraryService {
                 List<Task> nextTaskList = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskAssignee(assigneeValue).list();
                 for (Task t : nextTaskList) {
                     if (nextNodeKey.equals(t.getTaskDefinitionKey())) {
-                        ResultMsg returnMsg = dealFlow(processInstance, t, flowDto);
-                        if (returnMsg.isFlag() == false) {
-                            return returnMsg;
-                        }
-                        break;
+                        return dealFlow(processInstance, t, flowDto);
                     }
                 }
             }

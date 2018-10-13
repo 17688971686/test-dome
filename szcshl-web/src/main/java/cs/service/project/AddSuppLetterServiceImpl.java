@@ -525,11 +525,7 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
                 List<Task> nextTaskList = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskAssignee(assigneeValue).list();
                 for(Task t:nextTaskList){
                     if(nextNodeKey.equals(t.getTaskDefinitionKey())){
-                        ResultMsg returnMsg = dealSignSupperFlow(processInstance,t,flowDto);
-                        if(returnMsg.isFlag() == false){
-                            return returnMsg;
-                        }
-                        break;
+                        return dealSignSupperFlow(processInstance,t,flowDto);
                     }
                 }
             }
