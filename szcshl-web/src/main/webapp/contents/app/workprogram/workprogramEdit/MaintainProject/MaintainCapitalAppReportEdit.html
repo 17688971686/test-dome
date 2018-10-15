@@ -1,7 +1,7 @@
 <meta charset="UTF-8">
 <!--  协审流程编辑的工作方案  -->
 <!-- S 资金申请报告 -->
-<from id="wp_cap_form">
+<form id="wp_cap_form">
     <table class="table table-bordered" style="min-width: 900px;min-height: 1200px;">
         <caption class="text-center">
             <p style="float:left;">
@@ -227,14 +227,14 @@
         <tr>
             <td class="text-center">是否有补充资料函</td>
             <td colspan="3">
-                <label>
-                    <input type="checkbox" style="width:50px;" ng-model="wp.isHaveSuppLetter" name="isHaveSuppLetter"
+                <span>
+                    <input type="checkbox" ng-model="wp.isHaveSuppLetter" name="isHaveSuppLetter"
                            ng-checked="wp.isHaveSuppLetter==9" ng-true-value="9">是
-                </label>
-                <label>
-                    <input type="checkbox" style="width:50px;" ng-model="wp.isHaveSuppLetter" name="isHaveSuppLetter"
+                </span>
+                <span>
+                    <input type="checkbox" ng-model="wp.isHaveSuppLetter" name="isHaveSuppLetter"
                            ng-checked="wp.isHaveSuppLetter==0" ng-true-value="0">否
-                </label>
+                </span>
             </td>
             <td class="text-center">补充资料函发文日期</td>
             <td colspan="4">
@@ -379,4 +379,4 @@
         </tbody>
     </table>
     <!-- E 资金申请报告 -->
-</from>
+</form>

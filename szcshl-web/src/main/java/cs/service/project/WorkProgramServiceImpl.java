@@ -162,8 +162,12 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                     sign.setAppalyInvestment(compareInvestment);
                 }
             }
-            //表示正在做工作方案
-            sign.setProcessState(Constant.SignProcessState.DO_WP.getValue());
+
+            //如果没有发起流程，才改成正在做工作方案状态，如果已经做完工作方案，则不改状态（可能是从项目维护中修改）。
+            if(null == sign.getProcessState() || sign.getProcessState() < Constant.SignProcessState.END_WP.getValue()){
+                sign.setProcessState(Constant.SignProcessState.DO_WP.getValue());
+            }
+
             workProgram.setSign(sign);
             if (Constant.MergeType.REVIEW_SELF.getValue().equals(workProgram.getReviewType())) {
                 //清除专家费用，和协审会日期

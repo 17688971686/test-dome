@@ -117,8 +117,7 @@ public class SignWorkdayExecute implements Job {
                         || Constant.signEnumState.PAUSE.getValue().equals(sign.getIsLightUp())) {
                     sign.setIsLightUp(Constant.signEnumState.PROCESS.getValue());
                 }
-                //默认是在办
-                sign.setIsLightUp(Constant.signEnumState.PROCESS.getValue());
+
                 boolean isCountWorkDay = (null == sign.getProcessState() || sign.getProcessState() < Constant.SignProcessState.END_DIS_NUM.getValue());
                 float usedWorkDay = 0f,totalDays = 0f;
                 //未发文的，才计算剩余工作日
