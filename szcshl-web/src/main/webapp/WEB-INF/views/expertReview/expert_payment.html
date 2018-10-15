@@ -65,7 +65,7 @@
                                 <input type="text" name="reviewCost_{{$index}}" id="reviewCost_{{$index}}"
                                        class="form-control input-sm " ng-model="x.reviewCost"
                                        data-val-regex="评审费用只能为正数" data-val="true" data-val-required="必填"
-                                       data-val-regex-pattern="^(0|\d+(\.\d+)?)$">
+                                       data-val-regex-pattern="^(0|\d+(\.\d+)?)$" oninput = "value=value.replace(/[^\d.]/g,'')">
                                 <span data-valmsg-for="reviewCost_{{$index}}" data-valmsg-replace="true"class="errors"></span>
                             </div>
                             <div ng-show="vm.model.expertReviewDto.state==9">
