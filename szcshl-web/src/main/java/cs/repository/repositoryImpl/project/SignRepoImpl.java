@@ -418,7 +418,7 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
                         reviewDays += sign.getReviewdays();
                         if (sign.getProjectStopList() != null && sign.getProjectStopList().size() > 0) {
                             for (ProjectStop ps : sign.getProjectStopList()) {
-                                if (ps != null) {
+                                if (ps != null && ps.getPausedays() != null) {
                                     stopDay += ps.getPausedays();
                                 }
                             }
