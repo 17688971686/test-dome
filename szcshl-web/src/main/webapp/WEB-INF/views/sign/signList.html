@@ -191,7 +191,7 @@
                         <input ng-if="vm.project.fztype=='第一负责人'" operator="eq" name="mUserName"  value="{{vm.project.displayName}}" hidden/>
                         <input ng-if="vm.project.fztype=='第二负责人'" operator="like" name="aUserName"  value="{{vm.project.displayName}}" hidden/>
                         <input ng-if="vm.project.fztype=='全部'" operator="like" name="allPriUser"   value="{{vm.project.displayName}}" hidden/>
-                        <input ng-if="vm.project.fztype==' '" operator="like" name="allPriUser"   value="{{vm.project.displayName}}" hidden/>
+                        <input ng-if="!vm.project.fztype || vm.project.fztype==' ' " operator="like" name="allPriUser"   value="{{vm.project.displayName}}" hidden/>
                     </td>
                     <td class="text-right" >项目类型</td>
                     <td colspan="3">
