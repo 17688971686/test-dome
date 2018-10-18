@@ -14,6 +14,7 @@
             createMonthlyNewsletter: createMonthlyNewsletter,   //保存月报简报
             updateMonthlyNewsletter: updateMonthlyNewsletter,   //月报简报编辑
             deleteMonthlyNewsletter: deleteMonthlyNewsletter,   //删除月报简报记录
+            restoreMonthlyNewsletter: restoreMonthlyNewsletter, // 恢复月报简报
             getMonthlyNewsletterById: getMonthlyNewsletterById,
             createMonthReport: createMonthReport //生成月报简报
         };
@@ -70,6 +71,27 @@
             var httpOptions = {
                 method: 'delete',
                 url: url_monthlyNewsletter+"/deleteMonthlyData",
+                params: {
+                    id:id
+                }
+            };
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
+        function restoreMonthlyNewsletter(id,callBack) {
+            var httpOptions = {
+                method: 'get',
+                url: url_monthlyNewsletter+"/restoreMonthlyData",
                 params: {
                     id:id
                 }
@@ -292,10 +314,10 @@
         
         // begin#删除月报简报列表
         function monthlyDeleteGrid(vm) {
-            // Begin:dataSource
+            // Begin:dataSource11
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(url_monthlyNewsletter+"/findByOData",$("#monthlyForm"),{$filter:"monthlyType eq '2'"}),
+                transport: common.kendoGridConfig().transport(url_monthlyNewsletter+"/findByOData",$("#delMonthlyForm"),{$filter:"monthlyType eq '2'"}),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {
@@ -330,15 +352,6 @@
             //S_序号
             // Begin:column
             var columns = [
-                {
-                    template: function (item) {
-                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
-                            item.id)
-                    },
-                    filterable: false,
-                    width: 40,
-                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
-                },
                 {
 				    field: "rowNumber",
 				    title: "序号",
@@ -377,6 +390,15 @@
                     filterable: false,
                     format: "{0: yyyy-MM-dd HH:mm:ss}"
                 },
+                {
+                    field: "",
+                    title: "操作",
+                    width: 140,
+                    template: function (item) {
+                        return common.format($('#columnBtns1').html(),
+                         "vm.restore('" + item.id + "')");
+                    }
+                }
                
             ];
             // End:column
@@ -470,6 +492,7 @@
             };
 
         }// end fun 月报简报列表
+
         
     }
 })();

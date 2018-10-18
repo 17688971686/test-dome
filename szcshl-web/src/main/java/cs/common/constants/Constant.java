@@ -304,7 +304,8 @@ public class Constant {
         FILER("归档员"),
         DEPT_LEADER("部门负责人"),
         FINANCIAL("财务人员"),
-        SUPER_LEADER("上级领导");
+        SUPER_LEADER("上级领导"),
+        REPORT_USER("报表人员");
         private String value;
 
         EnumFlowNodeGroupName(String value) {

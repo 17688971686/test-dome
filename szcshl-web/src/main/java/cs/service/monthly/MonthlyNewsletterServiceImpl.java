@@ -360,6 +360,17 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
         return monthlyNewsletterRepo.updateMonthlyType(id,Constant.EnumState.STOP.getValue());
     }
 
+
+
+    /**
+     * 恢复月报简报状态
+     */
+    @Override
+    @Transactional
+    public ResultMsg restoreMonthlyData(String id) {
+        return monthlyNewsletterRepo.updateMonthlyType(id, EnumState.PROCESS.getValue());
+    }
+
     @Override
     @Transactional
     public void editTheMonthly(MonthlyNewsletterDto record) {

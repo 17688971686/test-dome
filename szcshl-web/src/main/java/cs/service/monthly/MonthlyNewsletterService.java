@@ -71,4 +71,6 @@ public interface MonthlyNewsletterService {
 	 * @return
 	 */
     ResultMsg endFlow(String businessKey);
+
+	ResultMsg restoreMonthlyData(String id);
 }

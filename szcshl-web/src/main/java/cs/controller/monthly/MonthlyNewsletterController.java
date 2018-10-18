@@ -4,6 +4,7 @@ import cs.ahelper.MudoleAnnotation;
 import cs.common.ResultMsg;
 import cs.common.constants.Constant;
 import cs.common.utils.DateUtils;
+import cs.common.utils.SessionUtil;
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import cs.model.PageModelDto;
@@ -131,6 +132,13 @@ public class MonthlyNewsletterController {
     @ResponseBody
     public ResultMsg deleteMonthlyData(@RequestParam String id) {
         return monthlyNewsletterService.deleteMonthlyData(id);
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "恢复月报简报记录", path = "restoreMonthlyData", method = RequestMethod.GET)
+    @ResponseBody
+    public ResultMsg restoreMonthlyData(@RequestParam String id) {
+        return monthlyNewsletterService.restoreMonthlyData(id);
     }
 
     @RequiresAuthentication
@@ -286,6 +294,9 @@ public class MonthlyNewsletterController {
 //    @RequiresPermissions("monthlyNewsletter#html/monthlyMultiyearList#get")
     @RequestMapping(name = "年度月报简报列表", path = "html/monthlyMultiyearList", method = RequestMethod.GET)
     public String monthlyMultiyear() {
+        System.out.println(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.REPORT_USER.getValue()));
+        SessionUtil.getSession().setAttribute("REPORT_USER",SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.REPORT_USER.getValue())==true
+                ?"1":"2");
         return ctrlName+"/monthlyMultiyearList"; 
     } 
 

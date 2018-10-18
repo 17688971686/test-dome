@@ -32,6 +32,23 @@
             });
         }
 
+        vm.restore = function (id) {
+            bsWin.confirm({
+                title: "询问提示",
+                message: "确认恢复数据吗？",
+                onOk: function () {
+                    monthlyNewsletterSvc.restoreMonthlyNewsletter(id,function(data){
+                        if(data.flag || data.reCode=='ok'){
+                            bsWin.alert("操作成功！",function(){
+                                vm.gridOptions.dataSource.read();
+                                vm.monthlyDeleteGridOptions.dataSource.read();
+                            })
+                        }
+                    });
+                }
+            });
+        }
+
         vm.dels = function () {
             var selectIds = common.getKendoCheckId('.grid');
             if (selectIds.length == 0) {
@@ -43,6 +60,21 @@
                 }
                 var idStr = ids.join(',');
                 vm.del(idStr);
+            }
+        };
+
+
+        vm.restorePatch = function () {
+            var selectIds = common.getKendoCheckId('.gridR');
+            if (selectIds.length == 0) {
+                bsWin.alert("请选择要恢复的数据！");
+            } else {
+                var ids = [];
+                for (var i = 0; i < selectIds.length; i++) {
+                    ids.push(selectIds[i].value);
+                }
+                var idStr = ids.join(',');
+                vm.restore(idStr);
             }
         };
 

@@ -21,14 +21,15 @@
     <div class="label-default" style="width: 100%;padding:5px 10px;">
         已有月报简报列表
     </div>
-    <form id="monthlyForm"></form>
+    <form id="monthlyForm">
     <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
-
+    </form>
     <div class="label-default" style="width: 100%;padding:5px 10px;margin-top:20px;">
         已删除月报简报列表
     </div>
-    <form id="delMonthlyForm"></form>
+    <form id="delMonthlyForm">
     <div class="grid" kendo-grid="grid" k-options="vm.monthlyDeleteGridOptions"></div>
+    </form>
 </div>
 
 <script type="text/template" id="columnBtns">
@@ -39,4 +40,9 @@
     <@shiro.hasPermission name="monthlyNewsletter##delete">
     <button class="btn btn-xs btn-danger" ng-click="{1}"><span class="glyphicon glyphicon-remove"></span>删除</button>
     </@shiro.hasPermission>
+</script>
+
+
+<script type="text/template" id="columnBtns1">
+    <button class="btn btn-xs btn-primary" ng-click="{0}"><span class="glyphicon glyphicon-pencil"></span>恢复</button>
 </script>
