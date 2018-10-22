@@ -45,14 +45,11 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.log4j.Logger;
-import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -150,8 +147,15 @@ public class FlowAppController {
     public @ResponseBody
     ResultMsg flowCommit(String flowObj,String username){
         //处理移动端传的对象
-        FlowDto flowDto = JSONObject.parseObject(flowObj, FlowDto.class);
+        String decodeData = "";
+        try {
+             decodeData = java.net.URLDecoder.decode(flowObj,"utf-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        FlowDto flowDto = JSONObject.parseObject(decodeData, FlowDto.class);
         if(Validate.isObject(flowDto)){
+
             String  dealOption = flowDto.getDealOption();
          /*   try {
                 username = new String(username.getBytes("ISO-8859-1"),"UTF-8");
@@ -419,7 +423,14 @@ public class FlowAppController {
     @ResponseBody
     @Transactional
     public ResultMsg rollBackLast(String flowObj) {
-        FlowDto flowDto = JSONObject.parseObject(flowObj, FlowDto.class);
+        //处理移动端传的对象
+        String decodeData = "";
+        try {
+            decodeData = java.net.URLDecoder.decode(flowObj,"utf-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        FlowDto flowDto = JSONObject.parseObject(decodeData, FlowDto.class);
         ResultMsg resultMsg = flowService.rollBackLastNode(flowDto);
         return resultMsg;
     }
