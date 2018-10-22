@@ -59,13 +59,13 @@
             var flag = $("#ischangeEstimate").is(':checked');
             if(flag){
                 if(vm.model.projectname){
-                    vm.model.projectname += "(是否调概)";
+                    vm.model.projectname += "(调概项目)";
                 }else{
-                    vm.model.projectname = "(是否调概)";
+                    vm.model.projectname = "(调概项目)";
                 }
             }else{
                 if(vm.model.projectname){
-                    vm.model.projectname = vm.model.projectname.replace("(是否调概)" , "");
+                    vm.model.projectname = vm.model.projectname.replace("(调概项目)" , "");
                 }
             }
         }
