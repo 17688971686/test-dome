@@ -89,6 +89,7 @@ public class SignRestServiceImpl implements SignRestService {
                 if (!Validate.isString(stageCHName)) {
                     StringBuffer msgBuffer = new StringBuffer("各阶段对应的标识如下：");
                     msgBuffer.append("(" + Constant.RevireStageKey.KEY_SUG.getValue() + ":" + Constant.STAGE_SUG);
+                    msgBuffer.append("|" + Constant.RevireStageKey.KEY_REGISTERCODE.getValue() + ":" + Constant.REGISTER_CODE);
                     msgBuffer.append("|" + Constant.RevireStageKey.KEY_STUDY.getValue() + ":" + Constant.STAGE_STUDY);
                     msgBuffer.append("|" + Constant.RevireStageKey.KEY_BUDGET.getValue() + ":" + Constant.STAGE_BUDGET);
                     msgBuffer.append("|" + Constant.RevireStageKey.KEY_REPORT.getValue() + ":" + Constant.APPLY_REPORT);
@@ -175,6 +176,7 @@ public class SignRestServiceImpl implements SignRestService {
                 if (!Validate.isString(stageCHName)) {
                     StringBuffer msgBuffer = new StringBuffer("各阶段对应的标识如下：");
                     msgBuffer.append("(" + Constant.RevireStageKey.KEY_SUG.getValue() + ":" + Constant.STAGE_SUG);
+                    msgBuffer.append("|" + Constant.RevireStageKey.KEY_REGISTERCODE.getValue() + ":" + Constant.REGISTER_CODE);
                     msgBuffer.append("|" + Constant.RevireStageKey.KEY_STUDY.getValue() + ":" + Constant.STAGE_STUDY);
                     msgBuffer.append("|" + Constant.RevireStageKey.KEY_BUDGET.getValue() + ":" + Constant.STAGE_BUDGET);
                     msgBuffer.append("|" + Constant.RevireStageKey.KEY_REPORT.getValue() + ":" + Constant.APPLY_REPORT);

@@ -782,6 +782,9 @@ public class Constant {
         public static String getZHCNName(String value) {
             String resultZHName = "";
             switch (value) {
+                case "REGISTERCODE":
+                    resultZHName = REGISTER_CODE;
+                break;
                 case "STAGESUG":
                     resultZHName = STAGE_SUG;
                     break;

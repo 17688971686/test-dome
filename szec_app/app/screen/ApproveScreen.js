@@ -258,6 +258,8 @@ export default class ApproveScreen extends Component {
         let data = this.state.curNodeInfo;
         data.businessMap.DIS_ID = this.state.DIS_ID;
         data.businessMap.AGREE = this.state.AGREE;
+        let jsonData = JSON.stringify(data);
+        let encodeData = encodeURIComponent(jsonData);
         this.setState({
             curNodeInfo: data
         }, () => {
@@ -265,7 +267,7 @@ export default class ApproveScreen extends Component {
                 url: "flowApp/commit",
                 method: "post",
                 params: {
-                    flowObj: this.state.curNodeInfo,
+                    flowObj: encodeData,
                     username: this.state.userName
                 },
             })
@@ -300,11 +302,14 @@ export default class ApproveScreen extends Component {
 
     //流程回退
     rollbacklast() {
+        let data = this.state.curNodeInfo;
+        let jsonData = JSON.stringify(data);
+        let encodeData = encodeURIComponent(jsonData);
         axios({
             url: "flowApp/rollbacklast",
             method: "post",
             params: {
-                flowObj: this.state.curNodeInfo,
+                flowObj: encodeData,
             },
         })
             .then((res) => {
