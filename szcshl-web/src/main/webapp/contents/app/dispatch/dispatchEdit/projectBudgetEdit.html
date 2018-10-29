@@ -190,7 +190,7 @@
                 <tr>
                     <td width="20%">
                         <div ng-if="dispatchDoc.signDto.ischangeEstimate && dispatchDoc.signDto.ischangeEstimate == '9'">调整概算阶段</div>
-                        <div ng-if="!dispatchDoc.signDto.ischangeEstimate || dispatchDoc.signDto.ischangeEstimate == '0'">{{dispatchDoc.signDto.reviewstage}}</div>
+                        <div ng-if="!dispatchDoc.signDto.ischangeEstimate || dispatchDoc.signDto.ischangeEstimate == '0'">{{dispatchDoc.dispatchStage}}</div>
                     </td>
                     <td width="14%">申报</td>
                     <td width="14%">审定</td>
@@ -236,9 +236,9 @@
                 </tr>
 
                 <tr style="height:80px;">
-                    <td ng-if="dispatchDoc.signDto.reviewstage = '项目建议书'">投资匡算及资金来源</td>
-                    <td ng-if="dispatchDoc.signDto.reviewstage = '可行性研究报告' || dispatchDoc.signDto.reviewstage = '资金申请报告'">投资估算及资金来源</td>
-                    <td ng-if="dispatchDoc.signDto.reviewstage = '项目概算'">投资概算及资金来源</td>
+                    <td ng-if="dispatchDoc.dispatchStage == '项目建议书'">投资匡算及资金来源</td>
+                    <td ng-if="dispatchDoc.dispatchStage == '可行性研究报告' || dispatchDoc.dispatchStage == '资金申请报告'">投资估算及资金来源</td>
+                    <td ng-if="dispatchDoc.dispatchStage == '项目概算'">投资概算及资金来源</td>
                     <td colspan="6" class="text-left">
                         {{dispatchDoc.fundTotalOrigin}}
                     </td>

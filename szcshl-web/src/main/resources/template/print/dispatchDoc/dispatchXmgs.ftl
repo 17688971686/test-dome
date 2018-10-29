@@ -2332,6 +2332,8 @@
                                             <w:t>投资匡算及资金来源</w:t>
                                         <#elseif dispatch.dispatchStage?? && dispatch.dispatchStage == "可行性研究报告" >
                                             <w:t>投资估算及资金来源</w:t>
+                                        <#elseif dispatch.dispatchStage?? && dispatch.dispatchStage == "项目概算" >
+                                            <w:t>投资概算及资金来源</w:t>
                                         </#if>
 
                                     </w:r>
