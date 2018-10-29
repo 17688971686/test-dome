@@ -1,0 +1,50 @@
+<div  class="well well-sm conttent_list" style="background: white;min-height:960px;margin-bottom: 50px;" >
+    <div class="toolbar">
+        <button class="btn btn-sm btn-danger" ng-click="back();">
+            <span class="glyphicon glyphicon-chevron-left"></span>返回
+        </button>
+    </div>
+
+    <table class="table table-bordered">
+        <tr>
+            <td class="text-right" width="15%">基地名称：</td>
+            <td>
+                {{vm.postdoctoralBase.baseName}}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-right" width="15%">批准成立时间：</td>
+            <td>
+                {{vm.postdoctoralBase.foundingTime}}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-right">主要研究方向及领域：</td>
+            <td>
+                {{vm.postdoctoralBase.researchArea}}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-right">基地负责人：</td>
+            <td>
+                {{vm.postdoctoralBase.principalBase}}
+            </td>
+        </tr>
+
+        <tr>
+            <td class="text-right">日常管理人员：</td>
+            <td>
+                {{vm.postdoctoralBase.dailyMananger}}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-right">基地日常工作职责：</td>
+            <td>
+                {{vm.postdoctoralBase.workDuty}}
+            </td>
+        </tr>
+
+
+
+    </table>
+</div>

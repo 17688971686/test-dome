@@ -317,6 +317,20 @@ public class Constant {
         }
     }
 
+    public static enum EnumPostdoctoralName {
+        POSTDOCTORAL_ADMIN("博士后基地管理员"),
+        POSTDOCTORAL_PERSON("博士后人员");
+        private String value;
+
+        EnumPostdoctoralName(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
     /**
      * 消息返回码
      *

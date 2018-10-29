@@ -1,0 +1,82 @@
+<#assign path=request.contextPath />
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+
+<!-- 附件 -->
+<#include "/file/common.html"/>
+
+<div  class="well well-sm conttent_list" style="background: white;min-height:960px;margin-bottom: 50px;" >
+    <ol class="breadcrumb">
+        <li><a href="#/expertList">博士后基地管理</a></li>
+        <li class="active">{{vm.title}}</li>
+    </ol>
+    <div class="toolbar">
+        <button class="btn btn-sm btn-danger" ng-click="back();">
+            <span class="glyphicon glyphicon-chevron-left"></span>返回
+        </button>
+        <button class="btn btn-sm btn-success"  ng-click="vm.createPostdoctoralBase()" ng-hide="vm.isShowUpdate" >
+            <span class="glyphicon glyphicon-ok"></span>保存
+        </button>
+        <button class="btn btn-sm btn-success"  ng-click="vm.updatePostdoctoralBase()" ng-show="vm.isShowUpdate" >
+            <span class="glyphicon glyphicon-ok"></span>更新
+        </button>
+    </div>
+    <div class="tab-content" style="background:white;">
+        <form id="form" name="form">
+            <table class="table table-bordered">
+                <tr>
+                    <td class="text-right" width="15%">基地名称<span class="required">*</span></td>
+                    <td>
+                        <input type="text" name="baseName" id="baseName" ng-model="vm.postdoctoralBase.baseName" style="width: 60%"
+                               data-val="true" data-val-required="必填"/>
+                        <span data-valmsg-for="baseName" data-valmsg-replace="true" class="errors"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-right">批准成立时间<span class="required">*</span></td>
+                    <td>
+                        <input type="text" name="foundingTime" id="foundingTime"
+                               style="width:20%;" class="form-control input-xm "
+                               kendo-date-picker k-format="'yyyy-MM-dd'"
+                               ng-model="vm.postdoctoralBase.foundingTime" data-val-date="必须为日期"
+                               data-val="true" data-val-required="必填">
+                        <span data-valmsg-for="foundingTime" data-valmsg-replace="true" class="errors"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-right">研究方向及领域<span class="required">*</span></td>
+                    <td>
+                        <input type="text" name="researchArea" id="researchArea" ng-model="vm.postdoctoralBase.researchArea" style="width: 60%"
+                               data-val="true" data-val-required="必填">
+                        <span data-valmsg-for="researchArea" data-valmsg-replace="true" class="errors"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-right">基地负责人<span class="required">*</span></td>
+                    <td>
+                        <input type="text" name="principalBase" id="principalBase" ng-model="vm.postdoctoralBase.principalBase" style="width: 60%"
+                               data-val="true" data-val-required="必填">
+                        <span data-valmsg-for="principalBase" data-valmsg-replace="true" class="errors"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-right">日常管理人员<span class="required">*</span></td>
+                    <td>
+                        <input type="text" name="dailyMananger" id="dailyMananger" ng-model="vm.postdoctoralBase.dailyMananger" style="width: 60%"
+                               data-val="true" data-val-required="必填">
+                        <span data-valmsg-for="dailyMananger" data-valmsg-replace="true" class="errors"></span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="text-right">日常管理人员<span class="required">*</span></td>
+                    <td>
+                        <input type="text" name="workDuty" id="workDuty" ng-model="vm.postdoctoralBase.workDuty" style="width: 60%"
+                               data-val="true" data-val-required="必填">
+                        <span data-valmsg-for="workDuty" data-valmsg-replace="true" class="errors"></span>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>

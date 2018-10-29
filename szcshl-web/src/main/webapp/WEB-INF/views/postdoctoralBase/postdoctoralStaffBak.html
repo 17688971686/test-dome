@@ -1,0 +1,154 @@
+<#assign path=request.contextPath />
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+
+<!-- 附件 -->
+<#include "/file/common.html"/>
+
+<div  class="well well-sm conttent_list" style="background: white;min-height:960px;margin-bottom: 50px;" >
+    <ol class="breadcrumb">
+        <li><a href="#/expertList">博士后人员管理</a></li>
+        <li class="active">{{vm.title}}</li>
+    </ol>
+    <div class="toolbar">
+        <button class="btn btn-sm btn-danger" ng-click="back();">
+            <span class="glyphicon glyphicon-chevron-left"></span>返回
+        </button>
+        <button class="btn btn-sm btn-success"  ng-click="vm.createPostdoctoralStaff()" ng-hide="vm.isShowUpdate" >
+            <span class="glyphicon glyphicon-ok"></span>保存
+        </button>
+        <button class="btn btn-sm btn-success"  ng-click="vm.updatePostdoctoralStaff()" ng-show="vm.isShowUpdate" >
+            <span class="glyphicon glyphicon-ok"></span>更新
+        </button>
+    </div>
+    <div class="tab-content" style="background:white;">
+        <form id="form" name="form">
+            <table class="table table-bordered" style="width: 70%">
+                <tr>
+                    <td class="text-center" width="20%">姓名<span class="required">*</span></td>
+                    <td width="25%">
+                        <input type="text" maxlength="200" class="form-control input-xm" name="name" id="name" ng-model="vm.postdoctoralStaff.name"
+                               data-val="true" data-val-required="必填"/>
+                        <span data-valmsg-for="name" data-valmsg-replace="true" class="errors"></span>
+                    </td>
+                    <td class="text-center" width="10%">性别<span class="required">*</span></td>
+                    <td width="20%">
+                        <select ng-model="vm.postdoctoralStaff.sex" class="form-control select-sm"
+                                name="sex" id="sex" data-val-required="必填"
+                                data-val="true">
+                            <option value="">请选择</option>
+                            <option value="男">男</option>
+                            <option value="女">女</option>
+                        </select>
+                        <span data-valmsg-for="sex" data-valmsg-replace="true" class="errors"></span>
+                    </td>
+                    <td width="20%" class="text-center">出生日期<span class="required">*</span></td>
+                    <td>
+                        <input type="text" name="birthdayDate" id="birthdayDate"
+                               class="form-control input-xm "
+                               kendo-date-picker k-format="'yyyy-MM-dd'"
+                               ng-model="vm.postdoctoralStaff.birthdayDate" data-val-date="必须为日期"
+                               data-val="true" data-val-required="必填">
+                        <span data-valmsg-for="birthdayDate" data-valmsg-replace="true" class="errors"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-center" width="20%">姓名<span class="required">*</span></td>
+                    <td width="25%">
+                        <input type="text" maxlength="200" class="form-control input-xm" name="name" id="name" ng-model="vm.postdoctoralStaff.name"
+                               data-val="true" data-val-required="必填"/>
+                        <span data-valmsg-for="name" data-valmsg-replace="true" class="errors"></span>
+                    </td>
+                    <td class="text-center" width="10%">性别<span class="required">*</span></td>
+                    <td width="20%">
+                        <select ng-model="vm.postdoctoralStaff.sex" class="form-control select-sm"
+                                name="sex" id="sex" data-val-required="必填"
+                                data-val="true">
+                            <option value="">请选择</option>
+                            <option value="男">男</option>
+                            <option value="女">女</option>
+                        </select>
+                        <span data-valmsg-for="sex" data-valmsg-replace="true" class="errors"></span>
+                    </td>
+                    <td width="20%" class="text-center">出生日期<span class="required">*</span></td>
+                    <td>
+                        <input type="text" name="birthdayDate" id="birthdayDate"
+                               class="form-control input-xm "
+                               kendo-date-picker k-format="'yyyy-MM-dd'"
+                               ng-model="vm.postdoctoralStaff.birthdayDate" data-val-date="必须为日期"
+                               data-val="true" data-val-required="必填">
+                        <span data-valmsg-for="birthdayDate" data-valmsg-replace="true" class="errors"></span>
+                    </td>
+                </tr>
+              <!--  <tr>
+                    <td class="text-right">学习经历<span class="required">*</span></td>
+                    <td>
+                        <input type="text" name="learningExperience" id="learningExperience" ng-model="vm.postdoctoralStaff.learningExperience" style="width: 60%"
+                               data-val="true" data-val-required="必填">
+                        <span data-valmsg-for="learningExperience" data-valmsg-replace="true" class="errors"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-right">工作履历<span class="required">*</span></td>
+                    <td>
+                        <input type="text" name="workExperience" id="workExperience" ng-model="vm.postdoctoralStaff.workExperience" style="width: 60%"
+                               data-val="true" data-val-required="必填">
+                        <span data-valmsg-for="workExperience" data-valmsg-replace="true" class="errors"></span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="text-right">进入基地时间<span class="required">*</span></td>
+                    <td>
+                        <input type="text" name="enterBaseDate" id="enterBaseDate"
+                               style="width:20%;" class="form-control input-xm "
+                               kendo-date-picker k-format="'yyyy-MM-dd'"
+                               ng-model="vm.postdoctoralStaff.enterBaseDate" data-val-date="必须为日期"
+                               data-val="true" data-val-required="必填">
+                        <span data-valmsg-for="enterBaseDate" data-valmsg-replace="true" class="errors"></span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="text-right">进站批准时间<span class="required">*</span></td>
+                    <td>
+                        <input type="text" name="enterStackApproveDate" id="enterStackApproveDate" ng-model="vm.postdoctoralStaff.enterStackApproveDate" style="width: 60%"
+                               data-val="true" data-val-required="必填">
+                        <span data-valmsg-for="enterStackApproveDate" data-valmsg-replace="true" class="errors"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-right">联合培养单位<span class="required">*</span></td>
+                    <td>
+                        <input type="text" name="trainUnit" id="trainUnit" ng-model="vm.postdoctoralStaff.trainUnit" style="width: 60%"
+                               data-val="true" data-val-required="必填">
+                        <span data-valmsg-for="trainUnit" data-valmsg-replace="true" class="errors"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-right">合作导师<span class="required">*</span></td>
+                    <td>
+                        <input type="text" name="cooperativeMentor" id="cooperativeMentor" ng-model="vm.postdoctoralStaff.cooperativeMentor" style="width: 60%"
+                               data-val="true" data-val-required="必填">
+                        <span data-valmsg-for="cooperativeMentor" data-valmsg-replace="true" class="errors"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-right">研究课题简介<span class="required">*</span></td>
+                    <td>
+                        <input type="text" name="topicIntroduce" id="topicIntroduce" ng-model="vm.postdoctoralStaff.topicIntroduce" style="width: 60%"
+                               data-val="true" data-val-required="必填">
+                        <span data-valmsg-for="topicIntroduce" data-valmsg-replace="true" class="errors"></span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="text-right">附件<span class="required">*</span></td>
+                    <td>
+                     333
+                    </td>
+                </tr>-->
+            </table>
+        </form>
+    </div>
+</div>
