@@ -1293,19 +1293,19 @@
                 })
                 .state('partyMeetList', {//党员会议列表
                     url: '/partyMeetList',
-                    templateUrl: rootPath + "/partyMeet/html/partyMeetList.html",
+                    templateUrl: rootPath + "/partyMeet/html/postdoctoralBaseList.html",
                     controller: 'partyMeetingCtrl',
                     controllerAs: 'vm'
                 })
                 .state('addPartyMeet', {//党员会议添加编辑页
                     url: '/addPartyMeet/:id',
-                    templateUrl: rootPath + "/partyMeet/html/addPartyMeeting.html",
+                    templateUrl: rootPath + "/partyMeet/html/postdoctoralBaseAdd.html",
                     controller: 'partyMeetingCtrl',
                     controllerAs: 'vm'
                 })
                 .state('partyMeetDetail', {//党员会议添加编辑页
                     url: '/partyMeetDetail/:id',
-                    templateUrl: rootPath + "/partyMeet/html/partyMeetDetail.html",
+                    templateUrl: rootPath + "/partyMeet/html/postdoctoralBaseDetail.html",
                     controller: 'partyMeetingCtrl',
                     controllerAs: 'vm'
                 })
@@ -1318,8 +1318,70 @@
                     controller: 'msgEditCtrl',
                     controllerAs: 'vm'
                 })
-
             //end 短信编辑
+                //begin 博士后基地模块列表
+                .state('postdoctoralBaseList', {
+                    url: '/postdoctoralBaseList',
+                    templateUrl: rootPath + "/postdoctoralBase/html/postdoctoralBaseList.html",
+                    controller: 'postdoctoralBaseCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('postdoctoralBaseAdd', {
+                    url: '/postdoctoralBaseAdd/:id',
+                    templateUrl: rootPath + "/postdoctoralBase/html/postdoctoralBaseAdd.html",
+                    controller: 'postdoctoralBaseCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('postdoctoralBaseDetail', {
+                    url: '/postdoctoralBaseDetail/:id',
+                    templateUrl: rootPath + "/postdoctoralBase/html/postdoctoralBaseDetail.html",
+                    controller: 'postdoctoralBaseCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('postdoctoralStaffList', {
+                    url: '/postdoctoralStaffList',
+                    templateUrl: rootPath + "/postdoctoralStaff/html/postdoctoralStaffList.html",
+                    controller: 'postdoctoralStaffCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('postdoctoralStaffAdd', {
+                    url: '/postdoctoralStaffAdd/:id',
+                    templateUrl: rootPath + "/postdoctoralStaff/html/postdoctoralStaffAdd.html",
+                    controller: 'postdoctoralStaffCtrl',
+                    controllerAs: 'vm'
+                })
+
+                .state('postdoctoralStaffDetail', {
+                    url: '/postdoctoralStaffDetail/:id',
+                    templateUrl: rootPath + "/postdoctoralStaff/html/postdoctoralStaffDetail.html",
+                    controller: 'postdoctoralStaffCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('postdoctoralPopStaffList', {
+                    url: '/postdoctoralPopStaffList',
+                    templateUrl: rootPath + "/postdoctoralStaff/html/postdoctoralPopStaffList.html",
+                    controller: 'postdoctoralPopStaffCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('postdoctoralPopStaffAdd', {
+                    url: '/postdoctoralPopStaffAdd/:id',
+                    templateUrl: rootPath + "/postdoctoralStaff/html/postdoctoralPopStaffAdd.html",
+                    controller: 'postdoctoralPopStaffCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('postdoctoralPopStaffDetail', {
+                    url: '/postdoctoralPopStaffDetail/:id',
+                    templateUrl: rootPath + "/postdoctoralStaff/html/postdoctoralPopStaffDetail.html",
+                    controller: 'postdoctoralStaffCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('postdoctoralPopStaff', {
+                    url: '/postdoctoralPopStaff/:id/:name',
+                    templateUrl: rootPath + "/postdoctoralStaff/html/postdoctoralPopStaff.html",
+                    controller: 'postdoctoralStaffCtrl',
+                    controllerAs: 'vm'
+                })
+            //end 博士后基地结束
         }]).run(function ($rootScope, $http, $state, $stateParams, bsWin) {
         $rootScope.rootPath = rootPath;
         $rootScope.DICT = DICTOBJ;

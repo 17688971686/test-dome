@@ -1,0 +1,87 @@
+<#assign path=request.contextPath />
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+
+<!-- 附件 -->
+<#include "/file/common.html"/>
+
+<div  class="well well-sm conttent_list" style="background: white;min-height:960px;margin-bottom: 50px;" >
+    <ol class="breadcrumb">
+        <li><a href="#/expertList">博士后人员管理</a></li>
+        <li class="active">{{vm.title}}</li>
+    </ol>
+    <div class="toolbar">
+        <button class="btn btn-sm btn-danger" ng-click="back();">
+            <span class="glyphicon glyphicon-chevron-left"></span>返回
+        </button>
+        <button class="btn btn-sm btn-primary" ng-click="vm.clickDetailBt();" id="detail_file_bt">查看附件</button>
+    </div>
+    <div class="tab-content" style="background:white;">
+        <form id="form" name="form">
+            <table class="" style="width: 70%;text-align: center;">
+                <caption class="text-center"> <h3><strong>博士后在站人员信息表</strong></h3></caption>
+                <tr>
+                    <td class="text-center" width="10%">姓名<span class="required">*</span></td>
+                    <td width="20%">
+                     {{vm.postdoctoralStaff.name}}
+                    </td>
+                    <td class="text-center" width="10%">性别<span class="required">*</span></td>
+                    <td width="10%">
+                       {{vm.postdoctoralStaff.sex}}
+                    </td>
+                    <td class="text-center"   width="10%">出生日期<span class="required">*</span></td>
+                    <td width="20%"  class="text-left" >
+                        {{vm.postdoctoralStaff.birthdayDate}}
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td class="text-center" >学习经历</td>
+                    <td colspan="5" class="text-left">
+                        {{vm.postdoctoralStaff.learningExperience}}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="text-center" >工作履历</td>
+                    <td colspan="5" class="text-left">
+                      {{vm.postdoctoralStaff.workExperience}}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td  class="text-center"   width="10%">进站时间<span class="required">*</span></td>
+                    <td colspan="2" class="text-left">
+                        {{vm.postdoctoralStaff.enterStackApproveDate}}
+                    </td>
+                    <td  class="text-center"   width="10%">出站时间</td>
+                    <td colspan="2" class="text-left">
+                        {{vm.postdoctoralStaff.pooStackDate}}
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td  class="text-center"   width="10%">联合培养单位</td>
+                    <td colspan="2" class="text-left">
+                            {{vm.postdoctoralStaff.trainUnit}}
+                    </td>
+                    <td  class="text-center"   width="10%">合作导师</td>
+                    <td colspan="2" class="text-left">
+                        {{vm.postdoctoralStaff.cooperativeMentor}}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="text-center" >研究课题简介</td>
+                    <td colspan="5" class="text-left">
+                            {{vm.postdoctoralStaff.topicIntroduce}}
+                    </td>
+                </tr>
+
+            </table>
+        </form>
+
+    </div>
+</div>

@@ -527,8 +527,28 @@ end 图书管理 -->
 </@shiro.hasPermission>
 
 
+<!-- begin 博士后管理-->
 
-<!-- end 党务管理-->
+<li class="treeview">
+    <a href="javascript:void(0)">
+        <i class="fa fa-cubes" aria-hidden="true"></i><span class="title">博士后基地管理</span>
+        <span class="pull-right-container"> <i class="fa fa-angle-right pull-right"></i></span>
+    </a>
+    <ul class="treeview-menu">
+        <@shiro.hasPermission name="postdoctoralBase#html/postdoctoralBaseList#get">
+        <li><a href="javascript:void(0)" ui-sref="postdoctoralBaseList">博士后基地查询</a></li>
+    </@shiro.hasPermission>
+
+    <li><a href="javascript:void(0)" ui-sref="postdoctoralStaffList">博士后在站人员列表</a></li>
+
+    <li><a href="javascript:void(0)" ui-sref="postdoctoralPopStaffList">博士后出站人员列表</a></li>
+</ul>
+</li>
+
+
+
+
+<!-- end 博士后管理-->
 
 <!-- start 公告资料管理 -->
 <@shiro.hasPermission name="permission#annountment">

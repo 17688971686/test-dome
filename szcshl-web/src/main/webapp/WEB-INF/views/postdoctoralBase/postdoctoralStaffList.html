@@ -1,0 +1,54 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a href="#/quartz">博士后在站人员列表</a></li>
+        <li class="active">{{vm.title}}</li>
+    </ol>
+
+
+    <div class="toolbar">
+        <button class="btn btn-sm btn-primary" ng-click="vm.searchForm()" >
+            <span class="glyphicon glyphicon-search"></span>查询
+        </button>
+        <button class="btn btn-sm btn-primary" ng-click="vm.formReset()">
+            <span class="glyphicon glyphicon-repeat"></span>重置
+        </button>
+        <a  ng-if="( ('${CURRENT_USER.loginName}'=='admin')|| ${POSTDOCTORAL_PERSON} )" class="btn btn-sm btn-success" style="margin-left:10px;" href="#/postdoctoralStaffAdd/">
+            <span class="glyphicon glyphicon-plus"></span>新增</a>
+    </div>
+
+    <div class="well well-sm">
+        <form id="postdoctoralStaffForm" name="postdoctoralStaffForm">
+            <table style="width:100%" id="searchTable">
+                <tr>
+                    <td class="text-right" style="width:8%;">姓名</td>
+                    <td width="12%"><input name="name" type="text" operator="like" ng-model="vm.searchModel.name" class="form-control input-sm "/></td>
+
+                    <td class="text-right" style="width:10%;min-width: 80px;max-width-width:120px;">进入基地时间</td>
+                    <td >
+                        <input type="text" name="enterBaseDate"  style="width:45%;min-width: 115px;max-width: 150px;" ng-model="vm.searchModel.enterBaseDate"
+                               operator="ge" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
+                        至
+                        <input type="text" name="enterBaseDate" style="width:45%;min-width: 115px;max-width: 150px;" ng-model="vm.searchModel.enterBaseEndDate"
+                               operator="le" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+    <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
+</div>
+<script type="text/template" id="columnBtns">
+
+    <a class="btn btn-xs btn-primary" ng-if="( ('${CURRENT_USER.loginName}'=='admin') || ${POSTDOCTORAL_ADMIN} || ('${CURRENT_USER.loginName}'=='{3}') )" href="#/postdoctoralStaffDetail/{0}"  ><span class="glyphicon glyphicon-pencil"></span>查看</a>
+    <a class="btn btn-xs btn-primary" ng-if="( ('${CURRENT_USER.loginName}'=='admin') || ${POSTDOCTORAL_ADMIN} || ('${CURRENT_USER.loginName}'=='{3}' && '{4}' == '0' ) )"  href="#/postdoctoralStaffAdd/{0}" ><span class="glyphicon glyphicon-pencil"></span>编辑</a>
+    <button  ng-if="( (('${CURRENT_USER.loginName}'=='admin') || ${POSTDOCTORAL_ADMIN}) && ('{4}' == '1' || '{4}' == '3') )"  class="btn btn-xs btn-warning" ng-click="{1}" ><span class="glyphicon glyphicon-warning-sign"></span>审核</button>
+    <button ng-if="( (('${CURRENT_USER.loginName}'=='admin') || ${POSTDOCTORAL_ADMIN}) && ('{4}' == '2' || '{4}' == '4') )" class="btn btn-xs btn-warning" ng-click="{5}" ><span class="glyphicon glyphicon-warning-sign"></span>回退</button>
+    <a ng-if="( '${CURRENT_USER.loginName}'=='{3}' && '{4}' == '2' )" class="btn btn-xs btn-primary" href="#/postdoctoralPopStaff/{0}/'${CURRENT_USER.loginName}'" ><span class="glyphicon glyphicon-pencil"></span>出站申请</a>
+   <button ng-if="( ('${CURRENT_USER.loginName}'=='admin') || ${POSTDOCTORAL_ADMIN}|| ('${CURRENT_USER.loginName}'=='{3}' && '{4}' == '0' ) )" class="btn btn-xs btn-warning" ng-click="{2}" ><span class="glyphicon glyphicon-warning-sign"></span>删除</button>
+</script>
