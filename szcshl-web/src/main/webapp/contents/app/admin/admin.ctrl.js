@@ -21,6 +21,8 @@
         vm.stateName = $state.current.name;
         //查询参数
         vm.queryParams = {};
+        vm.model = {};
+
         //点击时。保存查询的条件和grid列表的条件
         vm.saveView = function(){
             $rootScope.storeView(vm.stateName,{gridParams:vm.gridOptions.dataSource.transport.options.read.data(),queryParams:vm.queryParams,data:vm});
@@ -66,6 +68,9 @@
             }
             if(vm.model.nodeNameValue){
                 filters.push({field:'nodeNameValue',operator:'contains',value:vm.model.nodeNameValue});
+            }
+            if(vm.model.dfilenum){
+                filters.push({field:'dfilenum',operator:'contains',value:vm.model.dfilenum});
             }
             vm.gridOptions.dataSource.filter(filters);
         }
