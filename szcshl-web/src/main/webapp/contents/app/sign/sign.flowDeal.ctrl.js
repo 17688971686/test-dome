@@ -770,11 +770,12 @@
         // S_跳转到 发文 重写工作方案
         vm.reworkWorkPlanViem = function () {
             workprogramSvc.getProjBranchInfo($state.params.signid,function(data){
-                vm.signBranchData = data;
+                vm.signBranchData = data.branchList;
+                vm.reworkUserList = data.userList;
+                vm.reworkType = '1';   //默认是重做工作方案
                 $("#reworkWorkPlanWindow").kendoWindow({
                     width: "720px",
-                    height: "400px",
-                    title: "重写工作方案",
+                    title: "新增工作方案",
                     visible: false,
                     modal: true,
                     closable: true,
@@ -785,28 +786,46 @@
 
         //S_重做工作方案
         vm.reWorkFlow = function(){
-            var isCheck = $("#rework input[name='checBrands']:checked");
-            if(!isCheck || isCheck.length ==0){
-                bsWin.alert("请选择要重做工作方案的分支！");
-            }else{
-                var branchArr = [];
-                for (var i = 0; i < isCheck.length; i++) {
-                    branchArr.push(isCheck[i].value);
+            if(vm.reworkType == 1){
+                var isCheck = $("#rework input[name='checBrands']:checked");
+                if(!isCheck || isCheck.length ==0){
+                    bsWin.alert("请选择要重做工作方案的分支！");
+                }else{
+                    var branchArr = [];
+                    for (var i = 0; i < isCheck.length; i++) {
+                        branchArr.push(isCheck[i].value);
+                    }
+                    var branchStr = branchArr.join(',');
+                    bsWin.confirm("确定重做么？" , function(){
+                        workprogramSvc.reStartWorkFlow($state.params.signid,1, branchStr,null, function(data){
+                            if(data.flag || data.reCode == 'ok'){
+                                bsWin.success("操作成功！",function(){
+                                    window.parent.$("#reworkWorkPlanWindow").data("kendoWindow").close();
+                                });
+                            }else{
+                                bsWin.alert(data.reMsg);
+                            }
+                        });
+                    })
                 }
-                var branchStr = branchArr.join(',');
-                bsWin.confirm("确定重做么？" , function(){
-                    workprogramSvc.reStartWorkFlow($state.params.signid, branchStr, function(data){
-                        console.log(data);
-                        if(data.flag || data.reCode == 'ok'){
-                            bsWin.success("操作成功！",function(){
-                                window.parent.$("#reworkWorkPlanWindow").data("kendoWindow").close();
-                            });
-                        }else{
-                            bsWin.alert(data.reMsg);
-                        }
-                    });
-                })
+            }else if(vm.reworkType == 0){
+                if(!vm.reworkUserId){
+                    bsWin.alert("请选择新增工作方案的负责人！");
+                }else{
+                    bsWin.confirm("确定新增工作方案么？" , function(){
+                        workprogramSvc.reStartWorkFlow($state.params.signid,0,null, vm.reworkUserId, function(data){
+                            if(data.flag || data.reCode == 'ok'){
+                                bsWin.success("操作成功！",function(){
+                                    window.parent.$("#reworkWorkPlanWindow").data("kendoWindow").close();
+                                });
+                            }else{
+                                bsWin.alert(data.reMsg);
+                            }
+                        });
+                    })
+                }
             }
+
         }//E_重做工作方案
 
         //关联项目条件查询

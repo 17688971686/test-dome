@@ -135,8 +135,8 @@ public class WorkProgramController {
     @RequiresAuthentication
     @RequestMapping(name = "发起重新做工作方案流程", path = "startReWorkFlow", method = RequestMethod.POST)
     @ResponseBody
-    public ResultMsg startReWorkFlow(@RequestParam String signId,@RequestParam String brandIds) {
-        ResultMsg resultMsg = workProgramService.startReWorkFlow(signId,brandIds);
+    public ResultMsg startReWorkFlow(@RequestParam String signId,@RequestParam String reworkType,String brandIds,String userId) {
+        ResultMsg resultMsg = workProgramService.startReWorkFlow(signId,reworkType,brandIds,userId);
         if(resultMsg.isFlag()){
             //如果成功，则发送短信通知
             String taskName = resultMsg.getReObj().toString();
@@ -200,7 +200,7 @@ public class WorkProgramController {
             brandId = workProgramDto.getBranchId();
         }
 
-        if(Validate.isString(signId) && Validate.isString(brandId)){
+        if(Validate.isString(signId)){
             //如果不是主工作方案，还要查询主工作方案信息
             if(!ProjUtil.isMainBranch(brandId)){
                 WorkProgram mainWP = workProgramRepo.findBySignIdAndBranchId(signId, FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue(), false);
@@ -211,10 +211,13 @@ public class WorkProgramController {
                 }
             }
             resultMap.put("WorkProgramDto",workProgramDto);
-            //历史工作方案记录
-            List<WorkProgramHisDto> wpHisDtoList = workProgramHisService.findBySignAndBranch(signId,brandId);
-            if(Validate.isList(wpHisDtoList)){
-                resultMap.put("WorkProgramHisDtoList",wpHisDtoList);
+
+            //历史工作方案记录(重做的时候才有)
+            if(Validate.isString(brandId) && !brandId.equals(workProgramDto.getId().substring(0,2))){
+                List<WorkProgramHisDto> wpHisDtoList = workProgramHisService.findBySignAndBranch(signId,brandId);
+                if(Validate.isList(wpHisDtoList)){
+                    resultMap.put("WorkProgramHisDtoList",wpHisDtoList);
+                }
             }
         }
 

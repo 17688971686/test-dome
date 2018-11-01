@@ -2,19 +2,24 @@ package cs.controller.flow;
 
 import cs.ahelper.LogMsg;
 import cs.ahelper.MudoleAnnotation;
+import cs.common.constants.Constant;
 import cs.common.constants.Constant.MsgType;
 import cs.common.constants.Constant.MsgCode;
 import cs.common.constants.FlowConstant;
 import cs.common.ResultMsg;
+import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.Validate;
 import cs.domain.flow.HiProcessTask;
 import cs.domain.flow.RuProcessTask;
 import cs.domain.flow.RuTask;
 import cs.domain.project.SignDispaWork;
+import cs.domain.sys.Role;
+import cs.domain.sys.User;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.flow.Node;
 import cs.model.flow.TaskDto;
+import cs.model.sys.UserDto;
 import cs.repository.odata.ODataObj;
 import cs.service.archives.ArchivesLibraryService;
 import cs.service.asserts.assertStorageBusiness.AssertStorageBusinessService;
@@ -23,10 +28,7 @@ import cs.service.flow.FlowNextNodeFilter;
 import cs.service.flow.FlowService;
 import cs.service.flow.IFlow;
 import cs.service.monthly.MonthlyNewsletterService;
-import cs.service.project.AddSuppLetterService;
-import cs.service.project.ProjectStopService;
-import cs.service.project.SignService;
-import cs.service.project.WorkProgramService;
+import cs.service.project.*;
 import cs.service.reviewProjectAppraise.AppraiseService;
 import cs.service.rtx.RTXService;
 import cs.service.sys.AnnountmentService;
@@ -58,6 +60,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping(name = "流程", path = "flow")
@@ -134,6 +137,8 @@ public class FlowController {
     private UserService userService;
     @Autowired
     private RTXService rtxService;
+    @Autowired
+    private SignPrincipalService signPrincipalService;
 
     //@RequiresPermissions("flow#html/tasks#post")
     @RequiresAuthentication
@@ -742,8 +747,55 @@ public class FlowController {
     @RequiresAuthentication
     @RequestMapping(name = "获取重写工作方案分支", path = "getBranchInfo", method = RequestMethod.POST)
     @ResponseBody
-    public List<Map<String,Object>> getReWorkBranch(@RequestParam String signId) {
-        return flowService.getBranchInfo(signId);
+    public Map<String,Object> getReWorkBranch(@RequestParam String signId) {
+        Map<String,Object> resultMap = new HashMap<>();
+        //分支列表
+        resultMap.put("branchList",flowService.getBranchInfo(signId));//人员列表
+        /*List<User> allPostUser = userService.findAllPostUserByCriteria();
+        List<UserDto> userDtos = new ArrayList<>();
+        if (Validate.isList(allPostUser)) {
+            allPostUser.forEach(x -> {
+                List<Role> roles = x.getRoles();
+                if(Validate.isObject(x.getOrg()) && !checkIsLeader(roles)){
+                    UserDto userDto = new UserDto();
+                    BeanCopierUtils.copyProperties(x, userDto);
+                    userDtos.add(userDto);
+                }
+            });
+        }*/
+        //用户列表，直接选择项目负责人即可
+        List<User> userList = signPrincipalService.getAllSecondPriUser(signId);
+        if(null == userList){
+            userList = new ArrayList<>();
+        }
+        userList.add(signPrincipalService.getMainPriUser(signId));
+        if(Validate.isList(userList)){
+            List<UserDto> userDtoList = new ArrayList<>(userList.size());
+            userList.forEach(pul ->{
+                UserDto userDto = new UserDto();
+                BeanCopierUtils.copyProperties(pul,userDto);
+                userDtoList.add(userDto);
+            });
+            resultMap.put("userList",userDtoList);
+        }
+        return resultMap;
     }
 
+    /**
+     * 校验是否是领导
+     * @return
+     */
+    private boolean checkIsLeader(List<Role> roles){
+        boolean isLeader = false;
+        if(Validate.isList(roles)){
+            for(Role role : roles){
+                if(role.getRoleName().equals(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())
+                        || role.getRoleName().equals(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())
+                        || role.getRoleName().equals(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())){
+                    isLeader = true;
+                }
+            }
+        }
+        return isLeader;
+    }
 }

@@ -126,7 +126,7 @@ public interface WorkProgramService {
      * @param brandIds  分支ID
      * @return
      */
-    ResultMsg startReWorkFlow(String signId, String brandIds);
+    ResultMsg startReWorkFlow(String signId, String reworkType,String brandIds,String userId);
 
     /**
      * 重做工作方案流程处理

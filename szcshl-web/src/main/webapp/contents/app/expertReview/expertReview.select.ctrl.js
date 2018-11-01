@@ -15,7 +15,7 @@
         vm.confirmEPListReplace = [];                   //已经调整过的聘请专家列表（已经经过确认的专家）
         vm.matchEPMap = {};                             //保存符合条件的专家信息
         vm.selectIds = [],                              //已经抽取的专家信息ID（用于排除查询）
-            vm.businessId = $state.params.businessId;       //专家评审方案业务ID
+        vm.businessId = $state.params.businessId;       //专家评审方案业务ID
         vm.minBusinessId = $state.params.minBusinessId; //专家抽取方案业务ID
         vm.businessType = $state.params.businessType;   //专家业务类型
         vm.taskId = $state.params.taskId;               //任务ID
@@ -739,7 +739,8 @@
                 bsWin.alert("拟聘请专家数据有改动，请保存后再返回！");
                 return;
             }
-            if (vm.isback) {
+            window.history.back();
+            /*if (vm.isback) {
                 $state.go('MaintainProjectEdit',{
                     signid: vm.businessId,
                     processInstanceId:vm.processInstanceId
@@ -749,7 +750,7 @@
                     signid: vm.businessId,
                     taskid: vm.taskId
                 });
-            }
+            }*/
 
         }
 

@@ -92,6 +92,8 @@ public interface UserService {
 
     List<User> findAllPostUser();
 
+    List<User> findAllPostUserByCriteria();
+
     void fleshPostUserCache();
 
     /**

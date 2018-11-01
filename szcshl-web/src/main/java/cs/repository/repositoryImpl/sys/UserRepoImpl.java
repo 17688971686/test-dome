@@ -324,6 +324,7 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
         return resultList;
     }
 
+
     /**
      * 刷新所有在职用户细腻系
      */

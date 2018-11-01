@@ -1318,8 +1318,70 @@
                     controller: 'msgEditCtrl',
                     controllerAs: 'vm'
                 })
-
             //end 短信编辑
+                //begin 博士后基地模块列表
+                .state('postdoctoralBaseList', {
+                    url: '/postdoctoralBaseList',
+                    templateUrl: rootPath + "/postdoctoralBase/html/postdoctoralBaseList.html",
+                    controller: 'postdoctoralBaseCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('postdoctoralBaseAdd', {
+                    url: '/postdoctoralBaseAdd/:id',
+                    templateUrl: rootPath + "/postdoctoralBase/html/postdoctoralBaseAdd.html",
+                    controller: 'postdoctoralBaseCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('postdoctoralBaseDetail', {
+                    url: '/postdoctoralBaseDetail/:id',
+                    templateUrl: rootPath + "/postdoctoralBase/html/postdoctoralBaseDetail.html",
+                    controller: 'postdoctoralBaseCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('postdoctoralStaffList', {
+                    url: '/postdoctoralStaffList',
+                    templateUrl: rootPath + "/postdoctoralStaff/html/postdoctoralStaffList.html",
+                    controller: 'postdoctoralStaffCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('postdoctoralStaffAdd', {
+                    url: '/postdoctoralStaffAdd/:id',
+                    templateUrl: rootPath + "/postdoctoralStaff/html/postdoctoralStaffAdd.html",
+                    controller: 'postdoctoralStaffCtrl',
+                    controllerAs: 'vm'
+                })
+
+                .state('postdoctoralStaffDetail', {
+                    url: '/postdoctoralStaffDetail/:id',
+                    templateUrl: rootPath + "/postdoctoralStaff/html/postdoctoralStaffDetail.html",
+                    controller: 'postdoctoralStaffCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('postdoctoralPopStaffList', {
+                    url: '/postdoctoralPopStaffList',
+                    templateUrl: rootPath + "/postdoctoralStaff/html/postdoctoralPopStaffList.html",
+                    controller: 'postdoctoralPopStaffCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('postdoctoralPopStaffAdd', {
+                    url: '/postdoctoralPopStaffAdd/:id',
+                    templateUrl: rootPath + "/postdoctoralStaff/html/postdoctoralPopStaffAdd.html",
+                    controller: 'postdoctoralPopStaffCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('postdoctoralPopStaffDetail', {
+                    url: '/postdoctoralPopStaffDetail/:id',
+                    templateUrl: rootPath + "/postdoctoralStaff/html/postdoctoralPopStaffDetail.html",
+                    controller: 'postdoctoralStaffCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('postdoctoralPopStaff', {
+                    url: '/postdoctoralPopStaff/:id/:name',
+                    templateUrl: rootPath + "/postdoctoralStaff/html/postdoctoralPopStaff.html",
+                    controller: 'postdoctoralStaffCtrl',
+                    controllerAs: 'vm'
+                })
+            //end 博士后基地结束
         }]).run(function ($rootScope, $http, $state, $stateParams, bsWin) {
         $rootScope.rootPath = rootPath;
         $rootScope.DICT = DICTOBJ;
@@ -17256,7 +17318,7 @@
         vm.confirmEPListReplace = [];                   //已经调整过的聘请专家列表（已经经过确认的专家）
         vm.matchEPMap = {};                             //保存符合条件的专家信息
         vm.selectIds = [],                              //已经抽取的专家信息ID（用于排除查询）
-            vm.businessId = $state.params.businessId;       //专家评审方案业务ID
+        vm.businessId = $state.params.businessId;       //专家评审方案业务ID
         vm.minBusinessId = $state.params.minBusinessId; //专家抽取方案业务ID
         vm.businessType = $state.params.businessType;   //专家业务类型
         vm.taskId = $state.params.taskId;               //任务ID
@@ -17980,7 +18042,8 @@
                 bsWin.alert("拟聘请专家数据有改动，请保存后再返回！");
                 return;
             }
-            if (vm.isback) {
+            window.history.back();
+            /*if (vm.isback) {
                 $state.go('MaintainProjectEdit',{
                     signid: vm.businessId,
                     processInstanceId:vm.processInstanceId
@@ -17990,7 +18053,7 @@
                     signid: vm.businessId,
                     taskid: vm.taskId
                 });
-            }
+            }*/
 
         }
 
@@ -29123,245 +29186,6 @@
 (function () {
     'use strict';
 
-    angular.module('app').controller('registerFileCtrl', registerFile);
-
-    registerFile.$inject = ['$location','registerFileSvc','$state','$http']; 
-
-    function registerFile($location, registerFileSvc,$state,$http) {
-        var vm = this;
-        vm.title = '待办事项';
-        vm.addregister={};
-        vm.model={};
-        vm.model.signid=$state.params.signid;
-        activate();
-        function activate() {
-        	vm.showPrint=false;
-        	registerFileSvc.grid(vm);
-        }
-        vm.print = function(){
-        	//vm.registerFileList={};
-    		//vm.signdto={};
-            signcommon.registerFilePrint(vm,{$http: $http});
-        }
-        vm.findbySuppleDate = function(e){
-        	
-        }
-    }
-})();
-
-(function() {
-	'use strict';
-
-	angular.module('app').factory('registerFileSvc', registerFile);
-
-	registerFile.$inject = ['$rootScope', '$http'];
-
-	function registerFile($rootScope, $http) {
-		var addregister_url = rootPath + "/addRegisterFile";
-		
-		return {
-			grid : grid
-		};
-
-		// begin#grid
-		function grid(vm) {
-			
-			// Begin:dataSource
-			var dataSource = new kendo.data.DataSource({
-						type : 'odata',
-						transport : common.kendoGridinlineConfig().transport(
-								vm, {
-									readUrl : addregister_url
-											+ "/findByOData",
-									updateUrl : addregister_url + "/update",
-									destroyUrl : addregister_url + "/delete",
-									createUrl : addregister_url + "/create/"+vm.model.signid},
-									{filter: "signid eq '"+vm.model.signid+"'"}),
-						schema : common.kendoGridConfig().schema({
-									id : "id",
-									fields : {
-										fileName : {
-											validation: { required: true },
-											type : "String"
-										},
-										totalNum : {
-											type : "number",
-											validation: { required: true, min: 1}
-										},
-										isHasOriginfile : {
-											type : "boolean"
-										},
-										isHasCopyfile : {
-											type : "boolean"
-										},
-										suppleDeclare : {
-											type : "string"
-										},
-										suppleDate : {
-											type : "date"
-										},
-										createdDate : {
-											type : "date"
-										},
-										modifiedDate : {
-											type : "date"
-										}
-									}
-								}),
-						batch : true,
-						pageSize : 10,
-						serverPaging : true,
-						serverSorting : true,
-						serverFiltering : true,
-						sort : {
-							field : "createdDate",
-							dir : "desc"
-						}
-					});
-
-			// End:dataSource
-
-			// S_序号
-			var dataBound = function() {
-				var rows = this.items();
-				var page = this.pager.page() - 1;
-				var pagesize = this.pager.pageSize();
-				$(rows).each(function() {
-							var index = $(this).index() + 1 + page * pagesize;
-							var rowLabel = $(this).find(".row-number");
-							$(rowLabel).html(index);
-						});
-			}
-			// S_序号
-			// Begin:column
-			var columns = [{
-						field : "",
-						title : "序号",
-						width : 50,
-						filterable : false,
-						template : "<span class='row-number'></span>"
-					}, {
-						field : "fileName",
-						title : "资料名称",
-						width : "120px",
-						filterable : false
-					}, {
-						field : "totalNum",
-						title : "份数",
-						width : "120px",
-						filterable : false
-					}, {
-						field : "isHasOriginfile",
-						title : "原件",
-						width : "120px",
-						filterable : false,
-						template : function(item) {
-							if (item.isHasOriginfile) {
-								return "是";
-							} else {
-								return "否";
-							}
-						}
-					}, {
-						field : "isHasCopyfile",
-						title : "复印件",
-						width : "120px",
-						filterable : false,
-						template : function(item) {
-							if (item.isHasCopyfile) {
-								return "是";
-							} else {
-								return "否";
-							}
-						}
-					}, {
-						field : "suppleDeclare",
-						title : "补充说明",
-						width : "120px",
-						filterable : false
-					}, {
-						field : "suppleDate",
-						title : "补充日期",
-						width : "120px",
-						format : "{0:yyyy-MM-dd}",
-						filterable : false
-					}, {
-						command : ["destroy"],
-						title : "&nbsp;",
-						width : "250px"
-					}];// 列
-			// End:column
-
-			vm.gridOptions = {
-				dataSource : common.gridDataSource(dataSource),
-				filterable : common.kendoGridinlineConfig().filterable,
-				pageable : common.kendoGridinlineConfig().pageable,
-				noRecords : common.kendoGridConfig().noRecordMessage,
-				columns : columns,
-				toolbar : ["create", "save", "cancel"],
-				dataBound : dataBound,
-				editable : true,
-				navigatable : true,
-				resizable : true
-			};
-
-		}// end fun grid
-
-	}
-})();
-(function () {
-    'use strict';
-
-    angular.module('app').controller('suppletterCtrls', suppletter);
-
-    suppletter.$inject = ['$location','suppletterSvc','$state','$http']; 
-
-    function suppletter($location, suppletterSvc,$state,$http) {
-        var vm = this;
-        vm.showsupp=false;
-        vm.title = '拟补资料函';
-        vm.suppletter={};
-        vm.model = {};
-        vm.model.signid=$state.params.signid;
-        vm.suppletter.id=$state.params.id;
-        activate();
-        function activate() {
-        	//signcommon.initSuppData(vm,{$http:$http,$state:$state});
-        }
-        vm.addSuppContent=function(){
-        	vm.showsupp=true;
-        	 var ideaEditWindow = $("#addsuppContent");
-       		 ideaEditWindow.kendoWindow({
-	            width: "50%",
-	            height: "80%",
-	            title: "拟补资料函正文",
-	            visible: false,
-	            modal: true,
-	            closable: true,
-	            actions: ["Pin", "Minimize", "Maximize", "close"]
-	        }).data("kendoWindow").center().open();
-
-        }
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').factory('suppletterSvc', suppletter);
-
-    suppletter.$inject = ['$rootScope', '$http'];
-
-    function suppletter($rootScope, $http) {
-
-        var service = {
-        }
-        return service;
-    }
-})();
-(function () {
-    'use strict';
-
     angular.module('app').controller('monthlyHistoryCtrl', monthlyHistory);
 
     monthlyHistory.$inject = ['$location', 'monthlyHistorySvc'];
@@ -30670,6 +30494,23 @@
             });
         }
 
+        vm.restore = function (id) {
+            bsWin.confirm({
+                title: "询问提示",
+                message: "确认恢复数据吗？",
+                onOk: function () {
+                    monthlyNewsletterSvc.restoreMonthlyNewsletter(id,function(data){
+                        if(data.flag || data.reCode=='ok'){
+                            bsWin.alert("操作成功！",function(){
+                                vm.gridOptions.dataSource.read();
+                                vm.monthlyDeleteGridOptions.dataSource.read();
+                            })
+                        }
+                    });
+                }
+            });
+        }
+
         vm.dels = function () {
             var selectIds = common.getKendoCheckId('.grid');
             if (selectIds.length == 0) {
@@ -30681,6 +30522,21 @@
                 }
                 var idStr = ids.join(',');
                 vm.del(idStr);
+            }
+        };
+
+
+        vm.restorePatch = function () {
+            var selectIds = common.getKendoCheckId('.gridR');
+            if (selectIds.length == 0) {
+                bsWin.alert("请选择要恢复的数据！");
+            } else {
+                var ids = [];
+                for (var i = 0; i < selectIds.length; i++) {
+                    ids.push(selectIds[i].value);
+                }
+                var idStr = ids.join(',');
+                vm.restore(idStr);
             }
         };
 
@@ -30808,6 +30664,7 @@
             createMonthlyNewsletter: createMonthlyNewsletter,   //保存月报简报
             updateMonthlyNewsletter: updateMonthlyNewsletter,   //月报简报编辑
             deleteMonthlyNewsletter: deleteMonthlyNewsletter,   //删除月报简报记录
+            restoreMonthlyNewsletter: restoreMonthlyNewsletter, // 恢复月报简报
             getMonthlyNewsletterById: getMonthlyNewsletterById,
             createMonthReport: createMonthReport //生成月报简报
         };
@@ -30864,6 +30721,27 @@
             var httpOptions = {
                 method: 'delete',
                 url: url_monthlyNewsletter+"/deleteMonthlyData",
+                params: {
+                    id:id
+                }
+            };
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
+        function restoreMonthlyNewsletter(id,callBack) {
+            var httpOptions = {
+                method: 'get',
+                url: url_monthlyNewsletter+"/restoreMonthlyData",
                 params: {
                     id:id
                 }
@@ -31086,10 +30964,10 @@
         
         // begin#删除月报简报列表
         function monthlyDeleteGrid(vm) {
-            // Begin:dataSource
+            // Begin:dataSource11
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(url_monthlyNewsletter+"/findByOData",$("#monthlyForm"),{$filter:"monthlyType eq '2'"}),
+                transport: common.kendoGridConfig().transport(url_monthlyNewsletter+"/findByOData",$("#delMonthlyForm"),{$filter:"monthlyType eq '2'"}),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {
@@ -31124,15 +31002,6 @@
             //S_序号
             // Begin:column
             var columns = [
-                {
-                    template: function (item) {
-                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
-                            item.id)
-                    },
-                    filterable: false,
-                    width: 40,
-                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
-                },
                 {
 				    field: "rowNumber",
 				    title: "序号",
@@ -31171,6 +31040,15 @@
                     filterable: false,
                     format: "{0: yyyy-MM-dd HH:mm:ss}"
                 },
+                {
+                    field: "",
+                    title: "操作",
+                    width: 140,
+                    template: function (item) {
+                        return common.format($('#columnBtns1').html(),
+                         "vm.restore('" + item.id + "')");
+                    }
+                }
                
             ];
             // End:column
@@ -31264,6 +31142,7 @@
             };
 
         }// end fun 月报简报列表
+
         
     }
 })();
@@ -31285,6 +31164,245 @@
     }
 })();
 
+(function () {
+    'use strict';
+
+    angular.module('app').controller('registerFileCtrl', registerFile);
+
+    registerFile.$inject = ['$location','registerFileSvc','$state','$http']; 
+
+    function registerFile($location, registerFileSvc,$state,$http) {
+        var vm = this;
+        vm.title = '待办事项';
+        vm.addregister={};
+        vm.model={};
+        vm.model.signid=$state.params.signid;
+        activate();
+        function activate() {
+        	vm.showPrint=false;
+        	registerFileSvc.grid(vm);
+        }
+        vm.print = function(){
+        	//vm.registerFileList={};
+    		//vm.signdto={};
+            signcommon.registerFilePrint(vm,{$http: $http});
+        }
+        vm.findbySuppleDate = function(e){
+        	
+        }
+    }
+})();
+
+(function() {
+	'use strict';
+
+	angular.module('app').factory('registerFileSvc', registerFile);
+
+	registerFile.$inject = ['$rootScope', '$http'];
+
+	function registerFile($rootScope, $http) {
+		var addregister_url = rootPath + "/addRegisterFile";
+		
+		return {
+			grid : grid
+		};
+
+		// begin#grid
+		function grid(vm) {
+			
+			// Begin:dataSource
+			var dataSource = new kendo.data.DataSource({
+						type : 'odata',
+						transport : common.kendoGridinlineConfig().transport(
+								vm, {
+									readUrl : addregister_url
+											+ "/findByOData",
+									updateUrl : addregister_url + "/update",
+									destroyUrl : addregister_url + "/delete",
+									createUrl : addregister_url + "/create/"+vm.model.signid},
+									{filter: "signid eq '"+vm.model.signid+"'"}),
+						schema : common.kendoGridConfig().schema({
+									id : "id",
+									fields : {
+										fileName : {
+											validation: { required: true },
+											type : "String"
+										},
+										totalNum : {
+											type : "number",
+											validation: { required: true, min: 1}
+										},
+										isHasOriginfile : {
+											type : "boolean"
+										},
+										isHasCopyfile : {
+											type : "boolean"
+										},
+										suppleDeclare : {
+											type : "string"
+										},
+										suppleDate : {
+											type : "date"
+										},
+										createdDate : {
+											type : "date"
+										},
+										modifiedDate : {
+											type : "date"
+										}
+									}
+								}),
+						batch : true,
+						pageSize : 10,
+						serverPaging : true,
+						serverSorting : true,
+						serverFiltering : true,
+						sort : {
+							field : "createdDate",
+							dir : "desc"
+						}
+					});
+
+			// End:dataSource
+
+			// S_序号
+			var dataBound = function() {
+				var rows = this.items();
+				var page = this.pager.page() - 1;
+				var pagesize = this.pager.pageSize();
+				$(rows).each(function() {
+							var index = $(this).index() + 1 + page * pagesize;
+							var rowLabel = $(this).find(".row-number");
+							$(rowLabel).html(index);
+						});
+			}
+			// S_序号
+			// Begin:column
+			var columns = [{
+						field : "",
+						title : "序号",
+						width : 50,
+						filterable : false,
+						template : "<span class='row-number'></span>"
+					}, {
+						field : "fileName",
+						title : "资料名称",
+						width : "120px",
+						filterable : false
+					}, {
+						field : "totalNum",
+						title : "份数",
+						width : "120px",
+						filterable : false
+					}, {
+						field : "isHasOriginfile",
+						title : "原件",
+						width : "120px",
+						filterable : false,
+						template : function(item) {
+							if (item.isHasOriginfile) {
+								return "是";
+							} else {
+								return "否";
+							}
+						}
+					}, {
+						field : "isHasCopyfile",
+						title : "复印件",
+						width : "120px",
+						filterable : false,
+						template : function(item) {
+							if (item.isHasCopyfile) {
+								return "是";
+							} else {
+								return "否";
+							}
+						}
+					}, {
+						field : "suppleDeclare",
+						title : "补充说明",
+						width : "120px",
+						filterable : false
+					}, {
+						field : "suppleDate",
+						title : "补充日期",
+						width : "120px",
+						format : "{0:yyyy-MM-dd}",
+						filterable : false
+					}, {
+						command : ["destroy"],
+						title : "&nbsp;",
+						width : "250px"
+					}];// 列
+			// End:column
+
+			vm.gridOptions = {
+				dataSource : common.gridDataSource(dataSource),
+				filterable : common.kendoGridinlineConfig().filterable,
+				pageable : common.kendoGridinlineConfig().pageable,
+				noRecords : common.kendoGridConfig().noRecordMessage,
+				columns : columns,
+				toolbar : ["create", "save", "cancel"],
+				dataBound : dataBound,
+				editable : true,
+				navigatable : true,
+				resizable : true
+			};
+
+		}// end fun grid
+
+	}
+})();
+(function () {
+    'use strict';
+
+    angular.module('app').controller('suppletterCtrls', suppletter);
+
+    suppletter.$inject = ['$location','suppletterSvc','$state','$http']; 
+
+    function suppletter($location, suppletterSvc,$state,$http) {
+        var vm = this;
+        vm.showsupp=false;
+        vm.title = '拟补资料函';
+        vm.suppletter={};
+        vm.model = {};
+        vm.model.signid=$state.params.signid;
+        vm.suppletter.id=$state.params.id;
+        activate();
+        function activate() {
+        	//signcommon.initSuppData(vm,{$http:$http,$state:$state});
+        }
+        vm.addSuppContent=function(){
+        	vm.showsupp=true;
+        	 var ideaEditWindow = $("#addsuppContent");
+       		 ideaEditWindow.kendoWindow({
+	            width: "50%",
+	            height: "80%",
+	            title: "拟补资料函正文",
+	            visible: false,
+	            modal: true,
+	            closable: true,
+	            actions: ["Pin", "Minimize", "Maximize", "close"]
+	        }).data("kendoWindow").center().open();
+
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').factory('suppletterSvc', suppletter);
+
+    suppletter.$inject = ['$rootScope', '$http'];
+
+    function suppletter($rootScope, $http) {
+
+        var service = {
+        }
+        return service;
+    }
+})();
 (function () {
     'use strict';
 
@@ -34364,6 +34482,995 @@
                 treeObj.checkNode(nodes[i], true, true);
             }
         }
+    }
+})();
+(function () {
+    'use strict';
+
+    angular.module('app').controller('postdoctoralBaseCtrl', postdoctoralBase);
+
+    postdoctoralBase.$inject = ['postdoctoralBaseSvc' , 'bsWin' , '$scope' , "$state" , 'sysfileSvc'];
+
+    function postdoctoralBase(postdoctoralBaseSvc , bsWin , $scope , $state , sysfileSvc) {
+        var vm = this;
+        vm.title = '博士后基地管理';  //标题
+        vm.postdoctoralBase = {};
+        vm.businessFlag = {};
+        vm.id = $state.params.id;
+
+        active();
+        function active(){
+            postdoctoralBaseSvc.postdoctoralBaseGrid(vm);
+            if(vm.id){
+                vm.isShowUpdate = true;
+                postdoctoralBaseSvc.findPostdoctoralBaseById(vm.id , function(data){
+                    vm.postdoctoralBase = data;
+                });
+            }
+        }
+
+        /**
+         * 保存博士后基地
+         */
+        vm.createPostdoctoralBase = function(){
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                postdoctoralBaseSvc.createPostdoctoralBase(vm, function (data) {
+                    if (data.flag || data.reCode == 'ok') {
+                        vm.id = data.reObj;
+                        vm.isShowUpdate = true;
+                        bsWin.alert("保存成功！");
+                    }
+                });
+            }
+        }
+
+        /**
+         * 更新博士后基地
+         * @constructor
+         */
+        vm.updatePostdoctoralBase = function(){
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                postdoctoralBaseSvc.updatePostdoctoralBase(vm, function (data) {
+                    bsWin.alert("保存成功！");
+                });
+            }
+        }
+
+        /**
+         * 删除信息
+         * @param id
+         */
+        vm.deletePostdoctoralBase = function(id){
+            bsWin.confirm("确定删除？" , function(){
+                postdoctoralBaseSvc.deletePostdoctoralBase(id , function(data){
+                    if(data.flag || data.reCode == 'ok'){
+                        bsWin.alert("删除成功！");
+                        vm.gridOptions.dataSource.read();
+                    }
+                });
+            });
+
+        }
+
+    }
+})();
+
+(function(){
+    'use strict';
+    angular.module('app').factory('postdoctoralBaseSvc', postdoctoralBaseSvc);
+    postdoctoralBaseSvc.$inject = ['$http', '$state' , 'bsWin' ];
+    function postdoctoralBaseSvc($http , $state , bsWin ){
+        var service = {
+            postdoctoralBaseGrid : postdoctoralBaseGrid ,
+            createPostdoctoralBase : createPostdoctoralBase , //保存
+            findPostdoctoralBaseById : findPostdoctoralBaseById , //通过ID获取信息
+            updatePostdoctoralBase : updatePostdoctoralBase , //更新信息
+            deletePostdoctoralBase : deletePostdoctoralBase  , //删除信息
+
+        }
+
+        return service;
+
+        function deletePostdoctoralBase(id , callBack){
+            var httpOptions = {
+                method : "delete",
+                url : rootPath + "/postdoctoralBase/deletePostdoctoralBase",
+                params : {"id" : id}
+            }
+
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof  callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+        }
+
+        function updatePostdoctoralBase(vm , callBack){
+            var httpOptions = {
+                method : "post",
+                url : rootPath + "/postdoctoralBase/updatePostdoctoralBase",
+                data : vm.postdoctoralBase
+            }
+
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof  callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+        }
+
+        function findPostdoctoralBaseById(id , callBack){
+            var httpOptions = {
+                method : "post",
+                url : rootPath + "/postdoctoralBase/findById",
+                params : {"id" : id}
+            }
+
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof callBack =="function"){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+        }
+
+        function createPostdoctoralBase(vm , callBack){
+            var httpOptions = {
+                method : "post",
+                url : rootPath + "/postdoctoralBase/createPostdoctoralBase",
+                data : vm.postdoctoralBase
+            }
+
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof  callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+        }
+
+        function postdoctoralBaseGrid(vm){
+            // Begin:dataSource
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(rootPath + "/postdoctoralBase/findByOData" ),
+                schema: common.kendoGridConfig().schema({
+                    id: "id",
+                    fields: {
+                        createdDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
+            });
+            // End:dataSource
+            //S_序号
+            var dataBound = function () {
+                var rows = this.items();
+                var page = this.pager.page() - 1;
+                var pagesize = this.pager.pageSize();
+                $(rows).each(function () {
+                    var index = $(this).index() + 1 + page * pagesize;
+                    var rowLabel = $(this).find(".row-number");
+                    $(rowLabel).html(index);
+                });
+            }
+            //S_序号
+            // Begin:column
+            var columns = [
+                {
+                    template: function (item) {
+                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />", item.mId)
+                    },
+                    filterable: false,
+                    width: 40,
+                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox' />"
+                },
+                {
+                    field: "rowNumber",
+                    title: "序号",
+                    width: 40,
+                    filterable: false,
+                    template: "<span class='row-number'></span>"
+                },
+                {
+                    field: "baseName",
+                    title: "基地名称",
+                    width: 100,
+                    filterable: false,
+                    template: function (item) {
+                        return '<a  href="#/postdoctoralBaseDetail/' + item.id + '">'+item.baseName+'</a>'
+                    }
+                },
+                {
+                    field: "foundingTime",
+                    title: "成立时间",
+                    width: 160,
+                    filterable: false,
+                },
+                {
+                    field: "principalBase",
+                    title: "基地负责人",
+                    width: 160,
+                    filterable: false,
+                },
+                {
+                    field: "dailyMananger",
+                    title: "日常管理人员",
+                    width: 160,
+                    filterable: false,
+                },
+                {
+                    field: "",
+                    title: "操作",
+                    width: 120,
+                    template: function (item) {
+                        return common.format($('#columnBtns').html(),   item.id , "vm.deletePostdoctoralBase('" + item.id + "')");
+                    }
+                }
+            ];
+            // End:column
+
+            vm.gridOptions = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                dataBound: dataBound,
+                resizable: true
+            };
+        }
+
+    }
+})();
+(function () {
+    'use strict';
+
+    angular.module('app').controller('postdoctoralPopStaffCtrl', postdoctoralPopStaffCtrl);
+
+    postdoctoralPopStaffCtrl.$inject = ['postdoctoralStaffSvc' , 'bsWin' , '$scope' , "$state" , 'sysfileSvc'];
+
+    function postdoctoralPopStaffCtrl(postdoctoralStaffSvc , bsWin , $scope , $state , sysfileSvc) {
+        var vm = this;
+        vm.title = '出站人员列表';  //标题
+        vm.postdoctoralStaff = {};
+        vm.businessFlag = {};
+        vm.searchModel = {};
+        vm.id = $state.params.id;
+        //初始化附件上传控件
+        vm.initFileUpload = function () {
+            if (!vm.id) {
+                //监听ID，如果有新值，则自动初始化上传控件
+                $scope.$watch("vm.id", function (newValue, oldValue) {
+                    if (newValue && newValue != oldValue && !vm.initUploadOptionSuccess) {
+                        vm.initFileUpload();
+                    }
+                });
+            }
+
+            //创建附件对象
+            vm.sysFile = {
+                businessId: vm.id,
+                mainId: vm.id,
+                mainType: "博士后在站人员附件",
+                sysBusiType: "",
+                showBusiType: false,
+            };
+            sysfileSvc.initUploadOptions({
+                inputId: "sysfileinput",
+                vm: vm,
+                uploadSuccess: function () {
+                    sysfileSvc.findByBusinessId(vm.id, function (data) {
+                        vm.sysFilelists = data;
+                    });
+                }
+            });
+        }
+        active();
+        function active(){
+            postdoctoralStaffSvc.postdoctoralPopStaffGrid(vm);
+            if(vm.id){
+                vm.isShowUpdate = true;
+                postdoctoralStaffSvc.findPostdoctoralStaffById(vm.id , function(data){
+                    vm.postdoctoralStaff = data;
+                });
+            }
+            //初始化上传附件
+            vm.initFileUpload();
+        }
+
+        /**
+         * 保存博士后基地
+         */
+        vm.commitPostdoctoralStaff = function(){
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                vm.postdoctoralStaff.status = '4';
+                postdoctoralStaffSvc.createPostdoctoralStaff(vm, function (data) {
+                    if (data.flag || data.reCode == 'ok') {
+                        vm.id = data.reObj;
+                        vm.isShowUpdate = true;
+                        bsWin.alert("保存成功！");
+                    }
+                });
+            }
+        }
+
+
+
+        /**
+         * 更新博士后基地
+         * @constructor
+         */
+        vm.commitPostdoctoralPopStaff = function(){
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                vm.postdoctoralStaff.status = "3";
+                postdoctoralStaffSvc.updatePostdoctoralStaff(vm, function (data) {
+                    bsWin.alert("提交成功！");
+                });
+            }
+        }
+
+        /**
+         * 删除信息
+         * @param id
+         */
+        vm.deletePostdoctoralStaff = function(id){
+            bsWin.confirm("确定删除？" , function(){
+                postdoctoralStaffSvc.deletePostdoctoralStaff(id , function(data){
+                    if(data.flag || data.reCode == 'ok'){
+                        bsWin.alert("删除成功！");
+                        vm.gridOptions.dataSource.read();
+                    }
+                });
+            });
+        }
+
+        /**
+         * 审核信息
+         * @param id
+         */
+        vm.approvePostdoctoralStaff = function(id,status){
+            if(status == 'undefined' || status == undefined || status == null || status == ''){
+                status = "";
+            }
+            bsWin.confirm("确定审核？" , function(){
+                postdoctoralStaffSvc.approvePostdoctoralStaff(id,status , function(data){
+                    if(data.flag || data.reCode == 'ok'){
+                        bsWin.alert(data.reMsg);
+                        vm.gridOptions.dataSource.read();
+                    }else{
+                        bsWin.alert(data.reMsg);
+                    }
+                });
+            });
+        }
+
+        /**
+         * 回退信息
+         * @param id
+         */
+        vm.backPostdoctoralStaff = function(id,status){
+            if(status == 'undefined' || status == undefined || status == null || status == ''){
+                status = "";
+            }
+            bsWin.confirm("确定回退？" , function(){
+                if(status == '2'){
+                    status = '1'
+                }else if(status == '4'){
+                    status = '3'
+                }
+                postdoctoralStaffSvc.backPostdoctoralStaff(id,status , function(data){
+                    if(data.flag || data.reCode == 'ok'){
+                        bsWin.alert(data.reMsg);
+                        vm.gridOptions.dataSource.read();
+                    }else{
+                        bsWin.alert(data.reMsg);
+                    }
+                });
+            });
+        }
+
+        //表单查询
+        vm.searchForm = function(){
+            vm.gridOptions.dataSource._skip=0;
+            vm.gridOptions.dataSource.read();
+        }
+
+        //重置查询表单
+        vm.formReset = function(){
+            vm.searchModel = {};
+        }
+
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').controller('postdoctoralStaffCtrl', postdoctoralStaff);
+
+    postdoctoralStaff.$inject = ['postdoctoralStaffSvc' , 'bsWin' , '$scope' , "$state" , 'sysfileSvc'];
+
+    function postdoctoralStaff(postdoctoralStaffSvc , bsWin , $scope , $state , sysfileSvc) {
+        var vm = this;
+        vm.title = '博士后人员管理';  //标题
+        vm.postdoctoralStaff = {};
+        vm.businessFlag = {};
+        vm.searchModel = {};
+        vm.id = $state.params.id;
+        vm.name = $state.params.name;
+
+        //初始化附件上传控件
+        vm.initFileUpload = function () {
+            if (!vm.id) {
+                //监听ID，如果有新值，则自动初始化上传控件
+                $scope.$watch("vm.id", function (newValue, oldValue) {
+                    if (newValue && newValue != oldValue && !vm.initUploadOptionSuccess) {
+                        vm.initFileUpload();
+                    }
+                });
+            }
+
+            //创建附件对象
+            vm.sysFile = {
+                businessId: vm.id,
+                mainId: vm.id,
+                mainType: "博士后在站人员附件",
+                sysBusiType: "",
+                showBusiType: false,
+            };
+            sysfileSvc.initUploadOptions({
+                inputId: "sysfileinput",
+                vm: vm,
+                uploadSuccess: function () {
+                    sysfileSvc.findByBusinessId(vm.id, function (data) {
+                        vm.sysFilelists = data;
+                    });
+                }
+            });
+        }
+
+        active();
+        function active(){
+            postdoctoralStaffSvc.postdoctoralStaffGrid(vm);
+            //postdoctoralStaffSvc.postdoctoralPopStaffGrid(vm);
+            if(vm.id){
+                vm.isShowUpdate = true;
+                postdoctoralStaffSvc.findPostdoctoralStaffById(vm.id , function(data){
+                    vm.postdoctoralStaff = data;
+                });
+            }
+            //初始化上传附件
+            vm.initFileUpload();
+
+        }
+
+        /**
+         * 保存博士后基地
+         */
+        vm.createPostdoctoralStaff = function(){
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                postdoctoralStaffSvc.createPostdoctoralStaff(vm, function (data) {
+                    if (data.flag || data.reCode == 'ok') {
+                        vm.id = data.reObj;
+                        vm.isShowUpdate = true;
+                        bsWin.alert("保存成功！");
+                    }
+                });
+            }
+        }
+
+        /**
+         * 更新博士后基地
+         * @constructor
+         */
+        vm.updatePostdoctoralStaff = function(){
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                postdoctoralStaffSvc.updatePostdoctoralStaff(vm, function (data) {
+                    bsWin.alert("更新成功！");
+                });
+            }
+        }
+
+
+        /**
+         * 提交博士后基地
+         * @constructor
+         */
+        vm.commitPostdoctoralStaff = function(){
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                vm.postdoctoralStaff.status = "1";
+                postdoctoralStaffSvc.updatePostdoctoralStaff(vm, function (data) {
+                    bsWin.alert("提交成功！");
+                });
+            }
+        }
+
+
+        /**
+         * 提交博士后基地
+         * @constructor
+         */
+        vm.commitPostdoctoralPopStaff = function(){
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                vm.postdoctoralStaff.status = "3";
+                postdoctoralStaffSvc.updatePostdoctoralStaff(vm, function (data) {
+                    bsWin.alert("提交成功！");
+                });
+            }
+        }
+
+        /**
+         * 删除信息
+         * @param id
+         */
+        vm.deletePostdoctoralStaff = function(id){
+            bsWin.confirm("确定删除？" , function(){
+                postdoctoralStaffSvc.deletePostdoctoralStaff(id , function(data){
+                    if(data.flag || data.reCode == 'ok'){
+                        bsWin.alert("删除成功！");
+                        vm.gridOptions.dataSource.read();
+                    }
+                });
+            });
+        }
+
+        /**
+         * 审核信息
+         * @param id
+         */
+        vm.approvePostdoctoralStaff = function(id,status){
+            if(status == 'undefined' || status == undefined || status == null || status == ''){
+                status = "";
+            }
+            bsWin.confirm("确定审核？" , function(){
+                postdoctoralStaffSvc.approvePostdoctoralStaff(id,status , function(data){
+                    if(data.flag || data.reCode == 'ok'){
+                        bsWin.alert(data.reMsg);
+                        if(status == '3'){
+                            $state.go("postdoctoralPopStaffList");
+                        }else{
+                            vm.gridOptions.dataSource.read();
+                        }
+                    }else{
+                        bsWin.alert(data.reMsg);
+                    }
+                });
+            });
+        }
+
+        /**
+         * 回退信息
+         * @param id
+         */
+        vm.backPostdoctoralStaff = function(id,status){
+            if(status == 'undefined' || status == undefined || status == null || status == ''){
+                status = "";
+            }
+            bsWin.confirm("确定回退？" , function(){
+                if(status == '2'){
+                    status = '1'
+                }else if(status == '4'){
+                    status = '3'
+                }
+                postdoctoralStaffSvc.backPostdoctoralStaff(id,status , function(data){
+                    if(data.flag || data.reCode == 'ok'){
+                        bsWin.alert(data.reMsg);
+                            vm.gridOptions.dataSource.read();
+                    }else{
+                        bsWin.alert(data.reMsg);
+                    }
+                });
+            });
+        }
+
+        //表单查询
+        vm.searchForm = function(){
+            vm.gridOptions.dataSource._skip=0;
+            vm.gridOptions.dataSource.read();
+        }
+
+        //重置查询表单
+        vm.formReset = function(){
+            vm.searchModel = {};
+        }
+
+    }
+})();
+
+(function(){
+    'use strict';
+    angular.module('app').factory('postdoctoralStaffSvc', postdoctoralStaffSvc);
+    postdoctoralStaffSvc.$inject = ['$http', '$state' , 'bsWin' ];
+    function postdoctoralStaffSvc($http , $state , bsWin ){
+        var service = {
+            postdoctoralStaffGrid : postdoctoralStaffGrid ,
+            postdoctoralPopStaffGrid : postdoctoralPopStaffGrid ,
+            createPostdoctoralStaff : createPostdoctoralStaff , //保存
+            findPostdoctoralStaffById : findPostdoctoralStaffById , //通过ID获取信息
+            updatePostdoctoralStaff : updatePostdoctoralStaff , //更新信息
+            deletePostdoctoralStaff : deletePostdoctoralStaff  , //删除信息
+            approvePostdoctoralStaff : approvePostdoctoralStaff,
+            backPostdoctoralStaff : backPostdoctoralStaff
+
+        }
+
+        return service;
+
+        function deletePostdoctoralStaff(id , callBack){
+            var httpOptions = {
+                method : "delete",
+                url : rootPath + "/postdoctoralStaff/deletePostdoctoralStaff",
+                params : {"id" : id}
+            }
+
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof  callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+        }
+
+        function updatePostdoctoralStaff(vm , callBack){
+            var httpOptions = {
+                method : "post",
+                url : rootPath + "/postdoctoralStaff/updatePostdoctoralStaff",
+                data : vm.postdoctoralStaff
+            }
+
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof  callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+        }
+
+        function findPostdoctoralStaffById(id , callBack){
+            var httpOptions = {
+                method : "post",
+                url : rootPath + "/postdoctoralStaff/findById",
+                params : {"id" : id}
+            }
+
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof callBack =="function"){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+        }
+
+        function createPostdoctoralStaff(vm , callBack){
+            var httpOptions = {
+                method : "post",
+                url : rootPath + "/postdoctoralStaff/createPostdoctoralStaff",
+                data : vm.postdoctoralStaff
+            }
+
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof  callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+        }
+
+        function approvePostdoctoralStaff(id ,status, callBack){
+            var httpOptions = {
+                method : "post",
+                url : rootPath + "/postdoctoralStaff/approvePostdoctoralStaff",
+                params : {"id" : id,"status":status}
+            }
+
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof  callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+        }
+
+        function backPostdoctoralStaff(id ,status, callBack){
+            var httpOptions = {
+                method : "post",
+                url : rootPath + "/postdoctoralStaff/backPostdoctoralStaff",
+                params : {"id" : id,"status":status}
+            }
+
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof  callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+        }
+
+        function postdoctoralStaffGrid(vm){
+            // Begin:dataSource
+
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(rootPath + "/postdoctoralStaff/findByOData", $("#postdoctoralStaffForm"),{$filter:"status ne '4'"},true),
+                schema: common.kendoGridConfig().schema({
+                    id: "id",
+                    fields: {
+                        createdDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
+            });
+            // End:dataSource
+            //S_序号
+            var dataBound = function () {
+                var rows = this.items();
+                var page = this.pager.page() - 1;
+                var pagesize = this.pager.pageSize();
+                $(rows).each(function () {
+                    var index = $(this).index() + 1 + page * pagesize;
+                    var rowLabel = $(this).find(".row-number");
+                    $(rowLabel).html(index);
+                });
+            }
+            //S_序号
+            // Begin:column
+            var columns = [
+                {
+                    template: function (item) {
+                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />", item.id)
+                    },
+                    filterable: false,
+                    width: 40,
+                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox' />"
+                },
+                {
+                    field: "rowNumber",
+                    title: "序号",
+                    width: 50,
+                    filterable: false,
+                    template: "<span class='row-number'></span>"
+                },
+                {
+                    field: "name",
+                    title: "姓名",
+                    width: 100,
+                    filterable: false,
+                    template: function (item) {
+                        return '<a  href="#/postdoctoralStaffDetail/' + item.id + '">'+item.name+'</a>'
+                    }
+                },
+                {
+                    field: "sex",
+                    title: "性别",
+                    width: 50,
+                    filterable: false,
+                },
+                {
+                    field: "enterBaseDate",
+                    title: "进入基地时间",
+                    width: 160,
+                    filterable: false,
+                    format: "{0:yyyy-MM-dd}"
+                },
+                {
+                    field: "enterStackApproveDate",
+                    title: "进站批准日期",
+                    width: 160,
+                    filterable: false,
+                    format: "{0:yyyy-MM-dd}"
+                },
+                {
+                    field: "",
+                    title: "操作",
+                    width: 120,
+                    template: function (item) {
+                        return common.format($('#columnBtns').html(),   item.id , "vm.approvePostdoctoralStaff('" + item.id + "','"+item.status+"')","vm.deletePostdoctoralStaff('" + item.id + "')",item.name,item.status,"vm.backPostdoctoralStaff('" + item.id + "','"+item.status+"')");
+                    }
+                }
+            ];
+            // End:column
+
+            vm.gridOptions = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                dataBound: dataBound,
+                resizable: true
+            };
+        }
+
+        function postdoctoralPopStaffGrid(vm){
+            // Begin:dataSource
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(rootPath + "/postdoctoralStaff/findByOData", $("#postdoctoralPopStaffForm"), {$filter: "status eq '4'"},true),
+                schema: common.kendoGridConfig().schema({
+                    id: "id",
+                    fields: {
+                        createdDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
+            });
+            // End:dataSource
+            //S_序号
+            var dataBound = function () {
+                var rows = this.items();
+                var page = this.pager.page() - 1;
+                var pagesize = this.pager.pageSize();
+                $(rows).each(function () {
+                    var index = $(this).index() + 1 + page * pagesize;
+                    var rowLabel = $(this).find(".row-number");
+                    $(rowLabel).html(index);
+                });
+            }
+            //S_序号
+            // Begin:column
+            var columns = [
+                {
+                    template: function (item) {
+                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />", item.id)
+                    },
+                    filterable: false,
+                    width: 40,
+                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox' />"
+                },
+                {
+                    field: "rowNumber",
+                    title: "序号",
+                    width: 50,
+                    filterable: false,
+                    template: "<span class='row-number'></span>"
+                },
+                {
+                    field: "name",
+                    title: "姓名",
+                    width: 100,
+                    filterable: false,
+                    template: function (item) {
+                        return '<a  href="#/postdoctoralPopStaffDetail/' + item.id + '">'+item.name+'</a>'
+                    }
+                },
+                {
+                    field: "sex",
+                    title: "性别",
+                    width: 50,
+                    filterable: false,
+                },
+                {
+                    field: "enterStackApproveDate",
+                    title: "进站时间",
+                    width: 160,
+                    filterable: false,
+                    format: "{0:yyyy-MM-dd}"
+                },
+                {
+                    field: "pooStackDate",
+                    title: "出站时间",
+                    width: 160,
+                    filterable: false,
+                    format: "{0:yyyy-MM-dd}"
+                },
+                {
+                    field: "",
+                    title: "操作",
+                    width: 120,
+                    template: function (item) {
+                        return common.format($('#columnBtns').html(),   item.id,"vm.deletePostdoctoralStaff('" + item.id + "')",item.name,item.status,"vm.backPostdoctoralStaff('" + item.id + "','"+item.status+"')");
+                    }
+                }
+            ];
+            // End:column
+
+            vm.gridOptions = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                dataBound: dataBound,
+                resizable: true
+            };
+        }
+
     }
 })();
 (function () {
@@ -37683,13 +38790,13 @@
             var flag = $("#ischangeEstimate").is(':checked');
             if(flag){
                 if(vm.model.projectname){
-                    vm.model.projectname += "(是否调概)";
+                    vm.model.projectname += "(调概项目)";
                 }else{
-                    vm.model.projectname = "(是否调概)";
+                    vm.model.projectname = "(调概项目)";
                 }
             }else{
                 if(vm.model.projectname){
-                    vm.model.projectname = vm.model.projectname.replace("(是否调概)" , "");
+                    vm.model.projectname = vm.model.projectname.replace("(调概项目)" , "");
                 }
             }
         }
@@ -39634,11 +40741,12 @@
         // S_跳转到 发文 重写工作方案
         vm.reworkWorkPlanViem = function () {
             workprogramSvc.getProjBranchInfo($state.params.signid,function(data){
-                vm.signBranchData = data;
+                vm.signBranchData = data.branchList;
+                vm.reworkUserList = data.userList;
+                vm.reworkType = '1';   //默认是重做工作方案
                 $("#reworkWorkPlanWindow").kendoWindow({
                     width: "720px",
-                    height: "400px",
-                    title: "重写工作方案",
+                    title: "新增工作方案",
                     visible: false,
                     modal: true,
                     closable: true,
@@ -39649,28 +40757,46 @@
 
         //S_重做工作方案
         vm.reWorkFlow = function(){
-            var isCheck = $("#rework input[name='checBrands']:checked");
-            if(!isCheck || isCheck.length ==0){
-                bsWin.alert("请选择要重做工作方案的分支！");
-            }else{
-                var branchArr = [];
-                for (var i = 0; i < isCheck.length; i++) {
-                    branchArr.push(isCheck[i].value);
+            if(vm.reworkType == 1){
+                var isCheck = $("#rework input[name='checBrands']:checked");
+                if(!isCheck || isCheck.length ==0){
+                    bsWin.alert("请选择要重做工作方案的分支！");
+                }else{
+                    var branchArr = [];
+                    for (var i = 0; i < isCheck.length; i++) {
+                        branchArr.push(isCheck[i].value);
+                    }
+                    var branchStr = branchArr.join(',');
+                    bsWin.confirm("确定重做么？" , function(){
+                        workprogramSvc.reStartWorkFlow($state.params.signid,1, branchStr,null, function(data){
+                            if(data.flag || data.reCode == 'ok'){
+                                bsWin.success("操作成功！",function(){
+                                    window.parent.$("#reworkWorkPlanWindow").data("kendoWindow").close();
+                                });
+                            }else{
+                                bsWin.alert(data.reMsg);
+                            }
+                        });
+                    })
                 }
-                var branchStr = branchArr.join(',');
-                bsWin.confirm("确定重做么？" , function(){
-                    workprogramSvc.reStartWorkFlow($state.params.signid, branchStr, function(data){
-                        console.log(data);
-                        if(data.flag || data.reCode == 'ok'){
-                            bsWin.success("操作成功！",function(){
-                                window.parent.$("#reworkWorkPlanWindow").data("kendoWindow").close();
-                            });
-                        }else{
-                            bsWin.alert(data.reMsg);
-                        }
-                    });
-                })
+            }else if(vm.reworkType == 0){
+                if(!vm.reworkUserId){
+                    bsWin.alert("请选择新增工作方案的负责人！");
+                }else{
+                    bsWin.confirm("确定新增工作方案么？" , function(){
+                        workprogramSvc.reStartWorkFlow($state.params.signid,0,null, vm.reworkUserId, function(data){
+                            if(data.flag || data.reCode == 'ok'){
+                                bsWin.success("操作成功！",function(){
+                                    window.parent.$("#reworkWorkPlanWindow").data("kendoWindow").close();
+                                });
+                            }else{
+                                bsWin.alert(data.reMsg);
+                            }
+                        });
+                    })
+                }
             }
+
         }//E_重做工作方案
 
         //关联项目条件查询
@@ -48899,13 +50025,15 @@
             });
         }
 
-        function reStartWorkFlow(signId,branchIds,callBack){
+        function reStartWorkFlow(signId,reworkType,branchIds,userId,callBack){
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/workprogram/startReWorkFlow",
                 params: {
                     signId : signId,
-                    brandIds : branchIds
+                    reworkType: reworkType,
+                    brandIds : branchIds,
+                    userId:userId
                 },
             }
             var httpSuccess = function success(response) {

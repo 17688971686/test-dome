@@ -75,13 +75,15 @@
             });
         }
 
-        function reStartWorkFlow(signId,branchIds,callBack){
+        function reStartWorkFlow(signId,reworkType,branchIds,userId,callBack){
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/workprogram/startReWorkFlow",
                 params: {
                     signId : signId,
-                    brandIds : branchIds
+                    reworkType: reworkType,
+                    brandIds : branchIds,
+                    userId:userId
                 },
             }
             var httpSuccess = function success(response) {

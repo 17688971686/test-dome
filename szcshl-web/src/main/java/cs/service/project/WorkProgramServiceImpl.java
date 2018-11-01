@@ -232,13 +232,23 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 for (int i = 0; i < totalL; i++) {
                     WorkProgram wp = wpList.get(i);
                     boolean isBrandUser = false;
-                    if (branchIndex.equals(wp.getBranchId())) {
-                        priUserList = signPrincipalService.getSignPriUser(signId, branchIndex);
-                        for (User user : priUserList) {
-                            //当前处理人是代人人的时候也要考虑进去
-                            if (user.getId().equals(curUserId) || curUserId.equals(user.getTakeUserId())) {
+                    if(Validate.isString(branchIndex) && branchIndex.equals(wp.getBranchId())){
+                        if(branchIndex.equals(wp.getId().substring(0,2))){
+                            User user = userService.getCacheUserById(wp.getCreatedBy());
+                            //如果是新增的工作方案，流程还没走完
+                            if((user.getId().equals(curUserId) || curUserId.equals(user.getTakeUserId())) && Validate.isString(wp.getProcessInstanceId())){
                                 isBrandUser = true;
-                                break;
+                            }
+                        }
+                        //如果重做工作方案
+                        else {
+                            priUserList = signPrincipalService.getSignPriUser(signId, branchIndex);
+                            for (User user : priUserList) {
+                                //当前处理人是代人人的时候也要考虑进去
+                                if (user.getId().equals(curUserId) || curUserId.equals(user.getTakeUserId())) {
+                                    isBrandUser = true;
+                                    break;
+                                }
                             }
                         }
                     }
@@ -865,79 +875,108 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 
     @Override
     @Transactional
-    public ResultMsg startReWorkFlow(String signId, String brandIds) {
+    public ResultMsg startReWorkFlow(String signId, String reworkType,String brandIds,String userId) {
         Sign sign = signRepo.findById(signId);
         if (sign.getProcessState() > Constant.SignProcessState.END_DIS_NUM.getValue()) {
             return ResultMsg.error("已经发文的项目，不能再进行修改！");
         }
-        List<String> brandIdList = StringUtil.getSplit(brandIds, SysConstants.SEPARATE_COMMA);
-        int startCount = brandIdList.size();
-        if(startCount == 0){
-            return ResultMsg.error("请选择要重做的工作方案！");
-        }
-        //工作方案留痕
-        List<WorkProgram> workProgramList = ProjUtil.filterEnableWP(sign.getWorkProgramList());
-        WorkProgram mainWP = ProjUtil.filterMainWP(workProgramList);
-        if(Validate.isList(workProgramList)){
-            //检验选择的工作方案是否已经发起流程，并且未完成
-            ResultMsg checkResult = checkWorkFlow(brandIdList,workProgramList);
-            if(!checkResult.isFlag()){
-                return checkResult;
-            }
-        }
-
+        int startCount = 0;
+        boolean isNew = true;
+        WorkProgram mainWP = null;
         List<WorkProgram> reWorkList = new ArrayList<>();
-        //初始化工作方案
-        for (int i=0;i<startCount;i++) {
-            String brandId = brandIdList.get(i);
-            WorkProgram newWP = new WorkProgram();
-            boolean isNew = true;
-            for (WorkProgram wp : workProgramList) {
-                if (brandId.equals(wp.getBranchId())) {
-                    BeanCopierUtils.copyProperties(wp,newWP);
-                    if(!ProjUtil.isMainBranch(wp.getBranchId())){
-                        //如果不是主工作方案，还要把主工作方案的数据拷贝过来
-                        if(Validate.isObject(mainWP)){
-                            ProjUtil.copyMainWPProps(mainWP,wp);
-                        }
-                    }
-                    newWP.setId(new RandomGUID().valueAfterMD5);
-                    workProgramHisService.copyWorkProgram(wp, sign.getSignid(),newWP.getId());
-                    WorkPGUtil.create(newWP).resetLeaderOption().resetMinisterOption();
-                    isNew = false;
+        //如果是重做工作方案
+        if("1".equals(reworkType)){
+            List<String> brandIdList = StringUtil.getSplit(brandIds, SysConstants.SEPARATE_COMMA);
+            startCount = brandIdList.size();
+            if(startCount == 0){
+                return ResultMsg.error("请选择要重做的工作方案！");
+            }
+            //工作方案留痕
+            List<WorkProgram> workProgramList = ProjUtil.filterEnableWP(sign.getWorkProgramList());
+            mainWP = ProjUtil.filterMainWP(workProgramList);
+            if(Validate.isList(workProgramList)){
+                //检验选择的工作方案是否已经发起流程，并且未完成
+                ResultMsg checkResult = checkWorkFlow(brandIdList,workProgramList);
+                if(!checkResult.isFlag()){
+                    return checkResult;
                 }
             }
-            if(isNew){
-                newWP = initWP(sign,ProjUtil.isMainBranch(brandId));
-                newWP.setSign(sign);
-                newWP.setId(new RandomGUID().valueAfterMD5);
-                newWP.setCreatedBy(SessionUtil.getUserId());
-                newWP.setModifiedBy(SessionUtil.getLoginName());
+            //初始化工作方案
+            for (int i=0;i<startCount;i++) {
+                String brandId = brandIdList.get(i);
+                WorkProgram newWP = new WorkProgram();
+                for (WorkProgram wp : workProgramList) {
+                    if (brandId.equals(wp.getBranchId())) {
+                        BeanCopierUtils.copyProperties(wp,newWP);
+                        if(!ProjUtil.isMainBranch(wp.getBranchId())){
+                            //如果不是主工作方案，还要把主工作方案的数据拷贝过来
+                            if(Validate.isObject(mainWP)){
+                                ProjUtil.copyMainWPProps(mainWP,wp);
+                            }
+                        }
+                        newWP.setId(new RandomGUID().valueAfterMD5);
+                        workProgramHisService.copyWorkProgram(wp, sign.getSignid(),newWP.getId());
+                        WorkPGUtil.create(newWP).resetLeaderOption().resetMinisterOption();
+                        isNew = false;
+                    }
+                }
+                if(isNew){
+                    newWP = initWP(sign,ProjUtil.isMainBranch(brandId));
+                    newWP.setSign(sign);
+                    newWP.setId(new RandomGUID().valueAfterMD5);
+                    newWP.setCreatedBy(SessionUtil.getUserId());
+                    newWP.setModifiedBy(SessionUtil.getLoginName());
+                }
+                signBranchRepo.resetBranchState(sign.getSignid(), brandId);
+                newWP.setBranchId(brandId);
+                newWP.setBaseInfo(null);
+                reWorkList.add(newWP);
             }
-            signBranchRepo.resetBranchState(sign.getSignid(), brandId);
-            newWP.setBranchId(brandId);
+        }
+        //新增工作方案
+        else{
+            RandomGUID myGUID = new RandomGUID();
+            WorkProgram newWP = initWP(sign,false);
+            newWP.setSign(sign);
+            newWP.setId(myGUID.valueAfterMD5);
+            newWP.setCreatedBy(SessionUtil.getUserId());
+            newWP.setModifiedBy(SessionUtil.getLoginName());
             newWP.setBaseInfo(null);
+            //数据有效性默认为无效，审核通过才有效
+            newWP.setState(EnumState.NO.getValue());
+            if(!Validate.isObject(mainWP)){
+                //如果还没做工作方案，则新增的就是主工作方案
+                newWP.setBranchId(FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue());
+            }else{
+                newWP.setBranchId(myGUID.toString().substring(0,2));
+            }
             reWorkList.add(newWP);
         }
 
         //发起流程
         String assigneeValue = "",allAssigneeValue = "";
         List<AgentTask> agentTaskList = null;
-
         for (WorkProgram workProgram : reWorkList) {
             agentTaskList = new ArrayList<>();
             assigneeValue = "";
             //获取待处理人
-            List<User> dealUserList = signPrincipalService.getSignPriUser( sign.getSignid(), workProgram.getBranchId());
-            for (User user : dealUserList) {
-                String userId = userService.getTaskDealId(user, agentTaskList, WPHIS_XMFZR);
-                assigneeValue = StringUtil.joinString(assigneeValue, SEPARATE_COMMA, userId);
+            if("1".equals(reworkType)){
+                List<User> dealUserList = signPrincipalService.getSignPriUser(sign.getSignid(), workProgram.getBranchId());
+                for (User user : dealUserList) {
+                    String userIdx = userService.getTaskDealId(user, agentTaskList, WPHIS_XMFZR);
+                    assigneeValue = StringUtil.joinString(assigneeValue, SEPARATE_COMMA, userIdx);
+                }
             }
+            //新增
+            else{
+                assigneeValue = userId;
+            }
+
             //启动流程
             ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(FlowConstant.WORK_HIS_FLOW, workProgram.getId(),
                     ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USERS.getValue(), assigneeValue));
             //设置流程实例名称
-            processEngine.getRuntimeService().setProcessInstanceName(processInstance.getId(), ProjUtil.getReFlowName(sign.getProjectname()));
+            processEngine.getRuntimeService().setProcessInstanceName(processInstance.getId(), ProjUtil.getReFlowName(sign.getProjectname(),reworkType));
             //所有的处理人
             allAssigneeValue += assigneeValue;
 
@@ -948,7 +987,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(sign.getSignid(), allAssigneeValue);
 
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功",ProjUtil.getReFlowName(sign.getProjectname()));
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功",ProjUtil.getReFlowName(sign.getProjectname(),reworkType));
     }
 
     private ResultMsg checkWorkFlow(List<String> brandIdList, List<WorkProgram> workProgramList) {
@@ -1011,10 +1050,20 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                         return ResultMsg.error("合并评审次项目还未提交审批，主项目不能提交审批！");
                     }
                 }
-
-                OrgDept orgDept = orgDeptRepo.queryBySignBranchId(sign.getSignid(), wk.getBranchId());
-                if (orgDept == null || !Validate.isString(orgDept.getDirectorID())) {
-                    return ResultMsg.error("请设置该分支的部门负责人！");
+                OrgDept orgDept = null;
+                if(wk.getBranchId().length() == 2 && wk.getBranchId().equals(wk.getId().substring(0,2))){
+                    User user = userService.getCacheUserById(wk.getCreatedBy());
+                    if(Validate.isObject(user) && Validate.isObject(user.getOrg())){
+                        orgDept = new OrgDept();
+                        orgDept.setDirectorID(user.getOrg().getOrgDirector());
+                    }else{
+                        return ResultMsg.error("请先设置你所在部门的部门负责人！");
+                    }
+                }else{
+                    orgDept = orgDeptRepo.queryBySignBranchId(sign.getSignid(), wk.getBranchId());
+                    if (orgDept == null || !Validate.isString(orgDept.getDirectorID())) {
+                        return ResultMsg.error("请设置该分支的部门负责人！");
+                    }
                 }
                 assigneeValue = userService.getTaskDealId(orgDept.getDirectorID(), agentTaskList,WPHIS_BMLD_SPW);
 
