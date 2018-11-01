@@ -219,6 +219,12 @@ public class RuProcessTask {
     private String filecode;
 
     /**
+     * 发文文号
+     */
+    @Column
+    private String dfilenum;
+
+    /**
      * 合并评审项目
      */
     //这是此注解后该属性不会数据持久化
@@ -567,5 +573,13 @@ public class RuProcessTask {
 
     public void setFilecode(String filecode) {
         this.filecode = filecode;
+    }
+
+    public String getDfilenum() {
+        return dfilenum;
+    }
+
+    public void setDfilenum(String dfilenum) {
+        this.dfilenum = dfilenum;
     }
 }
