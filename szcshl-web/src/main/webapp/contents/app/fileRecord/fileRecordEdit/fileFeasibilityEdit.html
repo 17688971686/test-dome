@@ -83,14 +83,14 @@
                     <td style="border-top:none;text-align:right;">中心报审登记表</td>
                     <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
                                                         ng-model="vm.fileRecord.recordFormOriginal"
-                                                        ng-checked="vm.fileRecord.recordFormOriginal==9" name="recordFormOriginal" ng-true-value="9" ng-false-value="0">
+                                                        ng-checked="vm.fileRecord.recordFormOriginal==9" name="recordFormOriginal" ng-true-value="9" ng-false-value="0" ng-click="vm.resetCancelBox('recordFormOriginal')">
                     </td>
                     <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
                                                         ng-model="vm.fileRecord.recordFormCopy" name="recordFormCopy"
-                                                        ng-checked="vm.fileRecord.recordFormCopy==9" ng-true-value="9" ng-false-value="0"></td>
+                                                        ng-checked="vm.fileRecord.recordFormCopy==9" ng-true-value="9" ng-false-value="0" ng-click="vm.resetCancelBox('recordFormCopy')"></td>
                     <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
                                                         ng-model="vm.fileRecord.recordFormCopyScan"
-                                                        ng-checked="vm.fileRecord.recordFormCopyScan==9" name="recordFormCopyScan" ng-true-value="9" ng-false-value="0">
+                                                        ng-checked="vm.fileRecord.recordFormCopyScan==9" name="recordFormCopyScan" ng-true-value="9" ng-false-value="0" ng-click="vm.resetCancelBox('recordFormCopyScan')">
                     </td>
                     <td style="border-top:none;text-align:right;">暂停申请表</td>
                     <td style="border-top:none;">
@@ -102,29 +102,29 @@
                               data-valmsg-replace="true" class="errors"></span>
                     </td>
                     <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
-                                                        ng-model="vm.fileRecord.pauseFormOriginal"
-                                                        ng-click="vm.fileRecord.pauseFormCount = initInputValue($event,vm.fileRecord.pauseFormCount)"
+                                                        ng-model="vm.fileRecord.pauseFormOriginal" name="pauseFormOriginal"
+                                                        ng-click="vm.fileRecord.pauseFormCount = vm.initInputValue($event,vm.fileRecord.pauseFormCount,'pauseFormOriginal')"
                                                         ng-checked="vm.fileRecord.pauseFormOriginal==9" ng-true-value="9" ng-false-value="0"></td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
-                                                        ng-click="vm.fileRecord.pauseFormCount = initInputValue($event,vm.fileRecord.pauseFormCount)"
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"  name="pauseFormCopy"
+                                                        ng-click="vm.fileRecord.pauseFormCount = vm.initInputValue($event,vm.fileRecord.pauseFormCount,'pauseFormCopy')"
                                                         ng-model="vm.fileRecord.pauseFormCopy"
                                                         ng-checked="vm.fileRecord.pauseFormCopy==9" ng-true-value="9" ng-false-value="0"></td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
-                                                        ng-click="vm.fileRecord.pauseFormCount = initInputValue($event,vm.fileRecord.pauseFormCount)"
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox" name="pauseFormScan"
+                                                        ng-click="vm.fileRecord.pauseFormCount = vm.initInputValue($event,vm.fileRecord.pauseFormCount,'pauseFormScan')"
                                                         ng-model="vm.fileRecord.pauseFormScan"
                                                         ng-checked="vm.fileRecord.pauseFormScan==9" ng-true-value="9" ng-false-value="0"></td>
                 </tr>
                 <tr>
                     <td style="border-top:none;text-align:right;">委项目处理表</td>
                     <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
-                                                        ng-model="vm.fileRecord.sugproHandleFormOriginal"
-                                                        ng-checked="vm.fileRecord.sugproHandleFormOriginal==9" ng-true-value="9" ng-false-value="0"></td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
+                                                        ng-model="vm.fileRecord.sugproHandleFormOriginal" name="sugproHandleFormOriginal"
+                                                        ng-checked="vm.fileRecord.sugproHandleFormOriginal==9" ng-true-value="9" ng-false-value="0" ng-click="vm.resetCancelBox('sugproHandleFormOriginal')"></td>
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox" name="sugproHandleFormCopy"
                                                         ng-model="vm.fileRecord.sugproHandleFormCopy" ng-true-value="9"
-                                                        ng-checked="vm.fileRecord.sugproHandleFormCopy==9" ng-false-value="0"></td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
+                                                        ng-checked="vm.fileRecord.sugproHandleFormCopy==9" ng-false-value="0" ng-click="vm.resetCancelBox('sugproHandleFormCopy')"></td>
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"  name="sugproHandleFormScan"
                                                         ng-model="vm.fileRecord.sugproHandleFormScan" ng-true-value="9"
-                                                        ng-checked="vm.fileRecord.sugproHandleFormScan==9" ng-false-value="0"></td>
+                                                        ng-checked="vm.fileRecord.sugproHandleFormScan==9" ng-false-value="0" ng-click="vm.resetCancelBox('sugproHandleFormScan')"></td>
                     <td style="border-top:none;text-align:right;">补充资料函</td>
                     <td style="border-top:none;">
                         <input type="text" style="width:50px;" class="form-control input-sm "
@@ -134,31 +134,31 @@
                         <span data-valmsg-for="supplyFileLetterCount"
                               data-valmsg-replace="true" class="errors"></span>
                     </td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
-                                                        ng-click="vm.fileRecord.supplyFileLetterCount = initInputValue($event,vm.fileRecord.supplyFileLetterCount)"
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox" name="supplyFileLetterOriginal"
+                                                        ng-click="vm.fileRecord.supplyFileLetterCount = vm.initInputValue($event,vm.fileRecord.supplyFileLetterCount,'supplyFileLetterOriginal')"
                                                         ng-model="vm.fileRecord.supplyFileLetterOriginal"
                                                         ng-checked="vm.fileRecord.supplyFileLetterOriginal==9" ng-true-value="9" ng-false-value="0"></td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
-                                                        ng-click="vm.fileRecord.supplyFileLetterCount = initInputValue($event,vm.fileRecord.supplyFileLetterCount)"
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox" name="supplyFileLetterCopy"
+                                                        ng-click="vm.fileRecord.supplyFileLetterCount = vm.initInputValue($event,vm.fileRecord.supplyFileLetterCount,'supplyFileLetterCopy')"
                                                         ng-model="vm.fileRecord.supplyFileLetterCopy"
                                                         ng-checked="vm.fileRecord.supplyFileLetterCopy==9" ng-true-value="9" ng-false-value="0"></td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
-                                                        ng-click="vm.fileRecord.supplyFileLetterCount = initInputValue($event,vm.fileRecord.supplyFileLetterCount)"
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox" name="supplyFileLetterScan"
+                                                        ng-click="vm.fileRecord.supplyFileLetterCount = vm.initInputValue($event,vm.fileRecord.supplyFileLetterCount,'supplyFileLetterScan')"
                                                         ng-model="vm.fileRecord.supplyFileLetterScan"
                                                         ng-checked="vm.fileRecord.supplyFileLetterScan==9" ng-true-value="9" ng-false-value="0"></td>
 
                 </tr>
                 <tr>
                     <td style="border-top:none;text-align:right;">委文件处理表</td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox" name="sugfileHandleFormOriginal"
                                                         ng-model="vm.fileRecord.sugfileHandleFormOriginal"
-                                                        ng-checked="vm.fileRecord.sugfileHandleFormOriginal==9" ng-true-value="9" ng-false-value="0"></td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
+                                                        ng-checked="vm.fileRecord.sugfileHandleFormOriginal==9" ng-true-value="9" ng-false-value="0" ng-click="vm.resetCancelBox('sugfileHandleFormOriginal')"></td>
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"  name="sugfileHandleFormCopy"
                                                         ng-model="vm.fileRecord.sugfileHandleFormCopy" ng-true-value="9"
-                                                        ng-checked="vm.fileRecord.sugfileHandleFormCopy==9" ng-false-value="0"></td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
+                                                        ng-checked="vm.fileRecord.sugfileHandleFormCopy==9" ng-false-value="0" ng-click="vm.resetCancelBox('sugfileHandleFormCopy')"></td>
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox" name="sugfileHandleFormScan"
                                                         ng-model="vm.fileRecord.sugfileHandleFormScan" ng-true-value="9"
-                                                        ng-checked="vm.fileRecord.sugfileHandleFormScan==9" ng-false-value="0"></td>
+                                                        ng-checked="vm.fileRecord.sugfileHandleFormScan==9" ng-false-value="0" ng-click="vm.resetCancelBox('sugfileHandleFormScan')"></td>
                     <td style="border-top:none;text-align:right;">暂缓审核函</td>
                     <td style="border-top:none;">
                         <input type="text" style="width:50px;" class="form-control input-sm "
@@ -168,30 +168,30 @@
                         <span data-valmsg-for="slowReviewCount"
                               data-valmsg-replace="true" class="errors"></span>
                     </td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
-                                                        ng-click="vm.fileRecord.slowReviewCount = initInputValue($event,vm.fileRecord.slowReviewCount)"
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox" name="slowReviewOriginal"
+                                                        ng-click="vm.fileRecord.slowReviewCount = vm.initInputValue($event,vm.fileRecord.slowReviewCount,'slowReviewOriginal')"
                                                         ng-model="vm.fileRecord.slowReviewOriginal"
                                                         ng-checked="vm.fileRecord.slowReviewOriginal==9" ng-true-value="9" ng-false-value="0"></td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
-                                                        ng-click="vm.fileRecord.slowReviewCount = initInputValue($event,vm.fileRecord.slowReviewCount)"
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"  name="slowReviewCopy"
+                                                        ng-click="vm.fileRecord.slowReviewCount = vm.initInputValue($event,vm.fileRecord.slowReviewCount,'slowReviewCopy')"
                                                         ng-model="vm.fileRecord.slowReviewCopy"
                                                         ng-checked="vm.fileRecord.slowReviewCopy==9" ng-true-value="9" ng-false-value="0"></td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
-                                                        ng-click="vm.fileRecord.slowReviewCount = initInputValue($event,vm.fileRecord.slowReviewCount)"
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"  name="slowReviewScan"
+                                                        ng-click="vm.fileRecord.slowReviewCount = vm.initInputValue($event,vm.fileRecord.slowReviewCount,'slowReviewScan')"
                                                         ng-model="vm.fileRecord.slowReviewScan"
                                                         ng-checked="vm.fileRecord.slowReviewScan==9" ng-true-value="9" ng-false-value="0"></td>
                 </tr>
                 <tr>
                     <td style="border-top:none;text-align:right;">项目单位申报表</td>
                     <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
-                                                        ng-model="vm.fileRecord.sugproCompanyFormOriginal"
-                                                        ng-checked="vm.fileRecord.sugproCompanyFormOriginal==9" ng-true-value="9" ng-false-value="0"></td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
+                                                        ng-model="vm.fileRecord.sugproCompanyFormOriginal"  name="sugproCompanyFormOriginal"
+                                                        ng-checked="vm.fileRecord.sugproCompanyFormOriginal==9" ng-true-value="9" ng-false-value="0" ng-click="vm.resetCancelBox('sugproCompanyFormOriginal')"></td>
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"  name="sugproCompanyFormCopy"
                                                         ng-model="vm.fileRecord.sugproCompanyFormCopy" ng-true-value="9"
-                                                        ng-checked="vm.fileRecord.sugproCompanyFormCopy==9" ng-false-value="0"></td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
+                                                        ng-checked="vm.fileRecord.sugproCompanyFormCopy==9" ng-false-value="0" ng-click="vm.resetCancelBox('sugproCompanyFormCopy')"></td>
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"  name="sugproCompanyFormScan"
                                                         ng-model="vm.fileRecord.sugproCompanyFormScan" ng-true-value="9"
-                                                        ng-checked="vm.fileRecord.sugproCompanyFormScan==9" ng-false-value="0"></td>
+                                                        ng-checked="vm.fileRecord.sugproCompanyFormScan==9" ng-false-value="0" ng-click="vm.resetCancelBox('sugproCompanyFormScan')"></td>
                     <td style="border-top:none;text-align:right;">补充资料清单</td>
                     <td style="border-top:none;">
                         <input type="text" style="width:50px;" class="form-control input-sm "
@@ -201,31 +201,31 @@
                         <span data-valmsg-for="supplyFileListCount"
                               data-valmsg-replace="true" class="errors"></span>
                     </td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
-                                                        ng-click="vm.fileRecord.supplyFileListCount = initInputValue($event,vm.fileRecord.supplyFileListCount)"
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox" name="supplyFileListOriginal"
+                                                        ng-click="vm.fileRecord.supplyFileListCount = vm.initInputValue($event,vm.fileRecord.supplyFileListCount,'supplyFileListOriginal')"
                                                         ng-model="vm.fileRecord.supplyFileListOriginal"
                                                         ng-checked="vm.fileRecord.supplyFileListOriginal==9" ng-true-value="9" ng-false-value="0"></td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
-                                                        ng-click="vm.fileRecord.supplyFileListCount = initInputValue($event,vm.fileRecord.supplyFileListCount)"
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox" name="supplyFileListCopy"
+                                                        ng-click="vm.fileRecord.supplyFileListCount = vm.initInputValue($event,vm.fileRecord.supplyFileListCount,'supplyFileListCopy')"
                                                         ng-model="vm.fileRecord.supplyFileListCopy"
                                                         ng-checked="vm.fileRecord.supplyFileListCopy==9" ng-true-value="9" ng-false-value="0"></td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
-                                                        ng-click="vm.fileRecord.supplyFileListCount = initInputValue($event,vm.fileRecord.supplyFileListCount)"
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"  name="supplyFileListScan"
+                                                        ng-click="vm.fileRecord.supplyFileListCount = vm.initInputValue($event,vm.fileRecord.supplyFileListCount,'supplyFileListScan')"
                                                         ng-model="vm.fileRecord.supplyFileListScan"
                                                         ng-checked="vm.fileRecord.supplyFileListScan==9" ng-true-value="9" ng-false-value="0"></td>
                 </tr>
                 <tr>
                     <td style="border-top:none;text-align:right;">项目单位申报函</td>
                     <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
-                                                        ng-model="vm.fileRecord.sugproComletterOriginal"
-                                                        ng-checked="vm.fileRecord.sugproComletterOriginal==9" ng-true-value="9" ng-false-value="0"></td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
+                                                        ng-model="vm.fileRecord.sugproComletterOriginal" name="sugproComletterOriginal"
+                                                        ng-checked="vm.fileRecord.sugproComletterOriginal==9" ng-true-value="9" ng-false-value="0" ng-click="vm.resetCancelBox('sugproComletterOriginal')"></td>
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"  name="sugproComletterCopy"
                                                         ng-model="vm.fileRecord.sugproComletterCopy"
-                                                        ng-checked="vm.fileRecord.sugproComletterCopy==9" name="sugproComletterCopy" ng-true-value="9" ng-false-value="0">
+                                                        ng-checked="vm.fileRecord.sugproComletterCopy==9"  ng-true-value="9" ng-false-value="0" ng-click="vm.resetCancelBox('sugproComletterCopy')">
                     </td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox" name="sugproComletterScan"
                                                         ng-model="vm.fileRecord.sugproComletterScan"
-                                                        ng-checked="vm.fileRecord.sugproComletterScan==9" name="sugproComletterScan" ng-true-value="9" ng-false-value="0">
+                                                        ng-checked="vm.fileRecord.sugproComletterScan==9" ng-true-value="9" ng-false-value="0" ng-click="vm.resetCancelBox('sugproComletterScan')">
                     </td>
                     <td style="border-top:none;text-align:right;">电子光盘份数</td>
                     <td style="border-top:none;">
@@ -260,11 +260,11 @@
                 <tr>
                     <td style="border-top:none;text-align:right;">项目建议书批复</td>
                     <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
-                                                        ng-model="vm.fileRecord.procsugFileOriginal" ng-true-value="9"
-                                                        ng-checked="vm.fileRecord.procsugFileOriginal==9" ng-false-value="0"></td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
+                                                       name="procsugFileOriginal" ng-model="vm.fileRecord.procsugFileOriginal" ng-true-value="9"
+                                                        ng-checked="vm.fileRecord.procsugFileOriginal==9" ng-false-value="0" ng-click="vm.resetCancelBox('procsugFileOriginal')"></td>
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox" name="procsugFileEl"
                                                         ng-model="vm.fileRecord.procsugFileEl" ng-true-value="9"
-                                                        ng-checked="vm.fileRecord.procsugFileEl==9" ng-false-value="0"></td>
+                                                        ng-checked="vm.fileRecord.procsugFileEl==9" ng-false-value="0" ng-click="vm.resetCancelBox('procsugFileEl')"></td>
                     <td style="border-top:none;"></td>
                     <td style="border-top:none;text-align:right;">可研报告</td>
                     <td style="border-top:none;">
@@ -273,24 +273,24 @@
                                name="feasibilityReportCount" id="feasibilityReportCount">
                         <span data-valmsg-for="feasibilityReportCount" data-valmsg-replace="true" class="errors"></span>
                     </td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox" name="feasibilityReportOriginal"
                                                         ng-model="vm.fileRecord.feasibilityReportOriginal"
-                                                        ng-click="vm.fileRecord.feasibilityReportCount = initInputValue($event,vm.fileRecord.feasibilityReportCount)"
+                                                        ng-click="vm.fileRecord.feasibilityReportCount = vm.initInputValue($event,vm.fileRecord.feasibilityReportCount,'feasibilityReportOriginal')"
                                                         ng-checked="vm.fileRecord.feasibilityReportOriginal==9" ng-true-value="9" ng-false-value="0"></td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"  name="feasibilityReportCopy"
                                                         ng-model="vm.fileRecord.feasibilityReportCopy"
-                                                        ng-click="vm.fileRecord.feasibilityReportCount = initInputValue($event,vm.fileRecord.feasibilityReportCount)"
+                                                        ng-click="vm.fileRecord.feasibilityReportCount = vm.initInputValue($event,vm.fileRecord.feasibilityReportCount,'feasibilityReportCopy')"
                                                         ng-checked="vm.fileRecord.feasibilityReportCopy==9" ng-true-value="9" ng-false-value="0"></td>
                     <td style="border-top:none;"></td>
                 </tr>
                 <tr>
                     <td style="border-top:none;text-align:right;">相关会议要纪</td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"  name="meetingSummaryOriginal"
                                                         ng-model="vm.fileRecord.meetingSummaryOriginal"
-                                                        ng-checked="vm.fileRecord.meetingSummaryOriginal==9" ng-true-value="9" ng-false-value="0"></td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
+                                                        ng-checked="vm.fileRecord.meetingSummaryOriginal==9" ng-true-value="9" ng-false-value="0" ng-click="vm.resetCancelBox('meetingSummaryOriginal')"></td>
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox" name="meetingSummaryScan"
                                                         ng-model="vm.fileRecord.meetingSummaryScan" ng-true-value="9"
-                                                        ng-checked="vm.fileRecord.meetingSummaryScan==9" ng-false-value="0"></td>
+                                                        ng-checked="vm.fileRecord.meetingSummaryScan==9" ng-false-value="0" ng-click="vm.resetCancelBox('meetingSummaryScan')"></td>
                     <td style="border-top:none;"></td>
                     <td style="border-top:none;text-align:right;">节能报告</td>
                     <td style="border-top:none;">
@@ -299,25 +299,25 @@
                                id="energyCount">
                         <span data-valmsg-for="energyCount" data-valmsg-replace="true" class="errors"></span>
                     </td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox" name="energyOriginal"
                                                         ng-model="vm.fileRecord.energyOriginal"
-                                                        ng-click="vm.fileRecord.energyCount = initInputValue($event,vm.fileRecord.energyCount)"
+                                                        ng-click="vm.fileRecord.energyCount = vm.initInputValue($event,vm.fileRecord.energyCount,'energyOriginal')"
                                                         ng-checked="vm.fileRecord.energyOriginal==9" ng-true-value="9" ng-false-value="0"></td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox" name="energyCopy"
                                                         ng-model="vm.fileRecord.energyCopy"
-                                                        ng-click="vm.fileRecord.energyCount = initInputValue($event,vm.fileRecord.energyCount)"
+                                                        ng-click="vm.fileRecord.energyCount = vm.initInputValue($event,vm.fileRecord.energyCount,'energyCopy')"
                                                         ng-checked="vm.fileRecord.energyCopy==9" ng-true-value="9" ng-false-value="0"></td>
                     <td style="border-top:none;"></td>
 
                 </tr>
                 <tr>
                     <td style="border-top:none;text-align:right;">环评批复文件</td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"  name="environmentalCopy"
                                                         ng-model="vm.fileRecord.environmentalCopy" ng-true-value="9"
-                                                        ng-checked="vm.fileRecord.environmentalCopy==9" ng-false-value="0"></td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
+                                                        ng-checked="vm.fileRecord.environmentalCopy==9" ng-false-value="0" ng-click="vm.resetCancelBox('environmentalCopy')"></td>
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox" name="environmentalRmb"
                                                         ng-model="vm.fileRecord.environmentalRmb" ng-true-value="9"
-                                                        ng-checked="vm.fileRecord.environmentalRmb==9" ng-false-value="0"></td>
+                                                        ng-checked="vm.fileRecord.environmentalRmb==9" ng-false-value="0" ng-click="vm.resetCancelBox('environmentalRmb')"></td>
                     <td style="border-top:none;"></td>
                     <td style="border-top:none;text-align:right;">补充资料</td>
                     <td style="border-top:none;">
@@ -326,25 +326,25 @@
                                id="supplyFileCount">
                         <span data-valmsg-for="supplyFileCount" data-valmsg-replace="true" class="errors"></span>
                     </td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox" name="supplyFileOriginal"
                                                         ng-model="vm.fileRecord.supplyFileOriginal"
-                                                        ng-click="vm.fileRecord.supplyFileCount = initInputValue($event,vm.fileRecord.supplyFileCount)"
+                                                        ng-click="vm.fileRecord.supplyFileCount = vm.initInputValue($event,vm.fileRecord.supplyFileCount,'supplyFileOriginal')"
                                                         ng-checked="vm.fileRecord.supplyFileOriginal==9" ng-true-value="9" ng-false-value="0"></td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox" name="supplyFileEl"
                                                         ng-model="vm.fileRecord.supplyFileEl"
-                                                        ng-click="vm.fileRecord.supplyFileCount = initInputValue($event,vm.fileRecord.supplyFileCount)"
+                                                        ng-click="vm.fileRecord.supplyFileCount = vm.initInputValue($event,vm.fileRecord.supplyFileCount,'supplyFileEl')"
                                                         ng-checked="vm.fileRecord.supplyFileEl==9" ng-true-value="9" ng-false-value="0"></td>
                     <td style="border-top:none;"></td>
 
                 </tr>
                 <tr>
                     <td style="border-top:none;text-align:right;">规划选址批文</td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox" name="planningCopy"
                                                         ng-model="vm.fileRecord.planningCopy" ng-true-value="9"
-                                                        ng-checked="vm.fileRecord.expertCopy==9" ng-false-value="0"></td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
+                                                        ng-checked="vm.fileRecord.planningCopy==9" ng-false-value="0" ng-click="vm.resetCancelBox('planningCopy')"></td>
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox" name="PlanningRmb"
                                                         ng-model="vm.fileRecord.PlanningRmb" ng-true-value="9"
-                                                        ng-checked="vm.fileRecord.expertCopy==9" ng-false-value="0"></td>
+                                                        ng-checked="vm.fileRecord.PlanningRmb==9" ng-false-value="0" ng-click="vm.resetCancelBox('PlanningRmb')"></td>
                     <td style="border-top:none;"></td>
                     <td style="border-top:none;"></td>
                     <td style="border-top:none;"></td>
@@ -355,7 +355,7 @@
                 <tr>
                     <td style="border-top:none;text-align:right;">其他重要资料（备注）</td>
                     <td style="border-top:none;">
-                   <input type="checkbox" class="newcheckbox" ng-model="vm.fileRecord.otherImportFileCopy" ng-checked="vm.fileRecord.otherImportFileCopy==9" ng-true-value="9" ng-false-value="0">
+                   <input type="checkbox" class="newcheckbox" name="otherImportFileCopy" ng-model="vm.fileRecord.otherImportFileCopy" ng-checked="vm.fileRecord.otherImportFileCopy==9" ng-true-value="9" ng-false-value="0" ng-click="vm.resetCancelBox('otherImportFileCopy')">
                         <!--<button ng-click="vm.addOtherFile(vm.fileRecord.fileRecordId , 'XMJYS_DECLARE_FILE')" class="btn btn-sm btn-primary">添加</button>-->
                     </td>
                     <td style="border-top:none;"></td>
@@ -394,16 +394,16 @@
                         <span data-valmsg-for="planCount"
                               data-valmsg-replace="true" class="errors"></span>
                     </td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
-                                                        ng-click="vm.fileRecord.planCount = initInputValue($event,vm.fileRecord.planCount)"
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox" name="planOriginal"
+                                                        ng-click="vm.fileRecord.planCount = vm.initInputValue($event,vm.fileRecord.planCount,'planOriginal')"
                                                         ng-model="vm.fileRecord.planOriginal"
                                                         ng-checked="vm.fileRecord.planOriginal==9" ng-true-value="9" ng-false-value="0"></td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
-                                                        ng-click="vm.fileRecord.planCount = initInputValue($event,vm.fileRecord.planCount)"
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox" name="planCopy"
+                                                        ng-click="vm.fileRecord.planCount = vm.initInputValue($event,vm.fileRecord.planCount,'planCopy')"
                                                         ng-model="vm.fileRecord.planCopy" ng-true-value="9"
                                                         ng-checked="vm.fileRecord.planCopy==9" ng-false-value="0"></td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
-                                                        ng-click="vm.fileRecord.planCount = initInputValue($event,vm.fileRecord.planCount)"
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox" name="planScan"
+                                                        ng-click="vm.fileRecord.planCount = vm.initInputValue($event,vm.fileRecord.planCount,'planScan')"
                                                         ng-model="vm.fileRecord.planScan" ng-true-value="9"
                                                         ng-checked="vm.fileRecord.planScan==9" ng-false-value="0"></td>
                     <td style="border-top:none;text-align:right;">会议签到表</td>
@@ -415,16 +415,16 @@
                         <span data-valmsg-for="meetingSignCount"
                               data-valmsg-replace="true" class="errors"></span>
                     </td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
-                                                        ng-click="vm.fileRecord.meetingSignCount = initInputValue($event,vm.fileRecord.meetingSignCount)"
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox" name="meetingSignOriginal"
+                                                        ng-click="vm.fileRecord.meetingSignCount = vm.initInputValue($event,vm.fileRecord.meetingSignCount,'meetingSignOriginal')"
                                                         ng-model="vm.fileRecord.meetingSignOriginal"
                                                         ng-checked="vm.fileRecord.meetingSignOriginal==9" ng-true-value="9" ng-false-value="0"></td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
-                                                        ng-click="vm.fileRecord.meetingSignCount = initInputValue($event,vm.fileRecord.meetingSignCount)"
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox" name="meetingSignCopy"
+                                                        ng-click="vm.fileRecord.meetingSignCount = vm.initInputValue($event,vm.fileRecord.meetingSignCount,'meetingSignCopy')"
                                                         ng-model="vm.fileRecord.meetingSignCopy"
                                                         ng-checked="vm.fileRecord.meetingSignCopy==9" ng-true-value="9" ng-false-value="0"></td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
-                                                        ng-click="vm.fileRecord.meetingSignCount = initInputValue($event,vm.fileRecord.meetingSignCount)"
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox" name="meetingScan"
+                                                        ng-click="vm.fileRecord.meetingSignCount = vm.initInputValue($event,vm.fileRecord.meetingSignCount,'meetingScan')"
                                                         ng-model="vm.fileRecord.meetingScan"
                                                         ng-checked="vm.fileRecord.meetingScan==9" ng-true-value="9" ng-false-value="0"></td>
 
@@ -438,16 +438,16 @@
                         <span data-valmsg-for="expertCount"
                               data-valmsg-replace="true" class="errors"></span>
                     </td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
-                                                        ng-click="vm.fileRecord.expertCount = initInputValue($event,vm.fileRecord.expertCount)"
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox" name="expertOriginal"
+                                                        ng-click="vm.fileRecord.expertCount = vm.initInputValue($event,vm.fileRecord.expertCount,'expertOriginal')"
                                                         ng-model="vm.fileRecord.expertOriginal"
                                                         ng-checked="vm.fileRecord.expertOriginal==9" ng-true-value="9" ng-false-value="0"></td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
-                                                        ng-click="vm.fileRecord.expertCount = initInputValue($event,vm.fileRecord.expertCount)"
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox" name="expertCopy"
+                                                        ng-click="vm.fileRecord.expertCount = vm.initInputValue($event,vm.fileRecord.expertCount,'expertCopy')"
                                                         ng-model="vm.fileRecord.expertCopy"
                                                         ng-checked="vm.fileRecord.expertCopy==9" ng-true-value="9" ng-false-value="0"></td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
-                                                        ng-click="vm.fileRecord.expertCount = initInputValue($event,vm.fileRecord.expertCount)"
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox" name="expertScan"
+                                                        ng-click="vm.fileRecord.expertCount = vm.initInputValue($event,vm.fileRecord.expertCount,'expertScan')"
                                                         ng-model="vm.fileRecord.expertScan"
                                                         ng-checked="vm.fileRecord.expertScan==9" ng-true-value="9" ng-false-value="0"></td>
                     <td style="border-top:none;text-align:right;">评审费发放表</td>
@@ -459,16 +459,16 @@
                         <span data-valmsg-for="stageCostCount"
                               data-valmsg-replace="true" class="errors"></span>
                     </td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
-                                                        ng-click="vm.fileRecord.stageCostCount = initInputValue($event,vm.fileRecord.stageCostCount)"
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox" name="stageCostOriginal"
+                                                        ng-click="vm.fileRecord.stageCostCount = vm.initInputValue($event,vm.fileRecord.stageCostCount,'stageCostOriginal')"
                                                         ng-model="vm.fileRecord.stageCostOriginal"
                                                         ng-checked="vm.fileRecord.stageCostOriginal==9" ng-true-value="9" ng-false-value="0"></td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
-                                                        ng-click="vm.fileRecord.stageCostCount = initInputValue($event,vm.fileRecord.stageCostCount)"
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox" name="stageCostCopy"
+                                                        ng-click="vm.fileRecord.stageCostCount = vm.initInputValue($event,vm.fileRecord.stageCostCount,'stageCostCopy')"
                                                         ng-model="vm.fileRecord.stageCostCopy"
                                                         ng-checked="vm.fileRecord.stageCostCopy==9" ng-true-value="9" ng-false-value="0"></td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
-                                                        ng-click="vm.fileRecord.stageCostCount = initInputValue($event,vm.fileRecord.stageCostCount)"
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox" name="stageCostScan"
+                                                        ng-click="vm.fileRecord.stageCostCount = vm.initInputValue($event,vm.fileRecord.stageCostCount,'stageCostScan')"
                                                         ng-model="vm.fileRecord.stageCostScan"
                                                         ng-checked="vm.fileRecord.stageCostScan==9" ng-true-value="9" ng-false-value="0"></td>
                 </tr>
@@ -482,16 +482,16 @@
                         <span data-valmsg-for="expertAmanCount"
                               data-valmsg-replace="true" class="errors"></span>
                     </td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
-                                                        ng-click="vm.fileRecord.expertAmanCount = initInputValue($event,vm.fileRecord.expertAmanCount)"
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox" name="expertAmanOriginal"
+                                                        ng-click="vm.fileRecord.expertAmanCount = vm.initInputValue($event,vm.fileRecord.expertAmanCount,'expertAmanOriginal')"
                                                         ng-model="vm.fileRecord.expertAmanOriginal"
                                                         ng-checked="vm.fileRecord.expertAmanOriginal==9" ng-true-value="9" ng-false-value="0"></td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
-                                                        ng-click="vm.fileRecord.expertAmanCount = initInputValue($event,vm.fileRecord.expertAmanCount)"
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox" name="expertAmanCopy"
+                                                        ng-click="vm.fileRecord.expertAmanCount = vm.initInputValue($event,vm.fileRecord.expertAmanCount,'expertAmanCopy')"
                                                         ng-model="vm.fileRecord.expertAmanCopy"
                                                         ng-checked="vm.fileRecord.expertAmanCopy==9" ng-true-value="9" ng-false-value="0"></td>
-                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox"
-                                                        ng-click="vm.fileRecord.expertAmanCount = initInputValue($event,vm.fileRecord.expertAmanCount)"
+                    <td style="border-top:none;"><input type="checkbox" class="newcheckbox" name="expertAmanScan"
+                                                        ng-click="vm.fileRecord.expertAmanCount = vm.initInputValue($event,vm.fileRecord.expertAmanCount,'expertAmanScan')"
                                                         ng-model="vm.fileRecord.expertAmanScan"
                                                         ng-checked="vm.fileRecord.expertAmanScan==9" ng-true-value="9" ng-false-value="0"></td>
                     <td style="border-top:none;"></td>

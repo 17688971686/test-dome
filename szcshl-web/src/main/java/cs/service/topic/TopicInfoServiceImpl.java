@@ -27,8 +27,10 @@ import cs.repository.repositoryImpl.topic.*;
 import cs.service.flow.FlowService;
 import cs.service.rtx.RTXSendMsgPool;
 import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +81,9 @@ public class TopicInfoServiceImpl implements TopicInfoService {
     private ContractRepo contractRepo;
     @Autowired
     private TopicMaintainRepo topicMaintainRepo;
+
+    @Autowired
+    private RepositoryService repositoryService;
 
     @Override
     public PageModelDto<TopicInfoDto> get(ODataObj odataObj) {
@@ -214,8 +219,9 @@ public class TopicInfoServiceImpl implements TopicInfoService {
             RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), Validate.isString(directorUser.getTakeUserId()) ? directorUser.getTakeUserId() : directorUser.getId());
         }
         ResultMsg resultMsg = save(record);
+        ProcessDefinitionEntity processDefinitionEntity = (ProcessDefinitionEntity) repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());
         if(resultMsg.isFlag()){
-            return new ResultMsg(true, Constant.MsgCode.OK.getValue(),task.getId(),"操作成功！",processInstance.getName());
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(),task.getId(),"操作成功！",processDefinitionEntity.getName());
         }else{
               return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败！");
         }

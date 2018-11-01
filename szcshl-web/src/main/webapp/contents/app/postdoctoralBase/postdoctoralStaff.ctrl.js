@@ -68,7 +68,7 @@
             if (isValid) {
                 postdoctoralStaffSvc.createPostdoctoralStaff(vm, function (data) {
                     if (data.flag || data.reCode == 'ok') {
-                        vm.id = data.reObj;
+                        vm.postdoctoralStaff = data.reObj;
                         vm.isShowUpdate = true;
                         bsWin.alert("保存成功！");
                     }

@@ -745,6 +745,8 @@
                     processInstanceId:vm.processInstanceId
                 });
             } else {
+                $("#outExpertDiv").remove();
+                $("#selfExpertDiv").remove();
                 $state.go('flowWPEdit', {
                     signid: vm.businessId,
                     taskid: vm.taskId
