@@ -938,7 +938,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             RandomGUID myGUID = new RandomGUID();
             WorkProgram newWP = initWP(sign,false);
             newWP.setSign(sign);
-            newWP.setId(myGUID.valueAfterMD5);
+            newWP.setId(myGUID.toString());
             newWP.setCreatedBy(SessionUtil.getUserId());
             newWP.setModifiedBy(SessionUtil.getLoginName());
             newWP.setBaseInfo(null);
