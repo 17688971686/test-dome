@@ -670,6 +670,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void resetPwd(String ids) {
         List<User> userList = userRepo.getCacheUserListById(ids);
         for (User u : userList) {
