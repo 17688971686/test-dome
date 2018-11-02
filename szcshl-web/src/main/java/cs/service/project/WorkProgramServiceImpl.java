@@ -884,6 +884,10 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         boolean isNew = true;
         WorkProgram mainWP = null;
         List<WorkProgram> reWorkList = new ArrayList<>();
+        //原先的工作方案列表
+        List<WorkProgram> workProgramList = ProjUtil.filterEnableWP(sign.getWorkProgramList());
+        mainWP = ProjUtil.filterMainWP(workProgramList);
+
         //如果是重做工作方案
         if("1".equals(reworkType)){
             List<String> brandIdList = StringUtil.getSplit(brandIds, SysConstants.SEPARATE_COMMA);
@@ -891,9 +895,6 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             if(startCount == 0){
                 return ResultMsg.error("请选择要重做的工作方案！");
             }
-            //工作方案留痕
-            List<WorkProgram> workProgramList = ProjUtil.filterEnableWP(sign.getWorkProgramList());
-            mainWP = ProjUtil.filterMainWP(workProgramList);
             if(Validate.isList(workProgramList)){
                 //检验选择的工作方案是否已经发起流程，并且未完成
                 ResultMsg checkResult = checkWorkFlow(brandIdList,workProgramList);
