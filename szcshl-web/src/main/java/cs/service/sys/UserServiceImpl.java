@@ -31,6 +31,7 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -654,6 +655,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> findAllPostUser() {
         return userRepo.findAllPostUser();
+    }
+
+    @Override
+    public List<User> findAllPostUserByCriteria() {
+        Criteria criteria = userRepo.getExecutableCriteria();
+        criteria.add(Restrictions.eq(User_.jobState.getName(), "t"));
+        return criteria.list();
     }
 
     @Override

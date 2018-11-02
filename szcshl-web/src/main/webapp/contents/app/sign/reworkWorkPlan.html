@@ -3,26 +3,60 @@
 <div class="well well-sm" style="background:white;display: none;" id="reworkWorkPlanWindow" >
 	<table class="table table-bordered" id="rework">
 		<tr>
-			<td colspan="4">
-				项目工作方案分支
-				<button class="btn btn-xs btn-success" ng-click="vm.reWorkFlow()" >
-					<span class="glyphicon glyphicon-ok"></span>确定
-				</button>
+			<td style="width: 120px">
+				新增方式
+			</td>
+			<td colspan="3">
+				<label class="radio-inline">
+					<input name="reworkType" type="radio" value="1" ng-model="vm.reworkType" ng-checked="vm.reworkType == '1'">
+					重做工作方案
+				</label>
+				<label class="radio-inline">
+					<input name="reworkType" type="radio" value="0" ng-model="vm.reworkType" ng-checked="vm.reworkType == '0'">
+					新增
+				</label>
 			</td>
 		</tr>
-		<tr >
+		<tr class="active" ng-show="vm.reworkType == '1'">
+			<td colspan="4">
+				项目工作方案分支
+			</td>
+		</tr>
+		<tr ng-show="vm.reworkType == '1'">
 			<td class="text-center"  >选择</td>
 			<td class="text-center"  >分支</td>
 			<td class="text-center"  >办理部门</td>
 			<td class="text-center"  >负责人</td>
 		</tr>
-		<tr ng-repeat="b in vm.signBranchData | orderBy:'BID'">
+		<tr ng-show="vm.reworkType == '1'" ng-repeat="b in vm.signBranchData | orderBy:'BID'">
 			<td align="center" style="width: 80px;">
 				<input type="checkbox" name="checBrands" value="{{b.BID}}"/>
 			</td>
 			<td class="text-center" style="width: 80px;">{{ b.BID}}</td>
 			<td class="text-center">{{ b.NAME}}</td>
 			<td class="text-center">{{ b.USERNAMES }}</td>
+		</tr>
+		<tr class="active" ng-show="vm.reworkType == '0'">
+			<td colspan="4">
+				增加工作方案
+			</td>
+		</tr>
+		<tr ng-show="vm.reworkType == '0'">
+			<td style="vertical-align: middle;">
+				选择负责人
+			</td>
+			<td colspan="3">
+				<select ng-model="vm.reworkUserId" style="width:150px;margin:8px 5px;">
+					<option ng-repeat="u in vm.reworkUserList | filter: {useState: '!停用'}" value="{{u.id}}">{{u.displayName}}</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="4" class="text-center">
+				<button class="btn btn-success" ng-click="vm.reWorkFlow()" >
+					<span class="glyphicon glyphicon-ok"></span>确定
+				</button>
+			</td>
 		</tr>
 	</table>
 </div>

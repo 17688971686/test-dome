@@ -23,6 +23,9 @@
             <span class="help-inline" style="margin-left:10px;">环节名称：</span>
             <input ng-model="vm.model.nodeNameValue" type="text" operator="like" name="nodeNameValue" placeholder="请输入">
 
+            <span class="help-inline" style="margin-left:10px;">发文字号：</span>
+            <input ng-model="vm.model.dfilenum" type="text" operator="like" name="dfilenum" placeholder="请输入">
+
             <button class="btn btn-sm btn-primary" ng-click="vm.querySign()"><span class="glyphicon glyphicon-search"></span>查询</button>
             <button class="btn btn-sm btn-primary" ng-click="vm.resetForm()"><span class="glyphicon glyphicon-repeat"></span>重置</button>
         </form>

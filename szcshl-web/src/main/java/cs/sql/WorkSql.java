@@ -79,14 +79,14 @@ public class WorkSql {
     public static HqlBuilder updateWPHisProjName(String signId, String newName) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append(" UPDATE CS_HIS_WORK_PROGRAM SET PROJECTNAME = :newName where SIGNID =:signId ");
-        sqlBuilder.setParam("newName", ProjUtil.getReFlowName(newName)).setParam("signId",signId);
+        sqlBuilder.setParam("newName", ProjUtil.getReFlowName(newName,null)).setParam("signId",signId);
         return sqlBuilder;
     }
 
     public static HqlBuilder updateRunFlowName(String signId, String newName) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append(" update ACT_RU_EXECUTION set NAME_ =:newName where PROC_INST_ID_ in ");
-        sqlBuilder.setParam("newName",ProjUtil.getReFlowName(newName));
+        sqlBuilder.setParam("newName",ProjUtil.getReFlowName(newName,null));
         sqlBuilder.append(" (select PROCESSINSTANCEID from CS_WORK_PROGRAM where SIGNID = :signId) ");
         sqlBuilder.setParam("signId",signId);
         return sqlBuilder;

@@ -168,8 +168,12 @@ public class ProjUtil {
         wp.setSecondChargeUserName(mainWP.getSecondChargeUserName());
     }
 
-    public static String getReFlowName(String projName) {
-        return "[" + projName + "]重做工作方案";
+    public static String getReFlowName(String projName,String reworkType) {
+        String type = "重做";
+        if(Constant.EnumState.NO.getValue().equals(reworkType)){
+            type = "新增";
+        }
+        return "[" + projName + "]"+type+"工作方案";
     }
 
     /**

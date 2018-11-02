@@ -223,6 +223,7 @@ public class RandomGUID extends Object {
             System.out.println("Seeding String=" + myGUID.valueBeforeMD5);
             System.out.println("rawGUID=" + myGUID.valueAfterMD5);
             System.out.println("RandomGUID=" + myGUID.toString());
+            System.out.println("RandomGUIDStr=" + myGUID.toString().substring(0,2));
         }
     }
 }
