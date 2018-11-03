@@ -565,7 +565,9 @@ public class Constant {
         POLICYLIBRARY("政策标准库"),
         SUBJECT_STUDY("课题研究"),
         TEMOLATE("评审报告"),
-        FGW_FILE("委附件");
+        FGW_FILE("委附件"),
+        DOCTOR_KTYJDG("课题研究大纲"),
+        DOCTOR_KTWWHT("课题外委合同");
 
         private String value;
 
