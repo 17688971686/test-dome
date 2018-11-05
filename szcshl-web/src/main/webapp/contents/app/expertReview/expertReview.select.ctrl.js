@@ -25,7 +25,9 @@
         vm.isSuperUser = isSuperUser;
         vm.saveNewExpertFlag = 0;                       //保存新专家标志
         vm.reviewType = $state.params.reviewType;       //评审方式
-        vm.showLastDraf = true;                         //显示上次抽取的专家
+        vm.showLastDraf = true;
+        vm.sorces = [0 ,1 , 2 , 3, 4 , 5];
+        //显示上次抽取的专家
         //S 查看专家详细
         vm.findExportDetail = function (id) {
             expertSvc.getExpertById(id, function (data) {
@@ -143,6 +145,17 @@
             vm.selectIds = [];
             expertReviewSvc.initReview(businessId, minBusinessId, function (data) {
                 vm.expertReview = data;
+                //将综合分数转换为string类型，以防遍历时默认选中出问题
+                if(vm.expertReview.expertSelConditionDtoList) {
+                    $.each(vm.expertReview.expertSelConditionDtoList , function(i , obj){
+                        if(obj.compositeScore){
+                            vm.expertReview.expertSelConditionDtoList[i].compositeScore = obj.compositeScore.toString();
+                        }
+                        if(obj.compositeScoreEnd){
+                            vm.expertReview.expertSelConditionDtoList[i].compositeScoreEnd = obj.compositeScoreEnd.toString();
+                        }
+                    })
+                }
                 //获取已经抽取的专家
                 if (!angular.isUndefined(vm.expertReview.expertSelectedDtoList) && angular.isArray(vm.expertReview.expertSelectedDtoList)) {
                     vm.autoSelectedEPList = [];
@@ -540,6 +553,19 @@
                     expertConditionSvc.saveCondition(vm.businessId, vm.minBusinessId, vm.businessType, vm.expertReview.id, vm.expertReview.expertSelConditionDtoList, function (data) {
                         if (data.flag || data.reCode == 'ok') {
                             vm.expertReview.expertSelConditionDtoList = data.reObj;
+
+                            //将综合分数转换为string类型，以防遍历时默认选中出问题
+                            if(vm.expertReview.expertSelConditionDtoList) {
+                                $.each(vm.expertReview.expertSelConditionDtoList , function(i , obj){
+                                    if(obj.compositeScore){
+                                        vm.expertReview.expertSelConditionDtoList[i].compositeScore = obj.compositeScore.toString();
+                                    }
+                                    if(obj.compositeScoreEnd){
+                                        vm.expertReview.expertSelConditionDtoList[i].compositeScoreEnd = obj.compositeScoreEnd.toString();
+                                    }
+                                })
+                            }
+
                             if (!vm.expertReview.id) {
                                 vm.expertReview.id = vm.expertReview.expertSelConditionDtoList[0].expertReviewId;
                             }

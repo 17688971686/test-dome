@@ -81,15 +81,7 @@
                                 <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                 <w:sz w:val="24"/>
                             </w:rPr>
-                            <w:t>QR-4.3-10-A</w:t>
-                        </w:r>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                <w:sz w:val="24"/>
-                                <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                            </w:rPr>
-                            <w:t>1</w:t>
+                            <w:t>QR-4.3-10-A1</w:t>
                         </w:r>
                     </w:p>
                     <w:p>
@@ -108,30 +100,8 @@
                                 <w:sz w:val="44"/>
                                 <w:szCs w:val="44"/>
                             </w:rPr>
-                            <w:t>深圳市政府投资项目评审中心</w:t>
+                            <w:t>深圳市政府投资项目评审中心项目发文审批表</w:t>
                         </w:r>
-                    </w:p>
-                    <w:p>
-                        <w:pPr>
-                            <w:spacing w:before="120" w:beforeLines="50" w:after="120" w:afterLines="50"/>
-                            <w:jc w:val="center"/>
-                            <w:outlineLvl w:val="1"/>
-                            <w:rPr>
-                                <w:rFonts w:hint="eastAsia" w:ascii="黑体" w:eastAsia="黑体"/>
-                                <w:sz w:val="44"/>
-                                <w:szCs w:val="44"/>
-                            </w:rPr>
-                        </w:pPr>
-                        <w:bookmarkStart w:id="0" w:name="_Toc199925868"/>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:hint="eastAsia" w:ascii="黑体" w:eastAsia="黑体"/>
-                                <w:sz w:val="44"/>
-                                <w:szCs w:val="44"/>
-                            </w:rPr>
-                            <w:t>项目发文审批表</w:t>
-                        </w:r>
-                        <w:bookmarkEnd w:id="0"/>
                     </w:p>
                     <w:p>
                         <w:pPr>
@@ -146,24 +116,92 @@
                                 <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                 <w:sz w:val="24"/>
                             </w:rPr>
-                            <w:t>发文方式：</w:t>
+                            <w:t>发文方式：<#if dispatchWay?? && dispatchWay == "1">单个发文<#else>合并发文</#if></w:t>
                         </w:r>
                         <w:r>
                             <w:rPr>
                                 <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                 <w:sz w:val="24"/>
-                                <w:lang w:eastAsia="zh-CN"/>
                             </w:rPr>
-                            <w:t><#if dispatchWay?? && dispatchWay == "1">单个发文<#else>合并发文</#if></w:t>
+                            <w:tab/>
                         </w:r>
                         <w:r>
                             <w:rPr>
                                 <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                 <w:sz w:val="24"/>
-                                <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                             </w:rPr>
-                            <w:t xml:space="preserve">  <#if dispatchWay =="2" && isMainProject == "9">主项目</#if>
+                            <w:t><#if dispatchWay =="2" && isMainProject == "9">主项目</#if>
                             <#if dispatchWay =="2" && isMainProject == "0">次项目</#if></w:t>
+                        </w:r>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                <w:sz w:val="24"/>
+                            </w:rPr>
+                            <w:tab/>
+                        </w:r>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                <w:sz w:val="24"/>
+                            </w:rPr>
+                            <w:tab/>
+                        </w:r>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                <w:sz w:val="24"/>
+                            </w:rPr>
+                            <w:tab/>
+                        </w:r>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                <w:sz w:val="24"/>
+                            </w:rPr>
+                            <w:tab/>
+                        </w:r>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                <w:sz w:val="24"/>
+                            </w:rPr>
+                            <w:tab/>
+                        </w:r>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                <w:sz w:val="24"/>
+                            </w:rPr>
+                            <w:tab/>
+                        </w:r>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                <w:sz w:val="24"/>
+                            </w:rPr>
+                            <w:tab/>
+                        </w:r>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                <w:sz w:val="24"/>
+                            </w:rPr>
+                            <w:tab/>
+                        </w:r>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                <w:sz w:val="24"/>
+                            </w:rPr>
+                            <w:tab/>
+                        </w:r>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                <w:sz w:val="24"/>
+                            </w:rPr>
+                            <w:tab/>
                         </w:r>
                         <w:r>
                             <w:rPr>
@@ -217,11 +255,11 @@
                             <w:gridCol w:w="709"/>
                             <w:gridCol w:w="709"/>
                             <w:gridCol w:w="567"/>
-                            <w:gridCol w:w="1035"/>
-                            <w:gridCol w:w="86"/>
-                            <w:gridCol w:w="1140"/>
-                            <w:gridCol w:w="289"/>
-                            <w:gridCol w:w="852"/>
+                            <w:gridCol w:w="340"/>
+                            <w:gridCol w:w="781"/>
+                            <w:gridCol w:w="109"/>
+                            <w:gridCol w:w="1031"/>
+                            <w:gridCol w:w="1141"/>
                             <w:gridCol w:w="1248"/>
                         </w:tblGrid>
                         <w:tr>
@@ -243,13 +281,12 @@
                                 </w:tblCellMar>
                             </w:tblPrEx>
                             <w:trPr>
-                                <w:trHeight w:val="680" w:hRule="exact"/>
+                                <w:trHeight w:val="794" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
                                 <w:tcPr>
                                     <w:tcW w:w="1252" w:type="dxa"/>
-                                    <w:vMerge w:val="restart"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
@@ -265,25 +302,77 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>发文部门</w:t>
+                                        <w:t>文件标题</w:t>
                                     </w:r>
                                 </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="8619" w:type="dxa"/>
+                                    <w:gridSpan w:val="11"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
                                 <w:p>
                                     <w:pPr>
-                                        <w:jc w:val="center"/>
+                                        <w:jc w:val="both"/>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
                                             <w:sz w:val="24"/>
-                                            <w:lang w:eastAsia="zh-CN"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
-                                            <w:lang w:eastAsia="zh-CN"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>拟稿人</w:t>
+                                        <w:t>${fileTitle!}</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                        </w:tr>
+                        <w:tr>
+                            <w:tblPrEx>
+                                <w:tblBorders>
+                                    <w:top w:val="single" w:color="auto" w:sz="4" w:space="0"/>
+                                    <w:left w:val="single" w:color="auto" w:sz="4" w:space="0"/>
+                                    <w:bottom w:val="single" w:color="auto" w:sz="4" w:space="0"/>
+                                    <w:right w:val="single" w:color="auto" w:sz="4" w:space="0"/>
+                                    <w:insideH w:val="single" w:color="auto" w:sz="4" w:space="0"/>
+                                    <w:insideV w:val="single" w:color="auto" w:sz="4" w:space="0"/>
+                                </w:tblBorders>
+                                <w:tblLayout w:type="fixed"/>
+                                <w:tblCellMar>
+                                    <w:top w:w="0" w:type="dxa"/>
+                                    <w:left w:w="108" w:type="dxa"/>
+                                    <w:bottom w:w="0" w:type="dxa"/>
+                                    <w:right w:w="108" w:type="dxa"/>
+                                </w:tblCellMar>
+                            </w:tblPrEx>
+                            <w:trPr>
+                                <w:trHeight w:val="737" w:hRule="exact"/>
+                                <w:jc w:val="center"/>
+                            </w:trPr>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1252" w:type="dxa"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p>
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>发文部门</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -316,33 +405,29 @@
                                 <w:tcPr>
                                     <w:tcW w:w="1418" w:type="dxa"/>
                                     <w:gridSpan w:val="2"/>
-                                    <w:vMerge w:val="restart"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
                                     <w:pPr>
                                         <w:jc w:val="center"/>
                                         <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
-                                            <w:lang w:eastAsia="zh-CN"/>
                                         </w:rPr>
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
-                                            <w:lang w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>校对人</w:t>
+                                        <w:t>发文日期</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="1602" w:type="dxa"/>
-                                    <w:gridSpan w:val="2"/>
-                                    <w:vMerge w:val="restart"/>
+                                    <w:tcW w:w="1797" w:type="dxa"/>
+                                    <w:gridSpan w:val="4"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
@@ -360,41 +445,36 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${userName!}</w:t>
+                                        <w:t>${dispatchDate!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="1515" w:type="dxa"/>
-                                    <w:gridSpan w:val="3"/>
-                                    <w:vMerge w:val="restart"/>
+                                    <w:tcW w:w="1031" w:type="dxa"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
                                     <w:pPr>
                                         <w:jc w:val="center"/>
                                         <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
-                                            <w:lang w:eastAsia="zh-CN"/>
                                         </w:rPr>
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
-                                            <w:lang w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>拟稿时间</w:t>
+                                        <w:t>文号</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="2100" w:type="dxa"/>
+                                    <w:tcW w:w="2389" w:type="dxa"/>
                                     <w:gridSpan w:val="2"/>
-                                    <w:vMerge w:val="restart"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
@@ -412,7 +492,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${draftDate!}</w:t>
+                                        <w:t>${fileNum!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -436,145 +516,7 @@
                                 </w:tblCellMar>
                             </w:tblPrEx>
                             <w:trPr>
-                                <w:trHeight w:val="680" w:hRule="exact"/>
-                                <w:jc w:val="center"/>
-                            </w:trPr>
-                            <w:tc>
-                                <w:tcPr>
-                                    <w:tcW w:w="1252" w:type="dxa"/>
-                                    <w:vMerge w:val="continue"/>
-                                    <w:tcBorders/>
-                                    <w:vAlign w:val="center"/>
-                                </w:tcPr>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:jc w:val="center"/>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                            <w:lang w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                </w:p>
-                            </w:tc>
-                            <w:tc>
-                                <w:tcPr>
-                                    <w:tcW w:w="1984" w:type="dxa"/>
-                                    <w:gridSpan w:val="2"/>
-                                    <w:vAlign w:val="center"/>
-                                </w:tcPr>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:jc w:val="left"/>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
-                                            <w:sz w:val="24"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                        <w:t>${userName!}</w:t>
-                                    </w:r>
-                                </w:p>
-                            </w:tc>
-                            <w:tc>
-                                <w:tcPr>
-                                    <w:tcW w:w="1418" w:type="dxa"/>
-                                    <w:gridSpan w:val="2"/>
-                                    <w:vMerge w:val="continue"/>
-                                    <w:tcBorders/>
-                                    <w:vAlign w:val="center"/>
-                                </w:tcPr>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:jc w:val="center"/>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                </w:p>
-                            </w:tc>
-                            <w:tc>
-                                <w:tcPr>
-                                    <w:tcW w:w="1602" w:type="dxa"/>
-                                    <w:gridSpan w:val="2"/>
-                                    <w:vMerge w:val="continue"/>
-                                    <w:tcBorders/>
-                                    <w:vAlign w:val="center"/>
-                                </w:tcPr>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:jc w:val="center"/>
-                                        <w:rPr>
-                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                </w:p>
-                            </w:tc>
-                            <w:tc>
-                                <w:tcPr>
-                                    <w:tcW w:w="1515" w:type="dxa"/>
-                                    <w:gridSpan w:val="3"/>
-                                    <w:vMerge w:val="continue"/>
-                                    <w:tcBorders/>
-                                    <w:vAlign w:val="center"/>
-                                </w:tcPr>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:jc w:val="center"/>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                </w:p>
-                            </w:tc>
-                            <w:tc>
-                                <w:tcPr>
-                                    <w:tcW w:w="2100" w:type="dxa"/>
-                                    <w:gridSpan w:val="2"/>
-                                    <w:vMerge w:val="continue"/>
-                                    <w:tcBorders/>
-                                    <w:vAlign w:val="center"/>
-                                </w:tcPr>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:jc w:val="center"/>
-                                        <w:rPr>
-                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                </w:p>
-                            </w:tc>
-                        </w:tr>
-                        <w:tr>
-                            <w:tblPrEx>
-                                <w:tblBorders>
-                                    <w:top w:val="single" w:color="auto" w:sz="4" w:space="0"/>
-                                    <w:left w:val="single" w:color="auto" w:sz="4" w:space="0"/>
-                                    <w:bottom w:val="single" w:color="auto" w:sz="4" w:space="0"/>
-                                    <w:right w:val="single" w:color="auto" w:sz="4" w:space="0"/>
-                                    <w:insideH w:val="single" w:color="auto" w:sz="4" w:space="0"/>
-                                    <w:insideV w:val="single" w:color="auto" w:sz="4" w:space="0"/>
-                                </w:tblBorders>
-                                <w:tblLayout w:type="fixed"/>
-                                <w:tblCellMar>
-                                    <w:top w:w="0" w:type="dxa"/>
-                                    <w:left w:w="108" w:type="dxa"/>
-                                    <w:bottom w:w="0" w:type="dxa"/>
-                                    <w:right w:w="108" w:type="dxa"/>
-                                </w:tblCellMar>
-                            </w:tblPrEx>
-                            <w:trPr>
-                                <w:trHeight w:val="680" w:hRule="exact"/>
+                                <w:trHeight w:val="1020" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -586,16 +528,14 @@
                                     <w:pPr>
                                         <w:jc w:val="center"/>
                                         <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
-                                            <w:lang w:eastAsia="zh-CN"/>
                                         </w:rPr>
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
-                                            <w:lang w:eastAsia="zh-CN"/>
                                         </w:rPr>
                                         <w:t>秘密等级</w:t>
                                     </w:r>
@@ -636,75 +576,23 @@
                                     <w:pPr>
                                         <w:jc w:val="center"/>
                                         <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
-                                            <w:lang w:eastAsia="zh-CN"/>
                                         </w:rPr>
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
-                                            <w:lang w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>年度计划</w:t>
+                                        <w:t>急缓程度</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="1602" w:type="dxa"/>
-                                    <w:gridSpan w:val="2"/>
-                                    <w:vAlign w:val="center"/>
-                                </w:tcPr>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:jc w:val="left"/>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
-                                            <w:sz w:val="24"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                        <w:t>${yearPlan!}</w:t>
-                                    </w:r>
-                                </w:p>
-                            </w:tc>
-                            <w:tc>
-                                <w:tcPr>
-                                    <w:tcW w:w="1515" w:type="dxa"/>
-                                    <w:gridSpan w:val="3"/>
-                                    <w:vAlign w:val="center"/>
-                                </w:tcPr>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:jc w:val="center"/>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
-                                            <w:sz w:val="24"/>
-                                            <w:lang w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                            <w:lang w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                        <w:t>缓急程度</w:t>
-                                    </w:r>
-                                </w:p>
-                            </w:tc>
-                            <w:tc>
-                                <w:tcPr>
-                                    <w:tcW w:w="2100" w:type="dxa"/>
-                                    <w:gridSpan w:val="2"/>
+                                    <w:tcW w:w="1797" w:type="dxa"/>
+                                    <w:gridSpan w:val="4"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
@@ -726,132 +614,9 @@
                                     </w:r>
                                 </w:p>
                             </w:tc>
-                        </w:tr>
-                        <w:tr>
-                            <w:tblPrEx>
-                                <w:tblBorders>
-                                    <w:top w:val="single" w:color="auto" w:sz="4" w:space="0"/>
-                                    <w:left w:val="single" w:color="auto" w:sz="4" w:space="0"/>
-                                    <w:bottom w:val="single" w:color="auto" w:sz="4" w:space="0"/>
-                                    <w:right w:val="single" w:color="auto" w:sz="4" w:space="0"/>
-                                    <w:insideH w:val="single" w:color="auto" w:sz="4" w:space="0"/>
-                                    <w:insideV w:val="single" w:color="auto" w:sz="4" w:space="0"/>
-                                </w:tblBorders>
-                                <w:tblLayout w:type="fixed"/>
-                                <w:tblCellMar>
-                                    <w:top w:w="0" w:type="dxa"/>
-                                    <w:left w:w="108" w:type="dxa"/>
-                                    <w:bottom w:w="0" w:type="dxa"/>
-                                    <w:right w:w="108" w:type="dxa"/>
-                                </w:tblCellMar>
-                            </w:tblPrEx>
-                            <w:trPr>
-                                <w:trHeight w:val="680" w:hRule="exact"/>
-                                <w:jc w:val="center"/>
-                            </w:trPr>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="1252" w:type="dxa"/>
-                                    <w:vAlign w:val="center"/>
-                                </w:tcPr>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:jc w:val="center"/>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
-                                            <w:sz w:val="24"/>
-                                            <w:lang w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                            <w:lang w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                        <w:t>发文日期</w:t>
-                                    </w:r>
-                                </w:p>
-                            </w:tc>
-                            <w:tc>
-                                <w:tcPr>
-                                    <w:tcW w:w="1984" w:type="dxa"/>
-                                    <w:gridSpan w:val="2"/>
-                                    <w:vAlign w:val="center"/>
-                                </w:tcPr>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:jc w:val="left"/>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
-                                            <w:sz w:val="24"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                        <w:t>${dispatchDate!}</w:t>
-                                    </w:r>
-                                </w:p>
-                            </w:tc>
-                            <w:tc>
-                                <w:tcPr>
-                                    <w:tcW w:w="1418" w:type="dxa"/>
-                                    <w:gridSpan w:val="2"/>
-                                    <w:vAlign w:val="center"/>
-                                </w:tcPr>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:jc w:val="center"/>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
-                                            <w:sz w:val="24"/>
-                                            <w:lang w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                            <w:lang w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                        <w:t>文件字号</w:t>
-                                    </w:r>
-                                </w:p>
-                            </w:tc>
-                            <w:tc>
-                                <w:tcPr>
-                                    <w:tcW w:w="1602" w:type="dxa"/>
-                                    <w:gridSpan w:val="2"/>
-                                    <w:vAlign w:val="center"/>
-                                </w:tcPr>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:jc w:val="left"/>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
-                                            <w:sz w:val="24"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                        <w:t>${fileNum!}</w:t>
-                                    </w:r>
-                                </w:p>
-                            </w:tc>
-                            <w:tc>
-                                <w:tcPr>
-                                    <w:tcW w:w="1515" w:type="dxa"/>
-                                    <w:gridSpan w:val="3"/>
+                                    <w:tcW w:w="1031" w:type="dxa"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
@@ -873,7 +638,7 @@
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="2100" w:type="dxa"/>
+                                    <w:tcW w:w="2389" w:type="dxa"/>
                                     <w:gridSpan w:val="2"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
@@ -881,7 +646,7 @@
                                     <w:pPr>
                                         <w:jc w:val="left"/>
                                         <w:rPr>
-                                            <w:rFonts w:hint="default" w:ascii="Wingdings 2" w:hAnsi="Wingdings 2"
+                                            <w:rFonts w:hint="eastAsia" w:ascii="Wingdings 2" w:hAnsi="Wingdings 2"
                                                       w:eastAsia="宋体" w:cs="Wingdings 2"/>
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
@@ -949,7 +714,7 @@
                                 </w:tblCellMar>
                             </w:tblPrEx>
                             <w:trPr>
-                                <w:trHeight w:val="934" w:hRule="exact"/>
+                                <w:trHeight w:val="1077" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -978,14 +743,13 @@
                                 <w:tcPr>
                                     <w:tcW w:w="8619" w:type="dxa"/>
                                     <w:gridSpan w:val="11"/>
-                                    <w:vAlign w:val="top"/>
+                                    <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
                                     <w:pPr>
-                                        <w:ind w:right="720"/>
-                                        <w:jc w:val="both"/>
+                                        <w:jc w:val="left"/>
                                         <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
@@ -1001,18 +765,15 @@
                                 </w:p>
                                 <w:p>
                                     <w:pPr>
-                                        <w:ind w:right="720"/>
-                                        <w:jc w:val="both"/>
+                                        <w:jc w:val="left"/>
                                         <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
                                     </w:pPr>
                                 </w:p>
                                 <w:p>
                                     <w:pPr>
-                                        <w:ind w:right="720"/>
                                         <w:jc w:val="right"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
@@ -1024,22 +785,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>（印</w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                        <w:t>${printCount!}</w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                        <w:t>份）</w:t>
+                                        <w:t>（印 ${printCount!} 份）</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1063,7 +809,7 @@
                                 </w:tblCellMar>
                             </w:tblPrEx>
                             <w:trPr>
-                                <w:trHeight w:val="1201" w:hRule="exact"/>
+                                <w:trHeight w:val="782" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -1075,7 +821,7 @@
                                     <w:pPr>
                                         <w:jc w:val="center"/>
                                         <w:rPr>
-                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     </w:pPr>
@@ -1133,7 +879,7 @@
                                 </w:tblCellMar>
                             </w:tblPrEx>
                             <w:trPr>
-                                <w:trHeight w:val="1401" w:hRule="exact"/>
+                                <w:trHeight w:val="1701" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -1219,7 +965,7 @@
                                 </w:tblCellMar>
                             </w:tblPrEx>
                             <w:trPr>
-                                <w:trHeight w:val="1304" w:hRule="exact"/>
+                                <w:trHeight w:val="1389" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -1341,7 +1087,6 @@
                                 </w:p>
                             </w:tc>
                         </w:tr>
-
                         <w:tr>
                             <w:tblPrEx>
                                 <w:tblBorders>
@@ -1394,11 +1139,11 @@
                                 </w:tcPr>
                                 <w:p>
                                     <w:pPr>
-                                        <w:jc w:val="left"/>
+                                        <w:jc w:val="both"/>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
                                             <w:sz w:val="24"/>
-                                            <w:lang w:eastAsia="zh-CN"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
                                     </w:pPr>
                                     <w:r>
@@ -1411,6 +1156,15 @@
                                     </w:r>
                                 </w:p>
                             <#if branchCount?? && branchCount == 1>
+                                <w:p>
+                                    <w:pPr>
+                                        <w:jc w:val="left"/>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                </w:p>
                                 <w:p>
                                     <w:pPr>
                                         <w:ind w:left="5500"/>
@@ -1503,9 +1257,8 @@
                                     <w:pPr>
                                         <w:jc w:val="left"/>
                                         <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
-                                            <w:lang w:eastAsia="zh-CN"/>
                                         </w:rPr>
                                     </w:pPr>
                                     <w:r>
@@ -1516,8 +1269,24 @@
                                         </w:rPr>
                                         <w:t>${viceDirectorSuggesttion!}</w:t>
                                     </w:r>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t xml:space="preserve">          </w:t>
+                                    </w:r>
                                 </w:p>
                             <#if moreLeader?? && moreLeader == 0>
+                                <w:p>
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                </w:p>
                                 <w:p>
                                     <w:pPr>
                                         <w:ind w:left="5500"/>
@@ -1575,7 +1344,7 @@
                                 </w:tblCellMar>
                             </w:tblPrEx>
                             <w:trPr>
-                                <w:trHeight w:val="1304" w:hRule="exact"/>
+                                <w:trHeight w:val="1361" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -1626,9 +1395,8 @@
                                     <w:pPr>
                                         <w:jc w:val="left"/>
                                         <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
                                     </w:pPr>
                                     <w:r>
@@ -1637,8 +1405,24 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">${directorSuggesttion!}                             </w:t>
+                                        <w:t>${directorSuggesttion!}</w:t>
                                     </w:r>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t xml:space="preserve">          </w:t>
+                                    </w:r>
+                                </w:p>
+                                <w:p>
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
                                 </w:p>
                                 <w:p>
                                     <w:pPr>
@@ -1697,7 +1481,7 @@
                             </w:tblPrEx>
                             <w:trPr>
                                 <w:cantSplit/>
-                                <w:trHeight w:val="1134" w:hRule="exact"/>
+                                <w:trHeight w:val="930" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -1757,7 +1541,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>项目建议书阶段</w:t>
+                                        <w:t>其它</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1833,6 +1617,7 @@
                             <w:tc>
                                 <w:tcPr>
                                     <w:tcW w:w="1140" w:type="dxa"/>
+                                    <w:gridSpan w:val="2"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
@@ -1871,7 +1656,6 @@
                             <w:tc>
                                 <w:tcPr>
                                     <w:tcW w:w="1141" w:type="dxa"/>
-                                    <w:gridSpan w:val="2"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
@@ -1950,7 +1734,7 @@
                             </w:tblPrEx>
                             <w:trPr>
                                 <w:cantSplit/>
-                                <w:trHeight w:val="1134" w:hRule="exact"/>
+                                <w:trHeight w:val="930" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -2085,6 +1869,7 @@
                             <w:tc>
                                 <w:tcPr>
                                     <w:tcW w:w="1140" w:type="dxa"/>
+                                    <w:gridSpan w:val="2"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
@@ -2092,23 +1877,16 @@
                                         <w:jc w:val="center"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                         </w:rPr>
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="18"/>
-                                        </w:rPr>
-                                        <w:t xml:space="preserve">  </w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="18"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">${extraRate!} </w:t>
+                                        <w:t>${extraRate!}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -2122,7 +1900,6 @@
                             <w:tc>
                                 <w:tcPr>
                                     <w:tcW w:w="1141" w:type="dxa"/>
-                                    <w:gridSpan w:val="2"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
@@ -2140,7 +1917,7 @@
                                             <w:sz w:val="18"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${(approveValue?c)!}</w:t>
+                                        <w:t>${(approveValue?c)!}</w:t>-
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2189,7 +1966,7 @@
                             </w:tblPrEx>
                             <w:trPr>
                                 <w:cantSplit/>
-                                <w:trHeight w:val="1701" w:hRule="exact"/>
+                                <w:trHeight w:val="2268" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -2379,7 +2156,7 @@
                             </w:tblPrEx>
                             <w:trPr>
                                 <w:cantSplit/>
-                                <w:trHeight w:val="1701" w:hRule="exact"/>
+                                <w:trHeight w:val="2268" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -2415,7 +2192,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>投资估算及资金来源</w:t>
+                                        <w:t>投资匡算及资金来源</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2465,7 +2242,7 @@
                             </w:tblPrEx>
                             <w:trPr>
                                 <w:cantSplit/>
-                                <w:trHeight w:val="1701" w:hRule="exact"/>
+                                <w:trHeight w:val="2268" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -2581,10 +2358,12 @@
                     <w:sectPr>
                         <w:headerReference r:id="rId3" w:type="default"/>
                         <w:pgSz w:w="11906" w:h="16838"/>
-                        <w:pgMar w:top="1418" w:right="1418" w:bottom="1418" w:left="1418" w:header="851" w:footer="851"
+                        <w:pgMar w:top="1417" w:right="850" w:bottom="1417" w:left="850" w:header="851" w:footer="850"
                                  w:gutter="0"/>
+                        <w:paperSrc/>
                         <w:pgNumType w:fmt="numberInDash"/>
-                        <w:cols w:space="720" w:num="1"/>
+                        <w:cols w:space="0" w:num="1"/>
+                        <w:rtlGutter w:val="0"/>
                         <w:docGrid w:linePitch="312" w:charSpace="0"/>
                     </w:sectPr>
                 </w:body>
@@ -2652,7 +2431,7 @@
                 <dc:creator>wayne</dc:creator>
                 <cp:lastModifiedBy>Administrator</cp:lastModifiedBy>
                 <cp:lastPrinted>2013-05-07T02:04:00Z</cp:lastPrinted>
-                <dcterms:modified xsi:type="dcterms:W3CDTF">2018-01-07T09:21:31Z</dcterms:modified>
+                <dcterms:modified xsi:type="dcterms:W3CDTF">2017-12-19T03:31:47Z</dcterms:modified>
                 <dc:title>深圳市政府投资项目评审中心</dc:title>
                 <cp:revision>723</cp:revision>
             </cp:coreProperties>
@@ -2797,8 +2576,16 @@
                     <w:sig w:usb0="800002BF" w:usb1="38CF7CFA" w:usb2="00000016" w:usb3="00000000" w:csb0="00040001"
                            w:csb1="00000000"/>
                 </w:font>
-                <w:font w:name="Wingdings 2">
-                    <w:panose1 w:val="05020102010507070707"/>
+                <w:font w:name="华文宋体">
+                    <w:panose1 w:val="02010600040101010101"/>
+                    <w:charset w:val="86"/>
+                    <w:family w:val="auto"/>
+                    <w:pitch w:val="default"/>
+                    <w:sig w:usb0="00000287" w:usb1="080F0000" w:usb2="00000000" w:usb3="00000000" w:csb0="0004009F"
+                           w:csb1="DFD70000"/>
+                </w:font>
+                <w:font w:name="Wingdings 3">
+                    <w:panose1 w:val="05040102010807070707"/>
                     <w:charset w:val="00"/>
                     <w:family w:val="auto"/>
                     <w:pitch w:val="default"/>
@@ -2813,21 +2600,13 @@
                     <w:sig w:usb0="00000000" w:usb1="00000000" w:usb2="00000000" w:usb3="00000000" w:csb0="80000000"
                            w:csb1="00000000"/>
                 </w:font>
-                <w:font w:name="Wingdings 3">
-                    <w:panose1 w:val="05040102010807070707"/>
+                <w:font w:name="Wingdings 2">
+                    <w:panose1 w:val="05020102010507070707"/>
                     <w:charset w:val="00"/>
                     <w:family w:val="auto"/>
                     <w:pitch w:val="default"/>
                     <w:sig w:usb0="00000000" w:usb1="00000000" w:usb2="00000000" w:usb3="00000000" w:csb0="80000000"
                            w:csb1="00000000"/>
-                </w:font>
-                <w:font w:name="华文宋体">
-                    <w:panose1 w:val="02010600040101010101"/>
-                    <w:charset w:val="86"/>
-                    <w:family w:val="auto"/>
-                    <w:pitch w:val="default"/>
-                    <w:sig w:usb0="00000287" w:usb1="080F0000" w:usb2="00000000" w:usb3="00000000" w:csb0="0004009F"
-                           w:csb1="DFD70000"/>
                 </w:font>
             </w:fonts>
         </pkg:xmlData>
@@ -3763,10 +3542,10 @@
                     <w:rsid w:val="00FF12B9"/>
                     <w:rsid w:val="00FF1D1B"/>
                     <w:rsid w:val="00FF7469"/>
+                    <w:rsid w:val="0D403765"/>
                     <w:rsid w:val="1AB91485"/>
-                    <w:rsid w:val="271F674C"/>
-                    <w:rsid w:val="3D812D3A"/>
-                    <w:rsid w:val="75935136"/>
+                    <w:rsid w:val="263D54CA"/>
+                    <w:rsid w:val="35D948DA"/>
                 </w:rsids>
                 <m:mathPr>
                     <m:brkBin m:val="before"/>

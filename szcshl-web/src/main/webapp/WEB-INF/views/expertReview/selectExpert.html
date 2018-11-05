@@ -110,21 +110,21 @@
                     <select ng-disabled="('${CURRENT_USER.loginName}' !=  'admin') && (vm.expertReview.state == 9 || vm.expertReview.state == '9')" id="compositeScore{{x.id}}"
                             ng-model="vm.expertReview.expertSelConditionDtoList[$index].compositeScore">
                         <option value="" ></option>
-                        <option value="1" ng-selected="vm.expertReview.expertSelConditionDtoList[$index].compositeScore == 1">1</option>
-                        <option value="2" ng-selected="vm.expertReview.expertSelConditionDtoList[$index].compositeScore == 2">2</option>
-                        <option value="3" ng-selected="vm.expertReview.expertSelConditionDtoList[$index].compositeScore == 3">3</option>
-                        <option value="4" ng-selected="vm.expertReview.expertSelConditionDtoList[$index].compositeScore == 4">4</option>
-                        <option value="5" ng-selected="vm.expertReview.expertSelConditionDtoList[$index].compositeScore == 5">5</option>
+                        <option value="1" ng-selected="x.compositeScore == 1">1</option>
+                        <option value="2" ng-selected="x.compositeScore == 2">2</option>
+                        <option value="3" ng-selected="x.compositeScore == 3">3</option>
+                        <option value="4" ng-selected="x.compositeScore == 4">4</option>
+                        <option value="5" ng-selected="x.compositeScore == 5">5</option>
                     </select>分
                     -
                     <select ng-disabled="('${CURRENT_USER.loginName}' !=  'admin') && (vm.expertReview.state == 9 || vm.expertReview.state == '9')" id="compositeScore_end_{{x.id}}"
                             ng-model="vm.expertReview.expertSelConditionDtoList[$index].compositeScoreEnd" ng-change="vm.checkScore(vm.expertReview.expertSelConditionDtoList[$index])">
                         <option value="" ></option>
-                        <option value="1" ng-selected="vm.expertReview.expertSelConditionDtoList[$index].compositeScoreEnd == 1">1</option>
-                        <option value="2" ng-selected="vm.expertReview.expertSelConditionDtoList[$index].compositeScoreEnd == 2">2</option>
-                        <option value="3" ng-selected="vm.expertReview.expertSelConditionDtoList[$index].compositeScoreEnd == 3">3</option>
-                        <option value="4" ng-selected="vm.expertReview.expertSelConditionDtoList[$index].compositeScoreEnd == 4">4</option>
-                        <option value="5" ng-selected="vm.expertReview.expertSelConditionDtoList[$index].compositeScoreEnd == 5">5</option>
+                        <option value="1" ng-selected="x.compositeScoreEnd == 1">1</option>
+                        <option value="2" ng-selected="x.compositeScoreEnd == 2">2</option>
+                        <option value="3" ng-selected="x.compositeScoreEnd == 3">3</option>
+                        <option value="4" ng-selected="x.compositeScoreEnd == 4">4</option>
+                        <option value="5" ng-selected="x.compositeScoreEnd == 5">5</option>
                     </select>分
                     <p id="compositeScoreEnd_{{x.id}}"class="errors"></p>
                 </td>
