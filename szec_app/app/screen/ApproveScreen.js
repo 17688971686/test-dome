@@ -14,6 +14,7 @@ import {
     Picker
 } from "react-native";
 import axios from 'axios';
+import LoadingUtil from '../common/LoadingUtil'
 import Header from '../component/HeaderComponent';
 import Icon from 'react-native-vector-icons/Ionicons';
 import PopupDialog, {SlideAnimation, DialogTitle, DialogButton} from 'react-native-popup-dialog';
@@ -255,6 +256,7 @@ export default class ApproveScreen extends Component {
 
     //流程提交
     commitNextStep() {
+        LoadingUtil.showLoading();
         let data = this.state.curNodeInfo;
         data.businessMap.DIS_ID = this.state.DIS_ID;
         data.businessMap.AGREE = this.state.AGREE;
@@ -272,7 +274,6 @@ export default class ApproveScreen extends Component {
                 },
             })
                 .then((res) => {
-                    console.log(res);
                     if (res.status === 200 && res.data.reCode === 'ok') {
                         Alert.alert(
                             res.data.reMsg,
@@ -292,6 +293,7 @@ export default class ApproveScreen extends Component {
                             {cancelable: false}
                         )
                     }
+                    LoadingUtil.dismissLoading();
                 })
                 .catch(error => {
                     console.log(error)
@@ -302,6 +304,7 @@ export default class ApproveScreen extends Component {
 
     //流程回退
     rollbacklast() {
+        LoadingUtil.showLoading();
         let data = this.state.curNodeInfo;
         let jsonData = JSON.stringify(data);
         let encodeData = encodeURIComponent(jsonData);
@@ -332,6 +335,7 @@ export default class ApproveScreen extends Component {
                         {cancelable: false}
                     )
                 }
+                LoadingUtil.dismissLoading();
             })
             .catch(error => {
                 console.log(error)
@@ -511,11 +515,11 @@ export default class ApproveScreen extends Component {
             case "SIGN_ZR_QRFW":
                 submitBtn.push(
                     <TouchableOpacity key={1}
-                                      onPress={() =>  Alert.alert(
+                                      onPress={() => Alert.alert(
                                           '确认操作',
                                           '回退流程？',
                                           [
-                                              {text:'取消'},
+                                              {text: '取消'},
                                               {text: '确定', onPress: () => this.rollbacklast()},
                                           ],
                                           {cancelable: false}
@@ -529,22 +533,22 @@ export default class ApproveScreen extends Component {
                 break;
         }
 
-/*        if (this.state.curNodeId === 'SIGN_BMFB1' || this.state.curNodeId === 'SIGN_BMFB2') {
-                submitBtn.push(
-                    <TouchableOpacity key={2}
-                                      onPress={() =>  Alert.alert(
-                                          '确认操作',
-                                          '重新分办？',
-                                          [
-                                              {text:'取消'},
-                                              {text: '确定', onPress: () => this.getBack()},
-                                          ],
-                                          {cancelable: false})}
-                                      style={[styles.submitBtn, {backgroundColor: '#eee'}]}>
-                        <Text style={styles.submitText}>取回</Text>
-                    </TouchableOpacity>
-                );
-        }*/
+        /*        if (this.state.curNodeId === 'SIGN_BMFB1' || this.state.curNodeId === 'SIGN_BMFB2') {
+                        submitBtn.push(
+                            <TouchableOpacity key={2}
+                                              onPress={() =>  Alert.alert(
+                                                  '确认操作',
+                                                  '重新分办？',
+                                                  [
+                                                      {text:'取消'},
+                                                      {text: '确定', onPress: () => this.getBack()},
+                                                  ],
+                                                  {cancelable: false})}
+                                              style={[styles.submitBtn, {backgroundColor: '#eee'}]}>
+                                <Text style={styles.submitText}>取回</Text>
+                            </TouchableOpacity>
+                        );
+                }*/
         submitBtn.push(
             <TouchableOpacity key={3} onPress={() => this.commitNextStep()} style={[styles.submitBtn, {flex: 2}]}>
                 <Text style={[styles.submitText, {color: '#fff'}]}>提交</Text>

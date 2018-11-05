@@ -37,7 +37,9 @@ export default class ProjectScreen extends React.Component {
     }
 
     _loadData(pageIndex) {
-        console.log(this.state.filterStr);
+        this.setState({
+            isLoading:true
+        });
         if (this.state.projectData.length <= this.state.totalNum) {
             axios.get(this.state.api, {
                 params: {
@@ -49,6 +51,7 @@ export default class ProjectScreen extends React.Component {
                 .then(res => {
                     console.log(res);
                     this.setState({
+                        isLoading:false,
                         totalNum: res.data.count,
                         projectData: pageIndex ? this.state.projectData.concat(res.data.value) : res.data.value,
                     })
@@ -62,7 +65,6 @@ export default class ProjectScreen extends React.Component {
     componentWillMount() {
         this._loadData(this.state.pageIndex);
         this.deEmitter = DeviceEventEmitter.addListener('search', (filterStr) => {
-            console.log(1);
             this.setState({
                 filterStr:filterStr
             },()=>{this._loadData(this.state.pageIndex)})

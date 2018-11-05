@@ -1,4 +1,5 @@
 import React from 'react';
+import {View} from 'react-native';
 import {
     createBottomTabNavigator,
     createStackNavigator,
@@ -6,6 +7,7 @@ import {
 } from 'react-navigation';
 import axios from 'axios';
 import * as DeviceInfo from "react-native-device-info/deviceinfo";
+import Loading from "./component/LoadingComponent";
 import AuthLoadingScreen from './screen/AuthLoadingScreen';
 import SignInScreen from './screen/SignInScreen';
 import HomeScreen from './screen/Home/HomeScreen';
@@ -129,7 +131,12 @@ export default class App extends React.Component {
     }
 
     render() {
-        return <RootStack/>
+        return(
+            <View style={{flex : 1,}}>
+                <RootStack/>
+                {<Loading ref={(ref) => {global.mLoadingComponentRef = ref;}}/>}
+            </View>
+        )
     }
 
     initAxios = () => {
