@@ -70,6 +70,8 @@
                     if (data.flag || data.reCode == 'ok') {
                         vm.postdoctoralStaff = data.reObj;
                         vm.isShowUpdate = true;
+                        vm.id = vm.postdoctoralStaff.id;
+                        vm.initFileUpload();
                         bsWin.alert("保存成功！");
                     }
                 });
@@ -171,9 +173,9 @@
             }
             bsWin.confirm("确定回退？" , function(){
                 if(status == '2'){
-                    status = '1'
+                    status = '0'
                 }else if(status == '4'){
-                    status = '3'
+                    status = '2'
                 }
                 postdoctoralStaffSvc.backPostdoctoralStaff(id,status , function(data){
                     if(data.flag || data.reCode == 'ok'){

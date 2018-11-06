@@ -7,10 +7,15 @@ import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.postdoctor.PostdoctoralBase_;
 import cs.domain.postdoctor.PostdoctoralStaff;
+import cs.domain.sys.Role;
+import cs.domain.sys.Role_;
+import cs.domain.sys.User;
 import cs.model.PageModelDto;
 import cs.model.postdoctor.PostdoctoralStaffDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.postdoctor.PostdoctorStaffRepo;
+import cs.repository.repositoryImpl.sys.RoleRepo;
+import cs.repository.repositoryImpl.sys.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
@@ -29,6 +34,11 @@ public class PostdoctoralStaffServiceImpl implements PostdoctoralStaffService {
 
     @Autowired
     private PostdoctorStaffRepo postdoctorStaffRepo;
+    @Autowired
+    private RoleRepo roleRepo;
+    @Autowired
+    private UserRepo userRepo;
+
 
     @Override
     public PageModelDto<PostdoctoralStaffDto> get(ODataObj odataObj) {
@@ -49,17 +59,38 @@ public class PostdoctoralStaffServiceImpl implements PostdoctoralStaffService {
 
     @Override
     public ResultMsg save(PostdoctoralStaffDto record) {
+
+       Role r = roleRepo.findById(Role_.roleName.getName(),Constant.EnumPostdoctoralName.POSTDOCTORAL_PERSON.getValue());
+
+        if(!Validate.isObject(r)){
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "博士后人员角色还没创建，请先创建！");
+        }
+        Date now = new Date();
         if (!Validate.isString(record.getId())) {
             record.setId(UUID.randomUUID().toString());
+            User u = new User();
+            u.setId(UUID.randomUUID().toString());
+            u.setDisplayName(record.getName());
+            u.setLoginName(record.getName());
+            u.setPassword("1");
+            u.setCreatedDate(now);
+            u.setModifiedDate(now);
+            u.setCreatedBy(SessionUtil.getDisplayName());
+            u.setModifiedBy(SessionUtil.getDisplayName());
+            u.setLoginFailCount(0);
+            u.getRoles().add(r);
+            userRepo.save(u);
         }
+
+
         PostdoctoralStaff domain = new PostdoctoralStaff();
         BeanCopierUtils.copyProperties(record, domain);
         if(!Validate.isString(domain.getStatus())){
             domain.setStatus("0");
         }
-        Date now = new Date();
-        domain.setCreatedBy(SessionUtil.getUserId());
-        domain.setModifiedBy(SessionUtil.getUserId());
+
+        domain.setCreatedBy(SessionUtil.getDisplayName());
+        domain.setModifiedBy(SessionUtil.getDisplayName());
         domain.setCreatedDate(now);
         domain.setModifiedDate(now);
         postdoctorStaffRepo.save(domain);

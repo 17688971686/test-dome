@@ -101,4 +101,7 @@ public interface DictService {
 
 
     ResultMsg findById(String id);
+
+
+    List<DictDto> getDictForAppByCode(String dictCode);
 }

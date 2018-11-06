@@ -270,6 +270,23 @@ public class DictServiceImpl implements DictService {
         return dictDtoList;
     }
 
+    @Override
+    @Transactional
+    public List<DictDto> getDictForAppByCode(String dictCode) {
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append("select c1.* from CS_DICT c1 where c1.PARENTID in(");
+        hqlBuilder.append("select c2.dictId from CS_DICT c2 where c2.DICTCODE=:dictCode)");
+        hqlBuilder.setParam("dictCode", dictCode);
+        List<Dict> dictList = dictRepo.findBySql(hqlBuilder);
+        List<DictDto> dictDtoList = new ArrayList<>();
+        for (Dict dict : dictList) {
+            DictDto dictDto = new DictDto();
+            BeanCopierUtils.copyProperties(dict, dictDto);
+            dictDtoList.add(dictDto);
+        }
+        return dictDtoList;
+    }
+
     /**
      * 根据ID查询字典信息
      * @param id
