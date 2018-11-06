@@ -8,55 +8,35 @@
 <div  class="well well-sm conttent_list" style="background: white;min-height:960px;margin-bottom: 50px;" >
     <ol class="breadcrumb">
         <li><a href="#/expertList">博士后基地管理</a></li>
-        <li class="active">{{vm.title}}</li>
+        <li class="active">课题详情信息</li>
     </ol>
     <div class="toolbar">
         <button class="btn btn-sm btn-danger" ng-click="back();">
             <span class="glyphicon glyphicon-chevron-left"></span>返回
-        </button>
-        <button class="btn btn-sm btn-success"  ng-click="vm.createSubject()" ng-hide="vm.isShowUpdate" >
-            <span class="glyphicon glyphicon-ok"></span>保存
-        </button>
-        <button class="btn btn-sm btn-success"  ng-click="vm.updateSubject()" ng-show="vm.isShowUpdate" >
-            <span class="glyphicon glyphicon-ok"></span>更新
         </button>
     </div>
     <div class="tab-content" style="background:white;">
         <form id="form" name="form">
             <table class="table table-bordered">
                 <tr>
-                    <td class="text-right" width="15%">课题名称<span class="required">*</span></td>
+                    <td class="text-right" width="15%">课题名称</td>
                     <td colspan="3">
-                        <input type="text" name="subjectName" id="subjectName" ng-model="vm.subject.subjectName" style="width: 60%"
-                               data-val="true" data-val-required="必填"/>
-                        <span data-valmsg-for="subjectName" data-valmsg-replace="true" class="errors"></span>
+                        {{vm.subject.subjectName}}
                     </td>
                 </tr>
                 <tr>
-                    <td class="text-right">课程负责人<span class="required">*</span></td>
+                    <td class="text-right">课程负责人</td>
                     <td>
-                     <select name="pricipalId" id="pricipalId" ng-model="vm.subject.pricipalId"
-                    data-val="true" data-val-required="必填" style="width: 40%;">
-                         <option value="">请选择</option>
-                         <option value="{{x.id}}" ng-repeat="x in vm.staffList">{{x.name}}</option>
-                     </select>
-                        <#--<input type="text" name="pricipalId" id="pricipalId" ng-model="vm.subject.pricipalId" style="width: 60%"
-                               data-val="true" data-val-required="必填"/>-->
-                        <span data-valmsg-for="pricipalId" data-valmsg-replace="true" class="errors"></span>
+                        {{vm.subject.pricipalId}}
                     </td>
-                    <td class="text-right">创建时间<span class="required">*</span></td>
+                    <td class="text-right">创建时间</td>
                     <td>
-                        <input type="text" name="subjectCreatedDate" id="subjectCreatedDate"
-                               style="width:40%;" class="form-control input-xm "
-                               kendo-date-picker k-format="'yyyy-MM-dd'"
-                               ng-model="vm.subject.subjectCreatedDate" data-val-date="必须为日期"
-                               data-val="true" data-val-required="必填">
+                        {{vm.subject.subjectCreatedDate}}
                     </td>
                 </tr>
                 <tr>
                     <td class="text-right" width="15%">课题研究大纲</td>
                     <td colspan="3">
-                        <p><button class="btn btn-sm btn-success" ng-click="vm.addKTYJDG();vm.clickUploadBt();">上传文件</button></p>
                         <div ng-repeat="x in vm.sysFilelistsYJDG">
                             <p >
                                 <i class="fa fa-file-image-o" aria-hidden="true" ng-show="x.fileType =='.png' || x.fileType =='.jpg' || x.fileType =='.gif'"></i>
@@ -66,7 +46,6 @@
                                 <a ng-click="vm.downloadSysFile(x.sysFileId)">{{ x.showName }}</a>
                                 <button ng-if="x.fileType =='.pdf' || x.fileType =='.docx' || x.fileType =='.doc' || x.fileType =='.xlsx' || x.fileType =='.xls' || x.fileType =='.ppt' || x.fileType =='.pptx'"
                                         class="btn btn-xs btn-primary" ng-click="previewFile(x.sysFileId,'pdf')"><span class="glyphicon glyphicon-search"></span>查看</button>
-                                <button class="btn btn-xs btn-danger" ng-click="vm.delectYJDG(x.sysFileId)"><i class="fa fa-times" aria-hidden="true"></i>删除</button>
                             </p>
                         </div>
 
@@ -75,7 +54,6 @@
                 <tr>
                     <td class="text-right" width="15%">课题外委合同</td>
                     <td colspan="3">
-                        <p><button class="btn btn-sm btn-success" ng-click="vm.addKTYWHT();vm.clickUploadBt();">上传文件</button></p>
                         <div ng-repeat="x in vm.sysFilelistsWWHT">
                             <p >
                                 <i class="fa fa-file-image-o" aria-hidden="true" ng-show="x.fileType =='.png' || x.fileType =='.jpg' || x.fileType =='.gif'"></i>
@@ -85,7 +63,6 @@
                                 <a ng-click="vm.downloadSysFile(x.sysFileId)">{{ x.showName }}</a>
                                 <button ng-if="x.fileType =='.pdf' || x.fileType =='.docx' || x.fileType =='.doc' || x.fileType =='.xlsx' || x.fileType =='.xls' || x.fileType =='.ppt' || x.fileType =='.pptx'"
                                         class="btn btn-xs btn-primary" ng-click="previewFile(x.sysFileId,'pdf')"><span class="glyphicon glyphicon-search"></span>查看</button>
-                                <button class="btn btn-xs btn-danger" ng-click="vm.delectWWHT(x.sysFileId)"><i class="fa fa-times" aria-hidden="true"></i>删除</button>
                             </p>
                         </div>
                     </td>

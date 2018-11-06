@@ -6,7 +6,8 @@
         var vm = this ;
         vm.title = "博士基地课题编辑";
         vm.id = $state.params.id;
-
+        vm.sysFilelistsYJDG = [];//课题研究大纲
+        vm.sysFilelistsWWHT = [];//课题外委合同
         //初始化附件上传控件
         vm.initFileUpload = function () {
             if (!vm.id) {
@@ -28,18 +29,54 @@
             };
             sysfileSvc.initUploadOptions({
                 inputId: "sysfileinput",
-                vm: vm
+                vm: vm,
+                uploadSuccess: function () {
+                    sysfileSvc.findByBusinessId(vm.id, function (data) {
+                        console.log(234);
+                        if(data){
+                            vm.sysFilelistsYJDG = [];//课题研究大纲
+                            vm.sysFilelistsWWHT = [];//课题外委合同
+                            $.each(data , function( i , obj ){
+                                if(sysfileSvc.mainTypeValue().DOCTOR_KTYJDG == obj.mainType){
+                                    vm.sysFilelistsYJDG.push(obj);
+                                }
+                                if(sysfileSvc.mainTypeValue().DOCTOR_KTWWHT == obj.mainType){
+                                    vm.sysFilelistsWWHT.push(obj);
+                                }
+                            })
+                        }
+                    });
+                }
             });
         }
+
 
         activate();
         function activate(){
             if(vm.id){
+                vm.isShowUpdate = true;
                 postdoctorSubjectSvc.findBySubjectId(vm , function(data){
                     vm.subject = data;
                 });
+                sysfileSvc.findByBusinessId(vm.id, function (data) {
+                    if(data){
+                        $.each(data , function( i , obj ){
+                            if(sysfileSvc.mainTypeValue().DOCTOR_KTYJDG == obj.mainType){
+                                vm.sysFilelistsYJDG.push(obj);
+                            }
+                            if(sysfileSvc.mainTypeValue().DOCTOR_KTWWHT == obj.mainType){
+                                vm.sysFilelistsWWHT.push(obj);
+                            }
+                        })
+                    }
+                });
             }
+            postdoctorSubjectSvc.findStationStaff(function(data){
+                vm.staffList = data;
+            })
             vm.initFileUpload();
+
+
         }
 
         /**
@@ -50,8 +87,9 @@
                 if (data.flag || data.reCode == 'ok') {
                     vm.subject = data.reObj;
                     vm.id = vm.subject.id;
+                    vm.isShowUpdate = true;
                     bsWin.success("保存成功！");
-                    $state.go('postdoctoralSubjectList');
+                    // $state.go('postdoctoralSubjectList');
                 } else {
                     bsWin.error(data.reMsg);
                 }
@@ -72,6 +110,7 @@
         vm.addKTYJDG = function(){
             vm.type = sysfileSvc.mainTypeValue().DOCTOR_KTYJDG;
             vm.initFileUpload();
+
         }
 
         /**
@@ -79,9 +118,50 @@
          */
         vm.addKTYWHT = function(){
             vm.type = sysfileSvc.mainTypeValue().DOCTOR_KTWWHT;
+            vm.initFileUpload();
         }
 
+        /**
+         * 重写附件方案-课题研究大纲
+         * @param id
+         */
+        vm.delectYJDG = function (id) {
+            bsWin.confirm({
+                title: "询问提示",
+                message: "确认删除么？",
+                onOk: function () {
+                    sysfileSvc.delSysFile(id, function (data) {
+                        bsWin.alert(data.reMsg || "删除成功！");
+                        $.each(vm.sysFilelistsYJDG, function (i, sf) {
+                            if (!angular.isUndefined(sf) && sf.sysFileId == id) {
+                                vm.sysFilelistsYJDG.splice(i, 1);
+                            }
+                        })
+                    });
+                }
+            });
+        }
 
+        /**
+         * 重写附件删除方法-课题外委合同
+         * @param id
+         */
+        vm.delectWWHT = function(id){
+            bsWin.confirm({
+                title: "询问提示",
+                message: "确认删除么？",
+                onOk: function () {
+                    sysfileSvc.delSysFile(id, function (data) {
+                        bsWin.alert(data.reMsg || "删除成功！");
+                        $.each(vm.sysFilelistsWWHT, function (i, sf) {
+                            if (!angular.isUndefined(sf) && sf.sysFileId == id) {
+                                vm.sysFilelistsWWHT.splice(i, 1);
+                            }
+                        })
+                    });
+                }
+            });
+        }
 
     }
 })();

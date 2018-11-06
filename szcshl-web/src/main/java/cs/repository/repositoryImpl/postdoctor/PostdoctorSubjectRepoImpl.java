@@ -45,11 +45,13 @@ public class PostdoctorSubjectRepoImpl extends AbstractRepository<PostdoctorSubj
         if(psList != null && psList.size() > 0 ){
             for(PostdoctorSubject ps : psList){
                 PostdoctorSubjectDto dto = new PostdoctorSubjectDto();
-//                if(Validate.isString(ps.getPricipalId())){
-//                    PostdoctoralStaff p = postdoctorStaffRepo.findById(ps.getPricipalId());
-//                    dto.setPricipalName(p == null ? "" : p.getName());
-//                }
+                if(Validate.isString(ps.getPricipalId())){
+                    PostdoctoralStaff p = postdoctorStaffRepo.findById(ps.getPricipalId());
+                    dto.setPricipalName(p == null ? "" : p.getName());
+                }else{
+
                 dto.setPricipalName(ps.getPricipalId());
+                }
                 BeanCopierUtils.copyPropertiesIgnoreProps(ps , dto);
                 dtoList.add(dto);
             }

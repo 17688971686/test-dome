@@ -2,16 +2,21 @@ package cs.controller.postdoctor;
 
 import cs.ahelper.MudoleAnnotation;
 import cs.common.ResultMsg;
+import cs.common.constants.Constant;
+import cs.common.utils.SessionUtil;
 import cs.domain.postdoctor.PostdoctorSubject;
 import cs.model.PageModelDto;
 import cs.model.postdoctor.PostdoctorSubjectDto;
+import cs.model.postdoctor.PostdoctoralStaffDto;
 import cs.repository.odata.ODataObj;
 import cs.service.postdoctor.PostdoctorSubjectService;
+import cs.service.postdoctor.PostdoctoralStaffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * Description: 博士后基地课题
@@ -27,6 +32,9 @@ public class PostdoctorSubjectController {
 
     @Autowired
     private PostdoctorSubjectService postdoctorSubjectService;
+
+    @Autowired
+    private PostdoctoralStaffService postdoctoralStaffService;
 
 
     @RequestMapping(name = "课题列表" , path = "findByAll" , method = RequestMethod.POST)
@@ -57,14 +65,39 @@ public class PostdoctorSubjectController {
         return postdoctorSubjectService.createSubject(dto);
     }
 
+    @RequestMapping(name = "查询在站人员" , path = "findStationStaff" , method =RequestMethod.POST)
+    @ResponseBody
+    public List<PostdoctoralStaffDto> findStationStaff(){
+        return postdoctoralStaffService.findStationStaff();
+    }
+
+    @RequestMapping(name = "判断是否有权限查看详情" , path = "isPermission" , method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg isPermission(){
+        if(SessionUtil.hashRole(Constant.SUPER_ROLE) || SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())){
+            return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "操作成功！" , null);
+        }else{
+            return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "您无权查看！" , null);
+        }
+    }
+
+
     @RequestMapping(name = "课题列表页" , path = "html/subjectList")
     public String subjectList(){
+        //设置是否是在站人员
+        SessionUtil.getSession().setAttribute("ISSTAFF" , postdoctoralStaffService.findByName());
         return ctrlName + "/postdoctorSubjectList";
     }
 
     @RequestMapping(name = "课题编辑页" , path = "html/postdoctoralSubjectAdd")
     public String subjectAdd(){
         return ctrlName + "/postdoctorSubjectAdd";
+    }
+
+    @RequestMapping(name = "课题详情页" , path = "html/postdoctoralSubjectDetail" )
+    public String detail(){
+
+        return  ctrlName + "/postdoctorSubjectDetail";
     }
 
 }

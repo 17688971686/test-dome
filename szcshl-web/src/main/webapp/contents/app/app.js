@@ -1394,6 +1394,12 @@
                     controller: 'postdoctorSubjectEditCtrl',
                     controllerAs: 'vm'
                 })
+                .state('postdoctoralSubjectDetail', {
+                    url: '/postdoctoralSubjectDetail/:id',
+                    templateUrl: rootPath + "/postdoctorSubject/html/postdoctoralSubjectDetail.html",
+                    controller: 'postdoctorSubjectEditCtrl',
+                    controllerAs: 'vm'
+                })
 
             //end 博士后基地结束
         }]).run(function ($rootScope, $http, $state, $stateParams, bsWin) {

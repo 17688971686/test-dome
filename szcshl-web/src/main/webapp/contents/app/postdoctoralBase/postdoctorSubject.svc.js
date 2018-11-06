@@ -7,9 +7,31 @@
             subjectGrid : subjectGrid , //课题列表
             findBySubjectId : findBySubjectId , //通过ID获取课题信息
             createSubject : createSubject , //创建课题
+            findStationStaff : findStationStaff , //查询在站人员
+            isPermission : isPermission , //判断是否有权限查看
 
         };
         return service;
+
+        //begin isPermission
+        function isPermission(callBack){
+            var httpOptions = {
+                method : 'post',
+                url : rootPath + "/postdoctorSubject/isPermission"
+            }
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof  callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+        }
+        //end isPermission
 
         //begin createSubject
         function createSubject(vm , callBack){
@@ -61,7 +83,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/postdoctorSubject/findByAll" ),
+                transport: common.kendoGridConfig().transport(rootPath + "/postdoctorSubject/findByAll"  , $('#doctorSubjectForm')),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {
@@ -115,7 +137,7 @@
                     width: 100,
                     filterable: false,
                     template: function (item) {
-                        return '<a  href="#/postdoctoralBaseDetail/' + item.id + '">'+item.subjectName+'</a>'
+                        return '<a ng-click="vm.details(' + "'" + item.id + "'" + ')" >'+item.subjectName+'</a>'
                     }
                 },
                 {
@@ -135,7 +157,7 @@
                     title: "操作",
                     width: 120,
                     template: function (item) {
-                        return common.format($('#columnBtns').html(),   item.id , "vm.deleteSubject('" + item.id + "')");
+                        return common.format($('#columnBtns').html(),   item.id , "vm.deleteSubject('" + item.id + "')" , item.pricipalName);
                     }
                 }
             ];
@@ -151,5 +173,26 @@
                 resizable: true
             };
         }
+
+        //begin findStationStaff
+        function findStationStaff(callBack){
+            var httpOptions = {
+                method : 'post',
+                url : rootPath + "/postdoctorSubject/findStationStaff"
+            }
+
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+        }
+        //end findStationStaff
     }
 })();

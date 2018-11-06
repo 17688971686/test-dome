@@ -134,6 +134,15 @@ public class PostdoctoralStaffServiceImpl implements PostdoctoralStaffService {
 
     }
 
+    @Override
+    public List<PostdoctoralStaffDto> findStationStaff() {
+        return postdoctorStaffRepo.findStationStaff();
+    }
+
+    @Override
+    public Boolean findByName() {
+        return postdoctorStaffRepo.findByName();
+    }
 
 
 }

@@ -5,6 +5,8 @@ import cs.model.PageModelDto;
 import cs.model.postdoctor.PostdoctoralStaffDto;
 import cs.repository.odata.ODataObj;
 
+import java.util.List;
+
 /**
  * Description: 博士后 业务操作接口
  * author: zsl
@@ -27,6 +29,9 @@ public interface PostdoctoralStaffService {
     ResultMsg approvePostdoctoralStaff(String id , String status);
 
     ResultMsg backPostdoctoralStaff(String id , String status);
+
+    List<PostdoctoralStaffDto> findStationStaff();
+    Boolean findByName();
 
 
 }
