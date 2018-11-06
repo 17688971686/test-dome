@@ -11,6 +11,7 @@ import {
     TouchableOpacity,
     KeyboardAvoidingView
 } from "react-native";
+import LoadingUtil from '../common/LoadingUtil'
 import axios from "axios";
 import Icon from 'react-native-vector-icons/Ionicons';
 import JSEncrypt from '../res/lib/JSEncrypt';
@@ -68,6 +69,7 @@ export default class SignInScreen extends React.Component {
             Alert.alert('账号或密码不能为空');
             return false;
         }
+        LoadingUtil.showLoading();
         const encrypt = new JSEncrypt();
         const me = this;
         encrypt.setPublicKey(me.state.rsaKey || "");
@@ -79,6 +81,7 @@ export default class SignInScreen extends React.Component {
                 password: pd
             }
         }).then((res) => {
+            LoadingUtil.dismissLoading();
             const data = res.data || {};
             const userToken = data.reObj || "";
             if (res.status === 200 && data.reCode === 'ok') {

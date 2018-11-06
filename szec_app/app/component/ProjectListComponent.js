@@ -12,7 +12,8 @@ import {
     FlatList,
     RefreshControl,
     ActivityIndicator,
-    TouchableOpacity
+    TouchableOpacity,
+    DeviceEventEmitter
 } from "react-native";
 import axios from 'axios'
 
@@ -26,6 +27,7 @@ export default class ProjectScreen extends React.Component {
             api: this.props.api,
             pageSize: this.props.pageSize || 10,
             projectData: [],
+            filterStr:''
         }
     }
 
@@ -35,16 +37,21 @@ export default class ProjectScreen extends React.Component {
     }
 
     _loadData(pageIndex) {
+        this.setState({
+            isLoading:true
+        });
         if (this.state.projectData.length <= this.state.totalNum) {
             axios.get(this.state.api, {
                 params: {
                     "$top": this.state.pageSize,
                     "$skip": this.state.pageSize * pageIndex,
-                    "$filter" : "signState ne 7 and issign eq 9 "
+                    "$filter" : "signState ne 7 and issign eq 9" + this.state.filterStr
                 }
             })
                 .then(res => {
+                    console.log(res);
                     this.setState({
+                        isLoading:false,
                         totalNum: res.data.count,
                         projectData: pageIndex ? this.state.projectData.concat(res.data.value) : res.data.value,
                     })
@@ -57,6 +64,11 @@ export default class ProjectScreen extends React.Component {
 
     componentWillMount() {
         this._loadData(this.state.pageIndex);
+        this.deEmitter = DeviceEventEmitter.addListener('search', (filterStr) => {
+            this.setState({
+                filterStr:filterStr
+            },()=>{this._loadData(this.state.pageIndex)})
+        });
     }
 
     enIndicator() {
