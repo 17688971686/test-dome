@@ -97,7 +97,7 @@ public class PostdoctoralStaff extends DomainBase {
     private String topicIntroduce  ;
 
     /**
-     * 0.申请进站 1.表示进站，2.申请出站 3.出站
+     * .1.申请进站 2.表示进站，3.申请出站 4.出站
      */
     @Column(columnDefinition="VARCHAR(1)")
     private String status  ;

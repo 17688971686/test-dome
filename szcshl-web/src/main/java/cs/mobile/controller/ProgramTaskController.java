@@ -17,6 +17,7 @@ import cs.repository.repositoryImpl.project.SignPrincipalRepo;
 import cs.service.flow.FlowService;
 import cs.service.project.SignPrincipalService;
 import cs.service.project.WorkProgramService;
+import cs.service.sys.AnnountmentService;
 import cs.service.sys.OrgDeptService;
 import cs.service.sys.UserService;
 import org.apache.log4j.Logger;
@@ -63,6 +64,8 @@ public class ProgramTaskController {
     @Autowired
     private WorkProgramService workProgramService;
 
+    @Autowired
+    private AnnountmentService annService;
     /**
      * 部长以上审批
      * @param request
@@ -176,6 +179,8 @@ public class ProgramTaskController {
         }
         //获取会议信息
         resultMap.put("proMeetInfo", workProgramService.findProMeetInfo());
+        resultMap.put("annountmentList", annService.getHomePageAnnountment());
+
         return new ResultMsg(true,"ok","成功",resultMap);
     }
 

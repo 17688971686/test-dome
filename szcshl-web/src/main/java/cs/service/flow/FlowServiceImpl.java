@@ -378,7 +378,8 @@ public class FlowServiceImpl implements FlowService {
             //发送腾讯通消息
             if(Validate.isString(assigneeValue)){
                 RTXSendMsgPool.getInstance().sendReceiverIdPool(flowDto.getTaskId(), assigneeValue);
-                rtxService.dealPoolRTXMsg(flowDto.getTaskId(),resultMsg,instance.getName(),isProj? Constant.MsgType.project_type.name(): Constant.MsgType.task_type.name());
+                ProcessDefinitionEntity processDefinitionEntity = (ProcessDefinitionEntity) repositoryService.getProcessDefinition(instance.getProcessDefinitionId());
+                rtxService.dealPoolRTXMsg(flowDto.getTaskId(),resultMsg, processDefinitionEntity.getName(),isProj? Constant.MsgType.project_type.name(): Constant.MsgType.task_type.name());
             }
         } catch (Exception e) {
             errorMsg = e.getMessage();

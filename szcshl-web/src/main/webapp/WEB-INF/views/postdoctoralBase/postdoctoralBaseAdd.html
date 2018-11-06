@@ -11,7 +11,7 @@
         <li class="active">{{vm.title}}</li>
     </ol>
     <div class="toolbar">
-        <button class="btn btn-sm btn-danger" ng-click="back();">
+        <button class="btn btn-sm btn-primary" ng-click="back();">
             <span class="glyphicon glyphicon-chevron-left"></span>返回
         </button>
         <button class="btn btn-sm btn-success"  ng-click="vm.createPostdoctoralBase()" ng-hide="vm.isShowUpdate" >
@@ -23,6 +23,7 @@
     </div>
     <div class="tab-content" style="background:white;">
         <form id="form" name="form">
+            <input name="id" id="id" type="hidden" ng-model="vm.postdoctoralBase.id"/>
             <table class="table table-bordered">
                 <tr>
                     <td class="text-right" width="15%">基地名称<span class="required">*</span></td>
@@ -44,12 +45,19 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="text-right">研究方向及领域<span class="required">*</span></td>
+                <tr>
+                    <td class="text-center" >研究方向及领域</td>
+                    <td colspan="5" class="text-left">
+                        <textarea rows="3" ng-model="vm.postdoctoralBase.researchArea" name="researchArea" id="researchArea" style="width:90%"></textarea>
+                    </td>
+                </tr>
+
+            <!--    <td class="text-right">研究方向及领域<span class="required">*</span></td>
                     <td>
                         <input type="text" name="researchArea" id="researchArea" ng-model="vm.postdoctoralBase.researchArea" style="width: 60%"
                                data-val="true" data-val-required="必填">
                         <span data-valmsg-for="researchArea" data-valmsg-replace="true" class="errors"></span>
-                    </td>
+                    </td>-->
                 </tr>
                 <tr>
                     <td class="text-right">基地负责人<span class="required">*</span></td>
@@ -69,12 +77,16 @@
                 </tr>
 
                 <tr>
-                    <td class="text-right">日常管理人员<span class="required">*</span></td>
+                    <td class="text-center" >基地日常工作职责</td>
+                    <td colspan="5" class="text-left">
+                        <textarea rows="3" ng-model="vm.postdoctoralBase.workDuty" name="workDuty" id="workDuty" style="width:90%"></textarea>
+                    </td>
+                  <!--  <td class="text-right">基地日常工作职责<span class="required">*</span></td>
                     <td>
                         <input type="text" name="workDuty" id="workDuty" ng-model="vm.postdoctoralBase.workDuty" style="width: 60%"
                                data-val="true" data-val-required="必填">
                         <span data-valmsg-for="workDuty" data-valmsg-replace="true" class="errors"></span>
-                    </td>
+                    </td>-->
                 </tr>
             </table>
         </form>

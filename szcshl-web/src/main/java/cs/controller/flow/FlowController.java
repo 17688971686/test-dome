@@ -521,8 +521,16 @@ public class FlowController {
             taskId = resultMsg.getIdCode();
             resultMsg.setIdCode(null);
         }
+        ProcessDefinitionEntity processDefinitionEntity = (ProcessDefinitionEntity) repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());
+
+
         //腾讯通消息处理
-        rtxService.dealPoolRTXMsg(taskId,resultMsg,processInstance.getName(),isProj? MsgType.project_type.name(): MsgType.task_type.name());
+        if(isProj){
+            rtxService.dealPoolRTXMsg(taskId,resultMsg,processInstance.getName(), MsgType.project_type.name());
+        }else{
+            rtxService.dealPoolRTXMsg(taskId,resultMsg,processDefinitionEntity.getName(), MsgType.task_type.name());
+        }
+
         return resultMsg;
     }
 

@@ -48,3 +48,9 @@
     <button ng-if="( ('${CURRENT_USER.loginName}'=='admin')|| ${POSTDOCTORAL_ADMIN} )" class="btn btn-xs btn-warning" ng-click="{1}" ><span class="glyphicon glyphicon-warning-sign"></span>删除</button>
     <button ng-if="( (('${CURRENT_USER.loginName}'=='admin') || ${POSTDOCTORAL_ADMIN}) && ('{3}' == '2' || '{3}' == '4') )" class="btn btn-xs btn-warning" ng-click="{4}" ><span class="glyphicon glyphicon-warning-sign"></span>回退</button>
 </script>
+
+<script type="text/template" id="columnNames">
+    <a ng-if="( ('${CURRENT_USER.loginName}'=='admin') || ${POSTDOCTORAL_ADMIN} || ('${CURRENT_USER.loginName}'=='{1}') )" href="#/postdoctoralPopStaffDetail/{0}">{1}</a>
+
+    <span ng-if="( ('${CURRENT_USER.loginName}'!='admin') && ${POSTDOCTORAL_ADMIN}=='0' && ('${CURRENT_USER.loginName}'!='{1}') )">{1}</span>
+</script>

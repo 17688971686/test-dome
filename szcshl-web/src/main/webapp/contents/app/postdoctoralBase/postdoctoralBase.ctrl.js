@@ -32,7 +32,7 @@
             if (isValid) {
                 postdoctoralBaseSvc.createPostdoctoralBase(vm, function (data) {
                     if (data.flag || data.reCode == 'ok') {
-                        vm.id = data.reObj;
+                        vm.postdoctoralBase = data.reObj;
                         vm.isShowUpdate = true;
                         bsWin.alert("保存成功！");
                     }

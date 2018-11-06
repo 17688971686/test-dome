@@ -22,8 +22,10 @@ import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.service.project.AgentTaskService;
 import cs.service.rtx.RTXSendMsgPool;
 import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.log4j.Logger;
@@ -60,6 +62,8 @@ public class AnnountmentServiceImpl implements AnnountmentService {
     private AgentTaskService agentTaskService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private RepositoryService repositoryService;
     /* 
      * 获取个人发布的通知公告
      */
@@ -423,7 +427,8 @@ public class AnnountmentServiceImpl implements AnnountmentService {
         }
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),task.getId(), "操作成功！",processInstance.getName());
+        ProcessDefinitionEntity processDefinitionEntity = (ProcessDefinitionEntity) repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),task.getId(), "操作成功！",processDefinitionEntity.getName());
     }
 
     /**

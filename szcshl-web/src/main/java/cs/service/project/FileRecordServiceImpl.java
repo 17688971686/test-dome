@@ -52,7 +52,7 @@ public class FileRecordServiceImpl implements FileRecordService {
                 fileRecordDto.setFileRecordId(fileRecord.getFileRecordId());
             } else {
                 fileRecord = fileRecordRepo.findById(fileRecordDto.getFileRecordId());
-                BeanCopierUtils.copyPropertiesIgnoreNull(fileRecordDto, fileRecord);
+                BeanCopierUtils.copyProperties(fileRecordDto,fileRecord);
                 //先删除拟补充资料函
 //                addRegisterFileRepo.deleteById(AddRegisterFile_.businessId.getName(), fileRecordDto.getSignId());
             }

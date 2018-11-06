@@ -26,8 +26,10 @@ import cs.service.project.AgentTaskService;
 import cs.service.rtx.RTXSendMsgPool;
 import cs.service.sys.UserService;
 import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.hibernate.Criteria;
@@ -69,6 +71,8 @@ public class AppraiseServiceImpl implements AppraiseService {
     private AgentTaskService agentTaskService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private RepositoryService repositoryService;
 
     /**
      * 查询优秀评审报告列表
@@ -308,9 +312,10 @@ public class AppraiseServiceImpl implements AppraiseService {
         if (Validate.isList(agentTaskList)) {
             agentTaskService.updateAgentInfo(agentTaskList, processInstance.getId(), processInstance.getName());
         }
+        ProcessDefinitionEntity processDefinitionEntity = (ProcessDefinitionEntity) repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), task.getId(),"操作成功！", processInstance.getName());
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), task.getId(),"操作成功！", processDefinitionEntity.getName());
     }
 
     /**

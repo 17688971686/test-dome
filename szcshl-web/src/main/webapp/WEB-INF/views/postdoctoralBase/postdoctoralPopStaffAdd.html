@@ -11,7 +11,7 @@
         <li class="active">{{vm.title}}</li>
     </ol>
     <div class="toolbar">
-        <button class="btn btn-sm btn-danger" ng-click="back();">
+        <button class="btn btn-sm btn-primary" ng-click="back();">
             <span class="glyphicon glyphicon-chevron-left"></span>返回
         </button>
         <button class="btn btn-sm btn-success"  ng-click="vm.commitPostdoctoralStaff()" ng-hide="vm.isShowUpdate" >
@@ -27,13 +27,13 @@
     </div>
     <div class="tab-content" style="background:white;">
         <form id="form" name="form">
-            <table class="" style="width: 70%;text-align: center;">
-                <caption class="text-center"> <h3><strong>博士后在站人员信息表</strong></h3></caption>
+            <table class="" style="width: 100%;text-align: center;">
+                <caption class="text-center"> <h3><strong>博士后出站人员信息表</strong></h3></caption>
 
                 <tr>
                     <td class="text-center" width="10%">姓名<span class="required">*</span></td>
                     <td width="20%">
-                        <input readonly type="text"  maxlength="200" class="form-control input-xm"
+                        <input  type="text"  maxlength="200" class="form-control input-xm"
                                name="name" id="name" ng-init="vm.postdoctoralStaff.name = '${CURRENT_USER.loginName}'" ng-model="vm.postdoctoralStaff.name" data-val-required="必填"
                                data-val="true"/>
                         <span data-valmsg-for="name" data-valmsg-replace="true" class="errors"></span>

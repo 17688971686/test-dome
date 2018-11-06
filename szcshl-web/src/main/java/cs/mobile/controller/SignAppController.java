@@ -1,5 +1,6 @@
 package cs.mobile.controller;
 
+import cs.common.ResultMsg;
 import cs.common.constants.Constant;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
@@ -9,9 +10,11 @@ import cs.domain.sys.User;
 import cs.model.PageModelDto;
 import cs.model.project.SignDispaWorkDto;
 import cs.model.project.SignDto;
+import cs.model.sys.DictDto;
 import cs.repository.odata.ODataObj;
 import cs.service.project.SignDispaWorkService;
 import cs.service.project.SignService;
+import cs.service.sys.DictService;
 import cs.service.sys.UserService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 手机端项目查询接口
@@ -38,6 +45,9 @@ public class SignAppController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private DictService dictService;
 
     /**
      * 根据ID查询项目收文信息
@@ -81,4 +91,21 @@ public class SignAppController {
         signDispaWork = signService.getBackAppList(odataObj, isOrgLeader,user);
         return signDispaWork;
     }
+
+    @RequestMapping(name = "初始化评审部门", path = "initDeptList", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg initDeptList() {
+        return signService.initSignList();
+    }
+
+    @RequestMapping(name = "初始化数字字典", path = "initDictList", method = RequestMethod.POST)
+    public ResultMsg initSignDictList() {
+        Map map = new HashMap<String,Object>();
+        List<DictDto> dictDtoList = new ArrayList<DictDto>();
+        dictDtoList.addAll(dictService.getDictItemByCode("PRO_STAGE"));
+        map.put("PRO_STAGE",dictService.getDictItemByCode("PRO_STAGE"));
+        map.put("SECRECTLEVEL",dictService.getDictItemByCode("SECRECTLEVEL"));
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "数字字典初始化",map);
+    }
+
 }
