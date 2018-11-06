@@ -1381,6 +1381,26 @@
                     controller: 'postdoctoralStaffCtrl',
                     controllerAs: 'vm'
                 })
+            //博士后基地课题
+                .state('postdoctoralSubjectList', {
+                url: '/postdoctoralSubjectList',
+                templateUrl: rootPath + "/postdoctorSubject/html/subjectList.html",
+                controller: 'postdoctorSubjectCtrl',
+                controllerAs: 'vm'
+            })
+                .state('postdoctoralSubjectAdd', {
+                    url: '/postdoctoralSubjectAdd/:id',
+                    templateUrl: rootPath + "/postdoctorSubject/html/postdoctoralSubjectAdd.html",
+                    controller: 'postdoctorSubjectEditCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('postdoctoralSubjectDetail', {
+                    url: '/postdoctoralSubjectDetail/:id',
+                    templateUrl: rootPath + "/postdoctorSubject/html/postdoctoralSubjectDetail.html",
+                    controller: 'postdoctorSubjectEditCtrl',
+                    controllerAs: 'vm'
+                })
+
             //end 博士后基地结束
         }]).run(function ($rootScope, $http, $state, $stateParams, bsWin) {
         $rootScope.rootPath = rootPath;

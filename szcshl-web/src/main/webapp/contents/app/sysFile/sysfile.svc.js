@@ -47,7 +47,9 @@
                 TOPIC_WORKPLAN: "课题工作方案",
                 TOPIC_FILING: "课题归档",
                 MONTH_FILE: "月报简报",
-                AADSUPP_FILE: "拟补充资料函"
+                AADSUPP_FILE: "拟补充资料函",
+                DOCTOR_KTYJDG : "课题研究大纲",
+                DOCTOR_KTWWHT : "课题外委合同"
             }
         }
 

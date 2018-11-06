@@ -1,0 +1,86 @@
+<#assign path=request.contextPath />
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+
+<!-- 附件 -->
+<#include "/file/common.html"/>
+
+<div  class="well well-sm conttent_list" style="background: white;min-height:960px;margin-bottom: 50px;" >
+    <ol class="breadcrumb">
+        <li><a href="#/expertList">博士后基地管理</a></li>
+        <li class="active">课题详情信息</li>
+    </ol>
+    <div class="toolbar">
+        <button class="btn btn-sm btn-danger" ng-click="back();">
+            <span class="glyphicon glyphicon-chevron-left"></span>返回
+        </button>
+    </div>
+    <div class="tab-content" style="background:white;">
+        <form id="form" name="form">
+            <table class="table table-bordered">
+                <tr>
+                    <td class="text-right" width="15%">课题名称</td>
+                    <td colspan="3">
+                        {{vm.subject.subjectName}}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-right">课程负责人</td>
+                    <td>
+                        {{vm.subject.pricipalId}}
+                    </td>
+                    <td class="text-right">创建时间</td>
+                    <td>
+                        {{vm.subject.subjectCreatedDate}}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-right" width="15%">课题研究大纲</td>
+                    <td colspan="3">
+                        <div ng-repeat="x in vm.sysFilelistsYJDG">
+                            <p >
+                                <i class="fa fa-file-image-o" aria-hidden="true" ng-show="x.fileType =='.png' || x.fileType =='.jpg' || x.fileType =='.gif'"></i>
+                                <i class="fa fa-file-word-o" aria-hidden="true" ng-show="x.fileType =='.docx' || x.fileType =='.doc'"></i>
+                                <i class="fa fa-file-excel-o" aria-hidden="true" ng-show="x.fileType =='.xlsx' || x.fileType =='.xls'"></i>
+                                <i class="fa fa-file-pdf-o" aria-hidden="true" ng-show="x.fileType =='.pdf'"></i>
+                                <a ng-click="vm.downloadSysFile(x.sysFileId)">{{ x.showName }}</a>
+                                <button ng-if="x.fileType =='.pdf' || x.fileType =='.docx' || x.fileType =='.doc' || x.fileType =='.xlsx' || x.fileType =='.xls' || x.fileType =='.ppt' || x.fileType =='.pptx'"
+                                        class="btn btn-xs btn-primary" ng-click="previewFile(x.sysFileId,'pdf')"><span class="glyphicon glyphicon-search"></span>查看</button>
+                            </p>
+                        </div>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-right" width="15%">课题外委合同</td>
+                    <td colspan="3">
+                        <div ng-repeat="x in vm.sysFilelistsWWHT">
+                            <p >
+                                <i class="fa fa-file-image-o" aria-hidden="true" ng-show="x.fileType =='.png' || x.fileType =='.jpg' || x.fileType =='.gif'"></i>
+                                <i class="fa fa-file-word-o" aria-hidden="true" ng-show="x.fileType =='.docx' || x.fileType =='.doc'"></i>
+                                <i class="fa fa-file-excel-o" aria-hidden="true" ng-show="x.fileType =='.xlsx' || x.fileType =='.xls'"></i>
+                                <i class="fa fa-file-pdf-o" aria-hidden="true" ng-show="x.fileType =='.pdf'"></i>
+                                <a ng-click="vm.downloadSysFile(x.sysFileId)">{{ x.showName }}</a>
+                                <button ng-if="x.fileType =='.pdf' || x.fileType =='.docx' || x.fileType =='.doc' || x.fileType =='.xlsx' || x.fileType =='.xls' || x.fileType =='.ppt' || x.fileType =='.pptx'"
+                                        class="btn btn-xs btn-primary" ng-click="previewFile(x.sysFileId,'pdf')"><span class="glyphicon glyphicon-search"></span>查看</button>
+                            </p>
+                        </div>
+                    </td>
+                </tr>
+            </<table>
+        </form>
+    </div>
+
+    <!--S 上传附件弹窗 -->
+    <div id="commonUploadWindow" style="margin:0px 20px 0px 10px;background:white;display:none;">
+        <input type="file" id="sysfileinput" name="file" multiple="multiple" class="file-loading"/>
+        <div ng-show="vm.sysFile.showBusiType">
+            <span >文件类型：</span>
+            <span >
+           <select id="sysBusiType" name="sysBusiType" ng-model="vm.sysFile.sysBusiType" style="min-width:200px;margin-top:10px;">
+               <option value="">请选择</option>
+               <option  ng-repeat="x in DICT.SYS_MIN_TYPE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+           </select>
+       </span>
+        </div>
+    </div>

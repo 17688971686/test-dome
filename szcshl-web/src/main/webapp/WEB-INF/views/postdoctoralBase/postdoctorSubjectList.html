@@ -1,0 +1,47 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a href="#/postdoctoralSubjectList">博士后基地管理</a></li>
+        <li class="active">{{vm.title}}</li>
+    </ol>
+
+
+    <div class="toolbar">
+        <button class="btn btn-sm btn-primary" ng-click="vm.searchForm()" >
+            <span class="glyphicon glyphicon-search"></span>查询
+        </button>
+        <button class="btn btn-sm btn-primary" ng-click="vm.formReset()">
+            <span class="glyphicon glyphicon-repeat"></span>重置
+        </button>
+        <a class="btn btn-sm btn-success" style="margin-left:10px;" href="#/postdoctoralSubjectAdd/"
+        ng-if="${ISSTAFF}">
+            <span class="glyphicon glyphicon-plus"></span>新增</a>
+    </div>
+
+  <div class="well well-sm">
+        <form id="doctorSubjectForm" name="doctorSubjectForm">
+            <table style="width:100%" id="searchTable">
+                <tr>
+                    <td class="text-right" style="width: 100px;">课题名称</td>
+                    <td ><input name="subjectName" type="text" operator="like" ng-model="vm.searchModel.subjectName"
+                                class="form-control input-sm " style="width: 20%;"/></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+    <div class="grid" kendo-grid="grid" k-options="vm.subjectGridOptions"></div>
+
+
+    <script type="text/template" id="columnBtns">
+        <a class="btn btn-xs btn-primary"  href="#/postdoctoralSubjectAdd/{0}"
+        ng-if="'${CURRENT_USER.loginName}' == '{2}'">
+            <span class="glyphicon glyphicon-pencil"></span>编辑</a>
+        <button class="btn btn-xs btn-danger" ng-click="{1}"
+                ng-if="'${CURRENT_USER.loginName}' == '{2}'" ><span class="glyphicon glyphicon-remove"></span>删除</button>
+    </script>
+</div>
