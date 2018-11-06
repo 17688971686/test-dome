@@ -83,17 +83,21 @@
          * 创建课题
          */
         vm.createSubject = function(){
-            postdoctorSubjectSvc.createSubject(vm , function(data){
-                if (data.flag || data.reCode == 'ok') {
-                    vm.subject = data.reObj;
-                    vm.id = vm.subject.id;
-                    vm.isShowUpdate = true;
-                    bsWin.success("保存成功！");
-                    // $state.go('postdoctoralSubjectList');
-                } else {
-                    bsWin.error(data.reMsg);
-                }
-            })
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                postdoctorSubjectSvc.createSubject(vm, function (data) {
+                    if (data.flag || data.reCode == 'ok') {
+                        vm.subject = data.reObj;
+                        vm.id = vm.subject.id;
+                        vm.isShowUpdate = true;
+                        bsWin.success("保存成功！");
+                        // $state.go('postdoctoralSubjectList');
+                    } else {
+                        bsWin.error(data.reMsg);
+                    }
+                })
+            }
         }
 
 
