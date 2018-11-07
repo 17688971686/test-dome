@@ -22,10 +22,11 @@
         var expertID = $state.params.expertID;          //专家ID
         vm.isback = $state.params.isback;               //用来判断返回的是否是维护页面的工作方案
         vm.processInstanceId = $state.params.processInstanceId; //流程实例ID
+        vm.reviewType = $state.params.reviewType;       //评审方式
         vm.isSuperUser = isSuperUser;
         vm.saveNewExpertFlag = 0;                       //保存新专家标志
-        vm.reviewType = $state.params.reviewType;       //评审方式
-        vm.showLastDraf = true;
+        vm.isAutoDraf = false;                         //是否已经进行专家抽取（如果选择的专家有抽取类型，则表示已经进行抽取操作 ）
+        vm.showLastDraf = true;                        //是否显示上次抽取的信息
         vm.sorces = [0 ,1 , 2 , 3, 4 , 5];
         //显示上次抽取的专家
         //S 查看专家详细
@@ -145,6 +146,10 @@
             vm.selectIds = [];
             expertReviewSvc.initReview(businessId, minBusinessId, function (data) {
                 vm.expertReview = data;
+                //显示随机收取按钮
+                /*if((vm.expertReview.finishExtract > 0) ||(vm.expertReview.state == 9 || vm.expertReview.state == '9')){
+                    vm.isAutoDraf = true;
+                }*/
                 //将综合分数转换为string类型，以防遍历时默认选中出问题
                 if(vm.expertReview.expertSelConditionDtoList) {
                     $.each(vm.expertReview.expertSelConditionDtoList , function(i , obj){
@@ -164,6 +169,9 @@
                         isShowAutoExpert = true;
                     }
                     $.each(vm.expertReview.expertSelectedDtoList, function (i, sep) {
+                        if(!vm.isAutoDraf && (sep.selectType == 1 || sep.selectType == '1')){
+                            vm.isAutoDraf = true;
+                        }
                         vm.selectIds.push(sep.expertDto.expertID);
                         vm.confirmEPList.push(sep);
                         //显示最新抽取未确认的专家
@@ -586,7 +594,7 @@
                 bsWin.alert("请先进行整体专家抽取条件设置并保存！");
                 return;
             }
-            if (!isSuperUser && (vm.expertReview.state == 9 || vm.expertReview.state == '9')) {
+            if (!isSuperUser && vm.isAutoDraf) {
                 bsWin.alert("当前项目已经进行整体专家方案的抽取，不能再修改方案！");
                 return;
             }
@@ -616,7 +624,8 @@
                                 vm.showAutoExpertWin();
                                 //显示抽取效果
                                 expertReviewSvc.validateAutoExpert(data.reObj.allEPList, vm);
-
+                                //更新抽取状态
+                                vm.isAutoDraf = true;
                             } else {
                                 bsWin.error(data.reMsg);
                             }

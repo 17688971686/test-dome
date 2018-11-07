@@ -15,7 +15,7 @@
         vm.endDateTime = new Date("2060/6/1 21:00");
 
         vm.signid =  $state.params.signid;		//收文ID
-        vm.taskid = $state.params.taskid;		//任务ID，用户区分是自己的工作方案，还是代办的工作方案
+        vm.taskid = $state.params.taskid;		//任务ID
         vm.branchId = $state.params.branchId;   //分支ID
 
         vm.work.signId = $state.params.signid;
@@ -422,7 +422,9 @@
                                 minBusinessId: vm.work.id,
                                 businessType: "SIGN",
                                 reviewType: vm.work.reviewType,
-                                taskId :vm.taskid
+                                processInstanceId:vm.work.processInstanceId ||'',
+                                taskId :vm.taskid,
+                                isback:false
                             });
                         }
                     }else{

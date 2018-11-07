@@ -506,14 +506,19 @@ public class ExpertServiceImpl implements ExpertService {
         boolean isLetterRw = false;     //是否专家函评，默认是否
         int selectedEPCount = -1;       //符合条件的专家
         List<ExpertDto> officialEPList = new ArrayList<>(), alternativeEPList = new ArrayList<>(), allEPList = new ArrayList<>();
-        ExpertReview expertReview = expertReviewRepo.findById(ExpertReview_.id.getName(), reviewId);
+        ExpertReview expertReview = expertReviewRepo.findById(reviewId);
         if( null != expertReview.getPayDate() && null != expertReview.getReviewDate() && (new Date()).after(expertReview.getReviewDate())){
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"已发送专家评审费，不能对方案再修改！");
         }
 
         if(isAllExtract){
-            if(Validate.isObject(expertReview.getFinishExtract()) && expertReview.getFinishExtract() > 0){
-                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"该项目已进行整体专家方案抽取，不能再次执行此操作！");
+            //如果已经有抽取类型的专家，则表示该方案已经进行了全局抽取
+            List<ExpertSelected> selectedList = expertReview.getExpertSelectedList();
+            for(ExpertSelected expertSelected : selectedList){
+                if(Constant.EnumExpertSelectType.AUTO.getValue().equals(expertSelected.getSelectType())
+                        && minBusinessId.equals(expertSelected.getBusinessId())){
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"该项目已进行整体专家方案抽取，不能再次执行此操作！");
+                }
             }
         }
 

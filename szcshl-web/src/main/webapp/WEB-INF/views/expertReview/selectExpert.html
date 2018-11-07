@@ -29,19 +29,19 @@
     <div class="toolbar" style="min-height: 200px;">
         <div>
             <span>1、OA系统随机抽取专家方案</span><!--系统管理员可以修改-->
-            <button class="btn btn-xs btn-success" ng-click="vm.addCondition()" ng-disabled="('${CURRENT_USER.loginName}' !=  'admin') && (vm.isCommit || vm.expertReview.state == 9 || vm.expertReview.state == '9')">
+            <button class="btn btn-xs btn-success" ng-click="vm.addCondition()" ng-disabled="('${CURRENT_USER.loginName}' !=  'admin') && vm.isAutoDraf">
                 <span class="glyphicon glyphicon-ok"></span>添加条件
             </button>
-            <button class="btn btn-xs btn-danger" ng-click="vm.removeCondition()" ng-disabled="('${CURRENT_USER.loginName}' !=  'admin') && (vm.isCommit || vm.expertReview.state == 9 || vm.expertReview.state == '9')">
+            <button class="btn btn-xs btn-danger" ng-click="vm.removeCondition()" ng-disabled="('${CURRENT_USER.loginName}' !=  'admin') && vm.isAutoDraf">
                 <span class="glyphicon glyphicon-remove"></span>删除条件
             </button>
-            <button class="btn btn-xs btn-success" ng-click="vm.saveCondition()" ng-disabled="('${CURRENT_USER.loginName}' !=  'admin') && (vm.isCommit || vm.expertReview.state == 9 || vm.expertReview.state == '9')">
+            <button class="btn btn-xs btn-success" ng-click="vm.saveCondition()" ng-disabled="('${CURRENT_USER.loginName}' !=  'admin') && vm.isAutoDraf">
                 <span class="glyphicon glyphicon-ok"></span>保存
             </button>
             |
             <!--整体抽取方案只能抽取一次-->
             <button class="btn btn-xs btn-primary" ng-click="vm.startAutoExpertWin()"
-                    ng-disabled="vm.isCommit || (vm.expertReview.finishExtract > 0) ||(vm.expertReview.state == 9 || vm.expertReview.state == '9')">
+                    ng-disabled="('${CURRENT_USER.loginName}' !=  'admin') && (vm.isAutoDraf || vm.isCommit)">
                 <span class="glyphicon glyphicon-asterisk"></span>开始随机抽取
             </button>
             <button class="btn btn-xs btn-primary" ng-click="vm.showAutoExpertWin()">

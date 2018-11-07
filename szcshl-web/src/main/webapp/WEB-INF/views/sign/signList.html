@@ -82,13 +82,21 @@
                                class="form-control input-sm "/>
                     </td>
                     <td class="text-right" style="width:10%;min-width: 80px;max-width-width:120px;">建设单位</td>
-                    <td colspan="3" style="width: 40%;">
+                    <td style="width: 15%;">
                         <input name="builtcompanyname" type="text" operator="like"
                                ng-model="vm.project.builtcompanyname" class="form-control input-sm "/>
                     </td>
+                    <td class="text-right" style="width:10%;min-width: 80px;min-width:120px;">缓急程度</td>
+                    <td width="15%">
+                        <select operator="eq" name="urgencydegree" class="form-control select-sm "
+                                ng-model="vm.project.urgencydegree">
+                            <option value="">请选择</option>
+                            <option ng-repeat="x in DICT.BAOMI.dicts" value="{{x.dictName}}" ng-selected="vm.project.urgencydegree==x.dictName" >{{x.dictName}}</option>
+                        </select>
+                    </td>
                     <td style="vertical-align: top;">
                         <div class="more">
-                           <span >展开</span><i class="fa fa-angle-double-down" aria-hidden="true"></i>
+                            <span >展开</span><i class="fa fa-angle-double-down" aria-hidden="true"></i>
                         </div>
                     </td>
                 </tr>
@@ -120,7 +128,7 @@
                     <input ng-if="vm.project.isAdvanced=='正常'" name="isAdvanced" operator="ne" value="isNull" hidden/>
                     <input ng-if="vm.project.isAdvanced=='提前介入'" name="isAdvanced" operator="eq" value="9" hidden/>
 
-                    <td class="text-right" style="width:10%;min-width: 80px;min-width:120px;">评审部门</td>
+                    <td class="text-right" style="width:10%;min-width: 80px;min-width:120px;">主办部门</td>
                     <td width="15%">
                         <select name="mOrgId" class="form-control select-sm " operator="eq"
                                 ng-model="vm.project.mOrgId">
@@ -128,12 +136,12 @@
                             <option ng-repeat="x in vm.orgDeptList" value="{{x.id}}" ng-selected="vm.project.mOrgId==x.id" >{{x.name}}</option>
                         </select>
                     </td>
-                    <td class="text-right" style="width:10%;min-width: 80px;min-width:120px;">缓急程度</td>
+                    <td class="text-right" style="width:10%;min-width: 80px;min-width:120px;">协办部门</td>
                     <td width="15%">
-                        <select operator="eq" name="urgencydegree" class="form-control select-sm "
-                                ng-model="vm.project.urgencydegree">
+                        <select name="aOrgId" class="form-control select-sm " operator="like"
+                                ng-model="vm.project.aOrgId">
                             <option value="">请选择</option>
-                            <option ng-repeat="x in DICT.BAOMI.dicts" value="{{x.dictName}}" ng-selected="vm.project.urgencydegree==x.dictName" >{{x.dictName}}</option>
+                            <option ng-repeat="x in vm.orgDeptList" value="{{x.id}}" ng-selected="vm.project.aOrgId==x.id" >{{x.name}}</option>
                         </select>
                     </td>
                 </tr>
