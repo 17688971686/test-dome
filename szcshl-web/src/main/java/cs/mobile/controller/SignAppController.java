@@ -99,12 +99,11 @@ public class SignAppController {
     }
 
     @RequestMapping(name = "初始化数字字典", path = "initDictList", method = RequestMethod.POST)
+    @ResponseBody
     public ResultMsg initSignDictList() {
         Map map = new HashMap<String,Object>();
-        List<DictDto> dictDtoList = new ArrayList<DictDto>();
-        dictDtoList.addAll(dictService.getDictItemByCode("PRO_STAGE"));
-        map.put("PRO_STAGE",dictService.getDictItemByCode("PRO_STAGE"));
-        map.put("SECRECTLEVEL",dictService.getDictItemByCode("SECRECTLEVEL"));
+        map.put("PRO_STAGE",dictService.getDictForAppByCode("PRO_STAGE"));
+        map.put("SECRECTLEVEL",(dictService.getDictForAppByCode("SECRECTLEVEL")));
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "数字字典初始化",map);
     }
 

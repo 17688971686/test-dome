@@ -11,6 +11,12 @@
         vm.postdoctoralStaff = {};
         vm.businessFlag = {};
         vm.searchModel = {};
+        vm.searchModel.status = '1,2,3';
+
+
+
+
+
         vm.id = $state.params.id;
         vm.name = $state.params.name;
 
@@ -47,7 +53,6 @@
         active();
         function active(){
             postdoctoralStaffSvc.postdoctoralStaffGrid(vm);
-            //postdoctoralStaffSvc.postdoctoralPopStaffGrid(vm);
             if(vm.id){
                 vm.isShowUpdate = true;
                 postdoctoralStaffSvc.findPostdoctoralStaffById(vm.id , function(data){
@@ -190,6 +195,7 @@
 
         //表单查询
         vm.searchForm = function(){
+            vm.gridOptions.dataSource.transport.options.read.url = rootPath+'/postdoctoralStaff/findByOData';
             vm.gridOptions.dataSource._skip=0;
             vm.gridOptions.dataSource.read();
         }

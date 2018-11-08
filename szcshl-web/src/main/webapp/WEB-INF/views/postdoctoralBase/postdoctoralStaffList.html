@@ -17,7 +17,7 @@
         <button class="btn btn-sm btn-primary" ng-click="vm.formReset()">
             <span class="glyphicon glyphicon-repeat"></span>重置
         </button>
-        <a  ng-if="( ('${CURRENT_USER.loginName}'=='admin')|| ${POSTDOCTORAL_PERSON} )" class="btn btn-sm btn-success"  href="#/postdoctoralStaffAdd/">
+        <a  ng-if="( ('${CURRENT_USER.loginName}'=='admin')|| ${POSTDOCTORAL_PERSON}|| ${POSTDOCTORAL_ADMIN})" class="btn btn-sm btn-success"  href="#/postdoctoralStaffAdd/">
             <span class="glyphicon glyphicon-plus"></span>新增</a>
     </div>
 
@@ -27,6 +27,14 @@
                 <tr>
                     <td class="text-right" style="width:8%;">姓名</td>
                     <td width="12%"><input name="name" type="text" operator="like" ng-model="vm.searchModel.name" class="form-control input-sm "/></td>
+                    <td class="text-right" style="width:8%;">状态</td>
+                    <td width="12%">
+                        <select class="form-control select-sm" ng-model="vm.searchModel.status" operator="in" name="status" ng-init="vm.searchModel.status=='1,2,3'">
+                            <option value="0,1,2,3" >全部</option>
+                            <option value="1,2,3" ng-selected="vm.searchModel.status=='1,2,3'">已提交</option>
+                            <option value="0" ng-selected="vm.searchModel.status==0">未提交</option>
+                        </select>
+                    </td>
 
                     <td class="text-right" style="width:10%;min-width: 80px;max-width-width:120px;">进入基地时间</td>
                     <td >
