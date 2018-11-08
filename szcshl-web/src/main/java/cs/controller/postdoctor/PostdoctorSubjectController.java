@@ -85,7 +85,7 @@ public class PostdoctorSubjectController {
     @RequestMapping(name = "课题列表页" , path = "html/subjectList")
     public String subjectList(){
         //设置是否是在站人员
-        SessionUtil.getSession().setAttribute("ISSTAFF" , postdoctoralStaffService.findByName());
+        SessionUtil.getSession().setAttribute("ISSTAFF" , postdoctoralStaffService.findByName() ? 1 : 0 );
         return ctrlName + "/postdoctorSubjectList";
     }
 
