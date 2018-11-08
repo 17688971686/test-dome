@@ -263,20 +263,11 @@
                         var isCanEdit = true;
                         //已发布或者走流程的不能删除
                         if (item.issue == '9' || item.processInstanceId) {
-                            if (item.issue == '0' && item.appoveStatus == '9') {
-                                isCanDel = true;
-                            } else {
-                                isCanDel = false;
-                            }
-
+                            isCanDel = false;
                         }
-                        if (item.processInstanceId) {
-                            if (item.issue == '0' && item.appoveStatus == '9') {
-                                isCanEdit = true;
-                            } else {
-                                isCanEdit = false;
-                            }
-
+                        //已经正式发布的不能编辑
+                        if (item.issue == '9' || item.issue == 9) {
+                            isCanEdit = false;
                         }
                         return common.format(
                             $('#columnBtns').html(),
