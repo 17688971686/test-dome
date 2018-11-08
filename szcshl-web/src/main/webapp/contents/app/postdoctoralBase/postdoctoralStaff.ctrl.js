@@ -12,11 +12,6 @@
         vm.businessFlag = {};
         vm.searchModel = {};
         vm.searchModel.status = '1,2,3';
-
-
-
-
-
         vm.id = $state.params.id;
         vm.name = $state.params.name;
 

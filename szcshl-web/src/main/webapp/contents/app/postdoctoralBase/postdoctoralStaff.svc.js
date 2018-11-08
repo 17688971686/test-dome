@@ -175,14 +175,14 @@
             //S_序号
             // Begin:column
             var columns = [
-                {
+                /*{
                     template: function (item) {
                         return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />", item.id)
                     },
                     filterable: false,
                     width: 40,
                     title: "<input id='checkboxAll' type='checkbox'  class='checkbox' />"
-                },
+                },*/
                 {
                     field: "rowNumber",
                     title: "序号",
@@ -219,6 +219,23 @@
                     width: 160,
                     filterable: false,
                     format: "{0:yyyy-MM-dd}"
+                },
+                {
+                    field: "status",
+                    title: "状态",
+                    width: 160,
+                    filterable: false,
+                    template: function (item) {
+                        if(item.status == 0){
+                            return "未送审";
+                        }else if(item.status == 1){
+                            return "送审";
+                        }else if(item.status == 2){
+                            return "在站";
+                        }else if(item.status == 3){
+                            return "申请出站";
+                        }
+                    }
                 },
                 {
                     field: "",
