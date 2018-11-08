@@ -37,6 +37,10 @@
             vm.subjectGridOptions.dataSource.read();
         }
 
+        /**
+         * 查看详情页
+         * @param id
+         */
         vm.details = function(id){
             postdoctorSubjectSvc.isPermission(function(data){
                 if(data.flag || data.reCode == 'ok'){

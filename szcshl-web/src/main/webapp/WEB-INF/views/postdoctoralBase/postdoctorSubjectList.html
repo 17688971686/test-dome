@@ -17,8 +17,8 @@
         <button class="btn btn-sm btn-primary" ng-click="vm.formReset()">
             <span class="glyphicon glyphicon-repeat"></span>重置
         </button>
-        <a class="btn btn-sm btn-success" style="margin-left:10px;" href="#/postdoctoralSubjectAdd/"
-        ng-if="${ISSTAFF}">
+        <a class="btn btn-sm btn-success"  href="#/postdoctoralSubjectAdd/"
+        ng-if="'${CURRENT_USER.loginName}'=='admin' || ${ISSTAFF} == 1">
             <span class="glyphicon glyphicon-plus"></span>新增</a>
     </div>
 
@@ -39,9 +39,9 @@
 
     <script type="text/template" id="columnBtns">
         <a class="btn btn-xs btn-primary"  href="#/postdoctoralSubjectAdd/{0}"
-        ng-if="'${CURRENT_USER.loginName}' == '{2}'">
+        ng-if="'${CURRENT_USER.loginName}' == '{2}' || '${CURRENT_USER.loginName}'=='admin'">
             <span class="glyphicon glyphicon-pencil"></span>编辑</a>
         <button class="btn btn-xs btn-danger" ng-click="{1}"
-                ng-if="'${CURRENT_USER.loginName}' == '{2}'" ><span class="glyphicon glyphicon-remove"></span>删除</button>
+                ng-if="'${CURRENT_USER.loginName}' == '{2}' || '${CURRENT_USER.loginName}'=='admin'" ><span class="glyphicon glyphicon-remove"></span>删除</button>
     </script>
 </div>
