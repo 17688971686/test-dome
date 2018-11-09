@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>111</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        p{
+            text-indent: 2em;
+            margin: 0;
+            line-height: 30px;
+        }
+    </style>
+</head>
+<body id="main" style="padding: 10px;">
+
+<script>
+    /*var data = 0;
+    function sendData(data) {
+        if (window.originalPostMessage) {
+            window.postMessage(data);
+        } else {
+            throw Error('postMessage接口还未注入');
+        }
+    }*/
+
+    window.onload = function () {
+        document.addEventListener('message', e => {
+            document.getElementById('main').innerHTML = e.data;
+        });
+        /*document.getElementById('button').onclick = function () {
+            data += 100;
+            sendData(data);
+        }*/
+    }
+</script>
+</body>
+</html>

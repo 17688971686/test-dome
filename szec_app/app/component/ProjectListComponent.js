@@ -13,7 +13,8 @@ import {
     RefreshControl,
     ActivityIndicator,
     TouchableOpacity,
-    DeviceEventEmitter
+    DeviceEventEmitter,
+    Dimensions
 } from "react-native";
 import axios from 'axios'
 
@@ -27,7 +28,8 @@ export default class ProjectScreen extends React.Component {
             api: this.props.api,
             pageSize: this.props.pageSize || 10,
             projectData: [],
-            filterStr:''
+            filterStr: '',
+            tips: ''
         }
     }
 
@@ -37,38 +39,71 @@ export default class ProjectScreen extends React.Component {
     }
 
     _loadData(pageIndex) {
-        this.setState({
-            isLoading:true
-        });
-        if (this.state.projectData.length <= this.state.totalNum) {
-            axios.get(this.state.api, {
-                params: {
-                    "$top": this.state.pageSize,
-                    "$skip": this.state.pageSize * pageIndex,
-                    "$filter" : "signState ne 7 and issign eq 9" + this.state.filterStr
-                }
-            })
-                .then(res => {
-                    console.log(res);
+        axios({
+            url: this.state.api,
+            method: "post",
+            params: {
+                "$top": this.state.pageSize,
+                "$skip": this.state.pageSize * pageIndex,
+                "$filter": "signState ne 7 and issign eq 9" + this.state.filterStr
+            },
+        })
+            .then(res => {
+                console.log(res);
+                if(res.data.value.length===0){
                     this.setState({
-                        isLoading:false,
-                        totalNum: res.data.count,
-                        projectData: pageIndex ? this.state.projectData.concat(res.data.value) : res.data.value,
+                        tips:'未查到相关的项目'
                     })
+                }
+                this.setState({
+                    isLoading: false,
+                    pageIndex: pageIndex,
+                    totalNum: res.data.count,
+                    projectData: pageIndex ? this.state.projectData.concat(res.data.value) : res.data.value,
+                    reshing: false,
                 })
-                .catch(error => {
-                    console.log(error);
-                });
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
+
+    //下拉刷新
+    refreshing() {
+        this.setState({
+            isLoading: true
+        });
+        this._loadData(0);
+    };
+
+    //上拉加载更多
+    loadMore(pageIndex) {
+        if (this.state.projectData.length < this.state.totalNum) {
+            this._loadData(pageIndex);
+        } else {
+            this.setState({
+                tips: '到底啦，没有更多数据了'
+            })
         }
     }
 
     componentWillMount() {
-        this._loadData(this.state.pageIndex);
+        this.refreshing();
         this.deEmitter = DeviceEventEmitter.addListener('search', (filterStr) => {
             this.setState({
-                filterStr:filterStr
-            },()=>{this._loadData(this.state.pageIndex)})
+                filterStr: filterStr
+            }, () => {
+                this.refreshing(0)
+            })
         });
+    }
+
+    ListEmptyComponent() {
+        return (
+            <View>
+                <Text>没有匹配的数据</Text>
+            </View>
+        )
     }
 
     enIndicator() {
@@ -82,7 +117,7 @@ export default class ProjectScreen extends React.Component {
                 </View>
                 :
                 <View style={styles.noMore}>
-                    <Text>到底啦,没有更多数据了</Text>
+                    <Text>{this.state.tips}</Text>
                 </View>
         )
 
@@ -93,8 +128,8 @@ export default class ProjectScreen extends React.Component {
             <TouchableOpacity style={styles.item} activeOpacity={1}
                               onPress={() => this.props.navigation.navigate('ProDetailsScreen', {
                                   signId: item.signid,
-                                  projectName:item.projectname,
-                                  processInstanceId:item.processInstanceId
+                                  projectName: item.projectname,
+                                  processInstanceId: item.processInstanceId
                               })}>
                 <Text style={styles.itemName} activeOpacity={1}>{item.projectname}</Text>
                 <View style={styles.itemView}>
@@ -118,33 +153,39 @@ export default class ProjectScreen extends React.Component {
     }
 
     render() {
+        let {height} = Dimensions.get('window');
         return (
-            <FlatList
-                style={{width: '100%'}}
-                keyExtractor={this._extraUniqueKey}
-                data={this.state.projectData}
-                renderItem={({item}) => this._renderItem(item)}
-                refreshControl={
-                    <RefreshControl
-                        title={'Loading'} //IOS
-                        colors={['orange', 'green']} //android
-                        tintColor={['orange']} //IOS
-                        refreshing={this.state.isLoading}
-                        onRefresh={() => {
-                            this.setState({
-                                pageIndex: 0
-                            }, () => this._loadData(this.state.pageIndex))
-                        }}
-                    />
-                }
-                ListFooterComponent={() => this.enIndicator()}
-                onEndReachedThreshold={0.1}
-                onEndReached={() => {
-                    this.setState({
-                        pageIndex: this.state.pageIndex + 1
-                    }, () => this._loadData(this.state.pageIndex))
-                }}
-            />
+            <View style={{height: height - 90, width: '100%'}}>
+                <FlatList
+                    style={{width: '100%', height: '100%'}}
+                    keyExtractor={this._extraUniqueKey}
+                    data={this.state.projectData}
+                    renderItem={({item}) => this._renderItem(item)}
+                    refreshControl={
+                        <RefreshControl
+                            title={'Loading'} //IOS
+                            colors={['orange', 'green']} //android
+                            tintColor={['orange']} //IOS
+                            refreshing={this.state.isLoading}
+                            onRefresh={() => {
+                                this.refreshing()
+                            }}
+                        />
+                    }
+                    onMomentumScrollBegin={() => {
+                        this.onEndReachedCalledDuringMomentum = false;
+                    }}
+                    ListFooterComponent={() => this.enIndicator()}
+                    onEndReachedThreshold={0.1}
+                    onEndReached={() => {
+                        if (!this.onEndReachedCalledDuringMomentum) {
+                            this.loadMore(this.state.pageIndex + 1)
+                        }
+                        this.onEndReachedCalledDuringMomentum = true;
+                    }
+                    }
+                />
+            </View>
         );
     }
 

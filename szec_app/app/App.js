@@ -23,6 +23,7 @@ import ProDetailsScreen from "./screen/ProDetailsScreen";
 import ApproveScreen from "./screen/ApproveScreen";
 import ProRepeatScreen from "./screen/ProRepeatScreen";
 import ProRepeatDetailScreen from "./screen/ProRepeatDetailScreen";
+import AnnountmentDetailScreen from "./screen/Home/AnnountmentDetailScreen"
 
 
 
@@ -100,7 +101,8 @@ const RouteConfigs = {
     ProDetailsScreen: ProDetailsScreen,
     ApproveScreen:ApproveScreen,
     ProRepeatScreen: ProRepeatScreen,
-    ProRepeatDetailScreen: ProRepeatDetailScreen
+    ProRepeatDetailScreen: ProRepeatDetailScreen,
+    AnnountmentDetailScreen:AnnountmentDetailScreen
 };
 
 const StackNavigatorConfig = {
@@ -143,8 +145,7 @@ export default class App extends React.Component {
         // axios 全局配置
         /*评审内网测试地址*/
         /*axios.defaults.baseURL = 'http://172.30.36.217:9090/api';*/
-
-        axios.defaults.baseURL = 'http://192.168.1.20:8080/szcshl-web/api';
+        axios.defaults.baseURL = 'http://192.168.1.20:9080/szcshl-web/api';
        /* axios.defaults.baseURL = 'http://192.168.0.170:8080/szcshl-web/api';*/
         axios.defaults.headers.common['clientId'] = DeviceInfo.getUniqueID();
     }
