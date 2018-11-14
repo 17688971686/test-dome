@@ -69,7 +69,7 @@ export default class ChartComponent extends Component {
 		this.refs.chart.postMessage(JSON.stringify(option));
 	}
 	render() {
-        const source = (Platform.OS == 'ios') ? require('./chart.html') : { uri: 'file:///android_asset/chart.html' };
+        const source = (Platform.OS === 'ios') ? require('./chart.html') : { uri: 'file:///android_asset/chart.html' };
 		return (  
 			<View style={{width:this.props.width || width,flex: 1, height: this.props.height || 250,}}>
 				<WebView  

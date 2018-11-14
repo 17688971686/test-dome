@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, Alert, ScrollView, WebView, Dimensions, StyleSheet, TouchableOpacity,AsyncStorage} from 'react-native';
+import {View, Text, Alert, ScrollView, WebView,FlatList,Dimensions, StyleSheet, TouchableOpacity,AsyncStorage} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Header from '../../component/HeaderComponent'
 import ChartComponent from "../../component/ECharts/ChartComponent";
@@ -15,7 +15,8 @@ export default class ListScreen extends React.Component {
             surplusDays: [],
             lineSign: '',
             proMeetInfo: '',
-            userName:''
+            userName:'',
+            annountmentList:[],
         };
     };
     loadData(){
@@ -27,6 +28,7 @@ export default class ListScreen extends React.Component {
             },
         })
             .then((res) => {
+                console.log(res);
                 if (res.data.reCode === 'ok') {
                     let surplusDays = [], projectName = [],dayArr=[];
                     for (let item of res.data.reObj.lineSign) {
@@ -83,9 +85,11 @@ export default class ListScreen extends React.Component {
                     };
                     this.setState({
                         data: res.data.reObj,
+                        annountmentList:res.data.reObj.annountmentList,
                         proMeetInfo: res.data.reObj.proMeetInfo,
                         lineOPtions: lineOptions
-                    })
+                    });
+                    //console.log(this.state.annountmentList)
                 }
 
             })
@@ -116,6 +120,32 @@ export default class ListScreen extends React.Component {
         return m + '月' + d + '日' + w;
     }
 
+    annountmentItem(item){
+        return(
+            <TouchableOpacity style={styles.annountmentItem}
+                              onPress={()=>{this.props.navigation.navigate('AnnountmentDetailScreen',{
+                                  item:item
+                              })}}>
+                <View style={styles.annountmentTitleView}>
+                    <View style={{width:7,height:7,borderRadius:7,marginRight:8,backgroundColor:'#666'}}/>
+                    <Text style={{color:'#333',fontSize:15}}>{item.anTitle}</Text>
+                </View>
+                <Text style={{color:'#999'}}>{item.createdDate.substring(0,10)}</Text>
+            </TouchableOpacity>
+
+        )
+    }
+    //通知公告列表
+    annountmentList(){
+        return(
+            <FlatList
+                keyExtractor={(item,index) => {return("index" + index + item)}}
+                data={this.state.annountmentList}
+                renderItem={({item}) => this.annountmentItem(item)}
+            />
+        )
+    }
+
     render() {
         let meetingDate = [];
         const {navigation} = this.props;
@@ -127,26 +157,26 @@ export default class ListScreen extends React.Component {
                 <Header title={'评审系统'}/>
                 <View style={styles.headerBg}/>
                 <View style={styles.header}>
-                    <TouchableOpacity activeOpacity={0.8} style={styles.headItem} onPress={()=>this.props.navigation.navigate('leadpro')}>
+                    <TouchableOpacity activeOpacity={0.8} style={styles.headItem} onPress={()=>navigation.navigate('leadpro')}>
                         <View style={styles.iconView}>
                             <Icon name='ios-list-box' size={35} color={'#ff9700'}/>
                         </View>
                         <Text>项目审批</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity activeOpacity={0.8} style={styles.headItem} onPress={()=>this.props.navigation.navigate('Project')}>
+                    <TouchableOpacity activeOpacity={0.8} style={styles.headItem} onPress={()=>navigation.navigate('Project')}>
                         <View style={styles.iconView}>
                             <Icon name='ios-list-box' size={35} color={'#1E5AAF'}/>
                         </View>
                         <Text>项目查询统计</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity activeOpacity={0.8} style={styles.headItem} onPress={()=>this.props.navigation.navigate('ProRepeatScreen')}>
+                    <TouchableOpacity activeOpacity={0.8} style={styles.headItem} onPress={()=>navigation.navigate('ProRepeatScreen')}>
                         <View style={styles.iconView}>
                             <Icon name='ios-list-box' size={35} color={'#94af10'}/>
                         </View>
                         <Text>项目重新分办</Text>
                     </TouchableOpacity>
                 </View>
-                <View>
+                <ScrollView>
                     <View style={styles.chart}>
                         <View style={styles.chartTitle}>
                             <View style={styles.line}/>
@@ -161,6 +191,18 @@ export default class ListScreen extends React.Component {
                                 ref="charts"
                                 option={this.state.lineOPtions}
                             />
+                        </View>
+                    </View>
+                    <View style={styles.chart}>
+                        <View style={styles.chartTitle}>
+                            <View style={styles.line}/>
+                            <Text style={styles.titleStyle}>通知公告</Text>
+                             {/*<TouchableOpacity>
+                                <Text style={styles.more}>查看更多</Text>
+                            </TouchableOpacity>*/}
+                        </View>
+                        <View style={[styles.chartView,{height:150,paddingTop:12}]}>
+                            {this.annountmentList()}
                         </View>
                     </View>
                     <View style={styles.chart}>
@@ -183,7 +225,7 @@ export default class ListScreen extends React.Component {
                             </ScrollableTabView>
                         </View>
                     </View>
-                </View>
+                </ScrollView>
             </View>
 
         );
@@ -194,7 +236,6 @@ class MettingInfo extends Component {
     constructor(props) {
         super(props);
     }
-
     getMeetting(mt, index) {
         let meetting = [];
         for (let i in mt) {
@@ -287,6 +328,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-around',
     },
+    headItem:{
+        flex:1,
+        alignItems: 'center',
+    },
     iconView: {
         height: 60,
         width: 60,
@@ -353,5 +398,16 @@ const styles = StyleSheet.create({
     noMeetting:{
         alignItems:'center',
         marginTop:10
+    },
+    annountmentItem:{
+        flexDirection:'row',
+        justifyContent:'space-between',
+        width:'100%',
+        padding:10,
+    },
+    annountmentTitleView:{
+        flexDirection:'row',
+        justifyContent:'flex-start',
+        alignItems:'center'
     }
 });

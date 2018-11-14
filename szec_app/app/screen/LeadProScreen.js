@@ -19,8 +19,8 @@ export default class ProjectScreen extends React.Component {
         this.state = {
             data: '',
             userName: '',
-            reshing:'',
-            isLoading:false
+            reshing: '',
+            isLoading: false
         };
     }
 
@@ -30,9 +30,10 @@ export default class ProjectScreen extends React.Component {
             Refresh && this.loadData();
         });
     }
-    loadData(){
+
+    loadData() {
         this.setState({
-            isLoading:true
+            isLoading: true
         });
         AsyncStorage.getItem('userName', (error, result) => {
             if (!error) {
@@ -50,10 +51,10 @@ export default class ProjectScreen extends React.Component {
                 }).then((res) => {
                     this.setState({
                         data: res.data.value,
-                        isLoading:false
+                        isLoading: false
                     })
                 })
-                    .catch(error=>{
+                    .catch(error => {
                         console.log(error)
                     })
             } else {
@@ -61,9 +62,11 @@ export default class ProjectScreen extends React.Component {
             }
         });
     }
+
     componentWillUnmount() {
         this.deEmitter.remove();
     }
+
     _extraUniqueKey(item, index) {
         return "index" + index + item;
     }
@@ -104,9 +107,7 @@ export default class ProjectScreen extends React.Component {
     render() {
         return (
             <View style={styles.container}>
-                <Header
-                    title={'项目审批'}
-                />
+                <Header title={'项目审批'}/>
                 <View style={styles.container}>
                     <FlatList
                         style={{width: '100%', backgroundColor: '#eee'}}
