@@ -144,6 +144,9 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     @Autowired
     private SignRestService signRestService;
 
+    @Autowired
+    private ProjectStopRepo projectStopRepo;
+
     @Override
     public void setServletContext(ServletContext servletContext) {
         this.servletContext = servletContext;
@@ -1204,6 +1207,19 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 addFileData.put("strDate", DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
                 file = TemplateUtil.createDoc(addFileData, Template.ADD_REGISTER_FILE.getKey(), path);
 
+                break;
+
+            case "PROJECTSTOP":
+
+                ProjectStop projectStop = projectStopRepo.findById(ProjectStop_.stopid.getName() , businessId);
+                Sign sign1 = signRepo.findById(projectStop.getSign().getSignid());
+                Map<String, Object> psData = TemplateUtil.entryAddMap(projectStop);
+                psData.put("projectname", sign1.getProjectname());
+                psData.put("builtcompanyname", sign1.getBuiltcompanyName());
+                psData.put("mOrgName", sign1.getmOrgName());
+                psData.put("mUserName", sign1.getmUserName());
+                psData.put("receivedate", DateUtils.converToString(sign1.getReceivedate() , "yyyy-MM-dd"));
+                file = TemplateUtil.createDoc(psData, Template.PROJECT_STOP.getKey(), path);
                 break;
 
             default:

@@ -42,13 +42,13 @@ public class FileRecordServiceImpl implements FileRecordService {
             Date now = new Date();
             if (!Validate.isString(fileRecordDto.getFileRecordId())) {
                 fileRecord = new FileRecord();
-                fileRecordDto.setFileDate(fileRecordDto.getFileDate() == null ? now : fileRecordDto.getFileDate());
+//                fileRecordDto.setFileDate(fileRecordDto.getFileDate() == null ? now : fileRecordDto.getFileDate());
                 fileRecordDto.setPrintDate(fileRecordDto.getPrintDate() == null ? now : fileRecordDto.getPrintDate());
                 BeanCopierUtils.copyProperties(fileRecordDto, fileRecord);
                 fileRecord.setFileRecordId(UUID.randomUUID().toString());
                 fileRecord.setCreatedBy(SessionUtil.getLoginName());
                 fileRecord.setCreatedDate(now);
-                fileRecord.setFileDate(now);
+//                fileRecord.setFileDate(now);
                 fileRecordDto.setFileRecordId(fileRecord.getFileRecordId());
             } else {
                 fileRecord = fileRecordRepo.findById(fileRecordDto.getFileRecordId());
@@ -85,6 +85,10 @@ public class FileRecordServiceImpl implements FileRecordService {
                 addRegisterFileRepo.bathUpdate(registerFileList);
             }*/
 
+           //存档日期是确认存档环节，档案员确认存档后才生成的时间
+           if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.FILER.getValue())){
+               fileRecord.setFileDate(now);
+           }
             fileRecordRepo.save(fileRecord);
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！",fileRecord.getFileRecordId());
         } else {
