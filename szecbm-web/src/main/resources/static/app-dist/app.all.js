@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    angular.module('myApp', ['ui.router', 'angular-loading-bar', "bsTable", "sn.common"]).config(appConfig).run(appRun).controller('indexCtrl', indexCtrl);
+    angular.module('myApp', ['ui.router', 'kendo.directives','angular-loading-bar', "bsTable", "sn.common"]).config(appConfig).run(appRun).controller('indexCtrl', indexCtrl);
 
     indexCtrl.$inject = ['$scope', '$state', '$http', '$compile', "snBaseUtils"];
 
@@ -135,9 +135,9 @@
         });
     }
 
-    projectManagerCancelCtrl.$inject = ["$scope","projectManagerSvc","bsWin"];
+    projectManagerCancelCtrl.$inject = ["$scope","projectManagerSvc","bsWin","$state"];
 
-    function projectManagerCancelCtrl($scope,projectManagerSvc,bsWin) {
+    function projectManagerCancelCtrl($scope,projectManagerSvc,bsWin,$state) {
         $scope.csHide("cjgl");
         var vm = this;
         vm.model = {};
@@ -159,17 +159,29 @@
         }
 
         vm.restore = function (pro) {
-            vm.model = pro;
-            vm.model.status = '1';
-            bsWin.confirm("是否恢复项目", function () {
-                projectManagerSvc.restoreInvestProject(vm);
-            })
+            projectManagerSvc.checkProPriUser(pro.id,function(data){
+                if(data.flag){
+                    vm.model = pro;
+                    vm.model.status = '1';
+                    bsWin.confirm("是否恢复项目", function () {
+                        projectManagerSvc.restoreInvestProject(vm);
+                    })
+                }else{
+                    bsWin.alert("您无权进行编辑操作！");
+                }
+            });
         }
 
         vm.delete = function (id) {
-            bsWin.confirm("是否删除项目，删除后数据不可恢复", function () {
-                projectManagerSvc.deleteGovernmentInvestProject(id);
-            })
+            projectManagerSvc.checkProPriUser(id,function(data){
+                if(data.flag){
+                    bsWin.confirm("是否删除项目，删除后数据不可恢复", function () {
+                        projectManagerSvc.deleteGovernmentInvestProject(id);
+                    })
+                }else{
+                    bsWin.alert("您无权进行编辑操作！");
+                }
+            });
         }
     }
 
@@ -200,16 +212,16 @@
         vm.flag = $state.params.flag;
         vm.attachments = [];
 
-        /**
-         * 初始化附件上传
-         */
-        projectManagerSvc.initUploadConfig(vm, "relateAttach", function (data) {
-            vm.attachments = vm.attachments.concat(JSON.parse(data));
-        });
 
         projectManagerSvc.findOrgUser(function (data) {
             vm.principalUsers = data;
+            vm.initFileUpload();
         });
+
+        projectManagerSvc.findOrganUser(function (data) {
+            vm.orgUsers = data;
+        });
+
         projectManagerSvc.findAllOrgDelt(function (data) {
             vm.orgDeptList = data;
         });
@@ -219,16 +231,40 @@
                 /**
                  * 查询附件列表
                  */
-                projectManagerSvc.getAttachments(vm, {
+         /*       projectManagerSvc.getAttachments(vm, {
                     "businessId": vm.model.id
                 }, function (data) {
                     angular.forEach(vm.attachments.concat(data), function (o, i) {
                         vm.attachments = vm.attachments.concat(o);
                     });
-                });
+                });*/
             });
         } else {
             projectManagerSvc.createUUID(vm);
+        }
+
+        //初始化附件上传控件
+        vm.initFileUpload = function(){
+            if (!vm.model.id) {
+                //监听ID，如果有新值，则自动初始化上传控件
+                $scope.$watch("vm.model.id", function (newValue, oldValue) {
+                    if (newValue && newValue != oldValue && !vm.initUploadOptionSuccess) {
+                        vm.initFileUpload();
+                    }
+                });
+            }
+            vm.sysFile = {
+                businessId: vm.model.id,
+                mainId: "",
+                mainType: "",
+                sysfileType: "",
+                sysBusiType: "",
+                detailBt: "detail_file_bt",
+            };
+            projectManagerSvc.initUploadOptions({
+                inputId: "sysfileinput",
+                vm: vm
+            });
         }
 
 
@@ -257,7 +293,29 @@
         //新增与编辑
         vm.save = function () {
             util.initJqValidation();
-            var isValid = $('form').valid();
+            var isSelectOrg = false;
+            $('.seleteTable input[selectType="main"]:checked').each(function () {
+                vm.model.mainOrgId = $(this).val();
+                vm.model.mainOrgName = $(this).attr("tit");
+                isSelectOrg = true;
+            });
+            if(isSelectOrg){
+                var assistOrgArr = [];
+                var assistOrgNameArr = []
+                $('.seleteTable input[selectType="assist"]:checked').each(function () {
+                    assistOrgArr.push($(this).val());
+                    assistOrgNameArr.push($(this).attr("tit"));
+                });
+                if(assistOrgArr.length > 0){
+                    vm.model.assistOrgId = assistOrgArr.join(",");
+                    vm.model.assistOrgName = assistOrgNameArr.join(",");
+                }
+            }else{
+                bsWin.alert("您还没选择评审部门！");
+                return false;
+            }
+
+            var isValid = $('#form').valid();
             if (isValid) {
                 var selUser = []
                 var selUserName = []
@@ -276,7 +334,6 @@
                     projectManagerSvc.createGovernmentInvestProject(vm);
                 }
             }
-
         };
 
         //检查项目负责人
@@ -297,7 +354,28 @@
             }
         }
 
+        // 业务判断
+        vm.mainOrg = function ($event) {
+            var checkbox = $event.target;
+            var checked = checkbox.checked;
+            var checkboxValue = checkbox.value;
+            if (checked) {
+                $('.seleteTable input[selectType="main"]').each(
+                    function () {
+                        var value = $(this).attr("value");
+                        if (value != checkboxValue) {
+                            $(this).removeAttr("checked");
+                            $("#assist_" + value).removeAttr("disabled");
+                        } else {
+                            $("#assist_" + checkboxValue).removeAttr("checked");
+                            $("#assist_" + checkboxValue).attr("disabled", "disabled");
+                        }
+                    });
 
+            } else {
+                $("#assist_" + checkboxValue).removeAttr("disabled");
+            }
+        }
     }
 })();
 (function () {
@@ -317,9 +395,9 @@
         });
     }
 
-    projectManagerCtrl.$inject = ["$scope","projectManagerSvc","bsWin"];
+    projectManagerCtrl.$inject = ["$state","projectManagerSvc","bsWin"];
 
-    function projectManagerCtrl($scope,projectManagerSvc,bsWin) {
+    function projectManagerCtrl($state,projectManagerSvc,bsWin) {
         var vm = this;
         vm.model = {};
         vm.tableParams = {};
@@ -344,14 +422,30 @@
 
         //作废项目
         vm.cancel = function (pro) {
-            vm.model = pro;
-            vm.model.status = '2';
-            bsWin.confirm("是否作废项目", function () {
-                projectManagerSvc.cancelInvestProject(vm);
-            })
+            projectManagerSvc.checkProPriUser(pro.id,function(data){
+                if(data.flag){
+                    vm.model = pro;
+                    vm.model.status = '2';
+                    bsWin.confirm("是否作废项目", function () {
+                        projectManagerSvc.cancelInvestProject(vm);
+                    })
+                }else{
+                    bsWin.alert("您无权进行编辑操作！");
+                }
+            });
         }
-    }
 
+        vm.editProj = function(projId){
+            projectManagerSvc.checkProPriUser(projId,function(data){
+                if(data.flag){
+                    $state.go("projectManageEdit",{id:projId,flag:"edit"});
+                }else{
+                    bsWin.alert("您无权进行编辑操作！");
+                }
+            });
+        }
+
+    }
 })();
 (function () {
     'use strict';
@@ -428,9 +522,14 @@
                             filterControl: 'input',
                             filterOperator: "like",
                         }, {
-                            field: 'reviewDept',
-                            title: '评审部门',
+                            field: 'mainOrgName',
+                            title: '主办部门',
                             width: 90,
+                            filterControl: 'input',
+                        }, , {
+                            field: 'assistOrgName',
+                            title: '协办部门',
+                            width: 220,
                             filterControl: 'input',
                         }, {
                             field: 'mainUserName',
@@ -516,9 +615,14 @@
                             title: '项目单位',
                             width: 90,
                         }, {
-                            field: 'reviewDept',
-                            title: '评审部门',
+                            field: 'mainOrgName',
+                            title: '主办部门',
                             width: 90,
+                            filterControl: 'input',
+                        }, {
+                            field: 'assistOrgName',
+                            title: '协办部门',
+                            width: 220,
                             filterControl: 'input',
                         }, {
                             field: 'mainUserName',
@@ -604,12 +708,16 @@
                                 field: 'proUnit',
                                 title: '项目单位',
                                 width: 90,
-                            }, {
-                                field: 'reviewDept',
-                                title: '评审部门',
+                            },{
+                                field: 'mainOrgName',
+                                title: '主办部门',
                                 width: 90,
-                                filterControl: 'dict',
-                                filterData: 'DICT.DEPT.dicts.TRANSACT_DEPARTMENT'
+                                filterControl: 'input',
+                            }, {
+                                field: 'assistOrgName',
+                                title: '协办部门',
+                                width: 220,
+                                filterControl: 'input',
                             }, {
                                 field: 'mainUserName',
                                 title: '第一负责人',
@@ -776,6 +884,184 @@
                     }
                 });
             },
+            // S 初始化上传附件控件
+            /**
+             * options 属性 options.vm.sysFile 一定要有，这个是附件对象
+             *  uploadBt : 上传按钮
+             *  detailBt : 查看按钮
+             *  inputId : "sysfileinput",
+             *  mainType : 主要业务模块，业务的根目录
+             * @param options
+             */
+            initUploadOptions: function (options) {
+            options.vm.initUploadOptionSuccess = false;
+            //options.vm.sysFile 为定义好的附件对象
+            var sysFileDefaults = {
+                width: "70%",
+                height: "460px",
+                uploadBt: "upload_file_bt",
+                detailBt: "detail_file_bt",
+                inputId: "sysfileinput",
+                mainType: "ProAttachment",
+                sysBusiType: "",
+                showBusiType: true,
+            };
+            if (!options.vm.sysFile) {
+                bsWin.alert("初始化附件控件失败，请先定义附件对象！");
+                return;
+            }
+            if (options.sysBusiType) {
+                sysFileDefaults.sysBusiType = options.sysBusiType;
+            }
+            if (options.width) {
+                sysFileDefaults.width = options.width;
+            }
+            if (options.height) {
+                sysFileDefaults.height = options.height;
+            }
+
+            //是否显示业务下来框
+            if (angular.isUndefined(options.vm.sysFile.showBusiType)) {
+                options.vm.sysFile.showBusiType = sysFileDefaults.showBusiType;
+            }
+
+                //附件下载方法
+                options.vm.downloadSysFile = function (id) {
+                    downloadFile(id);
+                }
+                //附件删除方法
+                options.vm.delSysFile = function (id) {
+                    bsWin.confirm({
+                        title: "询问提示",
+                        message: "确认删除么？",
+                        onOk: function () {
+                            delSysFile(id, function (data) {
+                                bsWin.alert(data.reMsg || "删除成功！");
+                                $.each(options.vm.sysFilelists, function (i, sf) {
+                                    if (!angular.isUndefined(sf) && sf.sysFileId == id) {
+                                        options.vm.sysFilelists.splice(i, 1);
+                                    }
+                                })
+                            });
+                        }
+                    });
+                }
+
+            options.vm.clickUploadBt = function () {
+                if (!options.vm.sysFile.businessId) {
+                    bsWin.alert("请先保存业务数据！");
+                } else {
+                    //B、清空上一次的上传文件的预览窗口
+                    options.vm.sysFile.sysBusiType="";
+                    //E、清空上一次的上传文件的预览窗口
+                    angular.element('#sysfileinput').fileinput('clear');
+                    $("#commonUploadWindow").kendoWindow({
+                        width: sysFileDefaults.width,
+                        height: sysFileDefaults.height,
+                        title: "附件上传",
+                        visible: false,
+                        modal: true,
+                        closable: true,
+                    }).data("kendoWindow").center().open();
+                }
+            }
+
+                options.vm.clickDetailBt = function () {
+                    if (!options.vm.sysFile.businessId) {
+                        bsWin.alert("请先保存业务数据！");
+                        return;
+                    } else {
+                        findByBusinessId(options.vm.sysFile.businessId, function (data) {
+                            options.vm.sysFilelists = [];
+                            options.vm.sysFilelists = data;
+                            $("#commonQueryWindow").kendoWindow({
+                                width: "50%",
+                                height: "500px",
+                                title: "附件上传列表",
+                                visible: false,
+                                modal: true,
+                                closable: true,
+                                actions: ["Pin", "Minimize", "Maximize", "Close"]
+                            }).data("kendoWindow").center().open();
+                        });
+                    }
+                }
+
+                //有业务数据才能初始化
+                if (options.vm.sysFile.businessId) {
+                    var projectfileoptions = {
+                        language: 'zh',
+                        allowedPreviewTypes: ['image'],
+                        allowedFileExtensions: ['sql', 'exe', 'lnk'],//修改过，改为了不支持了。比如不支持.sql的
+                        maxFileSize: 0,     //文件大小不做限制
+                        showRemove: false,
+                        previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+                        uploadAsync: false, //同步上传
+                        enctype : 'multipart/form-data',
+                        uploadUrl: attachments_url+"/fileUpload",// 默认上传ftp服务器 /file/fileUploadLocal 为上传到本地服务
+                        previewFileIconSettings: {
+                            'doc': '<i class="fa fa-file-word-o text-primary"></i>',
+                            'xls': '<i class="fa fa-file-excel-o text-success"></i>',
+                            'ppt': '<i class="fa fa-file-powerpoint-o text-danger"></i>',
+                            'docx': '<i class="fa fa-file-word-o text-primary"></i>',
+                            'xlsx': '<i class="fa fa-file-excel-o text-success"></i>',
+                            'pptx': '<i class="fa fa-file-powerpoint-o text-danger"></i>',
+                            'pdf': '<i class="fa fa-file-pdf-o text-danger"></i>',
+                            'zip': '<i class="fa fa-file-archive-o text-muted"></i>',
+                        },
+                        uploadExtraData: function (previewId, index) {
+                            var result = {};
+                            result.businessId = options.vm.sysFile.businessId;
+                            result.mainId = options.vm.sysFile.mainId || "";
+                            result.mainType = options.vm.sysFile.mainType || sysFileDefaults.mainType;
+                            result.sysfileType = options.vm.sysFile.sysfileType || "";
+                            result.sysBusiType = options.vm.sysFile.sysBusiType || sysFileDefaults.sysBusiType;
+                            return result;
+                        }
+                    };
+
+                    var filesCount = 0;
+                    $("#" + options.inputId || sysFileDefaults.inputId).fileinput(projectfileoptions)
+                    //附件选择
+                        .on("filebatchselected", function (event, files) {
+                            filesCount = files.length;
+                            //console.log("附件选择:" + filesCount);
+                        })
+                        //上传前
+                        .on('filepreupload', function (event, data, previewId, index) {
+                            var form = data.form, files = data.files, extra = data.extra,
+                                response = data.response, reader = data.reader;
+                            //console.log("附件上传前:" + files);
+                        })
+                        /*//异步上传返回结果处理
+                         .on("fileuploaded", function (event, data, previewId, index) {
+                         projectfileoptions.sysBusiType = options.vm.sysFile.sysBusiType;
+                         if (filesCount == (index + 1)) {
+                         if (options.uploadSuccess != undefined && typeof options.uploadSuccess == 'function') {
+                         options.uploadSuccess(event, data, previewId, index);
+                         }
+                         }
+                         })*/
+                        //同步上传错误处理
+                        .on('filebatchuploaderror', function(event, data, msg) {
+                            console.log("同步上传错误");
+                            // get message
+                            //alert(msg);
+                        })
+                        //同步上传返回结果处理
+                        .on("filebatchuploadsuccess", function (event, data, previewId, index) {
+                            if (options.uploadSuccess != undefined && typeof options.uploadSuccess == 'function') {
+                                options.uploadSuccess(event, data, previewId, index);
+                            }
+                        });
+
+                    //表示初始化控件成功
+                    options.vm.initUploadOptionSuccess = true;
+                }
+
+
+        },
+        // E 初始化上传附件控件
             /**
              * 获取UUID:附件上传id
              * @param vm
@@ -797,12 +1083,58 @@
                     fn(data)
                 });
             },
+            findOrganUser: function (fn) {
+                $http.get(url_user + "/findOrgUser").success(function (data) {
+                    fn(data)
+                });
+            },
             findAllOrgDelt : function(fn){
                 $http.get("sys/organ/findAllOrgDept").success(function (data) {
                     fn(data)
                 });
-            }
+            },
+            //验证是否是项目负责人
+            checkProPriUser:function(projId, callBack) {
+            $http.get(url_management + "/checkProPriUser?id="+projId).success(function (data) {
+                callBack(data);
+            });
         }
+        }
+
+        //根据主业务获取所有的附件信息
+        function findByBusinessId(businessId, callBack) {
+            $http.get(attachments_url + "/findByBusinessId?businessId="+businessId).success(function (data) {
+                callBack(data);
+            });
+        }
+
+        // 系统文件下载
+        function downloadFile(id) {
+            $http.get(attachments_url + "/fileSysCheck?sysFileId="+id).success(function (response) {
+                var downForm = $("#szecSysFileDownLoadForm");
+                downForm.attr("target","");
+                downForm.attr("method","get");
+                if (response.flag || response.reCode == 'ok') {
+                    downForm.attr("action",attachments_url + "/fileDownload");
+                    downForm.find("input[name='sysfileId']").val(id);
+                    downForm.submit();//表单提交
+                } else {
+                    downForm.attr("action","");
+                    downForm.find("input[name='sysfileId']").val("");
+                    bsWin.error(response.reMsg);
+                }
+            });
+
+        }
+
+
+        // S 删除系统文件,自己实现回调方法
+        function delSysFile(sysFileId, callBack) {
+            $http.get(attachments_url + "/deleteSysFile?sysFileId="+sysFileId).success(function (data) {
+                callBack(data);
+            });
+        }
+
     }
 
 })();
@@ -834,30 +1166,31 @@
 
         projectManagerSvc.findOrgUser(function(data){
             vm.principalUsers = data;
+            vm.initFileUpload();
         });
 
         projectManagerSvc.findAllOrgDelt(function(data){
             vm.orgDeptList = data;
         });
-        /**
+  /*      /!**
          * 初始化附件上传
-         */
+         *!/
         projectManagerSvc.initUploadConfig(vm,"relateAttach",function (data) {
             vm.attachments = vm.attachments.concat(JSON.parse(data));
-        });
+        });*/
          if (vm.model.id) {
 
             projectManagerSvc.findGovernmentInvestProjectById(vm, function () {
-                /**
+        /*        /!**
                  * 查询附件列表
-                 */
+                 *!/
                projectManagerSvc.getAttachments(vm, {
                     "businessId": vm.model.id
                 }, function (data) {
                     angular.forEach(vm.attachments.concat(data), function (o, i) {
                         vm.attachments = vm.attachments.concat(o);
                     });
-                });
+                });*/
                 if(vm.flag == 'cancel' || vm.flag == 'normal'){
                     if(vm.flag == 'cancel'){
                         vm.model.status = '2';
@@ -879,6 +1212,30 @@
          */
         function compareDate (d1,d2) {
             return ((new Date(d1.replace(/-/g,"\/"))) > (new Date(d2.replace(/-/g,"\/"))));
+        }
+
+        //初始化附件上传控件
+        vm.initFileUpload = function(){
+            if (!vm.model.id) {
+                //监听ID，如果有新值，则自动初始化上传控件
+                $scope.$watch("vm.model.id", function (newValue, oldValue) {
+                    if (newValue && newValue != oldValue && !vm.initUploadOptionSuccess) {
+                        vm.initFileUpload();
+                    }
+                });
+            }
+            vm.sysFile = {
+                businessId: vm.model.id,
+                mainId: "",
+                mainType: "",
+                sysfileType: "",
+                sysBusiType: "",
+                detailBt: "detail_file_bt",
+            };
+            projectManagerSvc.initUploadOptions({
+                inputId: "sysfileinput",
+                vm: vm
+            });
         }
 
     }
@@ -965,233 +1322,6 @@
         return {};
 
     });
-})();
-(function () {
-    'use strict';
-
-    angular.module('myApp').config(function ($stateProvider) {
-        $stateProvider.state('dict', {
-            url: "/dict",
-            controllerAs: "vm",
-            templateUrl: util.formatUrl('sys/dict/html/list'),
-            controller: function ($scope, dictSvc, bsWin) {
-                $scope.csHide("bm");
-                var vm = this;
-                vm.dict = {};
-                //deleteDict#Begin
-                vm.dels = function () {
-                    var nodes = vm.dictsTree.getSelectedNodes();
-                    if (nodes && nodes.length > 0) {
-                        vm.del(nodes[0].dictId)
-                    } else {
-                        bsWin.confirm("请选择数据")
-                    }
-                };
-                vm.del = function (dictId) {
-                    vm.dict.dictId = dictId;
-                    bsWin.confirm("删除字典将会连下级字典一起删除，确认删除数据吗？", function () {
-                        dictSvc.deleteDict(vm);
-                    });
-                };
-                //deleteDict#End
-
-                vm.resetDict = function () {
-                    bsWin.confirm("您确定要重置数据字典吗？", function () {
-                        dictSvc.resetDict(vm);
-                    });
-                }
-
-                dictSvc.initDictTree(vm);
-            }
-
-        });
-    });
-
-})();
-(function () {
-    'use strict';
-
-    angular.module('myApp').config(function ($stateProvider) {
-        $stateProvider.state('dict.edit', {
-            url: "/dictEdit/:dictId",
-            controllerAs: "vm",
-            templateUrl: util.formatUrl('sys/dict/html/edit'),
-            controller: function ($scope, dictSvc, $state) {
-                $scope.csHide("bm");
-                var vm = this;
-                vm.dict = {};
-                vm.dictId = $state.params.dictId;
-                if (vm.dictId) {
-                    vm.isUpdate = true;
-                }
-                if (vm.isUpdate) {
-                    dictSvc.findDictById(vm);
-                } else {
-                    dictSvc.initpZtreeClient(vm);
-                }
-                vm.create = function () {
-                    if (vm.dictsTree) {
-                        var pNode = vm.dictsTree.getCheckedNodes(true);
-                        if (pNode && pNode.length != 0) {
-                            vm.dict.parentId = pNode[0].dictId;
-                        }
-                    }
-                    dictSvc.createDict(vm);
-                };
-
-                vm.update = function () {
-                    dictSvc.updateDict(vm);
-                };
-
-                vm.dictTypeChange = function () {
-                    if (vm.dict.dictType) {
-                        vm.dict.dictKey = '';
-                    }
-                };
-
-            }
-        });
-    });
-
-})();
-(function () {
-    'use strict';
-
-    var app = angular.module('myApp');
-    app.factory("dictSvc", function ($http, bsWin, $state) {
-        var dict_url = util.formatUrl("sys/dict");
-        return {
-            //list#zTree#Begin
-            initDictTree: initDictTree,
-            //list#zTree#End
-            //edit#zTree#Begin
-            /**
-             * 初始化数据字典树
-             * @param vm    作用域
-             */
-            initpZtreeClient: function (vm) {
-                vm.dictsTree && vm.dictsTree.destroy();
-                $http.get(dict_url + "?$orderby=itemOrder asc").success(function (data) {
-                    //vm.dict = data;
-                    var setting = {
-                        check: {enable: true, chkStyle: "radio", radioType: "all"},
-                        data: {
-                            key: {
-                                name: "dictName"
-                            },
-                            simpleData: {
-                                enable: true,
-                                idKey: "dictId",
-                                pIdKey: "parentId",
-                                rootPId: 0
-                            }
-                        }
-                    };
-                    vm.dictsTree = $.fn.zTree.init($("#pzTree"), setting, data || []);
-                });
-            },
-            //edit#zTree#End
-            /**
-             * 创建数据字典
-             * @param vm    作用域
-             */
-            createDict: function (vm) {
-                util.initJqValidation();
-                var isValid = $('form').valid();
-                if (isValid) {
-                    vm.isSubmit = true;
-                    $http.post(dict_url, vm.dict).then(function () {
-                        bsWin.success("创建成功");
-                        vm.isSubmit = false;
-                        initDictTree(vm);
-                    }, function () {
-                        vm.isSubmit = false;
-                    });
-                }
-            },
-            /**
-             * 通过主键查找数据字典数据
-             * @param vm    作用域
-             */
-            findDictById: function (vm) {
-                if (!vm.dictId) return false;
-                $http.get(dict_url + "/" + vm.dictId).success(function (data) {
-                    vm.dict = data;
-                });
-            },
-
-            updateDict: function (vm) {
-                util.initJqValidation();
-                var isValid = $('form').valid();
-                if (isValid) {
-                    vm.isSubmit = true;
-                    $http.put(dict_url, vm.dict).then(function () {
-                        bsWin.success("更新成功");
-                        vm.isSubmit = false;
-                        initDictTree(vm);
-                    }, function () {
-                        vm.isSubmit = false;
-                    })
-                }
-            },
-
-            deleteDict: function (vm) {
-                vm.isSubmit = true;
-                $http['delete'](dict_url, {params: {"dictId": vm.dict.dictId || ""}}).then(function () {
-                    bsWin.success("删除成功");
-                    vm.isSubmit = false;
-                    initDictTree(vm);
-                }, function () {
-                    vm.isSubmit = false;
-                });
-            },
-            /**
-             *
-             * @param vm
-             */
-            resetDict: function (vm) {
-                vm.isSubmit = true;
-                $http.post(dict_url + "/reset", {}).then(function () {
-                    bsWin.success("操作成功");
-                    vm.isSubmit = false;
-                    initDictTree(vm);
-                }, function () {
-                    vm.isSubmit = false;
-                });
-            }
-        };
-
-        function initDictTree(vm) {
-            vm.dictsTree && vm.dictsTree.destroy();
-            $http.get(dict_url + "?$orderby=itemOrder asc").success(function (data) {
-                // vm.dict = data;
-
-                vm.dictsTree = $.fn.zTree.init($("#zTree"), {
-                    callback: {
-                        onClick: zTreeOnClick
-                    },
-                    data: {
-                        key: {
-                            name: "dictName"
-                        },
-                        simpleData: {
-                            enable: true,
-                            idKey: "dictId",
-                            pIdKey: "parentId",
-                            rootPId: 0
-                        }
-                    }
-                }, data || []);
-                function zTreeOnClick(event, treeId, treeNode) {
-                    $state.go('dict.edit', {dictId: treeNode.dictId});
-                }
-
-                // 初始化模糊搜索方法
-                window.fuzzySearch("zTree", '#dictTreeKey', null, true);
-            });
-        }
-    });
-
 })();
 (function () {
     'use strict';
@@ -1457,6 +1587,233 @@
                 });
             },
 
+        }
+    });
+
+})();
+(function () {
+    'use strict';
+
+    angular.module('myApp').config(function ($stateProvider) {
+        $stateProvider.state('dict', {
+            url: "/dict",
+            controllerAs: "vm",
+            templateUrl: util.formatUrl('sys/dict/html/list'),
+            controller: function ($scope, dictSvc, bsWin) {
+                $scope.csHide("bm");
+                var vm = this;
+                vm.dict = {};
+                //deleteDict#Begin
+                vm.dels = function () {
+                    var nodes = vm.dictsTree.getSelectedNodes();
+                    if (nodes && nodes.length > 0) {
+                        vm.del(nodes[0].dictId)
+                    } else {
+                        bsWin.confirm("请选择数据")
+                    }
+                };
+                vm.del = function (dictId) {
+                    vm.dict.dictId = dictId;
+                    bsWin.confirm("删除字典将会连下级字典一起删除，确认删除数据吗？", function () {
+                        dictSvc.deleteDict(vm);
+                    });
+                };
+                //deleteDict#End
+
+                vm.resetDict = function () {
+                    bsWin.confirm("您确定要重置数据字典吗？", function () {
+                        dictSvc.resetDict(vm);
+                    });
+                }
+
+                dictSvc.initDictTree(vm);
+            }
+
+        });
+    });
+
+})();
+(function () {
+    'use strict';
+
+    angular.module('myApp').config(function ($stateProvider) {
+        $stateProvider.state('dict.edit', {
+            url: "/dictEdit/:dictId",
+            controllerAs: "vm",
+            templateUrl: util.formatUrl('sys/dict/html/edit'),
+            controller: function ($scope, dictSvc, $state) {
+                $scope.csHide("bm");
+                var vm = this;
+                vm.dict = {};
+                vm.dictId = $state.params.dictId;
+                if (vm.dictId) {
+                    vm.isUpdate = true;
+                }
+                if (vm.isUpdate) {
+                    dictSvc.findDictById(vm);
+                } else {
+                    dictSvc.initpZtreeClient(vm);
+                }
+                vm.create = function () {
+                    if (vm.dictsTree) {
+                        var pNode = vm.dictsTree.getCheckedNodes(true);
+                        if (pNode && pNode.length != 0) {
+                            vm.dict.parentId = pNode[0].dictId;
+                        }
+                    }
+                    dictSvc.createDict(vm);
+                };
+
+                vm.update = function () {
+                    dictSvc.updateDict(vm);
+                };
+
+                vm.dictTypeChange = function () {
+                    if (vm.dict.dictType) {
+                        vm.dict.dictKey = '';
+                    }
+                };
+
+            }
+        });
+    });
+
+})();
+(function () {
+    'use strict';
+
+    var app = angular.module('myApp');
+    app.factory("dictSvc", function ($http, bsWin, $state) {
+        var dict_url = util.formatUrl("sys/dict");
+        return {
+            //list#zTree#Begin
+            initDictTree: initDictTree,
+            //list#zTree#End
+            //edit#zTree#Begin
+            /**
+             * 初始化数据字典树
+             * @param vm    作用域
+             */
+            initpZtreeClient: function (vm) {
+                vm.dictsTree && vm.dictsTree.destroy();
+                $http.get(dict_url + "?$orderby=itemOrder asc").success(function (data) {
+                    //vm.dict = data;
+                    var setting = {
+                        check: {enable: true, chkStyle: "radio", radioType: "all"},
+                        data: {
+                            key: {
+                                name: "dictName"
+                            },
+                            simpleData: {
+                                enable: true,
+                                idKey: "dictId",
+                                pIdKey: "parentId",
+                                rootPId: 0
+                            }
+                        }
+                    };
+                    vm.dictsTree = $.fn.zTree.init($("#pzTree"), setting, data || []);
+                });
+            },
+            //edit#zTree#End
+            /**
+             * 创建数据字典
+             * @param vm    作用域
+             */
+            createDict: function (vm) {
+                util.initJqValidation();
+                var isValid = $('form').valid();
+                if (isValid) {
+                    vm.isSubmit = true;
+                    $http.post(dict_url, vm.dict).then(function () {
+                        bsWin.success("创建成功");
+                        vm.isSubmit = false;
+                        initDictTree(vm);
+                    }, function () {
+                        vm.isSubmit = false;
+                    });
+                }
+            },
+            /**
+             * 通过主键查找数据字典数据
+             * @param vm    作用域
+             */
+            findDictById: function (vm) {
+                if (!vm.dictId) return false;
+                $http.get(dict_url + "/" + vm.dictId).success(function (data) {
+                    vm.dict = data;
+                });
+            },
+
+            updateDict: function (vm) {
+                util.initJqValidation();
+                var isValid = $('form').valid();
+                if (isValid) {
+                    vm.isSubmit = true;
+                    $http.put(dict_url, vm.dict).then(function () {
+                        bsWin.success("更新成功");
+                        vm.isSubmit = false;
+                        initDictTree(vm);
+                    }, function () {
+                        vm.isSubmit = false;
+                    })
+                }
+            },
+
+            deleteDict: function (vm) {
+                vm.isSubmit = true;
+                $http['delete'](dict_url, {params: {"dictId": vm.dict.dictId || ""}}).then(function () {
+                    bsWin.success("删除成功");
+                    vm.isSubmit = false;
+                    initDictTree(vm);
+                }, function () {
+                    vm.isSubmit = false;
+                });
+            },
+            /**
+             *
+             * @param vm
+             */
+            resetDict: function (vm) {
+                vm.isSubmit = true;
+                $http.post(dict_url + "/reset", {}).then(function () {
+                    bsWin.success("操作成功");
+                    vm.isSubmit = false;
+                    initDictTree(vm);
+                }, function () {
+                    vm.isSubmit = false;
+                });
+            }
+        };
+
+        function initDictTree(vm) {
+            vm.dictsTree && vm.dictsTree.destroy();
+            $http.get(dict_url + "?$orderby=itemOrder asc").success(function (data) {
+                // vm.dict = data;
+
+                vm.dictsTree = $.fn.zTree.init($("#zTree"), {
+                    callback: {
+                        onClick: zTreeOnClick
+                    },
+                    data: {
+                        key: {
+                            name: "dictName"
+                        },
+                        simpleData: {
+                            enable: true,
+                            idKey: "dictId",
+                            pIdKey: "parentId",
+                            rootPId: 0
+                        }
+                    }
+                }, data || []);
+                function zTreeOnClick(event, treeId, treeNode) {
+                    $state.go('dict.edit', {dictId: treeNode.dictId});
+                }
+
+                // 初始化模糊搜索方法
+                window.fuzzySearch("zTree", '#dictTreeKey', null, true);
+            });
         }
     });
 

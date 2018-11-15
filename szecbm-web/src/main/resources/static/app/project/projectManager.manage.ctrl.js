@@ -15,9 +15,9 @@
         });
     }
 
-    projectManagerCtrl.$inject = ["$scope","projectManagerSvc","bsWin"];
+    projectManagerCtrl.$inject = ["$state","projectManagerSvc","bsWin"];
 
-    function projectManagerCtrl($scope,projectManagerSvc,bsWin) {
+    function projectManagerCtrl($state,projectManagerSvc,bsWin) {
         var vm = this;
         vm.model = {};
         vm.tableParams = {};
@@ -42,12 +42,28 @@
 
         //作废项目
         vm.cancel = function (pro) {
-            vm.model = pro;
-            vm.model.status = '2';
-            bsWin.confirm("是否作废项目", function () {
-                projectManagerSvc.cancelInvestProject(vm);
-            })
+            projectManagerSvc.checkProPriUser(pro.id,function(data){
+                if(data.flag){
+                    vm.model = pro;
+                    vm.model.status = '2';
+                    bsWin.confirm("是否作废项目", function () {
+                        projectManagerSvc.cancelInvestProject(vm);
+                    })
+                }else{
+                    bsWin.alert("您无权进行编辑操作！");
+                }
+            });
         }
-    }
 
+        vm.editProj = function(projId){
+            projectManagerSvc.checkProPriUser(projId,function(data){
+                if(data.flag){
+                    $state.go("projectManageEdit",{id:projId,flag:"edit"});
+                }else{
+                    bsWin.alert("您无权进行编辑操作！");
+                }
+            });
+        }
+
+    }
 })();

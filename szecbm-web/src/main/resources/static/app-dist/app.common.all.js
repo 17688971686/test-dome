@@ -401,7 +401,7 @@
     app.run(["$templateCache", function ($templateCache) {
         // 提示窗口模板
         $templateCache.put(alertTplPath,
-            '<div class="alertDialog modal fade" tabindex="-1" role="dialog" style="z-index: {{10000 + winId}};" ng-keypress="onKeyEnter($event)">\
+            '<div class="alertDialog modal fade" tabindex="-1" role="dialog" style="z-index: {{10000000000000000009 + winId}};" ng-keypress="onKeyEnter($event)">\
                 <div class="modal-dialog" role="document" style="margin:80px auto;width:80%;max-width:400px;">\
                     <div class="modal-content">\
                         <div class="modal-header">\
@@ -423,7 +423,7 @@
 
         // 询问窗口模板
         $templateCache.put(confirmTplPath,
-            '<div class="confirmDialog modal fade" tabindex="-1" role="dialog" style="z-index: {{10000 + winId}};" ng-keypress="onKeyEnter($event)">\
+            '<div class="confirmDialog modal fade" tabindex="-1" role="dialog" style="z-index: {{100000000000000000009 + winId}};" ng-keypress="onKeyEnter($event)">\
                 <div class="modal-dialog" role="document" style="margin:80px auto;width:80%;max-width:400px;">\
                     <div class="modal-content">\
                         <div class="modal-header">\
@@ -441,7 +441,7 @@
 
         // 重新登录窗口
         $templateCache.put(reloginTplPath,
-            '<div class="confirmDialog modal fade" tabindex="-1" role="dialog" style="z-index: {{10000 + winId}};" ng-keypress="onKeyEnter($event)">\
+            '<div class="confirmDialog modal fade" tabindex="-1" role="dialog" style="z-index: {{1000000 + winId}};" ng-keypress="onKeyEnter($event)">\
                 <div class="modal-dialog" role="document" style="margin:80px auto;width:80%;max-width:400px;">\
                     <div class="modal-content">\
                         <div class="modal-header">\
@@ -481,7 +481,7 @@
 
         // 查看流程图窗口
         $templateCache.put(traceImgTplPath,
-            '<div class="traceImgDialog modal fade" tabindex="-1" role="dialog" style="z-index: {{10000 + winId}};" ng-keypress="onKeyEnter($event)">\
+            '<div class="traceImgDialog modal fade" tabindex="-1" role="dialog" style="z-index: {{1000000 + winId}};" ng-keypress="onKeyEnter($event)">\
                 <div class="modal-dialog modal-lg" role="document">\
                     <div class="modal-content">\
                         <div class="modal-header">\

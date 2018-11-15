@@ -72,6 +72,11 @@ public class UserController {
         return null;
     }
 
+    @RequestMapping(name = "根据ID获取部门信息", path = "findOrgUser", method = RequestMethod.GET)
+    @ResponseBody
+    public List<UserDto> findOrgUser() {
+        return userService.getOrganUser();
+    }
 
     @RequestMapping(name = "根据id获取用户", path = "{userId}", method = RequestMethod.GET)
     @ResponseBody

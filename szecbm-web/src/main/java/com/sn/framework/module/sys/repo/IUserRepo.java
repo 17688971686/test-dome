@@ -65,4 +65,9 @@ public interface IUserRepo extends IRepository<User, String> {
      */
     List<User> getUserByOrganId(String organId,boolean queryAll);
 
+    /**
+     * 查询所有有部门的用户
+     * @return
+     */
+    List<User> getOrganUser();
 }

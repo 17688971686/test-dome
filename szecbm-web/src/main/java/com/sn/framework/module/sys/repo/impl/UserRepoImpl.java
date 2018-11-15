@@ -114,4 +114,16 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements IU
     }
 
 
+    @Override
+    public List<User> getOrganUser() {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery query = builder.createQuery(User.class);
+        Root<User> root = query.from(User.class);
+        Predicate predicate = builder.and(builder.equal(root.get(User_.useState.getName()), "1"));
+        predicate = builder.and(root.get(User_.organ).isNotNull(),predicate);
+
+        query.where(predicate);
+        List<User> userList = entityManager.createQuery(query.select(root)).getResultList();
+        return userList;
+    }
 }

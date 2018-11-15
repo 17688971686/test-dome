@@ -91,7 +91,7 @@
             <a class="btn btn-xs btn-primary" href="#/projectManageView/{{row.id}}/view">
                 <span class="glyphicon glyphicon-search"></span> 查看
             </a>
-            <a class="btn btn-xs btn-primary" href="#/projectManageEdit/{{row.id}}/edit">
+            <a class="btn btn-xs btn-primary" ng-click="vm.editProj(row.id)">
                 <span class="glyphicon glyphicon-pencil"></span> 编辑
             </a>
             <button class="btn btn-xs btn-danger" ng-click="vm.cancel(row)">

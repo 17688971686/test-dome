@@ -310,8 +310,7 @@ public class UserServiceImpl extends SServiceImpl<IUserRepo, User, UserDto> impl
         }else{
           userList = baseRepo.getUserByOrganId(SessionUtil.getUserInfo().getOrgan().getOrganId(),true);
         }
-
-       if(userList.size()> 0){
+       if(Validate.isList(userList)){
            return convertDtos(userList);
        }else{
            return null;
@@ -333,5 +332,15 @@ public class UserServiceImpl extends SServiceImpl<IUserRepo, User, UserDto> impl
             }
         }
 
+    }
+
+    @Override
+    public List<UserDto> getOrganUser() {
+        List<User> orgUserList = baseRepo.getOrganUser();
+        if(Validate.isList(orgUserList)){
+            return convertDtos(orgUserList);
+        }else{
+            return null;
+        }
     }
 }

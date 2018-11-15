@@ -15,9 +15,9 @@
         });
     }
 
-    projectManagerCancelCtrl.$inject = ["$scope","projectManagerSvc","bsWin"];
+    projectManagerCancelCtrl.$inject = ["$scope","projectManagerSvc","bsWin","$state"];
 
-    function projectManagerCancelCtrl($scope,projectManagerSvc,bsWin) {
+    function projectManagerCancelCtrl($scope,projectManagerSvc,bsWin,$state) {
         $scope.csHide("cjgl");
         var vm = this;
         vm.model = {};
@@ -39,17 +39,29 @@
         }
 
         vm.restore = function (pro) {
-            vm.model = pro;
-            vm.model.status = '1';
-            bsWin.confirm("是否恢复项目", function () {
-                projectManagerSvc.restoreInvestProject(vm);
-            })
+            projectManagerSvc.checkProPriUser(pro.id,function(data){
+                if(data.flag){
+                    vm.model = pro;
+                    vm.model.status = '1';
+                    bsWin.confirm("是否恢复项目", function () {
+                        projectManagerSvc.restoreInvestProject(vm);
+                    })
+                }else{
+                    bsWin.alert("您无权进行编辑操作！");
+                }
+            });
         }
 
         vm.delete = function (id) {
-            bsWin.confirm("是否删除项目，删除后数据不可恢复", function () {
-                projectManagerSvc.deleteGovernmentInvestProject(id);
-            })
+            projectManagerSvc.checkProPriUser(id,function(data){
+                if(data.flag){
+                    bsWin.confirm("是否删除项目，删除后数据不可恢复", function () {
+                        projectManagerSvc.deleteGovernmentInvestProject(id);
+                    })
+                }else{
+                    bsWin.alert("您无权进行编辑操作！");
+                }
+            });
         }
     }
 

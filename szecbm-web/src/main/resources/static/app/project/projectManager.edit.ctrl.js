@@ -29,6 +29,11 @@
             vm.principalUsers = data;
             vm.initFileUpload();
         });
+
+        projectManagerSvc.findOrganUser(function (data) {
+            vm.orgUsers = data;
+        });
+
         projectManagerSvc.findAllOrgDelt(function (data) {
             vm.orgDeptList = data;
         });
@@ -100,7 +105,29 @@
         //新增与编辑
         vm.save = function () {
             util.initJqValidation();
-            var isValid = $('form').valid();
+            var isSelectOrg = false;
+            $('.seleteTable input[selectType="main"]:checked').each(function () {
+                vm.model.mainOrgId = $(this).val();
+                vm.model.mainOrgName = $(this).attr("tit");
+                isSelectOrg = true;
+            });
+            if(isSelectOrg){
+                var assistOrgArr = [];
+                var assistOrgNameArr = []
+                $('.seleteTable input[selectType="assist"]:checked').each(function () {
+                    assistOrgArr.push($(this).val());
+                    assistOrgNameArr.push($(this).attr("tit"));
+                });
+                if(assistOrgArr.length > 0){
+                    vm.model.assistOrgId = assistOrgArr.join(",");
+                    vm.model.assistOrgName = assistOrgNameArr.join(",");
+                }
+            }else{
+                bsWin.alert("您还没选择评审部门！");
+                return false;
+            }
+
+            var isValid = $('#form').valid();
             if (isValid) {
                 var selUser = []
                 var selUserName = []
@@ -119,7 +146,6 @@
                     projectManagerSvc.createGovernmentInvestProject(vm);
                 }
             }
-
         };
 
         //检查项目负责人
@@ -140,6 +166,27 @@
             }
         }
 
+        // 业务判断
+        vm.mainOrg = function ($event) {
+            var checkbox = $event.target;
+            var checked = checkbox.checked;
+            var checkboxValue = checkbox.value;
+            if (checked) {
+                $('.seleteTable input[selectType="main"]').each(
+                    function () {
+                        var value = $(this).attr("value");
+                        if (value != checkboxValue) {
+                            $(this).removeAttr("checked");
+                            $("#assist_" + value).removeAttr("disabled");
+                        } else {
+                            $("#assist_" + checkboxValue).removeAttr("checked");
+                            $("#assist_" + checkboxValue).attr("disabled", "disabled");
+                        }
+                    });
 
+            } else {
+                $("#assist_" + checkboxValue).removeAttr("disabled");
+            }
+        }
     }
 })();

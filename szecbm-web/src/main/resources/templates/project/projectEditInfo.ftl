@@ -63,20 +63,34 @@
 
     <tr>
         <td class="text-right">评审部门：<span class="text-red">(*)</span></td>
-        <td>
-            <select class="form-control input-sm" style="width:200px;" ng-model="vm.${modelKey}.reviewDept"
-                    <#if !isEdit>disabled</#if> id="reviewDept" name="reviewDept" data-val="true"
-                    data-val-required="必填">
-                <option value="">---请选择---</option>
-                <option ng-repeat="x in vm.orgDeptList"
-                        value="{{x.name}}" ng-selected="x.name == vm.model.reviewDept">
-                    {{x.name}}
-                </option>
-            </select>
-            <span data-valmsg-for="reviewDept" data-valmsg-replace="true" class="text-red"></span>
+        <td colspan="3">
+            <table class="table table-bordered seleteTable">
+                <tr>
+                    <td width="250px;" align="center">部门名称</td>
+                    <td ng-repeat="x in vm.orgDeptList">
+                        {{x.name}}
+                    </td>
+                </tr>
+                <tr>
+                    <td width="250px;" align="center">主办部门</td>
+                    <td ng-repeat="x in vm.orgDeptList">
+                        <input type="checkbox" name="{{x.name}}" selectType="main" tit="{{x.name}}"
+                               ng-click="vm.mainOrg($event)" ng-checked="x.id == vm.model.mainOrgId" value="{{x.id}}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="250px;" align="center">协办部门</td>
+                    <td ng-repeat="x in vm.orgDeptList">
+                        <input type="checkbox" selectType="assist" tit="{{x.name}}" id="assist_{{x.id}}"
+                               ng-click="vm.initOption($event)" ng-checked="(vm.model.assistOrgId).indexOf(x.id) > -1" value="{{x.id}}"/>
+                    </td>
+                </tr>
+            </table>
         </td>
+    </tr>
+    <tr>
         <td class="text-right">第一负责人：<span class="text-red">(*)</span></td>
-        <td>
+        <td colspan="3">
             <select class="form-control input-sm" style="width:200px;" ng-model="vm.${modelKey}.mainUser"
                     ng-change="vm.checkPrincipal();"
                     <#if !isEdit>disabled</#if> id="mainUser" name="mainUser" data-val="true" data-val-required="必填">
@@ -89,12 +103,11 @@
             <span data-valmsg-for="mainUser" data-valmsg-replace="true" class="text-red"></span>
         </td>
     </tr>
-
     <tr>
         <td class="text-right">其他负责人：</td>
         <td colspan="3">
             <ul id="principalUser_ul">
-                <li ng-repeat="u in vm.principalUsers" id="principalUser" style="float: left;width: 80px;">
+                <li ng-repeat="u in vm.orgUsers" id="principalUser" style="float: left;width: 80px;">
                     <input ng-if="u.username != 'admin'" type="checkbox" selectType="assistUser" tit="{{u.displayName}}"
                            value="{{u.userId}}"
                            ng-checked="vm.model.assistUser && (vm.model.assistUser).indexOf(u.userId)>-1"
@@ -105,7 +118,7 @@
     </tr>
 
     <tr>
-        <td class="text-right">发文日期：<span class="text-red">(*)</span></td>
+        <td class="text-right">发文日期：</td>
         <td>
             <#if !isEdit>
                 <input class="form-control" disabled type="text" id="dispatchDate" name="dispatchDate"
@@ -114,7 +127,7 @@
             <#else>
                 <div class="input-group date" sn-datetimepicker format="yyyy-mm-dd" style="width: 200px;">
                     <input class="form-control date-input" size="16" type="text" id="dispatchDate" name="dispatchDate"
-                           readonly ng-model="vm.${modelKey}.dispatchDate" data-val="true" data-val-required="必填">
+                           readonly ng-model="vm.${modelKey}.dispatchDate" data-val="false" data-val-required="必填">
                     <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
                     <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
                 </div>
@@ -122,17 +135,17 @@
             </#if>
         </td>
 
-        <td class="text-right">发文号：<span class="text-red">(*)</span></td>
+        <td class="text-right">发文号：</td>
         <td>
             <input style="width:200px;" type="text" maxlength="150" class="form-control input-sm"
                    <#if !isEdit>disabled</#if>
-                   id="fileNum" name="fileNum" style="width: 200px;" data-val="true" data-val-required="必填"
+                   id="fileNum" name="fileNum" style="width: 200px;" data-val="false" data-val-required="必填"
                    ng-model="vm.${modelKey}.fileNum">
             <span data-valmsg-for="fileNum" data-valmsg-replace="true" class="text-red"></span>
         </td>
     </tr>
     <tr>
-        <td class="text-right">存档日期：<span class="text-red">(*)</span></td>
+        <td class="text-right">存档日期：</td>
         <td>
             <#if !isEdit>
                 <input class="form-control" disabled type="text" id="fileDate" name="fileDate" style="width: 200px;"
@@ -140,7 +153,7 @@
             <#else>
                 <div class="input-group date" sn-datetimepicker format="yyyy-mm-dd" style="width: 200px;">
                     <input class="form-control date-input" size="16" type="text" id="fileDate" name="fileDate"
-                           readonly ng-model="vm.${modelKey}.fileDate" data-val="true" data-val-required="必填">
+                           readonly ng-model="vm.${modelKey}.fileDate" data-val="false" data-val-required="必填">
                     <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
                     <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
                 </div>
@@ -148,11 +161,11 @@
             </#if>
         </td>
 
-        <td class="text-right">存档号：<span class="text-red">(*)</span></td>
+        <td class="text-right">存档号：</td>
         <td>
             <input style="width:200px;" type="text" maxlength="150" class="form-control input-sm"
                    <#if !isEdit>disabled</#if>
-                   id="fileNo" name="fileNo" style="width: 200px;" data-val="true" data-val-required="必填"
+                   id="fileNo" name="fileNo" style="width: 200px;" data-val="false" data-val-required="必填"
                    ng-model="vm.${modelKey}.fileNo">
             <span data-valmsg-for="fileNo" data-valmsg-replace="true" class="text-red"></span>
         </td>

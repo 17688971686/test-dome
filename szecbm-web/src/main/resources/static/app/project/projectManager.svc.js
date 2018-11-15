@@ -73,9 +73,14 @@
                             filterControl: 'input',
                             filterOperator: "like",
                         }, {
-                            field: 'reviewDept',
-                            title: '评审部门',
+                            field: 'mainOrgName',
+                            title: '主办部门',
                             width: 90,
+                            filterControl: 'input',
+                        }, , {
+                            field: 'assistOrgName',
+                            title: '协办部门',
+                            width: 220,
                             filterControl: 'input',
                         }, {
                             field: 'mainUserName',
@@ -161,9 +166,14 @@
                             title: '项目单位',
                             width: 90,
                         }, {
-                            field: 'reviewDept',
-                            title: '评审部门',
+                            field: 'mainOrgName',
+                            title: '主办部门',
                             width: 90,
+                            filterControl: 'input',
+                        }, {
+                            field: 'assistOrgName',
+                            title: '协办部门',
+                            width: 220,
                             filterControl: 'input',
                         }, {
                             field: 'mainUserName',
@@ -249,12 +259,16 @@
                                 field: 'proUnit',
                                 title: '项目单位',
                                 width: 90,
-                            }, {
-                                field: 'reviewDept',
-                                title: '评审部门',
+                            },{
+                                field: 'mainOrgName',
+                                title: '主办部门',
                                 width: 90,
-                                filterControl: 'dict',
-                                filterData: 'DICT.DEPT.dicts.TRANSACT_DEPARTMENT'
+                                filterControl: 'input',
+                            }, {
+                                field: 'assistOrgName',
+                                title: '协办部门',
+                                width: 220,
+                                filterControl: 'input',
                             }, {
                                 field: 'mainUserName',
                                 title: '第一负责人',
@@ -620,11 +634,22 @@
                     fn(data)
                 });
             },
+            findOrganUser: function (fn) {
+                $http.get(url_user + "/findOrgUser").success(function (data) {
+                    fn(data)
+                });
+            },
             findAllOrgDelt : function(fn){
                 $http.get("sys/organ/findAllOrgDept").success(function (data) {
                     fn(data)
                 });
-            }
+            },
+            //验证是否是项目负责人
+            checkProPriUser:function(projId, callBack) {
+            $http.get(url_management + "/checkProPriUser?id="+projId).success(function (data) {
+                callBack(data);
+            });
+        }
         }
 
         //根据主业务获取所有的附件信息
@@ -660,6 +685,7 @@
                 callBack(data);
             });
         }
+
     }
 
 })();

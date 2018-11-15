@@ -9,4 +9,9 @@ import com.sn.framework.module.project.model.ProjectDto;
  */
 public interface IProjectService extends ISService<ProjectDto> {
 
+    /**
+     * 验证是否是项目负责人
+     * @return
+     */
+    boolean checkCurUserIsPri(String projId);
 }

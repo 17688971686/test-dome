@@ -40,9 +40,29 @@ public class Project extends DomainBase {
     @Column(columnDefinition = "VARCHAR(150)")
     private String proUnit;
 
-    //评审部门
-    @Column(columnDefinition = "VARCHAR(30)")
-    private String reviewDept;
+    /**
+     * 主办部门ID
+     */
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String mainOrgId;
+
+    /**
+     * 主办部门名称
+     */
+    @Column(columnDefinition = "VARCHAR(32)")
+    private String mainOrgName;
+
+    /**
+     * 协办部门ID
+     */
+    @Column(columnDefinition = "VARCHAR(512)")
+    private String assistOrgId;
+
+    /**
+     * 协办部门名称
+     */
+    @Column(columnDefinition = "VARCHAR(256)")
+    private String assistOrgName;
 
     //项目负责人
     @Column(columnDefinition = "VARCHAR(64)")
@@ -134,12 +154,36 @@ public class Project extends DomainBase {
         this.proUnit = proUnit;
     }
 
-    public String getReviewDept() {
-        return reviewDept;
+    public String getMainOrgId() {
+        return mainOrgId;
     }
 
-    public void setReviewDept(String reviewDept) {
-        this.reviewDept = reviewDept;
+    public void setMainOrgId(String mainOrgId) {
+        this.mainOrgId = mainOrgId;
+    }
+
+    public String getMainOrgName() {
+        return mainOrgName;
+    }
+
+    public void setMainOrgName(String mainOrgName) {
+        this.mainOrgName = mainOrgName;
+    }
+
+    public String getAssistOrgId() {
+        return assistOrgId;
+    }
+
+    public void setAssistOrgId(String assistOrgId) {
+        this.assistOrgId = assistOrgId;
+    }
+
+    public String getAssistOrgName() {
+        return assistOrgName;
+    }
+
+    public void setAssistOrgName(String assistOrgName) {
+        this.assistOrgName = assistOrgName;
     }
 
     public String getFileNum() {

@@ -1,5 +1,6 @@
 package com.sn.framework.module.project.controller;
 
+import com.sn.framework.core.common.ResultMsg;
 import com.sn.framework.core.common.SNKit;
 import com.sn.framework.core.syslog.OperatorType;
 import com.sn.framework.core.syslog.SysLog;
@@ -129,12 +130,23 @@ public class ProjectController {
         }
     }
 
+    @RequestMapping(name = "验证是否是项目负责人", path = "checkProPriUser", method = RequestMethod.GET)
+    @ResponseBody
+    public ResultMsg checkProPriUser(@RequestParam String id) {
+        boolean isPriUser = projectService.checkCurUserIsPri(id);
+        if(isPriUser){
+            return ResultMsg.ok("是项目负责人");
+        }else{
+            return ResultMsg.error("不是项目负责人");
+        }
+    }
+
+
     @RequestMapping(name = "获取UUID", path = "createUUID", method = RequestMethod.GET)
     @ResponseBody
     public String createUUID() {
         return UUID.randomUUID().toString();
     }
-
 
 
     @GetMapping(name = "导出汇总打印", path = "exportPro2")

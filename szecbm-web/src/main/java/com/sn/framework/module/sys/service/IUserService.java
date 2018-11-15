@@ -3,6 +3,7 @@ package com.sn.framework.module.sys.service;
 
 import com.sn.framework.core.service.ISService;
 import com.sn.framework.module.sys.domain.Resource;
+import com.sn.framework.module.sys.domain.User;
 import com.sn.framework.module.sys.model.UserDto;
 import com.sn.framework.module.sys.model.UserInfoDto;
 
@@ -76,4 +77,10 @@ public interface IUserService extends ISService<UserDto> {
      * 重置所有用户的账号密码
      */
     void resetAllUserPwd();
+
+    /**
+     * 查询部门用户
+     * @return
+     */
+    List<UserDto> getOrganUser();
 }
