@@ -1,5 +1,8 @@
 package cs.controller.sys;
 
+import com.aspose.cells.Workbook;
+import com.aspose.slides.Presentation;
+import com.aspose.words.Document;
 import cs.ahelper.MudoleAnnotation;
 import cs.ahelper.RealPathResolver;
 import cs.common.constants.Constant;
@@ -478,12 +481,38 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             FtpUtils ftpUtils = new FtpUtils();
             FtpClientConfig k = ConfigProvider.getDownloadConfig(ftp);
 
+            //需要转换的类型，自己在方法实现
+            if(AsposeUtil.neddConvertToPdf(fileType)){
+                out = response.getOutputStream();
+                if(AsposeUtil.getLicense()){
+                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                    ftpUtils.downLoadFile(removeRelativeUrl, storeFileName, k, byteArrayOutputStream);
+                    inputStream = IOStreamUtil.parse(byteArrayOutputStream);
+                    switch (fileType){
+                        case ".doc":
+                        case ".docx":
+                            Document doc = new Document(inputStream);
+                            doc.save(out, com.aspose.words.SaveFormat.PDF);
+                            break;
+                        case ".xls":
+                        case ".xlsx":
+                            Workbook wb = new Workbook(inputStream);
+                            wb.save(out, com.aspose.cells.SaveFormat.PDF);
+                            break;
+                        case ".ppt":
+                        case ".pptx":
+                            Presentation pres = new Presentation(inputStream);//输入pdf路径
+                            pres.save(out, com.aspose.slides.SaveFormat.Pdf);
+                            break;
+                    }
+                }
+            }
             //如果是pdf文件，直接输出流，否则要先转为pdf
-            if (fileType.equals(".pdf") || fileType.equals(".png") || fileType.equals(".jpg") || fileType.equals(".gif")) {
+            else if (fileType.equals(".pdf") || fileType.equals(".png") || fileType.equals(".jpg") || fileType.equals(".gif")|| fileType.equals(".txt")|| fileType.equals(".text")) {
                 out = response.getOutputStream();
                 ftpUtils.downLoadFile(removeRelativeUrl, storeFileName, k, out);
             } else {
-                downFile = new File(SysFileUtil.getUploadPath() + File.separator + storeFileName);
+                /*downFile = new File(SysFileUtil.getUploadPath() + File.separator + storeFileName);
                 out = new FileOutputStream(downFile);
                 ftpUtils.downLoadFile(removeRelativeUrl, storeFileName, k, out);
                 String filePath = downFile.getAbsolutePath();
@@ -497,7 +526,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 inputStream.read(buffer);  //读取文件流
                 inputStream.close();
                 out = new BufferedOutputStream(response.getOutputStream());
-                out.write(buffer); // 输出文件
+                out.write(buffer); // 输出文件*/
             }
 
             switch (sysFile.getFileType()) {
@@ -555,11 +584,10 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         File printFile = null;
         try {
             String path = SysFileUtil.getUploadPath() + File.separator + Tools.generateRandomFilename() + Template.WORD_SUFFIX.getKey();
-            String filePath = path.substring(0, path.lastIndexOf(".")) + Template.PDF_SUFFIX.getKey();
+            //String filePath = path.substring(0, path.lastIndexOf(".")) + Template.PDF_SUFFIX.getKey();
             String fileName = "";
             file = createFile(businessId , businessType , stageType , path);
-
-            if (file != null) {
+            /*if (file != null) {
                 OfficeConverterUtil.convert2PDF(file.getAbsolutePath(), filePath);
             }
 
@@ -568,18 +596,21 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
             byte[] buffer = new byte[inputStream.available()];
             inputStream.read(buffer);  //读取文件流
-            inputStream.close();
-
+            inputStream.close();*/
+            //使用新的转换控件
             response.reset();  //重置结果集
+            OutputStream out = response.getOutputStream();
+            if (file != null) {
+                inputStream = new FileInputStream(file);
+                Document doc = new Document(inputStream);
+                doc.save(out, com.aspose.words.SaveFormat.PDF);
+            }
             response.setContentType("application/pdf");
-            response.addHeader("Content-Length", "" + printFile.length());  //返回头 文件大小
+            response.addHeader("Content-Length", "" + file.length());  //返回头 文件大小
             response.setHeader("Content-Disposition", "inline;filename=" + new String(fileName.getBytes(), "ISO-8859-1"));
 
-            //获取返回体输出权
-            OutputStream os = new BufferedOutputStream(response.getOutputStream());
-            os.write(buffer); // 输出文件
-            os.flush();
-            os.close();
+            out.flush();
+            out.close();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

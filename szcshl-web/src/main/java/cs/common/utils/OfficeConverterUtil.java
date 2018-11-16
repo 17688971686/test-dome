@@ -101,14 +101,14 @@ public class OfficeConverterUtil {
             // 调用Documents对象中Open方法打开文档，并返回打开的文档对象Document
             doc = Dispatch.call(docs, "Open", inputFile, false, true).toDispatch();
             // 调用Document对象的SaveAs方法，将文档保存为pdf格式
-            System.out.println("转换文档 [" + inputFile + "] >>> [" + pdfFile + "]");
+            //System.out.println("转换文档 [" + inputFile + "] >>> [" + pdfFile + "]");
             Dispatch.call(doc, "SaveAs", pdfFile, wdFormatPDF);//word保存为pdf格式宏，值为17
 //            Dispatch.call(doc, "ExportAsFixedFormat", pdfFile, wdFormatPDF); // word保存为pdf格式宏，值为17
 
             return true;
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("========Error:文档转换失败：" + e.getMessage());
+            //System.out.println("========Error:文档转换失败：" + e.getMessage());
         } finally {
             Dispatch.call(doc, "Close", false);
             System.out.println("关闭文档");
