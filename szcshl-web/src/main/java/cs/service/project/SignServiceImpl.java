@@ -158,6 +158,10 @@ public class SignServiceImpl implements SignService {
     private AssistUnitRepo assistUnitRepo;
     @Autowired
     private HistoryService historyService;
+
+    @Autowired
+    private ProjectStopRepo projectStopRepo;
+
     /**
      * 项目签收保存操作（这里的方法是正式签收）
      *
@@ -688,6 +692,17 @@ public class SignServiceImpl implements SignService {
                 signDto.setAssociateSignDtoList(signDtoList);
             }
 
+            //项目暂停信息
+            List<ProjectStop> projectStopList = projectStopRepo.findByIds(ProjectStop_.sign.getName() + "." + Sign_.signid.getName() , signid , null);
+           List<ProjectStopDto> projectStopDtoList = new ArrayList<>();
+            if(Validate.isList(projectStopList)){
+                for(ProjectStop p : projectStopList){
+                    ProjectStopDto projectStopDto = new ProjectStopDto();
+                    BeanCopierUtils.copyProperties( p , projectStopDto);
+                    projectStopDtoList.add(projectStopDto);
+                }
+                signDto.setProjectStopDtos(projectStopDtoList);
+            }
         }
         signDto.setCurDate(DateUtils.converToString(new Date(), "yyyy-MM-dd"));
         return signDto;

@@ -770,6 +770,11 @@ public class SignDto extends BaseDto {
      */
     private ProjBaseInfoDto projBaseInfoDto;
 
+    /**
+     * 项目暂停信息
+     */
+    private List<ProjectStopDto> projectStopDtos;
+
     public String getIsMoreExpert() {
         return isMoreExpert;
     }
@@ -2665,5 +2670,13 @@ public class SignDto extends BaseDto {
 
     public void setProjBaseInfoDto(ProjBaseInfoDto projBaseInfoDto) {
         this.projBaseInfoDto = projBaseInfoDto;
+    }
+
+    public List<ProjectStopDto> getProjectStopDtos() {
+        return projectStopDtos;
+    }
+
+    public void setProjectStopDtos(List<ProjectStopDto> projectStopDtos) {
+        this.projectStopDtos = projectStopDtos;
     }
 }

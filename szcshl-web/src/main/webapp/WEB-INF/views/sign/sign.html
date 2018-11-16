@@ -8,6 +8,7 @@
     <li ng-show="vm.showFlag.tabFilerecord"><a id="show_filerecord_a" data-toggle="tab" for-div="sign_filerecord">归档信息</a></li>
     <li ng-show="(vm.model.expertReviewDto && vm.model.expertReviewDto.expertSelectedDtoList) || vm.model.unitScoreDto"><a data-toggle="tab" for-div="expert_score">评分</a></li>
     <li ng-show="vm.model.expertReviewDto && vm.model.expertReviewDto.expertSelectedDtoList"><a data-toggle="tab" for-div="expert_payment">评审费发放表</a></li>
+    <li ng-show="vm.model.projectStopDtos "><a data-toggle="tab" for-div="project_pause">项目暂停表</a></li>
     <li ng-show="vm.model.suppLetterDtoList"><a data-toggle="tab" for-div="suppLetter_list">拟补充资料函</a></li>
     <li ng-show="vm.supply"><a data-toggle="tab" for-div="registerFile_list">补充资料</a></li>
     <li ng-show="vm.showFlag.tabSysFile"><a data-toggle="tab" for-div="sign_upload">评审报告</a></li>
@@ -264,6 +265,11 @@
     <!-- start 专家费用 -->
     <div class="tab-pane fade" style="background: white;margin-top:10px;" id="expert_payment">
         <#include "/expertReview/expert_payment.html"/>
+    </div>
+
+    <!-- start 项目暂停表 -->
+    <div class="tab-pane fade" style="background: white;margin-top:10px;" id="project_pause">
+    <#include "/projectStop/signDetail.html"/>
     </div>
 
     <!-- start 拟补充资料函 -->

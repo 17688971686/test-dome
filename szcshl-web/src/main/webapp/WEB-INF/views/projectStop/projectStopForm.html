@@ -10,7 +10,9 @@
         <button ng-if="vm.projectStop.isSupplementMaterial==9 ||vm.projectStop.isPuaseApprove==9" class="btn btn-sm btn-primary" ng-click="vm.clickUploadBt();" id="upload_file_bt">上传附件</button>
         <button  ng-if="vm.projectStop.isSupplementMaterial==9 ||vm.projectStop.isPuaseApprove==9" class="btn btn-sm btn-primary" ng-click="vm.clickDetailBt();" id="detail_file_bt">查看附件</button>
         <a  ng-hide="vm.showStartFlow" class="btn btn-sm btn-danger" ng-click="backtoflow()"><span class="glyphicon glyphicon-chevron-left"></span>返回流程</a>
-
+            <button  class="btn btn-sm btn-primary" ng-if="vm.projectStop.isSupplementMaterial==9 ||vm.projectStop.isPuaseApprove==9"
+                     ng-click="printFile(vm.projectStop.stopid,'PROJECTSTOP','PROJECTSTOP')">打印预览
+            </button>
     </div>
 
     <!--S 上传附件弹窗 -->
