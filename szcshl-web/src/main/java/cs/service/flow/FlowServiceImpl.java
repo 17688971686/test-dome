@@ -1360,7 +1360,7 @@ public class FlowServiceImpl implements FlowService {
         /*HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("select distinct ACT.USER_ID_ from ACT_HI_IDENTITYLINK act where act.PROC_INST_ID_ = :processInstanceId");
         sqlBuilder.setParam("processInstanceId", processInstanceId);*/
-        List<Map<String, Object>> resultMapList = jdbcTemplate.queryForList("select distinct ACT.USER_ID_ USER_ID from ACT_HI_IDENTITYLINK act where act.PROC_INST_ID_ = '" + processInstanceId + "'");
+        List<Map<String, Object>> resultMapList = jdbcTemplate.queryForList("select distinct ACT.USER_ID_ USER_ID from ACT_HI_IDENTITYLINK act where act.PROC_INST_ID_ = ?",processInstanceId);
         List<String> resultList = new ArrayList<>();
         for (Map<String, Object> map : resultMapList) {
             resultList.add(map.get("USER_ID") == null ? "" : map.get("USER_ID").toString());

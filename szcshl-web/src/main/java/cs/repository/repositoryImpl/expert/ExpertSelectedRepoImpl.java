@@ -85,21 +85,25 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("on a.expertreviewid = r.id  ");
         sqlBuilder.append("left join (select * from CS_SIGN t where signState <> '7' and signState <> '2' and (ispresign ='9' or ispresign  is null)) s  on r.businessid=s.signid) t  ");
         sqlBuilder.append("where t.expertid is not null  ");
-        //todo:添加查询条件
-        if(null != expertReviewCondDto){
-            if(StringUtil.isNotEmpty(expertReviewCondDto.getName())){
-                sqlBuilder.append("and t.name like '%"+expertReviewCondDto.getName()+"%'  ");
+        //添加查询条件
+        if(Validate.isObject(expertReviewCondDto)){
+            if(Validate.isString(expertReviewCondDto.getName())){
+                sqlBuilder.append("and t.name like :expName ");
+                sqlBuilder.setParam("expName","%"+expertReviewCondDto.getName()+"%" );
             }
-            if(StringUtil.isNotEmpty(expertReviewCondDto.getReviewtype())){
-                sqlBuilder.append("and t.isletterrw = '"+expertReviewCondDto.getReviewtype()+"'  ");
+            if(Validate.isString(expertReviewCondDto.getReviewtype())){
+                sqlBuilder.append("and t.isletterrw = :isletterrw ");
+                sqlBuilder.setParam("isletterrw",expertReviewCondDto.getReviewtype() );
             }
-            if(StringUtil.isNotEmpty(expertReviewCondDto.getBeginTime())){
+            if(Validate.isString(expertReviewCondDto.getBeginTime())){
                 String beginTime = expertReviewCondDto.getBeginTime()+" 00:00:00";
-                sqlBuilder.append("and t.reviewdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss')  ");
+                sqlBuilder.append("and t.reviewdate >= to_date(:beginTime, 'yyyy-mm-dd hh24:mi:ss')  ");
+                sqlBuilder.setParam("beginTime",beginTime);
             }
             if(StringUtil.isNotEmpty(expertReviewCondDto.getEndTime())){
                 String endTime = expertReviewCondDto.getEndTime()+" 23:59:59";
-                sqlBuilder.append("and t.reviewdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss')  ");
+                sqlBuilder.append("and t.reviewdate <= to_date(:endTime, 'yyyy-mm-dd hh24:mi:ss')  ");
+                sqlBuilder.setParam("endTime",endTime);
             }
         }
         sqlBuilder.append("order by t.expertno,t.isletterrw ");
@@ -218,20 +222,24 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("on a.expertreviewid = r.id  ");
         sqlBuilder.append("left join cs_sign s  on r.businessid=s.signid) t  ");
         sqlBuilder.append("where t.expertid is not null   ");
-        if(null != expertReviewConSimpleDto){
-            if(StringUtil.isNotEmpty(expertReviewConSimpleDto.getName())){
-                sqlBuilder.append("and t.name like '%"+expertReviewConSimpleDto.getName()+"%'  ");
+        if(Validate.isObject(expertReviewConSimpleDto)){
+            if(Validate.isString(expertReviewConSimpleDto.getName())){
+                sqlBuilder.append("and t.name like :expName ");
+                sqlBuilder.setParam("expName","%"+expertReviewConSimpleDto.getName()+"%" );
             }
-            if(StringUtil.isNotEmpty(expertReviewConSimpleDto.getReviewtype())){
-                sqlBuilder.append("and t.isletterrw = '"+expertReviewConSimpleDto.getReviewtype()+"'  ");
+            if(Validate.isString(expertReviewConSimpleDto.getReviewtype())){
+                sqlBuilder.append("and t.isletterrw = :isletterrw ");
+                sqlBuilder.setParam("isletterrw",expertReviewConSimpleDto.getReviewtype() );
             }
             if(StringUtil.isNotEmpty(expertReviewConSimpleDto.getBeginTime())){
                 String beginTime = expertReviewConSimpleDto.getBeginTime()+" 00:00:00";
-                sqlBuilder.append("and t.reviewdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss')  ");
+                sqlBuilder.append("and t.reviewdate >= to_date(:beginTime, 'yyyy-mm-dd hh24:mi:ss')  ");
+                sqlBuilder.setParam("beginTime",beginTime);
             }
             if(StringUtil.isNotEmpty(expertReviewConSimpleDto.getEndTime())){
                 String endTime = expertReviewConSimpleDto.getEndTime()+" 23:59:59";
-                sqlBuilder.append("and t.reviewdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss')  ");
+                sqlBuilder.append("and t.reviewdate <= to_date(:endTime, 'yyyy-mm-dd hh24:mi:ss')  ");
+                sqlBuilder.setParam("endTime",endTime);
             }
         }
         sqlBuilder.append("group by t.expertid,t.expertno,t.isletterrw   ");
@@ -249,20 +257,24 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder1.append("on a.expertreviewid = r.id  ");
         sqlBuilder1.append("left join cs_sign s  on r.businessid=s.signid) t  ");
         sqlBuilder1.append(" where t.expertid is not null  ");
-        if(null != expertReviewConSimpleDto){
-            if(StringUtil.isNotEmpty(expertReviewConSimpleDto.getName())){
-                sqlBuilder1.append("and t.name like '%"+expertReviewConSimpleDto.getName()+"%'  ");
+        if(Validate.isObject(expertReviewConSimpleDto)){
+            if(Validate.isString(expertReviewConSimpleDto.getName())){
+                sqlBuilder1.append("and t.name like :expName1 ");
+                sqlBuilder1.setParam("expName1","%"+expertReviewConSimpleDto.getName()+"%");
             }
-            if(StringUtil.isNotEmpty(expertReviewConSimpleDto.getReviewtype())){
-                sqlBuilder1.append("and t.isletterrw = '"+expertReviewConSimpleDto.getReviewtype()+"'  ");
+            if(Validate.isString(expertReviewConSimpleDto.getReviewtype())){
+                sqlBuilder1.append("and t.isletterrw = :isletterrw1 ");
+                sqlBuilder1.setParam("isletterrw1",expertReviewConSimpleDto.getReviewtype());
             }
             if(StringUtil.isNotEmpty(expertReviewConSimpleDto.getBeginTime())){
                 String beginTime = expertReviewConSimpleDto.getBeginTime()+" 00:00:00";
-                sqlBuilder1.append("and t.reviewdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss')  ");
+                sqlBuilder1.append("and t.reviewdate >= to_date(:beginTime1, 'yyyy-mm-dd hh24:mi:ss')  ");
+                sqlBuilder1.setParam("beginTime1",beginTime);
             }
             if(StringUtil.isNotEmpty(expertReviewConSimpleDto.getEndTime())){
                 String endTime = expertReviewConSimpleDto.getEndTime()+" 23:59:59";
-                sqlBuilder1.append("and t.reviewdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss')  ");
+                sqlBuilder1.append("and t.reviewdate <= to_date(:endTime1, 'yyyy-mm-dd hh24:mi:ss')  ");
+                sqlBuilder1.setParam("endTime1",endTime);
             }
         }
         sqlBuilder1.append("group by t.expertid,t.expertno,t.isletterrw ) t1  ");
@@ -474,9 +486,9 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("and s.processstate >= 6  ");//已发文
         sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  "); //排除预签收
 
-        //todo:添加查询条件
-        if(null != projectReviewConditionDto){
-            if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())){
+        //添加查询条件
+        if(Validate.isObject(projectReviewConditionDto)){
+            if(Validate.isString(projectReviewConditionDto.getBeginTime()) && Validate.isString(projectReviewConditionDto.getEndTime())){
                 String beginTime = projectReviewConditionDto.getBeginTime()+"-01 00:00:00";
                 String[] timeArr = projectReviewConditionDto.getEndTime().split("-");
                 String day = "";
@@ -484,7 +496,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                 String endTime = projectReviewConditionDto.getEndTime()+"-"+day+" 23:59:59";
                 sqlBuilder.append("and D.DISPATCHDATE >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
                 sqlBuilder.append("and D.DISPATCHDATE <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
-            }else if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())){
+            }else if(Validate.isString(projectReviewConditionDto.getBeginTime()) && !Validate.isString(projectReviewConditionDto.getEndTime())){
                 String[] timeArr = projectReviewConditionDto.getBeginTime().split("-");
                 String day = "";
                 day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
@@ -492,7 +504,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                 String endTime = projectReviewConditionDto.getBeginTime()+"-"+day+" 23:59:59";
                 sqlBuilder.append("and D.DISPATCHDATE >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
                 sqlBuilder.append("and D.DISPATCHDATE <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
-            }else if(StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime())){
+            }else if(Validate.isString(projectReviewConditionDto.getEndTime()) && !Validate.isString(projectReviewConditionDto.getBeginTime())){
                 String[] timeArr = projectReviewConditionDto.getEndTime().split("-");;
                 String day = "";
                 day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
@@ -548,9 +560,9 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("and D.DISPATCHTYPE != '项目退文函' ");//过滤退文项目
         sqlBuilder.append("and s.processstate >= 6  ");//已发文
         sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  "); //排除预签收
-        //todo:添加查询条件
-        if(null != projectReviewConditionDto){
-            if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())){
+        //添加查询条件
+        if(Validate.isObject(projectReviewConditionDto)){
+            if(Validate.isString(projectReviewConditionDto.getBeginTime()) && Validate.isString(projectReviewConditionDto.getEndTime())){
                 String beginTime = projectReviewConditionDto.getBeginTime()+"-01 00:00:00";
                 String[] timeArr = projectReviewConditionDto.getEndTime().split("-");
                 String day = "";
@@ -558,7 +570,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                 String endTime = projectReviewConditionDto.getEndTime()+"-"+day+" 23:59:59";
                 sqlBuilder.append("and D.DISPATCHDATE >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
                 sqlBuilder.append("and D.DISPATCHDATE <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
-            }else if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())){
+            }else if(Validate.isString(projectReviewConditionDto.getBeginTime()) && !Validate.isString(projectReviewConditionDto.getEndTime())){
                 String[] timeArr = projectReviewConditionDto.getBeginTime().split("-");
                 String day = "";
                 day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
@@ -566,7 +578,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                 String endTime = projectReviewConditionDto.getBeginTime()+"-"+day+" 23:59:59";
                 sqlBuilder.append("and D.DISPATCHDATE >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
                 sqlBuilder.append("and D.DISPATCHDATE <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
-            }else if(StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime())){
+            }else if(Validate.isString(projectReviewConditionDto.getEndTime()) && !Validate.isString(projectReviewConditionDto.getBeginTime())){
                 String[] timeArr = projectReviewConditionDto.getEndTime().split("-");;
                 String day = "";
                 day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
@@ -632,7 +644,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("and D.DISPATCHTYPE = '项目退文函' ");
         sqlBuilder.append("and s.processstate >= 6  ");//已发文
         sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  "); //排除预签收
-        //todo:添加查询条件
+        //添加查询条件
         if(null != projectReviewConditionDto){
             if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())){
                 String beginTime = projectReviewConditionDto.getBeginTime()+"-01 00:00:00";

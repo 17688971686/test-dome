@@ -155,7 +155,8 @@ public class PartyManagerRepoImpl extends AbstractRepository<PartyManager, Strin
     @Transactional
     public Boolean existByIdCar(String pmIdCard) {
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("select pmId from cs_party_manager where pmIDCard = '" + pmIdCard + "'");
+        hqlBuilder.append("select pmId from cs_party_manager where pmIDCard = :pmIdCard ");
+        hqlBuilder.setParam("pmIdCard",pmIdCard);
         int index = this.executeSql(hqlBuilder);
         if(index > 0){
             return true ;

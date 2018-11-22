@@ -140,7 +140,8 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 	@Transactional
 	public void deleteByBusinessId(String businessId) {
 		HqlBuilder sqlBuilder = HqlBuilder.create();
-		sqlBuilder.append(" delete from cs_books_buy where businessid = '"+businessId+"'");
+		sqlBuilder.append(" delete from cs_books_buy where businessid = :businessId ");
+		sqlBuilder.setParam("businessId",businessId);
 		bookBuyBusinessRepo.executeSql(sqlBuilder);
 	}
 

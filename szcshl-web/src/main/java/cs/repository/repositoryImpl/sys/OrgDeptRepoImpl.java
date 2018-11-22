@@ -13,6 +13,8 @@ import cs.repository.AbstractRepository;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.type.StringType;
+import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -31,7 +33,7 @@ public class OrgDeptRepoImpl extends AbstractRepository<OrgDept, String> impleme
     @Override
     public OrgDept queryBySignBranchId(String signId,String branchId) {
         Criteria criteria = getExecutableCriteria();
-        criteria.add(Restrictions.sqlRestriction(" id = (select orgid from CS_SIGN_BRANCH where signid='"+signId+"' and branchid = '"+branchId+"')"));
+        criteria.add(Restrictions.sqlRestriction(" id = (select orgid from CS_SIGN_BRANCH where signid=? and branchid = ?)",new Object[]{signId,branchId},new Type[]{StringType.INSTANCE,StringType.INSTANCE}));
         return (OrgDept) criteria.uniqueResult();
     }
 
