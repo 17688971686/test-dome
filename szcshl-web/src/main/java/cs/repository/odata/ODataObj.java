@@ -152,7 +152,7 @@ public class ODataObj {
                     oDataFilterItem = new ODataFilterItem<String>();
                     oDataFilterItem.setField(matcherField.group(1).trim());
                     //过滤String类型参数中可能存在的XSS注入
-                    oDataFilterItem.setValue(HtmlUtils.htmlEscape(matcherValue.group(1)));
+                    oDataFilterItem.setValue(StringUtil.cleanXSS(matcherValue.group(1)));
                     oDataFilterItem.setOperator("like");
                     filterItemsList.add(oDataFilterItem);
                 }

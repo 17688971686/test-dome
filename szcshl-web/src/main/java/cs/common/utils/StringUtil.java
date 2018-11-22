@@ -134,6 +134,99 @@ public class StringUtil extends StringUtils {
             return (new StringBuilder()).append(Character.toLowerCase(f)).append(str.substring(1)).toString();
     }
 
+    public static String cleanXSS(String value) {
+        if (value != null) {
+            value = value.replaceAll("", "");
+            Pattern scriptPattern = Pattern.compile("<script>(.*?)</script>", Pattern.CASE_INSENSITIVE);
+            value = scriptPattern.matcher(value).replaceAll("");
+            scriptPattern = Pattern.compile("src[\r\n]*=[\r\n]*\\\'(.*?)\\\'", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+            value = scriptPattern.matcher(value).replaceAll("");
+            scriptPattern = Pattern.compile("<iframe>(.*?)</iframe>", Pattern.CASE_INSENSITIVE);
+            value = scriptPattern.matcher(value).replaceAll("");
+            scriptPattern = Pattern.compile("</script>", Pattern.CASE_INSENSITIVE);
+            value = scriptPattern.matcher(value).replaceAll("");
+            scriptPattern = Pattern.compile("eval\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+            value = scriptPattern.matcher(value).replaceAll("");
+            scriptPattern = Pattern.compile("e­xpression\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+            value = scriptPattern.matcher(value).replaceAll("");
+            scriptPattern = Pattern.compile("javascript:", Pattern.CASE_INSENSITIVE);
+            value = scriptPattern.matcher(value).replaceAll("");
+            scriptPattern = Pattern.compile("vbscript:", Pattern.CASE_INSENSITIVE);
+            value = scriptPattern.matcher(value).replaceAll("");
+            scriptPattern = Pattern.compile("onload(.*?)=", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+            value = scriptPattern.matcher(value).replaceAll("");
+            scriptPattern = Pattern.compile("<link>(.*?)</link>", Pattern.CASE_INSENSITIVE);
+            value = scriptPattern.matcher(value).replaceAll("");
+            scriptPattern = Pattern.compile("<style>(.*?)</style>", Pattern.CASE_INSENSITIVE);
+            value = scriptPattern.matcher(value).replaceAll("");
+            scriptPattern = Pattern.compile("</script>", Pattern.CASE_INSENSITIVE);
+            value = scriptPattern.matcher(value).replaceAll("");
+            scriptPattern = Pattern.compile("</iframe>", Pattern.CASE_INSENSITIVE);
+            value = scriptPattern.matcher(value).replaceAll("");
+            scriptPattern = Pattern.compile("</link>", Pattern.CASE_INSENSITIVE);
+            value = scriptPattern.matcher(value).replaceAll("");
+            scriptPattern = Pattern.compile("</style>", Pattern.CASE_INSENSITIVE);
+            value = scriptPattern.matcher(value).replaceAll("");
+            scriptPattern = Pattern.compile("<script(.*?)>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+            value = scriptPattern.matcher(value).replaceAll("");
+            scriptPattern = Pattern.compile("<iframe(.*?)>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+            value = scriptPattern.matcher(value).replaceAll("");
+            scriptPattern = Pattern.compile("<link(.*?)>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+            value = scriptPattern.matcher(value).replaceAll("");
+            scriptPattern = Pattern.compile("<style(.*?)>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+            value = scriptPattern.matcher(value).replaceAll("");
+        }
+        return filter(value);
+    }
+
+    /**
+     * 过滤特殊字符
+     */
+    public static String filter(String value) {
+        if (value == null) {
+            return null;
+        }
+        StringBuffer result = new StringBuffer(value.length());
+        for (int i = 0; i < value.length(); ++i) {
+            switch (value.charAt(i)) {
+                case '<':
+                    result.append("<");
+                    break;
+                case '>':
+                    result.append(">");
+                    break;
+                case '"':
+                    result.append("\"");
+                    break;
+                case '\'':
+                    result.append("'");
+                    break;
+                case '%':
+                    result.append("%");
+                    break;
+                case ';':
+                    result.append(";");
+                    break;
+                case '(':
+                    result.append("(");
+                    break;
+                case ')':
+                    result.append(")");
+                    break;
+                case '&':
+                    result.append("&");
+                    break;
+                case '+':
+                    result.append("+");
+                    break;
+                default:
+                    result.append(value.charAt(i));
+                    break;
+            }
+        }
+        return result.toString();
+    }
+
     /**
      * 返回单个字符串，若匹配到多个的话就返回第一个，方法与getSubUtil一样
      *
