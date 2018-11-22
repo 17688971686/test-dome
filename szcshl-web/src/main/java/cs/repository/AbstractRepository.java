@@ -1,6 +1,7 @@
 package cs.repository;
 
 import cs.common.HqlBuilder;
+import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import cs.repository.odata.ODataObj;
 import org.apache.log4j.Logger;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -76,9 +78,12 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         hqlBuilder.append(" from  " + getPersistentClass().getSimpleName());
         hqlBuilder.append(" where " + idPropertyName + " = :id ");
         hqlBuilder.setParam("id", idValue);
-
         Query<T> q = this.getCurrentSession().createQuery(hqlBuilder.getHqlString(), getPersistentClass());
-        return setParamsToQuery2(q, hqlBuilder).uniqueResult();
+        List<T> resultList = setParamsToQuery2(q, hqlBuilder).list();
+        if(Validate.isList(resultList)){
+            return resultList.get(0);
+        }
+        return null;
     }
 
 
@@ -214,8 +219,7 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
     @Override
     public int executeHql(HqlBuilder hqlBuilder) {
         Query<?> q = setParamsToQuery(this.getCurrentSession().createQuery(hqlBuilder.getHqlString()), hqlBuilder);
-        int total = q.executeUpdate();
-        return total;
+        return q.executeUpdate();
     }
 
     @Override
@@ -228,12 +232,18 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         List<String> params = hqlBuilder.getParams();
         List<Object> values = hqlBuilder.getValues();
         List<Type> types = hqlBuilder.getTypes();
-        if (params != null) {
-            for (int i = 0; i < params.size(); i++) {
+        if (Validate.isList(params)) {
+            for (int i = 0, l = params.size();i<l; i++) {
+                Object value =  values.get(i);
+                if( value instanceof String ) {
+                    if (Validate.isString(value)) {
+                        value = StringUtil.sqlInjectionFilter(value.toString());
+                    }
+                }
                 if (types.get(i) == null) {
-                    query.setParameter(params.get(i), values.get(i));
+                    query.setParameter(params.get(i), value);
                 } else {
-                    query.setParameter(params.get(i), values.get(i), types.get(i));
+                    query.setParameter(params.get(i), value, types.get(i));
                 }
             }
         }
@@ -244,12 +254,18 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         List<String> params = hqlBuilder.getParams();
         List<Object> values = hqlBuilder.getValues();
         List<Type> types = hqlBuilder.getTypes();
-        if (params != null) {
-            for (int i = 0; i < params.size(); i++) {
+        if (Validate.isList(params)) {
+            for (int i = 0, l = params.size();i<l; i++) {
+                Object value =  values.get(i);
+                if( value instanceof String ) {
+                    if (Validate.isString(value)) {
+                        value = StringUtil.sqlInjectionFilter(value.toString());
+                    }
+                }
                 if (types.get(i) == null) {
-                    query.setParameter(params.get(i), values.get(i));
+                    query.setParameter(params.get(i), value);
                 } else {
-                    query.setParameter(params.get(i), values.get(i), types.get(i));
+                    query.setParameter(params.get(i), value, types.get(i));
                 }
             }
         }

@@ -9,12 +9,10 @@ import java.nio.charset.CharsetDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
-
-import static cs.common.constants.SysConstants.SEPARATE_COMMA;
 
 /**
  * 字符串工具类
@@ -25,6 +23,7 @@ public class StringUtil extends StringUtils {
 
     /**
      * 截取字符串
+     *
      * @param str
      * @param begin
      * @param end
@@ -36,12 +35,13 @@ public class StringUtil extends StringUtils {
 
     /**
      * 取默认值
+     *
      * @param checkStr
      * @param otherStr
      * @return
      */
-    public static String getDefaultValue(String checkStr,String otherStr){
-        if(Validate.isString(checkStr)){
+    public static String getDefaultValue(String checkStr, String otherStr) {
+        if (Validate.isString(checkStr)) {
             return checkStr;
         }
         return otherStr;
@@ -49,6 +49,7 @@ public class StringUtil extends StringUtils {
 
     /**
      * 拼接字符串
+     *
      * @param str
      * @param joinSymbol
      * @param joinStr
@@ -134,6 +135,31 @@ public class StringUtil extends StringUtils {
             return (new StringBuilder()).append(Character.toLowerCase(f)).append(str.substring(1)).toString();
     }
 
+    /**
+     * 过滤sql注入关键字
+     * 使用正则表达式过滤：过滤参数字符串
+     *
+     * @param str
+     * @return
+     * @throws PatternSyntaxException
+     */
+    public static String sqlInjectionFilter(String str) throws PatternSyntaxException {
+        if (StringUtils.isEmpty(str)) {
+            return "";
+        }
+        String reg = "(?:')|(?:--)|(/\\*(?:.|[\\n\\r])*?\\*/)|(\\b(select|update|and|or|delete|from|iframe|alert|insert|trancate|char|into|substr|ascii|declare|exec|count|master|into|drop|execute)\\b)";
+        Pattern sqlPattern = Pattern.compile(reg, Pattern.CASE_INSENSITIVE);
+        Matcher m = sqlPattern.matcher(str);
+        return m.replaceAll("").trim();
+    }
+
+
+    /**
+     * 处理跨脚本攻击方法
+     *
+     * @param value
+     * @return
+     */
     public static String cleanXSS(String value) {
         if (value != null) {
             value = value.replaceAll("", "");
@@ -272,12 +298,13 @@ public class StringUtil extends StringUtils {
 
     /**
      * 数组是否包含某个字符串
+     *
      * @param strArr
      * @param str
      * @return
      */
-    public static boolean isContainStr(List<String> strArr,String str){
-       return strArr.contains(str);
+    public static boolean isContainStr(List<String> strArr, String str) {
+        return strArr.contains(str);
     }
 
     public static void main(String[] args) {
@@ -293,10 +320,10 @@ public class StringUtil extends StringUtils {
 		System.out.println(listToString(nodeList));*/
 
 		/*String ss="d201800000";
-		System.out.println(ss.endsWith("0000"));*/
+        System.out.println(ss.endsWith("0000"));*/
 
         List<String> lines = Arrays.asList("spring", "node", "mkyong");
-        System.out.println(isContainStr(lines,"spring2"));
+        System.out.println(isContainStr(lines, "spring2"));
         List<String> result0 = getFilterOutput(lines, "mkyong");
         // output "spring", "node"
         for (String temp : result0) {
@@ -313,8 +340,7 @@ public class StringUtil extends StringUtils {
 
         result1.forEach(System.out::println); // output "spring", "node"
 
-        int yearNameL = "2018".length();
-        System.out.println(getSubString("2018",yearNameL-2,yearNameL));
+        System.out.println(sqlInjectionFilter("2018--"));
     }
 
 

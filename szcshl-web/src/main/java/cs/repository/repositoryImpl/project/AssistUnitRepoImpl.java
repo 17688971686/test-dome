@@ -23,12 +23,9 @@ public class AssistUnitRepoImpl extends AbstractRepository<AssistUnit, String> i
 
     @Override
     public int getUnitSortMax() {
-        Query query=this.getSession().createQuery("select max(a.unitSort) from "+AssistUnit.class.getSimpleName()+" a");
-        int max = 0;
-        if (query.uniqueResult() != null) {
-            max = (int) query.uniqueResult();
-        }
-        return max;
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" select max(unitSort) from cs_as_unit  ");
+        return returnIntBySql(sqlBuilder);
     }
 
     @Override
