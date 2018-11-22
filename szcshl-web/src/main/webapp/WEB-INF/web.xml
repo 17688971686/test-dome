@@ -1,51 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
-	<context-param>
-    <param-name>contextConfigLocation</param-name>
-    <param-value>classpath:spring.xml,classpath:spring-hibernate.xml,classpath:spring-shiro.xml,classpath:spring-httpclient.xml</param-value>
-   </context-param>
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>
+            classpath:spring.xml,classpath:spring-hibernate.xml,classpath:spring-shiro.xml,classpath:spring-httpclient.xml
+        </param-value>
+    </context-param>
+    <context-param>
+        <param-name>defaultHtmlEscape</param-name>
+        <param-value>true</param-value>
+    </context-param>
     <error-page>
         <error-code>404</error-code>
         <location>/</location>
     </error-page>
-	<error-page>
-		<error-code>500</error-code>
-		<location>/</location>
-	</error-page>
-	<servlet>
-		<servlet-name>framework</servlet-name>
-		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-
-		<init-param>
-			<param-name>contextConfigLocation</param-name>
-			<param-value>classpath:spring-mvc.xml</param-value>
-		</init-param>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-	<filter>
-		<filter-name>xFrameFilter</filter-name>
-		<filter-class>cs.common.filter.XFrameOptionFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>xFrameFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-	<!--APP API FIlter-->
-	<filter>
-		<filter-name>appApiFilter</filter-name>
-		<filter-class>cs.common.filter.MobileApiFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>appApiFilter</filter-name>
-		<url-pattern>/api/*</url-pattern>
-	</filter-mapping>
-	<!-- Map all requests to the DispatcherServlet for handling -->
-	<servlet-mapping>
-		<servlet-name>framework</servlet-name>
-		<url-pattern>/</url-pattern>
-	</servlet-mapping>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/</location>
+    </error-page>
+    <servlet>
+        <servlet-name>framework</servlet-name>
+        <!--<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>-->
+        <servlet-class>cs.spring.DispatcherServletWrapper</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:spring-mvc.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <filter>
+        <filter-name>xFrameFilter</filter-name>
+        <filter-class>cs.common.filter.XFrameOptionFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>xFrameFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <!--APP API FIlter-->
+    <filter>
+        <filter-name>appApiFilter</filter-name>
+        <filter-class>cs.common.filter.MobileApiFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>appApiFilter</filter-name>
+        <url-pattern>/api/*</url-pattern>
+    </filter-mapping>
+    <!-- Map all requests to the DispatcherServlet for handling -->
+    <servlet-mapping>
+        <servlet-name>framework</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
 
     <!-- 防止中文乱码过滤器配置 -->
     <filter>
@@ -65,69 +71,69 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
-	<!-- Druid 监控配置 -->
-	<filter>
-		<filter-name>DruidWebStatFilter</filter-name>
-		<filter-class>com.alibaba.druid.support.http.WebStatFilter</filter-class>
-		<init-param>
-			<param-name>exclusions</param-name>
-			<param-value>*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*</param-value>
-		</init-param>
-	</filter>
-	<filter-mapping>
-		<filter-name>DruidWebStatFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-	<servlet>
-		<servlet-name>DruidStatView</servlet-name>
-		<servlet-class>com.alibaba.druid.support.http.StatViewServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>DruidStatView</servlet-name>
-		<url-pattern>/druid/*</url-pattern>
-	</servlet-mapping>
+    <!-- Druid 监控配置 -->
+    <filter>
+        <filter-name>DruidWebStatFilter</filter-name>
+        <filter-class>com.alibaba.druid.support.http.WebStatFilter</filter-class>
+        <init-param>
+            <param-name>exclusions</param-name>
+            <param-value>*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>DruidWebStatFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <servlet>
+        <servlet-name>DruidStatView</servlet-name>
+        <servlet-class>com.alibaba.druid.support.http.StatViewServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DruidStatView</servlet-name>
+        <url-pattern>/druid/*</url-pattern>
+    </servlet-mapping>
 
     <!-- 配置shiro filter过滤器，被定义在classpath:applicationContext.xml文件里
          DelegatingFilterProxy实际上是Filter的代理对象，默认情况下，spring会到IOC容器中查找和<filter-name>对应的filter bean，
          也可以通过targetBeanName的初始化参数来配置filter bean的id。
      -->
-	<filter>
-		<filter-name>shiroFilter</filter-name>
-		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
-		<init-param>
-			<param-name>targetFilterLifecycle</param-name>
-			<param-value>true</param-value>
-		</init-param>
-	</filter>
-	<filter-mapping>
-		<filter-name>shiroFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
+    <filter>
+        <filter-name>shiroFilter</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+        <init-param>
+            <param-name>targetFilterLifecycle</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>shiroFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 
 
-	  <listener>
-	    <listener-class>org.springframework.web.context.request.RequestContextListener
-			</listener-class>
-	  </listener>
-	  <listener>
-	    <listener-class>org.springframework.web.context.ContextLoaderListener
-			</listener-class>
-	  </listener>
-	  <listener>
-	    <listener-class>org.springframework.web.util.IntrospectorCleanupListener
-			</listener-class>
-	  </listener>
+    <listener>
+        <listener-class>org.springframework.web.context.request.RequestContextListener
+        </listener-class>
+    </listener>
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener
+        </listener-class>
+    </listener>
+    <listener>
+        <listener-class>org.springframework.web.util.IntrospectorCleanupListener
+        </listener-class>
+    </listener>
 
 
     <filter>
-		<filter-name>openSessionInView</filter-name>
-		<filter-class>org.springframework.orm.hibernate5.support.OpenSessionInViewFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>openSessionInView</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
+        <filter-name>openSessionInView</filter-name>
+        <filter-class>org.springframework.orm.hibernate5.support.OpenSessionInViewFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>openSessionInView</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 
-	<display-name>Archetype Created Web Application</display-name>
+    <display-name>Archetype Created Web Application</display-name>
 
 </web-app>

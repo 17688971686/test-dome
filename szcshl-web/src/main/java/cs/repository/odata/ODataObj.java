@@ -13,6 +13,8 @@ import org.hibernate.criterion.Restrictions;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import cs.common.utils.DateUtils;
+import org.springframework.web.util.HtmlUtils;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -142,13 +144,15 @@ public class ODataObj {
                 filterItem = odataMatcher.group();
                 matcherField = patternField.matcher(filterItem);
                 matcherValue = patternValue.matcher(filterItem);
+
                 if (matcherField.find() && matcherValue.find()) {
                     if (ObjectUtils.isEmpty(matcherValue.group(1))) {   // 避免空字符串的查询
                         continue;
                     }
                     oDataFilterItem = new ODataFilterItem<String>();
                     oDataFilterItem.setField(matcherField.group(1).trim());
-                    oDataFilterItem.setValue(matcherValue.group(1));
+                    //过滤String类型参数中可能存在的XSS注入
+                    oDataFilterItem.setValue(HtmlUtils.htmlEscape(matcherValue.group(1)));
                     oDataFilterItem.setOperator("like");
                     filterItemsList.add(oDataFilterItem);
                 }
