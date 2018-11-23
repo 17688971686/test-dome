@@ -56,11 +56,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
             window.rootPath = '${path}';
             //是否是超级管理员
-            window.isSuperUser = '${CURRENT_USER.loginName}'== 'admin';
+            window.isSuperUser = '${CURRENT_USER.loginName}' == 'admin';
             window.curUserId = '${CURRENT_USER.id}';
             //数字字典对象
             window.DICTOBJ = {};
-            buildDict(DICTOBJ,${DICT_ITEMS});
+            buildDict(DICTOBJ, ${DICT_ITEMS});
+
+            window.todoTaskCount = {
+                DO_SIGN_COUNT : 0,
+                DO_TASK_COUNT : 0,
+                GET_SIGN_COUNT : 0,
+                GET_RESERVESIGN_COUNT : 0,
+            }
         </script>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -111,8 +118,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <!--End:自定义css -->
         <!--[if lt IE 11]>
         <style type="text/css">
-            .newcheckbox{
-                border:none;
+            .newcheckbox {
+                border: none;
             }
         </style>
         <![endif]-->
@@ -168,7 +175,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown"
                                    style="height: 55px">
                                     <!-- The user image in the navbar-->
-                                    <img src="${path}/contents/images/user_icon.png" class="user-image" alt="User Image">
+                                    <img src="${path}/contents/images/user_icon.png" class="user-image"
+                                         alt="User Image">
                                     <!-- hidden-xs hides the username on small devices so only the image appears. -->
                                     <span class="hidden-xs">${user}</span>
                                 </a>
@@ -205,30 +213,36 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <@shiro.hasPermission name="permission#workbench">
                     <li class="treeview active">
                         <a href="javascript:void(0)">
-                            <img style="width: 20px; height: 20px" src="${path}/contents/images/user_icon.png" class="user-image" alt="User Image" />
+                            <img style="width: 20px; height: 20px" src="${path}/contents/images/user_icon.png"
+                                 class="user-image" alt="User Image"/>
                             <span class="title">我的工作台</span>
                             <span class="pull-right-container"> <i class="fa fa-angle-right pull-right"></i> </span>
                         </a>
                         <ul class="treeview-menu">
-                            <li><a href="javascript:void(0)" ui-sref="welcome"><i class="fa fa-home" aria-hidden="true"></i>主页</a></li>
+                            <li><a href="javascript:void(0)" ui-sref="welcome"><i class="fa fa-home"
+                                                                                  aria-hidden="true"></i>主页</a></li>
                             <@shiro.hasPermission name="admin#gtasks#get">
-                                <li><a href="javascript:void(0)" ui-sref="gtasks"><i class="fa fa-flag-o"></i>待办项目<span class="label label-danger" id="DO_SIGN_COUNT">0</span></a></li>
-                            </@shiro.hasPermission>
-                            <@shiro.hasPermission name="admin#dtasks#get">
-                                <li><a href="javascript:void(0)" ui-sref="dtasks"> <i class="glyphicon glyphicon-tasks"></i>在办项目</a></li>
-                            </@shiro.hasPermission>
-                            <@shiro.hasPermission name="admin#agendaTasks#get">
-                                <li><a href="javascript:void(0)" ui-sref="agendaTasks"><i class="fa fa-flag-o"></i>待办任务<span class="label label-danger" id="DO_TASK_COUNT">0</span></a></li>
-                            </@shiro.hasPermission>
-                            <@shiro.hasPermission name="admin#doingTasks#get">
-                                <li><a href="javascript:void(0)" ui-sref="doingTasks"><i class="glyphicon glyphicon-tasks"></i>在办任务</a></li>
-                            </@shiro.hasPermission>
-                            <@shiro.hasPermission name="admin#endTasks#get">
-                                <li><a href="javascript:void(0)" ui-sref="endTasks"><i class="glyphicon glyphicon-floppy-disk"></i>办结任务</a></li>
-                            </@shiro.hasPermission>
-                        </ul>
+                            <li><a href="javascript:void(0)" ui-sref="gtasks"><i class="fa fa-flag-o"></i>待办项目<span
+                                    class="label label-danger" id="DO_SIGN_COUNT">0</span></a></li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="admin#dtasks#get">
+                    <li><a href="javascript:void(0)" ui-sref="dtasks"> <i class="glyphicon glyphicon-tasks"></i>在办项目</a>
                     </li>
-                    </@shiro.hasPermission>
+                </
+                @shiro.hasPermission>
+                <@shiro.hasPermission name="admin#agendaTasks#get">
+                <li><a href="javascript:void(0)" ui-sref="agendaTasks"><i class="fa fa-flag-o"></i>待办任务<span
+                        class="label label-danger" id="DO_TASK_COUNT">0</span></a></li>
+            </@shiro.hasPermission>
+            <@shiro.hasPermission name="admin#doingTasks#get">
+            <li><a href="javascript:void(0)" ui-sref="doingTasks"><i class="glyphicon glyphicon-tasks"></i>在办任务</a></li>
+        </@shiro.hasPermission>
+        <@shiro.hasPermission name="admin#endTasks#get">
+        <li><a href="javascript:void(0)" ui-sref="endTasks"><i class="glyphicon glyphicon-floppy-disk"></i>办结任务</a></li>
+    </@shiro.hasPermission>
+</ul>
+</li>
+</@shiro.hasPermission>
 
 <!-- start 项目管理-->
 <@shiro.hasPermission name="permission#sign">
@@ -239,10 +253,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
     </a>
     <ul class="treeview-menu">
         <@shiro.hasPermission name="sign#html/reserveList#get">
-        <li><a href="javascript:void(0)" ui-sref="reserveList">项目预签收列表<span class="label label-danger" id="GET_RESERVESIGN_COUNT">0</span></a></li>
-    </@shiro.hasPermission>
+        <li><a href="javascript:void(0)" ui-sref="reserveList">项目预签收列表<span class="label label-danger"
+                                                                            id="GET_RESERVESIGN_COUNT">0</span></a></li>
+    </
+    @shiro.hasPermission>
     <@shiro.hasPermission name="sign#html/list#get">
-<li><a href="javascript:void(0)" ui-sref="listSign">项目签收列表<span class="label label-danger" id="GET_SIGN_COUNT">0</span></a></li>
+<li><a href="javascript:void(0)" ui-sref="listSign">项目签收列表<span class="label label-danger" id="GET_SIGN_COUNT">0</span></a>
+</li>
 </@shiro.hasPermission>
 <@shiro.hasPermission name="sign#html/signGetBack#get">
 <li><a href="javascript:void(0)" ui-sref="signGetBack">项目重新分办</a></li>
@@ -277,7 +294,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <!-- start 月报简报管理 -->
         <@shiro.hasPermission name="monthlyNewsletter#html/monthlyNewsletterList#get">
         <li><a href="javascript:void(0)" ui-sref="monthlyNewsletterList">月报简报管理</a></li>
-    </@shiro.hasPermission>
+    </
+    @shiro.hasPermission>
 
     <!-- <@shiro.hasPermission name="monthlyNewsletter/html/monthlyHistoryList#get">
 <li><a href="javascript:void(0)" ui-sref="monthlyHistoryList">月报简报历史数据</a></li>
@@ -340,7 +358,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <ul class="treeview-menu">
         <@shiro.hasPermission name="expert#html/edit#get">
         <li><a href="javascript:void(0)" ui-sref="expertEdit({id:null})">专家信息录入</a></li>
-    </@shiro.hasPermission>
+    </
+    @shiro.hasPermission>
     <@shiro.hasPermission name="expert#html/audit#get">
 <li><a href="javascript:void(0)" ui-sref="expertAudit">专家信息审核</a></li>
 </@shiro.hasPermission>
@@ -371,7 +390,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <ul class="treeview-menu">
         <@shiro.hasPermission name="meeting#html/list#get">
         <li><a href="javascript:void(0)" ui-sref="meeting">会议室管理</a></li>
-    </@shiro.hasPermission>
+    </
+    @shiro.hasPermission>
     <@shiro.hasPermission name="room#html/roomlist#get">
 <li><a href="javascript:void(0)" ui-sref="room({workProgramId:null})">会议预定管理</a></li>
 </@shiro.hasPermission>
@@ -393,7 +413,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <ul class="treeview-menu">
         <@shiro.hasPermission name="signView#html/signList#get">
         <li><a href="javascript:void(0)" ui-sref="signList">项目查询统计 </a></li>
-    </@shiro.hasPermission>
+    </
+    @shiro.hasPermission>
     <@shiro.hasPermission name="signView#html/signChart#get">
 <li><a href="javascript:void(0)" ui-sref="signChart">项目统计分析 </a></li>
 </@shiro.hasPermission>
@@ -427,7 +448,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <ul class="treeview-menu">
         <@shiro.hasPermission name="archivesLibrary#html/archivesLibraryAdd#get">
         <li><a href="javascript:void(0)" ui-sref="libraryAdd">项目档案借阅</a></li>
-    </@shiro.hasPermission>
+    </
+    @shiro.hasPermission>
     <@shiro.hasPermission name="archivesLibrary#html/archivesLibraryList#get">
 <li><a href="javascript:void(0)" ui-sref="archivesLibraryList">档案借阅查询</a></li>
 </@shiro.hasPermission>
@@ -446,7 +468,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <ul class="treeview-menu">
         <@shiro.hasPermission name="topicInfo#html/add#get">
         <li><a href="javascript:void(0)" ui-sref="addTopic({id:null})">创建课题</a></li>
-    </@shiro.hasPermission>
+    </
+    @shiro.hasPermission>
     <@shiro.hasPermission name="topicInfo#html/myList#get">
 <li><a href="javascript:void(0)" ui-sref="myTopic">我的课题</a></li>
 </@shiro.hasPermission>
@@ -515,7 +538,8 @@ end 图书管理 -->
     <ul class="treeview-menu">
         <@shiro.hasPermission name="partyManager#html/partyEdit#get">
         <li><a href="javascript:void(0)" ui-sref="partyEdit">党员信息录入</a></li>
-    </@shiro.hasPermission>
+    </
+    @shiro.hasPermission>
     <@shiro.hasPermission name="partyManager#html/partyList#get">
 <li><a href="javascript:void(0)" ui-sref="partyList">党员信息查询</a></li>
 </@shiro.hasPermission>
@@ -537,16 +561,15 @@ end 图书管理 -->
     <ul class="treeview-menu">
         <@shiro.hasPermission name="postdoctoralBase#html/postdoctoralBaseList#get">
         <li><a href="javascript:void(0)" ui-sref="postdoctoralBaseList">博士后基地查询</a></li>
-    </@shiro.hasPermission>
+    </
+    @shiro.hasPermission>
 
-    <li><a href="javascript:void(0)" ui-sref="postdoctoralStaffList">博士后在站人员列表</a></li>
+<li><a href="javascript:void(0)" ui-sref="postdoctoralStaffList">博士后在站人员列表</a></li>
 
-    <li><a href="javascript:void(0)" ui-sref="postdoctoralPopStaffList">博士后出站人员列表</a></li>
-    <li><a href="javascript:void(0)" ui-sref="postdoctoralSubjectList">博士后课题列表</a></li>
+<li><a href="javascript:void(0)" ui-sref="postdoctoralPopStaffList">博士后出站人员列表</a></li>
+<li><a href="javascript:void(0)" ui-sref="postdoctoralSubjectList">博士后课题列表</a></li>
 </ul>
 </li>
-
-
 
 
 <!-- end 博士后管理-->
@@ -561,7 +584,8 @@ end 图书管理 -->
     <ul class="treeview-menu">
         <@shiro.hasPermission name="sharingPlatlform#html/list#get">
         <li><a href="javascript:void(0)" ui-sref="sharingPlatlform">共享资料管理</a></li>
-    </@shiro.hasPermission>
+    </
+    @shiro.hasPermission>
     <@shiro.hasPermission name="sharingPlatlform#html/yetList#get">
 <li><a href="javascript:void(0)" ui-sref="sharingPlatlformYet">共享资料列表</a></li>
 </@shiro.hasPermission>
@@ -577,9 +601,9 @@ end 图书管理 -->
 <@shiro.hasPermission name="fileLibrary#html/policyLibrary#get">
 <li><a href="javascript:void(0)" ui-sref="policyLibrary">政策标准库</a></li>
 </@shiro.hasPermission>
-        <@shiro.hasPermission name="fileLibrary#html/documentLibrary#get">
-            <li><a href="javascript:void(0)" ui-sref="documentLibrary">文件指标库</a></li>
-        </@shiro.hasPermission>
+<@shiro.hasPermission name="fileLibrary#html/documentLibrary#get">
+<li><a href="javascript:void(0)" ui-sref="documentLibrary">文件指标库</a></li>
+</@shiro.hasPermission>
 </ul>
 </li>
 </@shiro.hasPermission>
@@ -595,7 +619,8 @@ end 图书管理 -->
     <ul class="treeview-menu">
         <@shiro.hasPermission name="maintainProject#html/MaintainProjectList#get">
         <li><a href="javascript:void(0)" ui-sref="MaintainProjectList">维护项目</a></li>
-    </@shiro.hasPermission>
+    </
+    @shiro.hasPermission>
     <@shiro.hasPermission name="maintainProject#html/deletList#get">
 <li><a href="javascript:void(0)" ui-sref="deletList">作废项目</a></li>
 </@shiro.hasPermission>
@@ -623,7 +648,8 @@ end 图书管理 -->
     <ul class="treeview-menu">
         <@shiro.hasPermission name="user#html/list#get">
         <li><a href="javascript:void(0)" ui-sref="user">用户管理</a></li>
-    </@shiro.hasPermission>
+    </
+    @shiro.hasPermission>
     <@shiro.hasPermission name="org#html/list#get">
 <li><a href="javascript:void(0)" ui-sref="org">部门管理</a></li>
 </@shiro.hasPermission>
@@ -677,7 +703,8 @@ end 图书管理 -->
         -->
         <@shiro.hasPermission name="header#html/list#get">
         <li><a href="javascript:void(0)" ui-sref="header">表字段管理</a></li>
-    </@shiro.hasPermission>
+    </
+    @shiro.hasPermission>
     <@shiro.hasPermission name="personalCenter#html/takeUser#get">
 <li><a href="javascript:void(0)" ui-sref="takeUser">个人代办设置</a></li>
 </@shiro.hasPermission>
@@ -693,7 +720,8 @@ end 图书管理 -->
     <section class="content">
         <div ui-view></div>
         <!--返回顶部按钮-->
-        <a id="btnTop" class="btnTop" style="display:none;position: fixed;bottom: 10px;right: 15px;z-index: 100;" href="javascript:void(0);" title="返回顶部">
+        <a id="btnTop" class="btnTop" style="display:none;position: fixed;bottom: 10px;right: 15px;z-index: 100;"
+           href="javascript:void(0);" title="返回顶部">
             <img src="${path}/contents/images/back1.png" style="width: 64px; height: 64px;">
         </a>
     </section>
@@ -722,7 +750,7 @@ end 图书管理 -->
 </div>
 <!-- 打印预览隐藏div END -->
 <!--  系统文件下载表单 -->
-<form id="szecSysFileDownLoadForm" style="display:none;" >
+<form id="szecSysFileDownLoadForm" style="display:none;">
     <input name="sysfileId" type="hidden">
 </form>
 
@@ -756,10 +784,10 @@ end 图书管理 -->
 <!--ztree-->
 <script src="${path}/contents/libs/zTree/js/jquery.ztree.all.min.js"></script>
 <!--Ueditor-->
-<script  src="${path}/contents/libs/ueditor/ueditor.config.js"></script>
-<script  src="${path}/contents/libs/ueditor/ueditor.all.min.js"> </script>
+<script src="${path}/contents/libs/ueditor/ueditor.config.js"></script>
+<script src="${path}/contents/libs/ueditor/ueditor.all.min.js"></script>
 <!- Lodop-->
-<script  src="${path}/contents/libs/lodop/LodopFuncs.js"> </script>
+<script src="${path}/contents/libs/lodop/LodopFuncs.js"></script>
 
 <!--建议手动加在语言，避免在ie下有时因为加载语言失败导致编辑器加载失败-->
 <!--这里加载的语言文件会覆盖你在配置项目里添加的语言类型，比如你在配置项目里配置的是英文，这里加载的中文，那最后就是中文-->
@@ -783,75 +811,74 @@ end 图书管理 -->
 <script src="${path}/contents/app-dist/app.all.js"></script>
 <script src="${path}/contents/shared/index.js"></script>
 <script type="text/javascript">
-    window.onload = function(){
+    window.onload = function () {
         var btnTop = document.getElementById("btnTop");
         var timer = null;
 
-        window.onscroll = function(){
+        window.onscroll = function () {
             var backTop = getScrollTop();
-            if(backTop >= 20){ //当前视口顶端大于等于20时，显示返回顶部的按钮
+            if (backTop >= 20) { //当前视口顶端大于等于20时，显示返回顶部的按钮
                 btnTop.style.display = "block";
-            }else {
+            } else {
                 btnTop.style.display = "none";
             }
         };
 
-        btnTop.onclick = function(){
+        btnTop.onclick = function () {
             //定时执行
-            timer = setInterval(function(){
+            timer = setInterval(function () {
                 var backTop = getScrollTop();
                 var speedTop = backTop / 10;
                 //修改当前视口的数值，产生向上活动的效果
                 setScrollTop(backTop - speedTop);
-                if(backTop == 0){
+                if (backTop == 0) {
                     //结束函数执行
                     clearInterval(timer);
                 }
-            },30);
+            }, 30);
         };
         //获取当前视口的顶端数值
-        var getScrollTop = function(){
-            var sTop ;
-            if (document.compatMode == "BackCompat")
-            {
+        var getScrollTop = function () {
+            var sTop;
+            if (document.compatMode == "BackCompat") {
                 sTop = document.body.scrollTop;
-            }else{
+            } else {
                 //document.compatMode == \"CSS1Compat\"
                 sTop = document.documentElement.scrollTop == 0 ? document.body.scrollTop : document.documentElement.scrollTop;
             }
             return sTop;
         };
         //设置当前视口的顶端数值
-        var setScrollTop = function(top){
-            if (document.compatMode == "BackCompat"){
+        var setScrollTop = function (top) {
+            if (document.compatMode == "BackCompat") {
                 document.body.scrollTop = top;
-            }else if(document.documentElement.scrollTop == 0){
+            } else if (document.documentElement.scrollTop == 0) {
                 document.body.scrollTop = top;
-            }else{
+            } else {
                 document.documentElement.scrollTop = top;
             }
         }
     };
-    function showNotice(noticeList){
-        if(noticeList && noticeList.length > 0){
-            for(var i=0,l=noticeList.length;i<l;i++){
+    function showNotice(noticeList) {
+        if (noticeList && noticeList.length > 0) {
+            for (var i = 0, l = noticeList.length; i < l; i++) {
                 var t = layer.open({
                     type: 1,
-                    title:"系统提示",
+                    title: "系统提示",
                     offset: [
-                        ($(window).height()-160),
-                        ($(window).width()-365)
+                        ($(window).height() - 160),
+                        ($(window).width() - 365)
                     ],
-                    content: '<div style="width: 360px;height:105px;padding:8px 10px;overflow: hidden;">'+noticeList[i]+'</div>',
+                    content: '<div style="width: 360px;height:105px;padding:8px 10px;overflow: hidden;">' + noticeList[i] + '</div>',
                     shade: 0,       //不显示遮罩层
-                    yes: function(){
+                    yes: function () {
                         t.close();
                     }
                 });
             }
         }
     }
-    $(document).ready(function(){
+    $(document).ready(function () {
         $(".sidebar-menu .treeview-menu > li > a").click(function () {
             $(".sidebar-menu .treeview-menu > li > a").css({"font-weight": "normal"});
             $(".sidebar-menu .treeview-menu > li").css({"background": "none"});
@@ -864,7 +891,7 @@ end 图书管理 -->
 
         //判断是否是IE浏览器，如果是IE浏览器，则自动登录腾讯通
         var isIE = (navigator.userAgent.indexOf('MSIE') >= 0) || (navigator.userAgent.indexOf('Trident') >= 0);
-        if(isIE){
+        if (isIE) {
             var rtxSessionKey = "${RTX_SEESION_KEY}";
             if (rtxSessionKey) {
                 try {
@@ -879,18 +906,18 @@ end 图书管理 -->
                     alert("该浏览器不支持腾讯通登录：");
                 }
             }
-        }else{
+        } else {
             var o = layer.open({
                 type: 1,
-                title:"系统提示",
+                title: "系统提示",
                 offset: [
-                    ($(window).height()-160),
-                    ($(window).width()-365)
+                    ($(window).height() - 160),
+                    ($(window).width() - 365)
                 ],
                 content: '<div style="width: 360px;height:105px;padding:8px 10px;overflow: hidden;">该浏览器不支持腾讯通登录！</div>',
                 shade: 0,       //不显示遮罩层
-                time:2000,
-                yes: function(){
+                time: 2000,
+                yes: function () {
                     o.close();
                 }
             });
