@@ -295,10 +295,16 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         List<Type> types = sqlBuilder.getTypes();
         if (params != null) {
             for (int i = 0; i < params.size(); i++) {
+                Object value =  values.get(i);
+                if( value instanceof String ) {
+                    if (Validate.isString(value)) {
+                        value = StringUtil.sqlInjectionFilter(value.toString());
+                    }
+                }
                 if (types.get(i) == null) {
-                    q.setParameter(params.get(i), values.get(i));
+                    q.setParameter(params.get(i), value);
                 } else {
-                    q.setParameter(params.get(i), values.get(i), types.get(i));
+                    q.setParameter(params.get(i), value, types.get(i));
                 }
             }
         }
@@ -313,10 +319,16 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         List<Type> types = sqlBuilder.getTypes();
         if (params != null) {
             for (int i = 0; i < params.size(); i++) {
+                Object value =  values.get(i);
+                if( value instanceof String ) {
+                    if (Validate.isString(value)) {
+                        value = StringUtil.sqlInjectionFilter(value.toString());
+                    }
+                }
                 if (types.get(i) == null) {
-                    q.setParameter(params.get(i), values.get(i));
+                    q.setParameter(params.get(i), value);
                 } else {
-                    q.setParameter(params.get(i), values.get(i), types.get(i));
+                    q.setParameter(params.get(i), value, types.get(i));
                 }
             }
         }

@@ -112,7 +112,7 @@
                     }
                 })
             }
-            $("#financialCount").html(totalCost);
+            $("#financialCount").html(common.htmlEscape(totalCost));
         }
 
         /**

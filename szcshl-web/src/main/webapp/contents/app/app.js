@@ -1606,13 +1606,9 @@
                             bsWin.alert("评审费未计纳税额，不能进行打印操作！");
                             break;
                         }
-
                     }
-
                 }
             }
-
-
             if (!flag) {
                 $rootScope.printFile(signid, 'SIGN_EXPERT', 'SIGN_EXPERT_PAY');
             }

@@ -156,8 +156,7 @@
                 };
                 var httpSuccess = function success(response) {
                 	vm.financial.stageCount = response.data;
-                   $("#financialCount").html(vm.financial.stageCount);
-                   
+                   $("#financialCount").html(common.htmlEscape(vm.financial.stageCount));
                 };
 
                 common.http({

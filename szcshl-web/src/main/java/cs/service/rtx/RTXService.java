@@ -2,10 +2,7 @@ package cs.service.rtx;
 
 import cs.common.ResultMsg;
 import cs.common.constants.Constant;
-import cs.common.utils.PropertyUtil;
-import cs.common.utils.RTXUtils;
-import cs.common.utils.SMSUtils;
-import cs.common.utils.Validate;
+import cs.common.utils.*;
 import cs.domain.sys.SMSLog;
 import cs.domain.sys.User;
 import cs.model.sys.SysConfigDto;

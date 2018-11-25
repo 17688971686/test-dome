@@ -22,8 +22,21 @@
         getTaskCount: getTaskCount,                 // 用户待办总数
         uuid : uuid,                                // js
         downloadReport : downloadReport,            //报表下载
+        htmlEscape:htmlEscape                       //字符串转义
     };
     window.common = service;
+
+    /**
+     * 字符串转义，防止dom xss攻击
+     * @param str
+     */
+    function htmlEscape(str){
+        return str.replace(/&/g,'&amp;')
+            .replace(/"/g,'&quot;')
+            .replace(/'/g,'&#39;')
+            .replace(/</g,'&lt;')
+            .replace(/>/g,'&gt;');
+    }
 
     /**
      *
@@ -451,16 +464,16 @@
             url: rootPath + '/admin/myCountInfo'
         }).then(function (response) {
             if(response.data.DO_SIGN_COUNT){
-                $('#DO_SIGN_COUNT').html(response.data.DO_SIGN_COUNT);
+                $('#DO_SIGN_COUNT').html(htmlEscape(response.data.DO_SIGN_COUNT));
             }
             if(response.data.DO_TASK_COUNT){
-                $('#DO_TASK_COUNT').html(response.data.DO_TASK_COUNT);
+                $('#DO_TASK_COUNT').html(htmlEscape(response.data.DO_TASK_COUNT));
             }
             if(response.data.GET_SIGN_COUNT){
-                $('#GET_SIGN_COUNT').html(response.data.GET_SIGN_COUNT);
+                $('#GET_SIGN_COUNT').html(htmlEscape(response.data.GET_SIGN_COUNT));
             }
             if(response.data.GET_RESERVESIGN_COUNT){
-                $('#GET_RESERVESIGN_COUNT').html(response.data.GET_RESERVESIGN_COUNT);
+                $('#GET_RESERVESIGN_COUNT').html(htmlEscape(response.data.GET_RESERVESIGN_COUNT));
             }
         });
     }// E_获取待办总数

@@ -46,8 +46,9 @@ public class PropertyUtil {
         return p;
     }
     
-    public String readProperty(String key) {	
-    	return properties.getProperty(key);       
+    public String readProperty(String key) {
+        String keyValue = properties.getProperty(key);
+    	return StringUtil.cleanXSS(keyValue);
     }
     
     public List<String> getList(String prefix) {   	

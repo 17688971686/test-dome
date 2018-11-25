@@ -41,8 +41,7 @@ public class FileLibraryServiceImpl implements  FileLibraryService{
 
     public String getPath(){
         PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-        String libraryPath = propertyUtil.readProperty(FILE_LIBRARY_PATH);
-        return libraryPath;
+        return propertyUtil.readProperty(FILE_LIBRARY_PATH);
     }
 
     /**
