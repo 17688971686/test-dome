@@ -117,30 +117,30 @@ public class AsposeUtil {
      * @param args
      */
     public static void main(String[] args) {
-        // 验证License
+       /* // 验证License
         if (!getLicense()) {
             return;
         }
 
         try {
             long old = System.currentTimeMillis();
-           /* Workbook wb = new Workbook("D:\\myProjects.xls");// 原始excel路径
+           *//* Workbook wb = new Workbook("D:\\myProjects.xls");// 原始excel路径
             File pdfFile = new File("D:\\myProjects.pdf");// 输出路径
             FileOutputStream fileOS = new FileOutputStream(pdfFile);
-            wb.save(fileOS, SaveFormat.PDF);*/
+            wb.save(fileOS, SaveFormat.PDF);*//*
 
-            Document doc = new Document("D:\\评审中心问题整理20181114.doc");
+           *//* Document doc = new Document("D:\\评审中心问题整理20181114.doc");
             File pdfFile2 = new File("D:\\评审中心问题整理20181114.pdf");
             FileOutputStream fileOS2 = new FileOutputStream(pdfFile2);
             doc.save(fileOS2, com.aspose.words.SaveFormat.PDF);
             fileOS2.flush();
             fileOS2.close();
             long now = System.currentTimeMillis();
-            System.out.println("共耗时：" + ((now - old) / 1000.0) + "秒");
+            System.out.println("共耗时：" + ((now - old) / 1000.0) + "秒");*//*
 
             //AsposeUtil.ppt2pdf("D:\\测试.pptx","D:\\test4.pdf");
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
     }
 }

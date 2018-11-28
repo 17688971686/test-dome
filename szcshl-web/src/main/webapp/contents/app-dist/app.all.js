@@ -11547,22 +11547,39 @@
         buildOdataFilter: buildOdataFilter,         // 创建多条件查询的filter
         kendoGridDataSource: kendoGridDataSource,   // 获取gridDataSource
         getTaskCount: getTaskCount,                 // 用户待办总数
-        uuid : uuid,                                // js
-        downloadReport : downloadReport,            //报表下载
-        htmlEscape:htmlEscape                       //字符串转义
+        uuid: uuid,                                // js
+        downloadReport: downloadReport,            //报表下载
+        htmlEscape: htmlEscape,                      //实现html转码
+        htmlDecode: htmlDecode                       //实现html解码
     };
     window.common = service;
+
+    function htmlDecode(str) {
+        if (str.length == 0) return "";
+        var s = str.toString();
+        s = s.replace(/&amp;/g, "&");
+        s = s.replace(/&lt;/g, "<");
+        s = s.replace(/&gt;/g, ">");
+        s = s.replace(/&nbsp;/g, " ");
+        s = s.replace(/&#39;/g, "\'");
+        s = s.replace(/&quot;/g, "\"");
+        return s;
+    }
 
     /**
      * 字符串转义，防止dom xss攻击
      * @param str
      */
-    function htmlEscape(str){
-        return str.replace(/&/g,'&amp;')
-            .replace(/"/g,'&quot;')
-            .replace(/'/g,'&#39;')
-            .replace(/</g,'&lt;')
-            .replace(/>/g,'&gt;');
+    function htmlEscape(str) {
+        if (str.length == 0) return "";
+        var s = str.toString();
+        s = s.replace(/&/g, "&amp;");
+        s = s.replace(/</g, "&lt;");
+        s = s.replace(/>/g, "&gt;");
+        s = s.replace(/ /g, "&nbsp;");
+        s = s.replace(/\'/g, "&#39;");
+        s = s.replace(/\"/g, "&quot;");
+        return s;
     }
 
     /**
@@ -11573,8 +11590,8 @@
      * 使用{type: "application/vnd.ms-excel"}的写法，可以保存为xls格式的excel文件
      * 而使用“application/vnd.openxmlformats-officedocument.spreadsheetml.sheet”则会保存为xlsx
      */
-    function downloadReport(data , fileName , fileType){
-        var blob = new Blob([data] , {type : "application/" + fileType});
+    function downloadReport(data, fileName, fileType) {
+        var blob = new Blob([data], {type: "application/" + fileType});
         var objectUrl = URL.createObjectURL(blob);
         var aForExcel = $("<a><span class='forExcel'>下载</span></a>").attr("href", objectUrl).attr("download", fileName);
         $("body").append(aForExcel);
@@ -11686,10 +11703,10 @@
             return qs[1];
     }//end
 
-    function kendoGridDataSource(url, searchForm,page,pageSize,queryParams,isKeepParams) {
+    function kendoGridDataSource(url, searchForm, page, pageSize, queryParams, isKeepParams) {
         var dataSource = new kendo.data.DataSource({
             type: 'odata',
-            transport: kendoGridConfig().transport(url,searchForm,queryParams,isKeepParams),
+            transport: kendoGridConfig().transport(url, searchForm, queryParams, isKeepParams),
             schema: kendoGridConfig().schema({
                 id: "id",
                 fields: {
@@ -11701,8 +11718,8 @@
             serverPaging: true,
             serverSorting: true,
             serverFiltering: true,
-            pageSize : pageSize||10,
-            page:page||1,
+            pageSize: pageSize || 10,
+            page: page || 1,
             sort: {
                 field: "createdDate",
                 dir: "desc"
@@ -11738,13 +11755,13 @@
                 buttonCount: 5,
                 refresh: true,
                 pageSizes: true,
-                change:function(){
-                    if(scope && scope.page){
+                change: function () {
+                    if (scope && scope.page) {
                         scope.page = this.dataSource.page();
                     }
                 }
             },
-            dataBound:function(e){
+            dataBound: function (e) {
                 // this.dataSource.page(2);
                 var rows = this.items();
                 var page = this.pager.page() - 1;
@@ -11766,13 +11783,13 @@
                     model: model
                 };
             },
-            transport: function (url, form, paramObj,isKeepParams) {
+            transport: function (url, form, paramObj, isKeepParams) {
                 return {
                     read: {
                         url: url,
                         dataType: "json",
                         type: "post",
-                        cache : false ,
+                        cache: false,
                         beforeSend: function (req) {
                             req.setRequestHeader('Token', service.getToken());
                         },
@@ -11782,10 +11799,10 @@
                                 if (filterParam) {
                                     if (paramObj && paramObj.$filter) {
                                         var extendFilter = paramObj.$filter;
-                                        if(!isKeepParams){
+                                        if (!isKeepParams) {
                                             paramObj = undefined;
                                         }
-                                        return {"$filter":filterParam+" and "+extendFilter};
+                                        return {"$filter": filterParam + " and " + extendFilter};
                                     } else {
                                         return {
                                             "$filter": filterParam
@@ -11801,7 +11818,7 @@
                                     }
                                 }
                             } else {
-                                return paramObj||{};
+                                return paramObj || {};
                             }
                         }
                     }
@@ -11919,6 +11936,7 @@
         };
         return cookieUtil;
     }
+
     // end:cookie
 
     function getToken() {
@@ -11963,9 +11981,9 @@
                     return false;
                 }
                 var dataType = $me.attr("data-type") || "String";
-                if(dataType == "array"){
+                if (dataType == "array") {
                     val = "(" + val + ")";
-                }else{
+                } else {
                     val = "'" + val + "'";
                     if ("String" != dataType) {
                         val = dataType + val;
@@ -11980,7 +11998,7 @@
                     val = "datetime" + val;
                 }
 
-                return operator == "like" ? ("substringof(" + val + ", "+ elem.name + ")") : (elem.name + " "+operator+" " + val);
+                return operator == "like" ? ("substringof(" + val + ", " + elem.name + ")") : (elem.name + " " + operator + " " + val);
             }).get().join(" and ");
     }// E_封装filer的参数
 
@@ -11990,25 +12008,25 @@
             method: 'get',
             url: rootPath + '/admin/myCountInfo'
         }).then(function (response) {
-            if(response.data.DO_SIGN_COUNT){
+            if (response.data.DO_SIGN_COUNT) {
                 $('#DO_SIGN_COUNT').html(htmlEscape(response.data.DO_SIGN_COUNT));
             }
-            if(response.data.DO_TASK_COUNT){
+            if (response.data.DO_TASK_COUNT) {
                 $('#DO_TASK_COUNT').html(htmlEscape(response.data.DO_TASK_COUNT));
             }
-            if(response.data.GET_SIGN_COUNT){
+            if (response.data.GET_SIGN_COUNT) {
                 $('#GET_SIGN_COUNT').html(htmlEscape(response.data.GET_SIGN_COUNT));
             }
-            if(response.data.GET_RESERVESIGN_COUNT){
+            if (response.data.GET_RESERVESIGN_COUNT) {
                 $('#GET_RESERVESIGN_COUNT').html(htmlEscape(response.data.GET_RESERVESIGN_COUNT));
             }
         });
     }// E_获取待办总数
 
-    function uuid(){
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){
-            var r=Math.random()*16|0,
-                v=c=='x'?r:(r&0x3|0x8);
+    function uuid() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = Math.random() * 16 | 0,
+                v = c == 'x' ? r : (r & 0x3 | 0x8);
             return v.toString(16)
         }).toUpperCase()
     }
@@ -33011,14 +33029,14 @@
 
     angular.module('app').controller('partyListCtrl', partyList);
 
-    partyList.$inject = ['partySvc' , 'bsWin' , '$state'];
+    partyList.$inject = ['partySvc', 'bsWin', '$state'];
 
-    function partyList(partySvc , bsWin , $state) {
+    function partyList(partySvc, bsWin, $state) {
         var vm = this;
         vm.title = '党员信息查询';        		//标题
 
         active();
-        function active(){
+        function active() {
             partySvc.partyGrid(vm);
         }
 
@@ -33027,7 +33045,7 @@
          * 查看详情
          * @param pmId
          */
-        vm.partyDetail = function(pmId){
+        vm.partyDetail = function (pmId) {
             /* $('#myTab li').click(function (e) {
              var aObj = $("a",this);
              e.preventDefault();
@@ -33042,8 +33060,8 @@
                 height: "600px",
                 title: "党员信息表",
                 visible: false,
-                open : function(){
-                    partySvc.findById(pmId , function(data){
+                open: function () {
+                    partySvc.findById(pmId, function (data) {
                         vm.party = data.reObj;
                     })
                 },
@@ -33054,7 +33072,7 @@
 
         }
 
-        vm.formReset = function(){
+        vm.formReset = function () {
             vm.party = {};
         }
 
@@ -33062,24 +33080,24 @@
         /**
          * 模糊查询
          */
-        vm.queryParty = function(){
+        vm.queryParty = function () {
             vm.gridOptions.dataSource.read();
         }
 
         /**
          * 党务信息导出-word
          */
-        vm.exportPartyWord = function(pmId){
-            partySvc.exportPartyWord(vm , pmId)
+        vm.exportPartyWord = function (pmId) {
+            partySvc.exportPartyWord(vm, pmId)
         }
 
         /**
          * 删除党员信息
          * @param pmId
          */
-        vm.deleteParty = function(pmId){
-            bsWin.confirm("删除的数据无法恢复，确定删除？", function(){
-                partySvc.deleteParty(pmId , function(data){
+        vm.deleteParty = function (pmId) {
+            bsWin.confirm("删除的数据无法恢复，确定删除？", function () {
+                partySvc.deleteParty(pmId, function (data) {
                     bsWin.alert("删除成功！");
                     vm.gridOptions.dataSource.read();
                 });
@@ -33089,29 +33107,29 @@
         /**
          * 导出签到表
          */
-        vm.exportSignInSheet = function(){
+        vm.exportSignInSheet = function () {
             /*var selectIds = common.getKendoCheckId('.grid');
-            if (selectIds.length == 0) {
-                bsWin.alert("请选择要导出数据！");
-            } else {
-                var ids = [];
-                for (var i = 0; i < selectIds.length; i++) {
-                    ids.push(selectIds[i].value);
-                }
-                var idStr = ids.join(',');
-                partySvc.exportSignInSheet(idStr);
-            }*/
+             if (selectIds.length == 0) {
+             bsWin.alert("请选择要导出数据！");
+             } else {
+             var ids = [];
+             for (var i = 0; i < selectIds.length; i++) {
+             ids.push(selectIds[i].value);
+             }
+             var idStr = ids.join(',');
+             partySvc.exportSignInSheet(idStr);
+             }*/
             partySvc.exportSignInSheet();
         }
 
         /**
          * 批量导入弹框
          */
-        vm.importExcel = function(){
+        vm.importExcel = function () {
             $("importFile").val('');
             $("#importDiv").kendoWindow({
-                width: "500px",
-                height: "200px",
+                width: "700px",
+                height: "300px",
                 title: "导入文件",
                 visible: false,
                 modal: true,
@@ -33123,9 +33141,9 @@
         /**
          * 重置按钮
          */
-        vm.formReset = function(){
+        vm.formReset = function () {
             var tab = $("#partyform").find('input,select');
-            $.each(tab, function(i, obj) {
+            $.each(tab, function (i, obj) {
                 obj.value = "";
             });
         }
@@ -33133,10 +33151,10 @@
         /**
          * 导入数据
          */
-        vm.importFile = function (){
+        vm.importFile = function () {
             var file = $("#importFile").val();
             var fileStr = file.split('.');
-            if(file != "" && fileStr[1] != undefined &&( fileStr[1] == 'xls' || fileStr[1] == 'xlsx')){
+            if (file != "" && fileStr[1] != undefined && ( fileStr[1] == 'xls' || fileStr[1] == 'xlsx')) {
                 /* var downForm = $("#importForm");
                  downForm.attr("target", "");
                  downForm.attr("method", "post");
@@ -33146,9 +33164,10 @@
                  // downForm.attr("success" , function(data){
                  //     location.href = "#/partyList";
                  // })*/
-               var formData = new FormData();
+                vm.isImport = true;
+                var formData = new FormData();
                 var file = document.querySelector('input[type=file]').files[0];
-                formData.append("file" , file);
+                formData.append("file", file);
                 $.ajax({
                     type: "post",
                     url: rootPath + "/partyManager/importFile",
@@ -33159,11 +33178,9 @@
                     cache: false,
                     processData: false
                 }).success(function (data) {
-                    var msrg = data.reObj;
-                    if(data.reObj == undefined || data.reObj == ""){
-                        msrg = ""
-                    }
-                    bsWin.alert(data.reObj , function(){
+                    vm.isImport = false;
+                    var msrg = data.reMsg;
+                    bsWin.alert(msrg, function () {
                         window.parent.$("#importDiv").data("kendoWindow").close();
                         vm.gridOptions.dataSource.read();
                         // location.href = "#/partyList";
@@ -33171,9 +33188,9 @@
                     //成功提交
                 })
 
-            }else if(file == ""){
+            } else if (file == "") {
                 bsWin.alert("请上传导入文件！");
-            }else{
+            } else {
                 bsWin.alert("上传文件类型不匹配，请重新上传！");
             }
         }
@@ -33181,8 +33198,8 @@
         /**
          * 导出党员信息表-excel
          */
-        vm.exportPartyInfo = function(){
-                partySvc.exportPartyInfo();
+        vm.exportPartyInfo = function () {
+            partySvc.exportPartyInfo();
         }
 
     }
@@ -39586,28 +39603,32 @@
                     message: "确定发起流程么，请确保填写的信息已经保存正确！",
                     onOk: function () {
                         signSvc.updateFillin(vm.model, function (data) {
-                            var httpOptions = {
-                                method: 'post',
-                                url: rootPath + "/sign/startNewFlow",
-                                params: {
-                                    signid: vm.model.signid
+                            if(data.flag){
+                                var httpOptions = {
+                                    method: 'post',
+                                    url: rootPath + "/sign/startNewFlow",
+                                    params: {
+                                        signid: vm.model.signid
+                                    }
                                 }
-                            }
-                            var httpSuccess = function success(response) {
-                                vm.isSubmit = false;
-                                if (response.data.reCode == "ok") {
-                                    bsWin.success("操作成功！", function () {
-                                        $state.go('gtasks');
-                                    });
-                                } else {
-                                    bsWin.error(response.data.reMsg);
+                                var httpSuccess = function success(response) {
+                                    vm.isSubmit = false;
+                                    if (response.data.reCode == "ok") {
+                                        bsWin.success("操作成功！", function () {
+                                            $state.go('gtasks');
+                                        });
+                                    } else {
+                                        bsWin.error(response.data.reMsg);
+                                    }
                                 }
+                                common.http({
+                                    $http: $http,
+                                    httpOptions: httpOptions,
+                                    success: httpSuccess
+                                });
+                            }else{
+                                bsWin.alert(data.reMsg);
                             }
-                            common.http({
-                                $http: $http,
-                                httpOptions: httpOptions,
-                                success: httpSuccess
-                            });
                         });
                     }
                 });
@@ -39689,7 +39710,11 @@
                 vm.model.leaderhandlesug = $("#leaderhandlesug").val();
                 signSvc.updateFillin(vm.model, function (data) {
                     vm.isSubmit = false;
-                    bsWin.alert("操作成功！");
+                    if(data.flag){
+                        bsWin.alert("操作成功！");
+                    }else{
+                        bsWin.error(data.reMsg);
+                    }
                 });
             } else {
                 bsWin.alert("操作失败，有红色*号的选项为必填项，请按要求填写！");

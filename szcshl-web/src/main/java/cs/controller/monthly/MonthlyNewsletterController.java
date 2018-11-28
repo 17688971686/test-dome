@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.util.List;
@@ -260,6 +261,14 @@ public class MonthlyNewsletterController {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }finally {
+            if(Validate.isObject(is)){
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 

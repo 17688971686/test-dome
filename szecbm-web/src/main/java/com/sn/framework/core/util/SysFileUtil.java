@@ -131,20 +131,21 @@ public class SysFileUtil {
         boolean flag = true;
         // 删除文件夹中的所有文件包括子目录
         File[] files = dirFile.listFiles();
-        for (int i = 0; i < files.length; i++) {
-            // 删除子文件
-            if (files[i].isFile()) {
-                flag = deleteFile(files[i].getAbsolutePath());
-                if (!flag) {
-                    break;
+        if(!Validate.isEmpty(files)){
+            for (int i = 0; i < files.length; i++) {
+                // 删除子文件
+                if (files[i].isFile()) {
+                    flag = deleteFile(files[i].getAbsolutePath());
+                    if (!flag) {
+                        break;
+                    }
                 }
-            }
-            // 删除子目录
-            else if (files[i].isDirectory()) {
-                flag = deleteDirectory(files[i]
-                        .getAbsolutePath());
-                if (!flag) {
-                    break;
+                // 删除子目录
+                else if (files[i].isDirectory()) {
+                    flag = deleteDirectory(files[i].getAbsolutePath());
+                    if (!flag) {
+                        break;
+                    }
                 }
             }
         }
@@ -234,12 +235,6 @@ public class SysFileUtil {
     }
 
     public static void main(String[] args) {
-        try{
-            downLoadFromUrl("http://dlsw.baidu.com/sw-search-sp/soft/39/15453/zuiqiangwubishurufa.1403771155.rar",
-                    "baidu.rar","D:/szec_uploadfile/");
-        }catch (Exception e) {
-            System.out.print(e.getMessage());
-            // TODO: handle exception
-        }
+
     }
 }

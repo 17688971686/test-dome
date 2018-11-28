@@ -186,20 +186,32 @@ public class PartyManagerController {
     @RequestMapping(name = "批量导入" , path = "importFile" , method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg importFile( HttpServletRequest req , @RequestParam(name = "file") MultipartFile file){
-        ExcelReader er = null ;
         String returnMsg = "导入数据成功！<br/>";
         try{
-            er  = new ExcelReader();
-
-            List<PartyManager> partyManagerList = new ArrayList<>();
-            int index = 2;
-            List<Map<Integer , String >> list = er.readExcelContent(file.getInputStream() , 3 , 0);
-
-            for(Map<Integer , String > map : list){
+            //获取文件名
+            String fileName = file.getOriginalFilename();
+            fileName = fileName.substring(fileName.lastIndexOf("\\") + 1);
+            if (!fileName.matches("^.+\\.(?i)(xls)$") && !fileName.matches("^.+\\.(?i)(xlsx)$")) {
+                return ResultMsg.error("上传文件格式不正确");
+            }
+            ExcelReader er  = new ExcelReader();
+            List<Map<Integer , String >> list = er.readExcelContent(file.getInputStream() , 2 , 0);
+            String checkStr = list.get(0).get(0) + "," + list.get(0).get(1)+ "," + list.get(0).get(2) + "," + list.get(0).get(3)+ "," + list.get(0).get(4)
+                    + "," + list.get(0).get(5)+ "," + list.get(0).get(6) + "," + list.get(0).get(7)+ "," + list.get(0).get(8) + "," + list.get(0).get(9)
+                    + "," + list.get(0).get(10) + "," + list.get(0).get(11)+ "," + list.get(0).get(12) + "," + list.get(0).get(13)+ "," + list.get(0).get(14)
+                    + "," + list.get(0).get(15)+ "," + list.get(0).get(16) + "," + list.get(0).get(17)+ "," + list.get(0).get(18) + "," + list.get(0).get(19)
+                    + "," + list.get(0).get(20) ;
+            String headTitle = "序号,姓名,性别,民族,公民身份证号,出生日期,学历,人员类别,入党时间,转正时间,入党介绍人（2人）,组织关系是否在我委,转入党组织时间,"
+                    +"转出党组织时间,现所在党组织,参加工作时间,工作岗位,是否在编,联系电话(手机号),固定电话,家庭住址(具体到门牌号)";
+            if (!headTitle.equals(checkStr)) {
+                return ResultMsg.error("文件格式不正确，请确保表头名称和模板一致，且文字之间不要留有空格！");
+            }
+            for(int i=1,l=list.size();i<l;i++){
+                Map<Integer , String > map = list.get(i);
                 if(map.get(0) == null || "".equals(map.get(0)) || map.get(4) == null || "".equals(map.get(4))){
-                    returnMsg += "第" + index + "行：【党员名称、身份证号】不能为空<br/>";
+                    returnMsg += "第" + (i+2) + "行：【党员名称、身份证号】不能为空<br/>";
                 }else if(map.get(4) != null && partyManagerService.existByIdCar(map.get(4))){
-                    returnMsg += "第" + index + "行：【" + map.get(1) + "、" +  map.get(4) + "】有冲突。<br/>";
+                    returnMsg += "第" + (i+2) + "行：【" + map.get(1) + "、" +  map.get(4) + "】有冲突。<br/>";
                 }else{
                     PartyManager partyManager = new PartyManager() ;
                     partyManager.setPmId(UUID.randomUUID().toString());
@@ -235,16 +247,13 @@ public class PartyManagerController {
                     partyManager.setPmTel(map.get(19) == null ? "" : map.get(19)); // 固定电话
                     partyManager.setPmAddress(map.get(20) == null ? "" : map.get(20)); // 家庭住址
                     partyManagerService.saveParty(partyManager);
-//                    partyManagerList.add(partyManager);
                 }
-                index ++ ;
             }
-//            partyManagerService.batchSave(partyManagerList);
         }catch (Exception e){
             returnMsg = "数据导入失败";
             e.printStackTrace();
         }
-        return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "数据导入成功!" , returnMsg );
+        return new ResultMsg(true , Constant.MsgCode.OK.getValue(),  returnMsg );
     }
 
     @RequiresAuthentication

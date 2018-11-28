@@ -5,7 +5,7 @@ This is a starter template page. Use this page to start your new project from
 scratch. This page gets rid of all links and provides the needed markup only.
 -->
 <!-- REQUIRED JS SCRIPTS -->
-<script src="${path}/contents/libs/jquery/jquery-3.3.1.min.js"></script>
+<script src="${path}/contents/libs/jquery/jquery.min.js"></script>
 <script src="${path}/contents/libs/raty/lib/jquery.raty.js"></script>
 <script src="${path}/contents/libs/bootstrap/customize/js/bootstrap.min.js"></script>
 <script src="${path}/contents/libs/angular/angular.min.js"></script>
@@ -216,7 +216,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <@shiro.hasPermission name="admin#gtasks#get">
                             <li>
                                 <a href="javascript:void(0)" ui-sref="gtasks">
-                                    <i class="fa fa-flag-o"></i>待办项目<span class="label label-danger" id="DO_SIGN_COUNT" ></span>
+                                    <i class="fa fa-flag-o"></i>待办项目<span class="label label-danger" id="DO_SIGN_COUNT">0</span>
                                 </a>
                             </li>
                             </@shiro.hasPermission>
@@ -228,7 +228,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <@shiro.hasPermission name="admin#agendaTasks#get">
                             <li>
                                 <a href="javascript:void(0)" ui-sref="agendaTasks">
-                                    <i class="fa fa-flag-o"></i>待办任务<span class="label label-danger" id="DO_TASK_COUNT" ></span></a>
+                                    <i class="fa fa-flag-o"></i>待办任务<span class="label label-danger" id="DO_TASK_COUNT">0</span></a>
                             </li>
                             </@shiro.hasPermission>
                             <@shiro.hasPermission name="admin#doingTasks#get">
@@ -258,13 +258,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <@shiro.hasPermission name="sign#html/reserveList#get">
                             <li>
                                 <a href="javascript:void(0)" ui-sref="reserveList">项目预签收列表
-                                    <span class="label label-danger" id="GET_RESERVESIGN_COUNT" ></span></a>
+                                    <span class="label label-danger" id="GET_RESERVESIGN_COUNT">0</span></a>
                             </li>
                             </@shiro.hasPermission>
                             <@shiro.hasPermission name="sign#html/list#get">
                             <li>
                                 <a href="javascript:void(0)" ui-sref="listSign">项目签收列表
-                                    <span class="label label-danger" id="GET_SIGN_COUNT" ></span>
+                                    <span class="label label-danger" id="GET_SIGN_COUNT">0</span>
                                 </a>
                             </li>
                             </@shiro.hasPermission>

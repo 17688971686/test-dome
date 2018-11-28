@@ -101,25 +101,32 @@
 
 <!--批量导入选择导入文件弹框页-->
 <div style="display: none" id="importDiv">
-     <span class="attentionDiv" >
-            <i class="fa fa-exclamation-triangle" aria-hidden="true" ></i>
-            温馨提示：只能上传excel表格类型文件
-     </span>
     <form id="importForm" name="importForm" style="margin-top: 10px;">
         <table class="table table-bordered">
+            <tr>
+                <td class="text-right" style="width: 90px;vertical-align: middle;">温馨提示：</td>
+                <td>
+                    <div class="attentionDiv" >
+                        1、只能上传excel表格类型文件<br>
+                        2、文件格式类型，必须按照模板格式填写上报。<br>
+                        3、最好是下载模板文件，填报好数据之后再上传。<br>
+                    </div>
+                </td>
+            </tr>
             <tr>
                 <td class="text-right">导入文件：<span class="required">*</span></td>
                 <td><input type="file"  name="file" multiple="multiple" id="importFile"/></td>
             </tr>
             <tr>
-                <td></td>
-                <td><button class="btn btn-xm btn-success" ng-click="vm.importFile()">确认</button></td>
-            </tr>
-            <tr>
-                <td>导入模板文件</td>
+                <td class="text-right">模板文件下载</td>
                 <td>
                     <a href="${path}/contents/uploadFile/importPatryTemplate.xlsx"
                        download="党员信息表(导入模板).xlsx" target="_blank">党员信息表(导入模板)</a>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="text-center">
+                    <button class="btn btn-xm btn-success" ng-click="vm.importFile()" ng-disabled="vm.isImport">确认</button>
                 </td>
             </tr>
         </table>

@@ -1,5 +1,7 @@
 package cs.common.sysResource;
 
+import cs.common.utils.Validate;
+
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
@@ -23,8 +25,11 @@ public class ClassFinder {
         }
         File scannedDir = new File(scannedUrl.getFile());
         List<Class<?>> classes = new ArrayList<Class<?>>();
-        for (File file : scannedDir.listFiles()) {
-            classes.addAll(find(file, scannedPackage));
+        File[] files = scannedDir.listFiles();
+        if(!Validate.isEmpty(files)){
+            for (File file : files) {
+                classes.addAll(find(file, scannedPackage));
+            }
         }
         return classes;
     }
@@ -33,8 +38,11 @@ public class ClassFinder {
         List<Class<?>> classes = new ArrayList<Class<?>>();
         String resource = scannedPackage + PKG_SEPARATOR + file.getName();
         if (file.isDirectory()) {
-            for (File child : file.listFiles()) {
-                classes.addAll(find(child, resource));
+            File[] files = file.listFiles();
+            if(!Validate.isEmpty(files)){
+                for (File child : files) {
+                    classes.addAll(find(child, resource));
+                }
             }
         } else if (resource.endsWith(CLASS_FILE_SUFFIX)) {
             int endIndex = resource.length() - CLASS_FILE_SUFFIX.length();

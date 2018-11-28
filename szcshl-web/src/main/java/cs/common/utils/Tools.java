@@ -664,16 +664,18 @@ public class Tools {
 	public static void deleteFile(String filepath) throws IOException {
 		File f = new File(filepath);// 定义文件路径
 		if (f.exists() && f.isDirectory()) {// 判断是文件还是目录
-			if (f.listFiles().length == 0) {// 若目录下没有文件则直接删除
-				f.delete();
-			} else {// 若有则把文件放进数组，并判断是否有下级目录
-				File delFile[] = f.listFiles();
-				int i = f.listFiles().length;
-				for (int j = 0; j < i; j++) {
-					if (delFile[j].isDirectory()) {
-						deleteFile(delFile[j].getAbsolutePath());// 递归调用del方法并取得子目录路径
+			File delFile[] = f.listFiles();
+			if(!Validate.isEmpty(delFile)){
+				if (delFile.length == 0) {// 若目录下没有文件则直接删除
+					f.delete();
+				} else {// 若有则把文件放进数组，并判断是否有下级目录
+					int i = delFile.length;
+					for (int j = 0; j < i; j++) {
+						if (delFile[j].isDirectory()) {
+							deleteFile(delFile[j].getAbsolutePath());// 递归调用del方法并取得子目录路径
+						}
+						delFile[j].delete();// 删除文件
 					}
-					delFile[j].delete();// 删除文件
 				}
 			}
 			deleteFile(filepath);// 递归调用
@@ -684,16 +686,18 @@ public class Tools {
 
 	public static void deleteFile(File f) throws IOException {
 		if (f.exists() && f.isDirectory()) {// 判断是文件还是目录
-			if (f.listFiles().length == 0) {// 若目录下没有文件则直接删除
-				f.delete();
-			} else {// 若有则把文件放进数组，并判断是否有下级目录
-				File delFile[] = f.listFiles();
-				int i = f.listFiles().length;
-				for (int j = 0; j < i; j++) {
-					if (delFile[j].isDirectory()) {
-						deleteFile(delFile[j].getAbsolutePath());// 递归调用del方法并取得子目录路径
+			File[] delFile = f.listFiles();
+			if(!Validate.isEmpty(delFile)){
+				if (delFile.length == 0) {// 若目录下没有文件则直接删除
+					f.delete();
+				} else {// 若有则把文件放进数组，并判断是否有下级目录
+					int i = delFile.length;
+					for (int j = 0; j < i; j++) {
+						if (delFile[j].isDirectory()) {
+							deleteFile(delFile[j].getAbsolutePath());// 递归调用del方法并取得子目录路径
+						}
+						delFile[j].delete();// 删除文件
 					}
-					delFile[j].delete();// 删除文件
 				}
 			}
 			deleteFile(f);// 递归调用

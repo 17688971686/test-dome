@@ -2,18 +2,12 @@ package cs.controller.sys;
 
 import cs.ahelper.IgnoreAnnotation;
 import cs.common.ResultMsg;
-import cs.domain.sys.SysDept;
 import cs.model.PageModelDto;
-import cs.model.sys.CompanyDto;
-import cs.model.sys.OrgDto;
 import cs.model.sys.SysDeptDto;
 import cs.model.sys.UserDto;
 import cs.repository.odata.ODataObj;
-import cs.repository.repositoryImpl.sys.SysDeptRepo;
-import cs.service.sys.OrgService;
 import cs.service.sys.SysDeptService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -21,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
-import java.util.List;
 
 @Controller
 @RequestMapping(name = "部门", path = "sysdept")

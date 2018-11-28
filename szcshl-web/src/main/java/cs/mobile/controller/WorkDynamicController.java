@@ -37,7 +37,7 @@ import java.util.*;
  */
 @Controller
 @RequestMapping(name = "工作状态", path = "api/workDynamic")
-public class workDynamicController {
+public class WorkDynamicController {
     private static Logger log = Logger.getLogger(FlowController.class);
     @Autowired
     private WorkDynamicService workDynamicService;

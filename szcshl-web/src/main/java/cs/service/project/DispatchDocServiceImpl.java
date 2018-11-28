@@ -200,7 +200,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
             List<WorkProgram> workProgrmList = ProjUtil.filterEnableWP(sign.getWorkProgramList());
             if (Validate.isList(workProgrmList)) {
                 for (WorkProgram workProgram : workProgrmList) {
-                    if (workProgram.getBranchId() == FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue()) {
+                    if (ProjUtil.isMainBranch(workProgram.getBranchId())) {
                         workProgram.setAppalyInvestment(dispatchDocDto.getDeclareValue());
                     }
                 }

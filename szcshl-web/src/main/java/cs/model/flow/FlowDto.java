@@ -3,8 +3,6 @@ package cs.model.flow;
 import java.util.List;
 import java.util.Map;
 
-import cs.model.sys.UserDto;
-
 /**
  * 流程处理参数
  *

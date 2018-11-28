@@ -112,28 +112,32 @@
                     message: "确定发起流程么，请确保填写的信息已经保存正确！",
                     onOk: function () {
                         signSvc.updateFillin(vm.model, function (data) {
-                            var httpOptions = {
-                                method: 'post',
-                                url: rootPath + "/sign/startNewFlow",
-                                params: {
-                                    signid: vm.model.signid
+                            if(data.flag){
+                                var httpOptions = {
+                                    method: 'post',
+                                    url: rootPath + "/sign/startNewFlow",
+                                    params: {
+                                        signid: vm.model.signid
+                                    }
                                 }
-                            }
-                            var httpSuccess = function success(response) {
-                                vm.isSubmit = false;
-                                if (response.data.reCode == "ok") {
-                                    bsWin.success("操作成功！", function () {
-                                        $state.go('gtasks');
-                                    });
-                                } else {
-                                    bsWin.error(response.data.reMsg);
+                                var httpSuccess = function success(response) {
+                                    vm.isSubmit = false;
+                                    if (response.data.reCode == "ok") {
+                                        bsWin.success("操作成功！", function () {
+                                            $state.go('gtasks');
+                                        });
+                                    } else {
+                                        bsWin.error(response.data.reMsg);
+                                    }
                                 }
+                                common.http({
+                                    $http: $http,
+                                    httpOptions: httpOptions,
+                                    success: httpSuccess
+                                });
+                            }else{
+                                bsWin.alert(data.reMsg);
                             }
-                            common.http({
-                                $http: $http,
-                                httpOptions: httpOptions,
-                                success: httpSuccess
-                            });
                         });
                     }
                 });
@@ -215,7 +219,11 @@
                 vm.model.leaderhandlesug = $("#leaderhandlesug").val();
                 signSvc.updateFillin(vm.model, function (data) {
                     vm.isSubmit = false;
-                    bsWin.alert("操作成功！");
+                    if(data.flag){
+                        bsWin.alert("操作成功！");
+                    }else{
+                        bsWin.error(data.reMsg);
+                    }
                 });
             } else {
                 bsWin.alert("操作失败，有红色*号的选项为必填项，请按要求填写！");

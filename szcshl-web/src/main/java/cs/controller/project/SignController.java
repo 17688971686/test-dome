@@ -170,15 +170,15 @@ public class SignController {
     //@RequiresPermissions("sign##put")
     @RequiresAuthentication
     @RequestMapping(name = "更新收文", path = "", method = RequestMethod.PUT)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void update(@RequestBody SignDto signDto) {
-        signService.updateSign(signDto);
+    @ResponseBody
+    public ResultMsg update(@RequestBody SignDto signDto) {
+        return signService.updateSign(signDto);
     }
 
     //@RequiresPermissions("sign##post")
+    //@LogMsg(module = "保存收文")
     @RequiresAuthentication
     @RequestMapping(name = "创建收文", path = "", method = RequestMethod.POST)
-    @LogMsg(module = "保存收文")
     @ResponseBody
     public ResultMsg post(@RequestBody SignDto signDto) {
         return signService.createSign(signDto);

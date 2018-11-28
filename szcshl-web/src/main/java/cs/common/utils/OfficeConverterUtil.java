@@ -256,8 +256,8 @@ public class OfficeConverterUtil {
      /*   d.convert2PDF("D:\\szec_uploadfile\\zsl.docx", "D:\\zsl.pdf");
         d.convert2PDF("D:\\szec_uploadfile\\zsl111.doc", "D:\\zsl111.pdf");
         d.convert2PDF("D:\\szec_uploadfile\\b0e272ec51104e5caeff1cdb59d7a982.xls", "D:\\b0e272ec51104e5caeff1cdb59d7a982.pdf");
-        d.convert2PDF("D:\\szec_uploadfile\\123.pptx", "D:\\123.pdf");*/
-        OfficeConverterUtil.convert2PDF("D:\\szec_uploadfile\\鹏微公司服务器.txt", "D:\\鹏微公司服务.pdf");
+        d.convert2PDF("D:\\szec_uploadfile\\123.pptx", "D:\\123.pdf");
+        OfficeConverterUtil.convert2PDF("D:\\szec_uploadfile\\鹏微公司服务器.txt", "D:\\鹏微公司服务.pdf");*/
     }
 
 }

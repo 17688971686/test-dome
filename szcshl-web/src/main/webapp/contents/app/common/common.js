@@ -20,22 +20,39 @@
         buildOdataFilter: buildOdataFilter,         // 创建多条件查询的filter
         kendoGridDataSource: kendoGridDataSource,   // 获取gridDataSource
         getTaskCount: getTaskCount,                 // 用户待办总数
-        uuid : uuid,                                // js
-        downloadReport : downloadReport,            //报表下载
-        htmlEscape:htmlEscape                       //字符串转义
+        uuid: uuid,                                // js
+        downloadReport: downloadReport,            //报表下载
+        htmlEscape: htmlEscape,                      //实现html转码
+        htmlDecode: htmlDecode                       //实现html解码
     };
     window.common = service;
+
+    function htmlDecode(str) {
+        if (str.length == 0) return "";
+        var s = str.toString();
+        s = s.replace(/&amp;/g, "&");
+        s = s.replace(/&lt;/g, "<");
+        s = s.replace(/&gt;/g, ">");
+        s = s.replace(/&nbsp;/g, " ");
+        s = s.replace(/&#39;/g, "\'");
+        s = s.replace(/&quot;/g, "\"");
+        return s;
+    }
 
     /**
      * 字符串转义，防止dom xss攻击
      * @param str
      */
-    function htmlEscape(str){
-        return str.replace(/&/g,'&amp;')
-            .replace(/"/g,'&quot;')
-            .replace(/'/g,'&#39;')
-            .replace(/</g,'&lt;')
-            .replace(/>/g,'&gt;');
+    function htmlEscape(str) {
+        if (str.length == 0) return "";
+        var s = str.toString();
+        s = s.replace(/&/g, "&amp;");
+        s = s.replace(/</g, "&lt;");
+        s = s.replace(/>/g, "&gt;");
+        s = s.replace(/ /g, "&nbsp;");
+        s = s.replace(/\'/g, "&#39;");
+        s = s.replace(/\"/g, "&quot;");
+        return s;
     }
 
     /**
@@ -46,8 +63,8 @@
      * 使用{type: "application/vnd.ms-excel"}的写法，可以保存为xls格式的excel文件
      * 而使用“application/vnd.openxmlformats-officedocument.spreadsheetml.sheet”则会保存为xlsx
      */
-    function downloadReport(data , fileName , fileType){
-        var blob = new Blob([data] , {type : "application/" + fileType});
+    function downloadReport(data, fileName, fileType) {
+        var blob = new Blob([data], {type: "application/" + fileType});
         var objectUrl = URL.createObjectURL(blob);
         var aForExcel = $("<a><span class='forExcel'>下载</span></a>").attr("href", objectUrl).attr("download", fileName);
         $("body").append(aForExcel);
@@ -159,10 +176,10 @@
             return qs[1];
     }//end
 
-    function kendoGridDataSource(url, searchForm,page,pageSize,queryParams,isKeepParams) {
+    function kendoGridDataSource(url, searchForm, page, pageSize, queryParams, isKeepParams) {
         var dataSource = new kendo.data.DataSource({
             type: 'odata',
-            transport: kendoGridConfig().transport(url,searchForm,queryParams,isKeepParams),
+            transport: kendoGridConfig().transport(url, searchForm, queryParams, isKeepParams),
             schema: kendoGridConfig().schema({
                 id: "id",
                 fields: {
@@ -174,8 +191,8 @@
             serverPaging: true,
             serverSorting: true,
             serverFiltering: true,
-            pageSize : pageSize||10,
-            page:page||1,
+            pageSize: pageSize || 10,
+            page: page || 1,
             sort: {
                 field: "createdDate",
                 dir: "desc"
@@ -211,13 +228,13 @@
                 buttonCount: 5,
                 refresh: true,
                 pageSizes: true,
-                change:function(){
-                    if(scope && scope.page){
+                change: function () {
+                    if (scope && scope.page) {
                         scope.page = this.dataSource.page();
                     }
                 }
             },
-            dataBound:function(e){
+            dataBound: function (e) {
                 // this.dataSource.page(2);
                 var rows = this.items();
                 var page = this.pager.page() - 1;
@@ -239,13 +256,13 @@
                     model: model
                 };
             },
-            transport: function (url, form, paramObj,isKeepParams) {
+            transport: function (url, form, paramObj, isKeepParams) {
                 return {
                     read: {
                         url: url,
                         dataType: "json",
                         type: "post",
-                        cache : false ,
+                        cache: false,
                         beforeSend: function (req) {
                             req.setRequestHeader('Token', service.getToken());
                         },
@@ -255,10 +272,10 @@
                                 if (filterParam) {
                                     if (paramObj && paramObj.$filter) {
                                         var extendFilter = paramObj.$filter;
-                                        if(!isKeepParams){
+                                        if (!isKeepParams) {
                                             paramObj = undefined;
                                         }
-                                        return {"$filter":filterParam+" and "+extendFilter};
+                                        return {"$filter": filterParam + " and " + extendFilter};
                                     } else {
                                         return {
                                             "$filter": filterParam
@@ -274,7 +291,7 @@
                                     }
                                 }
                             } else {
-                                return paramObj||{};
+                                return paramObj || {};
                             }
                         }
                     }
@@ -392,6 +409,7 @@
         };
         return cookieUtil;
     }
+
     // end:cookie
 
     function getToken() {
@@ -436,9 +454,9 @@
                     return false;
                 }
                 var dataType = $me.attr("data-type") || "String";
-                if(dataType == "array"){
+                if (dataType == "array") {
                     val = "(" + val + ")";
-                }else{
+                } else {
                     val = "'" + val + "'";
                     if ("String" != dataType) {
                         val = dataType + val;
@@ -453,7 +471,7 @@
                     val = "datetime" + val;
                 }
 
-                return operator == "like" ? ("substringof(" + val + ", "+ elem.name + ")") : (elem.name + " "+operator+" " + val);
+                return operator == "like" ? ("substringof(" + val + ", " + elem.name + ")") : (elem.name + " " + operator + " " + val);
             }).get().join(" and ");
     }// E_封装filer的参数
 
@@ -463,25 +481,25 @@
             method: 'get',
             url: rootPath + '/admin/myCountInfo'
         }).then(function (response) {
-            if(response.data.DO_SIGN_COUNT){
+            if (response.data.DO_SIGN_COUNT) {
                 $('#DO_SIGN_COUNT').html(htmlEscape(response.data.DO_SIGN_COUNT));
             }
-            if(response.data.DO_TASK_COUNT){
+            if (response.data.DO_TASK_COUNT) {
                 $('#DO_TASK_COUNT').html(htmlEscape(response.data.DO_TASK_COUNT));
             }
-            if(response.data.GET_SIGN_COUNT){
+            if (response.data.GET_SIGN_COUNT) {
                 $('#GET_SIGN_COUNT').html(htmlEscape(response.data.GET_SIGN_COUNT));
             }
-            if(response.data.GET_RESERVESIGN_COUNT){
+            if (response.data.GET_RESERVESIGN_COUNT) {
                 $('#GET_RESERVESIGN_COUNT').html(htmlEscape(response.data.GET_RESERVESIGN_COUNT));
             }
         });
     }// E_获取待办总数
 
-    function uuid(){
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){
-            var r=Math.random()*16|0,
-                v=c=='x'?r:(r&0x3|0x8);
+    function uuid() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = Math.random() * 16 | 0,
+                v = c == 'x' ? r : (r & 0x3 | 0x8);
             return v.toString(16)
         }).toUpperCase()
     }

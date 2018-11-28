@@ -72,7 +72,7 @@ public class TemplateUtil {
 
 
     public static void main(String[] args) {
-        Map<String, Object> dataMap = new HashMap<>();
-        TemplateUtil.createDoc(dataMap, "cjb/smallProject/collectPrint/projectPrintExpBak", "G:\\6688.xls");
+       /* Map<String, Object> dataMap = new HashMap<>();
+        TemplateUtil.createDoc(dataMap, "cjb/smallProject/collectPrint/projectPrintExpBak", "G:\\6688.xls");*/
     }
 }

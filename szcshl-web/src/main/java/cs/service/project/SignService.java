@@ -25,7 +25,12 @@ public interface SignService {
 
     PageModelDto<SignDto> get(ODataObj odataObj);
 
-    void updateSign(SignDto signDto);
+    /**
+     * 更新项目信息
+     * @param signDto
+     * @return
+     */
+    ResultMsg updateSign(SignDto signDto);
 
     ResultMsg initFillPageData(String signId);
 

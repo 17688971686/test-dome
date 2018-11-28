@@ -48,7 +48,6 @@ import cs.service.sys.SysConfigService;
 import cs.service.sys.UserService;
 import cs.service.sys.WorkdayService;
 import cs.sql.*;
-import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -63,9 +62,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.*;
-
 import static cs.common.constants.Constant.*;
 import static cs.common.constants.FlowConstant.*;
 import static cs.common.constants.IgnoreProps.PUSH_SIGN_IGNORE_PROPS;
@@ -157,9 +154,6 @@ public class SignServiceImpl implements SignService {
     @Autowired
     private AssistUnitRepo assistUnitRepo;
     @Autowired
-    private HistoryService historyService;
-
-    @Autowired
     private ProjectStopRepo projectStopRepo;
 
     /**
@@ -170,8 +164,8 @@ public class SignServiceImpl implements SignService {
     @Override
     @Transactional
     public ResultMsg createSign(SignDto signDto) {
-        if (!Validate.isString(signDto.getFilecode())) {
-            return new ResultMsg(false, MsgCode.ERROR.getValue(), "保存失败，没有收文编号！");
+        if (!ProjUtil.checkProjDataValidate(signDto)) {
+            return new ResultMsg(false, MsgCode.ERROR.getValue(), "项目代码、评审阶段、项目名称和收文编号为空或者有特殊字符，保存失败！");
         }
         Date now = new Date();
         Sign sign = null;
@@ -206,7 +200,6 @@ public class SignServiceImpl implements SignService {
         if (Validate.isString(sign.getDesigncompanyName())) {
             unitScoreService.decide(sign.getDesigncompanyName(), sign.getSignid(), isSignUser);
         }
-
         //7、正式签收
         if (!Validate.isString(sign.getIssign()) || !EnumState.YES.getValue().equals(sign.getIssign())) {
             sign.setSigndate(now);
@@ -250,6 +243,9 @@ public class SignServiceImpl implements SignService {
     @Override
     @Transactional
     public ResultMsg reserveAddSign(SignDto signDto) {
+        if (!ProjUtil.checkProjDataValidate(signDto)) {
+            return new ResultMsg(false, MsgCode.ERROR.getValue(), "项目代码、评审阶段、项目名称和收文编号为空或者有特殊字符，保存失败！");
+        }
         Sign sign = null;
         Date now = new Date();
         //是否是签收员操作
@@ -342,7 +338,11 @@ public class SignServiceImpl implements SignService {
 
     @Override
     @Transactional
-    public void updateSign(SignDto signDto) {
+    public ResultMsg updateSign(SignDto signDto) {
+        if (!ProjUtil.checkProjDataValidate(signDto)) {
+            return ResultMsg.error("项目代码、评审阶段、项目名称和收文编号为空或者有特殊字符，保存失败！");
+        }
+
         boolean isSignUser = Validate.isString(SessionUtil.getUserId());
         Sign sign = signRepo.findById(signDto.getSignid());
         if (!signDto.getProjectname().equals(sign.getProjectname())) {
@@ -382,6 +382,8 @@ public class SignServiceImpl implements SignService {
         sign.setModifiedBy(SessionUtil.getUserId());
         sign.setModifiedDate(new Date());
         signRepo.save(sign);
+
+        return ResultMsg.ok("操作成功!");
     }
 
     @Override

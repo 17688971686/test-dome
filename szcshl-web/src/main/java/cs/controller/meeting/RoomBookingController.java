@@ -122,6 +122,14 @@ public class RoomBookingController {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }finally {
+            if(Validate.isObject(is)){
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 

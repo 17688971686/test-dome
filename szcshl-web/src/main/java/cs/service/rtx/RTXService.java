@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -58,6 +59,7 @@ public class RTXService {
      */
     public String getSessionKey(String url, String loginUser) {
         String strSessionKey = "";
+        BufferedReader reader = null;
         if (!Validate.isString(url)) {
             PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
             url = propertyUtil.readProperty("RTX_URL");
@@ -67,10 +69,18 @@ public class RTXService {
             url += "receiver=" + URLEncoder.encode(loginUser, "GBK");
             java.net.URL loginUrl = new URL(url);
             HttpURLConnection httpConnection = (HttpURLConnection) loginUrl.openConnection();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(httpConnection.getInputStream()));
+            reader = new BufferedReader(new InputStreamReader(httpConnection.getInputStream()));
             strSessionKey = reader.readLine();
         } catch (Exception e) {
             System.out.println("获取腾讯通sessionKey异常：" + e);
+        }finally {
+            if(Validate.isObject(reader)){
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return strSessionKey;
     }
@@ -85,6 +95,7 @@ public class RTXService {
      */
     public String queryUserState(String url, String loginUser) {
         String userState = "0";
+        BufferedReader reader = null;
         if (!Validate.isString(url)) {
             PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
             url = propertyUtil.readProperty("RTX_URL");
@@ -94,11 +105,19 @@ public class RTXService {
             url += "username=" + URLEncoder.encode(loginUser, "GBK");
             java.net.URL loginUrl = new URL(url);
             HttpURLConnection httpConnection = (HttpURLConnection) loginUrl.openConnection();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(httpConnection.getInputStream()));
+            reader = new BufferedReader(new InputStreamReader(httpConnection.getInputStream()));
             userState = reader.readLine();
         } catch (Exception e) {
             System.out.println("获取用户在线状态异常：" + e);
             userState = "3";
+        }finally {
+            if(Validate.isObject(reader)){
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return userState;
     }

@@ -1440,9 +1440,11 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         File parent = new File(realPathResolver.get(Constant.plugin_file_path));
         if (parent.exists()) {
             File flist[] = parent.listFiles();
-            for (File f : flist) {
-                if (!f.isDirectory() && !f.getName().toLowerCase().endsWith("png")) {
-                    list.add(new PluginFileDto(f, Constant.plugin_file_path));
+            if(!Validate.isEmpty(flist)){
+                for (File f : flist) {
+                    if (!f.isDirectory() && !f.getName().toLowerCase().endsWith("png")) {
+                        list.add(new PluginFileDto(f, Constant.plugin_file_path));
+                    }
                 }
             }
         }
@@ -1460,9 +1462,11 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         File parent = new File(realPathResolver.get(Constant.plugin_file_path));
         if (parent.exists()) {
             File flist[] = parent.listFiles();
-            for (File f : flist) {
-                if (!f.isDirectory() && !f.getName().toLowerCase().endsWith("png")) {
-                    list.add(new PluginFileDto(f, Constant.plugin_file_path));
+            if(!Validate.isEmpty(flist)){
+                for (File f : flist) {
+                    if (!f.isDirectory() && !f.getName().toLowerCase().endsWith("png")) {
+                        list.add(new PluginFileDto(f, Constant.plugin_file_path));
+                    }
                 }
             }
         }

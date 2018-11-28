@@ -554,8 +554,8 @@ public class ImageUtils {
 
 
     public static void main(String[] args) {
-        String src = "D:/tomcat.gif";
-        /*      imageUtils.cutImage(src, "D://1cut.jpg", -10, 40, 100000, 560);
+         /* String src = "D:/tomcat.gif";
+            imageUtils.cutImage(src, "D://1cut.jpg", -10, 40, 100000, 560);
         imageUtils.rotateImage(src, "D:/2rotate.jpg", -30);
         imageUtils.rotateImage(src, "D:/2rotate1.png", 30);
         imageUtils.Rotate(src, "D://2rotate2.jpg", 330);
@@ -568,10 +568,10 @@ public class ImageUtils {
         imageUtils.pressImage("D://3scale1.jpg", src, "D://7pressImage.jpg", 100, 100, 0.9f);
         imageUtils.pressText("图片1414", src, "D://8pressText.jpg", "宋体", Font.BOLD, Color.black, 80, 10, 10,0.6f);
 */
-        ImageUtils util = new ImageUtils();
+       /* ImageUtils util = new ImageUtils();
         util.getImageSizeByImageReader(src);
         util.getImageSizeByBufferedImage(src);
-        System.out.println(getImageHeight(src));
+        System.out.println(getImageHeight(src));*/
 
     }
 }

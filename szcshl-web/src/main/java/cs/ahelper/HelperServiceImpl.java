@@ -19,23 +19,23 @@ public class HelperServiceImpl implements HelperService {
 	public void DataInit() {
 		Session session =sessionFactory.getCurrentSession();
 		for (int i = 0; i < 50; i++) {
-			
+
 			Role role =new Role();
 			role.setId(UUID.randomUUID().toString());
 			role.setRoleName("role"+i);
 			//role.setModifiedDate(new Date());
-			
-			
+
+
 			User user=new User();
 			user.setId(UUID.randomUUID().toString());
 			user.setLoginName("user"+i);
 			user.setDisplayName("");
 			user.setPassword("");
 			session.saveOrUpdate(user);
-					
+
 			role.getUsers().add(user);
 			session.saveOrUpdate(role);
-			
+
 			System.out.println(role.getRoleName());
 		}
 	}

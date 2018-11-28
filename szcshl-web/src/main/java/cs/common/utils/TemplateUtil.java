@@ -225,13 +225,13 @@ public class TemplateUtil {
 
 
     public static void main(String[] args) {
-        Map<String, Object> dataMap = new HashMap<>();
+        /*Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("projectName" , "测试");
         dataMap.put("reviewStage" , "项目概算");
         dataMap.put("mOrgName" , "深圳市");
         dataMap.put("projectBackGround" , "深圳市");
         dataMap.put("buildSize" , "深圳市");
 //        TemplateUtil.createDoc(dataMap, "report/roster", "G:\\test\\建议书报审.doc");
-        TemplateUtil.createDoc(dataMap, "meetBefore/compere", "G:\\test\\主持人收稿.doc");
+        TemplateUtil.createDoc(dataMap, "meetBefore/compere", "G:\\test\\主持人收稿.doc");*/
     }
 }

@@ -4,6 +4,7 @@ import cs.common.constants.Constant;
 import cs.common.constants.FlowConstant;
 import cs.common.utils.Validate;
 import cs.domain.project.WorkProgram;
+import cs.model.project.SignDto;
 
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,14 @@ import java.util.stream.Collectors;
  * Created by ldm on 2018/3/6 0006.
  */
 public class ProjUtil {
+
+    public static boolean checkProjDataValidate(SignDto signDto){
+        if(!Validate.isString(signDto.getProjectname()) ||!Validate.isString(signDto.getReviewstage())
+                || !Validate.isString(signDto.getProjectcode()) ||!Validate.isString(signDto.getFilecode())){
+            return false;
+        }
+        return true;
+    }
 
     /**
      * 根据会签数量发送短信
