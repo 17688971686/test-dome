@@ -673,7 +673,7 @@
                                 </w:tblCellMar>
                             </w:tblPrEx>
                             <w:trPr>
-                                <w:trHeight w:val="794" w:hRule="exact"/>
+                                <w:trHeight w:val="494" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -791,7 +791,7 @@
                                 </w:tblCellMar>
                             </w:tblPrEx>
                             <w:trPr>
-                                <w:trHeight w:val="285" w:hRule="atLeast"/>
+                                <w:trHeight w:val="400" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -868,7 +868,7 @@
                                 </w:tblCellMar>
                             </w:tblPrEx>
                             <w:trPr>
-                                <w:trHeight w:val="397" w:hRule="atLeast"/>
+                                <w:trHeight w:val="400" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -1125,7 +1125,7 @@
                                 </w:tblCellMar>
                             </w:tblPrEx>
                             <w:trPr>
-                                <w:trHeight w:val="397" w:hRule="atLeast"/>
+                                <w:trHeight w:val="400" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -1384,7 +1384,7 @@
                                 </w:tblCellMar>
                             </w:tblPrEx>
                             <w:trPr>
-                                <w:trHeight w:val="397" w:hRule="exact"/>
+                                <w:trHeight w:val="400" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -1643,7 +1643,7 @@
                                 </w:tblCellMar>
                             </w:tblPrEx>
                             <w:trPr>
-                                <w:trHeight w:val="397" w:hRule="exact"/>
+                                <w:trHeight w:val="400" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -1902,7 +1902,7 @@
                                 </w:tblCellMar>
                             </w:tblPrEx>
                             <w:trPr>
-                                <w:trHeight w:val="397" w:hRule="exact"/>
+                                <w:trHeight w:val="400" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -2161,7 +2161,7 @@
                                 </w:tblCellMar>
                             </w:tblPrEx>
                             <w:trPr>
-                                <w:trHeight w:val="340" w:hRule="exact"/>
+                                <w:trHeight w:val="400" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -2210,7 +2210,7 @@
                                 </w:tblCellMar>
                             </w:tblPrEx>
                             <w:trPr>
-                                <w:trHeight w:val="345" w:hRule="atLeast"/>
+                                <w:trHeight w:val="400" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -2526,7 +2526,7 @@
                                 </w:tblCellMar>
                             </w:tblPrEx>
                             <w:trPr>
-                                <w:trHeight w:val="467" w:hRule="atLeast"/>
+                                <w:trHeight w:val="400" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -2985,7 +2985,7 @@
                                 </w:tblCellMar>
                             </w:tblPrEx>
                             <w:trPr>
-                                <w:trHeight w:val="431" w:hRule="atLeast"/>
+                                <w:trHeight w:val="400" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -3442,7 +3442,7 @@
                                 </w:tblCellMar>
                             </w:tblPrEx>
                             <w:trPr>
-                                <w:trHeight w:val="431" w:hRule="atLeast"/>
+                                <w:trHeight w:val="400" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -3896,7 +3896,7 @@
                                 </w:tblCellMar>
                             </w:tblPrEx>
                             <w:trPr>
-                                <w:trHeight w:val="360" w:hRule="atLeast"/>
+                                <w:trHeight w:val="400" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -4349,7 +4349,7 @@
                                 </w:tblCellMar>
                             </w:tblPrEx>
                             <w:trPr>
-                                <w:trHeight w:val="360" w:hRule="atLeast"/>
+                                <w:trHeight w:val="400" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -4810,7 +4810,7 @@
                                 </w:tblCellMar>
                             </w:tblPrEx>
                             <w:trPr>
-                                <w:trHeight w:val="360" w:hRule="atLeast"/>
+                                <w:trHeight w:val="400" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -5268,7 +5268,7 @@
                                 </w:tblCellMar>
                             </w:tblPrEx>
                             <w:trPr>
-                                <w:trHeight w:val="360" w:hRule="atLeast"/>
+                                <w:trHeight w:val="400" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
