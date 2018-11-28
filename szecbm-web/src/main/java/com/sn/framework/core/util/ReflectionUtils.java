@@ -393,7 +393,7 @@ public class ReflectionUtils {
         if (object1 == null && object2 != null) {
             return false;
         }
-        if (object1.equals(object2)) {
+        if (object2.equals(object1)) {
             return true;
         }
         return false;
