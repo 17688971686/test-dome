@@ -184,7 +184,7 @@
                                 </w:tblCellMar>
                             </w:tblPrEx>
                             <w:trPr>
-                                <w:trHeight w:val="680" w:hRule="exact"/>
+                                <w:trHeight w:val="500" w:hRule="exact"/>
                                 <w:jc w:val="right"/>
                             </w:trPr>
                             <w:tc>
@@ -256,7 +256,7 @@
                                 </w:tblCellMar>
                             </w:tblPrEx>
                             <w:trPr>
-                                <w:trHeight w:val="692" w:hRule="exact"/>
+                                <w:trHeight w:val="500" w:hRule="exact"/>
                                 <w:jc w:val="right"/>
                             </w:trPr>
                             <w:tc>
@@ -386,7 +386,7 @@
                             </w:tblPrEx>
                             <w:trPr>
                                 <w:cantSplit/>
-                                <w:trHeight w:val="590" w:hRule="exact"/>
+                                <w:trHeight w:val="500" w:hRule="exact"/>
                                 <w:jc w:val="right"/>
                             </w:trPr>
                             <w:tc>
@@ -503,7 +503,7 @@
                             </w:tblPrEx>
                             <w:trPr>
                                 <w:cantSplit/>
-                                <w:trHeight w:val="2490" w:hRule="atLeast"/>
+                                <w:trHeight w:val="3500" w:hRule="exact"/>
                                 <w:jc w:val="right"/>
                             </w:trPr>
                             <w:tc>
@@ -1461,14 +1461,6 @@
                                     <w:bookmarkStart w:id="1" w:name="_GoBack"/>
                                     <w:bookmarkEnd w:id="1"/>
                                 </w:p>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                </w:p>
                             </w:tc>
                         </w:tr>
                         <w:tr>
@@ -1491,7 +1483,7 @@
                             </w:tblPrEx>
                             <w:trPr>
                                 <w:cantSplit/>
-                                <w:trHeight w:val="2175" w:hRule="atLeast"/>
+                                <w:trHeight w:val="2600" w:hRule="exact"/>
                                 <w:jc w:val="right"/>
                             </w:trPr>
                             <w:tc>
@@ -1516,14 +1508,6 @@
                                     <w:gridSpan w:val="6"/>
                                     <w:vAlign w:val="top"/>
                                 </w:tcPr>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                </w:p>
                                 <w:p>
                                     <w:pPr>
                                         <w:rPr>
@@ -2150,14 +2134,6 @@
                                     </#if>
                                     </w:r>
                                 </w:p>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                </w:p>
                             </w:tc>
                         </w:tr>
                         <w:tr>
@@ -2180,7 +2156,7 @@
                             </w:tblPrEx>
                             <w:trPr>
                                 <w:cantSplit/>
-                                <w:trHeight w:val="1702" w:hRule="atLeast"/>
+                                <w:trHeight w:val="2200" w:hRule="exact"/>
                                 <w:jc w:val="right"/>
                             </w:trPr>
                             <w:tc>
@@ -2196,15 +2172,6 @@
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     </w:pPr>
-                                </w:p>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:jc w:val="center"/>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                    </w:pPr>
                                     <w:r>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
@@ -2212,15 +2179,6 @@
                                         </w:rPr>
                                         <w:t>专家评审资料</w:t>
                                     </w:r>
-                                </w:p>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:jc w:val="center"/>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                    </w:pPr>
                                 </w:p>
                             </w:tc>
                             <w:tc>
@@ -2907,17 +2865,6 @@
                                         <w:tabs>
                                             <w:tab w:val="left" w:pos="4214"/>
                                         </w:tabs>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                </w:p>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:tabs>
-                                            <w:tab w:val="left" w:pos="4214"/>
-                                        </w:tabs>
                                         <w:ind w:firstLine="5040" w:firstLineChars="2400"/>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
@@ -2954,7 +2901,7 @@
                             </w:tblPrEx>
                             <w:trPr>
                                 <w:cantSplit/>
-                                <w:trHeight w:val="850" w:hRule="exact"/>
+                                <w:trHeight w:val="400" w:hRule="exact"/>
                                 <w:jc w:val="right"/>
                             </w:trPr>
                             <w:tc>
@@ -3014,7 +2961,7 @@
                             </w:tblPrEx>
                             <w:trPr>
                                 <w:cantSplit/>
-                                <w:trHeight w:val="612" w:hRule="exact"/>
+                                <w:trHeight w:val="500" w:hRule="exact"/>
                                 <w:jc w:val="right"/>
                             </w:trPr>
                             <w:tc>
@@ -3133,7 +3080,7 @@
                             </w:tblPrEx>
                             <w:trPr>
                                 <w:cantSplit/>
-                                <w:trHeight w:val="612" w:hRule="exact"/>
+                                <w:trHeight w:val="500" w:hRule="exact"/>
                                 <w:jc w:val="right"/>
                             </w:trPr>
                             <w:tc>
@@ -3238,7 +3185,7 @@
                             </w:tblPrEx>
                             <w:trPr>
                                 <w:cantSplit/>
-                                <w:trHeight w:val="760" w:hRule="exact"/>
+                                <w:trHeight w:val="500" w:hRule="exact"/>
                                 <w:jc w:val="right"/>
                             </w:trPr>
                             <w:tc>
@@ -3338,6 +3285,7 @@
                     </w:tbl>
                     <w:p>
                         <w:pPr>
+                            <w:spacing w:line="30" w:lineRule="auto"/>
                             <w:rPr>
                                 <w:rFonts w:hint="eastAsia"/>
                                 <w:sz w:val="24"/>
