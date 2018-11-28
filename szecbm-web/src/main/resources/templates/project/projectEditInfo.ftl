@@ -75,6 +75,7 @@
                     <td width="250px;" align="center">主办部门</td>
                     <td ng-repeat="x in vm.orgDeptList">
                         <input type="checkbox" name="{{x.name}}" selectType="main" tit="{{x.name}}"
+                               <#if !isEdit>disabled</#if>
                                ng-click="vm.mainOrg($event)" ng-checked="x.id == vm.model.mainOrgId" value="{{x.id}}"/>
                     </td>
                 </tr>
@@ -82,6 +83,7 @@
                     <td width="250px;" align="center">协办部门</td>
                     <td ng-repeat="x in vm.orgDeptList">
                         <input type="checkbox" selectType="assist" tit="{{x.name}}" id="assist_{{x.id}}"
+                               <#if !isEdit>disabled</#if>
                                ng-click="vm.initOption($event)" ng-checked="(vm.model.assistOrgId).indexOf(x.id) > -1" value="{{x.id}}"/>
                     </td>
                 </tr>
@@ -108,10 +110,11 @@
         <td colspan="3">
             <ul id="principalUser_ul">
                 <li ng-repeat="u in vm.orgUsers" id="principalUser" style="float: left;width: 80px;">
-                    <input ng-if="u.username != 'admin'" type="checkbox" selectType="assistUser" tit="{{u.displayName}}"
-                           value="{{u.userId}}"
+                    <input ng-if="u.username != 'admin'" type="checkbox" selectType="assistUser" tit="{{u.displayName}}" value="{{u.userId}}"
                            ng-checked="vm.model.assistUser && (vm.model.assistUser).indexOf(u.userId)>-1"
-                           ng-disabled="vm.model.mainUser == u.userId"/><span ng-if="u.username != 'admin'">{{u.displayName}}</span>
+                           <#if !isEdit>disabled</#if>
+                           <#if isEdit> ng-disabled="(vm.model.mainUser == u.userId)"</#if>
+                          /><span ng-if="u.username != 'admin'">{{u.displayName}}</span>
                 </li>
             </ul>
         </td>

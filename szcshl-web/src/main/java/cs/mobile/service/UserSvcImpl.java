@@ -19,7 +19,7 @@ public class UserSvcImpl implements UserSvc {
 
     @Override
     public Object findByToken(String token) {
-        List<Map<String, Object>> userList = jdbcTemplate.queryForList("select * from cs_user where token = '"+token+"' ");
+        List<Map<String, Object>> userList = jdbcTemplate.queryForList("select * from cs_user where token = ? ",token);
         if(Validate.isList(userList)){
             return userList.get(0);
         }

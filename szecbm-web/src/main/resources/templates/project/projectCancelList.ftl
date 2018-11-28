@@ -1,6 +1,14 @@
 <!-- Content Header (Page header) -->
 <#assign path=request.contextPath/>
 <meta charset="UTF-8">
+<style>
+    label.control-label{
+        padding: 0 !important;
+        min-width: 80px;
+        line-height: 34px;
+    }
+</style>
+
 <section class="content-header">
     <h1>
         项目管理
@@ -9,8 +17,6 @@
         <li class="active">作废项目管理</li>
     </ol>
 </section>
-
-
 <!-- Main content -->
 <section class="content">
     <div class="well well-sm" style="background:white;">
@@ -19,8 +25,8 @@
                 <div class="panel-heading">查询条件</div>
                 <div style="margin-bottom: 10px;">
                     <form id="filterForm" class="form-horizontal">
-                        <div class="row">
-                            <div class="form-group" style="margin-top: 15px">
+                        <div class="row" style="margin: 0;">
+                            <div class="form-group" style="margin:15px 0">
                                 <label class="control-label col-sm-1" for="filter_like_fileCode">收文编号：</label>
                                 <div class="col-sm-2">
                                     <input type="text" class="form-control text-input"
@@ -45,7 +51,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row" style="margin: 0;">
                                 <label class="control-label col-sm-1">发文日期：</label>
                                 <div class="col-sm-5 form-inline" >
                                     <div class="input-group date" sn-datetimepicker format="yyyy-mm-dd"  style="width: 40%">
@@ -83,7 +89,7 @@
         </form>
 
         <div id="toolbar" >
-            <button class="btn btn-sm btn-success" ng-click="vm.expProinfo()">导出</button>
+            <button class="btn btn-sm btn-success" ng-click="vm.expProinfo()"><span class="glyphicon glyphicon-download-alt"></span>导出</button>
         </div>
 
         <script type="text/template" id="columnBtns">

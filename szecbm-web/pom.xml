@@ -287,6 +287,9 @@
 
         <profile>
             <id>war</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <properties>
                 <packaging.type>war</packaging.type>
                 <packaging.environment>dev</packaging.environment>
@@ -307,9 +310,6 @@
         </profile>
         <profile>
             <id>demo</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
             <properties>
                 <packaging.environment>demo</packaging.environment>
             </properties>

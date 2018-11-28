@@ -608,7 +608,7 @@
                             formatter: '<a href="#/projectManageView/{{row.id}}/view" style="color:blue">{{row.projectName}}</a>'
                         }, {
                             field: 'reviewStage',
-                            title: '评审阶段2222',
+                            title: '评审阶段',
                             width: 100,
                         }, {
                             field: 'proUnit',
@@ -1169,9 +1169,14 @@
             vm.initFileUpload();
         });
 
+        projectManagerSvc.findOrganUser(function (data) {
+            vm.orgUsers = data;
+        });
+
         projectManagerSvc.findAllOrgDelt(function(data){
             vm.orgDeptList = data;
         });
+
   /*      /!**
          * 初始化附件上传
          *!/

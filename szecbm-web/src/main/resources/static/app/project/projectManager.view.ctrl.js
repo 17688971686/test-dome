@@ -29,9 +29,14 @@
             vm.initFileUpload();
         });
 
+        projectManagerSvc.findOrganUser(function (data) {
+            vm.orgUsers = data;
+        });
+
         projectManagerSvc.findAllOrgDelt(function(data){
             vm.orgDeptList = data;
         });
+
   /*      /!**
          * 初始化附件上传
          *!/

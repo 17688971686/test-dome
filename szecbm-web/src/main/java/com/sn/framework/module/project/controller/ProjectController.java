@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -101,6 +102,9 @@ public class ProjectController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @SysLog(businessType = "更新项目",operatorType = OperatorType.UPDATE,serviceclass = IProjectService.class,idName = "id")
     public void put(@RequestBody ProjectDto dto) {
+        ProjectDto oldDto = projectService.getById(dto.getId());
+        //如果已经作废，则提示该项目信息已作废
+        Assert.isTrue(!"2".equals(oldDto.getStatus()), "该项目已删除，不能再进行修改操作！");
         projectService.update(dto);
     }
 
