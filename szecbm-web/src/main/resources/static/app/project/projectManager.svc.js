@@ -252,8 +252,6 @@
                             }, {
                                 field: 'reviewStage',
                                 title: '评审阶段',
-                                filterControl: 'dict',
-                                filterData: 'DICT.REVIEWSTAGE.dicts.PRO_STAGE',
                                 width: 100,
                             }, {
                                 field: 'proUnit',

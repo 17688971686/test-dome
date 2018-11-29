@@ -25,13 +25,16 @@
         vm.attachments = [];
 
 
+        /*第一负责人也是有部门的人员，而不是当前用户所在部门的部门人员（修改2018-11-18）
         projectManagerSvc.findOrgUser(function (data) {
             vm.principalUsers = data;
             vm.initFileUpload();
         });
-
+        */
         projectManagerSvc.findOrganUser(function (data) {
             vm.orgUsers = data;
+            vm.principalUsers = data;
+            vm.initFileUpload();
         });
 
         projectManagerSvc.findAllOrgDelt(function (data) {
