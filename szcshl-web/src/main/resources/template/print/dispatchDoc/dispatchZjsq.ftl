@@ -901,7 +901,7 @@
                                 </w:tblCellMar>
                             </w:tblPrEx>
                             <w:trPr>
-                                <w:trHeight w:val="1701" w:hRule="exact"/>
+                                <w:trHeight w:val="1301" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -928,6 +928,7 @@
                                 <w:p>
                                     <w:pPr>
                                         <w:jc w:val="center"/>
+                                        <w:spacing w:line="30" w:lineRule="auto"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
@@ -1180,17 +1181,9 @@
                             <#if branchCount?? && branchCount == 1>
                                 <w:p>
                                     <w:pPr>
-                                        <w:jc w:val="left"/>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                </w:p>
-                                <w:p>
-                                    <w:pPr>
                                         <w:ind w:left="5500"/>
                                         <w:jc w:val="left"/>
+                                        <w:spacing w:line="30" w:lineRule="auto"/>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
@@ -1208,6 +1201,7 @@
                                     <w:pPr>
                                         <w:ind w:left="5500"/>
                                         <w:jc w:val="left"/>
+                                        <w:spacing w:line="30" w:lineRule="auto"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
@@ -1302,17 +1296,9 @@
                             <#if moreLeader?? && moreLeader == 0>
                                 <w:p>
                                     <w:pPr>
-                                        <w:jc w:val="center"/>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                </w:p>
-                                <w:p>
-                                    <w:pPr>
                                         <w:ind w:left="5500"/>
                                         <w:jc w:val="left"/>
+                                        <w:spacing w:line="30" w:lineRule="auto"/>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
@@ -1330,6 +1316,7 @@
                                     <w:pPr>
                                         <w:ind w:left="5500"/>
                                         <w:jc w:val="left"/>
+                                        <w:spacing w:line="30" w:lineRule="auto"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
@@ -1439,17 +1426,9 @@
                                 </w:p>
                                 <w:p>
                                     <w:pPr>
-                                        <w:jc w:val="center"/>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                </w:p>
-                                <w:p>
-                                    <w:pPr>
                                         <w:ind w:left="5500"/>
                                         <w:jc w:val="left"/>
+                                        <w:spacing w:line="30" w:lineRule="auto"/>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
@@ -1467,6 +1446,7 @@
                                     <w:pPr>
                                         <w:ind w:left="5500"/>
                                         <w:jc w:val="left"/>
+                                        <w:spacing w:line="30" w:lineRule="auto"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
@@ -1656,10 +1636,10 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>核减</w:t>
+                                        <w:t>核减（增）率</w:t>
                                     </w:r>
                                 </w:p>
-                                <w:p>
+                               <#-- <w:p>
                                     <w:pPr>
                                         <w:jc w:val="center"/>
                                         <w:rPr>
@@ -1674,7 +1654,7 @@
                                         </w:rPr>
                                         <w:t>（增）率</w:t>
                                     </w:r>
-                                </w:p>
+                                </w:p>-->
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
@@ -1700,6 +1680,7 @@
                                 <w:p>
                                     <w:pPr>
                                         <w:jc w:val="center"/>
+                                        <w:spacing w:line="30" w:lineRule="auto"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
@@ -1785,6 +1766,7 @@
                                 <w:p>
                                     <w:pPr>
                                         <w:jc w:val="center"/>
+
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
@@ -1800,6 +1782,7 @@
                                 </w:p>
                                 <w:p>
                                     <w:pPr>
+                                        <w:spacing w:line="30" w:lineRule="auto"/>
                                         <w:jc w:val="center"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
@@ -2534,10 +2517,10 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>核减</w:t>
+                                        <w:t>核减（增）率</w:t>
                                     </w:r>
                                 </w:p>
-                                <w:p>
+                                <#--<w:p>
                                     <w:pPr>
                                         <w:jc w:val="center"/>
                                         <w:rPr>
@@ -2552,7 +2535,7 @@
                                         </w:rPr>
                                         <w:t>（增）率</w:t>
                                     </w:r>
-                                </w:p>
+                                </w:p>-->
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
@@ -2578,6 +2561,7 @@
                                 <w:p>
                                     <w:pPr>
                                         <w:jc w:val="center"/>
+                                        <w:spacing w:line="30" w:lineRule="auto"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
@@ -2678,6 +2662,7 @@
                                 <w:p>
                                     <w:pPr>
                                         <w:jc w:val="center"/>
+                                        <w:spacing w:line="30" w:lineRule="auto"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>

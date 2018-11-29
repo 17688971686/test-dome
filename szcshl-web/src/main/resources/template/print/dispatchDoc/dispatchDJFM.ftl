@@ -1128,7 +1128,7 @@
                                 </w:tblCellMar>
                             </w:tblPrEx>
                             <w:trPr>
-                                <w:trHeight w:val="1304" w:hRule="exact"/>
+                                <w:trHeight w:val="1100" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -1180,17 +1180,9 @@
                             <#if branchCount?? && branchCount == 1>
                                 <w:p>
                                     <w:pPr>
-                                        <w:jc w:val="left"/>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                </w:p>
-                                <w:p>
-                                    <w:pPr>
                                         <w:ind w:left="5500"/>
                                         <w:jc w:val="left"/>
+                                        <w:spacing w:line="50" w:lineRule="auto"/>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
@@ -1208,6 +1200,7 @@
                                     <w:pPr>
                                         <w:ind w:left="5500"/>
                                         <w:jc w:val="left"/>
+                                        <w:spacing w:line="50" w:lineRule="auto"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
@@ -1244,7 +1237,7 @@
                                 </w:tblCellMar>
                             </w:tblPrEx>
                             <w:trPr>
-                                <w:trHeight w:val="1304" w:hRule="exact"/>
+                                <w:trHeight w:val="1100" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -1302,17 +1295,9 @@
                             <#if moreLeader?? && moreLeader == 0>
                                 <w:p>
                                     <w:pPr>
-                                        <w:jc w:val="center"/>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                </w:p>
-                                <w:p>
-                                    <w:pPr>
                                         <w:ind w:left="5500"/>
                                         <w:jc w:val="left"/>
+                                        <w:spacing w:line="50" w:lineRule="auto"/>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
@@ -1330,6 +1315,7 @@
                                     <w:pPr>
                                         <w:ind w:left="5500"/>
                                         <w:jc w:val="left"/>
+                                        <w:spacing w:line="50" w:lineRule="auto"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
@@ -1366,7 +1352,7 @@
                                 </w:tblCellMar>
                             </w:tblPrEx>
                             <w:trPr>
-                                <w:trHeight w:val="1361" w:hRule="exact"/>
+                                <w:trHeight w:val="1100" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -1439,17 +1425,9 @@
                                 </w:p>
                                 <w:p>
                                     <w:pPr>
-                                        <w:jc w:val="center"/>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                </w:p>
-                                <w:p>
-                                    <w:pPr>
                                         <w:ind w:left="5500"/>
                                         <w:jc w:val="left"/>
+                                        <w:spacing w:line="50" w:lineRule="auto"/>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
@@ -1467,6 +1445,7 @@
                                     <w:pPr>
                                         <w:ind w:left="5500"/>
                                         <w:jc w:val="left"/>
+                                        <w:spacing w:line="50" w:lineRule="auto"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
