@@ -153,6 +153,85 @@ public class StringUtil extends StringUtils {
         return m.replaceAll("").trim();
     }
 
+    /**
+     * 校验有没有
+     * @param value
+     * @return
+     */
+    public static boolean checkXSSString(String value){
+        boolean isHaveXSSStr = false;
+        if(Validate.isString(value)){
+            value = value.toLowerCase();
+            Pattern scriptPattern = Pattern.compile("<script>(.*?)</script>", Pattern.CASE_INSENSITIVE);
+            isHaveXSSStr = scriptPattern.matcher(value).find();
+            if(isHaveXSSStr){
+                return isHaveXSSStr;
+            }
+            scriptPattern = Pattern.compile("src[\r\n]*=[\r\n]*\\\'(.*?)\\\'", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+            isHaveXSSStr = scriptPattern.matcher(value).find();
+            if(isHaveXSSStr){
+                return isHaveXSSStr;
+            }
+            scriptPattern = Pattern.compile("<iframe>(.*?)</iframe>", Pattern.CASE_INSENSITIVE);
+            isHaveXSSStr = scriptPattern.matcher(value).find();
+            if(isHaveXSSStr){
+                return isHaveXSSStr;
+            }
+            scriptPattern = Pattern.compile("eval\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+            isHaveXSSStr = scriptPattern.matcher(value).find();
+            if(isHaveXSSStr){
+                return isHaveXSSStr;
+            }
+            scriptPattern = Pattern.compile("e­xpression\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+            isHaveXSSStr = scriptPattern.matcher(value).find();
+            if(isHaveXSSStr){
+                return isHaveXSSStr;
+            }
+            scriptPattern = Pattern.compile("javascript:", Pattern.CASE_INSENSITIVE);
+            isHaveXSSStr = scriptPattern.matcher(value).find();
+            if(isHaveXSSStr){
+                return isHaveXSSStr;
+            }
+            scriptPattern = Pattern.compile("vbscript:", Pattern.CASE_INSENSITIVE);
+            isHaveXSSStr = scriptPattern.matcher(value).find();
+            if(isHaveXSSStr){
+                return isHaveXSSStr;
+            }
+            scriptPattern = Pattern.compile("onload(.*?)=", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+            isHaveXSSStr = scriptPattern.matcher(value).find();
+            if(isHaveXSSStr){
+                return isHaveXSSStr;
+            }
+            scriptPattern = Pattern.compile("<link>(.*?)</link>", Pattern.CASE_INSENSITIVE);
+            isHaveXSSStr = scriptPattern.matcher(value).find();
+            if(isHaveXSSStr){
+                return isHaveXSSStr;
+            }
+            scriptPattern = Pattern.compile("<style>(.*?)</style>", Pattern.CASE_INSENSITIVE);
+            isHaveXSSStr = scriptPattern.matcher(value).find();
+            if(isHaveXSSStr){
+                return isHaveXSSStr;
+            }
+            scriptPattern = Pattern.compile("<script(.*?)>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+            isHaveXSSStr = scriptPattern.matcher(value).find();
+            if(isHaveXSSStr){
+                return isHaveXSSStr;
+            }
+            scriptPattern = Pattern.compile("<iframe(.*?)>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+            isHaveXSSStr = scriptPattern.matcher(value).find();
+            if(isHaveXSSStr){
+                return isHaveXSSStr;
+            }
+            scriptPattern = Pattern.compile("<link(.*?)>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+            isHaveXSSStr = scriptPattern.matcher(value).find();
+            if(isHaveXSSStr){
+                return isHaveXSSStr;
+            }
+            scriptPattern = Pattern.compile("<style(.*?)>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+            isHaveXSSStr = scriptPattern.matcher(value).find();
+        }
+        return isHaveXSSStr;
+    };
 
     /**
      * 处理跨脚本攻击方法
@@ -308,39 +387,8 @@ public class StringUtil extends StringUtils {
     }
 
     public static void main(String[] args) {
-        /*System.out.print("李安".substring(0,1));
-        String str = "integer'2'";
-		String rgex = "integer'(.*?)'";
-		System.out.println(getSubUtilSimple(str, rgex));
-		List<String> nodeList = new ArrayList<>(4);
-		nodeList.add("12");
-		nodeList.add("ste");
-		nodeList.add("ttt");
-		nodeList.add("ddt");
-		System.out.println(listToString(nodeList));*/
-
-		/*String ss="d201800000";
-        System.out.println(ss.endsWith("0000"));*/
-
-        List<String> lines = Arrays.asList("spring", "node", "mkyong");
-        System.out.println(isContainStr(lines, "spring2"));
-        List<String> result0 = getFilterOutput(lines, "mkyong");
-        // output "spring", "node"
-        for (String temp : result0) {
-            System.out.println(temp);
-        }
-
-        /*
-            The equivalent example in Java 8, using stream.filter() to
-            filter a list, and collect() to convert a stream.
-        */
-        List<String> result1 = lines.stream()  // convert list to stream
-                .filter(line -> !"mkyong".equals(line)) // filter the line which equals to "mkyong"
-                .collect(Collectors.toList());  // collect the output and convert streams to a list
-
-        result1.forEach(System.out::println); // output "spring", "node"
-
-        System.out.println(sqlInjectionFilter("2018--"));
+        String checkString = "xxxxs第三个是大<script>235325235</script>阿萨德广东省";
+        System.out.println(checkXSSString(checkString));
     }
 
 

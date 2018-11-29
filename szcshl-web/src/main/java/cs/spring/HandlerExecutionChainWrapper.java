@@ -5,6 +5,7 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.cglib.proxy.Enhancer;
 import org.springframework.cglib.proxy.MethodInterceptor;
 import org.springframework.cglib.proxy.MethodProxy;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.method.HandlerMethod;
@@ -106,8 +107,11 @@ public class HandlerExecutionChainWrapper extends HandlerExecutionChain {
                 for (int i = 0; i < args.length; i++) {
                     if (args[i] == null)
                         continue;
-
                     if (args[i] instanceof String) {
+                        //如果有特殊字符，直接抛异常，不给保存
+                        if(StringUtil.checkXSSString((String) args[i])){
+                            throw new IllegalArgumentException("参数存在特殊字符！");
+                        }
                         args[i] = StringUtil.cleanXSS((String) args[i]);
                         continue;
                     }
@@ -128,12 +132,15 @@ public class HandlerExecutionChainWrapper extends HandlerExecutionChain {
                 return;
 
             ReflectionUtils.doWithFields(argument.getClass(), new ReflectionUtils.FieldCallback() {
-
                 @Override
                 public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
                     ReflectionUtils.makeAccessible(field);
                     String fv = (String) field.get(argument);
                     if (fv != null) {
+                        //如果有特殊字符，直接抛异常，不给保存
+                        if(StringUtil.checkXSSString(fv)){
+                            throw new IllegalArgumentException("参数存在特殊字符！");
+                        }
                         String nv = StringUtil.cleanXSS(fv);
                         field.set(argument, nv);
                     }

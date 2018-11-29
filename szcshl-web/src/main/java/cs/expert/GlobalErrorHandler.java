@@ -243,9 +243,11 @@ public class GlobalErrorHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ModelAndView handleException(Exception e, HttpServletResponse response) {
         logger.error("操作数据库出现异常:", e);
-        String msg = "数据异常";
+        String msg = "数据异常:";
         if (e.getCause() instanceof org.hibernate.exception.ConstraintViolationException) {
-            msg = "违反数据约束";
+            msg += "违反数据约束";
+        }else{
+            msg += e.getMessage();
         }
         return getErrorView(response, HttpStatus.INTERNAL_SERVER_ERROR, msg);
     }

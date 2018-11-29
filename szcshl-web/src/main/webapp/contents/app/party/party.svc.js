@@ -16,7 +16,6 @@
             deleteParty : deleteParty , //删除党员信息
             exportSignInSheet : exportSignInSheet , //导出签到表
             exportPartyInfo : exportPartyInfo , //导出党员信息表
-
         }
         
         return service;

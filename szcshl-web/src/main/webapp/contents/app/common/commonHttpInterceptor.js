@@ -14,7 +14,6 @@
                 return config;
             },
             responseError: function (response) {
-                // console.log("responseError", response);
                 if (!response.config.headers.commonHttp) { // 过滤掉用common.http发起的请求
                     errorHandle(bsWin, response.status, response.data);
                 }
@@ -50,10 +49,10 @@
                 bsWin.warning("请求超时");
                 break;
             case 412:
-                bsWin.warning(data.message || "操作失败");
+                bsWin.warning(data.reMsg || "操作失败");
                 break;
             case 499:
-                bsWin.warning(data.message || "您的账号已在别的地方登录，请确认密码是否被修改！");
+                bsWin.warning(data.reMsg || "您的账号已在别的地方登录，请确认密码是否被修改！");
                 break;
             default:
                 //bsWin.error("发生错误,系统已记录,我们会尽快处理！");
@@ -81,6 +80,7 @@
         jQuery(document).ajaxSend(function (event, request, settings) {
             request.setRequestHeader('Token', common.getToken());
         }).ajaxError(function (event, jqXHR, settings, thrownError) {
+
             var _body = angular.element("body"),
                 scope = _body.scope(),
                 bsWin = _body.injector().get("bsWin"),

@@ -100,7 +100,7 @@
          * 批量导入弹框
          */
         vm.importExcel = function () {
-            $("importFile").val('');
+            $("#importFile").val('');
             $("#importDiv").kendoWindow({
                 width: "700px",
                 height: "300px",
@@ -127,17 +127,7 @@
          */
         vm.importFile = function () {
             var file = $("#importFile").val();
-            var fileStr = file.split('.');
-            if (file != "" && fileStr[1] != undefined && ( fileStr[1] == 'xls' || fileStr[1] == 'xlsx')) {
-                /* var downForm = $("#importForm");
-                 downForm.attr("target", "");
-                 downForm.attr("method", "post");
-                 downForm.attr("enctype" , 'multipart/form-data');
-                 downForm.attr("action", rootPath + "/partyManager/importFile");
-                 downForm.submit();//表单提交
-                 // downForm.attr("success" , function(data){
-                 //     location.href = "#/partyList";
-                 // })*/
+            if (file) {
                 vm.isImport = true;
                 var formData = new FormData();
                 var file = document.querySelector('input[type=file]').files[0];
@@ -159,13 +149,9 @@
                         vm.gridOptions.dataSource.read();
                         // location.href = "#/partyList";
                     });
-                    //成功提交
                 })
-
-            } else if (file == "") {
-                bsWin.alert("请上传导入文件！");
-            } else {
-                bsWin.alert("上传文件类型不匹配，请重新上传！");
+            } else{
+                bsWin.alert("请先上传导入文件！");
             }
         }
 

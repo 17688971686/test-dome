@@ -15,9 +15,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.servlet.http.HttpServletRequest;
 
-@ControllerAdvice
+/*@ControllerAdvice*/
+@Deprecated
 public class GlobalDefaultExceptionHandler {
-	private static Logger logger = Logger.getLogger(RoleServiceImpl.class);
+	private static Logger logger = Logger.getLogger(GlobalDefaultExceptionHandler.class);
 	
 	public static final String DEFAULT_ERROR_VIEW = "error";
 
