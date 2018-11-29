@@ -200,12 +200,12 @@ public class AddRegisterFileServiceImpl implements AddRegisterFileService {
         hqlBuilder.setParam("businessId", businessId);
         List<AddRegisterFile> addRegisterFileList = addRegisterFileRepo.findByHql(hqlBuilder);
         List<AddRegisterFileDto> AddRegisterFileDtoList = new ArrayList<>();
-        List<Date> suppDate = new ArrayList<>();
+        //List<Date> suppDate = new ArrayList<>();
         for (AddRegisterFile addRegisterFile : addRegisterFileList) {
             AddRegisterFileDto addRegisterFileDto = new AddRegisterFileDto();
             BeanCopierUtils.copyProperties(addRegisterFile, addRegisterFileDto);
             AddRegisterFileDtoList.add(addRegisterFileDto);
-            suppDate.add(addRegisterFileDto.getSuppleDate());
+            //suppDate.add(addRegisterFileDto.getSuppleDate());
         }
         map.put("AddRegisterFileDtoList", AddRegisterFileDtoList);
         map.put("printDate", now);

@@ -18,7 +18,7 @@ public class ProjMaxSeqRepoImpl extends AbstractRepository<ProjMaxSeq, String> i
 
     @Override
     public ProjMaxSeq findByDate(String year, String type) {
-        int intYear = Integer.valueOf(year);
+        int intYear = Integer.parseInt(year);
         Criteria criteria = getExecutableCriteria();
         criteria.add(Restrictions.eq(ProjMaxSeq_.year.getName(),intYear));
         criteria.add(Restrictions.eq(ProjMaxSeq_.type.getName(),type));

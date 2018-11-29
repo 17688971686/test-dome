@@ -303,9 +303,8 @@ public class RTXSvrApi {
     */
    public void setServerIP(String strIP){
        svrInit(OBJNAME_RTXSYS);
-       int iResult=SetServerIP(iObj,strIP);
+       SetServerIP(iObj,strIP);
        release();
-
    }
 
    /**
@@ -314,7 +313,7 @@ public class RTXSvrApi {
     */
    public void setServerPort(int iPort){
        svrInit(OBJNAME_RTXSYS);
-       int iResult=SetServerPort(iObj,iPort);
+       SetServerPort(iObj,iPort);
        release();
    }
 

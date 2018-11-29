@@ -104,7 +104,7 @@ public class SysFileRepoImpl extends AbstractRepository<SysFile, String> impleme
                     Ftp f = fl.getFtp();
                     FtpUtils ftpUtils = new FtpUtils();
                     FtpClientConfig k = ConfigProvider.getDownloadConfig(f);
-                    boolean deleteResult = ftpUtils.remove(fl.getFileUrl(),k);
+                    ftpUtils.remove(fl.getFileUrl(),k);
                     resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(),"删除成功！");
                     /*if (deleteResult) {
                         resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(),"删除成功！");

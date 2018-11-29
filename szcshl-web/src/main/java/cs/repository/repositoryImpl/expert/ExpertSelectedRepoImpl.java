@@ -73,7 +73,6 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
     @Override
     public ResultMsg expertReviewCondDetailCount(ExpertReviewCondDto expertReviewCondDto) {
         Map<String, Object> resultMap = new HashMap<>();
-        PageModelDto<ExpertReviewCondDto> pageModelDto = new PageModelDto<ExpertReviewCondDto>();
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("select t.* from (   ");
         sqlBuilder.append("select e.expertid,e.expertno,e.name,e.company,r.reviewdate,s.projectname,s.reviewstage,s.signid,a.isletterrw,a.isConfrim,a.isJoin  from cs_expert e ");
@@ -210,7 +209,6 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
     @Override
     public ResultMsg expertReviewConSimpleCount(ExpertReviewConSimpleDto expertReviewConSimpleDto) {
         Map<String, Object> resultMap = new HashMap<>();
-        PageModelDto<ExpertReviewConSimpleDto> pageModelDto = new PageModelDto<ExpertReviewConSimpleDto>();
         //评审、函次数
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("select t.expertid,count(t.expertid)reviewCount,t.isletterrw from (   ");
@@ -548,7 +546,6 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
      */
     @Override
     public ProReviewConditionDto proReviewConditionSum(ProReviewConditionDto projectReviewConditionDto) {
-        Map<String, Object> resultMap = new HashMap<>();
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("select sum(projectcount),sum(declarevalue),sum(authorizevalue),sum(ljhj), decode(sum(declarevalue),0,0,round(sum(ljhj) / sum(declarevalue), 4) * 100) hjl from (  ");
         sqlBuilder.append("select s.reviewstage, count(s.projectcode) projectcount,sum(d.declarevalue)/10000 declarevalue,sum(d.authorizevalue)/10000 authorizevalue,(sum(d.declarevalue) -sum(d.authorizevalue))/10000 ljhj  from cs_sign s  ");
@@ -590,7 +587,6 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         }
         sqlBuilder.append("group by s.reviewstage ) ");
         List<Object[]> projectReviewConList = expertSelectedRepo.getObjectArray(sqlBuilder);
-        List<ProReviewConditionDto> projectReviewConDtoList = new ArrayList<ProReviewConditionDto>();
         ProReviewConditionDto proReviewConditionDto = new ProReviewConditionDto();
         if (projectReviewConList.size() > 0) {
                 Object[] projectReviewCon = projectReviewConList.get(0);
@@ -632,7 +628,6 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
      */
     @Override
     public ProReviewConditionDto getBackDispatchSum(ProReviewConditionDto projectReviewConditionDto) {
-        Map<String, Object> resultMap = new HashMap<>();
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("select sum(projectcount),sum(declarevalue),sum(authorizevalue),sum(ljhj), decode(sum(declarevalue),0,0,round(sum(ljhj) / sum(declarevalue), 4) * 100) hjl from (  ");
         sqlBuilder.append("select s.reviewstage, count(s.projectcode) projectcount,sum(d.declarevalue)/10000 declarevalue,sum(d.authorizevalue)/10000 authorizevalue,(sum(d.declarevalue) -sum(d.authorizevalue))/10000 ljhj  from cs_sign s  ");
@@ -674,7 +669,6 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         }
         sqlBuilder.append("group by s.reviewstage ) ");
         List<Object[]> projectReviewConList = expertSelectedRepo.getObjectArray(sqlBuilder);
-        List<ProReviewConditionDto> projectReviewConDtoList = new ArrayList<ProReviewConditionDto>();
         ProReviewConditionDto proReviewConditionDto = new ProReviewConditionDto();
         if (projectReviewConList.size() > 0) {
             Object[] projectReviewCon = projectReviewConList.get(0);
@@ -717,7 +711,6 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
     @Override
     public Integer proReviewMeetingCount(ProReviewConditionDto projectReviewConditionDto){
         Integer proCount = 0;
-        Map<String, Object> resultMap = new HashMap<>();
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("select count(s.projectcode) from cs_sign s ");
         sqlBuilder.append("left join cs_dispatch_doc d   ");
@@ -755,7 +748,6 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
     @Override
    public  Integer proReviewCount(ProReviewConditionDto projectReviewConditionDto){
        Integer proCount = 0;
-       Map<String, Object> resultMap = new HashMap<>();
        HqlBuilder sqlBuilder = HqlBuilder.create();
        sqlBuilder.append("select count(s.projectcode) from cs_sign s  ");
        sqlBuilder.append("left join cs_dispatch_doc d ");
@@ -1339,7 +1331,6 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
      */
     @Override
     public List<ProReviewConditionDto> getBackDispatchInfo(ProReviewConditionDto projectReviewConditionDto) {
-        Map<String, Object> resultMap = new HashMap<>();
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("select s.signid, s.reviewstage, s.projectname ,s.isadvanced ,d.remark  from cs_sign s   ");
         sqlBuilder.append("left join cs_dispatch_doc d  ");
@@ -1423,7 +1414,6 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
      */
     @Override
     public Integer[] proReviewCondByDeclare(String beginTime , String endTime) {
-        Map<String, Object> resultMap = new HashMap<>();
         HqlBuilder sqlBuilder = HqlBuilder.create();
 //        String beginTime = "";
 //        String endTime = "";
@@ -1487,7 +1477,6 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
 
         List projectReviewConList = expertSelectedRepo.getObjectArray(sqlBuilder);
         Integer[] proCountArr = new Integer[projectReviewConList.size()+1];
-        ProReviewConditionDto proReviewConditionDto = new ProReviewConditionDto();
         Integer totalNum = 0;
         if (projectReviewConList.size() > 0) {
             for(int i=0;i<projectReviewConList.size();i++){

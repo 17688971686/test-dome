@@ -1366,7 +1366,7 @@ public class FlowAppServiceImpl implements FlowAppService {
                     addSuppLetterService.initFileNum(addSuppLetter);
                 }
                 if(!Validate.isString(addSuppLetter.getFilenum())){
-                    new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "无法生成文件字号，请联系管理员查看！");
+                    return ResultMsg.error("无法生成文件字号，请联系管理员查看！");
                 }
                 addSuppLetter.setDeptSLeaderId(userDto.getId());
                 addSuppLetter.setDeptSLeaderName(userDto.getDisplayName());

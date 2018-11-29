@@ -403,7 +403,6 @@ public class SignRestServiceImpl implements SignRestService {
         }else{
             PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
             localUrl = propertyUtil.readProperty(IFResultCode.LOCAL_URL);
-            localUrl = StringUtil.cleanXSS(localUrl);
         }
         if (Validate.isString(localUrl) && localUrl.endsWith("/")) {
             localUrl = localUrl.substring(0, localUrl.length() - 1);

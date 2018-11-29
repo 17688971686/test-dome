@@ -229,13 +229,12 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
             Object[] objects = signList.get(0);
 //            signDto.setReviewdays(objects[0] == null ? 0 : Float.valueOf(objects[0].toString()));
             if (signDto.getTotalReviewdays() != null && signDto.getSurplusdays() != null) {
-
-                signDto.setReviewdays((signDto.getTotalReviewdays() < signDto.getSurplusdays() || objects[0] == null) ? 0 : Float.valueOf(objects[0].toString()));
+                signDto.setReviewdays((signDto.getTotalReviewdays() < signDto.getSurplusdays() || objects[0] == null) ? 0 : Float.parseFloat(objects[0].toString()));
             } else {
-                signDto.setReviewdays(Float.valueOf(0));
+                signDto.setReviewdays(Float.parseFloat("0"));
             }
-            signDto.setSurplusdays(objects[1] == null ? 0 : Float.valueOf(objects[1].toString()));
-            if(objects[2] != null){
+            signDto.setSurplusdays(objects[1] == null ? 0 : Float.parseFloat(objects[1].toString()));
+            if (objects[2] != null) {
                 signDto.setSigndate(DateUtils.converToDate(objects[2].toString(), "yyyy-MM-dd"));
             }
 
@@ -245,11 +244,11 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
             }
 //            signDto.setGoneDays(signDto.getTotalReviewdays() < signDto.getSurplusdays() ? 0 : signDto.getTotalReviewdays() - signDto.getSurplusdays()); //已逝工作日
             signDto.setOverDays(signDto.getSurplusdays() >= 0 ? 0 : Math.abs(signDto.getSurplusdays())); //延长工作日，如果剩余工作日大于等于0 ，则为0 否则取剩余工作日绝对值
-            signDto.setLengthenDays(objects[4] == null ? 0 : Float.valueOf(objects[4].toString()));
+            signDto.setLengthenDays(objects[4] == null ? 0 : Float.parseFloat(objects[4].toString()));
             signDto.setLengthenExp(objects[5] == null ? "" : objects[5].toString());
 
 
-            signDto.setTotalReviewdays(objects[6] == null ? 0 : Float.valueOf(objects[6].toString()));
+            signDto.setTotalReviewdays(objects[6] == null ? 0 : Float.parseFloat(objects[6].toString()));
         }
 
         return signDto;
@@ -263,7 +262,7 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
         List<Object[]> signList = this.getObjectArray(hqlBuilder);
         if (signList != null && signList.size() > 0) {
             Object[] objects = signList.get(0);
-            if (Validate.isObject(objects[0])){
+            if (Validate.isObject(objects[0])) {
                 signDto.setSignid((String) objects[0]);
             }
         }
@@ -335,7 +334,7 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
         criteria.addOrder(Order.asc(SignPrincipal_.sort.getName()));
         List<SignPrincipal> allSignPrincipal = criteria.list();
         if (Validate.isList(allSignPrincipal)) {
-            String aUserId = "", aUserName = "";
+            StringBuffer aUserId = new StringBuffer(), aUserName = new StringBuffer();
             for (SignPrincipal signPrincipal : allSignPrincipal) {
                 User user = userRepo.getCacheUserById(signPrincipal.getUserId());
                 //主负责人
@@ -344,16 +343,16 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
                     sign.setmUserName(user.getDisplayName());
                     //协办负责人
                 } else {
-                    if (Validate.isString(aUserId)) {
-                        aUserId += ",";
-                        aUserName += ",";
+                    if (aUserId.length() > 0) {
+                        aUserId.append(",");
+                        aUserName.append(",");
                     }
-                    aUserId += user.getId();
-                    aUserName += user.getDisplayName();
+                    aUserId.append(user.getId());
+                    aUserName.append(user.getDisplayName());
                 }
             }
-            sign.setaUserID(aUserId);
-            sign.setaUserName(aUserName);
+            sign.setaUserID(aUserId.toString());
+            sign.setaUserName(aUserName.toString());
         } else {
             sign.setmUserId("");
             sign.setmUserName("");
@@ -460,13 +459,13 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
 
             OrgDept orgDept = orgDeptRepo.findOrgDeptById(orgIds);
 
-            if ( b ) {
+            if (b) {
                 flag = true;
 
-                if(Validate.isString(sign.getaOrgId())){
+                if (Validate.isString(sign.getaOrgId())) {
                     aOrgIds += "," + orgDept.getId();
                     aorgName += "," + orgDept.getName();
-                }else{
+                } else {
                     aOrgIds = orgDept.getId();
                     aorgName = orgDept.getName();
                 }
@@ -504,10 +503,10 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
         if (signBranch == null) {
             OrgDept orgDept = orgDeptRepo.findOrgDeptById(orgIds);
             Sign sign = this.findById(Sign_.signid.getName(), signId);
-            if (sign != null && orgDept != null ) {
+            if (sign != null && orgDept != null) {
                 String aOrgName = sign.getaOrgName();
                 String aOrgId = sign.getaOrgId();
-                if (Validate.isString(aOrgName) && Validate.isString(aOrgId) ) {
+                if (Validate.isString(aOrgName) && Validate.isString(aOrgId)) {
 
                     if (aOrgId.indexOf(orgDept.getId()) > -1
                             || aOrgName.indexOf(orgDept.getName()) > -1) {
@@ -533,15 +532,16 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
 
     /**
      * 保存项目维护中的添加负责人
+     *
      * @param signId
      * @param userId
      * @return
      */
     @Override
     public ResultMsg addSecondUser(String signId, String userId) {
-        Sign sign = this.findById(Sign_.signid.getName() , signId);
-        User user = userRepo.findById(User_.id.getName() , userId);
-        if(sign != null  && user != null){
+        Sign sign = this.findById(Sign_.signid.getName(), signId);
+        User user = userRepo.findById(User_.id.getName(), userId);
+        if (sign != null && user != null) {
 
             boolean flag = false;
             String mUserName = sign.getmUserName();  //第一负责人
@@ -549,15 +549,15 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
 
             //1、第一、二均为空 2、第一不为空且不等，第二为空  3、第一不为空且不等，第二不为空且不等
             boolean b = (!Validate.isString(mUserName) && !Validate.isString(aUserName))
-                    || (Validate.isString(mUserName) && mUserName.indexOf(user.getDisplayName()) < 0  && !Validate.isString(aUserName))
+                    || (Validate.isString(mUserName) && mUserName.indexOf(user.getDisplayName()) < 0 && !Validate.isString(aUserName))
                     || (Validate.isString(mUserName) && mUserName.indexOf(user.getDisplayName()) < 0 && Validate.isString(aUserName) && aUserName.indexOf(user.getDisplayName()) < 0);
 
-            if(b){
+            if (b) {
                 flag = true;
-                if(Validate.isString(aUserName)){
+                if (Validate.isString(aUserName)) {
                     sign.setaUserID(sign.getaUserID() + "," + user.getId());
                     sign.setaUserName(aUserName + "," + user.getDisplayName());
-                }else{
+                } else {
                     sign.setaUserID(user.getId());
                     sign.setaUserName(user.getDisplayName());
                 }
@@ -572,11 +572,11 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
                 String aOrgIds = sign.getaOrgId();
                 String aorgName = sign.getaOrgName();
 
-                if ( b2 ) {
-                    if(Validate.isString(sign.getaOrgId())){
+                if (b2) {
+                    if (Validate.isString(sign.getaOrgId())) {
                         aOrgIds += "," + orgDept.getId();
                         aorgName += "," + orgDept.getName();
-                    }else{
+                    } else {
                         aOrgIds = orgDept.getId();
                         aorgName = orgDept.getName();
                     }
@@ -585,74 +585,76 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
                 sign.setaOrgName(aorgName);
             }
 
-            if(flag){
-                return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "操作成功！" , null);
-            }else{
-                return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "该用户已经存在，添加失败！！" , null);
+            if (flag) {
+                return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", null);
+            } else {
+                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "该用户已经存在，添加失败！！", null);
             }
 
-        }else{
-            return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "操作失败！" , null);
+        } else {
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败！", null);
         }
     }
 
     /**
      * 删除项目维护中添加的负责人
+     *
      * @param signId
      * @param userId
      * @return
      */
     @Override
-    public ResultMsg deleteSecondUser(String signId , String userId) {
-        Sign sign = this.findById(Sign_.signid.getName() , signId);
-        User user = userRepo.findById(User_.id.getName() , userId);
-        if(sign != null && user != null
-                && Validate.isString(sign.getaUserID()) && sign.getaUserID().indexOf(user.getId()) > -1){
-            List<User> userList =  signPrincipalRepo.getPrinUserList(signId , user.getOrg().getId());
-            if(userList != null && userList.size() > 0){
-                for(User u : userList){
-                    if(user.getId().equals(u.getId())){
-                        return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "该用户不能删除！" , null);
+    public ResultMsg deleteSecondUser(String signId, String userId) {
+        Sign sign = this.findById(Sign_.signid.getName(), signId);
+        User user = userRepo.findById(User_.id.getName(), userId);
+        if (sign != null && user != null
+                && Validate.isString(sign.getaUserID()) && sign.getaUserID().indexOf(user.getId()) > -1) {
+            List<User> userList = signPrincipalRepo.getPrinUserList(signId, user.getOrg().getId());
+            if (userList != null && userList.size() > 0) {
+                for (User u : userList) {
+                    if (user.getId().equals(u.getId())) {
+                        return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "该用户不能删除！", null);
                     }
                 }
-                String aUserId = removeStr(sign.getaUserID() , user.getId());
-                String aUserName = removeStr(sign.getaUserName() , user.getDisplayName());
+                String aUserId = removeStr(sign.getaUserID(), user.getId());
+                String aUserName = removeStr(sign.getaUserName(), user.getDisplayName());
                 sign.setaUserID(aUserId);
                 sign.setaUserName(aUserName);
-                return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "移除成功！" , null);
+                return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "移除成功！", null);
 
-            }else{
-                String aUserId = removeStr(sign.getaUserID() , user.getId());
-                String aUserName = removeStr(sign.getaUserName() , user.getDisplayName());
+            } else {
+                String aUserId = removeStr(sign.getaUserID(), user.getId());
+                String aUserName = removeStr(sign.getaUserName(), user.getDisplayName());
                 sign.setaUserName(aUserName);
                 sign.setaUserID(aUserId);
 
-                return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "移除成功！" , null);
+                return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "移除成功！", null);
             }
-        }else{
-            return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "没有该负责人！"  , null);
+        } else {
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "没有该负责人！", null);
         }
 
     }
 
     /**
      * 保存是否能多选专家
+     *
      * @param signId
      * @param isMoreExpert
      * @return
      */
     @Override
     public ResultMsg saveMoreExpert(String signId, String isMoreExpert) {
-        if(Validate.isString(signId) && Validate.isString(isMoreExpert)){
-            Sign sign = this.findById(Sign_.signid.getName() , signId);
-            if(sign != null){
+        if (Validate.isString(signId) && Validate.isString(isMoreExpert)) {
+            Sign sign = this.findById(Sign_.signid.getName(), signId);
+            if (sign != null) {
                 sign.setIsMoreExpert(isMoreExpert);
-                return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "操作成功！" , null);
-            }else{
-                return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "操作失败！" , null);
+                return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", null);
+            } else {
+                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败！", null);
             }
-        }else{
-            return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "操作失败！" , null);
+        } else {
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败！", null);
         }
     }
 

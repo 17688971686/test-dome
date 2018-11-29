@@ -1,5 +1,6 @@
 package cs.common.utils;
 
+import com.lowagie.text.html.HtmlEncoder;
 import org.apache.commons.lang3.StringUtils;
 
 import java.nio.ByteBuffer;
@@ -240,6 +241,7 @@ public class StringUtil extends StringUtils {
      * @return
      */
     public static String cleanXSS(String value) {
+
         if (value != null) {
             value = value.replaceAll("", "");
             Pattern scriptPattern = Pattern.compile("<script>(.*?)</script>", Pattern.CASE_INSENSITIVE);

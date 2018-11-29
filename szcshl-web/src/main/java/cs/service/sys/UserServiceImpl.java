@@ -125,11 +125,11 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public ResultMsg createUser(UserDto userDto) {
-        ResultMsg resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败！");
+        ResultMsg resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败！");
         boolean isUpdate = Validate.isString(userDto.getId());
-        if(isUpdate){
+        if (isUpdate) {
             resultMsg = updateUser(userDto);
-        }else{
+        } else {
             User findUser = userRepo.findUserByName(userDto.getLoginName());
             // 用户不存在
             if (findUser == null) {
@@ -151,7 +151,7 @@ public class UserServiceImpl implements UserService {
                 user.setModifiedBy(SessionUtil.getLoginName());
                 user.setPassword(DEFAULT_PASSWORD);        //设置系统默认登录密码
 
-                List<String> roleNames = new ArrayList<String>();
+                //List<String> roleNames = new ArrayList<String>();
                 // 加入角色
                 for (RoleDto roleDto : userDto.getRoleDtoList()) {
                     Role role = roleRepo.findById(Role_.id.getName(), roleDto.getId());
@@ -160,7 +160,7 @@ public class UserServiceImpl implements UserService {
                             isSLeader = true;
                         }
                         user.getRoles().add(role);
-                        roleNames.add(role.getRoleName());
+                        //roleNames.add(role.getRoleName());
                     }
                 }
                 //添加部门
@@ -174,7 +174,7 @@ public class UserServiceImpl implements UserService {
                 }
                 userRepo.save(user);
                 fleshPostUserCache();
-                return new ResultMsg(true, Constant.MsgCode.OK.getValue(), user.getId(), "创建成功",null);
+                return new ResultMsg(true, Constant.MsgCode.OK.getValue(), user.getId(), "创建成功", null);
             } else {
                 return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), String.format("用户：%s 已经存在,请重新输入！", userDto.getLoginName()));
             }
@@ -218,11 +218,11 @@ public class UserServiceImpl implements UserService {
 
         // 清除已有role
         user.getRoles().clear();
-        List<String> roleNames = new ArrayList<String>();
+        //List<String> roleNames = new ArrayList<String>();
         // 加入角色
         for (RoleDto roleDto : userDto.getRoleDtoList()) {
             Role role = roleRepo.findById(roleDto.getId());
-            roleNames.add(roleDto.getRoleName());
+            //roleNames.add(roleDto.getRoleName());
             if (role != null) {
                 user.getRoles().add(role);
                 if (EnumFlowNodeGroupName.VICE_DIRECTOR.getValue().equals(role.getRoleName())) {
@@ -270,7 +270,7 @@ public class UserServiceImpl implements UserService {
     public UserDto findUserByName(String userName) {
         User user = userRepo.findUserByName(userName);
         UserDto userDto = new UserDto();
-        if(Validate.isObject(user)){
+        if (Validate.isObject(user)) {
             BeanCopierUtils.copyProperties(user, userDto);
             List<Role> roleList = user.getRoles();
             if (roleList != null && roleList.size() > 0) {
@@ -582,7 +582,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> getSMSManyUser() {
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("select " + User_.userMPhone.getName() + "," + User_.displayName.getName() +  " from cs_user ");
+        hqlBuilder.append("select " + User_.userMPhone.getName() + "," + User_.displayName.getName() + " from cs_user ");
         hqlBuilder.append(" where " + User_.displayName.getName() + " like  '但龙%' or " + User_.displayName.getName() + "   like  '郭东东%'  or " + User_.displayName.getName() + "  like  '陈春燕%' and jobState ='t' ");
         List<UserDto> userDtoList = new ArrayList<>();
         List<Object[]> list = userRepo.getObjectArray(hqlBuilder);
@@ -590,10 +590,10 @@ public class UserServiceImpl implements UserService {
             for (int i = 0; i < list.size(); i++) {
                 Object[] userNames = list.get(i);
                 UserDto userDto = new UserDto();
-                if (StringUtil.isNotEmpty((String) userNames[0])){
+                if (StringUtil.isNotEmpty((String) userNames[0])) {
                     userDto.setUserMPhone((String) userNames[0]);
                 }
-                if (StringUtil.isNotEmpty((String) userNames[0])){
+                if (StringUtil.isNotEmpty((String) userNames[0])) {
                     userDto.setDisplayName((String) userNames[1]);
                 }
                 userDtoList.add(userDto);
@@ -611,14 +611,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResultMsg saveTakeUser(String takeUserId) {
         //别人已经设置选择的设定人为代办人
-        if(userRepo.checkTakeExist(takeUserId)){
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"选择的用户已经被设置为代办人，不能重复设置其为代办人！");
+        if (userRepo.checkTakeExist(takeUserId)) {
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "选择的用户已经被设置为代办人，不能重复设置其为代办人！");
 
-        //选择的代办人为请假人员，不能设定为代办人
-        }else if(userRepo.checkUserSetTask(takeUserId)){
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"选择的用户已经设置了代办人，不能设置其为代办人！");
+            //选择的代办人为请假人员，不能设定为代办人
+        } else if (userRepo.checkUserSetTask(takeUserId)) {
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "选择的用户已经设置了代办人，不能设置其为代办人！");
 
-        }else{
+        } else {
             HqlBuilder hqlBuilder = HqlBuilder.create();
             hqlBuilder.append("update " + User.class.getSimpleName() + " set " + User_.takeUserId.getName() + "=:takeUserId where " + User_.id.getName() + "=:userId ");
             hqlBuilder.setParam("takeUserId", takeUserId);
@@ -626,7 +626,7 @@ public class UserServiceImpl implements UserService {
             userRepo.executeHql(hqlBuilder);
             fleshPostUserCache();
         }
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
     }
 
     /**
@@ -772,9 +772,9 @@ public class UserServiceImpl implements UserService {
         List<String> orgIdList = null;
         Integer leaderFlag = 0;
         //如果是查看领导，则也要显示统计信息
-        if(SessionUtil.hashRole(SUPER_LEADER.getValue())){
+        if (SessionUtil.hashRole(SUPER_LEADER.getValue())) {
             leaderFlag = 1;
-        }else{
+        } else {
             //定义领导标识参数（0表示普通用户，1表示主任，2表示分管领导，3表示部长或者组长）
             leaderFlag = SUPER_ACCOUNT.equals(SessionUtil.getLoginName()) ? 1 : 0;
             if (leaderFlag == 0) {

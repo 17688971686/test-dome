@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -90,13 +91,12 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
                     double extraRate = 0;//核减（增）率
 
                     if (appalyinvestment != 0) {
-
-                        ratio = Integer.valueOf(String.format("%.00f", authorizeValue / appalyinvestment * 100));
+                        ratio = Integer.parseInt(String.format("%.00f", authorizeValue / appalyinvestment * 100));
 
                     }
 
                     if (authorizeValue != 0) {
-                        extraRate = Integer.valueOf(String.format("%.00f", (appalyinvestment - authorizeValue) / appalyinvestment * 100));
+                        extraRate = Integer.parseInt(String.format("%.00f", (appalyinvestment - authorizeValue) / appalyinvestment * 100));
                     }
 
                     Object[] value = {appalyinvestment, authorizeValue, num, ratio, extraRate}; //[申报金额，审定金额，数目 , 审定/申报 ， 核减（增率）]
@@ -400,140 +400,136 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
             queryArr = queryData.split(",");
         }
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        try {
-            hqlBuilder.append("select * from (select a.* , rownum rn from (");
-            hqlBuilder.append("select * from SIGN_DISP_WORK where signstate != '7' and issign = 9 ");
-            if (queryArr != null && queryArr.length > 0 && !"".equals(queryArr[0])) {
-                hqlBuilder.append(" and ");
-                for (int i = 0; i < queryArr.length; i++) {
-                    String filter = queryArr[i];
-                    String[] params = filter.split(":");
+        hqlBuilder.append("select * from (select a.* , rownum rn from (");
+        hqlBuilder.append("select * from SIGN_DISP_WORK where signstate != '7' and issign = 9 ");
+        if (queryArr != null && queryArr.length > 0 && !"".equals(queryArr[0])) {
+            hqlBuilder.append(" and ");
+            for (int i = 0; i < queryArr.length; i++) {
+                String filter = queryArr[i];
+                String[] params = filter.split(":");
 
-                    //对中文乱码进行处理
-                    String value = params[1];
-                    if(value.indexOf("\"") >-1){
-
-                        value = params[1].substring(1, params[1].length() - 1);
+                //对中文乱码进行处理
+                String value = params[1];
+                if(value.indexOf("\"") >-1){
+                    value = params[1].substring(1, params[1].length() - 1);
+                    try {
                         if (value.equals(new String(value.getBytes("iso8859-1"), "iso8859-1"))) {
-
                             value = new String((params[1].substring(1, params[1].length() - 1)).getBytes("iso8859-1"), "UTF-8");
                         }
-                    }
-
-
-                    //项目签收日期-+
-                    if ("signDateBegin".equals(params[0].substring(1, params[0].length() - 1))) {
-                        hqlBuilder.append("signdate>=to_date('" + params[1].substring(1, params[1].length() - 1) + " 00:00:00', 'yyyy-mm-dd hh24:mi:ss')");
-                    } else if ("signDateEnd".equals(params[0].substring(1, params[0].length() - 1))) {
-                        hqlBuilder.append("signdate<=to_date('" + params[1].substring(1, params[1].length() - 1) + " 23:59:59', 'yyyy-mm-dd hh24:mi:ss')");
-                    }
-                    //发文日期
-                    else if ("dispatchDateBegin".equals(params[0].substring(1, params[0].length() - 1))) {
-                        hqlBuilder.append("dispatchDate>=to_date('" + params[1].substring(1, params[1].length() - 1) + " 00:00:00', 'yyyy-mm-dd hh24:mi:ss')");
-                    } else if ("dispatchdateEnd".equals(params[0].substring(1, params[0].length() - 1))) {
-                        hqlBuilder.append("dispatchDate<=to_date('" + params[1].substring(1, params[1].length() - 1) + " 23:59:59', 'yyyy-mm-dd hh24:mi:ss')");
-
-                    }
-                    //归档日期
-                    else if ("fileDateBegin".equals(params[0].substring(1, params[0].length() - 1))) {
-                        hqlBuilder.append("fileDate>=to_date('" + params[1].substring(1, params[1].length() - 1) + " 00:00:00', 'yyyy-mm-dd hh24:mi:ss')");
-                    } else if ("fileDateEnd".equals(params[0].substring(1, params[0].length() - 1))) {
-                        hqlBuilder.append("fileDate<=to_date('" + params[1].substring(1, params[1].length() - 1) + " 23:59:59', 'yyyy-mm-dd hh24:mi:ss')");
-
-                    }
-                    //评审天数
-                    else if ("beginReviewdays".equals(params[0].substring(1, params[0].length() - 1))) {
-                        hqlBuilder.append("reviewdays>=" + params[1].substring(1, params[1].length() - 1) );
-                    } else if ("endReviewdays".equals(params[0].substring(1, params[0].length() - 1))) {
-                        hqlBuilder.append("reviewdays<=" + params[1].substring(1, params[1].length() - 1) );
-
-                    }
-                    //提前介入
-                    else if ("isAdvanced".equals(params[0].substring(1, params[0].length() - 1))
-                            && "提前介入".equals(value)) {
-                        hqlBuilder.append("isAdvanced = '" + Constant.EnumState.YES.getValue() + "'");
-                    } else if ("isAdvanced".equals(params[0].substring(1, params[0].length() - 1))
-                            && "正常".equals(value)) {
-                        hqlBuilder.append("isAdvanced != '" + Constant.EnumState.YES.getValue() + "'");
-
-                    }
-
-
-                    //申报投资
-                    else if ("appalyInvestmentMin".equals(params[0].substring(1, params[0].length() - 1))) {
-                        hqlBuilder.append("appalyInvestment>=" + new BigDecimal(params[1].substring(1, params[1].length() - 1)));
-                    } else if ("appalyInvestmentMax".equals(params[0].substring(1, params[0].length() - 1))) {
-                        hqlBuilder.append("appalyInvestment<=" + new BigDecimal(params[1].substring(1, params[1].length() - 1)));
-
-                    }
-
-                    //项目状态查询修改
-                   else if (SignDispaWork_.processState.getName().equals(params[0].substring(1, params[0].length() - 1))) {
-                       int  processState = Integer.parseInt(value);
-                        //未发文项目或者暂停项目
-                        if(processState == 1 || processState == 2){
-                            hqlBuilder.append(" signState=" + processState);
-                            hqlBuilder.append(" and processState <" + Constant.SignProcessState.DO_DIS.getValue());
-                        }else if(processState == 17){
-                            //未发送存档
-                            hqlBuilder.append(" processState=" + Constant.SignProcessState.IS_START.getValue());
-                            hqlBuilder.append(" and processState <=" + Constant.SignProcessState.SEND_CW.getValue());
-                        }else if(processState == 68){
-                            //已发文未存档
-                            hqlBuilder.append(" processState=" + Constant.SignProcessState.END_DIS_NUM.getValue());
-                            hqlBuilder.append(" or processState =" + Constant.SignProcessState.SEND_CW.getValue());
-                            hqlBuilder.append(" or processState =" + Constant.SignProcessState.SEND_FILE.getValue());
-
-                        }else if(processState == 69){
-                            //已发文项目
-                            hqlBuilder.append(" processState >=" + Constant.SignProcessState.END_DIS_NUM.getValue());
-                        }else if(processState == 89){
-                            //已发送存档
-                            hqlBuilder.append(" processState >=" + Constant.SignProcessState.SEND_FILE.getValue());
-                        }
-                        else if(processState == 24){
-                            //曾经暂停
-                            hqlBuilder.append(" isProjectStop =" + Constant.EnumState.YES.getValue());
-                            hqlBuilder.append(" signState =" + Constant.EnumState.PROCESS.getValue());
-                        }
-//                        continue;
-                    }
-
-                    //项目发文
-                   else if(SignDispaWork_.dispatchType.getName().equals(params[0].substring(1, params[0].length() - 1))){
-                     String   dispatchType = value;
-                        if("非暂不实施项目".equals(dispatchType)){
-                            //非暂不实施项目=项目发文+退文
-                            hqlBuilder.append(" dispatchType ='项目发文'");
-                            hqlBuilder.append(" or dispatchType ='项目退文'");
-                        }else if("非退文项目".equals(dispatchType)){
-                            //非退文项目=暂不实施+项目发文
-                            hqlBuilder.append(" dispatchType ='项目发文'");
-                            hqlBuilder.append(" or dispatchType ='暂不实施'");
-                        }
-//                        continue;
-                    }
-
-                    else {
-                       if("fztype".equals(params[0].substring(1, params[0].length() - 1))
-                               || "displayName".equals(params[0].substring(1, params[0].length() - 1))){
-                           continue;
-                        }
-
-                        hqlBuilder.append(params[0].substring(1, params[0].length() - 1) + " like '%" + value + "%'");
-                    }
-
-                    if (i < queryArr.length - 1) {
-                        hqlBuilder.append(" and ");
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
                     }
                 }
+
+                //项目签收日期-+
+                if ("signDateBegin".equals(params[0].substring(1, params[0].length() - 1))) {
+                    hqlBuilder.append("signdate>=to_date('" + params[1].substring(1, params[1].length() - 1) + " 00:00:00', 'yyyy-mm-dd hh24:mi:ss')");
+                } else if ("signDateEnd".equals(params[0].substring(1, params[0].length() - 1))) {
+                    hqlBuilder.append("signdate<=to_date('" + params[1].substring(1, params[1].length() - 1) + " 23:59:59', 'yyyy-mm-dd hh24:mi:ss')");
+                }
+                //发文日期
+                else if ("dispatchDateBegin".equals(params[0].substring(1, params[0].length() - 1))) {
+                    hqlBuilder.append("dispatchDate>=to_date('" + params[1].substring(1, params[1].length() - 1) + " 00:00:00', 'yyyy-mm-dd hh24:mi:ss')");
+                } else if ("dispatchdateEnd".equals(params[0].substring(1, params[0].length() - 1))) {
+                    hqlBuilder.append("dispatchDate<=to_date('" + params[1].substring(1, params[1].length() - 1) + " 23:59:59', 'yyyy-mm-dd hh24:mi:ss')");
+
+                }
+                //归档日期
+                else if ("fileDateBegin".equals(params[0].substring(1, params[0].length() - 1))) {
+                    hqlBuilder.append("fileDate>=to_date('" + params[1].substring(1, params[1].length() - 1) + " 00:00:00', 'yyyy-mm-dd hh24:mi:ss')");
+                } else if ("fileDateEnd".equals(params[0].substring(1, params[0].length() - 1))) {
+                    hqlBuilder.append("fileDate<=to_date('" + params[1].substring(1, params[1].length() - 1) + " 23:59:59', 'yyyy-mm-dd hh24:mi:ss')");
+
+                }
+                //评审天数
+                else if ("beginReviewdays".equals(params[0].substring(1, params[0].length() - 1))) {
+                    hqlBuilder.append("reviewdays>=" + params[1].substring(1, params[1].length() - 1) );
+                } else if ("endReviewdays".equals(params[0].substring(1, params[0].length() - 1))) {
+                    hqlBuilder.append("reviewdays<=" + params[1].substring(1, params[1].length() - 1) );
+
+                }
+                //提前介入
+                else if ("isAdvanced".equals(params[0].substring(1, params[0].length() - 1))
+                        && "提前介入".equals(value)) {
+                    hqlBuilder.append("isAdvanced = '" + Constant.EnumState.YES.getValue() + "'");
+                } else if ("isAdvanced".equals(params[0].substring(1, params[0].length() - 1))
+                        && "正常".equals(value)) {
+                    hqlBuilder.append("isAdvanced != '" + Constant.EnumState.YES.getValue() + "'");
+
+                }
+
+
+                //申报投资
+                else if ("appalyInvestmentMin".equals(params[0].substring(1, params[0].length() - 1))) {
+                    hqlBuilder.append("appalyInvestment>=" + new BigDecimal(params[1].substring(1, params[1].length() - 1)));
+                } else if ("appalyInvestmentMax".equals(params[0].substring(1, params[0].length() - 1))) {
+                    hqlBuilder.append("appalyInvestment<=" + new BigDecimal(params[1].substring(1, params[1].length() - 1)));
+
+                }
+
+                //项目状态查询修改
+                else if (SignDispaWork_.processState.getName().equals(params[0].substring(1, params[0].length() - 1))) {
+                    int  processState = Integer.parseInt(value);
+                    //未发文项目或者暂停项目
+                    if(processState == 1 || processState == 2){
+                        hqlBuilder.append(" signState=" + processState);
+                        hqlBuilder.append(" and processState <" + Constant.SignProcessState.DO_DIS.getValue());
+                    }else if(processState == 17){
+                        //未发送存档
+                        hqlBuilder.append(" processState=" + Constant.SignProcessState.IS_START.getValue());
+                        hqlBuilder.append(" and processState <=" + Constant.SignProcessState.SEND_CW.getValue());
+                    }else if(processState == 68){
+                        //已发文未存档
+                        hqlBuilder.append(" processState=" + Constant.SignProcessState.END_DIS_NUM.getValue());
+                        hqlBuilder.append(" or processState =" + Constant.SignProcessState.SEND_CW.getValue());
+                        hqlBuilder.append(" or processState =" + Constant.SignProcessState.SEND_FILE.getValue());
+
+                    }else if(processState == 69){
+                        //已发文项目
+                        hqlBuilder.append(" processState >=" + Constant.SignProcessState.END_DIS_NUM.getValue());
+                    }else if(processState == 89){
+                        //已发送存档
+                        hqlBuilder.append(" processState >=" + Constant.SignProcessState.SEND_FILE.getValue());
+                    }
+                    else if(processState == 24){
+                        //曾经暂停
+                        hqlBuilder.append(" isProjectStop =" + Constant.EnumState.YES.getValue());
+                        hqlBuilder.append(" signState =" + Constant.EnumState.PROCESS.getValue());
+                    }
+//                        continue;
+                }
+
+                //项目发文
+                else if(SignDispaWork_.dispatchType.getName().equals(params[0].substring(1, params[0].length() - 1))){
+                    String   dispatchType = value;
+                    if("非暂不实施项目".equals(dispatchType)){
+                        //非暂不实施项目=项目发文+退文
+                        hqlBuilder.append(" dispatchType ='项目发文'");
+                        hqlBuilder.append(" or dispatchType ='项目退文'");
+                    }else if("非退文项目".equals(dispatchType)){
+                        //非退文项目=暂不实施+项目发文
+                        hqlBuilder.append(" dispatchType ='项目发文'");
+                        hqlBuilder.append(" or dispatchType ='暂不实施'");
+                    }
+//                        continue;
+                }
+
+                else {
+                    if("fztype".equals(params[0].substring(1, params[0].length() - 1))
+                            || "displayName".equals(params[0].substring(1, params[0].length() - 1))){
+                        continue;
+                    }
+
+                    hqlBuilder.append(params[0].substring(1, params[0].length() - 1) + " like '%" + value + "%'");
+                }
+
+                if (i < queryArr.length - 1) {
+                    hqlBuilder.append(" and ");
+                }
             }
-            hqlBuilder.append(" ) a ) where rn >" + (page * 100) + " and rn <" + ((page + 1) * 100 + 1));
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-        List<SignDispaWork> signDispaWorkList = findBySql(hqlBuilder);
-        return signDispaWorkList;
+        hqlBuilder.append(" ) a ) where rn >" + (page * 100) + " and rn <" + ((page + 1) * 100 + 1));
+        return findBySql(hqlBuilder);
     }
 
 

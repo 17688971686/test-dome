@@ -14,8 +14,6 @@ import cs.repository.odata.ODataObj;
 public interface IRepository<T, ID> {
     public T findById(ID id);
 
-    public T findByIdGet(ID id);
-
     public T findById(String idPropertyName, String idValue);
 
     public T getById(ID id);
@@ -46,13 +44,12 @@ public interface IRepository<T, ID> {
 
     List<T> findByIds(String idPropertyName, String idValue, String orderStr);
 
-    public int executeHql(String hql);
+   /* int executeHql(String hql);*/
 
-    public int executeHql(HqlBuilder hqlBuilder);
+    /* int executeSql(String sql);*/
+    int executeHql(HqlBuilder hqlBuilder);
 
-    public int executeSql(HqlBuilder hqlBuilder);
-
-    public int executeSql(String sql);
+    int executeSql(HqlBuilder hqlBuilder);
 
     List<T> findBySql(HqlBuilder hqlBuilder);
 
@@ -61,6 +58,8 @@ public interface IRepository<T, ID> {
     int deleteById(String idPropertyName, String idValue);
 
     List<Object[]> getObjectArray(HqlBuilder hqlBuilder);
+
     List<Map<String, Object>> getMapListBySql(HqlBuilder sqlBuilder);
+
     String getDataBaseTime(String format);
 }

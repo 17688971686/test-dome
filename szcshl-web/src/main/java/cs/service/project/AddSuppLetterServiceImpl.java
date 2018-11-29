@@ -497,7 +497,7 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
                    initFileNum(addSuppLetter);
                 }
                 if(!Validate.isString(addSuppLetter.getFilenum())){
-                    new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "无法生成文件字号，请联系管理员查看！");
+                    return ResultMsg.error("无法生成文件字号，请联系管理员查看！");
                 }
                 if(isAgentTask){
                     addSuppLetter.setDeptSLeaderId(agentTaskService.getUserId(task.getId(),curUserId));

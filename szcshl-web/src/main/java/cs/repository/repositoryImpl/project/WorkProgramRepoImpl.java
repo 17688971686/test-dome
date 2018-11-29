@@ -178,8 +178,7 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram,String> 
                 workProgramDto.setRoomBookingDtos(roomBookingDtos);
             }
             //2、拟聘请专家
-            List<ExpertSelectedDto> expertSelectedDtoList = new ArrayList<>();
-            expertSelectedDtoList = expertSelectedRepo.findByBusinessId(wp.getId());
+            List<ExpertSelectedDto> expertSelectedDtoList = expertSelectedRepo.findByBusinessId(wp.getId());
             workProgramDto.setExpertSelectedDtoList(expertSelectedDtoList);
         }
     }

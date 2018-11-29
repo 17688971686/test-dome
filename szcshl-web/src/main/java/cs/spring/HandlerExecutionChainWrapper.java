@@ -112,7 +112,7 @@ public class HandlerExecutionChainWrapper extends HandlerExecutionChain {
                         if(StringUtil.checkXSSString((String) args[i])){
                             throw new IllegalArgumentException("参数存在特殊字符！");
                         }
-                        args[i] = StringUtil.cleanXSS((String) args[i]);
+                        args[i] = HtmlUtils.htmlEscape((String) args[i]);
                         continue;
                     }
 
@@ -141,7 +141,7 @@ public class HandlerExecutionChainWrapper extends HandlerExecutionChain {
                         if(StringUtil.checkXSSString(fv)){
                             throw new IllegalArgumentException("参数存在特殊字符！");
                         }
-                        String nv = StringUtil.cleanXSS(fv);
+                        String nv = HtmlUtils.htmlEscape(fv);
                         field.set(argument, nv);
                     }
                 }

@@ -368,7 +368,6 @@ public class AssistPlanServiceImpl implements AssistPlanService {
                 String assistUnitId = planSignAndUnitId[1];
 
                 AssistPlanSign assistPlanSign = assistPlanSignRepo.findById(planSignId);
-                assistPlanSign.getAssistPlan().getId();
                 AssistUnit assistUnit = assistUnitRepo.findById(assistUnitId);
                 Integer drawCount = assistUnit.getDrawCount() == null ? 1 : assistUnit.getDrawCount() + 1;
                 assistUnit.setDrawCount(drawCount);
@@ -388,7 +387,6 @@ public class AssistPlanServiceImpl implements AssistPlanService {
                     }
                 }
             }
-
             assistPlan.setIsDrawed(Constant.EnumState.YES.getValue());
             assistPlanRepo.save(assistPlan);
         }

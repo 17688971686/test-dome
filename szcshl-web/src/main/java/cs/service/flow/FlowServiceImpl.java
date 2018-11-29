@@ -1345,7 +1345,7 @@ public class FlowServiceImpl implements FlowService {
      */
     @Override
     public List<Map<String, Object>> getProc() {
-        List<Map<String, Object>> list = jdbcTemplate.queryForList("SELECT arp.NAME_,arp.KEY_ FROM act_re_procdef arp where arp.KEY_ != 'FINAL_SIGN_FLOW' GROUP BY arp.NAME_,arp.KEY_");
+        List<Map<String, Object>> list = jdbcTemplate.queryForList("SELECT arp.NAME_,arp.KEY_ FROM act_re_procdef arp where arp.KEY_ != ? GROUP BY arp.NAME_,arp.KEY_",SIGN_FLOW);
         return list;
     }
 

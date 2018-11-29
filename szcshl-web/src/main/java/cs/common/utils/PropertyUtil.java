@@ -1,5 +1,7 @@
 package cs.common.utils;
 
+import org.springframework.web.util.HtmlUtils;
+
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -48,7 +50,7 @@ public class PropertyUtil {
     
     public String readProperty(String key) {
         String keyValue = properties.getProperty(key);
-    	return StringUtil.cleanXSS(keyValue);
+    	return HtmlUtils.htmlEscape(keyValue);
     }
     
     public List<String> getList(String prefix) {   	

@@ -55,14 +55,6 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
     public T findById(ID id) {
         logger.debug("findById");
         return getSession().load(this.getPersistentClass(), id);
-
-    }
-
-    @Override
-    public T findByIdGet(ID id) {
-        logger.debug("findByIdGet");
-        return getSession().get(this.getPersistentClass(), id);
-
     }
 
     /**
@@ -80,7 +72,7 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         hqlBuilder.setParam("id", idValue);
         Query<T> q = this.getCurrentSession().createQuery(hqlBuilder.getHqlString(), getPersistentClass());
         List<T> resultList = setParamsToQuery2(q, hqlBuilder).list();
-        if(Validate.isList(resultList)){
+        if (Validate.isList(resultList)) {
             return resultList.get(0);
         }
         return null;
@@ -185,17 +177,17 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
     }
 
 
-    @Override
+    /*@Override
     public int executeHql(String hql) {
         Query<?> q = this.getCurrentSession().createQuery(hql);
         return q.executeUpdate();
-    }
+    }*/
 
-    @Override
+    /*@Override
     public int executeSql(String sql) {
         NativeQuery<T> q = this.getCurrentSession().createNativeQuery(sql, this.getPersistentClass());
         return q.executeUpdate();
-    }
+    }*/
 
     @Override
     public List<T> findBySql(HqlBuilder hqlBuilder) {
@@ -211,9 +203,9 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
      */
     @Override
     public int returnIntBySql(HqlBuilder sqlBuilder) {
-        NativeQuery<?> q = this.getCurrentSession().createNativeQuery(sqlBuilder.getHqlString());
-        Object returnValue = setParamsToQuery(q, sqlBuilder).getSingleResult();
-        return returnValue == null ? 0 : Integer.valueOf(returnValue.toString());
+        NativeQuery<Integer> q = this.getCurrentSession().createNativeQuery(sqlBuilder.getHqlString(), Integer.class);
+        Integer returnValue = (Integer) setParamsToQuery(q, sqlBuilder).getSingleResult();
+        return Validate.isObject(returnValue) ? returnValue : 0;
     }
 
     @Override
@@ -233,9 +225,9 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         List<Object> values = hqlBuilder.getValues();
         List<Type> types = hqlBuilder.getTypes();
         if (Validate.isList(params)) {
-            for (int i = 0, l = params.size();i<l; i++) {
-                Object value =  values.get(i);
-                if( value instanceof String ) {
+            for (int i = 0, l = params.size(); i < l; i++) {
+                Object value = values.get(i);
+                if (value instanceof String) {
                     if (Validate.isString(value)) {
                         value = StringUtil.sqlInjectionFilter(value.toString());
                     }
@@ -255,9 +247,9 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         List<Object> values = hqlBuilder.getValues();
         List<Type> types = hqlBuilder.getTypes();
         if (Validate.isList(params)) {
-            for (int i = 0, l = params.size();i<l; i++) {
-                Object value =  values.get(i);
-                if( value instanceof String ) {
+            for (int i = 0, l = params.size(); i < l; i++) {
+                Object value = values.get(i);
+                if (value instanceof String) {
                     if (Validate.isString(value)) {
                         value = StringUtil.sqlInjectionFilter(value.toString());
                     }
@@ -295,8 +287,8 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         List<Type> types = sqlBuilder.getTypes();
         if (params != null) {
             for (int i = 0; i < params.size(); i++) {
-                Object value =  values.get(i);
-                if( value instanceof String ) {
+                Object value = values.get(i);
+                if (value instanceof String) {
                     if (Validate.isString(value)) {
                         value = StringUtil.sqlInjectionFilter(value.toString());
                     }
@@ -319,8 +311,8 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         List<Type> types = sqlBuilder.getTypes();
         if (params != null) {
             for (int i = 0; i < params.size(); i++) {
-                Object value =  values.get(i);
-                if( value instanceof String ) {
+                Object value = values.get(i);
+                if (value instanceof String) {
                     if (Validate.isString(value)) {
                         value = StringUtil.sqlInjectionFilter(value.toString());
                     }
