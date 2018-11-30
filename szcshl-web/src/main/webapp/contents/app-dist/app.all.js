@@ -11547,12 +11547,59 @@
         buildOdataFilter: buildOdataFilter,         // 创建多条件查询的filter
         kendoGridDataSource: kendoGridDataSource,   // 获取gridDataSource
         getTaskCount: getTaskCount,                 // 用户待办总数
-        uuid: uuid,                                // js
-        downloadReport: downloadReport,            //报表下载
-        htmlEscape: htmlEscape,                      //实现html转码
-        htmlDecode: htmlDecode                       //实现html解码
+        uuid: uuid,                                 // js
+        downloadReport: downloadReport,             //报表下载
+        htmlEscape: htmlEscape,                     //实现html转码
+        htmlDecode: htmlDecode,                     //实现html解码
+        removeXss : removeXss                       //解除xss
     };
     window.common = service;
+
+    function removeXss(str){
+        if (str.length == 0) return "";
+        var val = str.toString();
+        val = val.replace(/([\x00-\x08][\x0b-\x0c][\x0e-\x20])/g, '');
+
+        var search = 'abcdefghijklmnopqrstuvwxyz';
+        search += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        search += '1234567890!@#$%^&*()';
+        search += '~`";:?+/={}[]-_|\'\\';
+
+        for (var i = 0; i < search.length; i++) {
+            var re = new RegExp('(&#[x|X]0{0,8}'+ parseInt(search[i].charCodeAt(),16)+';?)','gi');
+            val = val.replace(re, search[i]);
+            re = new RegExp('(&#0{0,8}'+ search[i].charCodeAt() + ';?)','gi');
+            val = val.replace(re, search[i]);
+        }
+
+        var ra1 = ['javascript', 'vbscript', 'expression', 'applet', 'meta','blink', 'link',  'script', 'embed', 'object', 'iframe', 'frame', 'frameset', 'ilayer', 'layer', 'bgsound', 'title'];
+        var ra2 = ['onabort', 'onactivate', 'onafterprint', 'onafterupdate', 'onbeforeactivate', 'onbeforecopy', 'onbeforecut', 'onbeforedeactivate', 'onbeforeeditfocus', 'onbeforepaste', 'onbeforeprint', 'onbeforeunload', 'onbeforeupdate', 'onblur', 'onbounce', 'oncellchange', 'onchange', 'onclick', 'oncontextmenu', 'oncontrolselect', 'oncopy', 'oncut', 'ondataavailable', 'ondatasetchanged', 'ondatasetcomplete', 'ondblclick', 'ondeactivate', 'ondrag', 'ondragend', 'ondragenter', 'ondragleave', 'ondragover', 'ondragstart', 'ondrop', 'onerror', 'onerrorupdate', 'onfilterchange', 'onfinish', 'onfocus', 'onfocusin', 'onfocusout', 'onhelp', 'onkeydown', 'onkeypress', 'onkeyup', 'onlayoutcomplete', 'onload', 'onlosecapture', 'onmousedown', 'onmouseenter', 'onmouseleave', 'onmousemove', 'onmouseout', 'onmouseover', 'onmouseup', 'onmousewheel', 'onmove', 'onmoveend', 'onmovestart', 'onpaste', 'onpropertychange', 'onreadystatechange', 'onreset', 'onresize', 'onresizeend', 'onresizestart', 'onrowenter', 'onrowexit', 'onrowsdelete', 'onrowsinserted', 'onscroll', 'onselect', 'onselectionchange', 'onselectstart', 'onstart', 'onstop', 'onsubmit', 'onunload'];
+        var ra = [].concat(ra1, ra2);
+
+        var found = true;
+        while (found == true) {
+            var val_before = val;
+            for (var i = 0; i < ra.length; i++) {
+                var pattern = '';
+                for (var j = 0; j < ra[i].length; j++) {
+                    if (j > 0) {
+                        pattern += '(';
+                        pattern += '(&#[x|X]0{0,8}([9][a][b]);?)?';
+                        pattern += '|(&#0{0,8}([9][10][13]);?)?';
+                        pattern += ')?';
+                    }
+                    pattern += ra[i][j];
+                }
+                pattern = new RegExp(pattern,'gi');
+                var replacement = ra[i].substr(0, 2) + '<x>'+ ra[i].substr(2);
+                val = val.replace(parttern, replacement);
+                if (val_before  == val) {
+                    found = false;
+                }
+            }
+        }
+        return val;
+    }
 
     function htmlDecode(str) {
         if (str.length == 0) return "";
@@ -11577,8 +11624,8 @@
         s = s.replace(/</g, "&lt;");
         s = s.replace(/>/g, "&gt;");
         s = s.replace(/ /g, "&nbsp;");
-        s = s.replace(/\'/g, "&#39;");
-        s = s.replace(/\"/g, "&quot;");
+        s = s.replace(/'/g, "&#39;");
+        s = s.replace(/"/g, "&quot;");
         return s;
     }
 
@@ -21310,7 +21357,7 @@
                     }
                 })
             }
-            $("#financialCount").html(common.htmlEscape(totalCost));
+            $("#financialCount").html(common.removeXss(totalCost));
         }
 
         /**
@@ -21679,7 +21726,7 @@
                         totalCost += f.charge;
                     }
                 })
-                $("#financialCount").html(common.htmlEscape(totalCost));
+                $("#financialCount").html(common.removeXss(totalCost));
             }
         }
 
@@ -22896,7 +22943,7 @@
                 };
                 var httpSuccess = function success(response) {
                 	vm.financial.stageCount = response.data;
-                   $("#financialCount").html(common.htmlEscape(vm.financial.stageCount));
+                   $("#financialCount").html(common.removeXss(vm.financial.stageCount));
 
                 };
 
@@ -23805,7 +23852,7 @@
                         totalCost += f.charge;
                     }
                 })
-                $("#financialCount").html(common.htmlEscape(totalCost));
+                $("#financialCount").html(common.removeXss(totalCost));
             }
         }
 
@@ -24185,7 +24232,7 @@
             };
             var httpSuccess = function success(response) {
                 // vm.financial.stageCount = response.data;
-                $("#financialCount").html(common.htmlEscape(response.data));
+                $("#financialCount").html(common.removeXss(response.data));
             };
 
             common.http({
@@ -24689,7 +24736,7 @@
                 };
                 var httpSuccess = function success(response) {
                 	vm.financial.stageCount = response.data;
-                   $("#financialCount").html(common.htmlEscape(vm.financial.stageCount));
+                   $("#financialCount").html(common.removeXss(vm.financial.stageCount));
                 };
 
                 common.http({
@@ -34146,6 +34193,375 @@
 })();
 (function () {
     'use strict';
+    angular.module('app').controller('takeUserCtrl', takeUser);
+
+    takeUser.$inject = ['bsWin', 'takeUserSvc', 'userSvc', 'flowSvc', '$state','$rootScope'];
+
+    function takeUser(bsWin, takeUserSvc, userSvc, flowSvc, $state,$rootScope) {
+        var vm = this;
+        vm.title = "个人代办";
+        vm.model = {};
+
+        activate();
+        function activate() {
+            takeUserSvc.getUser(function (data) {
+                vm.model = data;
+                takeUserSvc.initAllUser(function (data) {
+                    vm.takeUserList = data;
+                    vm.initTaskUser(vm.model.takeUserId);
+                });
+
+                //查询个人待办任务列表
+                userSvc.getAllTaskList(vm.model.id, function (data) {
+                    if (data.ruTaskList) {
+                        vm.ruTaskList = data.ruTaskList;        //待办任务
+                    }
+                    if (data.ruProcessTaskList) {
+                        vm.ruProcessTaskList = data.ruProcessTaskList;  //待办项目
+                    }
+                });
+            });
+
+            takeUserSvc.agentGrid(vm);
+        }
+
+        //查询
+        vm.queryAgentList = function () {
+            vm.agentGridOptions.dataSource._skip = 0;
+            vm.agentGridOptions.dataSource.read();
+        }
+
+        vm.formReset = function(){
+            vm.querymodel = {};
+        }
+
+        //  取消代办人
+        vm.cancelTakeUser = function () {
+            if (!vm.model.takeUserId) {
+                bsWin.alert("你还没有设置代办人！");
+            } else {
+                bsWin.confirm({
+                    title: "询问提示",
+                    message: "确认取消代办人么？",
+                    onOk: function () {
+                        takeUserSvc.cancelTakeUser(function () {
+                            vm.model.takeUserId = "";
+                            vm.taskUserName = "";
+                            bsWin.alert("操作成功!");
+                        });
+                    }
+                });
+            }
+        }
+
+
+        /**
+         * 保存代办人
+         * */
+        vm.saveTakeUser = function () {
+            if (vm.takeUserId) {
+                takeUserSvc.saveTakeUser(vm.takeUserId, function (data) {
+                    if(data.flag || data.reCode == 'ok'){
+                        vm.model.takeUserId = vm.takeUserId;
+                        vm.initTaskUser(vm.takeUserId);
+                        bsWin.alert(data.reMsg);
+                    }else{
+                        bsWin.alert(data.reMsg);
+                    }
+                });
+            } else {
+                bsWin.alert("请选择代办人！");
+            }
+        }
+
+        vm.initTaskUser = function (userId) {
+            angular.forEach(vm.takeUserList, function (u, index) {
+                if (u.id == userId) {
+                    vm.taskUserName = u.displayName;
+                    vm.takeUserId = userId;
+                }
+            })
+        }
+
+
+        /**
+         * 任务流转
+         */
+        vm.transTask = function (taskId) {
+            if (!vm.takeUserId) {
+                bsWin.alert("您还没设置代办人，不能进行任务转办");
+                return;
+            } else {
+                if (vm.takeUserId != vm.model.takeUserId) {
+                    bsWin.alert("您设置的待办人有更改，请保存后再操作！");
+                    return;
+                } else {
+                    flowSvc.transTask(taskId, vm.model.id, vm.model.takeUserId, function (data) {
+                        if (data.flag || data.reCode == 'ok') {
+                            //查询个人待办任务列表
+                            userSvc.getAllTaskList(vm.model.id, function (data) {
+                                if (data.ruTaskList) {
+                                    vm.ruTaskList = data.ruTaskList;        //待办任务
+                                }
+                                if (data.ruProcessTaskList) {
+                                    vm.ruProcessTaskList = data.ruProcessTaskList;  //待办项目
+                                }
+                            });
+                            bsWin.alert("操作成功！");
+                        } else {
+                            bsWin.alert(data.reMsg);
+                        }
+                    });
+                }
+            }
+        }
+
+    }
+
+})();
+(function(){
+    'use strict';
+    angular.module('app').factory("takeUserSvc" ,takeUser);
+
+    takeUser.$inject=['$http'];
+    function takeUser($http){
+
+        var service={
+            initAllUser : initAllUser ,         //初始化所有用户
+            saveTakeUser : saveTakeUser ,       //保存代办人
+            getUser : getUser ,                 //通过id查询个人信息
+            cancelTakeUser : cancelTakeUser ,   //取消代办人
+            initZtreeClient:initZtreeClient,
+            updateZtree : updateZtree,
+            agentGrid : agentGrid,              //个人代办记录
+        }
+        return service;
+
+        //查询个人代办记录
+        function agentGrid(vm){
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(rootPath + "/personalCenter/findByOData",  $("#searchform")),
+                schema: common.kendoGridConfig().schema({
+                    id: "agentId",
+                    fields: {
+                        transDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize : 10,
+                sort: {
+                    field: "transDate",
+                    dir: "desc"
+                }
+            });
+            var columns = [
+                {
+                    field: "",
+                    title: "序号",
+                    width: 50,
+                    attributes: {
+                        style: "text-align: center;",
+                    },
+                    template: function () {
+                        return "<span class='row-number'></span>";
+                    }
+                },
+                {
+                    field: "flowName",
+                    title: "流程名称",
+                    filterable: false,
+                },
+                {
+                    field: "nodeNameValue",
+                    title: "代办环节",
+                    filterable: false,
+                    width: 120
+                },
+                {
+                    field: "transDate",
+                    title: "转办时间",
+                    filterable: false,
+                    width: 220,
+                    format: "{0: yyyy-MM-dd}"
+                },
+                {
+                    field: "userName",
+                    title: "原处理人",
+                    width: 100,
+                    filterable: false,
+                }
+            ];
+            // End:column
+            vm.agentGridOptions = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                resizable: true,
+                dataBound: function () {
+                    var rows = this.items();
+                    var page = this.pager.page() - 1;
+                    var pagesize = this.pager.pageSize();
+                    $(rows).each(function () {
+                        var index = $(this).index() + 1 + page * pagesize;
+                        var rowLabel = $(this).find(".row-number");
+                        $(rowLabel).html(index);
+                    });
+                }
+            };
+        }
+
+        // begin#initZtreeClient
+        function initZtreeClient(vm) {
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/role/findAllRoles"
+            }
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm: vm,
+                    response: response,
+                    fn: function () {
+                        var zTreeObj;
+                        var setting = {
+                            check: {
+                                chkboxType: {
+                                    "Y": "ps",
+                                    "N": "ps"
+                                },
+                                enable: true
+                            }
+                        };
+                        var zNodes = $linq(response.data).select(
+                            function (x) {
+                                return {
+                                    id: x.id,
+                                    name: x.roleName
+                                };
+                            }).toArray();
+                        var rootNode = {
+                            id: '',
+                            name: '角色集合',
+                            children: zNodes
+                        };
+                        zTreeObj = $.fn.zTree.init($("#zTree"), setting, rootNode);
+                        updateZtree(vm);
+                    }
+                });
+            }
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
+        //begin initAllUser
+        function  initAllUser(callBack){
+            var httpOptions={
+                method : "post",
+                url : rootPath + "/user/getAllUserDisplayName",
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http : $http,
+                httpOptions : httpOptions,
+                success : httpSuccess
+            });
+        }
+        //end initAllUser
+
+        //begin saveTakeUser
+        function saveTakeUser(takeUserId,callBack){
+            var httpOptions = {
+                method: "post",
+                url: rootPath + "/user/saveTakeUser",
+                params: {
+                    takeUserId:takeUserId
+                }
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+        //end saveTakeUser
+
+        //begin getUser
+        function getUser(callBack) {
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/user/findCurrentUser",
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//end getUser
+
+        //begin cancelTakeUser
+        function cancelTakeUser(callBack){
+            var httpOptions={
+                method : "get",
+                url : rootPath + "/user/cancelTakeUser"
+            }
+
+            var httpSuccess = function success(response){
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+        //end cancelTakeUser
+
+        function updateZtree(vm) {
+            var treeObj = $.fn.zTree.getZTreeObj("zTree");
+            var checkedNodes = $linq(vm.model.roleDtoList).select(function (x) {
+                return x.roleName;
+            }).toArray();
+            var allNodes = treeObj.getNodesByParam("level", 1, null);
+
+            var nodes = $linq(allNodes).where(function (x) {
+                return $linq(checkedNodes).contains(x.name);
+            }).toArray();
+
+            for (var i = 0, l = nodes.length; i < l; i++) {
+                treeObj.checkNode(nodes[i], true, true);
+            }
+        }
+    }
+})();
+(function () {
+    'use strict';
 
     angular.module('app').controller('postdoctoralBaseCtrl', postdoctoralBase);
 
@@ -35597,375 +36013,6 @@
             });
         }
 
-    }
-})();
-(function () {
-    'use strict';
-    angular.module('app').controller('takeUserCtrl', takeUser);
-
-    takeUser.$inject = ['bsWin', 'takeUserSvc', 'userSvc', 'flowSvc', '$state','$rootScope'];
-
-    function takeUser(bsWin, takeUserSvc, userSvc, flowSvc, $state,$rootScope) {
-        var vm = this;
-        vm.title = "个人代办";
-        vm.model = {};
-
-        activate();
-        function activate() {
-            takeUserSvc.getUser(function (data) {
-                vm.model = data;
-                takeUserSvc.initAllUser(function (data) {
-                    vm.takeUserList = data;
-                    vm.initTaskUser(vm.model.takeUserId);
-                });
-
-                //查询个人待办任务列表
-                userSvc.getAllTaskList(vm.model.id, function (data) {
-                    if (data.ruTaskList) {
-                        vm.ruTaskList = data.ruTaskList;        //待办任务
-                    }
-                    if (data.ruProcessTaskList) {
-                        vm.ruProcessTaskList = data.ruProcessTaskList;  //待办项目
-                    }
-                });
-            });
-
-            takeUserSvc.agentGrid(vm);
-        }
-
-        //查询
-        vm.queryAgentList = function () {
-            vm.agentGridOptions.dataSource._skip = 0;
-            vm.agentGridOptions.dataSource.read();
-        }
-
-        vm.formReset = function(){
-            vm.querymodel = {};
-        }
-
-        //  取消代办人
-        vm.cancelTakeUser = function () {
-            if (!vm.model.takeUserId) {
-                bsWin.alert("你还没有设置代办人！");
-            } else {
-                bsWin.confirm({
-                    title: "询问提示",
-                    message: "确认取消代办人么？",
-                    onOk: function () {
-                        takeUserSvc.cancelTakeUser(function () {
-                            vm.model.takeUserId = "";
-                            vm.taskUserName = "";
-                            bsWin.alert("操作成功!");
-                        });
-                    }
-                });
-            }
-        }
-
-
-        /**
-         * 保存代办人
-         * */
-        vm.saveTakeUser = function () {
-            if (vm.takeUserId) {
-                takeUserSvc.saveTakeUser(vm.takeUserId, function (data) {
-                    if(data.flag || data.reCode == 'ok'){
-                        vm.model.takeUserId = vm.takeUserId;
-                        vm.initTaskUser(vm.takeUserId);
-                        bsWin.alert(data.reMsg);
-                    }else{
-                        bsWin.alert(data.reMsg);
-                    }
-                });
-            } else {
-                bsWin.alert("请选择代办人！");
-            }
-        }
-
-        vm.initTaskUser = function (userId) {
-            angular.forEach(vm.takeUserList, function (u, index) {
-                if (u.id == userId) {
-                    vm.taskUserName = u.displayName;
-                    vm.takeUserId = userId;
-                }
-            })
-        }
-
-
-        /**
-         * 任务流转
-         */
-        vm.transTask = function (taskId) {
-            if (!vm.takeUserId) {
-                bsWin.alert("您还没设置代办人，不能进行任务转办");
-                return;
-            } else {
-                if (vm.takeUserId != vm.model.takeUserId) {
-                    bsWin.alert("您设置的待办人有更改，请保存后再操作！");
-                    return;
-                } else {
-                    flowSvc.transTask(taskId, vm.model.id, vm.model.takeUserId, function (data) {
-                        if (data.flag || data.reCode == 'ok') {
-                            //查询个人待办任务列表
-                            userSvc.getAllTaskList(vm.model.id, function (data) {
-                                if (data.ruTaskList) {
-                                    vm.ruTaskList = data.ruTaskList;        //待办任务
-                                }
-                                if (data.ruProcessTaskList) {
-                                    vm.ruProcessTaskList = data.ruProcessTaskList;  //待办项目
-                                }
-                            });
-                            bsWin.alert("操作成功！");
-                        } else {
-                            bsWin.alert(data.reMsg);
-                        }
-                    });
-                }
-            }
-        }
-
-    }
-
-})();
-(function(){
-    'use strict';
-    angular.module('app').factory("takeUserSvc" ,takeUser);
-
-    takeUser.$inject=['$http'];
-    function takeUser($http){
-
-        var service={
-            initAllUser : initAllUser ,         //初始化所有用户
-            saveTakeUser : saveTakeUser ,       //保存代办人
-            getUser : getUser ,                 //通过id查询个人信息
-            cancelTakeUser : cancelTakeUser ,   //取消代办人
-            initZtreeClient:initZtreeClient,
-            updateZtree : updateZtree,
-            agentGrid : agentGrid,              //个人代办记录
-        }
-        return service;
-
-        //查询个人代办记录
-        function agentGrid(vm){
-            var dataSource = new kendo.data.DataSource({
-                type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/personalCenter/findByOData",  $("#searchform")),
-                schema: common.kendoGridConfig().schema({
-                    id: "agentId",
-                    fields: {
-                        transDate: {
-                            type: "date"
-                        }
-                    }
-                }),
-                serverPaging: true,
-                serverSorting: true,
-                serverFiltering: true,
-                pageSize : 10,
-                sort: {
-                    field: "transDate",
-                    dir: "desc"
-                }
-            });
-            var columns = [
-                {
-                    field: "",
-                    title: "序号",
-                    width: 50,
-                    attributes: {
-                        style: "text-align: center;",
-                    },
-                    template: function () {
-                        return "<span class='row-number'></span>";
-                    }
-                },
-                {
-                    field: "flowName",
-                    title: "流程名称",
-                    filterable: false,
-                },
-                {
-                    field: "nodeNameValue",
-                    title: "代办环节",
-                    filterable: false,
-                    width: 120
-                },
-                {
-                    field: "transDate",
-                    title: "转办时间",
-                    filterable: false,
-                    width: 220,
-                    format: "{0: yyyy-MM-dd}"
-                },
-                {
-                    field: "userName",
-                    title: "原处理人",
-                    width: 100,
-                    filterable: false,
-                }
-            ];
-            // End:column
-            vm.agentGridOptions = {
-                dataSource: common.gridDataSource(dataSource),
-                filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
-                noRecords: common.kendoGridConfig().noRecordMessage,
-                columns: columns,
-                resizable: true,
-                dataBound: function () {
-                    var rows = this.items();
-                    var page = this.pager.page() - 1;
-                    var pagesize = this.pager.pageSize();
-                    $(rows).each(function () {
-                        var index = $(this).index() + 1 + page * pagesize;
-                        var rowLabel = $(this).find(".row-number");
-                        $(rowLabel).html(index);
-                    });
-                }
-            };
-        }
-
-        // begin#initZtreeClient
-        function initZtreeClient(vm) {
-            var httpOptions = {
-                method: 'post',
-                url: rootPath + "/role/findAllRoles"
-            }
-            var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        var zTreeObj;
-                        var setting = {
-                            check: {
-                                chkboxType: {
-                                    "Y": "ps",
-                                    "N": "ps"
-                                },
-                                enable: true
-                            }
-                        };
-                        var zNodes = $linq(response.data).select(
-                            function (x) {
-                                return {
-                                    id: x.id,
-                                    name: x.roleName
-                                };
-                            }).toArray();
-                        var rootNode = {
-                            id: '',
-                            name: '角色集合',
-                            children: zNodes
-                        };
-                        zTreeObj = $.fn.zTree.init($("#zTree"), setting, rootNode);
-                        updateZtree(vm);
-                    }
-                });
-            }
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-
-        //begin initAllUser
-        function  initAllUser(callBack){
-            var httpOptions={
-                method : "post",
-                url : rootPath + "/user/getAllUserDisplayName",
-            }
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            };
-            common.http({
-                $http : $http,
-                httpOptions : httpOptions,
-                success : httpSuccess
-            });
-        }
-        //end initAllUser
-
-        //begin saveTakeUser
-        function saveTakeUser(takeUserId,callBack){
-            var httpOptions = {
-                method: "post",
-                url: rootPath + "/user/saveTakeUser",
-                params: {
-                    takeUserId:takeUserId
-                }
-            }
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            }
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-        //end saveTakeUser
-
-        //begin getUser
-        function getUser(callBack) {
-            var httpOptions = {
-                method: 'post',
-                url: rootPath + "/user/findCurrentUser",
-            }
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            };
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }//end getUser
-
-        //begin cancelTakeUser
-        function cancelTakeUser(callBack){
-            var httpOptions={
-                method : "get",
-                url : rootPath + "/user/cancelTakeUser"
-            }
-
-            var httpSuccess = function success(response){
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            }
-
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-        //end cancelTakeUser
-
-        function updateZtree(vm) {
-            var treeObj = $.fn.zTree.getZTreeObj("zTree");
-            var checkedNodes = $linq(vm.model.roleDtoList).select(function (x) {
-                return x.roleName;
-            }).toArray();
-            var allNodes = treeObj.getNodesByParam("level", 1, null);
-
-            var nodes = $linq(allNodes).where(function (x) {
-                return $linq(checkedNodes).contains(x.name);
-            }).toArray();
-
-            for (var i = 0, l = nodes.length; i < l; i++) {
-                treeObj.checkNode(nodes[i], true, true);
-            }
-        }
     }
 })();
 (function () {
@@ -48467,396 +48514,6 @@
 (function () {
     'use strict';
 
-    angular.module('app').controller('workdayCtrl', workday);
-
-    workday.$inject = ['$location', 'workdaySvc'];
-
-    function workday($location, workdaySvc) {
-        /* jshint validthis:true */
-        var vm = this;
-        vm.title = '工作日列表';
-        
-        activate();
-        function activate() {
-        	workdaySvc.grid(vm);
-        }
-
-        //打开增加窗口
-        vm.addWorkDay=function(){
-            $("#workDay").kendoWindow({
-                width: "45%",
-                height: "auto",
-                title: "新增工作日",
-                visible: false,
-                modal: true,
-     /*           open:function(){
-                },*/
-                closable: true,
-                actions: ["Pin", "Minimize", "Maximize", "Close"]
-            }).data("kendoWindow").center().open();
-        }
-
-        vm.create=function(){
-            common.initJqValidation($('#form'));
-            var isValid = $('#form').valid();
-            if (isValid) {
-                workdaySvc.createWorkday(vm);
-            }
-
-        }
-        vm.del=function(id){
-        	common.confirm({
-                vm: vm,
-                title: "",
-                msg: "确认删除数据吗？",
-                fn: function () {
-                    $('.confirmDialog').modal('hide');
-                    workdaySvc.deleteWorkday(vm, id);
-                }
-            });
-        }
-        
-         vm.dels = function () {
-            var selectIds = common.getKendoCheckId('.grid');
-            if (selectIds.length == 0) {
-                common.alert({
-                    vm: vm,
-                    msg: '请选择数据'
-                });
-            } else {
-                var ids = [];
-                for (var i = 0; i < selectIds.length; i++) {
-                    ids.push(selectIds[i].value);
-                }
-                var idStr = ids.join(',');
-                vm.del(idStr);
-            }
-        };
-        
-        
-        vm.queryWorkday=function(){
-        	workdaySvc.queryWorkday(vm);
-        }
-        
-        vm.ResetWorkday=function(){
-        	workdaySvc.clearValue(vm);
-        }
-    }
-})();
-
-(function() {
-	'use strict';
-	
-	angular.module('app').factory('workdaySvc', workday);
-	
-	workday.$inject = ['$http','$state','bsWin'];
-
-	function workday($http,$state,bsWin) {
-		
-		var url_workday=rootPath+'/workday';
-		var url_back="#/workday"
-		var service = {
-			grid : grid,	//初始化数据
-			createWorkday : createWorkday,	//新增工作日
-			getWorkdayById : getWorkdayById,	//通过id查找该对象信息
-			updateWorkday : updateWorkday,		//更新
-			deleteWorkday : deleteWorkday,		//删除
-			queryWorkday : queryWorkday,		//模糊查询
-			clearValue : clearValue		//重置
-			
-			
-		}
-		
-		return service;	
-		
-		//begin clearValue
-		function clearValue(vm){
-		var tab = $("#workdayForm").find('input,select');
-			$.each(tab, function(i, obj) {
-				obj.value = "";
-			});
-			
-		vm.gridOptions.dataSource.read();
-		}
-		
-		//begin getWorkdayById
-		function getWorkdayById(vm){
-		
-			var httpOptions={
-				method:'get',
-				url :url_workday+"/getWorkdayById",
-				params:{id:vm.id}
-			}
-			
-			var httpSuccess=function success(response){
-				vm.workday=response.data;
-			}
-			
-			 common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
-		}//end getWorkdayById
-		
-		function queryWorkday(vm){
-			vm.gridOptions.dataSource.read();
-		}
-		
-		//begin createWorkday
-		function createWorkday(vm){
-			var httpOptions={
-				method :'post',
-				url : url_workday+"/createWorkday",
-				data : vm.workday
-			}
-			var httpSuccess=function success(response){
-				console.log(response);
-				if(response.data.flag){
-                    bsWin.alert("保存成功！", function(){
-                        vm.gridOptions.dataSource.read();
-                        window.parent.$("#workDay").data("kendoWindow").close();
-                        vm.workday="";
-                    });
-				}else{
-                    bsWin.alert(response.data.reMsg+"已存在，不能重复添加！", function(){
-                        vm.gridOptions.dataSource.read();
-                        window.parent.$("#workDay").data("kendoWindow").close();
-                        vm.workday="";
-                    });
-				}
-
-
-			}
-			 common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
-		
-		
-		}//end createWorkday
-		
-		//begin updateWorkday
-		function updateWorkday(vm){
-			var httpOptions={
-				method: "put",
-				url : url_workday,
-				data : vm.workday
-			}
-			
-			var httpSuccess=function success(response){
-				common.requestSuccess({
-					vm:vm,
-					response:response,
-					fn:function(){
-						common.alert({
-							vm: vm,
-							msg:"操作成功",
-							fn:function(){
-								vm.isSubmit = false;
-                                $('.alertDialog').modal('hide');
-                                $('.modal-backdrop').remove();
-                                location.href = url_back;
-							}
-						});
-					}
-				});
-			}
-			common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
-		}
-		//end updateWorkday
-		
-		
-		//begin deleteWorkday
-		function deleteWorkday(vm,id){
-			var httpOptions={
-				method:'delete',
-				url:url_workday,
-				data:id
-			}
-			
-			var httpSuccess=function success(response){
-				 vm.gridOptions.dataSource.read();
-			}
-			common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
-			
-		}
-		//end deleteWorkday
-		
-		function grid(vm){
-			//begin dataSource
-			var dataSource=new kendo.data.DataSource({
-				type:'odata',
-				transport:common.kendoGridConfig().transport(url_workday+'/findByOdataObj',$("#workdayForm")),
-				schema:common.kendoGridConfig().schema({
-					id:'id',
-					fields:{
-						createdDate:{
-							type:"date"
-						},
-						modifiedDate:{
-							type:"date"
-						}
-					}
-				
-				}),
-				serverPaging:true,
-				serverSorting:true,
-				serverFiltering:true,
-				pageSize :10,
-				sort:{
-					field:"dates",
-					dir:"desc"
-				}
-
-				
-			});//end dataSource
-			
-			//S_序号
-            var  dataBound=function () {  
-                var rows = this.items();  
-                var page = this.pager.page() - 1;  
-                var pagesize = this.pager.pageSize();  
-                $(rows).each(function () {  
-                    var index = $(this).index() + 1 + page * pagesize;  
-                    var rowLabel = $(this).find(".row-number");  
-                    $(rowLabel).html(index);  
-                });  
-            }; 
-            //S_序号
-			
-			var columns=[
-				{
-				 template: function (item) {
-                        return kendo
-                            .format(
-                                "<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
-                                item.id)
-                    },
-                    filterable: false,
-                    width: 40,
-                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
-
-                },
-                {  
-				    field: "rowNumber",  
-				    title: "序号",  
-				    width: 50,
-				    filterable : false,
-				    template: "<span class='row-number'></span>"  
-				 },
-                {  
-				    field: "dates",  
-				    title: "时间",  
-				    width: 200,
-				    format:"{0:yyyy-MM-dd}",
-				    filterable : false
-				 },
-                {  
-				    field: "",  
-				    title: "状态",  
-				    width: 100,
-				    filterable : false,
-				    template:function(item){
-				    	if(item.status){
-					    	if(item.status=="1"){
-					    		return "调休";
-					    	}
-					    	if(item.status=="2"){
-					    		return "加班";
-					    	}
-				    	}else{
-				    		return "";
-				    	}
-				    }
-				 } ,
-                {  
-				    field: "remark",  
-				    title: "备注",  
-				    width: 140,
-				    filterable : false
-				 }
-				 ,
-                {  
-				    field: "",  
-				    title: "操作",  
-				    width: 140,
-				    template: function (item) {
-                        return common.format($('#columnBtns').html(),
-                            "vm.del('" + item.id + "')", item.id);
-
-                    }
-				 }
-			
-			];
-			vm.gridOptions = {
-                dataSource: common.gridDataSource(dataSource),
-                filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
-                noRecords: common.kendoGridConfig().noRecordMessage,
-                columns: columns,
-                dataBound:dataBound,
-                resizable: true,
-            };
-
-		
-		}//end grid
-		}
-		
-	})();
-(function () {
-    'use strict';
-
-    angular.module('app').controller('workdayEditCtrl', workdayEdit);
-
-    workdayEdit.$inject = ['$location', 'workdaySvc','$state'];
-
-    function workdayEdit($location, workdaySvc,$state) {
-        /* jshint validthis:true */
-        var vm = this;
-        vm.title = '添加工作日';
-        vm.id=$state.params.id;
-        vm.workday={};
-        vm.workday.status="1";//初始化状态
-        if(vm.id){
-        	vm.isUpdate=true;
-        	vm.title="更新工作日";
-        }
-        
-        
-        activate();
-        function activate() {
-        	if(vm.isUpdate){
-        		workdaySvc.getWorkdayById(vm);
-        	}
-        }
-        
-        vm.create=function(){
-        	workdaySvc.createWorkday(vm);
-        }
-        
-        vm.update=function(){
-        	workdaySvc.updateWorkday(vm);
-        }
-    }
-})();
-
-(function () {
-    'use strict';
-
     angular.module('app').controller('userCtrl', user);
 
     user.$inject = ['$location', 'userSvc', 'bsWin'];
@@ -49488,6 +49145,396 @@
         // end common fun
     }
 })();
+(function () {
+    'use strict';
+
+    angular.module('app').controller('workdayCtrl', workday);
+
+    workday.$inject = ['$location', 'workdaySvc'];
+
+    function workday($location, workdaySvc) {
+        /* jshint validthis:true */
+        var vm = this;
+        vm.title = '工作日列表';
+        
+        activate();
+        function activate() {
+        	workdaySvc.grid(vm);
+        }
+
+        //打开增加窗口
+        vm.addWorkDay=function(){
+            $("#workDay").kendoWindow({
+                width: "45%",
+                height: "auto",
+                title: "新增工作日",
+                visible: false,
+                modal: true,
+     /*           open:function(){
+                },*/
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "Close"]
+            }).data("kendoWindow").center().open();
+        }
+
+        vm.create=function(){
+            common.initJqValidation($('#form'));
+            var isValid = $('#form').valid();
+            if (isValid) {
+                workdaySvc.createWorkday(vm);
+            }
+
+        }
+        vm.del=function(id){
+        	common.confirm({
+                vm: vm,
+                title: "",
+                msg: "确认删除数据吗？",
+                fn: function () {
+                    $('.confirmDialog').modal('hide');
+                    workdaySvc.deleteWorkday(vm, id);
+                }
+            });
+        }
+        
+         vm.dels = function () {
+            var selectIds = common.getKendoCheckId('.grid');
+            if (selectIds.length == 0) {
+                common.alert({
+                    vm: vm,
+                    msg: '请选择数据'
+                });
+            } else {
+                var ids = [];
+                for (var i = 0; i < selectIds.length; i++) {
+                    ids.push(selectIds[i].value);
+                }
+                var idStr = ids.join(',');
+                vm.del(idStr);
+            }
+        };
+        
+        
+        vm.queryWorkday=function(){
+        	workdaySvc.queryWorkday(vm);
+        }
+        
+        vm.ResetWorkday=function(){
+        	workdaySvc.clearValue(vm);
+        }
+    }
+})();
+
+(function() {
+	'use strict';
+	
+	angular.module('app').factory('workdaySvc', workday);
+	
+	workday.$inject = ['$http','$state','bsWin'];
+
+	function workday($http,$state,bsWin) {
+		
+		var url_workday=rootPath+'/workday';
+		var url_back="#/workday"
+		var service = {
+			grid : grid,	//初始化数据
+			createWorkday : createWorkday,	//新增工作日
+			getWorkdayById : getWorkdayById,	//通过id查找该对象信息
+			updateWorkday : updateWorkday,		//更新
+			deleteWorkday : deleteWorkday,		//删除
+			queryWorkday : queryWorkday,		//模糊查询
+			clearValue : clearValue		//重置
+			
+			
+		}
+		
+		return service;	
+		
+		//begin clearValue
+		function clearValue(vm){
+		var tab = $("#workdayForm").find('input,select');
+			$.each(tab, function(i, obj) {
+				obj.value = "";
+			});
+			
+		vm.gridOptions.dataSource.read();
+		}
+		
+		//begin getWorkdayById
+		function getWorkdayById(vm){
+		
+			var httpOptions={
+				method:'get',
+				url :url_workday+"/getWorkdayById",
+				params:{id:vm.id}
+			}
+			
+			var httpSuccess=function success(response){
+				vm.workday=response.data;
+			}
+			
+			 common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+		}//end getWorkdayById
+		
+		function queryWorkday(vm){
+			vm.gridOptions.dataSource.read();
+		}
+		
+		//begin createWorkday
+		function createWorkday(vm){
+			var httpOptions={
+				method :'post',
+				url : url_workday+"/createWorkday",
+				data : vm.workday
+			}
+			var httpSuccess=function success(response){
+				console.log(response);
+				if(response.data.flag){
+                    bsWin.alert("保存成功！", function(){
+                        vm.gridOptions.dataSource.read();
+                        window.parent.$("#workDay").data("kendoWindow").close();
+                        vm.workday="";
+                    });
+				}else{
+                    bsWin.alert(response.data.reMsg+"已存在，不能重复添加！", function(){
+                        vm.gridOptions.dataSource.read();
+                        window.parent.$("#workDay").data("kendoWindow").close();
+                        vm.workday="";
+                    });
+				}
+
+
+			}
+			 common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+		
+		
+		}//end createWorkday
+		
+		//begin updateWorkday
+		function updateWorkday(vm){
+			var httpOptions={
+				method: "put",
+				url : url_workday,
+				data : vm.workday
+			}
+			
+			var httpSuccess=function success(response){
+				common.requestSuccess({
+					vm:vm,
+					response:response,
+					fn:function(){
+						common.alert({
+							vm: vm,
+							msg:"操作成功",
+							fn:function(){
+								vm.isSubmit = false;
+                                $('.alertDialog').modal('hide');
+                                $('.modal-backdrop').remove();
+                                location.href = url_back;
+							}
+						});
+					}
+				});
+			}
+			common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+		}
+		//end updateWorkday
+		
+		
+		//begin deleteWorkday
+		function deleteWorkday(vm,id){
+			var httpOptions={
+				method:'delete',
+				url:url_workday,
+				data:id
+			}
+			
+			var httpSuccess=function success(response){
+				 vm.gridOptions.dataSource.read();
+			}
+			common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+			
+		}
+		//end deleteWorkday
+		
+		function grid(vm){
+			//begin dataSource
+			var dataSource=new kendo.data.DataSource({
+				type:'odata',
+				transport:common.kendoGridConfig().transport(url_workday+'/findByOdataObj',$("#workdayForm")),
+				schema:common.kendoGridConfig().schema({
+					id:'id',
+					fields:{
+						createdDate:{
+							type:"date"
+						},
+						modifiedDate:{
+							type:"date"
+						}
+					}
+				
+				}),
+				serverPaging:true,
+				serverSorting:true,
+				serverFiltering:true,
+				pageSize :10,
+				sort:{
+					field:"dates",
+					dir:"desc"
+				}
+
+				
+			});//end dataSource
+			
+			//S_序号
+            var  dataBound=function () {  
+                var rows = this.items();  
+                var page = this.pager.page() - 1;  
+                var pagesize = this.pager.pageSize();  
+                $(rows).each(function () {  
+                    var index = $(this).index() + 1 + page * pagesize;  
+                    var rowLabel = $(this).find(".row-number");  
+                    $(rowLabel).html(index);  
+                });  
+            }; 
+            //S_序号
+			
+			var columns=[
+				{
+				 template: function (item) {
+                        return kendo
+                            .format(
+                                "<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
+                                item.id)
+                    },
+                    filterable: false,
+                    width: 40,
+                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
+
+                },
+                {  
+				    field: "rowNumber",  
+				    title: "序号",  
+				    width: 50,
+				    filterable : false,
+				    template: "<span class='row-number'></span>"  
+				 },
+                {  
+				    field: "dates",  
+				    title: "时间",  
+				    width: 200,
+				    format:"{0:yyyy-MM-dd}",
+				    filterable : false
+				 },
+                {  
+				    field: "",  
+				    title: "状态",  
+				    width: 100,
+				    filterable : false,
+				    template:function(item){
+				    	if(item.status){
+					    	if(item.status=="1"){
+					    		return "调休";
+					    	}
+					    	if(item.status=="2"){
+					    		return "加班";
+					    	}
+				    	}else{
+				    		return "";
+				    	}
+				    }
+				 } ,
+                {  
+				    field: "remark",  
+				    title: "备注",  
+				    width: 140,
+				    filterable : false
+				 }
+				 ,
+                {  
+				    field: "",  
+				    title: "操作",  
+				    width: 140,
+				    template: function (item) {
+                        return common.format($('#columnBtns').html(),
+                            "vm.del('" + item.id + "')", item.id);
+
+                    }
+				 }
+			
+			];
+			vm.gridOptions = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                dataBound:dataBound,
+                resizable: true,
+            };
+
+		
+		}//end grid
+		}
+		
+	})();
+(function () {
+    'use strict';
+
+    angular.module('app').controller('workdayEditCtrl', workdayEdit);
+
+    workdayEdit.$inject = ['$location', 'workdaySvc','$state'];
+
+    function workdayEdit($location, workdaySvc,$state) {
+        /* jshint validthis:true */
+        var vm = this;
+        vm.title = '添加工作日';
+        vm.id=$state.params.id;
+        vm.workday={};
+        vm.workday.status="1";//初始化状态
+        if(vm.id){
+        	vm.isUpdate=true;
+        	vm.title="更新工作日";
+        }
+        
+        
+        activate();
+        function activate() {
+        	if(vm.isUpdate){
+        		workdaySvc.getWorkdayById(vm);
+        	}
+        }
+        
+        vm.create=function(){
+        	workdaySvc.createWorkday(vm);
+        }
+        
+        vm.update=function(){
+        	workdaySvc.updateWorkday(vm);
+        }
+    }
+})();
+
 /**
  * Created by shenning on 2018/5/21.
  */

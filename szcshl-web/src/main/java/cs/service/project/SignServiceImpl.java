@@ -2428,8 +2428,7 @@ public class SignServiceImpl implements SignService {
         //3、已签收，但是未发起流程的项目
         criteria.add(Restrictions.eq(Sign_.issign.getName(), EnumState.YES.getValue()));
         criteria.add(Restrictions.isNull(Sign_.processInstanceId.getName()));
-
-        Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+        int totalResult = Integer.parseInt(criteria.setProjection(Projections.rowCount()).uniqueResult().toString());
         criteria.setProjection(null);
         criteria.addOrder(Order.desc(Sign_.createdDate.getName()));
         if (odataObj.getSkip() > 0) {

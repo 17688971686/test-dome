@@ -26,12 +26,12 @@ public final class JacksonUtils {
     static {
         objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        String df = AppYmlUtils.getProperty("spring.jackson.date-format");
+        String df = AppYmlUtils.getProperty("xss.jackson.date-format");
         if (StringUtil.isNotBlank(df)) {
             SimpleDateFormat sdf = new SimpleDateFormat(df);
             objectMapper.setDateFormat(sdf);
         }
-        String tz = AppYmlUtils.getProperty("spring.jackson.time-zone");
+        String tz = AppYmlUtils.getProperty("xss.jackson.time-zone");
         if (StringUtil.isNotBlank(tz)) {
             TimeZone timeZone = TimeZone.getTimeZone(tz);
             objectMapper.setTimeZone(timeZone);

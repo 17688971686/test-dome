@@ -33,7 +33,7 @@ public final class AppYmlUtils {
         if (defaultProp == null) {
             PropertiesUtils yml = PropertiesUtils.INSTANCE;
             defaultProp = yml.load(propName);
-            Object profileActive = getProp("spring.profiles.active");
+            Object profileActive = getProp("xss.profiles.active");
             if (profileActive != null) {
                 PropertySource profileProp = yml.load(String.format(propActName, profileActive));
                 ((Map) defaultProp.getSource()).putAll((Map) profileProp.getSource());

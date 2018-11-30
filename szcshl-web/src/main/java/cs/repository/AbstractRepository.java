@@ -227,11 +227,6 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         if (Validate.isList(params)) {
             for (int i = 0, l = params.size(); i < l; i++) {
                 Object value = values.get(i);
-                if (value instanceof String) {
-                    if (Validate.isString(value)) {
-                        value = StringUtil.sqlInjectionFilter(value.toString());
-                    }
-                }
                 if (types.get(i) == null) {
                     query.setParameter(params.get(i), value);
                 } else {
@@ -249,11 +244,6 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         if (Validate.isList(params)) {
             for (int i = 0, l = params.size(); i < l; i++) {
                 Object value = values.get(i);
-                if (value instanceof String) {
-                    if (Validate.isString(value)) {
-                        value = StringUtil.sqlInjectionFilter(value.toString());
-                    }
-                }
                 if (types.get(i) == null) {
                     query.setParameter(params.get(i), value);
                 } else {

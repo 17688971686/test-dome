@@ -2,6 +2,7 @@ package cs.common;
 
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.hibernate.query.Query;
 import org.hibernate.type.Type;
 
@@ -70,6 +71,11 @@ public class HqlBuilder {
 	 */
 	public HqlBuilder setParam(String param, Object value, Type type) {
 		getParams().add(param);
+		if (value instanceof String) {
+			if (Validate.isString(value)) {
+				value = StringUtil.sqlInjectionFilter(value.toString());
+			}
+		}
 		getValues().add(value);
 		getTypes().add(type);
 		return this;

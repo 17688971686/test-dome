@@ -1,20 +1,16 @@
 package cs.repository.odata;
 
+import cs.common.utils.DateUtils;
 import cs.common.utils.ObjectUtils;
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Property;
-import org.hibernate.criterion.Restrictions;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
-import cs.common.utils.DateUtils;
-import org.springframework.web.util.HtmlUtils;
-
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -150,9 +146,10 @@ public class ODataObj {
                         continue;
                     }
                     oDataFilterItem = new ODataFilterItem<String>();
-                    oDataFilterItem.setField(matcherField.group(1).trim());
                     //过滤String类型参数中可能存在的XSS注入
-                    String strValue = matcherValue.group(1);
+                    String strValue = matcherValue.group(1).trim();
+                    strValue = StringUtil.sqlInjectionFilter(strValue);
+                    oDataFilterItem.setField(matcherField.group(1).trim());
                     oDataFilterItem.setValue(strValue);
                     oDataFilterItem.setOperator("like");
                     filterItemsList.add(oDataFilterItem);

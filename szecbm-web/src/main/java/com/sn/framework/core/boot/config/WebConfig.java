@@ -14,7 +14,7 @@ import java.io.File;
 import java.util.List;
 
 /**
- * Description: spring mvc基础配置
+ * Description: xss mvc基础配置
  * @Author: tzg
  * @Date: 2017/6/16 15:24
  */
@@ -25,7 +25,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     private String diskPath;
 
     /**
-     * spring mvc参数解析器
+     * xss mvc参数解析器
      *
      * @param argumentResolvers
      */

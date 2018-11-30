@@ -153,7 +153,7 @@
                 };
                 var httpSuccess = function success(response) {
                 	vm.financial.stageCount = response.data;
-                   $("#financialCount").html(common.htmlEscape(vm.financial.stageCount));
+                   $("#financialCount").html(common.removeXss(vm.financial.stageCount));
 
                 };
 

@@ -143,8 +143,8 @@ public class SignController {
     //@RequiresPermissions("sign#findBySignUser#post")
     @RequiresAuthentication
     @RequestMapping(name = "签收人项目列表", path = "findBySignUser", method = RequestMethod.POST)
-    public @ResponseBody
-    PageModelDto<SignDto> findBySignUser(HttpServletRequest request) throws ParseException {
+    @ResponseBody
+    public PageModelDto<SignDto> findBySignUser(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<SignDto> signDtos = signService.findBySignUser(odataObj);
         return signDtos;
@@ -211,9 +211,8 @@ public class SignController {
         return ctrlName + "/add";
     }
 
-
     @RequiresAuthentication
-   @RequiresPermissions("sign#html/reserveList#get")
+    @RequiresPermissions("sign#html/reserveList#get")
     @RequestMapping(name = "项目预签收列表", path = "html/reserveList", method = RequestMethod.GET)
     public String reserveList() {
 

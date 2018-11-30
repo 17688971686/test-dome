@@ -2,6 +2,7 @@ package cs.common.utils;
 
 import com.lowagie.text.html.HtmlEncoder;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.util.HtmlUtils;
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -148,12 +149,11 @@ public class StringUtil extends StringUtils {
         if (StringUtils.isEmpty(str)) {
             return "";
         }
-        String reg = "(?:')|(?:--)|(/\\*(?:.|[\\n\\r])*?\\*/)|(\\b(select|update|and|or|delete|from|iframe|alert|insert|trancate|char|into|substr|ascii|declare|exec|count|master|into|drop|execute)\\b)";
+        String reg = "(?:')|(?:--)|(/\\*(?:.|[\\n\\r])*?\\*/)|(.*([';]+|(--)+).*)|('.+--)|(--)|(\\|)|(%7C)|(\\b(select|update|and|or|delete|from|iframe|alert|insert|trancate|char|into|substr|ascii|declare|exec|count|master|into|drop|execute)\\b)";
         Pattern sqlPattern = Pattern.compile(reg, Pattern.CASE_INSENSITIVE);
         Matcher m = sqlPattern.matcher(str);
         return m.replaceAll("").trim();
     }
-
     /**
      * 校验有没有
      * @param value
@@ -241,9 +241,10 @@ public class StringUtil extends StringUtils {
      * @return
      */
     public static String cleanXSS(String value) {
-
         if (value != null) {
-            value = value.replaceAll("", "");
+            value = filter(value);
+            value = HtmlUtils.htmlEscape(value);
+           /* value = value.replaceAll("", "");
             Pattern scriptPattern = Pattern.compile("<script>(.*?)</script>", Pattern.CASE_INSENSITIVE);
             value = scriptPattern.matcher(value).replaceAll("");
             scriptPattern = Pattern.compile("src[\r\n]*=[\r\n]*\\\'(.*?)\\\'", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
@@ -281,9 +282,9 @@ public class StringUtil extends StringUtils {
             scriptPattern = Pattern.compile("<link(.*?)>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
             value = scriptPattern.matcher(value).replaceAll("");
             scriptPattern = Pattern.compile("<style(.*?)>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
-            value = scriptPattern.matcher(value).replaceAll("");
+            value = scriptPattern.matcher(value).replaceAll("");*/
         }
-        return filter(value);
+        return value;
     }
 
     /**
