@@ -33,6 +33,8 @@ public class AchievementSumDto {
 
     private String deptIds;
 
+    private String deptNames;
+
     private String isMainPro;
 
     private String initFlag;
@@ -149,4 +151,13 @@ public class AchievementSumDto {
     public void setInitFlag(String initFlag) {
         this.initFlag = initFlag;
     }
+
+    public String getDeptNames() {
+        return deptNames;
+    }
+
+    public void setDeptNames(String deptNames) {
+        this.deptNames = deptNames;
+    }
+
 }
