@@ -35,7 +35,7 @@
                         totalCost += f.charge;
                     }
                 })
-                $("#financialCount").html(common.removeXss(totalCost));
+                $("#financialCount").html(common.htmlEscape(totalCost));
             }
         }
 

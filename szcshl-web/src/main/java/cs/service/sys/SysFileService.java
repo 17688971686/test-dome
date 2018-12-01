@@ -9,6 +9,7 @@ import cs.domain.sys.SysFile;
 import cs.model.PageModelDto;
 import cs.model.sys.SysFileDto;
 import cs.repository.odata.ODataObj;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -73,5 +74,5 @@ public interface SysFileService {
      * @param businessId
      * @param sysFileDtoList
      */
-    ResultMsg downRemoteFile(String businessId,List<SysFileDto> sysFileDtoList,String userId,String mainType,String busiType);
+    ResultMsg downRemoteFile(String businessId,List<SysFileDto> sysFileDtoList,String userId,String mainType,String busiType) throws MissingServletRequestParameterException;
 }

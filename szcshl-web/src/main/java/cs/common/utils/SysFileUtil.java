@@ -1,7 +1,7 @@
 package cs.common.utils;
 
-import cs.common.constants.Constant;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -16,7 +16,11 @@ import java.text.DecimalFormat;
 public class SysFileUtil {
     private static Logger logger = Logger.getLogger(SysFileUtil.class);
 
-    private static String FILE_UPLOAD_PATH = "file_upload_path";
+    private static String fileUploadPathProp;
+    @Value("#{busiProp.FILE_UPLOAD_PATH}")
+    public static void setFileUploadPathProp(String fileUploadPathProp) {
+        SysFileUtil.fileUploadPathProp = fileUploadPathProp;
+    }
 
     public static String getFileSize(Long fileS){
         String size = "";
@@ -40,8 +44,7 @@ public class SysFileUtil {
      * @return
      */
     public static String getUploadPath() {
-        PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-        String uploadPath = propertyUtil.readProperty(FILE_UPLOAD_PATH);
+        String uploadPath = fileUploadPathProp;
         return  Validate.isString(uploadPath)?uploadPath : "C:\\szec_uploadfile";
     }
 

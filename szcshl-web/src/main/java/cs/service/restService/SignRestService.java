@@ -10,6 +10,7 @@ import cs.model.project.DispatchDocDto;
 import cs.model.project.SignDto;
 import cs.model.project.WorkProgramDto;
 import cs.model.sys.SysFileDto;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 
 import java.util.List;
 import java.util.Map;
@@ -68,5 +69,5 @@ public interface SignRestService {
      * @param b
      * @return
      */
-    ResultMsg signProjAppr(SignDto signDto, boolean b);
+    ResultMsg signProjAppr(SignDto signDto, boolean b) throws MissingServletRequestParameterException;
 }

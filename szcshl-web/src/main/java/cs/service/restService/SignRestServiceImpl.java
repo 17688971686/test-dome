@@ -7,40 +7,37 @@ import cs.common.FGWResponse;
 import cs.common.IFResultCode;
 import cs.common.ResultMsg;
 import cs.common.constants.Constant;
-import cs.common.utils.PropertyUtil;
-import cs.common.utils.SMSUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import cs.domain.project.DispatchDoc;
 import cs.domain.project.Sign;
 import cs.domain.sys.SysFile;
-import cs.domain.sys.User;
 import cs.model.project.CommentDto;
 import cs.model.project.DispatchDocDto;
 import cs.model.project.SignDto;
 import cs.model.project.WorkProgramDto;
 import cs.model.sys.SysConfigDto;
 import cs.model.sys.SysFileDto;
-import cs.model.sys.UserDto;
 import cs.repository.repositoryImpl.project.DispatchDocRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
-import cs.repository.repositoryImpl.sys.SysFileRepo;
 import cs.service.project.DispatchDocService;
 import cs.service.project.SignService;
-import cs.service.rtx.RTXService;
-import cs.service.sys.*;
+import cs.service.sys.SysConfigService;
+import cs.service.sys.SysFileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 
 import java.math.BigDecimal;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import static cs.common.constants.Constant.RevireStageKey.FGW_PRE_PROJECT_IFS;
-import static cs.common.constants.Constant.RevireStageKey.LOCAL_URL;
-import static cs.common.constants.Constant.RevireStageKey.RETURN_FGW_URL;
+import static cs.common.constants.Constant.RevireStageKey.*;
 import static cs.common.constants.FlowConstant.*;
 import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
@@ -64,6 +61,19 @@ public class SignRestServiceImpl implements SignRestService {
     private DispatchDocService dispatchDocService;
     @Autowired
     private DispatchDocRepo dispatchDocRepo;
+
+    private String fgwProjIfsProp;
+    @Value("#{busiProp.FGW_PROJECT_IFS}")
+    public void setFgwProjIfsProp(String fgwProjIfsProp) {
+        this.fgwProjIfsProp = fgwProjIfsProp;
+    }
+
+    private String fgwPreProjIfsProp;
+    @Value("#{busiProp.FGW_PRE_PROJECT_IFS}")
+    public void setFgwPreProjIfsProp(String fgwPreProjIfsProp) {
+        this.fgwPreProjIfsProp = fgwPreProjIfsProp;
+    }
+
     /**
      * 项目推送
      *
@@ -129,7 +139,7 @@ public class SignRestServiceImpl implements SignRestService {
         return resultMsg;
     }
 
-    public void checkDownLoadFile(ResultMsg resultMsg, boolean isGetFiles, String businessId, List<SysFileDto> sysFileDtoList, String userId, String mainType, String busiType) {
+    public void checkDownLoadFile(ResultMsg resultMsg, boolean isGetFiles, String businessId, List<SysFileDto> sysFileDtoList, String userId, String mainType, String busiType) throws MissingServletRequestParameterException {
         //如果获取附件
         if (isGetFiles) {
             //获取传送过来的附件
@@ -333,7 +343,7 @@ public class SignRestServiceImpl implements SignRestService {
      * @return
      */
     @Override
-    public ResultMsg signProjAppr(SignDto signDto, boolean isGetFiles) {
+    public ResultMsg signProjAppr(SignDto signDto, boolean isGetFiles) throws MissingServletRequestParameterException {
         ResultMsg resultMsg = new ResultMsg();
         Sign sign = signRepo.findByFilecode(signDto.getFilecode(), Constant.EnumState.DELETE.getValue());
         if (!Validate.isObject(sign) || !Validate.isString(sign.getSignid())) {
@@ -388,8 +398,7 @@ public class SignRestServiceImpl implements SignRestService {
         if (sysConfigDto != null) {
             returnUrl = sysConfigDto.getConfigValue();
         } else {
-            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-            returnUrl = propertyUtil.readProperty(IFResultCode.FGW_PROJECT_IFS);
+            returnUrl = fgwProjIfsProp;
         }
         return returnUrl;
     }
@@ -400,9 +409,6 @@ public class SignRestServiceImpl implements SignRestService {
         SysConfigDto sysConfigDto = sysConfigService.findByKey(LOCAL_URL.getValue());
         if(sysConfigDto != null) {
             localUrl = sysConfigDto.getConfigValue();
-        }else{
-            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-            localUrl = propertyUtil.readProperty(IFResultCode.LOCAL_URL);
         }
         if (Validate.isString(localUrl) && localUrl.endsWith("/")) {
             localUrl = localUrl.substring(0, localUrl.length() - 1);
@@ -422,8 +428,7 @@ public class SignRestServiceImpl implements SignRestService {
         if (sysConfigDto != null) {
             returnUrl = sysConfigDto.getConfigValue();
         } else {
-            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-            returnUrl = propertyUtil.readProperty(IFResultCode.FGW_PRE_PROJECT_IFS);
+            returnUrl = fgwPreProjIfsProp;
         }
         return returnUrl;
     }

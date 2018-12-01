@@ -3,9 +3,9 @@
 
     angular.module('app').factory('adminSvc', admin);
 
-    admin.$inject = ['$rootScope', '$http', 'bsWin'];
+    admin.$inject = ['$http', 'bsWin'];
 
-    function admin($rootScope, $http, bsWin) {
+    function admin($http, bsWin) {
 
         var service = {
             gtasksGrid: gtasksGrid,		                //个人待办项目

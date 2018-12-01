@@ -1,11 +1,9 @@
 package cs.controller.sys;
 
 import com.alibaba.fastjson.JSON;
-import cs.ahelper.LogMsg;
 import cs.ahelper.MudoleAnnotation;
 import cs.ahelper.projhelper.ProjUtil;
 import cs.common.constants.Constant;
-import cs.common.constants.FlowConstant;
 import cs.common.utils.*;
 import cs.domain.flow.RuProcessTask;
 import cs.domain.sys.OrgDept;
@@ -27,6 +25,7 @@ import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -73,6 +72,12 @@ public class AdminController {
     @Autowired
     private SignPrincipalRepo signPrincipalRepo;
 
+    private String rtxIpProp;
+    @Value("#{busiProp.RTX_IP}")
+    public void setRtxIpProp(String rtxIpProp) {
+        this.rtxIpProp = rtxIpProp;
+    }
+
     //@RequiresPermissions("admin#index#get")
     @RequiresAuthentication
     @RequestMapping(name = "首页", path = "index")
@@ -94,8 +99,7 @@ public class AdminController {
                 String userState = rtxService.queryUserState(null, SessionUtil.getLoginName());
                 if ("0".equals(userState) || "2".equals(userState)) {
                     model.addAttribute("RTX_SEESION_KEY", rtxService.getSessionKey(null, SessionUtil.getLoginName()));
-                    PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-                    model.addAttribute("RTX_IP", propertyUtil.readProperty("RTX_IP"));
+                    model.addAttribute("RTX_IP", rtxIpProp);
                     String rtxName = Validate.isString(SessionUtil.getUserInfo().getRtxName()) ? SessionUtil.getUserInfo().getRtxName() : SessionUtil.getLoginName();
                     model.addAttribute("RTX_NAME", rtxName);
                 }

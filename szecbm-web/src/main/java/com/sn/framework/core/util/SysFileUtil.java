@@ -20,8 +20,6 @@ import java.util.Random;
 public class SysFileUtil {
     private final Logger logger = LoggerFactory.getLogger(SysFileUtil.class);
 
-    private static String FILE_UPLOAD_PATH = "file_upload_path";
-
     public static String getFileSize(Long fileS){
         String size = "";
         if(fileS == null || fileS == 0 ){

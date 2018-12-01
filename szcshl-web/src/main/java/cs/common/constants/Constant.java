@@ -22,7 +22,7 @@ public class Constant {
     /**
      * 默认需要上传的文件
      */
-    public static final String DEFAULT_CHECK_FILE = "投资估算表,投资匡算表;评审意见,审核意见";
+    //public static final String DEFAULT_CHECK_FILE = "投资估算表,投资匡算表;评审意见,审核意见";
     /**
      * 企业名称
      */
@@ -30,11 +30,8 @@ public class Constant {
     /**
      * 默认错误信息
      */
-    public static final String ERROR_MSG = "操作异常，错误信息已记录，请联系相关人员处理！";
-    /**
-     * 系统业务属性文件名
-     */
-    public static final String businessPropertiesName = "business.properties";
+    //public static final String ERROR_MSG = "操作异常，错误信息已记录，请联系相关人员处理！";
+
     /**
      * 默认来文单位
      */
@@ -129,7 +126,7 @@ public class Constant {
      * 文件存到ftp的
      * Ip地址、服务端口、用户名、密码、基础路径、文件存放路径
      */
-    public static final String FTP_IP = "FTP_IP1";
+    //public static final String FTP_IP = "FTP_IP1";
 
 
     /**

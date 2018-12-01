@@ -33,6 +33,20 @@
 		<property name="cacheManager" ref="cacheManagerFactory"/>
 	</bean>
 
+	<!--
+	    用途：可以使用@Value("#{prop.属性名}")注解读取properties文件配置的值，再给字段赋值
+	         方法1：注解在字段上，给字段赋值
+	         方法2：注解在字段的setter方法中赋值
+	         注意：@Value("#{prop.属性名}") 中的 prop 是 注册的PropertiesFactoryBean的 Bean ID
+	-->
+	<bean id="busiProp" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="locations">
+			<array>
+				<value>classpath:business.properties</value>
+			</array>
+		</property>
+	</bean>
+
 	<cache:annotation-driven />
 
 </beans>

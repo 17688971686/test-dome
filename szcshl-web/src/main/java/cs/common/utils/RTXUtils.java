@@ -1,9 +1,9 @@
 package cs.common.utils;
 
-import cs.common.constants.Constant;
 import cs.domain.sys.User;
 import cs.service.rtx.RTXSendMsgPool;
 import cs.service.sys.LogService;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -26,6 +26,13 @@ import java.util.concurrent.Future;
 public class RTXUtils {
     private final static String MSG_TITLE = "【评审中心项目管理信息系统】消息提醒";
     private final static String RTX_MSG_NOTICE = "/sendnotify.cgi?";
+
+    private static String RTX_URL_PROP;
+    @Value("#{busiProp.RTX_URL}")
+    public static void setRtxUrlProp(String rtxUrlProp) {
+        RTX_URL_PROP = rtxUrlProp;
+    }
+
     /**
      * 异步发送腾讯通消息
      * @param
@@ -83,8 +90,7 @@ public class RTXUtils {
      */
     public static String sendRTXMsg(String url, String sendMsg, String receiver) {
         if (!Validate.isString(url)) {
-            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-            url = propertyUtil.readProperty("RTX_URL");
+            url = RTX_URL_PROP;
         }
         url += RTX_MSG_NOTICE;
         PrintWriter out = null;

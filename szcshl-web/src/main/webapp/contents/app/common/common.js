@@ -24,55 +24,8 @@
         downloadReport: downloadReport,             //报表下载
         htmlEscape: htmlEscape,                     //实现html转码
         htmlDecode: htmlDecode,                     //实现html解码
-        removeXss : removeXss                       //解除xss
     };
     window.common = service;
-
-    function removeXss(str){
-        if (str.length == 0) return "";
-        var val = str.toString();
-        val = val.replace(/([\x00-\x08][\x0b-\x0c][\x0e-\x20])/g, '');
-
-        var search = 'abcdefghijklmnopqrstuvwxyz';
-        search += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        search += '1234567890!@#$%^&*()';
-        search += '~`";:?+/={}[]-_|\'\\';
-
-        for (var i = 0; i < search.length; i++) {
-            var re = new RegExp('(&#[x|X]0{0,8}'+ parseInt(search[i].charCodeAt(),16)+';?)','gi');
-            val = val.replace(re, search[i]);
-            re = new RegExp('(&#0{0,8}'+ search[i].charCodeAt() + ';?)','gi');
-            val = val.replace(re, search[i]);
-        }
-
-        var ra1 = ['javascript', 'vbscript', 'expression', 'applet', 'meta','blink', 'link',  'script', 'embed', 'object', 'iframe', 'frame', 'frameset', 'ilayer', 'layer', 'bgsound', 'title'];
-        var ra2 = ['onabort', 'onactivate', 'onafterprint', 'onafterupdate', 'onbeforeactivate', 'onbeforecopy', 'onbeforecut', 'onbeforedeactivate', 'onbeforeeditfocus', 'onbeforepaste', 'onbeforeprint', 'onbeforeunload', 'onbeforeupdate', 'onblur', 'onbounce', 'oncellchange', 'onchange', 'onclick', 'oncontextmenu', 'oncontrolselect', 'oncopy', 'oncut', 'ondataavailable', 'ondatasetchanged', 'ondatasetcomplete', 'ondblclick', 'ondeactivate', 'ondrag', 'ondragend', 'ondragenter', 'ondragleave', 'ondragover', 'ondragstart', 'ondrop', 'onerror', 'onerrorupdate', 'onfilterchange', 'onfinish', 'onfocus', 'onfocusin', 'onfocusout', 'onhelp', 'onkeydown', 'onkeypress', 'onkeyup', 'onlayoutcomplete', 'onload', 'onlosecapture', 'onmousedown', 'onmouseenter', 'onmouseleave', 'onmousemove', 'onmouseout', 'onmouseover', 'onmouseup', 'onmousewheel', 'onmove', 'onmoveend', 'onmovestart', 'onpaste', 'onpropertychange', 'onreadystatechange', 'onreset', 'onresize', 'onresizeend', 'onresizestart', 'onrowenter', 'onrowexit', 'onrowsdelete', 'onrowsinserted', 'onscroll', 'onselect', 'onselectionchange', 'onselectstart', 'onstart', 'onstop', 'onsubmit', 'onunload'];
-        var ra = [].concat(ra1, ra2);
-
-        var found = true;
-        while (found == true) {
-            var val_before = val;
-            for (var i = 0; i < ra.length; i++) {
-                var pattern = '';
-                for (var j = 0; j < ra[i].length; j++) {
-                    if (j > 0) {
-                        pattern += '(';
-                        pattern += '(&#[x|X]0{0,8}([9][a][b]);?)?';
-                        pattern += '|(&#0{0,8}([9][10][13]);?)?';
-                        pattern += ')?';
-                    }
-                    pattern += ra[i][j];
-                }
-                pattern = new RegExp(pattern,'gi');
-                var replacement = ra[i].substr(0, 2) + '<x>'+ ra[i].substr(2);
-                val = val.replace(parttern, replacement);
-                if (val_before  == val) {
-                    found = false;
-                }
-            }
-        }
-        return val;
-    }
 
     function htmlDecode(str) {
         if (str.length == 0) return "";

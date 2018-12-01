@@ -1,9 +1,9 @@
 package cs.service.sys;
 
-import cs.common.constants.Constant;
 import cs.common.HqlBuilder;
 import cs.common.IFResultCode;
 import cs.common.ResultMsg;
+import cs.common.constants.Constant;
 import cs.common.ftp.ConfigProvider;
 import cs.common.ftp.FtpClientConfig;
 import cs.common.ftp.FtpUtils;
@@ -23,11 +23,13 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -35,10 +37,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import static cs.common.constants.Constant.FTP_IP;
 import static cs.common.constants.Constant.RevireStageKey.KEY_FTPIP;
 import static cs.common.constants.Constant.RevireStageKey.KEY_FTPROOT;
-import static cs.common.constants.Constant.RevireStageKey.LOCAL_URL;
 
 @Service
 public class SysFileServiceImpl implements SysFileService {
@@ -49,8 +49,7 @@ public class SysFileServiceImpl implements SysFileService {
     private SysConfigService sysConfigService;
     @Autowired
     private FtpRepo ftpRepo;
-    @Autowired
-    private SysFileService sysFileService;
+
 
     @Override
     @Transactional
@@ -236,8 +235,7 @@ public class SysFileServiceImpl implements SysFileService {
     public String findFtpId() {
         SysConfigDto sysConfigDto = sysConfigService.findByKey(KEY_FTPIP.getValue());
         if(sysConfigDto == null || !Validate.isString(sysConfigDto.getConfigValue())) {
-            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-            return propertyUtil.readProperty(FTP_IP);
+            return "";
         }else{
             return sysConfigDto.getConfigValue();
         }
@@ -286,7 +284,7 @@ public class SysFileServiceImpl implements SysFileService {
      * @return
      */
     @Override
-    public ResultMsg downRemoteFile(String businessId, List<SysFileDto> sysFileDtoList,String userId,String mainType,String busiType) {
+    public ResultMsg downRemoteFile(String businessId, List<SysFileDto> sysFileDtoList,String userId,String mainType,String busiType){
         ResultMsg resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"没有附件信息！");
         if (Validate.isList(sysFileDtoList)) {
             List<SysFile> saveFileList = new ArrayList<>();

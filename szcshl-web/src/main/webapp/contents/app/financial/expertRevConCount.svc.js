@@ -155,8 +155,11 @@
                     }
                 };
                 var httpSuccess = function success(response) {
-                	vm.financial.stageCount = response.data;
-                   $("#financialCount").html(common.htmlEscape(vm.financial.stageCount));
+                	vm.financial.stageCount = 0;
+                	if(response.data){
+                        vm.financial.stageCount = response.data;
+                    }
+                    $("#financialCount").html(common.htmlEscape(vm.financial.stageCount));
                 };
 
                 common.http({

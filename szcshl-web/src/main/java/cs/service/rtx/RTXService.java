@@ -2,19 +2,20 @@ package cs.service.rtx;
 
 import cs.common.ResultMsg;
 import cs.common.constants.Constant;
-import cs.common.utils.*;
+import cs.common.utils.RTXUtils;
+import cs.common.utils.SMSUtils;
+import cs.common.utils.Validate;
 import cs.domain.sys.SMSLog;
 import cs.domain.sys.User;
 import cs.model.sys.SysConfigDto;
 import cs.repository.repositoryImpl.sys.UserRepo;
-import cs.service.restService.SignRestService;
 import cs.service.sys.LogService;
 import cs.service.sys.MsgService;
-import cs.service.sys.SMSLogService;
 import cs.service.sys.SysConfigService;
 import cs.threadtask.MsgThread;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -49,6 +50,13 @@ public class RTXService {
     @Autowired
     private MsgService msgService;
 
+    private String rtxUrlProp;
+
+    @Value("#{busiProp.RTX_URL}")
+    public void setRtxUrlProp(String rtxUrlProp) {
+        this.rtxUrlProp = rtxUrlProp;
+    }
+
 
     /**
      * 获取腾讯通的sessionKey
@@ -61,8 +69,7 @@ public class RTXService {
         String strSessionKey = "";
         BufferedReader reader = null;
         if (!Validate.isString(url)) {
-            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-            url = propertyUtil.readProperty("RTX_URL");
+            url = rtxUrlProp;
         }
         url += RTX_GETSESSION;
         try {
@@ -97,8 +104,7 @@ public class RTXService {
         String userState = "0";
         BufferedReader reader = null;
         if (!Validate.isString(url)) {
-            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-            url = propertyUtil.readProperty("RTX_URL");
+            url = rtxUrlProp;
         }
         url += RTX_GETSTATUS;
         try {
