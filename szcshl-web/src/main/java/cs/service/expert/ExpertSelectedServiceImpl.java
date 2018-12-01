@@ -1231,11 +1231,68 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
                 orgDeptList = criteria.list();
             }
         }
-        resultMap.put("achievementSumList", expertSelectedRepo.findAchievementSum(achievementSumDto, levelMap,orgDeptList));
-        achievementSumDto.setIsmainuser("9");
-        resultMap.put("achievementMainList", expertSelectedRepo.findAchievementDetail(achievementSumDto, levelMap,orgDeptList));
-        achievementSumDto.setIsmainuser("0");
-        resultMap.put("achievementAssistList", expertSelectedRepo.findAchievementDetail(achievementSumDto, levelMap,orgDeptList));
+        if(level == 1 || level == 2){
+            if(Validate.isString(achievementSumDto.getUserId())){
+                resultMap.put("achievementSumList", expertSelectedRepo.findAchievementSum(achievementSumDto, levelMap,orgDeptList));
+                return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", resultMap);
+            }
+            if (Validate.isString(achievementSumDto.getDeptNames())) {
+                String deptNames =  achievementSumDto.getDeptNames();
+                if(deptNames.contains(",")){
+                    List<String> tempList = StringUtil.getSplit(achievementSumDto.getDeptNames(),",");
+                    List<String> orgDeptListTemp = StringUtil.getSplit(achievementSumDto.getDeptIds(),",");
+                    for(int i = 0; i <  tempList.size(); i++){
+                        Map<String, Object> tempMap = new HashMap<String,Object>();
+                        if("评估一部信息化组".equals(tempList.get(i))){
+                            tempMap.put("leaderFlag",4);
+                        }else{
+                            tempMap.put("leaderFlag",3);
+                        }
+                        Criteria criteria = orgDeptRepo.getExecutableCriteria();
+                        criteria.add(Restrictions.eq(OrgDept_.id.getName(),orgDeptListTemp.get(i)));
+                        List<OrgDept> orgDeptTempList = new ArrayList<OrgDept>();
+                        orgDeptTempList = criteria.list();
+                        resultMap.put(tempList.get(i), expertSelectedRepo.findAchievementSum(achievementSumDto, tempMap,orgDeptTempList));
+                        resultMap.put("isLeader","1");
+                    }
+                }else{
+                    Map<String, Object> tempMap = new HashMap<String,Object>();
+                    if("评估一部信息化组".equals(achievementSumDto.getDeptNames())){
+                        tempMap.put("leaderFlag",4);
+                    }else{
+                        tempMap.put("leaderFlag",3);
+                    }
+                    Criteria criteria = orgDeptRepo.getExecutableCriteria();
+                    criteria.add(Restrictions.eq(OrgDept_.id.getName(),achievementSumDto.getDeptIds()));
+                    List<OrgDept> orgDeptTempList = new ArrayList<OrgDept>();
+                    orgDeptTempList = criteria.list();
+                    resultMap.put(achievementSumDto.getDeptNames(), expertSelectedRepo.findAchievementSum(achievementSumDto, tempMap,orgDeptTempList));
+                    resultMap.put("isLeader","1");
+                }
+            }else{
+                for(int i = 0; i <  orgDeptList.size(); i++){
+                    Map<String, Object> tempMap = new HashMap<String,Object>();
+                    if("评估一部信息化组".equals(orgDeptList.get(i).getName())){
+                        tempMap.put("leaderFlag",4);
+                    }else{
+                        tempMap.put("leaderFlag",3);
+                    }
+                    Criteria criteria = orgDeptRepo.getExecutableCriteria();
+                    criteria.add(Restrictions.eq(OrgDept_.id.getName(),orgDeptList.get(i).getId()));
+                    List<OrgDept> orgDeptTempList = new ArrayList<OrgDept>();
+                    orgDeptTempList = criteria.list();
+                    resultMap.put(orgDeptList.get(i).getName(), expertSelectedRepo.findAchievementSum(achievementSumDto, tempMap,orgDeptTempList));
+                    resultMap.put("isLeader","1");
+                }
+            }
+        }else{
+            resultMap.put("achievementSumList", expertSelectedRepo.findAchievementSum(achievementSumDto, levelMap,orgDeptList));
+            achievementSumDto.setIsmainuser("9");
+            resultMap.put("achievementMainList", expertSelectedRepo.findAchievementDetail(achievementSumDto, levelMap,orgDeptList));
+            achievementSumDto.setIsmainuser("0");
+            resultMap.put("achievementAssistList", expertSelectedRepo.findAchievementDetail(achievementSumDto, levelMap,orgDeptList));
+            resultMap.put("isLeader","0");
+        }
 
         resultMap.put("orgDeptList",orgDeptList);
         resultMap.put("level", level);

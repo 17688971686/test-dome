@@ -825,16 +825,24 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                 sqlBuilder.append(" on s.signid = p.signid where s.processstate >= 6  and s.signstate != 7 and p.ismainuser is not null " +
                         " and p.userid = '"+ SessionUtil.getUserId()+"' ");
             }else if(level==1 ||level ==2 || level == 3){
-                List<String> tempList = StringUtil.getSplit(achievementSumDto.getDeptIds(),",");
+                if(Validate.isList(orgDeptList)){
+                    for(int i = 0; i < orgDeptList.size(); i++){
+                        orgIds.append("'"+orgDeptList.get(i).getId()+"'");
+                        if(i!=orgDeptList.size()-1){
+                            orgIds.append(",");
+                        }
+                    }
+                }
+               /* List<String> tempList = StringUtil.getSplit(achievementSumDto.getDeptIds(),",");
                 if(!Validate.isList(tempList) && !Validate.isString(achievementSumDto.getInitFlag())){
-                     if(Validate.isList(orgDeptList)){
-                         for(int i = 0; i < orgDeptList.size(); i++){
-                             orgIds.append("'"+orgDeptList.get(i).getId()+"'");
-                             if(i!=orgDeptList.size()-1){
-                                 orgIds.append(",");
-                             }
-                         }
-                     }
+                    if(Validate.isList(orgDeptList)){
+                        for(int i = 0; i < orgDeptList.size(); i++){
+                            orgIds.append("'"+orgDeptList.get(i).getId()+"'");
+                            if(i!=orgDeptList.size()-1){
+                                orgIds.append(",");
+                            }
+                        }
+                    }
                 }else{
                     for(int i = 0; i < tempList.size(); i++){
                         orgIds.append("'"+tempList.get(i)+"'");
@@ -842,12 +850,12 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                             orgIds.append(",");
                         }
                     }
-                }
-
+                }*/
                 sqlBuilder.append(" on s.signid = p.signid where s.processstate >= 6  and s.signstate != 7 and p.ismainuser is not null " +
                         " and exists(select 1 from cs_user u " +
                         "  where u.orgid in ("+orgIds.toString()+") " +
-                        "  and u.id = p.userid) ");
+                        "  and u.id = p.userid)" +
+                        "  and not exists(select 1 from CS_DEPT_CS_USER u where u.userlist_id = p.userid )");
             }else if(level==4){
                 sqlBuilder.append(" on s.signid = p.signid where s.processstate >= 6  and s.signstate != 7 and p.ismainuser is not null " +
                         " and exists(select 1 from CS_DEPT_CS_USER u where u.userlist_id = p.userid ) ");
@@ -872,7 +880,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                     sqlBuilder.append(" and D.DISPATCHDATE >= to_date(:beginTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("beginTime",beginTime);
                     sqlBuilder.append(" and D.DISPATCHDATE <= to_date(:endTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("endTime",endTime);
                 }else if(achievementSumDto.getQuarter().equals("3")){
-                    beginTime = achievementSumDto.getYear()+"-07-31 00:00:00";
+                    beginTime = achievementSumDto.getYear()+"-07-01 00:00:00";
                     endTime = achievementSumDto.getYear()+"-09-30 23:59:59";
                     sqlBuilder.append(" and D.DISPATCHDATE >= to_date(:beginTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("beginTime",beginTime);
                     sqlBuilder.append(" and D.DISPATCHDATE <= to_date(:endTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("endTime",endTime);
@@ -974,7 +982,8 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                 sqlBuilder.append(" where s.processstate >= 6  and s.signstate != 7 " +
                         " and exists(select 1 from cs_user u " +
                         "  where u.orgid in ("+orgIds+") " +
-                        "  and u.id = p.userid) ");
+                        "  and u.id = p.userid) " +
+                        " and not exists(select 1 from CS_DEPT_CS_USER u where u.userlist_id = p.userid )");
             }else if(level==4){
                 sqlBuilder.append(" where s.processstate >= 6  and s.signstate != 7 and exists(select 1 from CS_DEPT_CS_USER u where u.userlist_id = p.userid ) ");
             }
@@ -1001,7 +1010,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                     sqlBuilder.append(" and D.DISPATCHDATE >= to_date(:beginTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("beginTime",beginTime);
                     sqlBuilder.append(" and D.DISPATCHDATE <= to_date(:endTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("endTime",endTime);
                 }else if(achievementSumDto.getQuarter().equals("3")){
-                    beginTime = achievementSumDto.getYear()+"-07-31 00:00:00";
+                    beginTime = achievementSumDto.getYear()+"-07-01 00:00:00";
                     endTime = achievementSumDto.getYear()+"-09-30 23:59:59";
                     sqlBuilder.append(" and D.DISPATCHDATE >= to_date(:beginTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("beginTime",beginTime);
                     sqlBuilder.append(" and D.DISPATCHDATE <= to_date(:endTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("endTime",endTime);
@@ -1012,7 +1021,12 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                     sqlBuilder.append(" and D.DISPATCHDATE <= to_date(:endTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("endTime",endTime);
                 }
             }
+            if("0".equals(achievementSumDto.getIsmainuser())){
+                sqlBuilder.append(" group by d.dispatchdate,s.projectname, d.filenum,d.declarevalue, d.authorizevalue, " +
+                        " d.extravalue, d.extrarate, p.ismainuser");
+            }
         }
+
         List<Object[]> achievementDetailObjList = expertSelectedRepo.getObjectArray(sqlBuilder);
         List<AchievementDetailDto> achievementDetailDtoList = new ArrayList<AchievementDetailDto>();
         for(int i = 0; i < achievementDetailObjList.size(); i++ ) {
@@ -1100,7 +1114,8 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                     " and exists(select 1 from cs_user u " +
                     "  where u.orgid in ("+orgIds.toString()+") " +
                     "  and u.id = p.userid) " +
-                    "  and p.ismainuser is not null");
+                    "  and p.ismainuser is not null" +
+                    "  and not exists(select 1 from CS_DEPT_CS_USER u where u.userlist_id = p.userid )");
         }else { //todo:信息化组单独测试
             sqlBuilder.append(" where s.processstate >= 6  and s.signstate != 7 and exists(select 1 from CS_DEPT_CS_USER u where u.userlist_id = p.userid ) ");
         }
@@ -1122,7 +1137,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                     sqlBuilder.append(" and D.DISPATCHDATE >= to_date(:beginTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("beginTime",beginTime);
                     sqlBuilder.append(" and D.DISPATCHDATE <= to_date(:endTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("endTime",endTime);
                 }else if(achievementDeptDetailDto.getQuarter().equals("3")){
-                    beginTime = achievementDeptDetailDto.getYear()+"-07-31 00:00:00";
+                    beginTime = achievementDeptDetailDto.getYear()+"-07-01 00:00:00";
                     endTime = achievementDeptDetailDto.getYear()+"-09-30 23:59:59";
                     sqlBuilder.append(" and D.DISPATCHDATE >= to_date(:beginTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("beginTime",beginTime);
                     sqlBuilder.append(" and D.DISPATCHDATE <= to_date(:endTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("endTime",endTime);
@@ -1138,7 +1153,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                 "  max(CASE WHEN rnum = 1 THEN ismainuser END ) ismainuser_1,max(CASE WHEN rnum = 1 THEN proCount END ) proCount_1," +
                 " max(CASE WHEN rnum = 2 THEN ismainuser END ) ismainuser_2,max(CASE WHEN rnum = 2 THEN proCount END ) proCount_2" +
                 " FROM ( SELECT a.*, row_number() OVER(PARTITION BY id order by id) rnum FROM a ) a1  GROUP BY id,displayname   ) d" +
-                "  union all select d.*,'2' from ( WITH A AS ( select t.id,t.displayname,t.ismainuser,count(1) proCount from " +
+                "  union all  select * from (select *  from (  select d.*,'2' protype from ( WITH A AS ( select t.id,t.displayname,t.ismainuser,count(1) proCount from " +
                 "  ( select u.id,u.displayname,d.dispatchdate,s.projectname,d.filenum,d.declarevalue,d.authorizevalue,d.extravalue," +
                 " d.extrarate, p.ismainuser from cs_sign s left join cs_dispatch_doc d on s.signid = d.signid left join CS_SIGN_PRINCIPAL2 p" +
                 " on s.signid = p.signid inner join cs_user u on p.userid = u.id " );
@@ -1160,74 +1175,92 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                     " select id,displayname, max(CASE WHEN rnum = 1 THEN ismainuser END ) ismainuser_1,max(CASE WHEN rnum = 1 THEN proCount END ) proCount_1," +
                     " max(CASE WHEN rnum = 2 THEN ismainuser END ) ismainuser_2, max(CASE WHEN rnum = 2 THEN proCount END ) proCount_2 " +
                     " FROM ( SELECT a.*, row_number() OVER(PARTITION BY id order by id) rnum FROM a ) a1 GROUP BY id,displayname" +
-                    " ) d ) order by id,protype ");
+                    " ) d ) order by id,protype   ) e  where exists  (select 1  from (select t.id, t.displayname, " +
+                    " t.ismainuser, count(1) proCount  from (select u.id,u.displayname, p.ismainuser   from cs_sign s " +
+                    " left join cs_dispatch_doc d on s.signid = d.signid  left join CS_SIGN_PRINCIPAL2 p on s.signid = p.signid" +
+                    " inner join cs_user u  on p.userid = u.id ");
+            if(level != 4){
+                sqlBuilder.append(" where s.processstate >= 6  and s.signstate != 7 " +
+                        " and exists(select 1 from cs_user u " +
+                        "  where u.orgid in ("+orgIds.toString()+") " +
+                        "  and u.id = p.userid) " +
+                        "  and p.ismainuser is not null" +
+                        "  and not exists(select 1 from CS_DEPT_CS_USER u where u.userlist_id = p.userid )");
+            }else{
+                sqlBuilder.append(" where s.processstate >= 6  and s.signstate != 7 and exists(select 1 from CS_DEPT_CS_USER u where u.userlist_id = p.userid ) ");
+            }
 
+        sqlBuilder.append(" and D.DISPATCHDATE >= to_date(:beginTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("beginTime",beginTime);
+        sqlBuilder.append(" and D.DISPATCHDATE <= to_date(:endTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("endTime",endTime);
+        sqlBuilder.append(" ) t  group by t.id, t.displayname, t.ismainuser  ) g   where e.id = g.id  ))  order by id, protype");
         List<Object[]> achievementDetailObjList = expertSelectedRepo.getObjectArray(sqlBuilder);
         List<AchievementDeptDetailDto> achievementDetailDtoList = new ArrayList<AchievementDeptDetailDto>();
-        for(int i = 0; i < achievementDetailObjList.size(); i+= 2 ) {
-            AchievementDeptDetailDto achievementDetailDto1 = new AchievementDeptDetailDto();
-            Object[] projectReviewCon = achievementDetailObjList.get(i);
-            Object[] projectReviewCon1 = achievementDetailObjList.get(i+1);
-            if (null != projectReviewCon[0]) {
-                achievementDetailDto1.setUserId((String)projectReviewCon[0]);
-            }else{
-                achievementDetailDto1.setUserId(null);
-            }
-            if (null != projectReviewCon[1]) {
-                achievementDetailDto1.setName((String)projectReviewCon[1]);
-            }else{
-                achievementDetailDto1.setName(null);
-            }
-            if(null != projectReviewCon[2] && null != projectReviewCon[4]){
-                if (null != projectReviewCon[3]) {
-
-                    achievementDetailDto1.setMainDisSum(Integer.parseInt(projectReviewCon[3].toString()));
+        try{
+            for(int i = 0; i < achievementDetailObjList.size(); i+= 2 ) {
+                AchievementDeptDetailDto achievementDetailDto1 = new AchievementDeptDetailDto();
+                Object[] projectReviewCon = achievementDetailObjList.get(i);
+                Object[] projectReviewCon1 = achievementDetailObjList.get(i+1);
+                if (null != projectReviewCon[0]) {
+                    achievementDetailDto1.setUserId((String)projectReviewCon[0]);
                 }else{
-                    achievementDetailDto1.setMainDisSum(0);
+                    achievementDetailDto1.setUserId(null);
                 }
-
-                if (null != projectReviewCon[5]) {
-                    achievementDetailDto1.setAssistDisSum(Integer.parseInt(projectReviewCon[5].toString()));
+                if (null != projectReviewCon[1]) {
+                    achievementDetailDto1.setName((String)projectReviewCon[1]);
                 }else{
-                    achievementDetailDto1.setAssistDisSum(0);
+                    achievementDetailDto1.setName(null);
                 }
+                if(null != projectReviewCon[2] && null != projectReviewCon[4]){
+                    if (null != projectReviewCon[3]) {
 
-                if (null != projectReviewCon1[3]) {
-                    achievementDetailDto1.setMainProCount(Integer.parseInt(projectReviewCon1[3].toString()));
-                }else{
-                    achievementDetailDto1.setMainProCount(0);
-                }
-
-                if (null != projectReviewCon1[5]) {
-                    achievementDetailDto1.setAssistProCount(Integer.parseInt(projectReviewCon1[5].toString()));
-                }else{
-                    achievementDetailDto1.setAssistProCount((Integer) projectReviewCon1[5]);
-                }
-            }else{
-                if (null != projectReviewCon[3]) {
-                    Integer temp = Integer.parseInt(projectReviewCon[2].toString());
-                    if(temp == 9){
                         achievementDetailDto1.setMainDisSum(Integer.parseInt(projectReviewCon[3].toString()));
-                        achievementDetailDto1.setAssistDisSum(0);
                     }else{
                         achievementDetailDto1.setMainDisSum(0);
-                        achievementDetailDto1.setAssistDisSum(Integer.parseInt(projectReviewCon[3].toString()));
                     }
-                }
-                if (null != projectReviewCon1[3]) {
-                    Integer temp = Integer.parseInt(projectReviewCon1[2].toString());
-                    if(temp == 9){
-                        achievementDetailDto1.setMainProCount(Integer.parseInt(projectReviewCon[3].toString()));
-                        achievementDetailDto1.setAssistProCount(0);
+
+                    if (null != projectReviewCon[5]) {
+                        achievementDetailDto1.setAssistDisSum(Integer.parseInt(projectReviewCon[5].toString()));
+                    }else{
+                        achievementDetailDto1.setAssistDisSum(0);
+                    }
+
+                    if (null != projectReviewCon1[3]) {
+                        achievementDetailDto1.setMainProCount(Integer.parseInt(projectReviewCon1[3].toString()));
                     }else{
                         achievementDetailDto1.setMainProCount(0);
-                        achievementDetailDto1.setAssistProCount(Integer.parseInt(projectReviewCon[3].toString()));
+                    }
+
+                    if (null != projectReviewCon1[5]) {
+                        achievementDetailDto1.setAssistProCount(Integer.parseInt(projectReviewCon1[5].toString()));
+                    }else{
+                        achievementDetailDto1.setAssistProCount((Integer) projectReviewCon1[5]);
+                    }
+                }else{
+                    if (null != projectReviewCon[3]) {
+                        Integer temp = Integer.parseInt(projectReviewCon[2].toString());
+                        if(temp == 9){
+                            achievementDetailDto1.setMainDisSum(Integer.parseInt(projectReviewCon[3].toString()));
+                            achievementDetailDto1.setAssistDisSum(0);
+                        }else{
+                            achievementDetailDto1.setMainDisSum(0);
+                            achievementDetailDto1.setAssistDisSum(Integer.parseInt(projectReviewCon[3].toString()));
+                        }
+                    }
+                    if (null != projectReviewCon1[3]) {
+                        Integer temp = Integer.parseInt(projectReviewCon1[2].toString());
+                        if(temp == 9){
+                            achievementDetailDto1.setMainProCount(Integer.parseInt(projectReviewCon1[3].toString()));
+                            achievementDetailDto1.setAssistProCount(0);
+                        }else{
+                            achievementDetailDto1.setMainProCount(0);
+                            achievementDetailDto1.setAssistProCount(Integer.parseInt(projectReviewCon1[3].toString()));
+                        }
                     }
                 }
+                achievementDetailDtoList.add(achievementDetailDto1);
             }
-
-
-            achievementDetailDtoList.add(achievementDetailDto1);
+        }catch (Exception e){
+            e.printStackTrace();
         }
         return achievementDetailDtoList;
     }

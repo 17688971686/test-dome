@@ -20,36 +20,227 @@
         function activate() {
             achievementSvc.achievementSum(vm,function (data) {
                 if(data.flag || data.reCode == 'ok'){
-                    vm.achievementSumList = data.reObj.achievementSumList;
-                    if(vm.achievementSumList.length > 0){
-                        if(vm.achievementSumList.length ==2){
-                            vm.assistDoc = vm.achievementSumList[0];
-                            vm.mainDoc = vm.achievementSumList[1];
-                        }else{
-                            if(vm.achievementSumList[0].ismainuser=='9'){
-                                vm.mainDoc = vm.achievementSumList[0];
-                                vm.assistDoc={};
-                                vm.assistDoc.disSum = 0;
-                                vm.assistDoc.declarevalueSum = 0;
-                                vm.assistDoc.authorizevalueSum = 0;
-                                vm.assistDoc.extravalueSum = 0;
-                                vm.assistDoc.extraRateSum = 0;
-                            }else if(vm.achievementSumList[0].ismainuser=='0'){
-                                vm.assistDoc = vm.achievementSumList[0];
-                                vm.mainDoc = {};
-                                vm.mainDoc.disSum = 0;
-                                vm.mainDoc.declarevalueSum = 0;
-                                vm.mainDoc.authorizevalueSum = 0;
-                                vm.mainDoc.extravalueSum = 0;
-                                vm.mainDoc.extraRateSum = 0;
+                    vm.isLeader = data.reObj.isLeader;
+                    if(vm.isLeader == '1'){
+                        vm.comprehensiveDept = data.reObj.综合部;
+                        vm.evaluateOneDept = data.reObj.评估一部;
+                        vm.evaluateTwoDept = data.reObj.评估二部;
+                        vm.budgetaryOneDept = data.reObj.概算一部;
+                        vm.budgetaryTwoDept = data.reObj.概算二部;
+                        vm.evaluateOneDeptInfo = data.reObj.评估一部信息化组;
+                        if(vm.comprehensiveDept != undefined && vm.comprehensiveDept.length > 0){
+                            if(vm.comprehensiveDept.length ==2){
+                                vm.assistDocComprehensive = vm.comprehensiveDept[0];
+                                vm.mainDocComprehensive = vm.comprehensiveDept[1];
+                            }else{
+                                if(vm.comprehensiveDept[0].ismainuser=='9'){
+                                    vm.mainDocComprehensive = vm.comprehensiveDept[0];
+                                    vm.assistDocComprehensive={};
+                                    vm.assistDocComprehensive.disSum = 0;
+                                    vm.assistDocComprehensive.declarevalueSum = 0;
+                                    vm.assistDocComprehensive.authorizevalueSum = 0;
+                                    vm.assistDocComprehensive.extravalueSum = 0;
+                                    vm.assistDocComprehensive.extraRateSum = 0;
+                                }else if(vm.comprehensiveDept[0].ismainuser=='0'){
+                                    vm.assistDocComprehensive = vm.comprehensiveDept[0];
+                                    vm.mainDocComprehensive = {};
+                                    vm.mainDocComprehensive.disSum = 0;
+                                    vm.mainDocComprehensive.declarevalueSum = 0;
+                                    vm.mainDocComprehensive.authorizevalueSum = 0;
+                                    vm.mainDocComprehensive.extravalueSum = 0;
+                                    vm.mainDocComprehensive.extraRateSum = 0;
+                                }
                             }
+                        }else{
+                            vm.mainDocComprehensive = {};
+                            vm.mainDocComprehensive.disSum = 0;
+                            vm.assistDocComprehensive={};
+                            vm.assistDocComprehensive.disSum = 0;
                         }
+
+                        if(vm.evaluateOneDept != undefined && vm.evaluateOneDept.length > 0){
+                            if(vm.evaluateOneDept.length ==2){
+                                vm.assistDocEvaluateOne = vm.evaluateOneDept[0];
+                                vm.mainDocEvaluateOne= vm.evaluateOneDept[1];
+                            }else{
+                                if(vm.evaluateOneDept[0].ismainuser=='9'){
+                                    vm.mainDocEvaluateOne = vm.evaluateOneDept[0];
+                                    vm.assistDocEvaluateOne={};
+                                    vm.assistDocEvaluateOne.disSum = 0;
+                                    vm.assistDocEvaluateOne.declarevalueSum = 0;
+                                    vm.assistDocEvaluateOne.authorizevalueSum = 0;
+                                    vm.assistDocEvaluateOne.extravalueSum = 0;
+                                    vm.assistDocEvaluateOne.extraRateSum = 0;
+                                }else if(vm.evaluateOneDept[0].ismainuser=='0'){
+                                    vm.assistDocEvaluateOne = vm.evaluateOneDept[0];
+                                    vm.mainDocEvaluateOne = {};
+                                    vm.mainDocEvaluateOne.disSum = 0;
+                                    vm.mainDocEvaluateOne.declarevalueSum = 0;
+                                    vm.mainDocEvaluateOne.authorizevalueSum = 0;
+                                    vm.mainDocEvaluateOne.extravalueSum = 0;
+                                    vm.mainDocEvaluateOne.extraRateSum = 0;
+                                }
+                            }
+                        }else{
+                            vm.mainDocEvaluateOne = {};
+                            vm.mainDocEvaluateOne.disSum = 0;
+                            vm.assistDocEvaluateOne={};
+                            vm.assistDocEvaluateOne.disSum = 0
+                        }
+
+                        if(vm.evaluateTwoDept != undefined && vm.evaluateTwoDept.length > 0){
+                            if(vm.evaluateTwoDept.length ==2){
+                                vm.assistDocEvaluateTwo = vm.evaluateTwoDept[0];
+                                vm.mainDocEvaluateTwo= vm.evaluateTwoDept[1];
+                            }else{
+                                if(vm.evaluateTwoDept[0].ismainuser=='9'){
+                                    vm.mainDocEvaluateTwo = vm.evaluateTwoDept[0];
+                                    vm.assistDocEvaluateTwo={};
+                                    vm.assistDocEvaluateTwo.disSum = 0;
+                                    vm.assistDocEvaluateTwo.declarevalueSum = 0;
+                                    vm.assistDocEvaluateTwo.authorizevalueSum = 0;
+                                    vm.assistDocEvaluateTwo.extravalueSum = 0;
+                                    vm.assistDocEvaluateTwo.extraRateSum = 0;
+                                }else if(vm.evaluateTwoDept[0].ismainuser=='0'){
+                                    vm.assistDocEvaluateTwo = vm.evaluateTwoDept[0];
+                                    vm.mainDocEvaluateTwo = {};
+                                    vm.mainDocEvaluateTwo.disSum = 0;
+                                    vm.mainDocEvaluateTwo.declarevalueSum = 0;
+                                    vm.mainDocEvaluateTwo.authorizevalueSum = 0;
+                                    vm.mainDocEvaluateTwo.extravalueSum = 0;
+                                    vm.mainDocEvaluateTwo.extraRateSum = 0;
+                                }
+                            }
+                        }else{
+                            vm.mainDocEvaluateTwo = {};
+                            vm.mainDocEvaluateTwo.disSum = 0;
+                            vm.assistDocEvaluateTwo={};
+                            vm.assistDocEvaluateTwo.disSum = 0;
+                        }
+
+                        if(vm.budgetaryOneDept != undefined && vm.budgetaryOneDept.length > 0){
+                            if(vm.budgetaryOneDept.length ==2){
+                                vm.assistDocBudgetaryOne = vm.budgetaryOneDept[0];
+                                vm.mainDocBudgetaryOne= vm.budgetaryOneDept[1];
+                            }else{
+                                if(vm.budgetaryOneDept[0].ismainuser=='9'){
+                                    vm.mainDocBudgetaryOne = vm.budgetaryOneDept[0];
+                                    vm.assistDocBudgetaryOne={};
+                                    vm.assistDocBudgetaryOne.disSum = 0;
+                                    vm.assistDocBudgetaryOne.declarevalueSum = 0;
+                                    vm.assistDocBudgetaryOne.authorizevalueSum = 0;
+                                    vm.assistDocBudgetaryOne.extravalueSum = 0;
+                                    vm.assistDocBudgetaryOne.extraRateSum = 0;
+                                }else if(vm.budgetaryOneDept[0].ismainuser=='0'){
+                                    vm.assistDocBudgetaryOne = vm.budgetaryOneDept[0];
+                                    vm.mainDocBudgetaryOne = {};
+                                    vm.mainDocBudgetaryOne.disSum = 0;
+                                    vm.mainDocBudgetaryOne.declarevalueSum = 0;
+                                    vm.mainDocBudgetaryOne.authorizevalueSum = 0;
+                                    vm.mainDocBudgetaryOne.extravalueSum = 0;
+                                    vm.mainDocBudgetaryOne.extraRateSum = 0;
+                                }
+                            }
+                        }else{
+                            vm.mainDocBudgetaryOne = {};
+                            vm.mainDocBudgetaryOne.disSum = 0;
+                            vm.assistDocBudgetaryOne={};
+                            vm.assistDocBudgetaryOne.disSum = 0;
+                        }
+
+                        if(vm.budgetaryTwoDept != undefined && vm.budgetaryTwoDept.length > 0){
+                            if(vm.budgetaryTwoDept.length ==2){
+                                vm.assistDocBudgetaryTwo = vm.budgetaryTwoDept[0];
+                                vm.mainDocBudgetaryTwo = vm.budgetaryTwoDept[1];
+                            }else{
+                                if(vm.budgetaryTwoDept[0].ismainuser=='9'){
+                                    vm.mainDocBudgetaryTwo = vm.budgetaryTwoDept[0];
+                                    vm.assistDocBudgetaryTwo={};
+                                    vm.assistDocBudgetaryTwo.disSum = 0;
+                                    vm.assistDocBudgetaryTwo.declarevalueSum = 0;
+                                    vm.assistDocBudgetaryTwo.authorizevalueSum = 0;
+                                    vm.assistDocBudgetaryTwo.extravalueSum = 0;
+                                    vm.assistDocBudgetaryTwo.extraRateSum = 0;
+                                }else if(vm.budgetaryTwoDept[0].ismainuser=='0'){
+                                    vm.assistDocBudgetaryTwo = vm.budgetaryTwoDept[0];
+                                    vm.mainDocBudgetaryTwo = {};
+                                    vm.mainDocBudgetaryTwo.disSum = 0;
+                                    vm.mainDocBudgetaryTwo.declarevalueSum = 0;
+                                    vm.mainDocBudgetaryTwo.authorizevalueSum = 0;
+                                    vm.mainDocBudgetaryTwo.extravalueSum = 0;
+                                    vm.mainDocBudgetaryTwo.extraRateSum = 0;
+                                }
+                            }
+                        }else{
+                            vm.mainDocBudgetaryTwo = {};
+                            vm.mainDocBudgetaryTwo.disSum = 0;
+                            vm.assistDocBudgetaryTwo={};
+                            vm.assistDocBudgetaryTwo.disSum = 0;
+                        }
+
+                        if(vm.evaluateOneDeptInfo != undefined && vm.evaluateOneDeptInfo.length > 0){
+                            if(vm.evaluateOneDeptInfo.length ==2){
+                                vm.assistDocOneDeptInfo = vm.evaluateOneDeptInfo[0];
+                                vm.mainDocDeptInfo= vm.evaluateOneDeptInfo[1];
+                            }else{
+                                if(vm.evaluateOneDeptInfo[0].ismainuser=='9'){
+                                    vm.mainDocDeptInfo = vm.evaluateOneDeptInfo[0];
+                                    vm.assistDocOneDeptInfo={};
+                                    vm.assistDocOneDeptInfo.disSum = 0;
+                                    vm.assistDocOneDeptInfo.declarevalueSum = 0;
+                                    vm.assistDocOneDeptInfo.authorizevalueSum = 0;
+                                    vm.assistDocOneDeptInfo.extravalueSum = 0;
+                                    vm.assistDocOneDeptInfo.extraRateSum = 0;
+                                }else if(vm.evaluateOneDeptInfo[0].ismainuser=='0'){
+                                    vm.assistDocOneDeptInfo = vm.evaluateOneDeptInfo[0];
+                                    vm.mainDocDeptInfo = {};
+                                    vm.mainDocDeptInfo.disSum = 0;
+                                    vm.mainDocDeptInfo.declarevalueSum = 0;
+                                    vm.mainDocDeptInfo.authorizevalueSum = 0;
+                                    vm.mainDocDeptInfo.extravalueSum = 0;
+                                    vm.mainDocDeptInfo.extraRateSum = 0;
+                                }
+                            }
+                        }else{
+                            vm.mainDocDeptInfo = {};
+                            vm.mainDocDeptInfo.disSum = 0;
+                            vm.assistDocOneDeptInfo={};
+                            vm.assistDocOneDeptInfo.disSum = 0;
+                        }
+
                     }else{
-                        vm.mainDoc = {};
-                        vm.assistDoc={};
+                        vm.achievementSumList = data.reObj.achievementSumList;
+                        if(vm.achievementSumList.length > 0){
+                            if(vm.achievementSumList.length ==2){
+                                vm.assistDoc = vm.achievementSumList[0];
+                                vm.mainDoc = vm.achievementSumList[1];
+                            }else{
+                                if(vm.achievementSumList[0].ismainuser=='9'){
+                                    vm.mainDoc = vm.achievementSumList[0];
+                                    vm.assistDoc={};
+                                    vm.assistDoc.disSum = 0;
+                                    vm.assistDoc.declarevalueSum = 0;
+                                    vm.assistDoc.authorizevalueSum = 0;
+                                    vm.assistDoc.extravalueSum = 0;
+                                    vm.assistDoc.extraRateSum = 0;
+                                }else if(vm.achievementSumList[0].ismainuser=='0'){
+                                    vm.assistDoc = vm.achievementSumList[0];
+                                    vm.mainDoc = {};
+                                    vm.mainDoc.disSum = 0;
+                                    vm.mainDoc.declarevalueSum = 0;
+                                    vm.mainDoc.authorizevalueSum = 0;
+                                    vm.mainDoc.extravalueSum = 0;
+                                    vm.mainDoc.extraRateSum = 0;
+                                }
+                            }
+                        }else{
+                            vm.mainDoc = {};
+                            vm.assistDoc={};
+                        }
+                        vm.achievementMainList =  data.reObj.achievementMainList;
+                        vm.achievementAssistList =  data.reObj.achievementAssistList;
                     }
-                    vm.achievementMainList =  data.reObj.achievementMainList;
-                    vm.achievementAssistList =  data.reObj.achievementAssistList;
+
                     vm.level = data.reObj.level;
                     vm.orgDeptList = data.reObj.orgDeptList;
                     if(vm.level == 0){
@@ -109,36 +300,226 @@
             }
             achievementSvc.achievementSum(vm,function (data) {
                 if(data.flag || data.reCode == 'ok'){
-                    vm.achievementSumList = data.reObj.achievementSumList;
-                    if(vm.achievementSumList.length > 0){
-                        if(vm.achievementSumList.length ==2){
-                            vm.assistDoc = vm.achievementSumList[0];
-                            vm.mainDoc = vm.achievementSumList[1];
-                        }else {
-                            if (vm.achievementSumList[0].ismainuser == '9') {
-                                vm.mainDoc = vm.achievementSumList[0];
-                                vm.assistDoc = {};
-                                vm.assistDoc.disSum = 0;
-                                vm.assistDoc.declarevalueSum = 0;
-                                vm.assistDoc.authorizevalueSum = 0;
-                                vm.assistDoc.extravalueSum = 0;
-                                vm.assistDoc.extraRateSum = 0;
-                            } else if (vm.achievementSumList[0].ismainuser == '0') {
-                                vm.assistDoc = vm.achievementSumList[0];
-                                vm.mainDoc = {};
-                                vm.mainDoc.disSum = 0;
-                                vm.mainDoc.declarevalueSum = 0;
-                                vm.mainDoc.authorizevalueSum = 0;
-                                vm.mainDoc.extravalueSum = 0;
-                                vm.mainDoc.extraRateSum = 0;
+                    vm.isLeader = data.reObj.isLeader;
+                    if(vm.isLeader == '1'){
+                        vm.comprehensiveDept = data.reObj.综合部;
+                        vm.evaluateOneDept = data.reObj.评估一部;
+                        vm.evaluateTwoDept = data.reObj.评估二部;
+                        vm.budgetaryOneDept = data.reObj.概算一部;
+                        vm.budgetaryTwoDept = data.reObj.概算二部;
+                        vm.evaluateOneDeptInfo = data.reObj.评估一部信息化组;
+                        if(vm.comprehensiveDept != undefined && vm.comprehensiveDept.length > 0){
+                            if(vm.comprehensiveDept.length ==2){
+                                vm.assistDocComprehensive = vm.comprehensiveDept[0];
+                                vm.mainDocComprehensive = vm.comprehensiveDept[1];
+                            }else{
+                                if(vm.comprehensiveDept[0].ismainuser=='9'){
+                                    vm.mainDocComprehensive = vm.comprehensiveDept[0];
+                                    vm.assistDocComprehensive={};
+                                    vm.assistDocComprehensive.disSum = 0;
+                                    vm.assistDocComprehensive.declarevalueSum = 0;
+                                    vm.assistDocComprehensive.authorizevalueSum = 0;
+                                    vm.assistDocComprehensive.extravalueSum = 0;
+                                    vm.assistDocComprehensive.extraRateSum = 0;
+                                }else if(vm.comprehensiveDept[0].ismainuser=='0'){
+                                    vm.assistDocComprehensive = vm.comprehensiveDept[0];
+                                    vm.mainDocComprehensive = {};
+                                    vm.mainDocComprehensive.disSum = 0;
+                                    vm.mainDocComprehensive.declarevalueSum = 0;
+                                    vm.mainDocComprehensive.authorizevalueSum = 0;
+                                    vm.mainDocComprehensive.extravalueSum = 0;
+                                    vm.mainDocComprehensive.extraRateSum = 0;
+                                }
                             }
+                        }else{
+                            vm.mainDocComprehensive = {};
+                            vm.mainDocComprehensive.disSum = 0;
+                            vm.assistDocComprehensive={};
+                            vm.assistDocComprehensive.disSum = 0;
                         }
+
+                        if(vm.evaluateOneDept != undefined && vm.evaluateOneDept.length > 0){
+                            if(vm.evaluateOneDept.length ==2){
+                                vm.assistDocEvaluateOne = vm.evaluateOneDept[0];
+                                vm.mainDocEvaluateOne= vm.evaluateOneDept[1];
+                            }else{
+                                if(vm.evaluateOneDept[0].ismainuser=='9'){
+                                    vm.mainDocEvaluateOne = vm.evaluateOneDept[0];
+                                    vm.assistDocEvaluateOne={};
+                                    vm.assistDocEvaluateOne.disSum = 0;
+                                    vm.assistDocEvaluateOne.declarevalueSum = 0;
+                                    vm.assistDocEvaluateOne.authorizevalueSum = 0;
+                                    vm.assistDocEvaluateOne.extravalueSum = 0;
+                                    vm.assistDocEvaluateOne.extraRateSum = 0;
+                                }else if(vm.evaluateOneDept[0].ismainuser=='0'){
+                                    vm.assistDocEvaluateOne = vm.evaluateOneDept[0];
+                                    vm.mainDocEvaluateOne = {};
+                                    vm.mainDocEvaluateOne.disSum = 0;
+                                    vm.mainDocEvaluateOne.declarevalueSum = 0;
+                                    vm.mainDocEvaluateOne.authorizevalueSum = 0;
+                                    vm.mainDocEvaluateOne.extravalueSum = 0;
+                                    vm.mainDocEvaluateOne.extraRateSum = 0;
+                                }
+                            }
+                        }else{
+                            vm.mainDocEvaluateOne = {};
+                            vm.mainDocEvaluateOne.disSum = 0;
+                            vm.assistDocEvaluateOne={};
+                            vm.assistDocEvaluateOne.disSum = 0
+                        }
+
+                        if(vm.evaluateTwoDept != undefined && vm.evaluateTwoDept.length > 0){
+                            if(vm.evaluateTwoDept.length ==2){
+                                vm.assistDocEvaluateTwo = vm.evaluateTwoDept[0];
+                                vm.mainDocEvaluateTwo= vm.evaluateTwoDept[1];
+                            }else{
+                                if(vm.evaluateTwoDept[0].ismainuser=='9'){
+                                    vm.mainDocEvaluateTwo = vm.evaluateTwoDept[0];
+                                    vm.assistDocEvaluateTwo={};
+                                    vm.assistDocEvaluateTwo.disSum = 0;
+                                    vm.assistDocEvaluateTwo.declarevalueSum = 0;
+                                    vm.assistDocEvaluateTwo.authorizevalueSum = 0;
+                                    vm.assistDocEvaluateTwo.extravalueSum = 0;
+                                    vm.assistDocEvaluateTwo.extraRateSum = 0;
+                                }else if(vm.evaluateTwoDept[0].ismainuser=='0'){
+                                    vm.assistDocEvaluateTwo = vm.evaluateTwoDept[0];
+                                    vm.mainDocEvaluateTwo = {};
+                                    vm.mainDocEvaluateTwo.disSum = 0;
+                                    vm.mainDocEvaluateTwo.declarevalueSum = 0;
+                                    vm.mainDocEvaluateTwo.authorizevalueSum = 0;
+                                    vm.mainDocEvaluateTwo.extravalueSum = 0;
+                                    vm.mainDocEvaluateTwo.extraRateSum = 0;
+                                }
+                            }
+                        }else{
+                            vm.mainDocEvaluateTwo = {};
+                            vm.mainDocEvaluateTwo.disSum = 0;
+                            vm.assistDocEvaluateTwo={};
+                            vm.assistDocEvaluateTwo.disSum = 0;
+                        }
+
+                        if(vm.budgetaryOneDept != undefined && vm.budgetaryOneDept.length > 0){
+                            if(vm.budgetaryOneDept.length ==2){
+                                vm.assistDocBudgetaryOne = vm.budgetaryOneDept[0];
+                                vm.mainDocBudgetaryOne= vm.budgetaryOneDept[1];
+                            }else{
+                                if(vm.budgetaryOneDept[0].ismainuser=='9'){
+                                    vm.mainDocBudgetaryOne = vm.budgetaryOneDept[0];
+                                    vm.assistDocBudgetaryOne={};
+                                    vm.assistDocBudgetaryOne.disSum = 0;
+                                    vm.assistDocBudgetaryOne.declarevalueSum = 0;
+                                    vm.assistDocBudgetaryOne.authorizevalueSum = 0;
+                                    vm.assistDocBudgetaryOne.extravalueSum = 0;
+                                    vm.assistDocBudgetaryOne.extraRateSum = 0;
+                                }else if(vm.budgetaryOneDept[0].ismainuser=='0'){
+                                    vm.assistDocBudgetaryOne = vm.budgetaryOneDept[0];
+                                    vm.mainDocBudgetaryOne = {};
+                                    vm.mainDocBudgetaryOne.disSum = 0;
+                                    vm.mainDocBudgetaryOne.declarevalueSum = 0;
+                                    vm.mainDocBudgetaryOne.authorizevalueSum = 0;
+                                    vm.mainDocBudgetaryOne.extravalueSum = 0;
+                                    vm.mainDocBudgetaryOne.extraRateSum = 0;
+                                }
+                            }
+                        }else{
+                            vm.mainDocBudgetaryOne = {};
+                            vm.mainDocBudgetaryOne.disSum = 0;
+                            vm.assistDocBudgetaryOne={};
+                            vm.assistDocBudgetaryOne.disSum = 0;
+                        }
+
+                        if(vm.budgetaryTwoDept != undefined && vm.budgetaryTwoDept.length > 0){
+                            if(vm.budgetaryTwoDept.length ==2){
+                                vm.assistDocBudgetaryTwo = vm.budgetaryTwoDept[0];
+                                vm.mainDocBudgetaryTwo = vm.budgetaryTwoDept[1];
+                            }else{
+                                if(vm.budgetaryTwoDept[0].ismainuser=='9'){
+                                    vm.mainDocBudgetaryTwo = vm.budgetaryTwoDept[0];
+                                    vm.assistDocBudgetaryTwo={};
+                                    vm.assistDocBudgetaryTwo.disSum = 0;
+                                    vm.assistDocBudgetaryTwo.declarevalueSum = 0;
+                                    vm.assistDocBudgetaryTwo.authorizevalueSum = 0;
+                                    vm.assistDocBudgetaryTwo.extravalueSum = 0;
+                                    vm.assistDocBudgetaryTwo.extraRateSum = 0;
+                                }else if(vm.budgetaryTwoDept[0].ismainuser=='0'){
+                                    vm.assistDocBudgetaryTwo = vm.budgetaryTwoDept[0];
+                                    vm.mainDocBudgetaryTwo = {};
+                                    vm.mainDocBudgetaryTwo.disSum = 0;
+                                    vm.mainDocBudgetaryTwo.declarevalueSum = 0;
+                                    vm.mainDocBudgetaryTwo.authorizevalueSum = 0;
+                                    vm.mainDocBudgetaryTwo.extravalueSum = 0;
+                                    vm.mainDocBudgetaryTwo.extraRateSum = 0;
+                                }
+                            }
+                        }else{
+                            vm.mainDocBudgetaryTwo = {};
+                            vm.mainDocBudgetaryTwo.disSum = 0;
+                            vm.assistDocBudgetaryTwo={};
+                            vm.assistDocBudgetaryTwo.disSum = 0;
+                        }
+
+                        if(vm.evaluateOneDeptInfo != undefined && vm.evaluateOneDeptInfo.length > 0){
+                            if(vm.evaluateOneDeptInfo.length ==2){
+                                vm.assistDocOneDeptInfo = vm.evaluateOneDeptInfo[0];
+                                vm.mainDocDeptInfo= vm.evaluateOneDeptInfo[1];
+                            }else{
+                                if(vm.evaluateOneDeptInfo[0].ismainuser=='9'){
+                                    vm.mainDocDeptInfo = vm.evaluateOneDeptInfo[0];
+                                    vm.assistDocOneDeptInfo={};
+                                    vm.assistDocOneDeptInfo.disSum = 0;
+                                    vm.assistDocOneDeptInfo.declarevalueSum = 0;
+                                    vm.assistDocOneDeptInfo.authorizevalueSum = 0;
+                                    vm.assistDocOneDeptInfo.extravalueSum = 0;
+                                    vm.assistDocOneDeptInfo.extraRateSum = 0;
+                                }else if(vm.evaluateOneDeptInfo[0].ismainuser=='0'){
+                                    vm.assistDocOneDeptInfo = vm.evaluateOneDeptInfo[0];
+                                    vm.mainDocDeptInfo = {};
+                                    vm.mainDocDeptInfo.disSum = 0;
+                                    vm.mainDocDeptInfo.declarevalueSum = 0;
+                                    vm.mainDocDeptInfo.authorizevalueSum = 0;
+                                    vm.mainDocDeptInfo.extravalueSum = 0;
+                                    vm.mainDocDeptInfo.extraRateSum = 0;
+                                }
+                            }
+                        }else{
+                            vm.mainDocDeptInfo = {};
+                            vm.mainDocDeptInfo.disSum = 0;
+                            vm.assistDocOneDeptInfo={};
+                            vm.assistDocOneDeptInfo.disSum = 0;
+                        }
+
                     }else{
-                        vm.mainDoc = {};
-                        vm.assistDoc={};
+                        vm.achievementSumList = data.reObj.achievementSumList;
+                        if(vm.achievementSumList.length > 0){
+                            if(vm.achievementSumList.length ==2){
+                                vm.assistDoc = vm.achievementSumList[0];
+                                vm.mainDoc = vm.achievementSumList[1];
+                            }else {
+                                if (vm.achievementSumList[0].ismainuser == '9') {
+                                    vm.mainDoc = vm.achievementSumList[0];
+                                    vm.assistDoc = {};
+                                    vm.assistDoc.disSum = 0;
+                                    vm.assistDoc.declarevalueSum = 0;
+                                    vm.assistDoc.authorizevalueSum = 0;
+                                    vm.assistDoc.extravalueSum = 0;
+                                    vm.assistDoc.extraRateSum = 0;
+                                } else if (vm.achievementSumList[0].ismainuser == '0') {
+                                    vm.assistDoc = vm.achievementSumList[0];
+                                    vm.mainDoc = {};
+                                    vm.mainDoc.disSum = 0;
+                                    vm.mainDoc.declarevalueSum = 0;
+                                    vm.mainDoc.authorizevalueSum = 0;
+                                    vm.mainDoc.extravalueSum = 0;
+                                    vm.mainDoc.extraRateSum = 0;
+                                }
+                            }
+                        }else{
+                            vm.mainDoc = {};
+                            vm.assistDoc={};
+                        }
+                        vm.achievementMainList =  data.reObj.achievementMainList;
+                        vm.achievementAssistList =  data.reObj.achievementAssistList;
                     }
-                    vm.achievementMainList =  data.reObj.achievementMainList;
-                    vm.achievementAssistList =  data.reObj.achievementAssistList;
                 }
             })
         }
@@ -337,7 +718,7 @@
                 deptNamesArr.push(objR.attr("tit"));
             });
             vm.model.deptIds = ids.join(",");
-            vm.model.deptNames = deptNamesArr.join("、");
+            vm.model.deptNames = deptNamesArr.join(",");
             achievementSvc.achievementDeptDetail(vm,function (data) {
                 if(data.flag || data.reCode == 'ok'){
                     vm.achievementDeptDetailList = data.reObj.achievementDeptDetailList;
@@ -361,8 +742,12 @@
             //初始化部门工作业绩
             var orgCheck = $("input[name='orgDept']:checked");
             var orgIds = [];
+            var deptNamesArr = [];
             $.each(orgCheck, function (i, obj) {
                 orgIds.push(obj.value);
+                var objR = $(obj);
+                deptNamesArr.push(objR.attr("tit"));
+
             });
             if(orgIds.length == 0){
                 var checkbox = $event.target;
@@ -371,20 +756,210 @@
                 return;
             }
             vm.model.deptIds = orgIds.join(",");
+            vm.model.deptNames = deptNamesArr.join(",");
             vm.model.initFlag = "1";
             achievementSvc.achievementSum(vm,function (data) {
                 if(data.flag || data.reCode == 'ok'){
-                    vm.achievementSumList = data.reObj.achievementSumList;
-                    if(vm.achievementSumList.length > 0){
-                        vm.assistDoc = vm.achievementSumList[0];
-                        vm.mainDoc = vm.achievementSumList[1];
-                    }else{
-                        vm.assistDoc = {};
-                        vm.mainDoc = {};
+                    if(vm.isLeader == '1'){
+                        vm.comprehensiveDept = data.reObj.综合部;
+                        vm.evaluateOneDept = data.reObj.评估一部;
+                        vm.evaluateTwoDept = data.reObj.评估二部;
+                        vm.budgetaryOneDept = data.reObj.概算一部;
+                        vm.budgetaryTwoDept = data.reObj.概算二部;
+                        vm.evaluateOneDeptInfo = data.reObj.评估一部信息化组;
+                        if(vm.comprehensiveDept != undefined && vm.comprehensiveDept.length > 0){
+                            if(vm.comprehensiveDept.length ==2){
+                                vm.assistDocComprehensive = vm.comprehensiveDept[0];
+                                vm.mainDocComprehensive = vm.comprehensiveDept[1];
+                            }else{
+                                if(vm.comprehensiveDept[0].ismainuser=='9'){
+                                    vm.mainDocComprehensive = vm.comprehensiveDept[0];
+                                    vm.assistDocComprehensive={};
+                                    vm.assistDocComprehensive.disSum = 0;
+                                    vm.assistDocComprehensive.declarevalueSum = 0;
+                                    vm.assistDocComprehensive.authorizevalueSum = 0;
+                                    vm.assistDocComprehensive.extravalueSum = 0;
+                                    vm.assistDocComprehensive.extraRateSum = 0;
+                                }else if(vm.comprehensiveDept[0].ismainuser=='0'){
+                                    vm.assistDocComprehensive = vm.comprehensiveDept[0];
+                                    vm.mainDocComprehensive = {};
+                                    vm.mainDocComprehensive.disSum = 0;
+                                    vm.mainDocComprehensive.declarevalueSum = 0;
+                                    vm.mainDocComprehensive.authorizevalueSum = 0;
+                                    vm.mainDocComprehensive.extravalueSum = 0;
+                                    vm.mainDocComprehensive.extraRateSum = 0;
+                                }
+                            }
+                        }else{
+                            vm.mainDocComprehensive = {};
+                            vm.mainDocComprehensive.disSum = 0;
+                            vm.assistDocComprehensive={};
+                            vm.assistDocComprehensive.disSum = 0;
+                        }
 
+                        if(vm.evaluateOneDept != undefined && vm.evaluateOneDept.length > 0){
+                            if(vm.evaluateOneDept.length ==2){
+                                vm.assistDocEvaluateOne = vm.evaluateOneDept[0];
+                                vm.mainDocEvaluateOne= vm.evaluateOneDept[1];
+                            }else{
+                                if(vm.evaluateOneDept[0].ismainuser=='9'){
+                                    vm.mainDocEvaluateOne = vm.evaluateOneDept[0];
+                                    vm.assistDocEvaluateOne={};
+                                    vm.assistDocEvaluateOne.disSum = 0;
+                                    vm.assistDocEvaluateOne.declarevalueSum = 0;
+                                    vm.assistDocEvaluateOne.authorizevalueSum = 0;
+                                    vm.assistDocEvaluateOne.extravalueSum = 0;
+                                    vm.assistDocEvaluateOne.extraRateSum = 0;
+                                }else if(vm.evaluateOneDept[0].ismainuser=='0'){
+                                    vm.assistDocEvaluateOne = vm.evaluateOneDept[0];
+                                    vm.mainDocEvaluateOne = {};
+                                    vm.mainDocEvaluateOne.disSum = 0;
+                                    vm.mainDocEvaluateOne.declarevalueSum = 0;
+                                    vm.mainDocEvaluateOne.authorizevalueSum = 0;
+                                    vm.mainDocEvaluateOne.extravalueSum = 0;
+                                    vm.mainDocEvaluateOne.extraRateSum = 0;
+                                }
+                            }
+                        }else{
+                            vm.mainDocEvaluateOne = {};
+                            vm.mainDocEvaluateOne.disSum = 0;
+                            vm.assistDocEvaluateOne={};
+                            vm.assistDocEvaluateOne.disSum = 0
+                        }
+
+                        if(vm.evaluateTwoDept != undefined && vm.evaluateTwoDept.length > 0){
+                            if(vm.evaluateTwoDept.length ==2){
+                                vm.assistDocEvaluateTwo = vm.evaluateTwoDept[0];
+                                vm.mainDocEvaluateTwo= vm.evaluateTwoDept[1];
+                            }else{
+                                if(vm.evaluateTwoDept[0].ismainuser=='9'){
+                                    vm.mainDocEvaluateTwo = vm.evaluateTwoDept[0];
+                                    vm.assistDocEvaluateTwo={};
+                                    vm.assistDocEvaluateTwo.disSum = 0;
+                                    vm.assistDocEvaluateTwo.declarevalueSum = 0;
+                                    vm.assistDocEvaluateTwo.authorizevalueSum = 0;
+                                    vm.assistDocEvaluateTwo.extravalueSum = 0;
+                                    vm.assistDocEvaluateTwo.extraRateSum = 0;
+                                }else if(vm.evaluateTwoDept[0].ismainuser=='0'){
+                                    vm.assistDocEvaluateTwo = vm.evaluateTwoDept[0];
+                                    vm.mainDocEvaluateTwo = {};
+                                    vm.mainDocEvaluateTwo.disSum = 0;
+                                    vm.mainDocEvaluateTwo.declarevalueSum = 0;
+                                    vm.mainDocEvaluateTwo.authorizevalueSum = 0;
+                                    vm.mainDocEvaluateTwo.extravalueSum = 0;
+                                    vm.mainDocEvaluateTwo.extraRateSum = 0;
+                                }
+                            }
+                        }else{
+                            vm.mainDocEvaluateTwo = {};
+                            vm.mainDocEvaluateTwo.disSum = 0;
+                            vm.assistDocEvaluateTwo={};
+                            vm.assistDocEvaluateTwo.disSum = 0;
+                        }
+
+                        if(vm.budgetaryOneDept != undefined && vm.budgetaryOneDept.length > 0){
+                            if(vm.budgetaryOneDept.length ==2){
+                                vm.assistDocBudgetaryOne = vm.budgetaryOneDept[0];
+                                vm.mainDocBudgetaryOne= vm.budgetaryOneDept[1];
+                            }else{
+                                if(vm.budgetaryOneDept[0].ismainuser=='9'){
+                                    vm.mainDocBudgetaryOne = vm.budgetaryOneDept[0];
+                                    vm.assistDocBudgetaryOne={};
+                                    vm.assistDocBudgetaryOne.disSum = 0;
+                                    vm.assistDocBudgetaryOne.declarevalueSum = 0;
+                                    vm.assistDocBudgetaryOne.authorizevalueSum = 0;
+                                    vm.assistDocBudgetaryOne.extravalueSum = 0;
+                                    vm.assistDocBudgetaryOne.extraRateSum = 0;
+                                }else if(vm.budgetaryOneDept[0].ismainuser=='0'){
+                                    vm.assistDocBudgetaryOne = vm.budgetaryOneDept[0];
+                                    vm.mainDocBudgetaryOne = {};
+                                    vm.mainDocBudgetaryOne.disSum = 0;
+                                    vm.mainDocBudgetaryOne.declarevalueSum = 0;
+                                    vm.mainDocBudgetaryOne.authorizevalueSum = 0;
+                                    vm.mainDocBudgetaryOne.extravalueSum = 0;
+                                    vm.mainDocBudgetaryOne.extraRateSum = 0;
+                                }
+                            }
+                        }else{
+                            vm.mainDocBudgetaryOne = {};
+                            vm.mainDocBudgetaryOne.disSum = 0;
+                            vm.assistDocBudgetaryOne={};
+                            vm.assistDocBudgetaryOne.disSum = 0;
+                        }
+
+                        if(vm.budgetaryTwoDept != undefined && vm.budgetaryTwoDept.length > 0){
+                            if(vm.budgetaryTwoDept.length ==2){
+                                vm.assistDocBudgetaryTwo = vm.budgetaryTwoDept[0];
+                                vm.mainDocBudgetaryTwo = vm.budgetaryTwoDept[1];
+                            }else{
+                                if(vm.budgetaryTwoDept[0].ismainuser=='9'){
+                                    vm.mainDocBudgetaryTwo = vm.budgetaryTwoDept[0];
+                                    vm.assistDocBudgetaryTwo={};
+                                    vm.assistDocBudgetaryTwo.disSum = 0;
+                                    vm.assistDocBudgetaryTwo.declarevalueSum = 0;
+                                    vm.assistDocBudgetaryTwo.authorizevalueSum = 0;
+                                    vm.assistDocBudgetaryTwo.extravalueSum = 0;
+                                    vm.assistDocBudgetaryTwo.extraRateSum = 0;
+                                }else if(vm.budgetaryTwoDept[0].ismainuser=='0'){
+                                    vm.assistDocBudgetaryTwo = vm.budgetaryTwoDept[0];
+                                    vm.mainDocBudgetaryTwo = {};
+                                    vm.mainDocBudgetaryTwo.disSum = 0;
+                                    vm.mainDocBudgetaryTwo.declarevalueSum = 0;
+                                    vm.mainDocBudgetaryTwo.authorizevalueSum = 0;
+                                    vm.mainDocBudgetaryTwo.extravalueSum = 0;
+                                    vm.mainDocBudgetaryTwo.extraRateSum = 0;
+                                }
+                            }
+                        }else{
+                            vm.mainDocBudgetaryTwo = {};
+                            vm.mainDocBudgetaryTwo.disSum = 0;
+                            vm.assistDocBudgetaryTwo={};
+                            vm.assistDocBudgetaryTwo.disSum = 0;
+                        }
+
+                        if(vm.evaluateOneDeptInfo != undefined && vm.evaluateOneDeptInfo.length > 0){
+                            if(vm.evaluateOneDeptInfo.length ==2){
+                                vm.assistDocOneDeptInfo = vm.evaluateOneDeptInfo[0];
+                                vm.mainDocDeptInfo= vm.evaluateOneDeptInfo[1];
+                            }else{
+                                if(vm.evaluateOneDeptInfo[0].ismainuser=='9'){
+                                    vm.mainDocDeptInfo = vm.evaluateOneDeptInfo[0];
+                                    vm.assistDocOneDeptInfo={};
+                                    vm.assistDocOneDeptInfo.disSum = 0;
+                                    vm.assistDocOneDeptInfo.declarevalueSum = 0;
+                                    vm.assistDocOneDeptInfo.authorizevalueSum = 0;
+                                    vm.assistDocOneDeptInfo.extravalueSum = 0;
+                                    vm.assistDocOneDeptInfo.extraRateSum = 0;
+                                }else if(vm.evaluateOneDeptInfo[0].ismainuser=='0'){
+                                    vm.assistDocOneDeptInfo = vm.evaluateOneDeptInfo[0];
+                                    vm.mainDocDeptInfo = {};
+                                    vm.mainDocDeptInfo.disSum = 0;
+                                    vm.mainDocDeptInfo.declarevalueSum = 0;
+                                    vm.mainDocDeptInfo.authorizevalueSum = 0;
+                                    vm.mainDocDeptInfo.extravalueSum = 0;
+                                    vm.mainDocDeptInfo.extraRateSum = 0;
+                                }
+                            }
+                        }else{
+                            vm.mainDocDeptInfo = {};
+                            vm.mainDocDeptInfo.disSum = 0;
+                            vm.assistDocOneDeptInfo={};
+                            vm.assistDocOneDeptInfo.disSum = 0;
+                        }
+
+                    }else{
+                        vm.achievementSumList = data.reObj.achievementSumList;
+                        if(vm.achievementSumList.length > 0){
+                            vm.assistDoc = vm.achievementSumList[0];
+                            vm.mainDoc = vm.achievementSumList[1];
+                        }else{
+                            vm.assistDoc = {};
+                            vm.mainDoc = {};
+
+                        }
+                        vm.achievementMainList =  data.reObj.achievementMainList;
+                        vm.achievementAssistList =  data.reObj.achievementAssistList;
                     }
-                    vm.achievementMainList =  data.reObj.achievementMainList;
-                    vm.achievementAssistList =  data.reObj.achievementAssistList;
                 }
             })
         }
@@ -402,7 +977,6 @@
         vm.exportDeptAchievementDetail = function () {
             //设置部门名字
             achievementSvc.exportDeptAchievementDetail(vm);
-
 
         }
 
