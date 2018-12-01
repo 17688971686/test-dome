@@ -64,7 +64,9 @@
                 <w:body>
                     <w:p>
                         <w:pPr>
+                            <w:spacing w:before="120" w:beforeLines="50" w:line="360" w:lineRule="auto"/>
                             <w:jc w:val="center"/>
+                            <w:outlineLvl w:val="1"/>
                             <w:rPr>
                                 <w:rFonts w:hint="eastAsia" w:ascii="黑体" w:hAnsi="黑体" w:eastAsia="黑体" w:cs="黑体"/>
                                 <w:b/>
@@ -74,8 +76,8 @@
                                 <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                             </w:rPr>
                         </w:pPr>
-                        <w:bookmarkStart w:id="0" w:name="_GoBack"/>
-                        <w:bookmarkEnd w:id="0"/>
+                        <#--<w:bookmarkStart w:id="0" w:name="_GoBack"/>
+                        <w:bookmarkEnd w:id="0"/>-->
                         <w:r>
                             <w:rPr>
                                 <w:rFonts w:hint="eastAsia" w:ascii="黑体" w:hAnsi="黑体" w:eastAsia="黑体" w:cs="黑体"/>
@@ -90,11 +92,9 @@
                     </w:p>
                     <w:tbl>
                         <w:tblPr>
-                            <w:tblStyle w:val="5"/>
-                            <w:tblpPr w:leftFromText="180" w:rightFromText="180" w:vertAnchor="page" w:horzAnchor="page"
-                                      w:tblpX="1728" w:tblpY="2478"/>
-                            <w:tblOverlap w:val="never"/>
-                            <w:tblW w:w="8504" w:type="dxa"/>
+                            <w:tblStyle w:val="42"/>
+                            <w:tblW w:w="10295" w:type="dxa"/>
+                            <w:jc w:val="center"/>
                             <w:tblInd w:w="0" w:type="dxa"/>
                             <w:tblBorders>
                                 <w:top w:val="single" w:color="auto" w:sz="4" w:space="0"/>
@@ -294,22 +294,6 @@
                             </w:tc>
                         </w:tr>
                     </w:tbl>
-                    <w:p>
-                        <w:pPr>
-                            <w:rPr>
-                                <w:rFonts w:hint="eastAsia"/>
-                                <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                            </w:rPr>
-                        </w:pPr>
-                    </w:p>
-                    <w:p>
-                        <w:pPr>
-                            <w:rPr>
-                                <w:rFonts w:hint="eastAsia"/>
-                                <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                            </w:rPr>
-                        </w:pPr>
-                    </w:p>
                     <w:p>
                         <w:pPr>
                             <w:rPr>
