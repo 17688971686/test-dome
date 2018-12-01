@@ -126,6 +126,30 @@ public class HqlBuilder {
 		return this;
 	}
 
+	/**
+	 * 转成jdbc值
+	 *
+	 * @return
+	 */
+	public Object[] getJdbcValue() {
+		List<Object> paramsValue = getValues();
+		if (Validate.isList(paramsValue)) {
+			int paramsL = paramsValue.size();
+			Object[] valueArr = new Object[paramsL];
+			for (int i = 0; i < paramsL; i++) {
+				Object value =  paramsValue.get(i);
+				if( value instanceof String ) {
+					if(Validate.isString(value)){
+						value = StringUtil.sqlInjectionFilter(value.toString());
+					}
+				}
+				valueArr[i] = value;
+			}
+			return valueArr;
+		}
+		return null;
+	}
+
 	public List<String> getParams() {
 		if (params == null) {
 			params = new ArrayList<String>();

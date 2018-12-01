@@ -14,6 +14,7 @@ import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
 import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
@@ -71,7 +72,7 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         hqlBuilder.append(" where " + idPropertyName + " = :id ");
         hqlBuilder.setParam("id", idValue);
         Query<T> q = this.getCurrentSession().createQuery(hqlBuilder.getHqlString(), getPersistentClass());
-        List<T> resultList = setParamsToQuery2(q, hqlBuilder).list();
+        List<T> resultList = setParamsToQuery(q, hqlBuilder).list();
         if (Validate.isList(resultList)) {
             return resultList.get(0);
         }
@@ -94,7 +95,6 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
             crit.add(c);
         }
         return crit.list();
-
     }
 
     @Override
@@ -173,26 +173,13 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
     @Override
     public List<T> findByHql(HqlBuilder hqlBuilder) {
         Query<T> q = this.getCurrentSession().createQuery(hqlBuilder.getHqlString(), getPersistentClass());
-        return setParamsToQuery2(q, hqlBuilder).list();
+        return setParamsToQuery(q, hqlBuilder).list();
     }
-
-
-    /*@Override
-    public int executeHql(String hql) {
-        Query<?> q = this.getCurrentSession().createQuery(hql);
-        return q.executeUpdate();
-    }*/
-
-    /*@Override
-    public int executeSql(String sql) {
-        NativeQuery<T> q = this.getCurrentSession().createNativeQuery(sql, this.getPersistentClass());
-        return q.executeUpdate();
-    }*/
 
     @Override
     public List<T> findBySql(HqlBuilder hqlBuilder) {
         NativeQuery<T> q = this.getCurrentSession().createNativeQuery(hqlBuilder.getHqlString(), this.getPersistentClass());
-        return setParamsToQuery2(q, hqlBuilder).list();
+        return setParamsToQuery(q, hqlBuilder).list();
     }
 
     /**
@@ -217,27 +204,10 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
     @Override
     public int executeSql(HqlBuilder hqlBuilder) {
         NativeQuery<T> q = this.getCurrentSession().createNativeQuery(hqlBuilder.getHqlString(), this.getPersistentClass());
-        return setParamsToQuery2(q, hqlBuilder).executeUpdate();
+        return setParamsToQuery(q, hqlBuilder).executeUpdate();
     }
 
-    protected Query<?> setParamsToQuery(Query<?> query, HqlBuilder hqlBuilder) {
-        List<String> params = hqlBuilder.getParams();
-        List<Object> values = hqlBuilder.getValues();
-        List<Type> types = hqlBuilder.getTypes();
-        if (Validate.isList(params)) {
-            for (int i = 0, l = params.size(); i < l; i++) {
-                Object value = values.get(i);
-                if (types.get(i) == null) {
-                    query.setParameter(params.get(i), value);
-                } else {
-                    query.setParameter(params.get(i), value, types.get(i));
-                }
-            }
-        }
-        return query;
-    }
-
-    protected Query<T> setParamsToQuery2(Query<T> query, HqlBuilder hqlBuilder) {
+    protected Query setParamsToQuery(Query query, HqlBuilder hqlBuilder) {
         List<String> params = hqlBuilder.getParams();
         List<Object> values = hqlBuilder.getValues();
         List<Type> types = hqlBuilder.getTypes();

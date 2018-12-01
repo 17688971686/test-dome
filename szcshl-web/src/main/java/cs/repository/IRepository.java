@@ -44,9 +44,6 @@ public interface IRepository<T, ID> {
 
     List<T> findByIds(String idPropertyName, String idValue, String orderStr);
 
-   /* int executeHql(String hql);*/
-
-    /* int executeSql(String sql);*/
     int executeHql(HqlBuilder hqlBuilder);
 
     int executeSql(HqlBuilder hqlBuilder);
