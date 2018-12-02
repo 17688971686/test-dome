@@ -2,6 +2,7 @@ package cs.mobile.controller;
 
 import cs.ahelper.MudoleAnnotation;
 import cs.common.ResultMsg;
+import cs.common.utils.Validate;
 import cs.domain.book.BookBuyBusiness;
 import cs.model.PageModelDto;
 import cs.model.book.BookBuyBusinessDto;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
+
+import static cs.common.constants.Constant.ERROR_MSG;
 
 /**
  * Description: 图书采购申请业务信息 控制层
@@ -71,9 +74,13 @@ public class BookBuyAppController {
     @RequiresAuthentication
     //@RequiresPermissions("bookBuyBusiness#saveBooksDetailList#post")
     @RequestMapping(name = "图书详细信息录入", path = "saveBooksDetailList", method = RequestMethod.POST)
-    public @ResponseBody
-    ResultMsg saveBooksDetailList(@RequestBody BookBuyDto[] bookBuyDtoArrary,BookBuyBusiness bookBuyBus){
-       return bookBuyBusinessService.saveBooksDetailList(bookBuyDtoArrary,bookBuyBus);
+    @ResponseBody
+    public ResultMsg saveBooksDetailList(@RequestBody BookBuyDto[] bookBuyDtoArrary,BookBuyBusiness bookBuyBus){
+        ResultMsg resultMsg = bookBuyBusinessService.saveBooksDetailList(bookBuyDtoArrary,bookBuyBus);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
@@ -81,9 +88,11 @@ public class BookBuyAppController {
     @RequestMapping(name = "发起流程", path = "startFlow", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg startFlow(@RequestBody BookBuyDto[] bookBuyDtoArrary,BookBuyBusiness bookBuyBus) {
-        return bookBuyBusinessService.startFlow(bookBuyDtoArrary,bookBuyBus);
+        ResultMsg resultMsg = bookBuyBusinessService.startFlow(bookBuyDtoArrary,bookBuyBus);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
-
-
 
 }

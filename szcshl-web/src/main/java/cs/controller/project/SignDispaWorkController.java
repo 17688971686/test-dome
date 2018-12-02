@@ -44,6 +44,7 @@ import java.util.*;
 import static com.sn.framework.common.StringUtil.GBK;
 import static com.sn.framework.common.StringUtil.ISO_8859_1;
 import static com.sn.framework.common.StringUtil.UTF_8;
+import static cs.common.constants.Constant.ERROR_MSG;
 
 /**
  * 项目详情信息视图控制器
@@ -84,66 +85,94 @@ public class SignDispaWorkController {
     //@RequiresPermissions("signView#unMergeWPSign#post")
     @RequestMapping(name = "待选合并评审项目", path = "unMergeWPSign", method = RequestMethod.POST)
     @ResponseBody
-    public List<SignDispaWork> unMergeWPSign(@RequestParam(required = true) String signId) {
-        return signDispaWorkService.unMergeWPSign(signId);
+    public List<SignDispaWork> unMergeWPSign(@RequestParam String signId) {
+        List<SignDispaWork> signDispaWorkList = signDispaWorkService.unMergeWPSign(signId);
+        if(!Validate.isList(signDispaWorkList)){
+            signDispaWorkList = new ArrayList<>();
+        }
+        return signDispaWorkList;
     }
 
     @RequiresAuthentication
     //@RequiresPermissions("signView#getMergeSignBySignId#post")
     @RequestMapping(name = "获取已选合并评审项目", path = "getMergeSignBySignId", method = RequestMethod.POST)
-    public @ResponseBody
-    List<SignDispaWork> getMergeSignBySignId(@RequestParam(required = true) String signId) {
-        return signDispaWorkService.getMergeWPSignBySignId(signId);
+    @ResponseBody
+    public List<SignDispaWork> getMergeSignBySignId(@RequestParam  String signId) {
+        List<SignDispaWork> signDispaWorkList = signDispaWorkService.getMergeWPSignBySignId(signId);
+        if(!Validate.isList(signDispaWorkList)){
+            signDispaWorkList = new ArrayList<>();
+        }
+        return signDispaWorkList;
     }
 
     @RequiresAuthentication
     //@RequiresPermissions("signView#unMergeDISSign#post")
     @RequestMapping(name = "待选合并发文项目", path = "unMergeDISSign", method = RequestMethod.POST)
     @ResponseBody
-    public List<SignDispaWork> unMergeDISSign(@RequestParam(required = true) String signId) {
-        return signDispaWorkService.unMergeDISSign(signId);
+    public List<SignDispaWork> unMergeDISSign(@RequestParam  String signId) {
+        List<SignDispaWork> signDispaWorkList = signDispaWorkService.unMergeDISSign(signId);
+        if(!Validate.isList(signDispaWorkList)){
+            signDispaWorkList = new ArrayList<>();
+        }
+        return signDispaWorkList;
     }
 
     @RequiresAuthentication
     //@RequiresPermissions("signView#getMergeDISSign#post")
     @RequestMapping(name = "获取已选合并发文项目", path = "getMergeDISSign", method = RequestMethod.POST)
     @ResponseBody
-    public List<SignDispaWork> getMergeDISSign(@RequestParam(required = true) String signId) {
-        return signDispaWorkService.getMergeDISSignBySignId(signId);
+    public List<SignDispaWork> getMergeDISSign(@RequestParam String signId) {
+        List<SignDispaWork> signDispaWorkList = signDispaWorkService.getMergeDISSignBySignId(signId);
+        if(!Validate.isList(signDispaWorkList)){
+            signDispaWorkList = new ArrayList<>();
+        }
+        return signDispaWorkList;
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "保存合并项目", path = "mergeSign", method = RequestMethod.POST)
     @ResponseBody
-    public ResultMsg mergeSign(@RequestParam(required = true) String signId,
-                               @RequestParam(required = true) String mergeIds, @RequestParam(required = true) String mergeType) {
-        return signDispaWorkService.mergeSign(signId, mergeIds, mergeType);
+    public ResultMsg mergeSign(@RequestParam  String signId,@RequestParam String mergeIds, @RequestParam String mergeType) {
+        ResultMsg resultMsg = signDispaWorkService.mergeSign(signId, mergeIds, mergeType);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
     //@RequiresPermissions("signView#cancelMergeSign#post")
     @RequestMapping(name = "解除合并评审发文", path = "cancelMergeSign", method = RequestMethod.POST)
     @ResponseBody
-    public ResultMsg cancelMergeSign(@RequestParam(required = true) String signId, String cancelIds,
-                                     @RequestParam(required = true) String mergeType) {
-        return signDispaWorkService.cancelMergeSign(signId, cancelIds, mergeType);
+    public ResultMsg cancelMergeSign(@RequestParam String signId, String cancelIds, @RequestParam String mergeType) {
+        ResultMsg resultMsg = signDispaWorkService.cancelMergeSign(signId, cancelIds, mergeType);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
     //@RequiresPermissions("signView#deleteAllMerge#post")
     @RequestMapping(name = "删除所有合并项目", path = "deleteAllMerge", method = RequestMethod.POST)
     @ResponseBody
-    public ResultMsg deleteAllMerge(@RequestParam(required = true) String signId,
-                                    @RequestParam(required = true) String mergeType,
-                                    @RequestParam(required = true) String businessId) {
-        return signDispaWorkService.deleteAllMerge(signId, mergeType,businessId);
+    public ResultMsg deleteAllMerge(@RequestParam String signId,@RequestParam String mergeType,@RequestParam String businessId) {
+        ResultMsg resultMsg = signDispaWorkService.deleteAllMerge(signId, mergeType,businessId);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "通过条件查询进行统计分析" , path = "QueryStatistics" , method = RequestMethod.POST)
     @ResponseBody
     public List<SignDispaWork> queryStatistics(@RequestParam String queryData , @RequestParam int page){
-        return signDispaWorkService.queryStatistics(queryData , page);
+        List<SignDispaWork> signDispaWorkList = signDispaWorkService.queryStatistics(queryData , page);
+        if(!Validate.isList(signDispaWorkList)){
+            signDispaWorkList = new ArrayList<>();
+        }
+        return signDispaWorkList;
     }
 
     @RequiresAuthentication
@@ -233,6 +262,9 @@ public class SignDispaWorkController {
     public PageModelDto<SignDispaWork> personMainTasks(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<SignDispaWork> pageModelDto = signDispaWorkService.findMyDoProject(odataObj,true);
+        if(!Validate.isObject(pageModelDto)){
+            pageModelDto = new PageModelDto();
+        }
         return pageModelDto;
     }
 
@@ -242,6 +274,9 @@ public class SignDispaWorkController {
     public PageModelDto<SignDispaWork> personAssistTasks(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<SignDispaWork> pageModelDto = signDispaWorkService.findMyDoProject(odataObj,false);
+        if(!Validate.isObject(pageModelDto)){
+            pageModelDto = new PageModelDto();
+        }
         return pageModelDto;
     }
 
@@ -249,22 +284,33 @@ public class SignDispaWorkController {
     @RequestMapping(name = "通过时间段获取项目信息(按评审阶段)" , path = "findByTime" , method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg findByTime(@RequestParam String startTime , @RequestParam String endTime){
-        return signDispaWorkService.findByTime(startTime , endTime);
+        ResultMsg resultMsg = signDispaWorkService.findByTime(startTime , endTime);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
+
     @RequiresAuthentication
     @RequestMapping(name = "通过时间段获取项目信息(按评审阶段、项目类别)" , path = "findByTypeAndReview" , method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg findByTypeAndReview(@RequestParam String startTime , @RequestParam String endTime){
-        return signDispaWorkService.findByTypeAndReview(startTime , endTime);
+        ResultMsg resultMsg = signDispaWorkService.findByTypeAndReview(startTime , endTime);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "获取员工业绩汇总" , path = "getAchievementSum" , method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg getAchievementSum(@RequestBody AchievementSumDto achievementSumDto){
-        return expertSelectedService.findAchievementSum(achievementSumDto);
-
-       // return null;
+        ResultMsg resultMsg = expertSelectedService.findAchievementSum(achievementSumDto);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
@@ -558,14 +604,17 @@ public class SignDispaWorkController {
     @RequestMapping(name = "获取部门业绩明细" , path = "getAchievementDeptDetail" , method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg getAchievementDeptDetail(@RequestBody AchievementDeptDetailDto achievementSumDto){
-        return expertSelectedService.findDeptAchievementDetail(achievementSumDto);
+        ResultMsg resultMsg = expertSelectedService.findDeptAchievementDetail(achievementSumDto);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
     @RequestMapping(name="项目评审情况汇总(按照申报投资金额)" , path="pieDate" , method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg pieDate(@RequestParam String startTime ,@RequestParam  String endTime){
-
         Date start = DateUtils.converToDate(startTime , "yyyy-MM-dd");
         Date end = DateUtils.converToDate(endTime , "yyyy-MM-dd");
         Integer[][] result = null;
@@ -609,24 +658,29 @@ public class SignDispaWorkController {
         calendar.setTime(now);
         calendar.add(Calendar.MONTH , -6);
         return calendar.getTime();
-
     }
 
     @RequiresAuthentication
     @RequestMapping(name="对秘密项目进行权限限制" , path="findSecretProPermission" , method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg findSecretProPermission(@RequestParam String signId){
-        return signDispaWorkService.findSecretProPermission(signId);
+        ResultMsg resultMsg = signDispaWorkService.findSecretProPermission(signId);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "计算剩余工作日" , path = "admin/countWeekDays" , method = RequestMethod.POST )
     @ResponseBody
     public ResultMsg countWeekDays(@RequestParam String oldSignDate ,  @RequestParam String signDate){
-        return signDispaWorkService.countWeekDays(DateUtils.converToDate1(oldSignDate , "yyyy-MM-dd") , DateUtils.converToDate1(signDate , "yyyy-MM-dd"));
+        ResultMsg resultMsg = signDispaWorkService.countWeekDays(DateUtils.converToDate1(oldSignDate , DateUtils.DATE_PATTERN) , DateUtils.converToDate1(signDate , DateUtils.DATE_PATTERN));
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
-
-
 
     @RequiresPermissions("signView#html/signChart#get")
     @RequestMapping(name="项目统计分析" , path = "html/signChart" , method = RequestMethod.GET)

@@ -2,6 +2,7 @@ package cs.model.meeting;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import cs.common.utils.DateUtils;
+import cs.common.utils.Validate;
 import cs.domain.project.WorkProgram;
 import cs.model.BaseDto;
 import org.hibernate.annotations.Formula;
@@ -79,6 +80,10 @@ public class RoomBookingDto extends BaseDto {
     private String endTimeStr;
     private String bookId;
     private String mainFlag;
+
+    public RoomBookingDto() {
+    }
+
     public String getId() {
         return id;
     }
@@ -228,7 +233,9 @@ public class RoomBookingDto extends BaseDto {
     }
 
     public void setBusinessId(String businessId) {
-        this.businessId = businessId;
+        if(Validate.isString(businessId)){
+            this.businessId = businessId;
+        }
     }
 
     public String getBusinessType() {
@@ -236,7 +243,9 @@ public class RoomBookingDto extends BaseDto {
     }
 
     public void setBusinessType(String businessType) {
-        this.businessType = businessType;
+        if(Validate.isString(businessType)){
+            this.businessType = businessType;
+        }
     }
 
     public String getBookId() {

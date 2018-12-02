@@ -2,6 +2,7 @@ package cs.model.project;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import cs.common.utils.DateUtils;
+import cs.common.utils.Validate;
 import cs.domain.meeting.RoomBooking;
 import cs.model.BaseDto;
 import cs.model.expert.ExpertDto;
@@ -203,7 +204,9 @@ public class WorkProgramDto extends BaseDto {
     }
 
     public void setSignId(String signId) {
-        this.signId = signId;
+        if(Validate.isString(signId)){
+            this.signId = signId;
+        }
     }
 
     public String getReviewType() {
@@ -676,5 +679,8 @@ public class WorkProgramDto extends BaseDto {
 
     public void setExpertDtoList(List<ExpertDto> expertDtoList) {
         this.expertDtoList = expertDtoList;
+    }
+
+    public WorkProgramDto() {
     }
 }

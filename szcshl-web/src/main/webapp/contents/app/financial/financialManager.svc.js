@@ -166,7 +166,10 @@
                 }
             };
             var httpSuccess = function success(response) {
-                vm.financial.stageCount = response.data || 0;
+                vm.financial.stageCount = 0;
+                if(response.data){
+                    vm.financial.stageCount = response.data;
+                }
                 $("#financialCount").html(common.htmlEscape(response.data));
             };
 

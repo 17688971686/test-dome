@@ -1,6 +1,7 @@
 package cs.model.expert;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import cs.common.utils.Validate;
 
 import java.util.Date;
 import java.util.List;
@@ -114,7 +115,9 @@ public class ExpertSelectHis {
     }
 
     public void setEpCompany(String epCompany) {
-        this.epCompany = epCompany;
+        if(Validate.isString(epCompany)){
+            this.epCompany = epCompany;
+        }
     }
 
     public String getProjectName() {
@@ -243,5 +246,8 @@ public class ExpertSelectHis {
 
     public void setReviewStage(String reviewStage) {
         this.reviewStage = reviewStage;
+    }
+
+    public ExpertSelectHis() {
     }
 }

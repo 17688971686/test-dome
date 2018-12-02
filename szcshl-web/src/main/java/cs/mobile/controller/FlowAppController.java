@@ -49,7 +49,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -125,27 +129,19 @@ public class FlowAppController {
     @Autowired
     private AddSuppLetterService addSuppLetterService;
     @Autowired
-    private MonthlyNewsletterService monthlyNewsletterService;
-    @Autowired
-    private AnnountmentService annountmentService;
-    @Autowired
     private LogService logService;
     @Autowired
     private RTXService rtxService;
     @Autowired
     private UserService userService;
-
     @Autowired
     private OrgDeptRepo orgDeptRepo;
-
     @Autowired
     private SignBranchService signBranchService;
 
-
-
     @RequestMapping(name = "流程提交", path = "commit", method = RequestMethod.POST)
-    public @ResponseBody
-    ResultMsg flowCommit(String flowObj,String username){
+    @ResponseBody
+    public  ResultMsg flowCommit(String flowObj,String username){
         //处理移动端传的对象
         String decodeData = "";
         try {

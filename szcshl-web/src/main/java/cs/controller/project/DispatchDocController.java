@@ -2,6 +2,7 @@ package cs.controller.project;
 
 import cs.ahelper.IgnoreAnnotation;
 import cs.common.ResultMsg;
+import cs.common.utils.Validate;
 import cs.domain.project.DispatchDoc;
 import cs.model.project.DispatchDocDto;
 import cs.model.project.SignDto;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,8 +48,11 @@ public class DispatchDocController {
     // @RequiresPermissions("dispatch#initData#get")
     @RequestMapping(name = "初始化发文页面", path = "initData", method = RequestMethod.GET)
     @ResponseBody
-    public Map<String, Object> initDispatch(@RequestParam String signid) throws Exception {
+    public Map<String, Object> initDispatch(@RequestParam String signid){
         Map<String, Object> map = dispatchDocService.initDispatchData(signid);
+        if(!Validate.isMap(map)){
+            map = new HashMap<>();
+        }
         return map;
     }
 
@@ -55,7 +60,7 @@ public class DispatchDocController {
     //@RequiresPermissions("dispatch#html/initDispatchBySignId#get")
     @RequestMapping(name = "查询流程发文信息", path = "html/initDispatchBySignId", method = {RequestMethod.POST,RequestMethod.GET})
     @ResponseBody
-    public DispatchDocDto initDispatchBySignId(@RequestParam String signId) throws Exception {
+    public DispatchDocDto initDispatchBySignId(@RequestParam String signId){
         return dispatchDocService.initDispatchBySignId(signId);
     }
 

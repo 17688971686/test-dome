@@ -5,9 +5,6 @@ import cs.model.BaseDto;
 import cs.model.expert.ExpertDto;
 import cs.model.meeting.RoomBookingDto;
 
-import javax.persistence.Column;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;

@@ -1,6 +1,7 @@
 package cs.model.project;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import cs.common.utils.Validate;
 import cs.model.BaseDto;
 import java.util.Date;
 
@@ -147,6 +148,9 @@ public class AddSuppLetterDto extends BaseDto {
      * 流程实例ID
      */
     private String processInstanceId;
+
+    public AddSuppLetterDto() {
+    }
 
     public String getId() {
         return id;
@@ -385,7 +389,9 @@ public class AddSuppLetterDto extends BaseDto {
     }
 
     public void setBusinessId(String businessId) {
-        this.businessId = businessId;
+        if(Validate.isString(businessId )){
+            this.businessId = businessId;
+        }
     }
 
     public String getBusinessType() {
@@ -393,7 +399,9 @@ public class AddSuppLetterDto extends BaseDto {
     }
 
     public void setBusinessType(String businessType) {
-        this.businessType = businessType;
+        if(Validate.isString(businessType)){
+            this.businessType = businessType;
+        }
     }
 
     public String getAppoveStatus() {

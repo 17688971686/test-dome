@@ -32,7 +32,6 @@ public class AnnountMentFlowImpl implements IFlow {
     @Override
     public Map<String, Object> getFlowBusinessMap(String businessKey,String taskDefinitionKey) {
         Map<String, Object> businessMap = new HashMap<>();
-
         switch (taskDefinitionKey) {
             //填报环节
             case FlowConstant.ANNOUNT_TZ:

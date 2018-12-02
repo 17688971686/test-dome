@@ -3,6 +3,7 @@ package cs.model.sharing;
 import java.util.Date;
 import java.util.List;
 
+import cs.common.utils.Validate;
 import cs.model.BaseDto;
 
 
@@ -57,7 +58,9 @@ public class SharingPlatlformDto extends BaseDto {
 	}
 
 	public void setSharId(String sharId) {
-		this.sharId = sharId;
+		if(Validate.isString(sharId)){
+			this.sharId = sharId;
+		}
 	}
 
 	public String getTheme() {

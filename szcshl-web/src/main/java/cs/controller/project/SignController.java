@@ -34,8 +34,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static cs.common.constants.Constant.ERROR_MSG;
 
 @Controller
 @RequestMapping(name = "收文", path = "sign")
@@ -61,13 +64,16 @@ public class SignController {
     PageModelDto<SignDto> get(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<SignDto> signDtos = signService.get(odataObj);
+        if(!Validate.isObject(signDtos)){
+            signDtos = new PageModelDto<>();
+        }
         return signDtos;
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "获取项目取回数据", path = "fingByGetBack", method = RequestMethod.POST)
-    public @ResponseBody
-    PageModelDto<RuProcessTask> getBackList(HttpServletRequest request) throws ParseException {
+    @ResponseBody
+    public PageModelDto<RuProcessTask> getBackList(HttpServletRequest request) throws ParseException {
         PageModelDto<RuProcessTask> signDispaWork = new PageModelDto<>();
         //是否为部长或者小组组长
         boolean isOrgLeader = false;
@@ -81,6 +87,9 @@ public class SignController {
         }
         ODataObj odataObj = new ODataObj(request);
         signDispaWork = signService.getBackList(odataObj, isOrgLeader);
+        if(!Validate.isObject(signDispaWork)){
+            signDispaWork = new PageModelDto<>();
+        }
         return signDispaWork;
     }
 
@@ -136,8 +145,12 @@ public class SignController {
     @RequiresAuthentication
     @RequestMapping(name = "获取评分单位信息", path = "findSignUnitScore", method = RequestMethod.POST)
     @ResponseBody
-    public UnitScoreDto findSignUnitScore(@RequestParam(required = true) String signId) throws ParseException {
-        return  signService.findSignUnitScore(signId);
+    public UnitScoreDto findSignUnitScore(@RequestParam String signId){
+        UnitScoreDto unitScoreDto = signService.findSignUnitScore(signId);
+        if(!Validate.isObject(unitScoreDto)){
+            unitScoreDto = new UnitScoreDto();
+        }
+        return  unitScoreDto;
     }
 
     //@RequiresPermissions("sign#findBySignUser#post")
@@ -147,15 +160,22 @@ public class SignController {
     public PageModelDto<SignDto> findBySignUser(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<SignDto> signDtos = signService.findBySignUser(odataObj);
+        if(!Validate.isObject(signDtos)){
+            signDtos = new PageModelDto<>();
+        }
         return signDtos;
     }
 
     @RequiresAuthentication
     //@RequiresPermissions("sign#findAssociateSign#post")
     @RequestMapping(name = "获取待关联的项目", path = "findAssociateSign", method = RequestMethod.POST)
-    public @ResponseBody
-    List<SignDispaWork> findAssociateSign(@RequestBody SignDispaWork signDispaWork) {
-        return signService.findAssociateSign(signDispaWork);
+    @ResponseBody
+    public List<SignDispaWork> findAssociateSign(@RequestBody SignDispaWork signDispaWork) {
+        List<SignDispaWork> signDispaWorkList = signService.findAssociateSign(signDispaWork);
+        if(!Validate.isList(signDispaWorkList)){
+            signDispaWorkList = new ArrayList<>();
+        }
+        return signDispaWorkList;
     }
 
 
@@ -163,7 +183,11 @@ public class SignController {
     @RequestMapping(name = "获取待关联的项目列表", path = "findAssociateSignList", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<SignDispaWork> findAssociateSignList( String signid, String reviewstage, String projectname,String mUserName, String skip, String size) {
-        return signService.findAssociateSignList(signid, reviewstage, projectname, mUserName,skip, size);
+        PageModelDto<SignDispaWork> SignDispaWorkPage = signService.findAssociateSignList(signid, reviewstage, projectname, mUserName,skip, size);
+        if(!Validate.isObject(SignDispaWorkPage)){
+            SignDispaWorkPage = new PageModelDto<>();
+        }
+        return SignDispaWorkPage;
     }
 
     //编辑收文
@@ -172,7 +196,11 @@ public class SignController {
     @RequestMapping(name = "更新收文", path = "", method = RequestMethod.PUT)
     @ResponseBody
     public ResultMsg update(@RequestBody SignDto signDto) {
-        return signService.updateSign(signDto);
+        ResultMsg resultMsg = signService.updateSign(signDto);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     //@RequiresPermissions("sign##post")
@@ -181,14 +209,22 @@ public class SignController {
     @RequestMapping(name = "创建收文", path = "", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg post(@RequestBody SignDto signDto) {
-        return signService.createSign(signDto);
+        ResultMsg resultMsg = signService.createSign(signDto);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "项目预签收", path = "html/reserveAddPost", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg reserveAddPost(@RequestBody SignDto signDto) {
-        return signService.reserveAddSign(signDto);
+        ResultMsg resultMsg = signService.reserveAddSign(signDto);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
@@ -321,18 +357,22 @@ public class SignController {
 
     @RequiresAuthentication
     @RequestMapping(name = "初始化详情页面", path = "html/initDetailPageData", method = RequestMethod.GET)
+    @ResponseBody
     @Transactional
-    public @ResponseBody
-    SignDto initDetailPageData(@RequestParam(required = true) String signid,
+    public SignDto initDetailPageData(@RequestParam(required = true) String signid,
                                @RequestParam(defaultValue = "false", required = false) boolean queryAll) {
-        return signService.findById(signid, queryAll);
+        SignDto signDto = signService.findById(signid, queryAll);
+        if(!Validate.isObject(signDto)){
+            signDto = new SignDto();
+        }
+        return signDto;
     }
 
     @RequiresAuthentication
     //@RequiresPermissions("sign#selectSign#get")
     @RequestMapping(name = "获取办事处信息", path = "selectSign", method = RequestMethod.GET)
-    public @ResponseBody
-    List<OrgDto> selectSign(HttpServletRequest request) throws ParseException {
+    @ResponseBody
+    public List<OrgDto> selectSign(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         List<OrgDto> orgDto = signService.selectSign(odataObj);
         return orgDto;
@@ -350,8 +390,12 @@ public class SignController {
     @RequestMapping(name = "初始化流程处理页面", path = "initFlowPageData", method = RequestMethod.GET)
     @Transactional
     @ResponseBody
-    public SignDto initFlowPageData(@RequestParam(required = true) String signid) {
-        return signService.findById(signid, true);
+    public SignDto initFlowPageData(@RequestParam String signid) {
+        SignDto signDto = signService.findById(signid, true);
+        if(!Validate.isObject(signDto)){
+            signDto = new SignDto();
+        }
+        return signDto;
     }
 
     /**
@@ -381,11 +425,15 @@ public class SignController {
     @Transactional
     public ResultMsg startNewFlow(@RequestParam(required = true) String signid) {
         ResultMsg resultMsg = signService.startNewFlow(signid);
-        if(resultMsg.isFlag()){
-            String procInstName = Validate.isObject(resultMsg.getReObj())?resultMsg.getReObj().toString():"";
-            rtxService.dealPoolRTXMsg(resultMsg.getIdCode(),resultMsg,procInstName,Constant.MsgType.project_type.name());
-            resultMsg.setIdCode(null);
-            resultMsg.setReObj(null);
+        if(Validate.isObject(resultMsg)){
+            if(resultMsg.isFlag()){
+                String procInstName = Validate.isObject(resultMsg.getReObj())?resultMsg.getReObj().toString():"";
+                rtxService.dealPoolRTXMsg(resultMsg.getIdCode(),resultMsg,procInstName,Constant.MsgType.project_type.name());
+                resultMsg.setIdCode(null);
+                resultMsg.setReObj(null);
+            }
+        }else{
+            resultMsg = ResultMsg.error(Constant.ERROR_MSG);
         }
         return resultMsg;
     }

@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 
+import cs.common.utils.Validate;
 import cs.domain.project.AssistPlan;
 import cs.domain.project.AssistUnit;
 import cs.domain.project.Sign;
@@ -65,7 +66,9 @@ public class AssistPlanSignDto{
     }
 
     public void setUnitNameStr(String unitNameStr) {
-        this.unitNameStr = unitNameStr;
+        if(Validate.isString(unitNameStr)){
+            this.unitNameStr = unitNameStr;
+        }
     }
 
     @JSONField(serialzeFeatures = SerializerFeature.DisableCircularReferenceDetect)
@@ -90,7 +93,9 @@ public class AssistPlanSignDto{
     }
 
     public void setPlanId(String planId) {
-        this.planId = planId;
+        if(Validate.isString(planId)){
+            this.planId = planId;
+        }
     }
 
     public String getSignId() {

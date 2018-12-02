@@ -194,7 +194,7 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
      */
     @Override
     @Transactional
-    public void save(SharingPlatlformDto record) {
+    public SharingPlatlformDto save(SharingPlatlformDto record) {
         SharingPlatlform domain = new SharingPlatlform();
         Date now = new Date();
         BeanCopierUtils.copyProperties(record, domain);
@@ -232,6 +232,8 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
 
         sharingPlatlformRepo.save(domain);
         record.setSharId(domain.getSharId());
+
+        return record;
     }
 
     @Override

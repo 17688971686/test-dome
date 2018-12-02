@@ -8,6 +8,7 @@ import javax.persistence.Column;
 
 import com.alibaba.fastjson.annotation.JSONField;
 
+import cs.common.utils.Validate;
 import cs.model.BaseDto;
 
 public class DispatchDocDto extends BaseDto {
@@ -176,6 +177,9 @@ public class DispatchDocDto extends BaseDto {
         this.associateDispatchs = associateDispatchs;
     }
 
+    public DispatchDocDto() {
+    }
+
     public String getMianChargeSuggest() {
         return mianChargeSuggest;
     }
@@ -337,7 +341,9 @@ public class DispatchDocDto extends BaseDto {
     }
 
     public void setSignId(String signId) {
-        this.signId = signId;
+        if(Validate.isString(signId)){
+            this.signId = signId;
+        }
     }
 
     public String getId() {

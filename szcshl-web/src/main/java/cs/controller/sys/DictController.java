@@ -1,6 +1,8 @@
 package cs.controller.sys;
 
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -8,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import cs.ahelper.MudoleAnnotation;
 import cs.common.ResultMsg;
+import cs.common.utils.Validate;
 import cs.model.sys.OrgDto;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -58,26 +61,37 @@ public class DictController {
     //@RequiresPermissions("dict#dictItems#get")
     @RequiresAuthentication
     @RequestMapping(name = "获取字典数据", path = "dictItems", method = RequestMethod.GET)
-    public @ResponseBody
-    List<DictDto> getDictItems(String dictCode) throws ParseException {
-        return dictService.getDictItemByCode(dictCode);
+    @ResponseBody
+    public List<DictDto> getDictItems(String dictCode) {
+        List<DictDto> resultList = dictService.getDictItemByCode(dictCode);
+        if(!Validate.isList(resultList)){
+            resultList = new ArrayList<>();
+        }
+        return resultList;
     }
 
     //@RequiresPermissions("dict#dictNameData#get")
     @RequiresAuthentication
     @RequestMapping(name = "获取字典数据字面值", path = "dictNameData", method = RequestMethod.GET)
-    public @ResponseBody
-    Map<String, String> dictNameData(@RequestParam(required = true) String dictCode) throws ParseException {
-        return dictService.getDictNameByCode(dictCode);
+    @ResponseBody
+    public Map<String, String> dictNameData(@RequestParam String dictCode) {
+        Map<String, String> resultMap = dictService.getDictNameByCode(dictCode);
+        if(!Validate.isMap(resultMap)){
+            resultMap = new HashMap<>();
+        }
+        return resultMap;
     }
 
     //@RequiresPermissions("dict#getAllDictByCode#get")
     @RequiresAuthentication
     @RequestMapping(name = "通过编码获取父级后再获取子级", path = "getAllDictByCode", method = RequestMethod.GET)
-    public @ResponseBody
-    List<DictDto> getDictByCode(@RequestParam String dictCode) {
-
-        return dictService.getAllDictByCode(dictCode);
+    @ResponseBody
+    public List<DictDto> getDictByCode(@RequestParam String dictCode) {
+        List<DictDto> resultCode = dictService.getAllDictByCode(dictCode);
+        if(!Validate.isList(resultCode)){
+            resultCode = new ArrayList<>();
+        }
+        return resultCode;
     }
 
     //@RequiresPermissions("dict##post")

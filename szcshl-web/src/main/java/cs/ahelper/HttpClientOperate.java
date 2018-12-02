@@ -77,16 +77,17 @@ public class HttpClientOperate implements BeanFactoryAware{
         try {
             // 执行请求
             response = this.getHttpClient().execute(httpGet);
-            // 判断返回状态是否为200
-            if (response.getStatusLine().getStatusCode() == 200) {
-                String content = EntityUtils.toString(response.getEntity(), "UTF-8");
-                return content;
+            if(Validate.isObject(response)){
+                // 判断返回状态是否为200
+                if (response.getStatusLine().getStatusCode() == 200) {
+                    String content = EntityUtils.toString(response.getEntity(), "UTF-8");
+                    return content;
+                }
             }
         } finally {
-            if (response != null) {
+            if (Validate.isObject(response)) {
                 response.close();
             }
-            //httpclient.close();
         }
         return null;
     }

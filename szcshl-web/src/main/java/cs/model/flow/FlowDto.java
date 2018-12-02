@@ -1,5 +1,7 @@
 package cs.model.flow;
 
+import cs.common.utils.Validate;
+
 import java.util.List;
 import java.util.Map;
 
@@ -25,12 +27,16 @@ public class FlowDto {
     private Node curNode;                    //当前节点
     private List<Node> nextNode;             //下一节点
 
+
+
     public Node getCurNode() {
         return curNode;
     }
 
     public void setCurNode(Node curNode) {
-        this.curNode = curNode;
+        if(Validate.isObject(curNode)){
+            this.curNode = curNode;
+        }
     }
 
     public List<Node> getNextNode() {
@@ -38,7 +44,9 @@ public class FlowDto {
     }
 
     public void setNextNode(List<Node> nextNode) {
-        this.nextNode = nextNode;
+        if(Validate.isList(nextNode)){
+            this.nextNode = nextNode;
+        }
     }
 
     public String getDealOption() {
@@ -102,7 +110,9 @@ public class FlowDto {
     }
 
     public void setProcessKey(String processKey) {
-        this.processKey = processKey;
+        if(Validate.isString(processKey)){
+            this.processKey = processKey;
+        }
     }
 
     public Map<String, Object> getBusinessMap() {

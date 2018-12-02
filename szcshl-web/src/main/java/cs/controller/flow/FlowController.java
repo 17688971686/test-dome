@@ -358,8 +358,8 @@ public class FlowController {
 
     @RequestMapping(name = "获取流程处理信息", path = "processInstance/flowNodeInfo", method = RequestMethod.POST)
     @RequiresAuthentication
-    public @ResponseBody
-    FlowDto flowNodeInfo(@RequestParam(required = true) String taskId, @RequestParam(required = true) String processInstanceId) {
+    @ResponseBody
+    public FlowDto flowNodeInfo(@RequestParam String taskId, @RequestParam String processInstanceId) {
         FlowDto flowDto = new FlowDto();
         flowDto.setProcessInstanceId(processInstanceId);
         flowDto.setEnd(false);
@@ -381,46 +381,49 @@ public class FlowController {
             flowDto.setSuspended(task.isSuspended());
             flowDto.setProcessKey(processInstance.getProcessDefinitionKey());
 
+            Map<String,Object> dealFlowMap = new HashMap<>();
             /**
              * 流程的一些参数处理
              */
             switch (processInstance.getProcessDefinitionKey()){
                 case FlowConstant.SIGN_FLOW:
-                    flowDto.setBusinessMap(signFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
+                    dealFlowMap = signFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey());
                     break;
                 case FlowConstant.TOPIC_FLOW:
-                    flowDto.setBusinessMap(topicFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
+                    dealFlowMap = topicFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey());
                     break;
                 case FlowConstant.BOOKS_BUY_FLOW:
-                    flowDto.setBusinessMap(booksBuyBusFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
+                    dealFlowMap = booksBuyBusFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey());
                     break;
                 case FlowConstant.ASSERT_STORAGE_FLOW:
-                    flowDto.setBusinessMap(assertStorageFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
+                    dealFlowMap = assertStorageFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey());
                     break;
                 case FlowConstant.PROJECT_STOP_FLOW:
-                    flowDto.setBusinessMap(projectStopFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
+                    dealFlowMap = projectStopFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey());
                     break;
                 case FlowConstant.FLOW_ARCHIVES:
-                    flowDto.setBusinessMap(archivesFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
+                    dealFlowMap = archivesFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey());
                     break;
                 case FlowConstant.FLOW_APPRAISE_REPORT:
-                    flowDto.setBusinessMap(appraiseFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
+                    dealFlowMap = appraiseFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey());
                     break;
                 case FlowConstant.FLOW_SUPP_LETTER:
-                    flowDto.setBusinessMap(suppLetterFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
+                    dealFlowMap = suppLetterFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey());
                     break;
                 case FlowConstant.MONTHLY_BULLETIN_FLOW:
-                    flowDto.setBusinessMap(monthFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
+                    dealFlowMap = monthFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey());
                     break;
                 case FlowConstant.ANNOUNT_MENT_FLOW:
-                    flowDto.setBusinessMap(annountMentFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
+                    dealFlowMap = annountMentFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey());
                     break;
                 default:
                     ;
             }
-
+            if(Validate.isMap(dealFlowMap)){
+                flowDto.setBusinessMap(dealFlowMap);
+            }
             //获取下一环节信息
-            if(flowDto.isEnd() == false){
+            if(false == flowDto.isEnd()){
                 //获取下一环节信息--获取从某个节点出来的所有线路
                 ProcessDefinitionEntity def = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService)
                         .getDeployedProcessDefinition(task.getProcessDefinitionId());
@@ -746,10 +749,15 @@ public class FlowController {
         return resultPage;
     }
 
+    @RequiresAuthentication
     @RequestMapping(name = "获取流程列表",path = "proc",method = RequestMethod.GET)
     @ResponseBody
     public List<Map<String, Object>> getProc(){
-        return  flowService.getProc();
+        List<Map<String, Object>> resultList = flowService.getProc();
+        if(!Validate.isList(resultList)){
+            resultList = new ArrayList<>();
+        }
+        return  resultList;
     }
 
     @RequiresAuthentication
@@ -757,20 +765,14 @@ public class FlowController {
     @ResponseBody
     public Map<String,Object> getReWorkBranch(@RequestParam String signId) {
         Map<String,Object> resultMap = new HashMap<>();
+
         //分支列表
-        resultMap.put("branchList",flowService.getBranchInfo(signId));//人员列表
-        /*List<User> allPostUser = userService.findAllPostUserByCriteria();
-        List<UserDto> userDtos = new ArrayList<>();
-        if (Validate.isList(allPostUser)) {
-            allPostUser.forEach(x -> {
-                List<Role> roles = x.getRoles();
-                if(Validate.isObject(x.getOrg()) && !checkIsLeader(roles)){
-                    UserDto userDto = new UserDto();
-                    BeanCopierUtils.copyProperties(x, userDto);
-                    userDtos.add(userDto);
-                }
-            });
-        }*/
+        List<Map<String, Object>> branchList = flowService.getBranchInfo(signId);
+        if(!Validate.isList(branchList)){
+            branchList = new ArrayList<>();
+        }
+        resultMap.put("branchList",branchList);
+
         //用户列表，直接选择项目负责人即可
         List<User> userList = signPrincipalService.getAllSecondPriUser(signId);
         if(null == userList){

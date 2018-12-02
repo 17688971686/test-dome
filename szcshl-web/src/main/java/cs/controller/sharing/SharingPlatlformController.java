@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import cs.ahelper.MudoleAnnotation;
+import cs.common.utils.Validate;
 import cs.model.expert.ExpertSelConditionDto;
 import cs.model.sharing.SharingPrivilegeDto;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
@@ -100,8 +101,11 @@ public class SharingPlatlformController {
     @RequestMapping(name = "创建记录", path = "saveSharing", method = RequestMethod.POST)
     @ResponseBody
     public SharingPlatlformDto post(@RequestBody SharingPlatlformDto record) {
-        sharingPlatlformService.save(record);
-        return record;
+        SharingPlatlformDto sharingPlatlformDto = sharingPlatlformService.save(record);
+        if(!Validate.isObject(sharingPlatlformDto)){
+            sharingPlatlformDto = new SharingPlatlformDto();
+        }
+        return sharingPlatlformDto;
     }
 
     @RequiresAuthentication

@@ -1,5 +1,7 @@
 package cs.model.expert;
 
+import cs.common.utils.Validate;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -58,7 +60,9 @@ public class ExpertCostCountDto  {
     }
 
     public void setUserPhone(String userPhone) {
-        this.userPhone = userPhone;
+        if(Validate.isString(userPhone)){
+            this.userPhone = userPhone;
+        }
     }
 
     public BigDecimal getReviewcost() {
@@ -147,5 +151,8 @@ public class ExpertCostCountDto  {
 
     public void setMonth(String month) {
         this.month = month;
+    }
+
+    public ExpertCostCountDto() {
     }
 }

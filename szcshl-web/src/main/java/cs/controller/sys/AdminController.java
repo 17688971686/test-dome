@@ -265,6 +265,9 @@ public class AdminController {
                 //柱状图
                 existList = new ArrayList<>();
                 Map<String, Map<String, Object>> histogramMap = getCountMap(authFlag, resultMap, authRuSignTask, authMap, orgIdList, existList);
+                if(!Validate.isMap(histogramMap)){
+                    histogramMap = new HashMap<>();
+                }
                 resultMap.put("histogram", histogramMap);
 
                 //(在办项目 ， 发文超期 ， 暂停 ， 少于3个工作日)
@@ -310,7 +313,11 @@ public class AdminController {
     @ResponseBody
     public Map<String, Object> getHomeMeetInfo(HttpServletRequest request) throws ParseException, IOException, ClassNotFoundException {
         Map<String, Object> resultMap = new HashMap<String, Object>();
-        resultMap.put("proMeetInfo", workProgramService.findProMeetInfo());
+        Map<String, Object> metMapInfo = workProgramService.findProMeetInfo();
+        if(!Validate.isMap(metMapInfo)){
+            metMapInfo = new HashMap<>();
+        }
+        resultMap.put("proMeetInfo", metMapInfo);
         return resultMap;
     }
 
@@ -404,9 +411,13 @@ public class AdminController {
                         notDealMap = entry.getValue();
                     } else {
                         User user = userService.getCacheUserById(entry.getKey());
+                        String displayName = "未知用户";
+                        if(Validate.isObject(user)){
+                            displayName = user.getDisplayName();
+                        }
                         Map<String, Object> runTaskInfoMap = entry.getValue();
-                        runTaskInfoMap.put("HISTOGRAM_NAME", user.getDisplayName());
-                        histogramMap.put(user.getDisplayName(), runTaskInfoMap);
+                        runTaskInfoMap.put("HISTOGRAM_NAME", displayName);
+                        histogramMap.put(displayName, runTaskInfoMap);
                     }
 
                 }

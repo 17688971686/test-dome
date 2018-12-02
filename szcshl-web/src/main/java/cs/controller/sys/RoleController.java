@@ -1,11 +1,13 @@
 package cs.controller.sys;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import cs.ahelper.MudoleAnnotation;
+import cs.common.utils.Validate;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,26 +36,37 @@ public class RoleController {
     //@RequiresPermissions("role#fingByOData#post")
     @RequiresAuthentication
     @RequestMapping(name = "获取角色数据", path = "fingByOData", method = RequestMethod.POST)
-    public @ResponseBody
-    PageModelDto<RoleDto> get(HttpServletRequest request) throws ParseException {
+    @ResponseBody
+    public PageModelDto<RoleDto> get(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<RoleDto> roleDtos = roleService.get(odataObj);
+        if(!Validate.isObject(roleDtos)){
+            roleDtos = new PageModelDto();
+        }
         return roleDtos;
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "获取所有角色", path = "findAllRoles", method = RequestMethod.POST)
-    public @ResponseBody
-    List<RoleDto> findAllRoles() {
-        return roleService.findAllRoles();
+    @ResponseBody
+    public List<RoleDto> findAllRoles() {
+        List<RoleDto> roleDtoList = roleService.findAllRoles();
+        if(!Validate.isList(roleDtoList)){
+            roleDtoList = new ArrayList<>();
+        }
+        return roleDtoList;
     }
 
     //@RequiresPermissions("role#findById#post")
     @RequiresAuthentication
     @RequestMapping(name = "获取角色数据", path = "findById", method = RequestMethod.POST)
-    public @ResponseBody
-    RoleDto get(@RequestParam(required = true) String roleId) {
-        return roleService.findById(roleId);
+    @ResponseBody
+    public RoleDto get(@RequestParam String roleId) {
+        RoleDto roleDto = roleService.findById(roleId);
+        if(!Validate.isObject(roleDto)){
+            roleDto = new RoleDto();
+        }
+        return roleDto;
     }
 
     //@RequiresPermissions("role##post")

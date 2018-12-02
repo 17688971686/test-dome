@@ -1,6 +1,7 @@
 package cs.common.utils;
 
 import com.lowagie.text.html.HtmlEncoder;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.util.HtmlUtils;
 
@@ -242,8 +243,8 @@ public class StringUtil extends StringUtils {
      */
     public static String cleanXSS(String value) {
         if (value != null) {
-            value = filter(value);
-            value = HtmlUtils.htmlEscape(value);
+            //value = filter(value);
+            value = StringEscapeUtils.escapeHtml3(value);
            /* value = value.replaceAll("", "");
             Pattern scriptPattern = Pattern.compile("<script>(.*?)</script>", Pattern.CASE_INSENSITIVE);
             value = scriptPattern.matcher(value).replaceAll("");

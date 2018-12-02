@@ -95,8 +95,8 @@ public class RoomBookingController {
     @RequiresAuthentication
 //    @RequiresPermissions("room#exportThisWeekStage#get")
     @RequestMapping(name = "导出本周评审会议安排", path = "exportThisWeekStage", method = RequestMethod.GET)
-    public void exportThisWeekStage(HttpServletRequest request, HttpServletRequest req, HttpServletResponse resp, @RequestParam String currentDate, @RequestParam String rbType, @RequestParam String mrId, String fileName) {
-//		roomBookingSerivce.exportThisWeekStage();
+    public void exportThisWeekStage(HttpServletRequest request, HttpServletRequest req, HttpServletResponse resp, @RequestParam String currentDate,
+                                    @RequestParam String rbType, @RequestParam String mrId, String fileName) {
         String date = currentDate.replaceAll("/", "-");
         InputStream is = null;
         ServletOutputStream out = null;
@@ -104,21 +104,25 @@ public class RoomBookingController {
             fileName = COMPANY_NAME+"会议安排";
         }
         try {
-//            String title = new String(fileName.getBytes("ISO-8859-1"),"UTF-8");
             String title = java.net.URLDecoder.decode(fileName, "UTF-8");//解码，需要抛异常
             File file = roomBookingSerivce.exportRoom(currentDate, rbType, mrId);
             is = new FileInputStream(file);
             resp.setCharacterEncoding("utf-8");
             resp.setContentType("application/msword");
             // 设置浏览器以下载的方式处理该文件默认
-            String fileName2 = new String((fileName + ".doc").getBytes("GB2312"), "ISO-8859-1");
-            resp.addHeader("Content-Disposition", "attachment;filename=" + fileName2);
+            String outFileName = new String((fileName + ".doc").getBytes("GB2312"), "ISO-8859-1");
+            if(!Validate.isString(outFileName)){
+                outFileName = "weekMeeting.doc";
+            }
+            resp.addHeader("Content-Disposition", "attachment;filename=" + outFileName);
             out = resp.getOutputStream();
-            byte[] buffer = new byte[512];  // 缓冲区
-            int bytesToRead = -1;
-            // 通过循环将读入的Word文件的内容输出到浏览器中
-            while ((bytesToRead = is.read(buffer)) != -1) {
-                out.write(buffer, 0, bytesToRead);
+            if(Validate.isObject(out)){
+                byte[] buffer = new byte[512];  // 缓冲区
+                int bytesToRead = -1;
+                // 通过循环将读入的Word文件的内容输出到浏览器中
+                while ((bytesToRead = is.read(buffer)) != -1) {
+                    out.write(buffer, 0, bytesToRead);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -126,6 +130,13 @@ public class RoomBookingController {
             if(Validate.isObject(is)){
                 try {
                     is.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(Validate.isObject(out)){
+                try {
+                    out.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

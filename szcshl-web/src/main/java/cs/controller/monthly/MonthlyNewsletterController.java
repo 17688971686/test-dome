@@ -32,6 +32,8 @@ import java.io.InputStream;
 import java.text.ParseException;
 import java.util.List;
 
+import static cs.common.constants.Constant.ERROR_MSG;
+
 /**
  * Description: 月报简报 控制层
  * author: sjy
@@ -193,12 +195,15 @@ public class MonthlyNewsletterController {
     @ResponseBody
     public ResultMsg startFlow(@RequestParam String id){
         ResultMsg resultMsg = monthlyNewsletterService.startFlow(id);
-        if(resultMsg.isFlag()){
-            String procInstName = Validate.isObject(resultMsg.getReObj())?resultMsg.getReObj().toString():"";
-            rtxService.dealPoolRTXMsg(resultMsg.getIdCode(),resultMsg,procInstName, Constant.MsgType.task_type.name());
-
-            resultMsg.setIdCode(null);
-            resultMsg.setReObj(null);
+        if(Validate.isObject(resultMsg)){
+            if(resultMsg.isFlag()){
+                String procInstName = Validate.isObject(resultMsg.getReObj())?resultMsg.getReObj().toString():"";
+                rtxService.dealPoolRTXMsg(resultMsg.getIdCode(),resultMsg,procInstName, Constant.MsgType.task_type.name());
+                resultMsg.setIdCode(null);
+                resultMsg.setReObj(null);
+            }
+        }else{
+            resultMsg = ResultMsg.error(ERROR_MSG);
         }
         return resultMsg;
     }

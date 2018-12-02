@@ -144,6 +144,9 @@ public class SysRestController {
                 msg = "该项目信息不存在请核查！";
                 resultMsg = new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(), msg);
             }
+            if(!Validate.isObject(resultMsg)){
+                resultMsg = new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_DEAL_ERROR.getCode(), IFResultCode.IFMsgCode.SZEC_DEAL_ERROR.getValue());
+            }
         } catch (Exception e) {
             resultMsg = new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(), e.getMessage());
             e.printStackTrace();

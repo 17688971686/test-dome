@@ -2,6 +2,7 @@ package cs.controller.sys;
 
 import cs.ahelper.MudoleAnnotation;
 import cs.common.ResultMsg;
+import cs.common.utils.Validate;
 import cs.model.PageModelDto;
 import cs.model.sys.FileLibraryDto;
 import cs.model.sys.PolicyDto;
@@ -113,7 +114,9 @@ public class FileLibraryController {
     public FileLibraryDto getFileUrlById(@RequestParam String fileId){
         String fileUrl = fileLibraryService.findFileUrlById(fileId);
         FileLibraryDto fileLibraryDto = new FileLibraryDto();
-        fileLibraryDto.setFileUrl(fileUrl);
+        if(Validate.isString(fileUrl)){
+            fileLibraryDto.setFileUrl(fileUrl);
+        }
         return fileLibraryDto ;
     }
 

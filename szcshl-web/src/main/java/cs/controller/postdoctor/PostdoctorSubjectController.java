@@ -4,6 +4,7 @@ import cs.ahelper.MudoleAnnotation;
 import cs.common.ResultMsg;
 import cs.common.constants.Constant;
 import cs.common.utils.SessionUtil;
+import cs.common.utils.Validate;
 import cs.domain.postdoctor.PostdoctorSubject;
 import cs.model.PageModelDto;
 import cs.model.postdoctor.PostdoctorSubjectDto;
@@ -40,12 +41,13 @@ public class PostdoctorSubjectController {
     @RequestMapping(name = "课题列表" , path = "findByAll" , method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<PostdoctorSubjectDto> findByAll(HttpServletRequest request ){
-
          PageModelDto<PostdoctorSubjectDto> pageModelDto = new PageModelDto<>();
         try{
             ODataObj odataObj = new ODataObj(request);
             pageModelDto = postdoctorSubjectService.findByAll(odataObj);
-
+            if(!Validate.isObject(pageModelDto)){
+                pageModelDto = new PageModelDto<>();
+            }
         }catch (Exception e){
             e.printStackTrace();
         }

@@ -3297,7 +3297,11 @@ public class SignServiceImpl implements SignService {
      */
     @Override
     public SignDto findReviewDayBySignId(String signId) {
-        return signRepo.findReviewDayBySignId(signId);
+        SignDto signDto = signRepo.findReviewDayBySignId(signId);
+        if(!Validate.isObject(signDto)){
+            signDto = new SignDto();
+        }
+        return signDto;
     }
 
 

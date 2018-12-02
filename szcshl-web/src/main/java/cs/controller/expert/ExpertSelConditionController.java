@@ -3,6 +3,7 @@ package cs.controller.expert;
 import cs.ahelper.IgnoreAnnotation;
 import cs.ahelper.MudoleAnnotation;
 import cs.common.ResultMsg;
+import cs.common.utils.Validate;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertSelConditionDto;
 import cs.repository.odata.ODataObj;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
+
+import static cs.common.constants.Constant.ERROR_MSG;
 
 /**
  * Description: 专家抽取条件 控制层
@@ -52,15 +55,24 @@ public class ExpertSelConditionController {
     //@RequiresPermissions("expertSelCondition#saveConditionList#post")
     @RequestMapping(name = "保存专家抽取条件", path = "saveConditionList", method = RequestMethod.POST)
     public @ResponseBody
-    ResultMsg saveConditionList(@RequestBody ExpertSelConditionDto[] paramArrary,@RequestParam(required = true)String businessId,
-        @RequestParam(required = true)String minBusinessId, @RequestParam(required = true)String businessType, String reviewId){
-        return  expertSelConditionService.saveConditionList(businessId,minBusinessId,businessType,reviewId,paramArrary);
+    ResultMsg saveConditionList(@RequestBody ExpertSelConditionDto[] paramArrary,@RequestParam String businessId,
+        @RequestParam String minBusinessId, @RequestParam String businessType, String reviewId){
+        ResultMsg resultMsg = expertSelConditionService.saveConditionList(businessId,minBusinessId,businessType,reviewId,paramArrary);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
 	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)
-	public @ResponseBody ExpertSelConditionDto findById(@RequestParam(required = true)String id){		
-		return expertSelConditionService.findById(id);
+    @ResponseBody
+	public  ExpertSelConditionDto findById(@RequestParam String id){
+        ExpertSelConditionDto expertSelConditionDto = expertSelConditionService.findById(id);
+        if(!Validate.isObject(expertSelConditionDto)){
+            expertSelConditionDto = new ExpertSelConditionDto();
+        }
+		return expertSelConditionDto;
 	}
 
     @RequiresAuthentication

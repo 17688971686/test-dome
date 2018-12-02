@@ -58,21 +58,33 @@ public class FinancialManagerController {
     @RequestMapping(name = "协审费录入页面", path = "findSingAssistCostList", method = RequestMethod.POST)
     @ResponseBody
     public List<SignAssistCostDto> findSingAssistCostList(@RequestBody SignAssistCostDto signAssistCost) {
-        return financialManagerService.signAssistCostList(signAssistCost, false);
+        List<SignAssistCostDto> resultList = financialManagerService.signAssistCostList(signAssistCost, false);
+        if(!Validate.isList(resultList)){
+            resultList = new ArrayList<>();
+        }
+        return resultList;
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "根据项目ID查询出对应的协审费用", path = "findSignCostBySignId", method = RequestMethod.POST)
     @ResponseBody
     public List<SignAssistCostDto> findSignCostBySignId(@RequestParam String signId) {
-        return financialManagerService.findSignCostBySignId(signId);
+        List<SignAssistCostDto> resultList = financialManagerService.findSignCostBySignId(signId);
+        if(!Validate.isList(resultList)){
+            resultList = new ArrayList<>();
+        }
+        return resultList;
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "协审费统计", path = "findSingAssistCostCount", method = RequestMethod.POST)
     @ResponseBody
     public List<SignAssistCostDto> findSingAssistCostCount(@RequestBody SignAssistCostDto signAssistCost) {
-        return financialManagerService.signAssistCostList(signAssistCost, true);
+        List<SignAssistCostDto> resultList = financialManagerService.signAssistCostList(signAssistCost, true);
+        if(!Validate.isList(resultList)){
+            resultList = new ArrayList<>();
+        }
+        return resultList;
     }
 
     @RequiresAuthentication

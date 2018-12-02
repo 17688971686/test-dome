@@ -21,6 +21,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.util.List;
 
+import static cs.common.constants.Constant.ERROR_MSG;
+
 /**
  * Description:优秀评审报告
  * Author: mcl
@@ -43,7 +45,11 @@ public class ReviewProjectAppraiseController {
     @RequestMapping(name="通过项目ID初始化" , path="initBySignId" , method = RequestMethod.POST)
     @ResponseBody
     public AppraiseReportDto initBySignId(@RequestParam String signId){
-        return  appraiseService.initBySignId(signId);
+        AppraiseReportDto appraiseReportDto = appraiseService.initBySignId(signId);
+        if(!Validate.isObject(appraiseReportDto)){
+            appraiseReportDto = new AppraiseReportDto();
+        }
+        return  appraiseReportDto;
     }
 
     @RequiresAuthentication
@@ -51,7 +57,11 @@ public class ReviewProjectAppraiseController {
     @RequestMapping(name="保存申请信息" , path="saveApply" , method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg saveApply(@RequestBody  AppraiseReportDto appraiseReportDto){
-        return appraiseService.saveApply(appraiseReportDto);
+        ResultMsg resultMsg = appraiseService.saveApply(appraiseReportDto);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
@@ -59,13 +69,17 @@ public class ReviewProjectAppraiseController {
     @ResponseBody
     public ResultMsg startFlow(@RequestParam String id){
         ResultMsg resultMsg = appraiseService.startFlow(id);
-        if(resultMsg.isFlag()){
-            String procInstName = Validate.isObject(resultMsg.getReObj())?resultMsg.getReObj().toString():"";
-            rtxService.dealPoolRTXMsg(resultMsg.getIdCode(),resultMsg,procInstName, Constant.MsgType.task_type.name());
-
-            resultMsg.setIdCode(null);
-            resultMsg.setReObj(null);
+        if(Validate.isObject(resultMsg)){
+            if(resultMsg.isFlag()){
+                String procInstName = Validate.isObject(resultMsg.getReObj())?resultMsg.getReObj().toString():"";
+                rtxService.dealPoolRTXMsg(resultMsg.getIdCode(),resultMsg,procInstName, Constant.MsgType.task_type.name());
+                resultMsg.setIdCode(null);
+                resultMsg.setReObj(null);
+            }
+        }else{
+            resultMsg = ResultMsg.error(ERROR_MSG);
         }
+
         return resultMsg;
     }
 

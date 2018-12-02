@@ -241,7 +241,7 @@ public class ArchivesLibraryServiceImpl implements ArchivesLibraryService {
 
         ProcessDefinitionEntity processDefinitionEntity = (ProcessDefinitionEntity) repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());
 
-        return new ResultMsg(true, MsgCode.OK.getValue(), task.getId(),"操作成功！",         processDefinitionEntity.getName());
+        return new ResultMsg(true, MsgCode.OK.getValue(), task.getId(),"操作成功！",  processDefinitionEntity.getName());
     }
 
     /**

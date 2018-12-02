@@ -1,5 +1,7 @@
 package cs.model.flow;
 
+import cs.common.utils.Validate;
+
 /**
  * 流程节点信息
  * @author ldm
@@ -15,7 +17,9 @@ public class Node {
 		return activitiId;
 	}
 	public void setActivitiId(String activitiId) {
-		this.activitiId = activitiId;
+		if(Validate.isString(activitiId)){
+			this.activitiId = activitiId;
+		}
 	}
 	public String getActivitiName() {
 		return activitiName;

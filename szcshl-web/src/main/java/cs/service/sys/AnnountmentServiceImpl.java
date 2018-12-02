@@ -64,7 +64,8 @@ public class AnnountmentServiceImpl implements AnnountmentService {
     private UserService userService;
     @Autowired
     private RepositoryService repositoryService;
-    /* 
+
+    /*
      * 获取个人发布的通知公告
      */
     @Override
@@ -204,12 +205,12 @@ public class AnnountmentServiceImpl implements AnnountmentService {
         hqlBuilder.append("select u." + User_.org.getName() + "." + Org_.id.getName() + " from " + User.class.getSimpleName() + " u where u." + User_.loginName.getName() + "=:loginName)");
         hqlBuilder.setParam("loginName", loginName);
         List<Org> orgList = orgRepo.findByHql(hqlBuilder);
-        if (orgList != null && orgList.size() > 0) {
-            return orgList.get(0).getName();
+        if (Validate.isList(orgList)) {
+            Org org = orgList.get(0);
+            return Validate.isObject(org) ? orgList.get(0).getName() : null;
         } else {
             return null;
         }
-
     }
 
     @Override
@@ -217,7 +218,9 @@ public class AnnountmentServiceImpl implements AnnountmentService {
     public AnnountmentDto findAnnountmentById(String anId) {
         Annountment annountment = annountmentRepo.findById(Annountment_.anId.getName(), anId);
         AnnountmentDto annountmentDto = new AnnountmentDto();
-        BeanCopierUtils.copyProperties(annountment, annountmentDto);
+        if(Validate.isObject(annountment)){
+            BeanCopierUtils.copyProperties(annountment, annountmentDto);
+        }
         return annountmentDto;
     }
 
@@ -230,7 +233,6 @@ public class AnnountmentServiceImpl implements AnnountmentService {
             BeanCopierUtils.copyPropertiesIgnoreNull(annountmentDto, annountment);
             annountment.setModifiedBy(SessionUtil.getDisplayName());
             annountment.setModifiedDate(now);
-
             //已发布的要加上发布人和发布时间
             if (Constant.EnumState.YES.getValue().equals(annountment.getIssue())) {
                 annountment.setIssueDate(now);
@@ -354,15 +356,15 @@ public class AnnountmentServiceImpl implements AnnountmentService {
         //是否发布,如果是发布，还要更新发布日期
         boolean isaPublish = (Constant.EnumState.YES.getValue().equals(issueState)) ? true : false;
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append(" update "+Annountment.class.getSimpleName()+" set "+Annountment_.issue.getName()+" =:issue ");
-        hqlBuilder.setParam("issue",issueState);
-        if(isaPublish){
-            hqlBuilder.append(","+Annountment_.issueDate.getName()+" =sysdate ");
-            hqlBuilder.append(","+Annountment_.issueUser.getName()+" = "+Annountment_.modifiedBy.getName());
+        hqlBuilder.append(" update " + Annountment.class.getSimpleName() + " set " + Annountment_.issue.getName() + " =:issue ");
+        hqlBuilder.setParam("issue", issueState);
+        if (isaPublish) {
+            hqlBuilder.append("," + Annountment_.issueDate.getName() + " =sysdate ");
+            hqlBuilder.append("," + Annountment_.issueUser.getName() + " = " + Annountment_.modifiedBy.getName());
         }
         annountmentRepo.executeHql(hqlBuilder);
 
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"更新成功！");
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "更新成功！");
     }
 
 
@@ -423,12 +425,12 @@ public class AnnountmentServiceImpl implements AnnountmentService {
 
         //如果是代办，还要更新环节名称和任务ID
         if (Validate.isList(agentTaskList)) {
-            agentTaskService.updateAgentInfo(agentTaskList,processInstance.getId(),processInstance.getName());
+            agentTaskService.updateAgentInfo(agentTaskList, processInstance.getId(), processInstance.getName());
         }
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
         ProcessDefinitionEntity processDefinitionEntity = (ProcessDefinitionEntity) repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),task.getId(), "操作成功！",processDefinitionEntity.getName());
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), task.getId(), "操作成功！", processDefinitionEntity.getName());
     }
 
     /**
@@ -450,7 +452,7 @@ public class AnnountmentServiceImpl implements AnnountmentService {
         User dealUser = null;
         Map<String, Object> variables = new HashMap<>();        //流程参数
         boolean isNextUser = false,                             //是否是下一环节处理人（主要是处理领导审批，部长审批）
-                isAgentTask = agentTaskService.isAgentTask(task.getId(),curUserId); //是否代办
+                isAgentTask = agentTaskService.isAgentTask(task.getId(), curUserId); //是否代办
         Annountment annountment = annountmentRepo.findById(Annountment_.anId.getName(), businessId);
         List<AgentTask> agentTaskList = new ArrayList<>();
 
@@ -474,18 +476,18 @@ public class AnnountmentServiceImpl implements AnnountmentService {
             case FlowConstant.ANNOUNT_BZ:
                 //获取创建人的部长
                 dealUser = userRepo.getCacheUserById(annountment.getCreatedBy());
-                if(!Validate.isString(dealUser.getOrg().getOrgSLeader())){
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"您还没设置该部门的分管副主任，请先设置再提交流程！");
+                if (!Validate.isString(dealUser.getOrg().getOrgSLeader())) {
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "您还没设置该部门的分管副主任，请先设置再提交流程！");
                 }
                 assigneeValue = userService.getTaskDealId(dealUser.getOrg().getOrgSLeader(), agentTaskList, FlowConstant.ANNOUNT_FZ);
                 variables = ActivitiUtil.setAssigneeValue(FlowConstant.AnnountMentFLOWParams.USER_FZ.getValue(), assigneeValue);
 
-                if(isAgentTask){
-                    annountment.setDeptMinisterId(agentTaskService.getUserId(task.getId(),curUserId));
-                }else{
+                if (isAgentTask) {
+                    annountment.setDeptMinisterId(agentTaskService.getUserId(task.getId(), curUserId));
+                } else {
                     annountment.setDeptMinisterId(curUserId);
                 }
-                annountment.setDeptMinisterName(ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask));
+                annountment.setDeptMinisterName(ActivitiUtil.getSignName(SessionUtil.getDisplayName(), isAgentTask));
 
                 annountment.setDeptMinisterDate(new Date());
                 annountment.setDeptMinisterIdeaContent(flowDto.getDealOption());
@@ -501,18 +503,18 @@ public class AnnountmentServiceImpl implements AnnountmentService {
             //副主任审批
             case FlowConstant.ANNOUNT_FZ:
                 dealUser = userRepo.getCacheUserById(annountment.getCreatedBy());
-                if(!Validate.isString(dealUser.getOrg().getOrgMLeader())){
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"您还没设置该部门的主任，请先设置再提交流程！");
+                if (!Validate.isString(dealUser.getOrg().getOrgMLeader())) {
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "您还没设置该部门的主任，请先设置再提交流程！");
                 }
                 assigneeValue = userService.getTaskDealId(dealUser.getOrg().getOrgMLeader(), agentTaskList, FlowConstant.ANNOUNT_FZ);
                 variables = ActivitiUtil.setAssigneeValue(FlowConstant.AnnountMentFLOWParams.USER_ZR.getValue(), assigneeValue);
 
-                if(isAgentTask){
-                    annountment.setDeptSLeaderId(agentTaskService.getUserId(task.getId(),curUserId));
-                }else{
+                if (isAgentTask) {
+                    annountment.setDeptSLeaderId(agentTaskService.getUserId(task.getId(), curUserId));
+                } else {
                     annountment.setDeptSLeaderId(curUserId);
                 }
-                annountment.setDeptSLeaderName(ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask));
+                annountment.setDeptSLeaderName(ActivitiUtil.getSignName(SessionUtil.getDisplayName(), isAgentTask));
 
                 annountment.setDeptSleaderDate(new Date());
                 annountment.setDeptSLeaderIdeaContent(flowDto.getDealOption());
@@ -531,20 +533,20 @@ public class AnnountmentServiceImpl implements AnnountmentService {
             //主任审批
             case FlowConstant.ANNOUNT_ZR:
                 boolean isPass = Validate.isObject(flowDto.getBusinessMap().get("AGREE")) && Constant.EnumState.YES.getValue().equals(flowDto.getBusinessMap().get("AGREE").toString());
-                if(isPass){
+                if (isPass) {
                     annountment.setIssue(Constant.EnumState.YES.getValue());
                     annountment.setIssueDate(new Date());
                     //发布人为最后修改人
                     annountment.setIssueUser(annountment.getModifiedBy());
-                }else{
+                } else {
                     annountment.setIssue(Constant.EnumState.NO.getValue());
                 }
-                if(isAgentTask){
-                    annountment.setDeptDirectorId(agentTaskService.getUserId(task.getId(),curUserId));
-                }else{
+                if (isAgentTask) {
+                    annountment.setDeptDirectorId(agentTaskService.getUserId(task.getId(), curUserId));
+                } else {
                     annountment.setDeptDirectorId(curUserId);
                 }
-                annountment.setDeptDirectorName(ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask));
+                annountment.setDeptDirectorName(ActivitiUtil.getSignName(SessionUtil.getDisplayName(), isAgentTask));
 
                 annountment.setDeptDirectorDate(new Date());
                 annountment.setDeptDirectorIdeaContent(flowDto.getDealOption());
@@ -572,20 +574,20 @@ public class AnnountmentServiceImpl implements AnnountmentService {
         }
         //如果是代办，还要更新环节名称和任务ID
         if (Validate.isList(agentTaskList)) {
-            agentTaskService.updateAgentInfo(agentTaskList,processInstance.getId(),processInstance.getName());
+            agentTaskService.updateAgentInfo(agentTaskList, processInstance.getId(), processInstance.getName());
         }
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
 
         //当下一个处理人还是自己的时候，任务ID是已经改变了的，所以这里要返回任务ID
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), task.getId(),"操作成功！",null);
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), task.getId(), "操作成功！", null);
     }
 
     @Override
     public ResultMsg endFlow(String businessKey) {
-        Annountment annountment = annountmentRepo.findById(Annountment_.anId.getName(),businessKey);
-        if(Validate.isObject(annountment)){
-            if(!SessionUtil.getUserId().equals(annountment.getCreatedBy()) && !SUPER_ACCOUNT.equals(SessionUtil.getLoginName())){
+        Annountment annountment = annountmentRepo.findById(Annountment_.anId.getName(), businessKey);
+        if (Validate.isObject(annountment)) {
+            if (!SessionUtil.getUserId().equals(annountment.getCreatedBy()) && !SUPER_ACCOUNT.equals(SessionUtil.getLoginName())) {
                 return ResultMsg.error("您无权进行删除流程操作！");
             }
             annountment.setAppoveStatus(Constant.EnumState.DELETE.getValue());

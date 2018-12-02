@@ -2,6 +2,7 @@ package cs.common;
 
 
 import cs.common.constants.Constant;
+import cs.common.utils.Validate;
 
 /**
  * 操作返回类
@@ -18,35 +19,48 @@ public class ResultMsg implements java.io.Serializable {
 	private Object reObj; // 返回实体
 
 	public ResultMsg() {
-
+		super();
 	}
 
 	public ResultMsg(boolean flag, String reCode, String idCode, String reMsg, Object reObj) {
 		this.flag = flag;
-		this.reCode = reCode;
-		this.idCode = idCode;
-		this.reMsg = reMsg;
-		this.reObj = reObj;
+        if(Validate.isString(reCode)){
+            this.reCode = reCode;
+        }
+        if(Validate.isString(reMsg)){
+            this.reMsg = reMsg;
+        }
+        if(Validate.isString(idCode)){
+            this.idCode = idCode;
+        }
+        if(Validate.isObject(reObj)){
+            this.reObj = reObj;
+        }
 	}
 
 	public ResultMsg(boolean flag, String reCode, String reMsg) {
 		this.flag = flag;
-		this.reCode = reCode;
-		this.reMsg = reMsg;
-	}
-
-	public ResultMsg(boolean flag, String[] message) {
-		this.flag = flag;
-		this.reCode = message[0];
-		this.reMsg = message[1];
+		if(Validate.isString(reCode)){
+			this.reCode = reCode;
+		}
+		if(Validate.isString(reMsg)){
+			this.reMsg = reMsg;
+		}
 	}
 
 	public ResultMsg(boolean flag, String reCode, String reMsg, Object reObj) {
 		this.flag = flag;
-		this.reCode = reCode;
-		this.reMsg = reMsg;
-		this.reObj = reObj;
+		if(Validate.isString(reCode)){
+			this.reCode = reCode;
+		}
+		if(Validate.isString(reMsg)){
+			this.reMsg = reMsg;
+		}
+		if(Validate.isObject(reObj)){
+			this.reObj = reObj;
+		}
 	}
+
 	public static ResultMsg ok(String msg){
 		return new ResultMsg(true, Constant.MsgCode.OK.getValue(), null == msg?"成功":msg);
 	}
@@ -67,7 +81,9 @@ public class ResultMsg implements java.io.Serializable {
 	}
 
 	public void setReMsg(String reMsg) {
-		this.reMsg = reMsg;
+	    if(Validate.isString(reMsg)){
+            this.reMsg = reMsg;
+        }
 	}
 
 	public Object getReObj() {
@@ -75,7 +91,9 @@ public class ResultMsg implements java.io.Serializable {
 	}
 
 	public void setReObj(Object reObj) {
-		this.reObj = reObj;
+        if(Validate.isObject(reObj)){
+            this.reObj = reObj;
+        }
 	}
 
 	public boolean isFlag() {

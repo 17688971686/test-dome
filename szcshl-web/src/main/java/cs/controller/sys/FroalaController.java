@@ -3,6 +3,7 @@ package cs.controller.sys;
 import cs.ahelper.IgnoreAnnotation;
 import cs.ahelper.RealPathResolver;
 import cs.common.utils.SysFileUtil;
+import cs.common.utils.Validate;
 import org.apache.commons.io.FileUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,9 +40,12 @@ public class FroalaController {
     @RequiresAuthentication
     @RequestMapping(name = "富文本图片上传", path = "uploadImg", method = RequestMethod.POST)
     @ResponseBody
-    Map<String, String> uploadImg(@RequestParam("file") MultipartFile multipartFile,String rootPath){
+    public Map<String, String> uploadImg(@RequestParam("file") MultipartFile multipartFile,String rootPath){
         String fileName = multipartFile.getOriginalFilename();
-        String fileType = fileName.substring(fileName.lastIndexOf("."), fileName.length());
+        String fileType = ".png";
+        if(Validate.isString(fileName)){
+            fileType = fileName.substring(fileName.lastIndexOf("."), fileName.length());
+        }
         Map<String, String> map = new HashMap<>();
         try {
             String imgId = UUID.randomUUID().toString();
@@ -54,7 +58,7 @@ public class FroalaController {
             FileUtils.copyInputStreamToFile(multipartFile.getInputStream(),new File(savePath+"/"+imgId+fileType));
             map.put("link", rootPath+"/"+froala_img_path+"/"+imgId+fileType);
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
         return map;
     }

@@ -25,6 +25,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.util.List;
 
+import static cs.common.constants.Constant.ERROR_MSG;
+
 /**
  * Description: 专家评审 控制层
  * author: ldm
@@ -108,7 +110,11 @@ public class ExpertReviewController {
     @ResponseBody
     public ResultMsg saveExpertReview(@RequestParam(required = true) String businessId, @RequestParam(required = true) String minBusinessId, String reviewId,
                                       @RequestParam(required = true) String businessType, @RequestParam(required = true) String expertIds, @RequestParam(required = true) String selectType) {
-        return expertReviewService.save(businessId, minBusinessId, businessType, reviewId, expertIds, selectType);
+        ResultMsg resultMsg = expertReviewService.save(businessId, minBusinessId, businessType, reviewId, expertIds, selectType);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication

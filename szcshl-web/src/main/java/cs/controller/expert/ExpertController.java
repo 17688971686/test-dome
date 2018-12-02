@@ -38,6 +38,8 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static cs.common.constants.Constant.ERROR_MSG;
+
 @Controller
 @RequestMapping(name = "专家信息", path = "expert")
 @MudoleAnnotation(name = "专家库管理",value = "permission#expert")
@@ -137,14 +139,22 @@ public class ExpertController {
     @RequestMapping(name = "统计符合条件的专家", path = "countReviewExpert", method = RequestMethod.POST)
     @ResponseBody
     public List<ExpertDto> countReviewExpert(@RequestParam String minBusinessId, @RequestParam String reviewId, @RequestBody ExpertSelConditionDto epSelCondition) {
-        return expertService.countExpert(minBusinessId, reviewId, epSelCondition);
+        List<ExpertDto> resultList = expertService.countExpert(minBusinessId, reviewId, epSelCondition);
+        if(!Validate.isList(resultList)){
+            resultList = new ArrayList<>();
+        }
+        return resultList;
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "专家抽取", path = "autoExpertReview", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg findReviewExpert(@RequestParam boolean isAllExtract,@RequestParam String minBusinessId, @RequestParam String reviewId, @RequestBody ExpertSelConditionDto[] paramArrary) {
-        return expertService.autoExpertReview(isAllExtract,minBusinessId, reviewId, paramArrary);
+        ResultMsg resultMsg = expertService.autoExpertReview(isAllExtract,minBusinessId, reviewId, paramArrary);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
@@ -236,24 +246,31 @@ public class ExpertController {
     @RequestMapping(name = "专家抽取统计", path = "expertSelectHis", method = RequestMethod.POST)
     @ResponseBody
     public List<ExpertSelectHis> expertSelectHis(@RequestBody ExpertSelectHis expertSelectHis) {
-        return expertService.expertSelectHis(expertSelectHis,false);
+        List<ExpertSelectHis> resultList = expertService.expertSelectHis(expertSelectHis,false);
+        if(!Validate.isList(resultList)){
+            resultList = new ArrayList<>();
+        }
+        return resultList;
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "专家评分统计", path = "expertScoreHis", method = RequestMethod.POST)
     @ResponseBody
     public List<ExpertSelectHis> expertScoreHis(@RequestBody ExpertSelectHis expertSelectHis) {
-        return expertService.expertSelectHis(expertSelectHis,true);
+        List<ExpertSelectHis> resultList = expertService.expertSelectHis(expertSelectHis,true);
+        if(!Validate.isList(resultList)){
+            resultList = new ArrayList<>();
+        }
+        return resultList;
     }
-
 
     @RequiresAuthentication
     @RequestMapping(name="查询专家评审的项目信息" , path = "reviewProject" , method =  RequestMethod.POST)
     @ResponseBody
     public List<ExpertSignDto> reviewProject(@RequestParam String expertId){
-        List<ExpertSignDto> resultList = new ArrayList<>();
-        if(Validate.isString(expertId)){
-            resultList = expertSignService.reviewProject(expertId);
+        List<ExpertSignDto> resultList =  expertSignService.reviewProject(expertId);
+        if(!Validate.isList(resultList)){
+            resultList = new ArrayList<>();
         }
         return resultList;
     }

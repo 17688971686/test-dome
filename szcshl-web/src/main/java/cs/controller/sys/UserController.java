@@ -1,6 +1,7 @@
 package cs.controller.sys;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -183,7 +184,11 @@ public class UserController {
     @RequestMapping(name = "获取所有用户显示名和id", path = "getAllUserDisplayName", method = RequestMethod.POST)
     @ResponseBody
     public List<UserDto> getAllUserDisPlayName() {
-        return userService.getAllUserDisplayName();
+        List<UserDto> userDtoList = userService.getAllUserDisplayName();
+        if(!Validate.isList(userDtoList)){
+            userDtoList = new ArrayList<>();
+        }
+        return userDtoList;
     }
 
     @RequiresAuthentication

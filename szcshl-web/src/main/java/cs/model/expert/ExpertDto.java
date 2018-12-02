@@ -1,6 +1,7 @@
 package cs.model.expert;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import cs.common.utils.Validate;
 import cs.model.BaseDto;
 
 import javax.persistence.Column;
@@ -231,7 +232,9 @@ public class ExpertDto extends BaseDto {
     }
 
     public void setRemark(String remark) {
-        this.remark = remark;
+        if(Validate.isString(remark)){
+            this.remark = remark;
+        }
     }
 
     public String getExpertID() {
@@ -402,4 +405,6 @@ public class ExpertDto extends BaseDto {
         this.inputPerson = inputPerson;
     }
 
+    public ExpertDto() {
+    }
 }

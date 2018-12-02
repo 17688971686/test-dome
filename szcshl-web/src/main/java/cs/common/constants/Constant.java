@@ -30,7 +30,7 @@ public class Constant {
     /**
      * 默认错误信息
      */
-    //public static final String ERROR_MSG = "操作异常，错误信息已记录，请联系相关人员处理！";
+    public static final String ERROR_MSG = "操作异常，错误信息已记录，请联系相关人员处理！";
 
     /**
      * 默认来文单位

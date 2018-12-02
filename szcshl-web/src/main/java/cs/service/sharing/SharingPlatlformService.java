@@ -18,7 +18,7 @@ public interface SharingPlatlformService {
 
     PageModelDto<SharingPlatlformDto> findByCurUser(ODataObj odataObj);
 
-    void save(SharingPlatlformDto record);
+    SharingPlatlformDto save(SharingPlatlformDto record);
 
     void update(SharingPlatlformDto record);
 

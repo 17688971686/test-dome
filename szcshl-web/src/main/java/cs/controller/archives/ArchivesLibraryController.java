@@ -71,16 +71,18 @@ public class ArchivesLibraryController {
     @RequiresAuthentication
     @RequestMapping(name = "发起流程", path = "startFlow", method = RequestMethod.POST)
     @ResponseBody
-    public ResultMsg startFlow(@RequestParam(required = true) String id) {
+    public ResultMsg startFlow(@RequestParam String id) {
         ResultMsg resultMsg = archivesLibraryService.startFlow(id);
-        if(resultMsg.isFlag()){
-            String procInstName = Validate.isObject(resultMsg.getReObj())?resultMsg.getReObj().toString():"";
-            rtxService.dealPoolRTXMsg(resultMsg.getIdCode(),resultMsg,procInstName, Constant.MsgType.task_type.name());
-
-            resultMsg.setIdCode(null);
-            resultMsg.setReObj(null);
+        if(Validate.isObject(resultMsg)){
+            if(resultMsg.isFlag()){
+                String procInstName = Validate.isObject(resultMsg.getReObj())?resultMsg.getReObj().toString():"";
+                rtxService.dealPoolRTXMsg(resultMsg.getIdCode(),resultMsg,procInstName, Constant.MsgType.task_type.name());
+                resultMsg.setIdCode(null);
+                resultMsg.setReObj(null);
+            }
+        }else{
+            resultMsg = ResultMsg.error("处理异常！");
         }
-
         return resultMsg;
     }
 

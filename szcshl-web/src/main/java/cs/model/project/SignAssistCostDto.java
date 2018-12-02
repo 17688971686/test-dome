@@ -1,6 +1,7 @@
 package cs.model.project;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import cs.common.utils.Validate;
 import cs.model.financial.FinancialManagerDto;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -191,7 +192,9 @@ public class SignAssistCostDto {
     }
 
     public void setIsLightUp(String isLightUp) {
-        this.isLightUp = isLightUp;
+        if(Validate.isString(isLightUp)){
+            this.isLightUp = isLightUp;
+        }
     }
 
     public Integer getProcessState() {
@@ -200,5 +203,8 @@ public class SignAssistCostDto {
 
     public void setProcessState(Integer processState) {
         this.processState = processState;
+    }
+
+    public SignAssistCostDto() {
     }
 }

@@ -31,6 +31,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static cs.common.constants.Constant.ERROR_MSG;
+
 @Controller
 @RequestMapping(name = "工作方案", path = "workprogram")
 @IgnoreAnnotation
@@ -52,7 +54,11 @@ public class WorkProgramController {
     @RequestMapping(name = "保存工作方案", path = "addWork", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg post(@RequestBody WorkProgramDto workProgramDto, Boolean isNeedWorkProgram) {
-        return workProgramService.save(workProgramDto, isNeedWorkProgram);
+        ResultMsg resultMsg = workProgramService.save(workProgramDto, isNeedWorkProgram);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
@@ -60,7 +66,11 @@ public class WorkProgramController {
     @RequestMapping(name = "保存项目基本信息", path = "saveBaseInfo", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg saveBaseInfo(@RequestBody WorkProgramDto workProgramDto) {
-        return workProgramService.saveBaseInfo(workProgramDto);
+        ResultMsg resultMsg = workProgramService.saveBaseInfo(workProgramDto);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
     @RequiresAuthentication
     //@RequiresPermissions("workprogram#initWorkProgram#post")
@@ -82,15 +92,23 @@ public class WorkProgramController {
     //@RequiresPermissions("workprogram#html/workMaintainList#post")
     @RequestMapping(name = "查询工作方案", path = "html/workMaintainList", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String,Object> workMaintainList(@RequestParam(required = true) String signId) {
-        return workProgramService.workMaintainList(signId);
+    public Map<String,Object> workMaintainList(@RequestParam String signId) {
+        Map<String,Object> resultMap = workProgramService.workMaintainList(signId);
+        if(!Validate.isMap(resultMap)){
+            resultMap = new HashMap<>();
+        }
+        return resultMap;
     }
 
     @RequiresAuthentication
     //@RequiresPermissions("workprogram#initWorkProgramById#post")
     @RequestMapping(name = "根据ID查找工作方案信息", path = "initWorkProgramById", method = RequestMethod.POST)
-    public @ResponseBody WorkProgramDto initWorkProgramById(@RequestParam(required = true) String workId){
+    @ResponseBody
+    public  WorkProgramDto initWorkProgramById(@RequestParam String workId){
     	WorkProgramDto work = workProgramService.initWorkProgramById(workId);
+    	if(!Validate.isObject(work)){
+            work = new WorkProgramDto();
+        }
     	return work;
     }
 
@@ -105,31 +123,47 @@ public class WorkProgramController {
     @RequiresAuthentication
     @RequestMapping(name = "删除工作方案", path = "deleteBySignId", method = RequestMethod.DELETE)
     @ResponseBody
-    public ResultMsg deleteBySignId(@RequestParam(required = true) String signId) {
-        return workProgramService.deleteBySignId(signId);
+    public ResultMsg deleteBySignId(@RequestParam  String signId) {
+        ResultMsg resultMsg = workProgramService.deleteBySignId(signId);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
     //@RequiresPermissions("workprogram#findByPrincipalUser#get")
     @RequestMapping(name="通过项目负责人获取项目信息", path="findByPrincipalUser" ,method=RequestMethod.GET)
     @ResponseBody
-    public WorkProgramDto findByPrincipalUser(@RequestParam  String signId){
-        return workProgramService.findByPrincipalUser(signId);
+    public WorkProgramDto findByPrincipalUser(@RequestParam String signId){
+        WorkProgramDto work = workProgramService.findByPrincipalUser(signId);
+        if(!Validate.isObject(work)){
+            work = new WorkProgramDto();
+        }
+        return work;
     }
 
     @RequiresAuthentication
     //@RequiresPermissions("workprogram#createMeetingDoc#get")
     @RequestMapping(name = "生成会前准备材料", path = "createMeetingDoc", method = RequestMethod.GET)
     @ResponseBody
-    public ResultMsg createMeetingDoc(@RequestParam(required = true) String signId) {
-        return workProgramService.createMeetingDoc(signId);
+    public ResultMsg createMeetingDoc(@RequestParam String signId) {
+        ResultMsg resultMsg = workProgramService.createMeetingDoc(signId);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "专家评审会修改", path = "updateReviewType", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg updateReviewType(@RequestBody WorkProgramDto workProgramDto) {
-        return workProgramService.updateReviewType(workProgramDto.getSignId(),workProgramDto.getId(),workProgramDto.getReviewType());
+        ResultMsg resultMsg = workProgramService.updateReviewType(workProgramDto.getSignId(),workProgramDto.getId(),workProgramDto.getReviewType());
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
@@ -137,13 +171,16 @@ public class WorkProgramController {
     @ResponseBody
     public ResultMsg startReWorkFlow(@RequestParam String signId,@RequestParam String reworkType,String brandIds,String userId) {
         ResultMsg resultMsg = workProgramService.startReWorkFlow(signId,reworkType,brandIds,userId);
-        if(resultMsg.isFlag()){
-            //如果成功，则发送短信通知
-            String taskName = resultMsg.getReObj().toString();
-            rtxService.dealPoolRTXMsg(signId,resultMsg,taskName, Constant.MsgType.task_type.name());
+        if(Validate.isObject(resultMsg)){
+            if(resultMsg.isFlag()){
+                //如果成功，则发送短信通知
+                String taskName = resultMsg.getReObj().toString();
+                rtxService.dealPoolRTXMsg(signId,resultMsg,taskName, Constant.MsgType.task_type.name());
+            }
+        }else{
+            resultMsg = ResultMsg.error(ERROR_MSG);
         }
         return resultMsg;
-
     }
 
     @RequiresAuthentication

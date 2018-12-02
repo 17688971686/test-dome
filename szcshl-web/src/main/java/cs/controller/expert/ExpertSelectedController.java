@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import static cs.common.constants.Constant.COMPANY_NAME;
+import static cs.common.constants.Constant.ERROR_MSG;
 
 /**
  * Description: 抽取专家 控制层
@@ -90,8 +91,12 @@ public class ExpertSelectedController {
     //@RequiresPermissions("expertSelected#expertCostTotal#post")
     @RequestMapping(name = "专家评审费汇总", path = "expertCostTotal", method = RequestMethod.POST)
     @ResponseBody
-    public ResultMsg expertCostTotal(@RequestBody ExpertCostCountDto expertCostCountDto) throws ParseException {
-        return expertSelectedService.expertCostTotal(expertCostCountDto);
+    public ResultMsg expertCostTotal(@RequestBody ExpertCostCountDto expertCostCountDto) {
+        ResultMsg resultMsg = expertSelectedService.expertCostTotal(expertCostCountDto);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
@@ -99,7 +104,11 @@ public class ExpertSelectedController {
     @RequestMapping(name = "项目评审费统计", path = "projectCostTotal", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg projectCostTotal(@RequestBody ProjectReviewCostDto projectReviewCostDto) {
-        return expertSelectedService.projectReviewCost(projectReviewCostDto);
+        ResultMsg resultMsg = expertSelectedService.projectReviewCost(projectReviewCostDto);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
@@ -107,7 +116,11 @@ public class ExpertSelectedController {
     @RequestMapping(name = "项目评审费录入", path = "findProjectReviewCost", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<ProjectReviewCostDto> findProjectReviewCost(@RequestBody ProjectReviewCostDto projectReviewCostDto,String skip,String size) {
-        return expertSelectedService.findProjectRevireCostBak(projectReviewCostDto,skip,size);
+        PageModelDto<ProjectReviewCostDto> projectReviewCostDtoPageModelDto = expertSelectedService.findProjectRevireCostBak(projectReviewCostDto,skip,size);
+        if(!Validate.isObject(projectReviewCostDtoPageModelDto)){
+            projectReviewCostDtoPageModelDto = new PageModelDto();
+        }
+        return projectReviewCostDtoPageModelDto;
     }
 
     @RequiresAuthentication
@@ -115,7 +128,11 @@ public class ExpertSelectedController {
     @RequestMapping(name = "项目评审费分类统计", path = "proCostClassifyTotal", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg proCostClassifyTotal(@RequestBody ProjectReviewCostDto projectReviewCostDto, int page) {
-        return expertSelectedService.proReviewClassifyCount(projectReviewCostDto, page);
+        ResultMsg resultMsg = expertSelectedService.proReviewClassifyCount(projectReviewCostDto, page);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
@@ -123,7 +140,11 @@ public class ExpertSelectedController {
     @RequestMapping(name = "项目评审情况统计", path = "proReviewConditionCount", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg proCostClassifyTotal(@RequestBody ProReviewConditionDto proReviewConditionDto) {
-        return expertSelectedService.proReviewConditionCount(proReviewConditionDto);
+        ResultMsg resultMsg = expertSelectedService.proReviewConditionCount(proReviewConditionDto);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
@@ -131,7 +152,11 @@ public class ExpertSelectedController {
     @RequestMapping(name = "专家评审情况综合统计", path = "expertReviewCondCount", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg expertReviewCondTotal(@RequestBody ExpertReviewConSimpleDto expertReviewConSimpleDto) {
-        return expertSelectedService.expertReviewConSimpleCount(expertReviewConSimpleDto);
+        ResultMsg resultMsg = expertSelectedService.expertReviewConSimpleCount(expertReviewConSimpleDto);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
@@ -139,7 +164,11 @@ public class ExpertSelectedController {
     @RequestMapping(name = "专家评审情况不规则统计", path = "expertReviewCompliCount", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg expertReviewCompliCount(@RequestBody ExpertReviewConSimpleDto expertReviewConSimpleDto) {
-        return expertSelectedService.expertReviewConComplicatedCount(expertReviewConSimpleDto);
+        ResultMsg resultMsg = expertSelectedService.expertReviewConComplicatedCount(expertReviewConSimpleDto);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
 
@@ -148,7 +177,11 @@ public class ExpertSelectedController {
     @RequestMapping(name = "专家评审情况详细统计", path = "expertReviewCondDetailCount", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg expertReviewCondDetailTotal(@RequestBody ExpertReviewCondDto expertReviewCondDto) {
-        return expertSelectedService.expertReviewCondDetailCount(expertReviewCondDto);
+        ResultMsg resultMsg = expertSelectedService.expertReviewCondDetailCount(expertReviewCondDto);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
@@ -156,7 +189,11 @@ public class ExpertSelectedController {
     @RequestMapping(name = "专家评审费明细汇总", path = "expertCostDetailTotal", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg expertCostDetailTotal(@RequestBody ExpertCostDetailCountDto expertCostDetailCountDto) throws ParseException {
-        return expertSelectedService.expertCostDetailTotal(expertCostDetailCountDto);
+        ResultMsg resultMsg = expertSelectedService.expertCostDetailTotal(expertCostDetailCountDto);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication

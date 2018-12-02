@@ -20,7 +20,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
+
+import static cs.common.constants.Constant.ERROR_MSG;
 
 
 /**
@@ -65,7 +68,11 @@ public class TopicInfoController {
     @RequestMapping(name = "更新记录", path = "updateTopic", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg updateTopic(@RequestBody TopicInfoDto record) {
-        return topicInfoService.updateTopic(record);
+        ResultMsg resultMsg =topicInfoService.updateTopic(record);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
@@ -96,38 +103,58 @@ public class TopicInfoController {
 
     @RequiresAuthentication
     @RequestMapping(name = "查询课题维护详情", path = "findTopicDetail", method = RequestMethod.POST)
-    public @ResponseBody
-    List<TopicMaintainDto> findTopicDetail(@RequestParam(required = true) String userId) {
-        return topicMaintainService.findTopicAll(userId);
+    @ResponseBody
+    public List<TopicMaintainDto> findTopicDetail(@RequestParam String userId) {
+        List<TopicMaintainDto> resultList = topicMaintainService.findTopicAll(userId);
+        if(!Validate.isList(resultList)){
+            resultList = new ArrayList<>();
+        }
+        return resultList;
     }
 
 
     @RequiresAuthentication
     @RequestMapping(name = "合同录入", path = "saveContractDetailList", method = RequestMethod.POST)
-    public @ResponseBody
-    ResultMsg saveContractDetailList(@RequestBody ContractDto[] contractDtoArrary){
-        return topicInfoService.saveContractDetailList(contractDtoArrary);
+    @ResponseBody
+    public ResultMsg saveContractDetailList(@RequestBody ContractDto[] contractDtoArrary){
+        ResultMsg resultMsg = topicInfoService.saveContractDetailList(contractDtoArrary);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "课题维护", path = "saveTopicDetailList", method = RequestMethod.POST)
-    public @ResponseBody
-    ResultMsg saveTopicDetailList(@RequestBody TopicMaintainDto[] topicMaintainDtoArray){
-        return topicInfoService.saveTopicDetailList(topicMaintainDtoArray);
+    @ResponseBody
+    public ResultMsg saveTopicDetailList(@RequestBody TopicMaintainDto[] topicMaintainDtoArray){
+        ResultMsg resultMsg = topicInfoService.saveTopicDetailList(topicMaintainDtoArray);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "删除记录", path = "contractDel", method = RequestMethod.DELETE)
     @ResponseBody
-    public ResultMsg deleteContract(@RequestParam(required = true) String ids) {
-        return topicInfoService.deleteContract(ids);
+    public ResultMsg deleteContract(@RequestParam String ids) {
+        ResultMsg resultMsg = topicInfoService.deleteContract(ids);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "删除课题维护记录", path = "topicMaintainDel", method = RequestMethod.DELETE)
     @ResponseBody
-    public ResultMsg deleteTopicMaintain(@RequestParam(required = true) String ids) {
-        return topicInfoService.deleteTopicMaintain(ids);
+    public ResultMsg deleteTopicMaintain(@RequestParam String ids) {
+        ResultMsg resultMsg = topicInfoService.deleteTopicMaintain(ids);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication

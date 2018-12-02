@@ -1,5 +1,6 @@
 package cs.mobile.controller;
 
+import cs.common.utils.Validate;
 import cs.controller.flow.FlowController;
 import cs.domain.project.SignDispaWork;
 import cs.mobile.service.ProStatisticsService;
@@ -86,9 +87,13 @@ public class PendingTaskController {
     }
 
     @RequestMapping(name = "项目暂停详情", path = "projectStop",method=RequestMethod.GET)
-    public @ResponseBody
-    ProjectStopDto projectStop(@RequestParam(required = true)String id){
-        return projectStopService.getProjectStopByStopId(id);
+    @ResponseBody
+    public ProjectStopDto projectStop(@RequestParam String id){
+        ProjectStopDto projectStopDto = projectStopService.getProjectStopByStopId(id);
+        if(!Validate.isObject(projectStopDto)){
+            projectStopDto = new ProjectStopDto();
+        }
+        return projectStopDto;
     }
 
     @RequestMapping(name = "课题研究详情", path = "topic",method=RequestMethod.GET)

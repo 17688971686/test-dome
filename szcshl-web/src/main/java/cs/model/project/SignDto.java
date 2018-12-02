@@ -2,6 +2,7 @@ package cs.model.project;
 
 
 import com.alibaba.fastjson.annotation.JSONField;
+import cs.common.utils.Validate;
 import cs.model.BaseDto;
 import cs.model.expert.ExpertReviewDto;
 import cs.model.sys.SysFileDto;
@@ -12,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 public class SignDto extends BaseDto {
+
 
     private String signid;
 
@@ -839,7 +841,9 @@ public class SignDto extends BaseDto {
     }
 
     public void setLengthenExp(String lengthenExp) {
-        this.lengthenExp = lengthenExp;
+        if(Validate.isString(lengthenExp)){
+            this.lengthenExp = lengthenExp;
+        }
     }
 
     /*********************************** 以下是set get 方法 *****************************************/
@@ -923,7 +927,9 @@ public class SignDto extends BaseDto {
     }
 
     public void setSignid(String signid) {
-        this.signid = signid;
+        if(Validate.isString(signid)){
+            this.signid = signid;
+        }
     }
 
     public String getFilecode() {

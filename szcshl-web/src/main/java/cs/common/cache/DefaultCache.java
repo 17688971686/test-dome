@@ -1,5 +1,6 @@
 package cs.common.cache;
 
+import cs.common.utils.Validate;
 import org.ehcache.Cache;
 
 /**
@@ -25,8 +26,10 @@ public class DefaultCache implements ICache{
 
 	@Override
 	public Object get(String key) {
-		
-		return cache.get(key);
+		if(Validate.isString(key)){
+			return cache.get(key);
+		}
+		return null;
 	}
 
 	@Override

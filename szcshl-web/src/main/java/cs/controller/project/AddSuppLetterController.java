@@ -20,6 +20,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.util.List;
 
+import static cs.common.constants.Constant.ERROR_MSG;
+
 /**
  * Description: 项目资料补充函 控制层
  * author: ldm
@@ -54,13 +56,16 @@ public class AddSuppLetterController {
     @ResponseBody
     public ResultMsg startSignSupperFlow(@RequestParam(required = true) String id) {
          ResultMsg resultMsg = addSuppLetterService.startSignSupperFlow(id);
-        if(resultMsg.isFlag()){
-            String procInstName = Validate.isObject(resultMsg.getReObj())?resultMsg.getReObj().toString():"";
-            rtxService.dealPoolRTXMsg(resultMsg.getIdCode(),resultMsg,procInstName,Constant.MsgType.task_type.name());
-
-            resultMsg.setIdCode(null);
-            resultMsg.setReObj(null);
-        }
+         if(Validate.isObject(resultMsg)){
+             if(resultMsg.isFlag()){
+                 String procInstName = Validate.isObject(resultMsg.getReObj())?resultMsg.getReObj().toString():"";
+                 rtxService.dealPoolRTXMsg(resultMsg.getIdCode(),resultMsg,procInstName,Constant.MsgType.task_type.name());
+                 resultMsg.setIdCode(null);
+                 resultMsg.setReObj(null);
+             }
+         }else{
+             resultMsg = ResultMsg.error(ERROR_MSG);
+         }
          return resultMsg;
     }
 
@@ -117,15 +122,25 @@ public class AddSuppLetterController {
     @RequiresAuthentication
     //@RequiresPermissions("addSuppLetter#initSuppLetter#post")
     @RequestMapping(name = "初始化补充资料函", path = "initSuppLetter", method = RequestMethod.POST)
-    public @ResponseBody AddSuppLetterDto initSuppLetter(@RequestParam String businessId, String businessType){
-        return addSuppLetterService.initSuppLetter(businessId,businessType);
+    @ResponseBody
+    public AddSuppLetterDto initSuppLetter(@RequestParam String businessId, String businessType){
+        AddSuppLetterDto addSuppLetterDto = addSuppLetterService.initSuppLetter(businessId,businessType);
+        if(!Validate.isObject(addSuppLetterDto)){
+            addSuppLetterDto = new AddSuppLetterDto();
+        }
+        return addSuppLetterDto;
     }
 
     @RequiresAuthentication
     //@RequiresPermissions("addSuppLetter#findById#get")
     @RequestMapping(name = "根据id获取拟补充资料函", path = "findById", method = RequestMethod.POST)
-    public @ResponseBody AddSuppLetterDto findById(@RequestParam String id){
-        return addSuppLetterService.findById(id);
+    @ResponseBody
+    public AddSuppLetterDto findById(@RequestParam String id){
+        AddSuppLetterDto addSuppLetterDto = addSuppLetterService.findById(id);
+        if(!Validate.isObject(addSuppLetterDto)){
+            addSuppLetterDto = new AddSuppLetterDto();
+        }
+        return addSuppLetterDto;
     }
 
     /*@RequiresAuthentication

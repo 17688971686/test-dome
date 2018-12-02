@@ -1,6 +1,7 @@
 package cs.controller.personalcenter;
 
 import cs.ahelper.MudoleAnnotation;
+import cs.common.utils.Validate;
 import cs.domain.project.AgentTask;
 import cs.model.PageModelDto;
 import cs.model.project.SignDto;
@@ -34,10 +35,13 @@ public class PersonalCenterController {
 
     @RequiresAuthentication
     @RequestMapping(name = "获取代办记录", path = "findByOData", method = RequestMethod.POST)
-    public @ResponseBody
-    PageModelDto<AgentTask> get(HttpServletRequest request) throws ParseException {
+    @ResponseBody
+    public PageModelDto<AgentTask> get(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<AgentTask> agentTaskList = agentTaskService.get(odataObj);
+        if(!Validate.isObject(agentTaskList)){
+            agentTaskList = new PageModelDto<>();
+        }
         return agentTaskList;
     }
 
@@ -47,6 +51,5 @@ public class PersonalCenterController {
     public String takeUser(){
 
         return ctrlName+"/takeUser";
-
     }
 }

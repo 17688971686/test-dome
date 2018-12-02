@@ -1,5 +1,6 @@
 package cs.model.sys;
 
+import cs.common.utils.Validate;
 import cs.model.BaseDto;
 
 import java.util.ArrayList;
@@ -205,7 +206,9 @@ public class UserDto extends BaseDto {
     }
 
     public void setLoginName(String loginName) {
-        this.loginName = loginName;
+        if(Validate.isString(loginName)){
+            this.loginName = loginName;
+        }
     }
 
     public String getPassword() {
@@ -414,5 +417,8 @@ public class UserDto extends BaseDto {
 
     public void setRtxName(String rtxName) {
         this.rtxName = rtxName;
+    }
+
+    public UserDto() {
     }
 }

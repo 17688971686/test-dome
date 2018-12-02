@@ -785,8 +785,10 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         Map resultMap = new HashMap<String, Object>();
         List<ProMeetDto> proAmMeetDtoList = workProgramRepo.findAmProMeetInfo();
         List<ProMeetDto> proPmMeetDtoList = workProgramRepo.findPmProMeetInfo();
-        resultMap.put("proAmMeetDtoList", proAmMeetInfoUpdate(proAmMeetDtoList));
-        resultMap.put("proPmMeetDtoList", proAmMeetInfoUpdate(proPmMeetDtoList));
+        List<ProMeetShow> proMeetShowList1 = proAmMeetInfoUpdate(proAmMeetDtoList);
+        List<ProMeetShow> proMeetShowList2 = proAmMeetInfoUpdate(proPmMeetDtoList);
+        resultMap.put("proAmMeetDtoList", Validate.isList(proMeetShowList1)?proMeetShowList1:new ArrayList<>());
+        resultMap.put("proPmMeetDtoList", Validate.isList(proMeetShowList2)?proMeetShowList2:new ArrayList<>());
         return resultMap;
     }
 
@@ -1364,7 +1366,6 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                         proMeetShowList.add(proMeetShow);
                     }
                 }
-
             }
         }
         return proMeetShowList;

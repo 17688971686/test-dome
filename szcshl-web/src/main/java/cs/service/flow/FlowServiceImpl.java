@@ -2,13 +2,13 @@ package cs.service.flow;
 
 import cs.ahelper.projhelper.DisUtil;
 import cs.ahelper.projhelper.WorkPGUtil;
+import cs.common.HqlBuilder;
 import cs.common.RandomGUID;
+import cs.common.ResultMsg;
 import cs.common.constants.Constant;
 import cs.common.constants.Constant.MergeType;
 import cs.common.constants.Constant.MsgCode;
 import cs.common.constants.FlowConstant;
-import cs.common.HqlBuilder;
-import cs.common.ResultMsg;
 import cs.common.utils.*;
 import cs.domain.flow.*;
 import cs.domain.project.*;
@@ -22,7 +22,6 @@ import cs.model.flow.TaskDto;
 import cs.model.project.CommentDto;
 import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
-import cs.repository.odata.ODataObjFilterStrategy;
 import cs.repository.repositoryImpl.flow.HiProcessTaskRepo;
 import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
 import cs.repository.repositoryImpl.flow.RuTaskRepo;
@@ -1346,7 +1345,10 @@ public class FlowServiceImpl implements FlowService {
     @Override
     public List<Map<String, Object>> getProc() {
         List<Map<String, Object>> list = jdbcTemplate.queryForList("SELECT arp.NAME_,arp.KEY_ FROM act_re_procdef arp where arp.KEY_ != ? GROUP BY arp.NAME_,arp.KEY_",SIGN_FLOW);
-        return list;
+        if(Validate.isList(list)){
+            return list;
+        }
+        return null;
     }
 
     /**
@@ -1498,7 +1500,11 @@ public class FlowServiceImpl implements FlowService {
 
     @Override
     public List<Map<String,Object>> getBranchInfo(String signId) {
-        return jdbcTemplate.queryForList(WorkSql.getReWorkSql(),signId);
+        List<Map<String,Object>> resultList = jdbcTemplate.queryForList(WorkSql.getReWorkSql(),signId);
+        if(!Validate.isList(resultList)){
+            resultList = new ArrayList<>();
+        }
+        return resultList;
     }
 
     /**

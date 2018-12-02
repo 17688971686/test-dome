@@ -18,7 +18,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
+
+import static cs.common.constants.Constant.ERROR_MSG;
 
 @Controller
 @RequestMapping(name = "通知公告", path = "annountment")
@@ -48,12 +51,16 @@ public class AnnountmentController {
     @ResponseBody
     public ResultMsg startFlow(@RequestParam String id) {
         ResultMsg resultMsg = annService.startFlow(id);
-        if(resultMsg.isFlag()){
-            String procInstName = Validate.isObject(resultMsg.getReObj())?resultMsg.getReObj().toString():"";
-            rtxService.dealPoolRTXMsg(resultMsg.getIdCode(),resultMsg,procInstName, Constant.MsgType.task_type.name());
+        if(Validate.isObject(resultMsg)){
+            if(resultMsg.isFlag()){
+                String procInstName = Validate.isObject(resultMsg.getReObj())?resultMsg.getReObj().toString():"";
+                rtxService.dealPoolRTXMsg(resultMsg.getIdCode(),resultMsg,procInstName, Constant.MsgType.task_type.name());
 
-            resultMsg.setIdCode(null);
-            resultMsg.setReObj(null);
+                resultMsg.setIdCode(null);
+                resultMsg.setReObj(null);
+            }
+        }else{
+            resultMsg = ResultMsg.error(ERROR_MSG);
         }
         return resultMsg;
     }
@@ -74,7 +81,11 @@ public class AnnountmentController {
     @RequestMapping(name = "新增通知公告", path = "", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg create(@RequestBody AnnountmentDto annountmentDto) {
-        return annService.createAnnountment(annountmentDto);
+        ResultMsg resultMsg = annService.createAnnountment(annountmentDto);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     //@RequiresPermissions("annountment#initAnOrg#get")
@@ -82,7 +93,8 @@ public class AnnountmentController {
     @RequestMapping(name = "初始化发布单位", path = "initAnOrg", method = RequestMethod.GET)
     @ResponseBody
     public String inintAnOrg() {
-        return annService.findAnOrg();
+        String resultStr = annService.findAnOrg();
+        return Validate.isString(resultStr)?resultStr:"";
     }
 
     //@RequiresPermissions("annountment#findAnnountmentById#post")
@@ -90,7 +102,11 @@ public class AnnountmentController {
     @RequestMapping(name = "通过ID获取通知公告", path = "findAnnountmentById", method = RequestMethod.POST)
     @ResponseBody
     public AnnountmentDto findAnnoungmentById(@RequestParam String anId) {
-        return annService.findAnnountmentById(anId);
+        AnnountmentDto annountmentDto = annService.findAnnountmentById(anId);
+        if(!Validate.isObject(annountmentDto)){
+            annountmentDto = new AnnountmentDto();
+        }
+        return annountmentDto;
     }
 
     //@RequiresPermissions("annountment##put")
@@ -106,7 +122,11 @@ public class AnnountmentController {
     @RequestMapping(name = "更改发布状态", path = "updateIssueState", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg updateIssueState(@RequestParam String ids, @RequestParam String issueState) {
-        return annService.updateIssueState(ids, issueState);
+        ResultMsg resultMsg = annService.updateIssueState(ids, issueState);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     //@RequiresPermissions("annountment#getHomePageAnnountment#get")
@@ -114,7 +134,11 @@ public class AnnountmentController {
     @RequestMapping(name = "获取主页上的通知公告", path = "getHomePageAnnountment", method = RequestMethod.GET)
     @ResponseBody
     public List<AnnountmentDto> getHomePageAnnountment() {
-        return annService.getHomePageAnnountment();
+        List<AnnountmentDto> resultList = annService.getHomePageAnnountment();
+        if(!Validate.isList(resultList)){
+            resultList = new ArrayList<>();
+        }
+        return resultList;
     }
 
     //@RequiresPermissions("annountment#postArticle#get")
@@ -122,7 +146,11 @@ public class AnnountmentController {
     @RequestMapping(name = "获取上一篇", path = "postArticle", method = RequestMethod.GET)
     @ResponseBody
     public AnnountmentDto postpostArticle(@RequestParam String anId) {
-        return annService.postAritle(anId);
+        AnnountmentDto annountmentDto = annService.postAritle(anId);
+        if(!Validate.isObject(annountmentDto)){
+            annountmentDto = new AnnountmentDto();
+        }
+        return annountmentDto;
     }
 
     //@RequiresPermissions("annountment#nextArticle#get")
@@ -130,7 +158,11 @@ public class AnnountmentController {
     @RequestMapping(name = "获取下一篇", path = "nextArticle", method = RequestMethod.GET)
     @ResponseBody
     public AnnountmentDto nextArticle(@RequestParam String anId) {
-        return annService.nextArticle(anId);
+        AnnountmentDto annountmentDto = annService.nextArticle(anId);
+        if(!Validate.isObject(annountmentDto)){
+            annountmentDto = new AnnountmentDto();
+        }
+        return annountmentDto;
     }
 
     //@RequiresPermissions("annountment##delete")
@@ -138,7 +170,11 @@ public class AnnountmentController {
     @RequestMapping(name = "删除通知公告", path = "", method = RequestMethod.DELETE)
     @ResponseBody
     public ResultMsg delete(@RequestParam String anId) {
-        return annService.deleteAnnountment(anId);
+        ResultMsg resultMsg = annService.deleteAnnountment(anId);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     //begin  html
