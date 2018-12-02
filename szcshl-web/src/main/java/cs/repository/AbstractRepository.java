@@ -56,7 +56,10 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
     @Override
     public T findById(ID id) {
         logger.debug("findById");
-        return getSession().load(this.getPersistentClass(), id);
+        if (null != id) {
+            return getSession().load(this.getPersistentClass(), id);
+        }
+        return null;
     }
 
     /**
@@ -74,7 +77,7 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         hqlBuilder.setParam("id", idValue);
         Query<T> q = this.getCurrentSession().createQuery(hqlBuilder.getHqlString(), getPersistentClass());
         q = setParamsToQuery(q, hqlBuilder);
-        if(Validate.isObject(q)){
+        if (Validate.isObject(q)) {
             List<T> resultList = q.list();
             if (Validate.isList(resultList)) {
                 return resultList.get(0);
@@ -96,7 +99,9 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         logger.debug("findByCriteria");
         Criteria crit = getExecutableCriteria();
         for (Criterion c : criterion) {
-            crit.add(c);
+            if (Validate.isObject(c)) {
+                crit.add(c);
+            }
         }
         return crit.list();
     }
@@ -107,7 +112,7 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         logger.debug("findByOdata");
         Criteria crit = getExecutableCriteria();
         crit = oDataObj.buildQuery(crit);
-        if(Validate.isObject(crit)){
+        if (Validate.isObject(crit)) {
             List<T> list = crit.list();
             return list;
         }
@@ -182,7 +187,7 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
     public List<T> findByHql(HqlBuilder hqlBuilder) {
         Query<T> q = this.getCurrentSession().createQuery(hqlBuilder.getHqlString(), getPersistentClass());
         q = setParamsToQuery(q, hqlBuilder);
-        if(Validate.isObject(q)){
+        if (Validate.isObject(q)) {
             return q.list();
         }
         return null;
@@ -192,7 +197,7 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
     public List<T> findBySql(HqlBuilder hqlBuilder) {
         NativeQuery<T> q = this.getCurrentSession().createNativeQuery(hqlBuilder.getHqlString(), this.getPersistentClass());
         q = setNativeQueryParams(q, hqlBuilder);
-        if(Validate.isObject(q)){
+        if (Validate.isObject(q)) {
             return q.list();
         }
         return null;
@@ -209,7 +214,7 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         NativeQuery<Integer> q = this.getCurrentSession().createNativeQuery(sqlBuilder.getHqlString(), Integer.class);
         q = setNativeQueryParams(q, sqlBuilder);
         Integer returnValue = 0;
-        if(Validate.isObject(q)){
+        if (Validate.isObject(q)) {
             returnValue = q.getSingleResult();
         }
         return Validate.isObject(returnValue) ? returnValue : 0;
@@ -218,9 +223,9 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
     @Override
     public int executeHql(HqlBuilder hqlBuilder) {
         Query q = this.getCurrentSession().createQuery(hqlBuilder.getHqlString());
-        q = setParamsToQuery(q,hqlBuilder);
+        q = setParamsToQuery(q, hqlBuilder);
         int updateCount = 0;
-        if(Validate.isObject(q)){
+        if (Validate.isObject(q)) {
             updateCount = q.executeUpdate();
         }
         return updateCount;
@@ -231,14 +236,14 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         NativeQuery<T> q = this.getCurrentSession().createNativeQuery(hqlBuilder.getHqlString(), this.getPersistentClass());
         q = setNativeQueryParams(q, hqlBuilder);
         int updateCount = 0;
-        if(Validate.isObject(q)){
+        if (Validate.isObject(q)) {
             updateCount = q.executeUpdate();
         }
         return updateCount;
     }
 
     protected Query setParamsToQuery(Query query, HqlBuilder hqlBuilder) {
-        if(!Validate.isObject(query)){
+        if (!Validate.isObject(query)) {
             return null;
         }
         List<String> params = hqlBuilder.getParams();
@@ -258,7 +263,7 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
     }
 
     protected NativeQuery setNativeQueryParams(NativeQuery q, HqlBuilder hqlBuilder) {
-        if(!Validate.isObject(q)){
+        if (!Validate.isObject(q)) {
             return null;
         }
         List<String> params = hqlBuilder.getParams();
@@ -294,9 +299,9 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
     @Override
     public List<Object[]> getObjectArray(HqlBuilder sqlBuilder) {
         NativeQuery<Object[]> q = this.getCurrentSession().createNativeQuery(sqlBuilder.getHqlString());
-        q = setNativeQueryParams(q,sqlBuilder);
+        q = setNativeQueryParams(q, sqlBuilder);
         List<Object[]> resultList = new ArrayList<>();
-        if(Validate.isObject(q)){
+        if (Validate.isObject(q)) {
             resultList = q.getResultList();
         }
         return resultList;

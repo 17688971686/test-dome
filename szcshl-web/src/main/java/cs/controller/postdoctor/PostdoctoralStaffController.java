@@ -6,17 +6,13 @@ import cs.common.constants.Constant;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
-import cs.domain.postdoctor.PostdoctoralStaff;
 import cs.domain.postdoctor.PostdoctoralStaff_;
-import cs.domain.project.SignDispaWork;
-import cs.domain.project.SignDispaWork_;
 import cs.model.PageModelDto;
 import cs.model.postdoctor.PostdoctoralStaffDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.postdoctor.PostdoctorStaffRepo;
 import cs.service.postdoctor.PostdoctoralStaffService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Property;
@@ -24,9 +20,10 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -74,13 +71,10 @@ public class PostdoctoralStaffController {
                    criteria.addOrder(Property.forName(odataObj.getOrderby()).asc());
                }
            }
-
            List<PostdoctoralStaffDto> postdoctoralStaffList = criteria.list();
-
-           pageModelDto.setValue(postdoctoralStaffList);
+           pageModelDto.setValue(Validate.isList(postdoctoralStaffList)?postdoctoralStaffList:new ArrayList<>());
            return  pageModelDto;
        }
-
         PageModelDto<PostdoctoralStaffDto> PostdoctoralBaseDtoList = postdoctoralStaffService.get(odataObj);
         return PostdoctoralBaseDtoList;
     }

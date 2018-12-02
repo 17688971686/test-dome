@@ -336,7 +336,11 @@ public class SignController {
     @RequestMapping(name = "删除收文", path = "", method = RequestMethod.DELETE)
     @ResponseBody
     public ResultMsg deleteSign(@RequestParam String signid) {
-        return signService.deleteSign(signid);
+        ResultMsg resultMsg = signService.deleteSign(signid);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
 /*    @RequiresAuthentication
@@ -350,17 +354,20 @@ public class SignController {
     @RequiresAuthentication
     //@RequiresPermissions("sign#html/initFillPageData#post")
     @RequestMapping(name = "初始收文编辑页面", path = "html/initFillPageData", method = RequestMethod.POST)
-    public @ResponseBody
-    ResultMsg initFillPageData(@RequestParam(required = true) String signid) {
-        return signService.initFillPageData(signid);
+    @ResponseBody
+    public ResultMsg initFillPageData(@RequestParam String signid) {
+        ResultMsg resultMsg = signService.initFillPageData(signid);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "初始化详情页面", path = "html/initDetailPageData", method = RequestMethod.GET)
     @ResponseBody
     @Transactional
-    public SignDto initDetailPageData(@RequestParam(required = true) String signid,
-                               @RequestParam(defaultValue = "false", required = false) boolean queryAll) {
+    public SignDto initDetailPageData(@RequestParam String signid,@RequestParam(defaultValue = "false", required = false) boolean queryAll) {
         SignDto signDto = signService.findById(signid, queryAll);
         if(!Validate.isObject(signDto)){
             signDto = new SignDto();
@@ -375,7 +382,21 @@ public class SignController {
     public List<OrgDto> selectSign(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         List<OrgDto> orgDto = signService.selectSign(odataObj);
+        if(!Validate.isList(orgDto)){
+            orgDto = new ArrayList<>();
+        }
         return orgDto;
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "查找项目概算", path = "findAssistSign", method = RequestMethod.GET)
+    @ResponseBody
+    public List<SignDto> findAssistSign() {
+        List<SignDto> resultList = signService.findAssistSign();
+        if(!Validate.isList(resultList)){
+            resultList = new ArrayList<>();
+        }
+        return resultList;
     }
 
     @RequiresAuthentication
@@ -383,7 +404,11 @@ public class SignController {
     @RequestMapping(name = "初始化项目查询统计", path = "initSignList", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg initSignList() {
-        return signService.initSignList();
+        ResultMsg resultMsg = signService.initSignList();
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
@@ -406,15 +431,23 @@ public class SignController {
     @RequiresAuthentication
     @RequestMapping(name = "统计项目平均天数", path = "sumExistDays", method = RequestMethod.POST)
     @ResponseBody
-    public ResultMsg sumExistDays(@RequestParam(required = true) String signIds){
-        return signService.sumExistDays(signIds);
+    public ResultMsg sumExistDays(@RequestParam String signIds){
+        ResultMsg resultMsg = signService.sumExistDays(signIds);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "通过signId获取平均评审天数和工作日" , path = "findAVGDayId" , method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg findAVGDayId(@RequestParam  String signIds){
-        return signService.findAVGDayId(signIds);
+        ResultMsg resultMsg = signService.findAVGDayId(signIds);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
@@ -423,7 +456,7 @@ public class SignController {
     @ResponseBody
     @LogMsg(module = "发起项目签收流程",logLevel = "2")
     @Transactional
-    public ResultMsg startNewFlow(@RequestParam(required = true) String signid) {
+    public ResultMsg startNewFlow(@RequestParam String signid) {
         ResultMsg resultMsg = signService.startNewFlow(signid);
         if(Validate.isObject(resultMsg)){
             if(resultMsg.isFlag()){
@@ -441,58 +474,84 @@ public class SignController {
     @RequiresAuthentication
     @RequestMapping(name = "正式签收", path = "realSign", method = RequestMethod.POST)
     @ResponseBody
-    public ResultMsg realSign(@RequestParam(required = true) String signid) {
-        return signService.realSign(signid);
+    public ResultMsg realSign(@RequestParam String signid) {
+        ResultMsg resultMsg = signService.realSign(signid);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
-
 
     @RequiresAuthentication
     @RequestMapping(name="在维护项目中添加评审部门" , path = "addAOrg" , method = RequestMethod.POST)
     @ResponseBody
-    public ResultMsg addOrg(@RequestParam String signId , @RequestParam String orgIds ){
-        return signService.addAOrg(signId , orgIds );
+    public ResultMsg addOrg(@RequestParam String signId, @RequestParam String orgIds){
+        ResultMsg resultMsg = signService.addAOrg(signId, orgIds);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "移除项目维护中所添加的评审部门" , path = "deleteOrg" , method = RequestMethod.DELETE)
     @ResponseBody
-    public ResultMsg deleteOrg(@RequestParam String signId , @RequestParam String orgIds){
-        return signService.deleteAOg(signId , orgIds);
+    public ResultMsg deleteOrg(@RequestParam String signId, @RequestParam String orgIds){
+        ResultMsg resultMsg = signService.deleteAOg(signId , orgIds);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "添加项目维护中的添加负责人" , path = "addSecondUser" , method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg addSecondUser(@RequestParam String signId , @RequestParam String userId){
-        return signService.addSecondUser(signId ,  userId);
+        ResultMsg resultMsg = signService.addSecondUser(signId ,  userId);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "删除项目维护中添加的负责人" , path = "deleteSecondUser" , method = RequestMethod.DELETE)
     @ResponseBody
     public ResultMsg deleteSecondUser(@RequestParam String signId ,  @RequestParam String userId){
-        return signService.deleteSecondUser(signId ,  userId);
+        ResultMsg resultMsg = signService.deleteSecondUser(signId ,  userId);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "保存是否能自选多个专家" , path = "saveMoreExpert" , method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg saveMoreExpert(@RequestParam String signId , @RequestParam String isMoreExpert){
-        return signService.saveMoreExpert(signId , isMoreExpert);
+        ResultMsg resultMsg = signService.saveMoreExpert(signId , isMoreExpert);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "更新回传发改委状态" , path = "updateSendFGWState" , method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg updateSendFGWState(@RequestParam String signId , @RequestParam String state){
-        return signService.updateSendFGWState(signId , state);
+        ResultMsg resultMsg = signService.updateSendFGWState(signId , state);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
     //@RequiresPermissions("sign#html/flowDeal#get")
     @RequestMapping(name = "项目流程处理", path = "html/flowDeal", method = RequestMethod.GET)
     public String flowDeal() {
-
         return ctrlName + "/flowDeal";
     }
 
@@ -533,14 +592,6 @@ public class SignController {
     public String getBack() {
 
         return ctrlName + "/signGetBack";
-    }
-
-    @RequiresAuthentication
-    @RequestMapping(name = "查找项目概算", path = "findAssistSign", method = RequestMethod.GET)
-    public @ResponseBody
-    List<SignDto> findAssistSign() {
-
-        return signService.findAssistSign();
     }
 
     @RequiresPermissions("sign#personDtasks#get")

@@ -27,7 +27,7 @@ import java.util.UUID;
  * Date: 2018/10/31 10:29
  */
 @Repository
-public class PostdoctorSubjectRepoImpl extends AbstractRepository<PostdoctorSubject , String > implements  PostdoctorSubjectRepo {
+public class PostdoctorSubjectRepoImpl extends AbstractRepository<PostdoctorSubject, String> implements PostdoctorSubjectRepo {
 
     @Autowired
     private PostdoctorStaffRepo postdoctorStaffRepo;
@@ -35,24 +35,19 @@ public class PostdoctorSubjectRepoImpl extends AbstractRepository<PostdoctorSubj
 
     @Override
     public PageModelDto<PostdoctorSubjectDto> findByAll(ODataObj odataObj) {
-
         PageModelDto<PostdoctorSubjectDto> pageModelDto = new PageModelDto<>();
-
         List<PostdoctorSubject> psList = this.findByOdata(odataObj);
-
         List<PostdoctorSubjectDto> dtoList = new ArrayList<>();
-
-        if(psList != null && psList.size() > 0 ){
-            for(PostdoctorSubject ps : psList){
+        if (Validate.isList(psList)) {
+            for (PostdoctorSubject ps : psList) {
                 PostdoctorSubjectDto dto = new PostdoctorSubjectDto();
-                if(Validate.isString(ps.getPricipalId())){
+                if (Validate.isString(ps.getPricipalId())) {
                     PostdoctoralStaff p = postdoctorStaffRepo.findById(ps.getPricipalId());
-                    dto.setPricipalName(p == null ? "" : p.getName());
-                }else{
-
-                dto.setPricipalName(ps.getPricipalId());
+                    dto.setPricipalName(Validate.isObject(p) ? p.getName() : "");
+                } else {
+                    dto.setPricipalName(ps.getPricipalId());
                 }
-                BeanCopierUtils.copyPropertiesIgnoreProps(ps , dto);
+                BeanCopierUtils.copyPropertiesIgnoreProps(ps, dto);
                 dtoList.add(dto);
             }
         }
@@ -66,9 +61,9 @@ public class PostdoctorSubjectRepoImpl extends AbstractRepository<PostdoctorSubj
     public PostdoctorSubjectDto findBySubjectId(String id) {
         PostdoctorSubjectDto dto = new PostdoctorSubjectDto();
         PostdoctorSubject ps = this.findById(id);
-        if(ps != null){
+        if (ps != null) {
 
-            BeanCopierUtils.copyPropertiesIgnoreProps( ps , dto );
+            BeanCopierUtils.copyPropertiesIgnoreProps(ps, dto);
         }
         return dto;
     }
@@ -77,21 +72,21 @@ public class PostdoctorSubjectRepoImpl extends AbstractRepository<PostdoctorSubj
     @Transactional
     public ResultMsg createSubject(PostdoctorSubjectDto dto) {
         PostdoctorSubject ps = new PostdoctorSubject();
-        Date now  = new Date();
-        if(dto != null && !Validate.isString(dto.getId())) {
+        Date now = new Date();
+        if (dto != null && !Validate.isString(dto.getId())) {
             ps.setId(UUID.randomUUID().toString());
             ps.setCreatedBy(SessionUtil.getDisplayName());
             ps.setCreatedDate(now);
             dto.setId(ps.getId());
-        }else{
+        } else {
             ps = this.findById(dto.getId());
         }
-        BeanCopierUtils.copyPropertiesIgnoreProps(dto , ps);
+        BeanCopierUtils.copyPropertiesIgnoreProps(dto, ps);
         ps.setModifiedBy(SessionUtil.getDisplayName());
         ps.setModifiedDate(now);
         this.save(ps);
 
-        return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "创建成功" , dto);
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "创建成功", dto);
     }
 
 

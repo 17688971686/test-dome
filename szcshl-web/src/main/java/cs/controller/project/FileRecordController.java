@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static cs.common.constants.Constant.ERROR_MSG;
+
 @Controller
 @RequestMapping(name = "归档", path = "fileRecord")
 @IgnoreAnnotation
@@ -32,10 +34,14 @@ private  String ctrlName = "fileRecord";
 
     @RequiresAuthentication
     //@RequiresPermissions("fileRecord##post")
-	@RequestMapping(name = "发文提交", path = "",method=RequestMethod.POST)
+	@RequestMapping(name = "归档提交", path = "",method=RequestMethod.POST)
 	@ResponseBody
-	public ResultMsg post(@RequestBody FileRecordDto fileRecordDto) throws Exception  {
-		return fileRecordService.save(fileRecordDto);
+	public ResultMsg post(@RequestBody FileRecordDto fileRecordDto){
+		ResultMsg resultMsg = fileRecordService.save(fileRecordDto);
+		if(!Validate.isObject(resultMsg)){
+			resultMsg = ResultMsg.error(ERROR_MSG);
+		}
+		return resultMsg;
 	}
 
     @RequiresAuthentication
@@ -69,6 +75,4 @@ private  String ctrlName = "fileRecord";
 		}
 		return fileRecordDto;
 	}
-	
-	
 }

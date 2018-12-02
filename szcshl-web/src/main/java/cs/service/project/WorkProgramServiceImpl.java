@@ -1017,6 +1017,9 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         String assigneeValue = "",                                  //环节处理人
                curUserId = SessionUtil.getUserId();                 //当前用户ID
         WorkProgram wk = workProgramRepo.findById(processInstance.getBusinessKey());
+        if(!Validate.isObject(wk)){
+            return ResultMsg.error("工作方案已被删除，无法进行流程处理！");
+        }
         Sign sign = wk.getSign();
         WorkPGUtil workPGUtil = WorkPGUtil.create(wk);
 

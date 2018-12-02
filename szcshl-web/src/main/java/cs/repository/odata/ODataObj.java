@@ -6,6 +6,7 @@ import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Property;
 
@@ -249,10 +250,13 @@ public class ODataObj {
             Object value;
             for (ODataFilterItem item : filter) {
                 value = item.getValue();
-                if (null == value) {
+                if (!Validate.isObject(value)) {
                     continue;
                 }
-                criteria.add(ODataObjFilterStrategy.getStrategy(item.getOperator()).getCriterion(item.getField(),value));
+                Criterion criterion = ODataObjFilterStrategy.getStrategy(item.getOperator()).getCriterion(item.getField(),value);
+                if(Validate.isObject(criterion)){
+                    criteria.add(criterion);
+                }
             }
         }
         return criteria;

@@ -62,6 +62,8 @@ import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static cs.common.constants.Constant.ERROR_MSG;
+
 @Controller
 @RequestMapping(name = "流程", path = "flow")
 @MudoleAnnotation(name = "我的工作台",value = "permission#workbench")
@@ -143,12 +145,13 @@ public class FlowController {
     //@RequiresPermissions("flow#html/tasks#post")
     @RequiresAuthentication
     @RequestMapping(name = "待办项目", path = "html/tasks", method = RequestMethod.POST)
-    public @ResponseBody PageModelDto<RuProcessTask> tasks(HttpServletRequest request) throws ParseException {
+    @ResponseBody
+    public PageModelDto<RuProcessTask> tasks(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         List<RuProcessTask> resultList = flowService.queryRunProcessTasks(odataObj,true,null,null);
         PageModelDto<RuProcessTask> pageModelDto = new PageModelDto<RuProcessTask>();
         pageModelDto.setCount(Validate.isList(resultList)?resultList.size():0);
-        pageModelDto.setValue(resultList);
+        pageModelDto.setValue(Validate.isList(resultList)?resultList:new ArrayList<>());
         return pageModelDto;
     }
 
@@ -165,6 +168,9 @@ public class FlowController {
     public PageModelDto<RuTask> queryMyAgendaTask(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<RuTask> pageModelDto = flowService.queryMyAgendaTask(odataObj);
+        if(!Validate.isObject(pageModelDto)){
+            pageModelDto = new PageModelDto();
+        }
         return pageModelDto;
     }
 
@@ -175,6 +181,9 @@ public class FlowController {
     public PageModelDto<RuTask> queryAgendaTask(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<RuTask> pageModelDto = flowService.queryAgendaTask(odataObj);
+        if(!Validate.isObject(pageModelDto)){
+            pageModelDto = new PageModelDto();
+        }
         return pageModelDto;
     }
 
@@ -184,10 +193,15 @@ public class FlowController {
     @ResponseBody
     public PageModelDto<RuProcessTask> doingtasks(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
+        PageModelDto<RuProcessTask> pageModelDto = new PageModelDto<RuProcessTask>();
+
         Map<String,Object> authMap = userService.getUserSignAuth();
         Integer authFlag = new Integer(authMap.get("leaderFlag").toString());
         List<String> orgIdList = (List<String>) authMap.get("orgIdList");
         List<RuProcessTask> resultList = flowService.queryRunProcessTasks(odataObj,false,authFlag,orgIdList);
+        if(!Validate.isList(resultList)){
+            return pageModelDto;
+        }
         //已项目为单位，要过滤掉重复的项目
         List<RuProcessTask> finalList = new ArrayList<>();
         List<String> existList = new ArrayList<>();
@@ -204,7 +218,6 @@ public class FlowController {
                         }
                     }
                 }else{
-
                     continue;
                 }
             } else {
@@ -212,9 +225,8 @@ public class FlowController {
                 finalList.add(rpt);
             }
         }
-        PageModelDto<RuProcessTask> pageModelDto = new PageModelDto<RuProcessTask>();
         pageModelDto.setCount(Validate.isList(finalList)?finalList.size():0);
-        pageModelDto.setValue(finalList);
+        pageModelDto.setValue(Validate.isList(finalList)?finalList:new ArrayList<>());
         return pageModelDto;
     }
 
@@ -225,6 +237,9 @@ public class FlowController {
     public PageModelDto<SignDispaWork> endTasks(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<SignDispaWork> pageModelDto = flowService.queryETasks(odataObj);
+        if(!Validate.isObject(pageModelDto)){
+            pageModelDto = new PageModelDto();
+        }
         return pageModelDto;
     }
 
@@ -243,6 +258,9 @@ public class FlowController {
     public PageModelDto<TaskDto> queryEndTask(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<TaskDto> pageModelDto = flowService.queryEndTasks(odataObj);
+        if(!Validate.isObject(pageModelDto)){
+            pageModelDto = new PageModelDto();
+        }
         return pageModelDto;
     }
 
@@ -347,12 +365,12 @@ public class FlowController {
 
     @RequestMapping(name = "读取流程历史记录", path = "processInstance/history/{processInstanceId}", method = RequestMethod.POST)
     @RequiresAuthentication
-    public @ResponseBody
-    PageModelDto<HiProcessTask> findHisActivitiList(@PathVariable("processInstanceId") String processInstanceId) {
+    @ResponseBody
+    public PageModelDto<HiProcessTask> findHisActivitiList(@PathVariable("processInstanceId") String processInstanceId) {
         List<HiProcessTask> list = flowService.getProcessHistory(processInstanceId);
         PageModelDto<HiProcessTask> pageModelDto = new PageModelDto<HiProcessTask>();
-        pageModelDto.setCount(list.size());
-        pageModelDto.setValue(list);
+        pageModelDto.setCount(Validate.isList(list)?list.size():0);
+        pageModelDto.setValue(Validate.isList(list)?list:new ArrayList<>());
         return pageModelDto;
     }
 
@@ -519,14 +537,16 @@ public class FlowController {
             log.info("流程提交异常："+errorMsg);
             resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"操作异常，错误信息已记录，请联系管理员查看！异常信息："+errorMsg);
         }
+        if(!Validate.isObject(resultMsg)){
+            return ResultMsg.error(ERROR_MSG);
+        }
+
         String taskId = flowDto.getTaskId();
         if(Validate.isString(resultMsg.getIdCode())){
             taskId = resultMsg.getIdCode();
             resultMsg.setIdCode(null);
         }
         ProcessDefinitionEntity processDefinitionEntity = (ProcessDefinitionEntity) repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());
-
-
         //腾讯通消息处理
         if(isProj){
             rtxService.dealPoolRTXMsg(taskId,resultMsg,processInstance.getName(), MsgType.project_type.name());
@@ -543,6 +563,9 @@ public class FlowController {
     @Transactional
     public ResultMsg rollBackLast(@RequestBody FlowDto flowDto) {
         ResultMsg resultMsg = flowService.rollBackLastNode(flowDto);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
         return resultMsg;
     }
 
@@ -552,7 +575,11 @@ public class FlowController {
     @ResponseBody
     public ResultMsg activeFlow(@PathVariable("businessKey") String businessKey) {
         log.info("流程激活成功！businessKey=" + businessKey);
-        return flowService.restartFlow(businessKey);
+        ResultMsg resultMsg = flowService.restartFlow(businessKey);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     /**
@@ -566,7 +593,11 @@ public class FlowController {
     @ResponseBody
     public ResultMsg suspendFlow(@PathVariable("businessKey") String businessKey) {
         log.info("流程挂起成功！businessKey=" + businessKey);
-        return flowService.stopFlow(businessKey);
+        ResultMsg resultMsg = flowService.stopFlow(businessKey);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
     @RequiresAuthentication
@@ -620,7 +651,11 @@ public class FlowController {
     @RequestMapping(name = "任务转办", path = "taskTransferAssignee", method ={RequestMethod.POST,RequestMethod.GET} )
     @ResponseBody
     public ResultMsg taskTransferAssignee(@RequestParam String taskId, @RequestParam String oldUserId, @RequestParam String newUserId){
-        return flowService.taskTransferAssignee(taskId,oldUserId,newUserId);
+        ResultMsg resultMsg = flowService.taskTransferAssignee(taskId,oldUserId,newUserId);
+        if(!Validate.isObject(resultMsg)){
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
     /******************************   以下是页面处理  ******************************/
     //@RequiresPermissions("flow#flowDeal/processKey#get")

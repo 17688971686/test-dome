@@ -11,7 +11,6 @@ import cs.repository.odata.ODataObj;
 import cs.service.reviewProjectAppraise.AppraiseService;
 import cs.service.rtx.RTXService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
-import java.util.List;
 
 import static cs.common.constants.Constant.ERROR_MSG;
 
@@ -32,12 +30,9 @@ import static cs.common.constants.Constant.ERROR_MSG;
 @RequestMapping(name="优秀评审报告" , path="reviewProjectAppraise")
 @MudoleAnnotation(name = "项目管理",value = "permission#sign")
 public class ReviewProjectAppraiseController {
-
     private String ctrlName = "reviewProjectAppraise";
-
     @Autowired
     private AppraiseService appraiseService;
-
     @Autowired
     private RTXService rtxService;
 
@@ -79,7 +74,6 @@ public class ReviewProjectAppraiseController {
         }else{
             resultMsg = ResultMsg.error(ERROR_MSG);
         }
-
         return resultMsg;
     }
 
@@ -89,7 +83,11 @@ public class ReviewProjectAppraiseController {
     @ResponseBody
     public PageModelDto<SignDispaWork> findAppraisingProject(HttpServletRequest request ) throws ParseException{
         ODataObj oDataObj = new ODataObj(request);
-        return appraiseService.findAppraisingProject(oDataObj);
+        PageModelDto<SignDispaWork> pageModelDto = appraiseService.findAppraisingProject(oDataObj);
+        if(!Validate.isObject(pageModelDto)){
+            pageModelDto = new PageModelDto<>();
+        }
+        return pageModelDto;
     }
 
     @RequiresAuthentication
@@ -108,7 +106,12 @@ public class ReviewProjectAppraiseController {
     @ResponseBody
     public PageModelDto<AppraiseReportDto> getAppraiseReport(HttpServletRequest request) throws ParseException {
         ODataObj oDataObj = new ODataObj(request);
-        return appraiseService.getAppraiseReport(oDataObj);
+        PageModelDto<AppraiseReportDto> pageModelDto = appraiseService.getAppraiseReport(oDataObj);
+        if(!Validate.isObject(pageModelDto)){
+            pageModelDto = new PageModelDto<>();
+        }
+        return pageModelDto;
+
     }
 
     @RequiresAuthentication
@@ -116,10 +119,12 @@ public class ReviewProjectAppraiseController {
     @RequestMapping(name="通过id查询优秀评审报告信息" , path="getAppraiseById" , method = RequestMethod.POST)
     @ResponseBody
     public AppraiseReportDto getAppraiseById(@RequestParam String id){
-        return  appraiseService.getAppraiseById(id);
+        AppraiseReportDto appraiseReportDto = appraiseService.getAppraiseById(id);
+        if(!Validate.isObject(appraiseReportDto)){
+            appraiseReportDto = new AppraiseReportDto();
+        }
+        return appraiseReportDto;
     }
-
-
 
     @RequiresAuthentication
 //    @RequiresPermissions("reviewProjectAppraise#html/edit#get")
@@ -134,7 +139,6 @@ public class ReviewProjectAppraiseController {
     public String approveList(){
         return ctrlName + "/approveList";
     }
-
 
     @RequiresAuthentication
 //    @RequiresPermissions("reviewProjectAppraise#html/approveWindow#get")

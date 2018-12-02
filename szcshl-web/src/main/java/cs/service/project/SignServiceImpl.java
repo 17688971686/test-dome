@@ -422,7 +422,7 @@ public class SignServiceImpl implements SignService {
         }
         //单位
         List<Company> companyList = companyRepo.findAll();
-        map.put("companyList", companyList);
+        map.put("companyList", Validate.isList(companyList)?companyList:new ArrayList<>());
 
         //查询系统上传文件
         Criteria file = sysFileRepo.getExecutableCriteria();
@@ -2507,7 +2507,6 @@ public class SignServiceImpl implements SignService {
     @Override
     @Transactional
     public PageModelDto<SignDispaWork> findAssociateSignList(String signid, String reviewstage, String projectname, String mUserName, String skip, String size) {
-
         //解决乱码问题
         try {
             if (Validate.isString(reviewstage) && reviewstage.equals(new String(reviewstage.getBytes("iso8859-1"), "iso8859-1"))) {
@@ -2571,7 +2570,9 @@ public class SignServiceImpl implements SignService {
         sqlBuilders.append(" ) where num between :skip and :size ");
         sqlBuilders.setParam("skip", skip).setParam("size", size);
         List<SignDispaWork> signList = signDispaWorkRepo.findBySql(sqlBuilders);
-
+        if(!Validate.isList(signList)){
+            signList = new ArrayList<>();
+        }
         pageModelDto.setCount(total);
         pageModelDto.setValue(signList);
         return pageModelDto;
@@ -2959,7 +2960,7 @@ public class SignServiceImpl implements SignService {
         });*/
 
         pageModelDto.setCount(totalResult);
-        pageModelDto.setValue(runProcessList);
+        pageModelDto.setValue(Validate.isList(runProcessList)?runProcessList:new ArrayList<>());
         return pageModelDto;
     }
 

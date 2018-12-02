@@ -104,8 +104,7 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
             }
         }
         List<SignDispaWork> signDispaWorkList = criteria.list();
-        pageModelDto.setValue(signDispaWorkList);
-
+        pageModelDto.setValue(Validate.isList(signDispaWorkList)?signDispaWorkList:new ArrayList<>());
         return pageModelDto;
     }
 

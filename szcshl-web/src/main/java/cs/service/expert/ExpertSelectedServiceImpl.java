@@ -1294,7 +1294,7 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
             resultMap.put("isLeader","0");
         }
 
-        resultMap.put("orgDeptList",orgDeptList);
+        resultMap.put("orgDeptList",Validate.isList(orgDeptList)?orgDeptList:new ArrayList<>());
         resultMap.put("level", level);
         if(Validate.isString(achievementSumDto.getUserId())){
             resultMap.put("userId", achievementSumDto.getUserId());
