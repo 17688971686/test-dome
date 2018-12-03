@@ -39,4 +39,25 @@ public interface IOrganRepo extends IRepository<Organ,String>{
      */
     Organ findJurisdicon(String jurisdiction);
 
+    /**
+     *获取主任机构信息
+     * @param organName
+     * @return
+     */
+    List<Organ> findByOrganByOrgMLeader(String organName);
+
+    /**
+     * 获取分管领导机构信息
+     * @param organName
+     * @return
+     */
+    List<Organ> findByOrganByOrganManage(String organName);
+
+    /**
+     * 获取部长记过机构信息
+     * @param organName
+     * @return
+     */
+    List<Organ> findByOrganByOrganLead(String organName);
+
 }

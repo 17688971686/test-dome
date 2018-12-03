@@ -1,7 +1,9 @@
 package com.sn.framework.module.project.service;
 
 import com.sn.framework.core.service.ISService;
+import com.sn.framework.core.web.PageModelDto;
 import com.sn.framework.module.project.model.ProjectDto;
+import com.sn.framework.odata.impl.jpa.OdataJPA;
 
 
 /**
@@ -14,4 +16,8 @@ public interface IProjectService extends ISService<ProjectDto> {
      * @return
      */
     boolean checkCurUserIsPri(String projId);
+
+
+    PageModelDto<ProjectDto> getProjectForManage(OdataJPA odata,String status);
+
 }

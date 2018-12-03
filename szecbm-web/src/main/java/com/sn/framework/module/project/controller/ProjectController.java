@@ -2,6 +2,7 @@ package com.sn.framework.module.project.controller;
 
 import com.sn.framework.core.common.ResultMsg;
 import com.sn.framework.core.common.SNKit;
+import com.sn.framework.core.common.SessionUtil;
 import com.sn.framework.core.syslog.OperatorType;
 import com.sn.framework.core.syslog.SysLog;
 import com.sn.framework.core.util.CreateTemplateUtils;
@@ -63,16 +64,13 @@ public class ProjectController {
     @RequestMapping(name = "获取项目信息", path = "proInfo", method = RequestMethod.GET)
     @ResponseBody
     public PageModelDto<ProjectDto> getProjectForManage(OdataJPA odata) {
-        odata.addFilter(Project_.status.getName(), OdataFilter.Operate.EQ, "1");
-        return projectService.findPageByOdata(odata);
+        return projectService.getProjectForManage(odata,"1");
     }
 
     @RequestMapping(name = "获取作废项目信息", path = "cancelInfo", method = RequestMethod.GET)
     @ResponseBody
     public PageModelDto<ProjectDto> getCancelProjectForManage(OdataJPA odata) {
-        odata.addFilter(Project_.status.getName(), OdataFilter.Operate.EQ, "2");
-        //PageModelDto<ProjectDto> pageModelDto = projectService.findPageByOdata(odata);
-        return projectService.findPageByOdata(odata);
+        return projectService.getProjectForManage(odata,"2");
     }
 
     @RequestMapping(name = "项目编辑", path = "html/edit", method = RequestMethod.GET)

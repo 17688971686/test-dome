@@ -3,7 +3,7 @@ server:
   context-path: /
   display-name: szecbm-web
 
-logging.file: ${sn.multipart.disk-path}\logs\${server.display-name}_${xss.profiles.active}.log
+logging.file: ${sn.multipart.disk-path}\logs\${server.display-name}_${spring.profiles.active}.log
 
 spring:
   profiles.active: @packaging.environment@

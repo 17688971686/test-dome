@@ -1,7 +1,7 @@
 package com.sn.framework;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.sn.framework.xss.StringXssDeserializer;
+//import com.sn.framework.xss.StringXssDeserializer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -33,7 +33,7 @@ public class SNApplication extends SpringBootServletInitializer {
     public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
         MappingJackson2HttpMessageConverter htmlEscapingConverter = new MappingJackson2HttpMessageConverter();
         SimpleModule simpleModule = new SimpleModule();
-        simpleModule.addDeserializer(String.class, new StringXssDeserializer());
+        //simpleModule.addDeserializer(String.class, new StringXssDeserializer());
         htmlEscapingConverter.getObjectMapper().registerModule(simpleModule);
         return htmlEscapingConverter;
     }
