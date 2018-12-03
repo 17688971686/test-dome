@@ -391,8 +391,10 @@ public class StringUtil extends StringUtils {
     }
 
     public static void main(String[] args) {
-        String checkString = "xxxxs第三个是大<script>235325235</script>阿萨德广东省";
-        System.out.println(checkXSSString(checkString));
+        /*String checkString = "xxxxs第三个是大<script>235325235</script>阿萨德广东省";
+        ;*/
+        String querySql = HtmlEncoder.encode("SELECT arp.NAME_,arp.KEY_ FROM act_re_procdef arp where arp.KEY_ >= ? GROUP BY arp.NAME_,arp.KEY_");
+        System.out.println(querySql);
     }
 
 

@@ -3,6 +3,7 @@ package cs.controller.sys;
 import cs.ahelper.MudoleAnnotation;
 import cs.common.constants.Constant;
 import cs.common.ResultMsg;
+import cs.common.utils.Validate;
 import cs.model.PageModelDto;
 import cs.model.sys.HeaderDto;
 import cs.repository.odata.ODataObj;
@@ -16,7 +17,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
+
+import static cs.common.constants.Constant.ERROR_MSG;
 
 /**
  * Description:
@@ -40,7 +44,11 @@ public class HeaderController {
     @ResponseBody
     public PageModelDto<HeaderDto> get(HttpServletRequest request) throws ParseException {
         ODataObj oDataObj = new ODataObj(request);
-        return headerService.get(oDataObj);
+        PageModelDto<HeaderDto> resultPage = headerService.get(oDataObj);
+        if(!Validate.isObject(resultPage)){
+            resultPage = new PageModelDto();
+        }
+        return resultPage;
     }
 
     //@RequiresPermissions("header#createHeader#post")
@@ -48,7 +56,11 @@ public class HeaderController {
     @RequestMapping(name="创建表头" , path="createHeader" , method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg createHeader(@RequestBody HeaderDto headerDto){
-        return headerService.createHeader(headerDto);
+        ResultMsg resultMsg = headerService.createHeader(headerDto);
+        if (!Validate.isObject(resultMsg)) {
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
 
@@ -57,7 +69,11 @@ public class HeaderController {
     @RequestMapping(name="获取未选中表头列表" , path="findHeaderListNoSelected" , method = RequestMethod.POST)
     @ResponseBody
     public List<HeaderDto> findHeaderListNoSelected(@RequestBody  HeaderDto headerDto){
-        return headerService.findHeaderList(headerDto.getHeaderType(), Constant.EnumState.NO.getValue());
+        List<HeaderDto> headerDtoList = headerService.findHeaderList(headerDto.getHeaderType(), Constant.EnumState.NO.getValue());
+        if(!Validate.isList(headerDtoList)){
+            headerDtoList = new ArrayList<>();
+        }
+        return headerDtoList;
     }
 
     //@RequiresPermissions("header#findHeaderListSelected#post")
@@ -65,7 +81,11 @@ public class HeaderController {
     @RequestMapping(name="获取选中的表头列表" ,path="findHeaderListSelected" , method = RequestMethod.POST)
     @ResponseBody
     public List<HeaderDto> findHeaderListSelected(@RequestBody  HeaderDto headerDto){
-        return headerService.findHeaderList(headerDto.getHeaderType(), Constant.EnumState.YES.getValue());
+        List<HeaderDto> headerDtoList = headerService.findHeaderList(headerDto.getHeaderType(), Constant.EnumState.YES.getValue());
+        if(!Validate.isList(headerDtoList)){
+            headerDtoList = new ArrayList<>();
+        }
+        return headerDtoList;
     }
 
     //@RequiresPermissions("header#updateSelectedHeader#put")
@@ -108,7 +128,11 @@ public class HeaderController {
     @RequestMapping(name="通过id查询表头信息" , path="getHeaderById" , method=RequestMethod.GET)
     @ResponseBody
     public HeaderDto getHeaderById(String id){
-        return headerService.getHeaderById(id);
+        HeaderDto headerDto = headerService.getHeaderById(id);
+        if(!Validate.isObject(headerDto)){
+            headerDto = new HeaderDto();
+        }
+        return headerDto;
     }
 
     //@RequiresPermissions("header#updateHeader#put")
@@ -116,7 +140,11 @@ public class HeaderController {
     @RequestMapping(name="更新表头信息" , path="updateHeader" , method= RequestMethod.PUT)
     @ResponseBody
     public ResultMsg updateHeader(@RequestBody  HeaderDto headerDto){
-        return   headerService.updateHeader(headerDto);
+        ResultMsg resultMsg = headerService.updateHeader(headerDto);
+        if (!Validate.isObject(resultMsg)) {
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
 

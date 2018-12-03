@@ -54,6 +54,14 @@
         </mvc:message-converters>       
     </mvc:annotation-driven>
 
+	<!--设置HttpOnly，而XSS就是在别人的应用程序中恶意执行一段JS以窃取用户的cookie-->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/*"/>
+			<bean class="cs.spring.HttpOnlyInterceptor"></bean>
+		</mvc:interceptor>
+	</mvc:interceptors>
+
 	<!-- 支持上传文件-->
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 		<!--允许最大上传10G文件(1024*1024)

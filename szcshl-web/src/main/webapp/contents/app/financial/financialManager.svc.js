@@ -170,7 +170,7 @@
                 if(response.data){
                     vm.financial.stageCount = response.data;
                 }
-                $("#financialCount").html(common.htmlEscape(response.data));
+                $("#financialCount").html(common.htmlEscape(vm.financial.stageCount));
             };
 
             common.http({

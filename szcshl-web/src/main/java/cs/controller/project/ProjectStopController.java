@@ -40,6 +40,9 @@ public class ProjectStopController {
     public PageModelDto<ProjectStopDto> getProjectStop(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<ProjectStopDto> pageModelDto = projectStopService.findProjectStopByStopId(odataObj);
+        if(!Validate.isObject(pageModelDto)){
+            pageModelDto = new PageModelDto();
+        }
         return pageModelDto;
     }
 
@@ -98,7 +101,11 @@ public class ProjectStopController {
     @RequestMapping(name = "保存信息", path = "saveProjectStop", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg saveProjectStop(@RequestBody ProjectStopDto projectStopDto) {
-        return projectStopService.saveProjectStop(projectStopDto);
+        ResultMsg resultMsg = projectStopService.saveProjectStop(projectStopDto);
+        if (!Validate.isObject(resultMsg)) {
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
     }
 
 
@@ -132,12 +139,12 @@ public class ProjectStopController {
         for (ProjectStopDto p : projectStopList) {
             //有流程实例，但是还没完成
             if (Validate.isString(p.getProcessInstanceId()) && !Constant.EnumState.YES.getValue().equals(p.getIsOverTime())) {
-                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "该项目已发起暂停流程并且未处理完成！");
+                resultMsg = ResultMsg.error("该项目已发起暂停流程并且未处理完成！");
                 break;
             }
         }
         if (resultMsg == null) {
-            resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(), "没有暂停未处理项目");
+            resultMsg = ResultMsg.ok("没有暂停未处理项目");
         }
         return resultMsg;
     }
@@ -146,7 +153,11 @@ public class ProjectStopController {
     @RequestMapping(name = "通过收文ID获取审批通过的项目信息", path = "getListInfo", method = RequestMethod.POST)
     @ResponseBody
     public List<ProjectStopDto> getListInfo(@RequestParam String signId) {
-        return projectStopService.getStopList(signId);
+        List<ProjectStopDto> projectStopDtoList = projectStopService.getStopList(signId);
+        if(!Validate.isList(projectStopDtoList)){
+            projectStopDtoList = new ArrayList<>();
+        }
+        return projectStopDtoList;
     }
 
 

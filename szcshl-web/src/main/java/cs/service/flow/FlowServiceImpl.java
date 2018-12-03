@@ -1,5 +1,6 @@
 package cs.service.flow;
 
+import com.lowagie.text.html.HtmlEncoder;
 import cs.ahelper.projhelper.DisUtil;
 import cs.ahelper.projhelper.WorkPGUtil;
 import cs.common.HqlBuilder;
@@ -37,6 +38,7 @@ import cs.service.rtx.RTXService;
 import cs.service.sys.LogService;
 import cs.service.sys.OrgService;
 import cs.service.sys.UserService;
+import cs.sql.FlowSql;
 import cs.sql.WorkSql;
 import org.activiti.engine.*;
 import org.activiti.engine.history.HistoricProcessInstance;
@@ -1324,11 +1326,7 @@ public class FlowServiceImpl implements FlowService {
         nativeQuery.setParameter("taskId", taskId).executeUpdate();
 
         stringBuffer.setLength(0);
-        stringBuffer.append("DELETE FROM act_ru_t" +
-                "" +
-                "" +
-                "" +
-                "ask WHERE ID_=:taskId");
+        stringBuffer.append("DELETE FROM act_ru_task WHERE ID_=:taskId");
         nativeQuery = session.createNativeQuery(stringBuffer.toString());
         nativeQuery.setParameter("taskId", taskId).executeUpdate();
 
@@ -1344,7 +1342,7 @@ public class FlowServiceImpl implements FlowService {
      */
     @Override
     public List<Map<String, Object>> getProc() {
-        List<Map<String, Object>> list = jdbcTemplate.queryForList("SELECT arp.NAME_,arp.KEY_ FROM act_re_procdef arp where arp.KEY_ != ? GROUP BY arp.NAME_,arp.KEY_",SIGN_FLOW);
+        List<Map<String, Object>> list = jdbcTemplate.queryForList(FlowSql.activityProSql,SIGN_FLOW);
         if(Validate.isList(list)){
             return list;
         }
@@ -1353,16 +1351,12 @@ public class FlowServiceImpl implements FlowService {
 
     /**
      * 根据流程实例，获取经办人ID
-     *
      * @param processInstanceId
      * @return
      */
     @Override
     public List<String> findUserIdByProcessInstanceId(String processInstanceId) {
-        /*HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append("select distinct ACT.USER_ID_ from ACT_HI_IDENTITYLINK act where act.PROC_INST_ID_ = :processInstanceId");
-        sqlBuilder.setParam("processInstanceId", processInstanceId);*/
-        List<Map<String, Object>> resultMapList = jdbcTemplate.queryForList("select distinct ACT.USER_ID_ USER_ID from ACT_HI_IDENTITYLINK act where act.PROC_INST_ID_ = ?",processInstanceId);
+        List<Map<String, Object>> resultMapList = jdbcTemplate.queryForList(FlowSql.activityUserSql,processInstanceId);
         List<String> resultList = new ArrayList<>();
         for (Map<String, Object> map : resultMapList) {
             resultList.add(map.get("USER_ID") == null ? "" : map.get("USER_ID").toString());
@@ -1379,32 +1373,7 @@ public class FlowServiceImpl implements FlowService {
      */
     @Override
     public List<CommentDto> findCommentByProcInstId(String procInstId, List<String> nodeKeys) {
-        /**
-         SELECT hm.*, CU.DISPLAYNAME
-         FROM (  SELECT HC.PROC_INST_ID_,
-         HC.TIME_,
-         HC.MESSAGE_,
-         HA.ACT_ID_,
-         HA.ASSIGNEE_
-         FROM ACT_HI_COMMENT hc, ACT_HI_ACTINST ha
-         WHERE     HC.PROC_INST_ID_ = HA.PROC_INST_ID_
-         AND HC.TASK_ID_ = HA.TASK_ID_
-         AND hc.PROC_INST_ID_ = '1037501'
-         --and HA.ACT_ID_ = 'SIGN_FGLD_FB'
-         AND ha.ACT_TYPE_ = 'userTask'
-         ORDER BY HC.TIME_) hm,
-         cs_user cu
-         WHERE hm.ASSIGNEE_ = CU.ID
-         */
-        HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append(" SELECT hm.*, CU.DISPLAYNAME AS DISPLAYNAME_ FROM ( ");
-        sqlBuilder.append(" SELECT HC.PROC_INST_ID_,HC.TIME_,HC.MESSAGE_,HA.ACT_ID_,HA.ASSIGNEE_ ");
-        sqlBuilder.append(" FROM ACT_HI_COMMENT hc, ACT_HI_ACTINST ha WHERE HC.PROC_INST_ID_ = HA.PROC_INST_ID_ ");
-        sqlBuilder.append(" AND HC.TASK_ID_ = HA.TASK_ID_ AND hc.PROC_INST_ID_ = :procInstId ").setParam("procInstId", procInstId);
-        if (Validate.isList(nodeKeys)) {
-            sqlBuilder.bulidPropotyString("AND", "HA.ACT_ID_", StringUtil.listToString(nodeKeys));
-        }
-        sqlBuilder.append(" AND ha.ACT_TYPE_ = 'userTask' ) hm,cs_user cu WHERE hm.ASSIGNEE_ = CU.ID ORDER BY hm.TIME_");
+        HqlBuilder sqlBuilder = FlowSql.activityCommentSql(procInstId,nodeKeys);
         List<Object[]> commentList = signBranchRepo.getObjectArray(sqlBuilder);
         List<CommentDto> resultList = new ArrayList<>();
         for (Object[] objArr : commentList) {
@@ -1500,7 +1469,8 @@ public class FlowServiceImpl implements FlowService {
 
     @Override
     public List<Map<String,Object>> getBranchInfo(String signId) {
-        List<Map<String,Object>> resultList = jdbcTemplate.queryForList(WorkSql.getReWorkSql(),signId);
+        HqlBuilder hqlBuilder = WorkSql.getReWorkSql();
+        List<Map<String,Object>> resultList = jdbcTemplate.queryForList(hqlBuilder.getHqlString(),signId);
         if(!Validate.isList(resultList)){
             resultList = new ArrayList<>();
         }

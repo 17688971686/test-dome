@@ -56,7 +56,5 @@ public interface IRepository<T, ID> {
 
     List<Object[]> getObjectArray(HqlBuilder hqlBuilder);
 
-    List<Map<String, Object>> getMapListBySql(HqlBuilder sqlBuilder);
-
     String getDataBaseTime(String format);
 }
