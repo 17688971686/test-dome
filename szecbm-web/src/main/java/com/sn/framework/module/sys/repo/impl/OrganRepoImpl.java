@@ -10,7 +10,9 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
@@ -70,5 +72,41 @@ public class OrganRepoImpl extends AbstractRepository<Organ, String> implements 
             logger.warn("未找到【" + jurisdiction + "】");
         }
         return null;
+    }
+
+    @Override
+    public List<Organ> findByOrganByOrgMLeader(String userName) {
+
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery query = builder.createQuery(Organ.class);
+        Root<Organ> root = query.from(Organ.class);
+        Predicate predicate = builder.and(builder.equal(root.get(Organ_.orgMLeader.getName()), userName));
+        query.where(predicate);
+        List<Organ> organList = entityManager.createQuery(query.select(root)).getResultList();
+        return organList;
+    }
+
+    @Override
+    public List<Organ> findByOrganByOrganManage(String userName) {
+
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery query = builder.createQuery(Organ.class);
+        Root<Organ> root = query.from(Organ.class);
+        Predicate predicate = builder.and(builder.equal(root.get(Organ_.organManage.getName()), userName));
+        query.where(predicate);
+        List<Organ> organList = entityManager.createQuery(query.select(root)).getResultList();
+        return organList;
+
+    }
+
+    @Override
+    public List<Organ> findByOrganByOrganLead(String userName) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery query = builder.createQuery(Organ.class);
+        Root<Organ> root = query.from(Organ.class);
+        Predicate predicate = builder.and(builder.equal(root.get(Organ_.organLead.getName()), userName));
+        query.where(predicate);
+        List<Organ> organList = entityManager.createQuery(query.select(root)).getResultList();
+        return organList;
     }
 }
