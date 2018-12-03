@@ -1,7 +1,7 @@
 package cs.common.utils;
 
+import cs.common.constants.Constant;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -16,12 +16,9 @@ import java.text.DecimalFormat;
 public class SysFileUtil {
     private static Logger logger = Logger.getLogger(SysFileUtil.class);
 
-    @Value("${FILE_UPLOAD_PATH}")
-    private static String fileUploadPathProp;
-
-    public static String getFileSize(Long fileS){
+    public static String getFileSize(Long fileS) {
         String size = "";
-        if(fileS == null || fileS == 0 ){
+        if (fileS == null || fileS == 0) {
             return size;
         }
         DecimalFormat df = new DecimalFormat("#.00");
@@ -32,41 +29,44 @@ public class SysFileUtil {
         } else if (fileS < 1073741824) {
             size = df.format((double) fileS / 1048576) + "MB";
         } else {
-            size = df.format((double) fileS / 1073741824) +"GB";
+            size = df.format((double) fileS / 1073741824) + "GB";
         }
-        return  size;
+        return size;
     }
+
     /**
      * 根据附件主类划分
+     *
      * @return
      */
     public static String getUploadPath() {
-        String uploadPath = fileUploadPathProp;
-        return  Validate.isString(uploadPath)?uploadPath : "C:\\szec_uploadfile";
+        PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
+        return propertyUtil.readProperty(Constant.RevireStageKey.FILE_UPLOAD_PATH.getValue(), "C:\\szec_uploadfile");
     }
 
     /**
      * 根据业务类型(urlGenerator)生成不同规则的文件路径
+     *
      * @param fileLocation 文件存放的根目录
      */
-    public static String generatRelativeUrl(String fileLocation,String mainType,String mainId, String sysBusiType, String fileName) {
+    public static String generatRelativeUrl(String fileLocation, String mainType, String mainId, String sysBusiType, String fileName) {
 
         String relativeUrl = "";
-        if(!Validate.isString(mainType)){
+        if (!Validate.isString(mainType)) {
             mainType = "NO_MAIN_TYPE_FILE";
         }
         //文件存放的格式,根目录/主业务ID/业务模块/文件名
         relativeUrl += (File.separator + mainType);
         //如果有主业务ID ，则加上
-        if(Validate.isString(mainId)){
-            relativeUrl += (File.separator+mainId);
+        if (Validate.isString(mainId)) {
+            relativeUrl += (File.separator + mainId);
         }
         //如果有业务模块，则加上业务模块
-        if(Validate.isString(sysBusiType)){
-            relativeUrl += (File.separator+sysBusiType);
+        if (Validate.isString(sysBusiType)) {
+            relativeUrl += (File.separator + sysBusiType);
         }
         //如果是本地
-        if(Validate.isString(fileLocation)){
+        if (Validate.isString(fileLocation)) {
             String url = fileLocation;
             File isFileExists = new File(url + File.separator + relativeUrl);
             if (isFileExists.exists()) {
@@ -79,10 +79,10 @@ public class SysFileUtil {
         }
 
         //如果有文件名，则加上文件名
-        if(Validate.isString(fileName)){
+        if (Validate.isString(fileName)) {
             String extendName = fileName;
             //若是文件夹，则不需要切割
-            if(fileName.indexOf(".") >0){
+            if (fileName.indexOf(".") > 0) {
                 extendName = fileName.substring(fileName.lastIndexOf("."), fileName.length());
             }
             String distFileName = Tools.generateRandomFilename().concat(extendName);
@@ -104,7 +104,7 @@ public class SysFileUtil {
         } else {
             if (file.isFile()) {
                 return deleteFile(fileName);
-            }else {
+            } else {
                 return deleteDirectory(fileName);
             }
         }
@@ -149,7 +149,7 @@ public class SysFileUtil {
         boolean flag = true;
         // 删除文件夹中的所有文件包括子目录
         File[] files = dirFile.listFiles();
-        if(!Validate.isEmpty(files)){
+        if (!Validate.isEmpty(files)) {
             for (int i = 0; i < files.length; i++) {
                 // 删除子文件
                 if (files[i].isFile()) {
@@ -181,16 +181,17 @@ public class SysFileUtil {
 
     /**
      * 从网络Url中下载文件
+     *
      * @param urlStr
      * @param fileName
      * @param savePath
      * @throws IOException
      */
-    public static void  downLoadFromUrl(String urlStr,String fileName,String savePath) throws IOException {
+    public static void downLoadFromUrl(String urlStr, String fileName, String savePath) throws IOException {
         URL url = new URL(urlStr);
-        HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         //设置超时间为3秒
-        conn.setConnectTimeout(60*1000);
+        conn.setConnectTimeout(60 * 1000);
         //防止屏蔽程序抓取而返回403错误
         conn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
 
@@ -201,37 +202,34 @@ public class SysFileUtil {
 
         //文件保存位置
         File saveDir = new File(savePath);
-        if(!saveDir.exists()){
+        if (!saveDir.exists()) {
             saveDir.mkdir();
         }
-        File file = new File(saveDir+File.separator+fileName);
+        File file = new File(saveDir + File.separator + fileName);
         FileOutputStream fos = new FileOutputStream(file);
         fos.write(getData);
-        if(fos!=null){
+        if (fos != null) {
             fos.close();
         }
-        if(inputStream!=null){
+        if (inputStream != null) {
             inputStream.close();
         }
-
-
-        System.out.println("info:"+url+" download success");
+        System.out.println("info:" + url + " download success");
 
     }
 
-
-
     /**
      * 从输入流中获取字节数组
+     *
      * @param inputStream
      * @return
      * @throws IOException
      */
-    public static  byte[] readInputStream(InputStream inputStream) throws IOException {
+    public static byte[] readInputStream(InputStream inputStream) throws IOException {
         byte[] buffer = new byte[1024];
         int len = 0;
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        while((len = inputStream.read(buffer)) != -1) {
+        while ((len = inputStream.read(buffer)) != -1) {
             bos.write(buffer, 0, len);
         }
         bos.close();

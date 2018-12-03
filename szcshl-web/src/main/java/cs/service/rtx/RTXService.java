@@ -2,6 +2,7 @@ package cs.service.rtx;
 
 import cs.common.ResultMsg;
 import cs.common.constants.Constant;
+import cs.common.utils.PropertyUtil;
 import cs.common.utils.RTXUtils;
 import cs.common.utils.SMSUtils;
 import cs.common.utils.Validate;
@@ -50,9 +51,6 @@ public class RTXService {
     @Autowired
     private MsgService msgService;
 
-    @Value("${RTX_URL}")
-    private String rtxUrlProp;
-
 
     /**
      * 获取腾讯通的sessionKey
@@ -65,7 +63,8 @@ public class RTXService {
         String strSessionKey = "";
         BufferedReader reader = null;
         if (!Validate.isString(url)) {
-            url = rtxUrlProp;
+            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
+            url = propertyUtil.readProperty("RTX_URL", "http://172.18.225.26:8012");
         }
         url += RTX_GETSESSION;
         try {
@@ -100,7 +99,8 @@ public class RTXService {
         String userState = "0";
         BufferedReader reader = null;
         if (!Validate.isString(url)) {
-            url = rtxUrlProp;
+            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
+            url = propertyUtil.readProperty("RTX_URL", "http://172.18.225.26:8012");
         }
         url += RTX_GETSTATUS;
         try {

@@ -54,7 +54,7 @@
                         vm.viceDirectors = vm.flow.businessMap.viceDirectors;
                     }
                     break;
-                //分管领导审批工作方案
+                //分管领导分办
                 case flowcommon.getSignFlowNode().SIGN_FGLD_FB:
                     vm.showFlag.buttBack = true;    //可回退
                     vm.showFlag.businessNext = true;

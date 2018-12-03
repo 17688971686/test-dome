@@ -31,7 +31,10 @@ public class Constant {
      * 默认错误信息
      */
     public static final String ERROR_MSG = "操作异常，错误信息已记录，请联系相关人员处理！";
-
+    /**
+     * 系统业务属性文件名
+     */
+    public static final String businessPropertiesName = "business.properties";
     /**
      * 默认来文单位
      */
@@ -776,6 +779,7 @@ public class Constant {
         SMS_SYS_TYPE("SMS_SYS_TYPE"),               //系统参数: 短息开关0:打开，1:关闭
         SMS_SING_NOTICE_USER("SMS_SING_NOTICE_USER"),     //委里项目推送短信通知人配置
         SMS_SENDFGW_FAIL_USER("SMS_SENDFGW_FAIL_USER"),    //回传委里失败推送的短信通知人配置
+        FILE_UPLOAD_PATH("FILE_UPLOAD_PATH"),              //缓存地址
         LOCAL_URL("LOCAL_URL");         //系统访问地址
         private String value;
 

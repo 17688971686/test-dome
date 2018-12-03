@@ -1,5 +1,6 @@
 package cs.common.utils;
 
+import cs.common.constants.Constant;
 import cs.domain.sys.User;
 import cs.service.rtx.RTXSendMsgPool;
 import cs.service.sys.LogService;
@@ -26,8 +27,6 @@ import java.util.concurrent.Future;
 public class RTXUtils {
     private final static String MSG_TITLE = "【评审中心项目管理信息系统】消息提醒";
     private final static String RTX_MSG_NOTICE = "/sendnotify.cgi?";
-    @Value("${RTX_URL}")
-    private static String RTX_URL_PROP;
 
     /**
      * 异步发送腾讯通消息
@@ -86,7 +85,8 @@ public class RTXUtils {
      */
     public static String sendRTXMsg(String url, String sendMsg, String receiver) {
         if (!Validate.isString(url)) {
-            url = RTX_URL_PROP;
+            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
+            url = propertyUtil.readProperty("RTX_URL", "http://172.18.225.26:8012");
         }
         url += RTX_MSG_NOTICE;
         PrintWriter out = null;

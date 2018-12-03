@@ -3,7 +3,7 @@
     <li><a data-toggle="tab" for-div="Vdeal_detail"> 委处理表</a></li>
     <li class="active"><a id="show_sign_a" data-toggle="tab" for-div="sign_detail"> 审批登记</a></li>
     <li ng-show="vm.model.projBaseInfoDto"><a id="show_baseinfo_a" data-toggle="tab"  for-div="sign_baseinfo">项目基本信息</a></li>
-    <li ng-show="vm.model.workProgramDtoList && vm.model.workProgramDtoList.length > 0" ><a data-toggle="tab"  for-div="sign_workprogram">工作方案</a></li>
+    <li ng-show="vm.model.workProgramDtoList && vm.model.workProgramDtoList.length > 0" ><a id="show_workprogram_a" data-toggle="tab"  for-div="sign_workprogram">工作方案</a></li>
     <li ng-show="vm.showFlag.tabDispatch"><a id="show_dispatch_a" data-toggle="tab" for-div="sign_dispatch">发文信息</a></li>
     <li ng-show="vm.showFlag.tabFilerecord"><a id="show_filerecord_a" data-toggle="tab" for-div="sign_filerecord">归档信息</a></li>
     <li ng-show="(vm.model.expertReviewDto && vm.model.expertReviewDto.expertSelectedDtoList) || vm.model.unitScoreDto"><a data-toggle="tab" for-div="expert_score">评分</a></li>
@@ -299,7 +299,7 @@
 
     <ul id="myTabExpertS" class="nav nav-tabs">
         <li class="active"><a data-toggle="tab" for-div="busi_baseinfoS">专家信息</a></li>
-        <li><a id="show_workprogram_a" data-toggle="tab" for-div="busi_workplanS">评审过项目</a>
+        <li><a data-toggle="tab" for-div="busi_workplanS">评审过项目</a>
         </li>
     </ul>
 

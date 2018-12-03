@@ -7,6 +7,7 @@ import cs.common.FGWResponse;
 import cs.common.IFResultCode;
 import cs.common.ResultMsg;
 import cs.common.constants.Constant;
+import cs.common.utils.PropertyUtil;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
@@ -61,10 +62,6 @@ public class SignRestServiceImpl implements SignRestService {
     private DispatchDocService dispatchDocService;
     @Autowired
     private DispatchDocRepo dispatchDocRepo;
-    @Value("${FGW_PROJECT_IFS}")
-    private String fgwProjIfsProp;
-    @Value("${FGW_PRE_PROJECT_IFS}")
-    private String fgwPreProjIfsProp;
 
     /**
      * 项目推送
@@ -390,7 +387,8 @@ public class SignRestServiceImpl implements SignRestService {
         if (sysConfigDto != null) {
             returnUrl = sysConfigDto.getConfigValue();
         } else {
-            returnUrl = fgwProjIfsProp;
+            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
+            returnUrl = propertyUtil.readProperty(IFResultCode.FGW_PROJECT_IFS,"");
         }
         return returnUrl;
     }
@@ -420,7 +418,8 @@ public class SignRestServiceImpl implements SignRestService {
         if (sysConfigDto != null) {
             returnUrl = sysConfigDto.getConfigValue();
         } else {
-            returnUrl = fgwPreProjIfsProp;
+            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
+            returnUrl = propertyUtil.readProperty(IFResultCode.FGW_PRE_PROJECT_IFS,"");
         }
         return returnUrl;
     }

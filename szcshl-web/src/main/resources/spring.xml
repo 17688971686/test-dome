@@ -12,7 +12,6 @@
             http://www.springframework.org/schema/aop/spring-aop.xsd
             http://www.springframework.org/schema/cache
             http://www.springframework.org/schema/cache/spring-cache.xsd">
-
 	<!-- 加载配置文件 -->
 	<context:property-placeholder location="classpath:config.properties,classpath:httpclient.properties"/>
 
@@ -31,30 +30,6 @@
 	</bean>
 	<bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
 		<property name="cacheManager" ref="cacheManagerFactory"/>
-	</bean>
-
-	<!--
-	    用途：可以使用@Value("#{prop.属性名}")注解读取properties文件配置的值，再给字段赋值
-	         方法1：注解在字段上，给字段赋值
-	         方法2：注解在字段的setter方法中赋值
-	         注意：@Value("#{prop.属性名}") 中的 prop 是 注册的PropertiesFactoryBean的 Bean ID
-	-->
-	<!--<bean id="busiProp" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-		<property name="locations">
-			<array>
-				<value>classpath:business.properties</value>
-			</array>
-		</property>
-	</bean>-->
-	<bean id="propertyPlaceHolderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
-		<property name="ignoreResourceNotFound" value="true" />
-		<property name="locations">
-			<list>
-				<!-- 把需要配置的properties文件配置在这里，可以有多个 -->
-				<value>classpath:business.properties</value>
-			</list>
-		</property>
 	</bean>
 
 	<cache:annotation-driven />
