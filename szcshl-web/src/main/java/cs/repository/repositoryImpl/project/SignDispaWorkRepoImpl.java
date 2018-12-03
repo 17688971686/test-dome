@@ -40,6 +40,7 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
 
     @Autowired
     private SignRepo signRepo;
+
     /**
      * 通过时间段 获取项目信息（按评审阶段分组），用于项目查询统计分析
      *
@@ -410,7 +411,7 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
 
                 //对中文乱码进行处理
                 String value = params[1];
-                if(value.indexOf("\"") >-1){
+                if (value.indexOf("\"") > -1) {
                     value = params[1].substring(1, params[1].length() - 1);
                     try {
                         if (value.equals(new String(value.getBytes("iso8859-1"), "iso8859-1"))) {
@@ -443,9 +444,9 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
                 }
                 //评审天数
                 else if ("beginReviewdays".equals(params[0].substring(1, params[0].length() - 1))) {
-                    hqlBuilder.append("reviewdays>=" + params[1].substring(1, params[1].length() - 1) );
+                    hqlBuilder.append("reviewdays>=" + params[1].substring(1, params[1].length() - 1));
                 } else if ("endReviewdays".equals(params[0].substring(1, params[0].length() - 1))) {
-                    hqlBuilder.append("reviewdays<=" + params[1].substring(1, params[1].length() - 1) );
+                    hqlBuilder.append("reviewdays<=" + params[1].substring(1, params[1].length() - 1));
 
                 }
                 //提前介入
@@ -469,29 +470,28 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
 
                 //项目状态查询修改
                 else if (SignDispaWork_.processState.getName().equals(params[0].substring(1, params[0].length() - 1))) {
-                    int  processState = Integer.parseInt(value);
+                    int processState = Integer.parseInt(value);
                     //未发文项目或者暂停项目
-                    if(processState == 1 || processState == 2){
+                    if (processState == 1 || processState == 2) {
                         hqlBuilder.append(" signState=" + processState);
                         hqlBuilder.append(" and processState <" + Constant.SignProcessState.DO_DIS.getValue());
-                    }else if(processState == 17){
+                    } else if (processState == 17) {
                         //未发送存档
                         hqlBuilder.append(" processState=" + Constant.SignProcessState.IS_START.getValue());
                         hqlBuilder.append(" and processState <=" + Constant.SignProcessState.SEND_CW.getValue());
-                    }else if(processState == 68){
+                    } else if (processState == 68) {
                         //已发文未存档
                         hqlBuilder.append(" processState=" + Constant.SignProcessState.END_DIS_NUM.getValue());
                         hqlBuilder.append(" or processState =" + Constant.SignProcessState.SEND_CW.getValue());
                         hqlBuilder.append(" or processState =" + Constant.SignProcessState.SEND_FILE.getValue());
 
-                    }else if(processState == 69){
+                    } else if (processState == 69) {
                         //已发文项目
                         hqlBuilder.append(" processState >=" + Constant.SignProcessState.END_DIS_NUM.getValue());
-                    }else if(processState == 89){
+                    } else if (processState == 89) {
                         //已发送存档
                         hqlBuilder.append(" processState >=" + Constant.SignProcessState.SEND_FILE.getValue());
-                    }
-                    else if(processState == 24){
+                    } else if (processState == 24) {
                         //曾经暂停
                         hqlBuilder.append(" isProjectStop =" + Constant.EnumState.YES.getValue());
                         hqlBuilder.append(" signState =" + Constant.EnumState.PROCESS.getValue());
@@ -500,29 +500,25 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
                 }
 
                 //项目发文
-                else if(SignDispaWork_.dispatchType.getName().equals(params[0].substring(1, params[0].length() - 1))){
-                    String   dispatchType = value;
-                    if("非暂不实施项目".equals(dispatchType)){
+                else if (SignDispaWork_.dispatchType.getName().equals(params[0].substring(1, params[0].length() - 1))) {
+                    String dispatchType = value;
+                    if ("非暂不实施项目".equals(dispatchType)) {
                         //非暂不实施项目=项目发文+退文
                         hqlBuilder.append(" dispatchType ='项目发文'");
                         hqlBuilder.append(" or dispatchType ='项目退文'");
-                    }else if("非退文项目".equals(dispatchType)){
+                    } else if ("非退文项目".equals(dispatchType)) {
                         //非退文项目=暂不实施+项目发文
                         hqlBuilder.append(" dispatchType ='项目发文'");
                         hqlBuilder.append(" or dispatchType ='暂不实施'");
                     }
 //                        continue;
-                }
-
-                else {
-                    if("fztype".equals(params[0].substring(1, params[0].length() - 1))
-                            || "displayName".equals(params[0].substring(1, params[0].length() - 1))){
+                } else {
+                    if ("fztype".equals(params[0].substring(1, params[0].length() - 1))
+                            || "displayName".equals(params[0].substring(1, params[0].length() - 1))) {
                         continue;
                     }
-
                     hqlBuilder.append(params[0].substring(1, params[0].length() - 1) + " like '%" + value + "%'");
                 }
-
                 if (i < queryArr.length - 1) {
                     hqlBuilder.append(" and ");
                 }
@@ -556,20 +552,20 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
         boolean isHavePermission = false;
         SignDispaWork signDispaWork = findById(signId);
         String curUserId = SessionUtil.getUserId();
-        Sign sign = signRepo.findById(Sign_.signid.getName() , signId);
+        Sign sign = signRepo.findById(Sign_.signid.getName(), signId);
         //1、先判断是否是新项目
-        if(Validate.isString(signDispaWork.getOldProjectId())){
+        if (Validate.isString(signDispaWork.getOldProjectId())) {
             //部长或者普通人员
-            isHavePermission = (SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())&& SessionUtil.getUserId().equals(signDispaWork.getmOrgId()));
-            if(!isHavePermission){
+            isHavePermission = (SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue()) && SessionUtil.getUserId().equals(signDispaWork.getmOrgId()));
+            if (!isHavePermission) {
                 isHavePermission = curUserId.equals(signDispaWork.getmUserId()) || (Validate.isString(signDispaWork.getaUserID()) && signDispaWork.getaUserID().indexOf(curUserId) > -1)
                         || (Validate.isString(sign.getaUserID()) && sign.getaUserID().indexOf(curUserId) > -1);
             }
-        }else{
+        } else {
             //新项目，是经办人才行
-            if(Validate.isString(signDispaWork.getProcessInstanceId())){
+            if (Validate.isString(signDispaWork.getProcessInstanceId())) {
                 List<String> userIdList = flowService.findUserIdByProcessInstanceId(signDispaWork.getProcessInstanceId());
-                if(userIdList.contains(curUserId) || (Validate.isString(sign.getaUserID()) && sign.getaUserID().indexOf(curUserId) > -1)){
+                if (userIdList.contains(curUserId) || (Validate.isString(sign.getaUserID()) && sign.getaUserID().indexOf(curUserId) > -1)) {
                     isHavePermission = true;
                 }
             }
@@ -583,6 +579,7 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
 
     /**
      * 在办项目数量统计
+     *
      * @return
      */
     @Override

@@ -33,9 +33,7 @@ public class CustomerFastJsonHttpMessageConverter extends FastJsonHttpMessageCon
     protected void writeInternal(Object obj, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
         OutputStream out = outputMessage.getBody();
         String text = JSON.toJSONString(obj, mapping, super.getFeatures());
-        // 对文本做HTML特殊字符转义
-        String result = convertJson(text);
-        byte[] bytes = result.getBytes(getCharset());
+        byte[] bytes = text.getBytes(getCharset());
         out.write(bytes);
     }
 

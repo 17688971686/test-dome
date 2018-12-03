@@ -38,7 +38,7 @@ import cs.service.rtx.RTXService;
 import cs.service.sys.LogService;
 import cs.service.sys.OrgService;
 import cs.service.sys.UserService;
-import cs.sql.FlowSql;
+//import cs.sql.FlowSql;
 import cs.sql.WorkSql;
 import org.activiti.engine.*;
 import org.activiti.engine.history.HistoricProcessInstance;
@@ -1342,10 +1342,10 @@ public class FlowServiceImpl implements FlowService {
      */
     @Override
     public List<Map<String, Object>> getProc() {
-        List<Map<String, Object>> list = jdbcTemplate.queryForList(FlowSql.activityProSql,SIGN_FLOW);
+       /* List<Map<String, Object>> list = jdbcTemplate.queryForList(FlowSql.activityProSql,SIGN_FLOW);
         if(Validate.isList(list)){
             return list;
-        }
+        }*/
         return null;
     }
 
@@ -1356,12 +1356,13 @@ public class FlowServiceImpl implements FlowService {
      */
     @Override
     public List<String> findUserIdByProcessInstanceId(String processInstanceId) {
-        List<Map<String, Object>> resultMapList = jdbcTemplate.queryForList(FlowSql.activityUserSql,processInstanceId);
+       /* List<Map<String, Object>> resultMapList = jdbcTemplate.queryForList(FlowSql.activityUserSql,processInstanceId);
         List<String> resultList = new ArrayList<>();
         for (Map<String, Object> map : resultMapList) {
             resultList.add(map.get("USER_ID") == null ? "" : map.get("USER_ID").toString());
         }
-        return resultList;
+        return resultList;*/
+       return null;
     }
 
     /**
@@ -1373,7 +1374,7 @@ public class FlowServiceImpl implements FlowService {
      */
     @Override
     public List<CommentDto> findCommentByProcInstId(String procInstId, List<String> nodeKeys) {
-        HqlBuilder sqlBuilder = FlowSql.activityCommentSql(procInstId,nodeKeys);
+        /*HqlBuilder sqlBuilder = FlowSql.activityCommentSql(procInstId,nodeKeys);
         List<Object[]> commentList = signBranchRepo.getObjectArray(sqlBuilder);
         List<CommentDto> resultList = new ArrayList<>();
         for (Object[] objArr : commentList) {
@@ -1381,7 +1382,8 @@ public class FlowServiceImpl implements FlowService {
             mapToComment(objArr, commentDto);
             resultList.add(commentDto);
         }
-        return resultList;
+        return resultList;*/
+        return null;
     }
 
     private void mapToComment(Object[] objArr, CommentDto commentDto) {
