@@ -39,11 +39,21 @@
 	         方法2：注解在字段的setter方法中赋值
 	         注意：@Value("#{prop.属性名}") 中的 prop 是 注册的PropertiesFactoryBean的 Bean ID
 	-->
-	<bean id="busiProp" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+	<!--<bean id="busiProp" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
 		<property name="locations">
 			<array>
 				<value>classpath:business.properties</value>
 			</array>
+		</property>
+	</bean>-->
+	<bean id="propertyPlaceHolderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+		<property name="ignoreResourceNotFound" value="true" />
+		<property name="locations">
+			<list>
+				<!-- 把需要配置的properties文件配置在这里，可以有多个 -->
+				<value>classpath:business.properties</value>
+			</list>
 		</property>
 	</bean>
 

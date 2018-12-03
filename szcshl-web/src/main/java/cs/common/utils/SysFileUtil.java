@@ -16,11 +16,8 @@ import java.text.DecimalFormat;
 public class SysFileUtil {
     private static Logger logger = Logger.getLogger(SysFileUtil.class);
 
+    @Value("${FILE_UPLOAD_PATH}")
     private static String fileUploadPathProp;
-    @Value("#{busiProp.FILE_UPLOAD_PATH}")
-    public static void setFileUploadPathProp(String fileUploadPathProp) {
-        SysFileUtil.fileUploadPathProp = fileUploadPathProp;
-    }
 
     public static String getFileSize(Long fileS){
         String size = "";

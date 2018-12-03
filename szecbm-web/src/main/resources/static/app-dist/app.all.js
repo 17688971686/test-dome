@@ -1336,233 +1336,6 @@
     'use strict';
 
     angular.module('myApp').config(function ($stateProvider) {
-        $stateProvider.state('dict', {
-            url: "/dict",
-            controllerAs: "vm",
-            templateUrl: util.formatUrl('sys/dict/html/list'),
-            controller: function ($scope, dictSvc, bsWin) {
-                $scope.csHide("bm");
-                var vm = this;
-                vm.dict = {};
-                //deleteDict#Begin
-                vm.dels = function () {
-                    var nodes = vm.dictsTree.getSelectedNodes();
-                    if (nodes && nodes.length > 0) {
-                        vm.del(nodes[0].dictId)
-                    } else {
-                        bsWin.confirm("请选择数据")
-                    }
-                };
-                vm.del = function (dictId) {
-                    vm.dict.dictId = dictId;
-                    bsWin.confirm("删除字典将会连下级字典一起删除，确认删除数据吗？", function () {
-                        dictSvc.deleteDict(vm);
-                    });
-                };
-                //deleteDict#End
-
-                vm.resetDict = function () {
-                    bsWin.confirm("您确定要重置数据字典吗？", function () {
-                        dictSvc.resetDict(vm);
-                    });
-                }
-
-                dictSvc.initDictTree(vm);
-            }
-
-        });
-    });
-
-})();
-(function () {
-    'use strict';
-
-    angular.module('myApp').config(function ($stateProvider) {
-        $stateProvider.state('dict.edit', {
-            url: "/dictEdit/:dictId",
-            controllerAs: "vm",
-            templateUrl: util.formatUrl('sys/dict/html/edit'),
-            controller: function ($scope, dictSvc, $state) {
-                $scope.csHide("bm");
-                var vm = this;
-                vm.dict = {};
-                vm.dictId = $state.params.dictId;
-                if (vm.dictId) {
-                    vm.isUpdate = true;
-                }
-                if (vm.isUpdate) {
-                    dictSvc.findDictById(vm);
-                } else {
-                    dictSvc.initpZtreeClient(vm);
-                }
-                vm.create = function () {
-                    if (vm.dictsTree) {
-                        var pNode = vm.dictsTree.getCheckedNodes(true);
-                        if (pNode && pNode.length != 0) {
-                            vm.dict.parentId = pNode[0].dictId;
-                        }
-                    }
-                    dictSvc.createDict(vm);
-                };
-
-                vm.update = function () {
-                    dictSvc.updateDict(vm);
-                };
-
-                vm.dictTypeChange = function () {
-                    if (vm.dict.dictType) {
-                        vm.dict.dictKey = '';
-                    }
-                };
-
-            }
-        });
-    });
-
-})();
-(function () {
-    'use strict';
-
-    var app = angular.module('myApp');
-    app.factory("dictSvc", function ($http, bsWin, $state) {
-        var dict_url = util.formatUrl("sys/dict");
-        return {
-            //list#zTree#Begin
-            initDictTree: initDictTree,
-            //list#zTree#End
-            //edit#zTree#Begin
-            /**
-             * 初始化数据字典树
-             * @param vm    作用域
-             */
-            initpZtreeClient: function (vm) {
-                vm.dictsTree && vm.dictsTree.destroy();
-                $http.get(dict_url + "?$orderby=itemOrder asc").success(function (data) {
-                    //vm.dict = data;
-                    var setting = {
-                        check: {enable: true, chkStyle: "radio", radioType: "all"},
-                        data: {
-                            key: {
-                                name: "dictName"
-                            },
-                            simpleData: {
-                                enable: true,
-                                idKey: "dictId",
-                                pIdKey: "parentId",
-                                rootPId: 0
-                            }
-                        }
-                    };
-                    vm.dictsTree = $.fn.zTree.init($("#pzTree"), setting, data || []);
-                });
-            },
-            //edit#zTree#End
-            /**
-             * 创建数据字典
-             * @param vm    作用域
-             */
-            createDict: function (vm) {
-                util.initJqValidation();
-                var isValid = $('form').valid();
-                if (isValid) {
-                    vm.isSubmit = true;
-                    $http.post(dict_url, vm.dict).then(function () {
-                        bsWin.success("创建成功");
-                        vm.isSubmit = false;
-                        initDictTree(vm);
-                    }, function () {
-                        vm.isSubmit = false;
-                    });
-                }
-            },
-            /**
-             * 通过主键查找数据字典数据
-             * @param vm    作用域
-             */
-            findDictById: function (vm) {
-                if (!vm.dictId) return false;
-                $http.get(dict_url + "/" + vm.dictId).success(function (data) {
-                    vm.dict = data;
-                });
-            },
-
-            updateDict: function (vm) {
-                util.initJqValidation();
-                var isValid = $('form').valid();
-                if (isValid) {
-                    vm.isSubmit = true;
-                    $http.put(dict_url, vm.dict).then(function () {
-                        bsWin.success("更新成功");
-                        vm.isSubmit = false;
-                        initDictTree(vm);
-                    }, function () {
-                        vm.isSubmit = false;
-                    })
-                }
-            },
-
-            deleteDict: function (vm) {
-                vm.isSubmit = true;
-                $http['delete'](dict_url, {params: {"dictId": vm.dict.dictId || ""}}).then(function () {
-                    bsWin.success("删除成功");
-                    vm.isSubmit = false;
-                    initDictTree(vm);
-                }, function () {
-                    vm.isSubmit = false;
-                });
-            },
-            /**
-             *
-             * @param vm
-             */
-            resetDict: function (vm) {
-                vm.isSubmit = true;
-                $http.post(dict_url + "/reset", {}).then(function () {
-                    bsWin.success("操作成功");
-                    vm.isSubmit = false;
-                    initDictTree(vm);
-                }, function () {
-                    vm.isSubmit = false;
-                });
-            }
-        };
-
-        function initDictTree(vm) {
-            vm.dictsTree && vm.dictsTree.destroy();
-            $http.get(dict_url + "?$orderby=itemOrder asc").success(function (data) {
-                // vm.dict = data;
-
-                vm.dictsTree = $.fn.zTree.init($("#zTree"), {
-                    callback: {
-                        onClick: zTreeOnClick
-                    },
-                    data: {
-                        key: {
-                            name: "dictName"
-                        },
-                        simpleData: {
-                            enable: true,
-                            idKey: "dictId",
-                            pIdKey: "parentId",
-                            rootPId: 0
-                        }
-                    }
-                }, data || []);
-                function zTreeOnClick(event, treeId, treeNode) {
-                    $state.go('dict.edit', {dictId: treeNode.dictId});
-                }
-
-                // 初始化模糊搜索方法
-                window.fuzzySearch("zTree", '#dictTreeKey', null, true);
-            });
-        }
-    });
-
-})();
-(function () {
-    'use strict';
-
-    angular.module('myApp').config(function ($stateProvider) {
         $stateProvider.state('attachment', {
             url: "/attachment",
             controllerAs: "vm",
@@ -1830,193 +1603,227 @@
 (function () {
     'use strict';
 
-    var app = angular.module('myApp');
-
-    app.config(function ($stateProvider) {
-        $stateProvider
-            .state('operatorLog', {
-                url: "/operatorLog",
-                controllerAs: "vm",
-                templateUrl: util.formatUrl('sys/operatorLog/html/list'),
-                controller: function ($scope, operatorLogSvc, bsWin) {
-                    $scope.csHide("bm");
-
-                    var vm = this;
-                    vm.model = {};
-                    vm.delLog = function(days){
-                        operatorLogSvc.deleteLog(vm,days);
+    angular.module('myApp').config(function ($stateProvider) {
+        $stateProvider.state('dict', {
+            url: "/dict",
+            controllerAs: "vm",
+            templateUrl: util.formatUrl('sys/dict/html/list'),
+            controller: function ($scope, dictSvc, bsWin) {
+                $scope.csHide("bm");
+                var vm = this;
+                vm.dict = {};
+                //deleteDict#Begin
+                vm.dels = function () {
+                    var nodes = vm.dictsTree.getSelectedNodes();
+                    if (nodes && nodes.length > 0) {
+                        vm.del(nodes[0].dictId)
+                    } else {
+                        bsWin.confirm("请选择数据")
                     }
+                };
+                vm.del = function (dictId) {
+                    vm.dict.dictId = dictId;
+                    bsWin.confirm("删除字典将会连下级字典一起删除，确认删除数据吗？", function () {
+                        dictSvc.deleteDict(vm);
+                    });
+                };
+                //deleteDict#End
 
-                    // vm.del = function (id) {
-                    //     vm.model.id = id;
-                    //     bsWin.confirm("确认删除数据吗？", function () {
-                    //         operatorLogSvc.deleteLog(vm);
-                    //     })
-                    // };
-                    //
-                    // vm.dels = function () {
-                    //     var rows = $('#editTable').bootstrapTable('getSelections');//返回的是所有选中的行对象
-                    //     if (rows.length == 0) {
-                    //         bsWin.alert("请选择要删除的数据");
-                    //         return;
-                    //     }
-                    //     var ids = [];
-                    //     $.each(rows, function (i, row) {
-                    //         ids.push(row.id)
-                    //     });
-                    //     vm.del(ids.join(","));
-                    // };
-
-                    // 初始化列表
-                    operatorLogSvc.bsTableControl($scope);
+                vm.resetDict = function () {
+                    bsWin.confirm("您确定要重置数据字典吗？", function () {
+                        dictSvc.resetDict(vm);
+                    });
                 }
 
-            });
+                dictSvc.initDictTree(vm);
+            }
+
+        });
     });
 
 })();
 (function () {
     'use strict';
 
-    angular.module('myApp').factory("operatorLogSvc", function ($http, bsWin) {
-        var operatorLog_url = util.formatUrl("sys/operatorLog");
+    angular.module('myApp').config(function ($stateProvider) {
+        $stateProvider.state('dict.edit', {
+            url: "/dictEdit/:dictId",
+            controllerAs: "vm",
+            templateUrl: util.formatUrl('sys/dict/html/edit'),
+            controller: function ($scope, dictSvc, $state) {
+                $scope.csHide("bm");
+                var vm = this;
+                vm.dict = {};
+                vm.dictId = $state.params.dictId;
+                if (vm.dictId) {
+                    vm.isUpdate = true;
+                }
+                if (vm.isUpdate) {
+                    dictSvc.findDictById(vm);
+                } else {
+                    dictSvc.initpZtreeClient(vm);
+                }
+                vm.create = function () {
+                    if (vm.dictsTree) {
+                        var pNode = vm.dictsTree.getCheckedNodes(true);
+                        if (pNode && pNode.length != 0) {
+                            vm.dict.parentId = pNode[0].dictId;
+                        }
+                    }
+                    dictSvc.createDict(vm);
+                };
+
+                vm.update = function () {
+                    dictSvc.updateDict(vm);
+                };
+
+                vm.dictTypeChange = function () {
+                    if (vm.dict.dictType) {
+                        vm.dict.dictKey = '';
+                    }
+                };
+
+            }
+        });
+    });
+
+})();
+(function () {
+    'use strict';
+
+    var app = angular.module('myApp');
+    app.factory("dictSvc", function ($http, bsWin, $state) {
+        var dict_url = util.formatUrl("sys/dict");
         return {
+            //list#zTree#Begin
+            initDictTree: initDictTree,
+            //list#zTree#End
+            //edit#zTree#Begin
             /**
-             * 构建操作日志登录列表配置项
+             * 初始化数据字典树
              * @param vm    作用域
              */
-            bsTableControl: function (vm) {
-                vm.bsTableControl = {
-                    options: util.getTableFilterOption({
-                        url: operatorLog_url,
-                        columns: [{
-                            title: '行号',
-                            switchable: false,
-                            width: 50,
-                            align: "left",
-                            formatter: function (value, row, index) {
-                                var state = vm.bsTableControl.state;
-                                if (state.pageNumber && state.pageSize) {
-                                    return index + 1 + (state.pageNumber - 1) * state.pageSize;
-                                } else {
-                                    return index + 1
-                                }
+            initpZtreeClient: function (vm) {
+                vm.dictsTree && vm.dictsTree.destroy();
+                $http.get(dict_url + "?$orderby=itemOrder asc").success(function (data) {
+                    //vm.dict = data;
+                    var setting = {
+                        check: {enable: true, chkStyle: "radio", radioType: "all"},
+                        data: {
+                            key: {
+                                name: "dictName"
+                            },
+                            simpleData: {
+                                enable: true,
+                                idKey: "dictId",
+                                pIdKey: "parentId",
+                                rootPId: 0
                             }
-                        }, {
-                            field: 'createdDate',
-                            title: '操作时间',
-                            width: 100,
-                            sortable: true,
-                            filterControl: "datepicker",
-                            filterOperator: "lte"
-                        }, {
-                            field: 'createdBy',
-                            title: '操作人',
-                            width: 100,
-                            sortable: true,
-                            filterControl: "input",
-                            filterOperator: "like"
-                        }, {
-                            field: 'businessType',
-                            title: '操作对象',
-                            width: 100,
-                            sortable: true,
-                            filterControl: "input",
-                            filterOperator: "like",
-                            formatter: function (value, row, index) {
-                                return row.businessType+"["+row.operateType+"]";
-                            }
-                        }, {
-                            field: 'operateTime',
-                            title: '耗时',
-                            width: 80,
-                            sortable: true,
-                            align: "right",
-                            filterControl: "number"
-                        }, {
-                            field: 'ipAddress',
-                            title: 'IP地址',
-                            width: 100,
-                            align: "center",
-                            filterControl: "input",
-                            filterOperator: "like"
-                        },  {
-                            field: 'sucessFlag',
-                            title: '结果',
-                            width: 60,
-                            filterControl: "input",
-                            filterOperator: "like",
-                            formatter: "<span ng-show='row.sucessFlag==1' class='bg-green'>成功</span><span ng-show='row.sucessFlag!=1' class='bg-red'>失败</span>"
-                        }, {
-                            field: 'message',
-                            title: '结果消息',
-                            width: 120
-                        },{
-                            field: 'oldInfo',
-                            title: '原数据',
-                            width: 200,
-                            formatter: function (value, row, index) {
-                                if(value){
-                                    return "<textarea style='width: 100%' rows='4'>"+value+"</textarea>";
-                                }else{
-                                    return "<textarea style='width: 100%' rows='4'> </textarea>";
-                                }
-                            }
-                        },{
-                            field: 'newInfo',
-                            title: '更新数据',
-                            width: 200,
-                            formatter: function (value, row, index) {
-                                if(value){
-                                    return "<textarea style='width: 100%' rows='4'>"+value+"</textarea>";
-                                }else{
-                                    return "<textarea style='width: 100%' rows='4'> </textarea>";
-                                }
-                            }
-                        },{
-                            field: 'updateInfo',
-                            title: '更新信息',
-                            width: 200,
-                            formatter: function (value, row, index) {
-                                if(value){
-                                    return "<textarea style='width: 100%' rows='4'>"+value+"</textarea>";
-                                }else{
-                                    return "<textarea style='width: 100%' rows='4'> </textarea>";
-                                }
-                            }
-                        }]
-                    })
-                };
+                        }
+                    };
+                    vm.dictsTree = $.fn.zTree.init($("#pzTree"), setting, data || []);
+                });
+            },
+            //edit#zTree#End
+            /**
+             * 创建数据字典
+             * @param vm    作用域
+             */
+            createDict: function (vm) {
+                util.initJqValidation();
+                var isValid = $('form').valid();
+                if (isValid) {
+                    vm.isSubmit = true;
+                    $http.post(dict_url, vm.dict).then(function () {
+                        bsWin.success("创建成功");
+                        vm.isSubmit = false;
+                        initDictTree(vm);
+                    }, function () {
+                        vm.isSubmit = false;
+                    });
+                }
             },
             /**
-             * 获取操作日志数据
-             * @param vm        作用域
-             * @param params    查询参数
+             * 通过主键查找数据字典数据
+             * @param vm    作用域
              */
-            getOperatorLogList: function (vm, params) {
-                $http.get(operatorLog_url, {
-                    params: params
-                }).success(function (data) {
-                    vm.operatorLogList = data || {};
+            findDictById: function (vm) {
+                if (!vm.dictId) return false;
+                $http.get(dict_url + "/" + vm.dictId).success(function (data) {
+                    vm.dict = data;
+                });
+            },
+
+            updateDict: function (vm) {
+                util.initJqValidation();
+                var isValid = $('form').valid();
+                if (isValid) {
+                    vm.isSubmit = true;
+                    $http.put(dict_url, vm.dict).then(function () {
+                        bsWin.success("更新成功");
+                        vm.isSubmit = false;
+                        initDictTree(vm);
+                    }, function () {
+                        vm.isSubmit = false;
+                    })
+                }
+            },
+
+            deleteDict: function (vm) {
+                vm.isSubmit = true;
+                $http['delete'](dict_url, {params: {"dictId": vm.dict.dictId || ""}}).then(function () {
+                    bsWin.success("删除成功");
+                    vm.isSubmit = false;
+                    initDictTree(vm);
+                }, function () {
+                    vm.isSubmit = false;
                 });
             },
             /**
-             * 删除操作日志数据
-             * @param vm    作用域
-             * @param days  删除指定天数之前的数据
+             *
+             * @param vm
              */
-            deleteLog: function (vm, days) {
+            resetDict: function (vm) {
                 vm.isSubmit = true;
-                $http['delete'](operatorLog_url, {params: {"days": days || ""}}).then(function () {
-                    bsWin.alert("删除成功");
+                $http.post(dict_url + "/reset", {}).then(function () {
+                    bsWin.success("操作成功");
                     vm.isSubmit = false;
-                    $("#editTable").bootstrapTable('refresh', "");//刷新表格数据
+                    initDictTree(vm);
+                }, function () {
+                    vm.isSubmit = false;
                 });
             }
-
         };
 
+        function initDictTree(vm) {
+            vm.dictsTree && vm.dictsTree.destroy();
+            $http.get(dict_url + "?$orderby=itemOrder asc").success(function (data) {
+                // vm.dict = data;
 
+                vm.dictsTree = $.fn.zTree.init($("#zTree"), {
+                    callback: {
+                        onClick: zTreeOnClick
+                    },
+                    data: {
+                        key: {
+                            name: "dictName"
+                        },
+                        simpleData: {
+                            enable: true,
+                            idKey: "dictId",
+                            pIdKey: "parentId",
+                            rootPId: 0
+                        }
+                    }
+                }, data || []);
+                function zTreeOnClick(event, treeId, treeNode) {
+                    $state.go('dict.edit', {dictId: treeNode.dictId});
+                }
+
+                // 初始化模糊搜索方法
+                window.fuzzySearch("zTree", '#dictTreeKey', null, true);
+            });
+        }
     });
 
 })();
@@ -2518,6 +2325,199 @@
         userSvc.bsTableControl($scope, {field: "organ.organId", operator: "eq", value: $scope.organId});
         userSvc.reloadBsTable($scope);
     }
+
+})();
+(function () {
+    'use strict';
+
+    var app = angular.module('myApp');
+
+    app.config(function ($stateProvider) {
+        $stateProvider
+            .state('operatorLog', {
+                url: "/operatorLog",
+                controllerAs: "vm",
+                templateUrl: util.formatUrl('sys/operatorLog/html/list'),
+                controller: function ($scope, operatorLogSvc, bsWin) {
+                    $scope.csHide("bm");
+
+                    var vm = this;
+                    vm.model = {};
+                    vm.delLog = function(days){
+                        operatorLogSvc.deleteLog(vm,days);
+                    }
+
+                    // vm.del = function (id) {
+                    //     vm.model.id = id;
+                    //     bsWin.confirm("确认删除数据吗？", function () {
+                    //         operatorLogSvc.deleteLog(vm);
+                    //     })
+                    // };
+                    //
+                    // vm.dels = function () {
+                    //     var rows = $('#editTable').bootstrapTable('getSelections');//返回的是所有选中的行对象
+                    //     if (rows.length == 0) {
+                    //         bsWin.alert("请选择要删除的数据");
+                    //         return;
+                    //     }
+                    //     var ids = [];
+                    //     $.each(rows, function (i, row) {
+                    //         ids.push(row.id)
+                    //     });
+                    //     vm.del(ids.join(","));
+                    // };
+
+                    // 初始化列表
+                    operatorLogSvc.bsTableControl($scope);
+                }
+
+            });
+    });
+
+})();
+(function () {
+    'use strict';
+
+    angular.module('myApp').factory("operatorLogSvc", function ($http, bsWin) {
+        var operatorLog_url = util.formatUrl("sys/operatorLog");
+        return {
+            /**
+             * 构建操作日志登录列表配置项
+             * @param vm    作用域
+             */
+            bsTableControl: function (vm) {
+                vm.bsTableControl = {
+                    options: util.getTableFilterOption({
+                        url: operatorLog_url,
+                        columns: [{
+                            title: '行号',
+                            switchable: false,
+                            width: 50,
+                            align: "left",
+                            formatter: function (value, row, index) {
+                                var state = vm.bsTableControl.state;
+                                if (state.pageNumber && state.pageSize) {
+                                    return index + 1 + (state.pageNumber - 1) * state.pageSize;
+                                } else {
+                                    return index + 1
+                                }
+                            }
+                        }, {
+                            field: 'createdDate',
+                            title: '操作时间',
+                            width: 100,
+                            sortable: true,
+                            filterControl: "datepicker",
+                            filterOperator: "lte"
+                        }, {
+                            field: 'createdBy',
+                            title: '操作人',
+                            width: 100,
+                            sortable: true,
+                            filterControl: "input",
+                            filterOperator: "like"
+                        }, {
+                            field: 'businessType',
+                            title: '操作对象',
+                            width: 100,
+                            sortable: true,
+                            filterControl: "input",
+                            filterOperator: "like",
+                            formatter: function (value, row, index) {
+                                return row.businessType+"["+row.operateType+"]";
+                            }
+                        }, {
+                            field: 'operateTime',
+                            title: '耗时',
+                            width: 80,
+                            sortable: true,
+                            align: "right",
+                            filterControl: "number"
+                        }, {
+                            field: 'ipAddress',
+                            title: 'IP地址',
+                            width: 100,
+                            align: "center",
+                            filterControl: "input",
+                            filterOperator: "like"
+                        },  {
+                            field: 'sucessFlag',
+                            title: '结果',
+                            width: 60,
+                            filterControl: "input",
+                            filterOperator: "like",
+                            formatter: "<span ng-show='row.sucessFlag==1' class='bg-green'>成功</span><span ng-show='row.sucessFlag!=1' class='bg-red'>失败</span>"
+                        }, {
+                            field: 'message',
+                            title: '结果消息',
+                            width: 120
+                        },{
+                            field: 'oldInfo',
+                            title: '原数据',
+                            width: 200,
+                            formatter: function (value, row, index) {
+                                if(value){
+                                    return "<textarea style='width: 100%' rows='4'>"+value+"</textarea>";
+                                }else{
+                                    return "<textarea style='width: 100%' rows='4'> </textarea>";
+                                }
+                            }
+                        },{
+                            field: 'newInfo',
+                            title: '更新数据',
+                            width: 200,
+                            formatter: function (value, row, index) {
+                                if(value){
+                                    return "<textarea style='width: 100%' rows='4'>"+value+"</textarea>";
+                                }else{
+                                    return "<textarea style='width: 100%' rows='4'> </textarea>";
+                                }
+                            }
+                        },{
+                            field: 'updateInfo',
+                            title: '更新信息',
+                            width: 200,
+                            formatter: function (value, row, index) {
+                                if(value){
+                                    return "<textarea style='width: 100%' rows='4'>"+value+"</textarea>";
+                                }else{
+                                    return "<textarea style='width: 100%' rows='4'> </textarea>";
+                                }
+                            }
+                        }]
+                    })
+                };
+            },
+            /**
+             * 获取操作日志数据
+             * @param vm        作用域
+             * @param params    查询参数
+             */
+            getOperatorLogList: function (vm, params) {
+                $http.get(operatorLog_url, {
+                    params: params
+                }).success(function (data) {
+                    vm.operatorLogList = data || {};
+                });
+            },
+            /**
+             * 删除操作日志数据
+             * @param vm    作用域
+             * @param days  删除指定天数之前的数据
+             */
+            deleteLog: function (vm, days) {
+                vm.isSubmit = true;
+                $http['delete'](operatorLog_url, {params: {"days": days || ""}}).then(function () {
+                    bsWin.alert("删除成功");
+                    vm.isSubmit = false;
+                    $("#editTable").bootstrapTable('refresh', "");//刷新表格数据
+                });
+            }
+
+        };
+
+
+    });
 
 })();
 (function () {

@@ -72,11 +72,8 @@ public class AdminController {
     @Autowired
     private SignPrincipalRepo signPrincipalRepo;
 
+    @Value("${RTX_IP}")
     private String rtxIpProp;
-    @Value("#{busiProp.RTX_IP}")
-    public void setRtxIpProp(String rtxIpProp) {
-        this.rtxIpProp = rtxIpProp;
-    }
 
     //@RequiresPermissions("admin#index#get")
     @RequiresAuthentication

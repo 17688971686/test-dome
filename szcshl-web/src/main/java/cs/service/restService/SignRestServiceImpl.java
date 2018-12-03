@@ -61,18 +61,10 @@ public class SignRestServiceImpl implements SignRestService {
     private DispatchDocService dispatchDocService;
     @Autowired
     private DispatchDocRepo dispatchDocRepo;
-
+    @Value("${FGW_PROJECT_IFS}")
     private String fgwProjIfsProp;
-    @Value("#{busiProp.FGW_PROJECT_IFS}")
-    public void setFgwProjIfsProp(String fgwProjIfsProp) {
-        this.fgwProjIfsProp = fgwProjIfsProp;
-    }
-
+    @Value("${FGW_PRE_PROJECT_IFS}")
     private String fgwPreProjIfsProp;
-    @Value("#{busiProp.FGW_PRE_PROJECT_IFS}")
-    public void setFgwPreProjIfsProp(String fgwPreProjIfsProp) {
-        this.fgwPreProjIfsProp = fgwPreProjIfsProp;
-    }
 
     /**
      * 项目推送

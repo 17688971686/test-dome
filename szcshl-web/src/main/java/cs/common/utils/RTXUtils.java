@@ -26,12 +26,8 @@ import java.util.concurrent.Future;
 public class RTXUtils {
     private final static String MSG_TITLE = "【评审中心项目管理信息系统】消息提醒";
     private final static String RTX_MSG_NOTICE = "/sendnotify.cgi?";
-
+    @Value("${RTX_URL}")
     private static String RTX_URL_PROP;
-    @Value("#{busiProp.RTX_URL}")
-    public static void setRtxUrlProp(String rtxUrlProp) {
-        RTX_URL_PROP = rtxUrlProp;
-    }
 
     /**
      * 异步发送腾讯通消息

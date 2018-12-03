@@ -50,12 +50,8 @@ public class RTXService {
     @Autowired
     private MsgService msgService;
 
+    @Value("${RTX_URL}")
     private String rtxUrlProp;
-
-    @Value("#{busiProp.RTX_URL}")
-    public void setRtxUrlProp(String rtxUrlProp) {
-        this.rtxUrlProp = rtxUrlProp;
-    }
 
 
     /**
