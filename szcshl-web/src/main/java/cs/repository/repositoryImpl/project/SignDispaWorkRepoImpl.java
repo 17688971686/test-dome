@@ -12,6 +12,7 @@ import cs.domain.project.SignDispaWork_;
 import cs.domain.project.Sign_;
 import cs.repository.AbstractRepository;
 import cs.service.flow.FlowService;
+import cs.sql.ProjSql;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -594,10 +595,7 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
      */
     @Override
     public List<Map<String, Object>> dataskCount() {
-        String statisticsSql = " select COUNT(signid)  as SIGNNUMBER ,reviewstage   from SIGN_DISP_WORK t where signstate<>7 and signstate<>2 group by t.reviewstage";
-        List<Map<String, Object>> statList = jdbcTemplate.queryForList(statisticsSql);
-
-        return statList;
+        return jdbcTemplate.queryForList(ProjSql.COUNT_PROJ);
     }
 
     /**
@@ -607,11 +605,7 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
      */
     @Override
     public List<Map<String, Object>> dtasksLineSign() {
-        //for mysql
-        String statisticsSql = " select t.signid, t.projectname,t.receivedate,t.surplusdays,t.processInstanceId from SIGN_DISP_WORK t where signstate<>7 and signstate<>2";
-        List<Map<String, Object>> statList = jdbcTemplate.queryForList(statisticsSql);
-
-        return statList;
+        return jdbcTemplate.queryForList(ProjSql.COUNT_DEAL_PROJ);
     }
 
 
