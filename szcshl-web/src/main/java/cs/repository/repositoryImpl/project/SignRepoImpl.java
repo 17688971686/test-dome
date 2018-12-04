@@ -1,17 +1,19 @@
 package cs.repository.repositoryImpl.project;
 
+import cs.ahelper.projhelper.ProjUtil;
 import cs.common.constants.Constant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
-import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.DateUtils;
-import cs.common.utils.Validate;
+import cs.common.constants.FlowConstant;
+import cs.common.utils.*;
 import cs.domain.project.*;
 import cs.domain.sys.*;
+import cs.model.project.CommentDto;
 import cs.model.project.SignDto;
 import cs.repository.AbstractRepository;
 import cs.repository.repositoryImpl.sys.OrgDeptRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
+import cs.service.flow.FlowService;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -19,8 +21,7 @@ import org.hibernate.type.IntegerType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
@@ -33,6 +34,8 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
     private OrgDeptRepo orgDeptRepo;
     @Autowired
     private SignBranchRepo signBranchRepo;
+    @Autowired
+    private FlowService flowService;
 
     /**
      * 修改项目状态
@@ -323,11 +326,11 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
      * 重新初始化协办部门和协办负责人信息
      *
      * @param sign
-     * @param signId
      * @param branchId 排除的分支
      */
     @Override
-    public void initAOrgAndUser(Sign sign, String signId, String branchId) {
+    public void initAOrgAndUser(Sign sign, String branchId) {
+        String signId = sign.getSignid();
         Criteria criteria = signPrincipalRepo.getExecutableCriteria();
         criteria.add(Restrictions.eq(SignPrincipal_.signId.getName(), signId));
         criteria.add(Restrictions.ne(SignPrincipal_.flowBranch.getName(), branchId));
@@ -354,11 +357,43 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
             sign.setaUserID(aUserId.toString());
             sign.setaUserName(aUserName.toString());
         } else {
-            sign.setmUserId("");
-            sign.setmUserName("");
-            sign.setaUserID("");
-            sign.setaUserName("");
+            ProjUtil.resetReviewUser(sign);
         }
+        //重置部长评审意见
+        List<String> nodeKeyList = Arrays.asList(FlowConstant.FLOW_SIGN_BMFB1, FlowConstant.FLOW_SIGN_BMFB2, FlowConstant.FLOW_SIGN_BMFB3,FlowConstant.FLOW_SIGN_BMFB4);
+        List<CommentDto> commentDtoList = flowService.findCommentByProcInstId(sign.getProcessInstanceId(),nodeKeyList);
+        Map<String,CommentDto> commentDtoMap = flowService.filterComents(commentDtoList,nodeKeyList);
+        commentDtoList = new ArrayList(commentDtoMap.values());
+        if(Validate.isList(commentDtoList)){
+            Collections.sort(commentDtoList, new Comparator<CommentDto>() {
+                @Override
+                public int compare(CommentDto o1, CommentDto o2) {
+                    if(!Validate.isObject(o1.getCommentDate())){
+                        return -1;
+                    }
+                    if(!Validate.isObject(o2)){
+                        return 1;
+                    }
+                    return o1.getCommentDate().compareTo(o2.getCommentDate());
+                }
+            });
+
+            StringBuffer optionBuffer = new StringBuffer();
+            for(CommentDto commentDto : commentDtoList){
+                if(("SIGN_BMFB"+branchId).equals(commentDto.getNodeKeyValue())){
+                    continue;
+                }
+                if(optionBuffer.length() > 0){
+                    optionBuffer.append("<br>");
+                }
+                optionBuffer.append(commentDto.getComments()).append(" 签名：").append(commentDto.getUserName());
+                optionBuffer.append("  日期：" + DateUtils.converToString(commentDto.getCommentDate(), "yyyy年MM月dd日"));
+            }
+            sign.setMinisterhandlesug(optionBuffer.toString());
+        }else{
+            sign.setMinisterhandlesug("");
+        }
+        save(sign);
     }
 
     /**

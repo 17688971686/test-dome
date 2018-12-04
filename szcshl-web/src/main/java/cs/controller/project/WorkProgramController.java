@@ -175,7 +175,7 @@ public class WorkProgramController {
             if(resultMsg.isFlag()){
                 //如果成功，则发送短信通知
                 String taskName = resultMsg.getReObj().toString();
-                rtxService.dealPoolRTXMsg(signId,resultMsg,taskName, Constant.MsgType.task_type.name());
+                rtxService.dealPoolRTXMsg(null,signId,resultMsg,taskName, Constant.MsgType.task_type.name());
             }
         }else{
             resultMsg = ResultMsg.error(ERROR_MSG);

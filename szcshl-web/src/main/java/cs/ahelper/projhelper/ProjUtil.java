@@ -3,6 +3,7 @@ package cs.ahelper.projhelper;
 import cs.common.constants.Constant;
 import cs.common.constants.FlowConstant;
 import cs.common.utils.Validate;
+import cs.domain.project.Sign;
 import cs.domain.project.WorkProgram;
 import cs.model.project.SignDto;
 
@@ -196,5 +197,51 @@ public class ProjUtil {
             return workProgramList.stream().filter(item -> Constant.EnumState.YES.getValue().equals(item.getState())).collect(Collectors.toList());
         }
         return null;
+    }
+    /**
+     * 清空综合部意见
+     * @return
+     */
+    public static Sign resetLeaderOption(Sign sign){
+        sign.setLeaderhandlesug("");
+        sign.setLeaderDate(null);
+        sign.setLeaderId("");
+        sign.setLeaderName("");
+        return sign;
+    }
+
+    /**
+     * 清空部长意见
+     * @return
+     */
+    public static Sign resetMinisterOption(Sign sign){
+        sign.setMinisterhandlesug("");
+        sign.setMinisterDate(null);
+        sign.setMinisterId("");
+        sign.setMinisterName("");
+        return sign;
+    }
+
+    /**
+     * 清空部门信息
+     * @return
+     */
+    public static Sign resetReviewDept(Sign sign){
+        sign.setmOrgId("");
+        sign.setmOrgName("");
+        sign.setaOrgId("");
+        sign.setaOrgName("");
+        return sign;
+    }
+    /**
+     * 清空部门信息
+     * @return
+     */
+    public static Sign resetReviewUser(Sign sign){
+        sign.setmUserId("");
+        sign.setmUserName("");
+        sign.setaUserID("");
+        sign.setaUserName("");
+        return sign;
     }
 }

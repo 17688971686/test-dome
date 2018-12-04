@@ -93,7 +93,7 @@ public class SysRestController {
         if (rtxService.rtxSMSEnabled() && SMSUtils.isSendTime()) {
             List<User> recvUserList = msgService.getNoticeUserByConfigKey(SMS_SING_NOTICE_USER.getValue());
             if(Validate.isList(recvUserList)){
-                String msgContent = SMSUtils.buildSendMsgContent(incoming_type.name(),projName+"["+fileCode+"]",resultMsg.isFlag());
+                String msgContent = SMSUtils.buildSendMsgContent(null,incoming_type.name(),projName+"["+fileCode+"]",resultMsg.isFlag());
                 SMSLog smsLog = new SMSLog();
                 smsLog.setSmsLogType(incoming_type.name());
                 smsLog.setProjectName(projName);

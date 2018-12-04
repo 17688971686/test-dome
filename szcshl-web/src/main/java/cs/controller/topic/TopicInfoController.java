@@ -83,7 +83,7 @@ public class TopicInfoController {
         ResultMsg resultMsg = topicInfoService.startFlow(record);
         if(resultMsg.isFlag()){
             String procInstName = Validate.isObject(resultMsg.getReObj())?resultMsg.getReObj().toString():"";
-            rtxService.dealPoolRTXMsg(resultMsg.getIdCode(),resultMsg,procInstName, Constant.MsgType.task_type.name());
+            rtxService.dealPoolRTXMsg(null,resultMsg.getIdCode(),resultMsg,procInstName, Constant.MsgType.task_type.name());
         }
         return resultMsg;
     }

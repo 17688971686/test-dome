@@ -10,7 +10,7 @@ import cs.domain.project.WorkProgram_;
  */
 public class WorkSql {
 
-    public static HqlBuilder getReWorkSql(){
+    public static HqlBuilder getReWorkSql() {
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" SELECT bu.bId,bu.gId,bu.userNames,vg.name FROM ( ");
         hqlBuilder.append(" SELECT bi.bId, bi.gId, wm_concat (CU.DISPLAYNAME) AS userNames ");
@@ -24,7 +24,7 @@ public class WorkSql {
         return hqlBuilder;
     }
 
-    public static HqlBuilder copyExpertSelected(String businessId){
+    public static HqlBuilder copyExpertSelected(String businessId) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append(" INSERT INTO CS_HIS_EXPERT_SELECTED (ID,BUSINESSID,COMPOSITESCORE,");
         sqlBuilder.append(" COMPOSITESCOREEND,CONDITIONID, CREATEBY,DESCRIBES,");
@@ -38,7 +38,7 @@ public class WorkSql {
         sqlBuilder.append(" sel.SCORE,sel.SELECTINDEX,sel.SELECTTYPE,sel.TOTALCOST,sel.EXPERTREVIEWID,");
         sqlBuilder.append(" sel.EXPERTID");
         sqlBuilder.append(" FROM CS_EXPERT_SELECTED sel WHERE sel.BUSINESSID = :businessId");
-        sqlBuilder.setParam("businessId",businessId);
+        sqlBuilder.setParam("businessId", businessId);
 
         return sqlBuilder;
     }
@@ -52,7 +52,7 @@ public class WorkSql {
         sqlBuilder.append(" cer.BUSINESSTYPE,cer.EXPRETCOUNT,cer.EXTRACTINFO,cer.FINISHEXTRACT,cer.PAYDATE,cer.REVIEWCOST,");
         sqlBuilder.append(" cer.REVIEWDATE,cer.REVIEWTAXES,cer.REVIEWTITLE,cer.SELECTINDEX,cer.STATE,cer.TOTALCOST");
         sqlBuilder.append(" FROM CS_EXPERT_REVIEW cer WHERE cer.ID = :reviewId ");
-        sqlBuilder.setParam("reviewId",reviewId);
+        sqlBuilder.setParam("reviewId", reviewId);
         return sqlBuilder;
     }
 
@@ -64,51 +64,52 @@ public class WorkSql {
         sqlBuilder.append(" SELECT sys_guid(),sec.ALTERNATIVENUM,sec.BUSINESSID,sec.COMPOSITESCORE,sec.COMPOSITESCOREEND,");
         sqlBuilder.append(" sec.CREATEBY,sec.EXPERTTYPE,sec.MAJORBIG,sec.MAJORSMALL,sec.OFFICIALNUM,sec.SELECTINDEX,");
         sqlBuilder.append(" sec.SORT,sec.EXPERTREVIEWID FROM CS_EXPERT_CONDITION sec WHERE sec.BUSINESSID = :businessId");
-        sqlBuilder.setParam("businessId",businessId);
+        sqlBuilder.setParam("businessId", businessId);
 
         return sqlBuilder;
     }
 
-    public static HqlBuilder updateWPProjName(String signId,String newName) {
+    public static HqlBuilder updateWPProjName(String signId, String newName) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append(" UPDATE CS_WORK_PROGRAM SET PROJECTNAME = :newName where SIGNID =:signId ");
-        sqlBuilder.setParam("newName",newName).setParam("signId",signId);
+        sqlBuilder.setParam("newName", newName).setParam("signId", signId);
         return sqlBuilder;
     }
 
     public static HqlBuilder updateWPHisProjName(String signId, String newName) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append(" UPDATE CS_HIS_WORK_PROGRAM SET PROJECTNAME = :newName where SIGNID =:signId ");
-        sqlBuilder.setParam("newName", ProjUtil.getReFlowName(newName,null)).setParam("signId",signId);
+        sqlBuilder.setParam("newName", ProjUtil.getReFlowName(newName, null)).setParam("signId", signId);
         return sqlBuilder;
     }
 
     public static HqlBuilder updateRunFlowName(String signId, String newName) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append(" update ACT_RU_EXECUTION set NAME_ =:newName where PROC_INST_ID_ in ");
-        sqlBuilder.setParam("newName",ProjUtil.getReFlowName(newName,null));
+        sqlBuilder.setParam("newName", ProjUtil.getReFlowName(newName, null));
         sqlBuilder.append(" (select PROCESSINSTANCEID from CS_WORK_PROGRAM where SIGNID = :signId) ");
-        sqlBuilder.setParam("signId",signId);
+        sqlBuilder.setParam("signId", signId);
         return sqlBuilder;
     }
 
     public static HqlBuilder updateHisFlowName(String signId, String newName) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append(" update ACT_HI_PROCINST set NAME_ =:newName where PROC_INST_ID_ in ");
-        sqlBuilder.setParam("newName",newName);
+        sqlBuilder.setParam("newName", newName);
         sqlBuilder.append(" (select PROCESSINSTANCEID from CS_WORK_PROGRAM where SIGNID = :signId) ");
-        sqlBuilder.setParam("signId",signId);
+        sqlBuilder.setParam("signId", signId);
         return sqlBuilder;
     }
 
 
     /**
      * 删除工作方案
+     *
      * @param signId
      * @param brandId
      * @return
      */
-    public static HqlBuilder deleteWorkProgran(String signId,String brandId){
+    public static HqlBuilder deleteWorkProgran(String signId, String brandId) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append(" delete from cs_work_program where signid =:signid and branchId =:branchId and (baseInfo is null or baseInfo !=:bstate )");
         sqlBuilder.setParam("signid", signId);
@@ -120,21 +121,23 @@ public class WorkSql {
 
     /**
      * 更新工作方案状态
+     *
      * @param signId
      * @param brandIds
      * @return
      */
-    public static HqlBuilder updateWPState(String signId, String brandIds,String state) {
+    public static HqlBuilder updateWPState(String signId, String brandIds, String state) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append(" update cs_work_program set state = :state where signid =:signid ");
         sqlBuilder.setParam("state", state);
         sqlBuilder.setParam("signid", signId);
-        sqlBuilder.bulidPropotyString("and", WorkProgram_.branchId.getName(),brandIds);
+        sqlBuilder.bulidPropotyString("and", WorkProgram_.branchId.getName(), brandIds);
         return sqlBuilder;
     }
 
     /**
      * 更新专家抽取的业务ID
+     *
      * @param oldBusinessId
      * @param newBusinessId
      * @return
@@ -142,14 +145,30 @@ public class WorkSql {
     public static HqlBuilder updateSeleBusinessId(String oldBusinessId, String newBusinessId) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append(" UPDATE CS_EXPERT_SELECTED SET BUSINESSID = :newBusinessid where BUSINESSID = :oldBusinessId ");
-        sqlBuilder.setParam("newBusinessid",newBusinessId).setParam("oldBusinessId",oldBusinessId);
+        sqlBuilder.setParam("newBusinessid", newBusinessId).setParam("oldBusinessId", oldBusinessId);
         return sqlBuilder;
     }
 
     public static HqlBuilder updateConditionBusinessId(String oldBusinessId, String newBusinessId) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append(" UPDATE CS_EXPERT_CONDITION SET BUSINESSID = :newBusinessid where BUSINESSID = :oldBusinessId ");
-        sqlBuilder.setParam("newBusinessid",newBusinessId).setParam("oldBusinessId",oldBusinessId);
+        sqlBuilder.setParam("newBusinessid", newBusinessId).setParam("oldBusinessId", oldBusinessId);
+        return sqlBuilder;
+    }
+
+    public static HqlBuilder homeMeetCountSql() {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" select a.*,row_number() over(partition by a.rbday order by a.rbday) innerSeq from  ");
+        sqlBuilder.append(" ( select t.rbday,t.rbname,t.addressname from cs_room_booking t  ");
+        sqlBuilder.append(" where t.rbday between TRUNC(SYSDATE) and TRUNC(SYSDATE + 4) ");
+        sqlBuilder.append(" and to_number(to_char(t.begintime,'hh24')) between 8 and 12  ");
+        sqlBuilder.append(" and to_number(to_char(t.endtime,'hh24')) between 8 and 12  ");
+        sqlBuilder.append(" union all  ");
+        sqlBuilder.append(" select t.rbday,t.rbname,t.addressname from cs_room_booking t  ");
+        sqlBuilder.append(" where t.rbday between TRUNC(SYSDATE) and TRUNC(SYSDATE + 4)  ");
+        sqlBuilder.append(" and to_number(to_char(t.begintime,'hh24')) between 8 and 12  ");
+        sqlBuilder.append(" and to_number(to_char(t.endtime,'hh24')) > 12  ");
+        sqlBuilder.append("  ) a order by innerSeq,rbday  ");
         return sqlBuilder;
     }
 }

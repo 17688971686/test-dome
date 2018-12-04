@@ -95,10 +95,9 @@ public interface SignRepo extends IRepository<Sign, String> {
     /**
      * 重新初始化协办部门和负责人信息
      * @param sign
-     * @param signId
      * @param branchId  排除的分支
      */
-    void initAOrgAndUser(Sign sign, String signId, String branchId);
+    void initAOrgAndUser(Sign sign, String branchId);
 
     /**
      * 验证是否是调概项目

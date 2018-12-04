@@ -2973,45 +2973,29 @@ public class SignServiceImpl implements SignService {
     @Override
     @Transactional
     public void deleteBranchInfo(String signId, String branchId) {
+        //是否需要要删除所有分支
         boolean deleteBranchId = false;
-        boolean isDeleteMainBranchId = false;
-        SignBranch signBranch = null;
-        SignPrincipal signPrincipal = null;
         if (Validate.isString(branchId)) {
             deleteBranchId = true;
-            if (branchId.equals("1")) {
-                isDeleteMainBranchId = true;
-            }
         }
         Sign sign = signRepo.findById(signId);
-        //1、删除分支，如果是分管领导分办，则删除分支；如果是部长，则改变相应的状态即可
+        //1、删除分支，如果是部长，则改变相应的状态即可
         if (deleteBranchId) {
+            //如果是分管领导分办，则删除分支；
             signBranchRepo.resetBranchState(signId, branchId);
             //重新初始化负责人信息
-            signRepo.initAOrgAndUser(sign, signId, branchId);
+            signRepo.initAOrgAndUser(sign,branchId);
         } else {
             HqlBuilder sqlBuilder1 = HqlBuilder.create();
             sqlBuilder1.append("delete from CS_SIGN_BRANCH where " + SignBranch_.signId.getName() + " =:signId ");
             sqlBuilder1.setParam("signId", signId);
             signBranchRepo.executeSql(sqlBuilder1);
 
-            sign.setLeaderhandlesug("");
-            sign.setLeaderDate(null);
-            sign.setLeaderId("");
-            sign.setLeaderName("");
-            sign.setMinisterhandlesug("");
-            sign.setMinisterDate(null);
-            sign.setMinisterId("");
-            sign.setMinisterName("");
+            sign = ProjUtil.resetLeaderOption(sign);
+            sign = ProjUtil.resetMinisterOption(sign);
+            sign = ProjUtil.resetReviewDept(sign);
+            sign = ProjUtil.resetReviewUser(sign);
 
-            sign.setmOrgId("");
-            sign.setmOrgName("");
-            sign.setaOrgId("");
-            sign.setaOrgName("");
-            sign.setmUserId("");
-            sign.setmUserName("");
-            sign.setaUserID("");
-            sign.setaUserName("");
             signRepo.save(sign);
         }
 

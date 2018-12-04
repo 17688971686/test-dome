@@ -2,6 +2,7 @@ package cs.common.utils;
 
 
 import cs.common.constants.Constant;
+import cs.common.constants.FlowConstant;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
@@ -9,7 +10,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * Created by Administrator on 2018/5/29.
+ * Created by ldm on 2018/5/29.
  * 短信工具类
  */
 public class SMSUtils {
@@ -122,7 +123,7 @@ public class SMSUtils {
         return codeMsg;
     }
 
-    public static String buildSendMsgContent(String msgType, String procInstName,boolean isSucess) {
+    public static String buildSendMsgContent(String flowTaskDefindKey,String msgType, String procInstName,boolean isSucess) {
         StringBuffer stringBuffer = new StringBuffer();
         Constant.MsgType typeEnum = Constant.MsgType.valueOf(msgType);
         switch (typeEnum) {
@@ -131,6 +132,17 @@ public class SMSUtils {
                 break;
             case project_type:
                 stringBuffer.append("\n 您收到一条待办项目。\n 项目名称:" + procInstName + ",请及时处理").append("\n");
+                if(Validate.isString(flowTaskDefindKey)){
+                    switch (flowTaskDefindKey){
+                        //部长分办环节，短信内容后面加上“请到综合部领取项目资料”；
+                        case FlowConstant.FLOW_SIGN_BMFB1:
+                        case FlowConstant.FLOW_SIGN_BMFB2:
+                        case FlowConstant.FLOW_SIGN_BMFB3:
+                        case FlowConstant.FLOW_SIGN_BMFB4:
+                            stringBuffer.append("请到综合部领取项目资料").append("\n");
+                            break;
+                    }
+                }
                 break;
             case incoming_type: //委里推送项目
                 stringBuffer.append("\n 您收到一条信息(委里推送项目提示): \n"+procInstName);

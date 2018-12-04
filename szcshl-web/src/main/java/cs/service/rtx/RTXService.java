@@ -131,12 +131,12 @@ public class RTXService {
      * @param resultMsg
      * @return
      */
-    public boolean dealPoolRTXMsg(String taskId, ResultMsg resultMsg, String procInstName, String msgType) {
+    public boolean dealPoolRTXMsg(String nodeKey,String taskId, ResultMsg resultMsg, String procInstName, String msgType) {
         Object obj = RTXSendMsgPool.getInstance().getReceiver(taskId);
         if (Validate.isObject(obj)) {
             String receiverIds = obj.toString();
             List<User> receiverList = userRepo.getCacheUserListById(receiverIds);
-            String msgContent = SMSUtils.buildSendMsgContent(msgType,procInstName,true);
+            String msgContent = SMSUtils.buildSendMsgContent(nodeKey,msgType,procInstName,true);
             //短息开关
             if (rtxSMSEnabled() && resultMsg.isFlag()) {
                 if (Validate.isList(receiverList)) {

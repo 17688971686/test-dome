@@ -472,13 +472,12 @@ public class FlowController {
     @Transactional(rollbackFor = {Exception.class})
     public ResultMsg flowCommit(@RequestBody FlowDto flowDto){
         ResultMsg resultMsg = null;
-        String errorMsg = "";
-        String module="";
+        String errorMsg = "",module="";
         ProcessInstance processInstance = null;
         boolean isProj = false;
+        Task task = null;
         try{
             processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(flowDto.getProcessInstanceId()).singleResult();
-            Task task = null;
             if (Validate.isString(flowDto.getTaskId())) {
                 task = taskService.createTaskQuery().taskId(flowDto.getTaskId()).active().singleResult();
             } else {
@@ -546,12 +545,12 @@ public class FlowController {
             taskId = resultMsg.getIdCode();
             resultMsg.setIdCode(null);
         }
-        ProcessDefinitionEntity processDefinitionEntity = (ProcessDefinitionEntity) repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());
         //腾讯通消息处理
         if(isProj){
-            rtxService.dealPoolRTXMsg(taskId,resultMsg,processInstance.getName(), MsgType.project_type.name());
+            rtxService.dealPoolRTXMsg(task.getTaskDefinitionKey(),taskId,resultMsg,processInstance.getName(), MsgType.project_type.name());
         }else{
-            rtxService.dealPoolRTXMsg(taskId,resultMsg,processDefinitionEntity.getName(), MsgType.task_type.name());
+            ProcessDefinitionEntity processDefinitionEntity = (ProcessDefinitionEntity) repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());
+            rtxService.dealPoolRTXMsg(task.getTaskDefinitionKey(),taskId,resultMsg,processDefinitionEntity.getName(), MsgType.task_type.name());
         }
 
         return resultMsg;

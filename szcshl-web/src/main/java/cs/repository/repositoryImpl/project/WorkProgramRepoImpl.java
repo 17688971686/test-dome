@@ -255,19 +255,7 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram,String> 
      */
     @Override
     public List<ProMeetDto> findAmProMeetInfo() {
-        HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append(" select a.*,row_number() over(partition by a.rbday order by a.rbday) innerSeq from  ( " +
-                " select t.rbday,t.rbname,t.addressname from cs_room_booking t " +
-                " where t.rbday between TRUNC(SYSDATE) and TRUNC(SYSDATE + 4)" +
-                " and to_number(to_char(t.begintime,'hh24')) between 8 and 12 " +
-                " and to_number(to_char(t.endtime,'hh24')) between 8 and 12 " +
-                " union all " +
-                " select t.rbday,t.rbname,t.addressname from cs_room_booking t " +
-                " where t.rbday between TRUNC(SYSDATE) and TRUNC(SYSDATE + 4) " +
-                " and to_number(to_char(t.begintime,'hh24')) between 8 and 12 " +
-                " and to_number(to_char(t.endtime,'hh24')) > 12 " +
-                "  ) a order by innerSeq,rbday ");
-        List<Object[]> objList = getObjectArray(sqlBuilder);
+        List<Object[]> objList = getObjectArray(WorkSql.homeMeetCountSql());
         List<ProMeetDto> proAmMeetDtoList = new ArrayList<ProMeetDto>();
         for (int i = 0; i < objList.size(); i++) {
             ProMeetDto proMeetDto = new ProMeetDto();
@@ -275,7 +263,6 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram,String> 
             if (null != objRow[0]) {
                 proMeetDto.setProMeetDate((Date) objRow[0]);
             }
-
             if (null != objRow[1]) {
                 proMeetDto.setRbName((String)objRow[1]);
             }

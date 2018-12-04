@@ -98,26 +98,32 @@ public class SignController {
     @RequestMapping(name = "项目重新分办", path = "getBack", method = RequestMethod.POST)
     @ResponseBody
     @Transactional
-    public ResultMsg getBack(@RequestParam(required = true) String taskId, String businessKey) {
-        String backActivityId = "", branch = "";
+    public ResultMsg getBack(@RequestParam String taskId, String businessKey) {
+        String backActivityId = "", branchId = "";
         if (SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())) {
             backActivityId = FlowConstant.FLOW_SIGN_FGLD_FB;
         } else {
             OrgDept orgDept = orgDeptRepo.findById(OrgDept_.directorID.getName(), SessionUtil.getUserId());
-            if (SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())
-                    || null != orgDept) {
+            if (null != orgDept || SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())) {
                 //根据当前用户所在部门ID，查询是哪个分支的取回
                 SignBranch signBranch = signBranchService.findByOrgDirector(businessKey, orgDept.getId());
                 if (signBranch != null) {
-                    branch = signBranch.getBranchId();
-                    if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branch)) {
-                        backActivityId = FlowConstant.FLOW_SIGN_BMFB1;
-                    } else if (FlowConstant.SignFlowParams.BRANCH_INDEX2.getValue().equals(branch)) {
-                        backActivityId = FlowConstant.FLOW_SIGN_BMFB2;
-                    } else if (FlowConstant.SignFlowParams.BRANCH_INDEX3.getValue().equals(branch)) {
-                        backActivityId = FlowConstant.FLOW_SIGN_BMFB3;
-                    } else if (FlowConstant.SignFlowParams.BRANCH_INDEX4.getValue().equals(branch)) {
-                        backActivityId = FlowConstant.FLOW_SIGN_BMFB4;
+                    branchId = signBranch.getBranchId();
+                    if(Validate.isString(branchId)){
+                        switch (Integer.parseInt(branchId)){
+                            case 1:
+                                backActivityId = FlowConstant.FLOW_SIGN_BMFB1;
+                                break;
+                            case 2:
+                                backActivityId = FlowConstant.FLOW_SIGN_BMFB2;
+                                break;
+                            case 3:
+                                backActivityId = FlowConstant.FLOW_SIGN_BMFB3;
+                                break;
+                            case 4:
+                                backActivityId = FlowConstant.FLOW_SIGN_BMFB4;
+                                break;
+                        }
                     }
                 } else {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，你没有权限进行此操作！");
@@ -125,12 +131,11 @@ public class SignController {
             }
         }
         if (Validate.isString(backActivityId)) {
-            ResultMsg result = null;
             try {
-                result = flowService.callBackProcess(taskId, backActivityId, businessKey, Validate.isString(branch) ? false : true);
+                ResultMsg result = flowService.callBackProcess(taskId, backActivityId, businessKey, Validate.isString(branchId) ? false : true);
                 //取回成功,则删除相应的分支信息
                 if (result.isFlag()) {
-                    signService.deleteBranchInfo(businessKey, Validate.isString(branch) ? branch : null);
+                    signService.deleteBranchInfo(businessKey, branchId);
                 }
                 return result;
             } catch (Exception e) {
@@ -461,7 +466,7 @@ public class SignController {
         if(Validate.isObject(resultMsg)){
             if(resultMsg.isFlag()){
                 String procInstName = Validate.isObject(resultMsg.getReObj())?resultMsg.getReObj().toString():"";
-                rtxService.dealPoolRTXMsg(resultMsg.getIdCode(),resultMsg,procInstName,Constant.MsgType.project_type.name());
+                rtxService.dealPoolRTXMsg(null,resultMsg.getIdCode(),resultMsg,procInstName,Constant.MsgType.project_type.name());
                 resultMsg.setIdCode(null);
                 resultMsg.setReObj(null);
             }

@@ -151,10 +151,8 @@ public class FlowServiceImpl implements FlowService {
     @Autowired
     @Qualifier("workHisFlowBackImpl")
     private IFlowBack workHisFlowBackImpl;
-
     @Autowired
     private JdbcTemplate jdbcTemplate;
-
     @Autowired
     private LogService logService;
     @Autowired
@@ -185,6 +183,7 @@ public class FlowServiceImpl implements FlowService {
         WorkPGUtil workPGUtil = null;
         Map<String, Object> resultMap = null;
         boolean isProj = false;
+        Task task = null;
         try {
             // 取得当前任务
             HistoricTaskInstance currTask = historyService.createHistoricTaskInstanceQuery().taskId(flowDto.getTaskId()).singleResult();
@@ -214,9 +213,9 @@ public class FlowServiceImpl implements FlowService {
             pvmTransitionList.clear();
 
             // 完成任务
-            Task task = taskService.createTaskQuery().taskId(flowDto.getTaskId()).active().singleResult();
+            task = taskService.createTaskQuery().taskId(flowDto.getTaskId()).active().singleResult();
             if (task == null) {
-                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，无法获取任务信息！");
+                return ResultMsg.error("操作失败，该任务已办理或者已被删除！");
             }
 
             String backActivitiId = "";
@@ -380,7 +379,7 @@ public class FlowServiceImpl implements FlowService {
             if (Validate.isString(assigneeValue)) {
                 RTXSendMsgPool.getInstance().sendReceiverIdPool(flowDto.getTaskId(), assigneeValue);
                 ProcessDefinitionEntity processDefinitionEntity = (ProcessDefinitionEntity) repositoryService.getProcessDefinition(instance.getProcessDefinitionId());
-                rtxService.dealPoolRTXMsg(flowDto.getTaskId(), resultMsg, processDefinitionEntity.getName(), isProj ? Constant.MsgType.project_type.name() : Constant.MsgType.task_type.name());
+                rtxService.dealPoolRTXMsg(task.getTaskDefinitionKey(),flowDto.getTaskId(), resultMsg, processDefinitionEntity.getName(), isProj ? Constant.MsgType.project_type.name() : Constant.MsgType.task_type.name());
             }
         } catch (Exception e) {
             errorMsg = e.getMessage();
@@ -521,7 +520,6 @@ public class FlowServiceImpl implements FlowService {
                 criteria.add(Restrictions.or(Restrictions.like(SignDispaWork_.aUserID.getName(), SessionUtil.getUserId()), Restrictions.like(SignDispaWork_.mUserId.getName(), SessionUtil.getUserId())));
             }
         }
-
         //统计总数
         Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
         pageModelDto.setCount(totalResult);
@@ -533,9 +531,7 @@ public class FlowServiceImpl implements FlowService {
         if (odataObj.getTop() > 0) {
             criteria.setMaxResults(odataObj.getTop());
         }
-
-        List<SignDispaWork> signDispaWorkList = criteria.list();
-        pageModelDto.setValue(signDispaWorkList);
+        pageModelDto.setValue(criteria.list());
         return pageModelDto;
     }
 
@@ -1015,10 +1011,10 @@ public class FlowServiceImpl implements FlowService {
             if (task != null) {
                 commitProcess(task.getId(), null, activityId);
             } else {
-                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，该任务已提交！请重新刷新再试!");
+                return ResultMsg.error("操作失败，该任务已提交！请重新刷新再试!");
             }
         }
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+        return ResultMsg.ok("操作成功！");
     }
 
     /**
@@ -1314,7 +1310,7 @@ public class FlowServiceImpl implements FlowService {
         //DELETE FROM act_ru_identitylink WHERE TASK_ID_='135068'(act_ru_task主键)
         //流程实例,通过EXECUTION_ID_字段和act_ru_execution关联
         //DELETE FROM act_ru_task WHERE ID_='135068'
-        //任务节点表
+
         //DELETE FROM act_ru_execution WHERE ID_='135065'
         Session session = sessionFactory.getCurrentSession();
         StringBuffer stringBuffer = new StringBuffer();
@@ -1369,7 +1365,7 @@ public class FlowServiceImpl implements FlowService {
      */
     @Override
     public List<CommentDto> findCommentByProcInstId(String procInstId, List<String> nodeKeys) {
-        /*HqlBuilder sqlBuilder = FlowSql.activityCommentSql(procInstId,nodeKeys);
+        HqlBuilder sqlBuilder = FlowSql.activityCommentSql(procInstId,nodeKeys);
         List<Object[]> commentList = signBranchRepo.getObjectArray(sqlBuilder);
         List<CommentDto> resultList = new ArrayList<>();
         for (Object[] objArr : commentList) {
@@ -1377,8 +1373,7 @@ public class FlowServiceImpl implements FlowService {
             mapToComment(objArr, commentDto);
             resultList.add(commentDto);
         }
-        return resultList;*/
-        return null;
+        return resultList;
     }
 
     private void mapToComment(Object[] objArr, CommentDto commentDto) {

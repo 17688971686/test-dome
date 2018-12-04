@@ -146,7 +146,7 @@ public class SendProjectFGWExecute implements Job {
                     if (rtxService.rtxSMSEnabled()  && SMSUtils.isSendTime() && workdayService.isWorkDay(new Date())) {
                         List<User> recvUserList = msgService.getNoticeUserByConfigKey(SMS_SENDFGW_FAIL_USER.getValue());
                         if(Validate.isList(recvUserList)){
-                            String msgContent = SMSUtils.buildSendMsgContent(sendfgw_type.name(),msgBuffer.toString(),resultMsg.isFlag());
+                            String msgContent = SMSUtils.buildSendMsgContent(null,sendfgw_type.name(),msgBuffer.toString(),resultMsg.isFlag());
                             SMSLog smsLog = new SMSLog();
                             smsLog.setSmsLogType(sendfgw_type.name());
                             smsLog.setBuninessId(StringUtils.join(sucessIdList, ","));
