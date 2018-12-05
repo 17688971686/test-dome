@@ -1,10 +1,10 @@
 package cs.common.utils;
 
-import cs.common.constants.Constant;
+import cs.common.sysprop.BusinessProperties;
 import cs.domain.sys.User;
 import cs.service.rtx.RTXSendMsgPool;
 import cs.service.sys.LogService;
-import org.springframework.beans.factory.annotation.Value;
+import cs.spring.SpringContextUtil;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,31 +30,34 @@ public class RTXUtils {
 
     /**
      * 异步发送腾讯通消息
+     *
      * @param
      * @return
      */
-    public static void sendRTXThread(String taskId,List<User> receiverList, String seekContent, LogService logService){
+    public static void sendRTXThread(String taskId, List<User> receiverList, String seekContent, LogService logService) {
         ExecutorService threadPool = Executors.newSingleThreadExecutor();
         //线程池提交一个异步任务
-        Future<HashMap<String,String>> future = threadPool.submit(new Callable<HashMap<String,String>>() {
+        Future<HashMap<String, String>> future = threadPool.submit(new Callable<HashMap<String, String>>() {
             @Override
-            public HashMap<String,String> call() throws Exception {
+            public HashMap<String, String> call() throws Exception {
                 //异步任务 不需要直接反应结果，通过日志记录发信状况信息
-                sendRTXSMS(taskId,receiverList,seekContent);
+                sendRTXSMS(taskId, receiverList, seekContent);
                 return
-                        new HashMap<String,String>(){
-                            {this.put("success", "成功获取future异步任务结果");}
+                        new HashMap<String, String>() {
+                            {
+                                this.put("success", "成功获取future异步任务结果");
+                            }
                         };
             }
         });
         //关闭线程池
-        if(!threadPool.isShutdown()){
+        if (!threadPool.isShutdown()) {
             threadPool.shutdown();
         }
     }
 
     //发送腾讯通消息
-    public static boolean sendRTXSMS(String taskId,List<User> receiverList,String seekContent){
+    public static boolean sendRTXSMS(String taskId, List<User> receiverList, String seekContent) {
         User u = null;
         if (Validate.isList(receiverList)) {
             String rtxNames = "";
@@ -67,7 +70,7 @@ public class RTXUtils {
             }
             if (Validate.isString(rtxNames)) {
                 //正式启动再去掉注释
-                sendRTXMsg(null,seekContent,rtxNames);
+                sendRTXMsg(null, seekContent, rtxNames);
                 RTXSendMsgPool.getInstance().removeCache(taskId);
                 return true;
             }
@@ -85,8 +88,8 @@ public class RTXUtils {
      */
     public static String sendRTXMsg(String url, String sendMsg, String receiver) {
         if (!Validate.isString(url)) {
-            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-            url = propertyUtil.readProperty("RTX_URL", "http://172.18.225.26:8012");
+            BusinessProperties businessProperties = SpringContextUtil.getBean("businessProperties");
+            url = businessProperties.getRtxUrl();
         }
         url += RTX_MSG_NOTICE;
         PrintWriter out = null;

@@ -2,7 +2,7 @@ package cs.service.rtx;
 
 import cs.common.ResultMsg;
 import cs.common.constants.Constant;
-import cs.common.utils.PropertyUtil;
+import cs.common.sysprop.BusinessProperties;
 import cs.common.utils.RTXUtils;
 import cs.common.utils.SMSUtils;
 import cs.common.utils.Validate;
@@ -13,10 +13,10 @@ import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.service.sys.LogService;
 import cs.service.sys.MsgService;
 import cs.service.sys.SysConfigService;
+import cs.spring.SpringContextUtil;
 import cs.threadtask.MsgThread;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -50,8 +50,6 @@ public class RTXService {
 
     @Autowired
     private MsgService msgService;
-
-
     /**
      * 获取腾讯通的sessionKey
      *
@@ -63,8 +61,8 @@ public class RTXService {
         String strSessionKey = "";
         BufferedReader reader = null;
         if (!Validate.isString(url)) {
-            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-            url = propertyUtil.readProperty("RTX_URL", "http://172.18.225.26:8012");
+            BusinessProperties businessProperties = SpringContextUtil.getBean("businessProperties");
+            url = businessProperties.getRtxUrl();
         }
         url += RTX_GETSESSION;
         try {
@@ -99,8 +97,8 @@ public class RTXService {
         String userState = "0";
         BufferedReader reader = null;
         if (!Validate.isString(url)) {
-            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-            url = propertyUtil.readProperty("RTX_URL", "http://172.18.225.26:8012");
+            BusinessProperties businessProperties = SpringContextUtil.getBean("businessProperties");
+            url = businessProperties.getRtxUrl();
         }
         url += RTX_GETSTATUS;
         try {

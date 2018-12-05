@@ -7,7 +7,7 @@ import cs.common.FGWResponse;
 import cs.common.IFResultCode;
 import cs.common.ResultMsg;
 import cs.common.constants.Constant;
-import cs.common.utils.PropertyUtil;
+import cs.common.sysprop.BusinessProperties;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
@@ -26,8 +26,8 @@ import cs.service.project.DispatchDocService;
 import cs.service.project.SignService;
 import cs.service.sys.SysConfigService;
 import cs.service.sys.SysFileService;
+import cs.spring.SpringContextUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -62,7 +62,6 @@ public class SignRestServiceImpl implements SignRestService {
     private DispatchDocService dispatchDocService;
     @Autowired
     private DispatchDocRepo dispatchDocRepo;
-
     /**
      * 项目推送
      *
@@ -387,8 +386,8 @@ public class SignRestServiceImpl implements SignRestService {
         if (sysConfigDto != null) {
             returnUrl = sysConfigDto.getConfigValue();
         } else {
-            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-            returnUrl = propertyUtil.readProperty(IFResultCode.FGW_PROJECT_IFS,"");
+            BusinessProperties businessProperties = SpringContextUtil.getBean("businessProperties");
+            returnUrl = businessProperties.getFgwProjIfs();
         }
         return returnUrl;
     }
@@ -418,8 +417,8 @@ public class SignRestServiceImpl implements SignRestService {
         if (sysConfigDto != null) {
             returnUrl = sysConfigDto.getConfigValue();
         } else {
-            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-            returnUrl = propertyUtil.readProperty(IFResultCode.FGW_PRE_PROJECT_IFS,"");
+            BusinessProperties businessProperties = SpringContextUtil.getBean("businessProperties");
+            returnUrl = businessProperties.getFgwPreProjIfs();
         }
         return returnUrl;
     }

@@ -1,6 +1,7 @@
 package cs.common.utils;
 
-import cs.common.constants.Constant;
+import cs.common.sysprop.BusinessProperties;
+import cs.spring.SpringContextUtil;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -40,8 +41,9 @@ public class SysFileUtil {
      * @return
      */
     public static String getUploadPath() {
-        PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-        return propertyUtil.readProperty(Constant.RevireStageKey.FILE_UPLOAD_PATH.getValue(), "C:\\szec_uploadfile");
+        BusinessProperties businessProperties = SpringContextUtil.getBean("businessProperties");
+        String uploadPath = businessProperties.getFileUploadPath();
+        return Validate.isString(uploadPath)?uploadPath:"C:\\szec_uploadfile";
     }
 
     /**

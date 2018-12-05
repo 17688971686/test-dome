@@ -13,7 +13,7 @@
             http://www.springframework.org/schema/cache
             http://www.springframework.org/schema/cache/spring-cache.xsd">
 	<!-- 加载配置文件 -->
-	<context:property-placeholder location="classpath:config.properties,classpath:httpclient.properties"/>
+	<context:property-placeholder location="classpath:config.properties,classpath:httpclient.properties,classpath:business.properties"/>
 
 	<!-- 扫描service自动注入为bean -->
 	<!-- <context:component-scan base-package="cs.service,cs.repository.repositoryImpl" /> -->
@@ -34,4 +34,11 @@
 
 	<cache:annotation-driven />
 
+	<bean id="businessProperties" class="cs.common.sysprop.BusinessProperties">
+		<property name="fgwProjIfs" value="${FGW_PROJECT_IFS}"></property>
+		<property name="fgwPreProjIfs" value="${FGW_PRE_PROJECT_IFS}"></property>
+		<property name="rtxUrl" value="${RTX_URL}"></property>
+		<property name="rtxIp" value="${RTX_IP}"></property>
+		<property name="fileUploadPath" value="${FILE_UPLOAD_PATH}"></property>
+	</bean>
 </beans>
