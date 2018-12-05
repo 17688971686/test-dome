@@ -39,10 +39,9 @@ public class FilingServiceImpl implements FilingService {
     @Override
     public PageModelDto<FilingDto> get(ODataObj odataObj) {
         PageModelDto<FilingDto> pageModelDto = new PageModelDto<FilingDto>();
+        List<FilingDto> resultDtoList = new ArrayList<>();
         List<Filing> resultList = filingRepo.findByOdata(odataObj);
-        List<FilingDto> resultDtoList = new ArrayList<FilingDto>(resultList.size());
-
-        if (resultList != null && resultList.size() > 0) {
+        if (Validate.isList(resultList)) {
             resultList.forEach(x -> {
                 FilingDto modelDto = new FilingDto();
                 BeanCopierUtils.copyProperties(x, modelDto);

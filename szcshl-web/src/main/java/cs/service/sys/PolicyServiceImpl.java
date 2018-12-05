@@ -25,8 +25,8 @@ public class PolicyServiceImpl implements PolicyService {
     public PageModelDto<PolicyDto> get(ODataObj odataObj) {
         PageModelDto<PolicyDto> pageModelDto = new PageModelDto<PolicyDto>();
         List<Policy> resultList = policyRepo.findByOdata(odataObj);
-        List<PolicyDto> resultDtoList = new ArrayList<PolicyDto>(resultList.size());
-        if (resultList != null && resultList.size() > 0) {
+        List<PolicyDto> resultDtoList = new ArrayList<>();
+        if (Validate.isList(resultList)) {
             resultList.forEach(x -> {
                 PolicyDto modelDto = new PolicyDto();
                 BeanCopierUtils.copyProperties(x, modelDto);

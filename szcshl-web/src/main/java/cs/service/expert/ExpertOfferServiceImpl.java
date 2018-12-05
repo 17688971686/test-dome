@@ -36,10 +36,9 @@ public class ExpertOfferServiceImpl  implements ExpertOfferService {
 	@Override
 	public PageModelDto<ExpertOfferDto> get(ODataObj odataObj) {
 		PageModelDto<ExpertOfferDto> pageModelDto = new PageModelDto<ExpertOfferDto>();
+		List<ExpertOfferDto> resultDtoList = new ArrayList<>();
 		List<ExpertOffer> resultList = expertOfferRepo.findByOdata(odataObj);
-		List<ExpertOfferDto> resultDtoList = new ArrayList<ExpertOfferDto>(resultList.size());
-		
-		if(resultList != null && resultList.size() > 0){
+		if(Validate.isList(resultList)){
             resultList.forEach(x->{
 				ExpertOfferDto modelDto = new ExpertOfferDto();
 				BeanCopierUtils.copyProperties(x, modelDto);

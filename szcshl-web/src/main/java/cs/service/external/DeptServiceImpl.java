@@ -78,7 +78,7 @@ public class DeptServiceImpl implements DeptService {
 		dept.setModifiedBy(SessionUtil.getLoginName());
 		dept.setModifiedDate(new Date());
 		deptRepo.save(dept);
-		logger.info(String.format("更新办事处", record.getDeptName()));
+		logger.info(String.format("更新办事处{0}", record.getDeptName()));
 	}
 
 	@Override

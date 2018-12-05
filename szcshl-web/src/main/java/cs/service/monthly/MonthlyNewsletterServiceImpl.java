@@ -61,8 +61,6 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
     @Autowired
     private ExpertSelectedService expertSelectedService;
     @Autowired
-    private SysFileRepo sysFileRepo;
-    @Autowired
     private AddSuppLetterRepo addSuppLetterRepo;
     @Autowired
     private RuntimeService runtimeService;
@@ -108,9 +106,8 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
         }
 
         List<MonthlyNewsletter> resultList = criteria.list();
-        List<MonthlyNewsletterDto> resultDtoList = new ArrayList<MonthlyNewsletterDto>(resultList.size());
-
-        if (resultList != null && resultList.size() > 0) {
+        List<MonthlyNewsletterDto> resultDtoList = new ArrayList<>();
+        if (Validate.isList(resultList)) {
             resultList.forEach(x -> {
                 MonthlyNewsletterDto modelDto = new MonthlyNewsletterDto();
                 BeanCopierUtils.copyProperties(x, modelDto);
@@ -458,7 +455,6 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
                 proReviewConditionDtoAllList = (List<ProReviewConditionDto>) resultMap.get("protReviewConditionList");
                 proReviewConditionSum = expertSelectedService.proReviewConditionSum(proReviewConditionDto);
                 //项目类别
-                resultMsg = null;
                 resultMap.clear();
                 resultMsg = expertSelectedService.proReviewConditionByTypeCount(proReviewConditionDto);
                 resultMap = (Map<String, Object>) resultMsg.getReObj();

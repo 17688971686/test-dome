@@ -52,10 +52,9 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
     @Override
     public PageModelDto<ExpertReviewDto> get(ODataObj odataObj) {
         PageModelDto<ExpertReviewDto> pageModelDto = new PageModelDto<ExpertReviewDto>();
+        List<ExpertReviewDto> resultDtoList = new ArrayList<>();
         List<ExpertReview> resultList = expertReviewRepo.findByOdata(odataObj);
-        List<ExpertReviewDto> resultDtoList = new ArrayList<ExpertReviewDto>(resultList.size());
-
-        if (resultList != null && resultList.size() > 0) {
+        if (Validate.isList(resultList)) {
             resultList.forEach(x -> {
                 ExpertReviewDto modelDto = new ExpertReviewDto();
                 BeanCopierUtils.copyProperties(x, modelDto);
@@ -439,6 +438,9 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
         boolean isSuperUser = SUPER_ACCOUNT.equals(SessionUtil.getLoginName());
         if (Validate.isString(experReviewId)) {
             ExpertReview expertReview = expertReviewRepo.findById(experReviewId);
+            if(!Validate.isObject(expertReview)){
+                return ResultMsg.error("操作失败，该评审方案已被删除");
+            }
             //管理员可以维护
             if (expertReview.getPayDate() != null && !isSuperUser) {
                 return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "已经进行评审费发放，不能再次发放！");
@@ -489,9 +491,9 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
                 expertReviewRepo.save(expertReview);
                 return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", resultObj);
             }
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，该评审方案已被删除");
+            return ResultMsg.error("操作失败，该评审方案已被删除");
         } else {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，该评审方案已被删除");
+            return ResultMsg.error("操作失败，该评审方案已被删除");
         }
     }
 

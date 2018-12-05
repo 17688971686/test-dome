@@ -256,9 +256,9 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce {
     @Override
     public PageModelDto<RoomBookingDto> get(ODataObj odataObj) {
         PageModelDto<RoomBookingDto> pageModelDto = new PageModelDto<RoomBookingDto>();
+        List<RoomBookingDto> roomDtoList = new ArrayList<>();
         List<RoomBooking> roomList = roomBookingRepo.findByOdata(odataObj);
-        List<RoomBookingDto> roomDtoList = new ArrayList<RoomBookingDto>(roomList.size());
-        if (roomList != null && roomList.size() > 0) {
+        if (Validate.isList(roomList)) {
             roomList.forEach(x -> {
                 RoomBookingDto roomDto = new RoomBookingDto();
                 BeanCopierUtils.copyProperties(x, roomDto);

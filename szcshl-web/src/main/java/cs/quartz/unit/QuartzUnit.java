@@ -103,33 +103,34 @@ public class QuartzUnit {
     public static int getWorkDayNum(String startDate, String endDate, String format) {
         List yearMonthDayList = new ArrayList();
         Date start = null, stop = null;
+        int num = 0;
         try {
             start = new SimpleDateFormat(format).parse(startDate);
             stop = new SimpleDateFormat(format).parse(endDate);
+            if (start.after(stop)) {
+                Date tmp = start;
+                start = stop;
+                stop = tmp;
+            }
+            //将起止时间中的所有时间加到List中
+            Calendar calendarTemp = Calendar.getInstance();
+            calendarTemp.setTime(start);
+            while (calendarTemp.getTime().getTime() <= stop.getTime()) {
+                yearMonthDayList.add(new SimpleDateFormat(format)
+                        .format(calendarTemp.getTime()));
+                calendarTemp.add(Calendar.DAY_OF_YEAR, 1);
+            }
+            Collections.sort(yearMonthDayList);
+
+            int size = yearMonthDayList.size();
+            for (int i = 0; i < size; i++) {
+                String day = (String) yearMonthDayList.get(i);
+                if (isWorkDay(day, DateUtils.DATE_PATTERN)) {
+                    num++;
+                }
+            }
         } catch (ParseException e) {
             e.printStackTrace();
-        }
-        if (start.after(stop)) {
-            Date tmp = start;
-            start = stop;
-            stop = tmp;
-        }
-        //将起止时间中的所有时间加到List中
-        Calendar calendarTemp = Calendar.getInstance();
-        calendarTemp.setTime(start);
-        while (calendarTemp.getTime().getTime() <= stop.getTime()) {
-            yearMonthDayList.add(new SimpleDateFormat(format)
-                    .format(calendarTemp.getTime()));
-            calendarTemp.add(Calendar.DAY_OF_YEAR, 1);
-        }
-        Collections.sort(yearMonthDayList);
-        int num = 0;
-        int size = yearMonthDayList.size();
-        for (int i = 0; i < size; i++) {
-            String day = (String) yearMonthDayList.get(i);
-            if (isWorkDay(day, DateUtils.DATE_PATTERN)) {
-                num++;
-            }
         }
         return num;
     }

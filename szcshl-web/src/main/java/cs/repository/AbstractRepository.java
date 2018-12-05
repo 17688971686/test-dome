@@ -4,6 +4,7 @@ import cs.common.HqlBuilder;
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import cs.repository.odata.ODataObj;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -253,11 +254,12 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
     }
 
     protected boolean checkBuilder(HqlBuilder hqlBuilder){
-        if (!Validate.isObject(hqlBuilder) || !Validate.isString(hqlBuilder.getHqlString())) {
+        if (!Validate.isObject(hqlBuilder)) {
             return false;
         }
         return true;
     }
+
 
     protected Query setParamsToQuery(Query query, HqlBuilder hqlBuilder) {
         if (!Validate.isObject(query)) {
@@ -268,7 +270,7 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         List<Type> types = hqlBuilder.getTypes();
         if (Validate.isList(params)) {
             for (int i = 0, l = params.size(); i < l; i++) {
-                String paramName = params.get(i);
+                String paramName = StringUtil.sqlInjectionFilter(params.get(i));
                 Object value = values.get(i);
                 if(!Validate.isString(paramName) || !Validate.isObject(value)){
                     continue;
@@ -276,6 +278,9 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
                 if (value instanceof String) {
                     if (Validate.isString(value)) {
                         value = StringUtil.sqlInjectionFilter(value.toString());
+                        if(!Validate.isString(value)){
+                            continue;
+                        }
                     }
                 }
                 if (types.get(i) == null) {
@@ -312,11 +317,7 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         }
         Query<Object[]> q = this.getCurrentSession().createNativeQuery(sqlBuilder.getHqlString());
         q = setParamsToQuery(q, sqlBuilder);
-        List<Object[]> resultList = new ArrayList<>();
-        if (Validate.isObject(q)) {
-            resultList = q.getResultList();
-        }
-        return resultList;
+        return q.getResultList();
     }
 
     @Override

@@ -7,6 +7,7 @@ import cs.ahelper.IgnoreAnnotation;
 import cs.common.constants.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.Validate;
+import cs.xss.XssShieldUtil;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,7 @@ import cs.model.project.AssistPlanSignDto;
 import cs.service.project.AssistPlanSignService;
 
 import static cs.common.constants.Constant.ERROR_MSG;
+import static cs.common.constants.Constant.ERROR_XSS_MSG;
 
 @Controller
 @RequestMapping(name = "协审项目信息", path = "assistPlanSign")
@@ -66,11 +68,11 @@ public class AssistPlanSignController {
     @RequestMapping(name="通过收文ID获取协审单位和协审费用" , path = "findAssistPlanSignById" , method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg findAssistPlanSignById(String signId){
-        ResultMsg resultMsg = assistPlanSignService.findAssistPlanSignBySignId(signId);
-        if(!Validate.isObject(resultMsg)){
-            resultMsg = ResultMsg.error(ERROR_MSG);
+        signId = XssShieldUtil.stripXss(signId);
+        if(!Validate.isString(signId)){
+            return ResultMsg.error(ERROR_XSS_MSG);
         }
-        return resultMsg;
+        return assistPlanSignService.findAssistPlanSignBySignId(signId);
     }
 
 }

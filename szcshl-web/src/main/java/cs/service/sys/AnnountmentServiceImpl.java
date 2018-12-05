@@ -168,7 +168,7 @@ public class AnnountmentServiceImpl implements AnnountmentService {
             if (!Validate.isObject(annountment.getIsStick())) {
                 annountment.setIsStick(Integer.valueOf(Constant.EnumState.NO.getValue()));
             } else {
-                if (Constant.EnumState.YES.getValue().equals(annountment.getIsStick())) {
+                if (Validate.isObject(annountment.getIsStick()) && Constant.EnumState.YES.getValue().equals(annountment.getIsStick().toString())) {
                     annountment.setIssueDate(now);
                 }
             }

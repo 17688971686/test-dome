@@ -1462,11 +1462,7 @@ public class FlowServiceImpl implements FlowService {
     @Override
     public List<Map<String, Object>> getBranchInfo(String signId) {
         HqlBuilder hqlBuilder = WorkSql.getReWorkSql();
-        List<Map<String, Object>> resultList = jdbcTemplate.queryForList(hqlBuilder.getHqlString(), signId);
-        if (!Validate.isList(resultList)) {
-            resultList = new ArrayList<>();
-        }
-        return resultList;
+        return jdbcTemplate.queryForList(hqlBuilder.getHqlString(), signId);
     }
 
     /**

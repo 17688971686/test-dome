@@ -2732,7 +2732,7 @@ public class SignServiceImpl implements SignService {
         Sign sign = signRepo.findById(Sign_.signid.getName(), signid);
         if (sign != null) {
             signRepo.delete(sign);
-            log.info(String.format("删除预签收项目", sign.getProjectname()));
+            log.info(String.format("删除预签收项目{0}", sign.getProjectname()));
         }
     }
 

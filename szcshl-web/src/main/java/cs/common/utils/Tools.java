@@ -188,16 +188,16 @@ public class Tools {
 	 * @return String 替换后的结果
 	 */
 	public static synchronized String strReplace(String sAll, String sOld, String sNew) {
-		int iT = 0;
-		String sF = null;
-		String sH = null;
+		if (!Validate.isString(sAll) || !Validate.isString(sOld) || !Validate.isString(sNew)) {
+			return sAll;
+		}
 		/* 如果新串中包括旧串,不让替多只让替少 */
 		if (sNew.indexOf(sOld) != -1) {
 			return sAll;
 		}
-		if ((sAll == null) || (sOld == null) || (sNew == null)) {
-			return sAll;
-		}
+		int iT = 0;
+		String sF = "";
+		String sH = "";
 		iT = sAll.indexOf(sOld);
 		while (iT != -1) {
 			sF = sAll.substring(0, iT);

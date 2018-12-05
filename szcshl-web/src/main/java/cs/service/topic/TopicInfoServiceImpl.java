@@ -88,10 +88,10 @@ public class TopicInfoServiceImpl implements TopicInfoService {
     @Override
     public PageModelDto<TopicInfoDto> get(ODataObj odataObj) {
         PageModelDto<TopicInfoDto> pageModelDto = new PageModelDto<TopicInfoDto>();
-        List<TopicInfo> resultList = topicInfoRepo.findByOdata(odataObj);
-        List<TopicInfoDto> resultDtoList = new ArrayList<TopicInfoDto>(resultList.size());
+        List<TopicInfoDto> resultDtoList = new ArrayList<>();
 
-        if (resultList != null && resultList.size() > 0) {
+        List<TopicInfo> resultList = topicInfoRepo.findByOdata(odataObj);
+        if (Validate.isList(resultList)) {
             resultList.forEach(x -> {
                 TopicInfoDto modelDto = new TopicInfoDto();
                 BeanCopierUtils.copyProperties(x, modelDto);

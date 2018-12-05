@@ -44,10 +44,6 @@ public class AssertStorageBusinessServiceImpl  implements AssertStorageBusinessS
 
 	@Autowired
 	private AssertStorageBusinessRepo assertStorageBusinessRepo;
-
-	@Autowired
-	private GoodsDetailRepo  goodsDetailRepo;
-
 	@Autowired
 	private RuntimeService runtimeService;
 	@Autowired
@@ -56,16 +52,13 @@ public class AssertStorageBusinessServiceImpl  implements AssertStorageBusinessS
 	private TaskService taskService;
 	@Autowired
 	private UserRepo userRepo;
-	@Autowired
-	private OrgDeptRepo orgDeptRepo;
 	
 	@Override
 	public PageModelDto<AssertStorageBusinessDto> get(ODataObj odataObj) {
 		PageModelDto<AssertStorageBusinessDto> pageModelDto = new PageModelDto<AssertStorageBusinessDto>();
+		List<AssertStorageBusinessDto> resultDtoList = new ArrayList<>();
 		List<AssertStorageBusiness> resultList = assertStorageBusinessRepo.findByOdata(odataObj);
-		List<AssertStorageBusinessDto> resultDtoList = new ArrayList<AssertStorageBusinessDto>(resultList.size());
-		
-		if(resultList != null && resultList.size() > 0){
+		if(Validate.isList(resultList)){
             resultList.forEach(x->{
 				AssertStorageBusinessDto modelDto = new AssertStorageBusinessDto();
 				BeanCopierUtils.copyProperties(x, modelDto);

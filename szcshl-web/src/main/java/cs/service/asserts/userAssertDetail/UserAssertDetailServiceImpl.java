@@ -30,10 +30,9 @@ public class UserAssertDetailServiceImpl  implements UserAssertDetailService {
 	@Override
 	public PageModelDto<UserAssertDetailDto> get(ODataObj odataObj) {
 		PageModelDto<UserAssertDetailDto> pageModelDto = new PageModelDto<UserAssertDetailDto>();
+		List<UserAssertDetailDto> resultDtoList = new ArrayList<>();
 		List<UserAssertDetail> resultList = userAssertDetailRepo.findByOdata(odataObj);
-		List<UserAssertDetailDto> resultDtoList = new ArrayList<UserAssertDetailDto>(resultList.size());
-		
-		if(resultList != null && resultList.size() > 0){
+		if(Validate.isList(resultList)){
             resultList.forEach(x->{
 				UserAssertDetailDto modelDto = new UserAssertDetailDto();
 				BeanCopierUtils.copyProperties(x, modelDto);

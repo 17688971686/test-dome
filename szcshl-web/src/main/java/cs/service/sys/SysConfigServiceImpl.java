@@ -39,9 +39,8 @@ public class SysConfigServiceImpl implements SysConfigService {
     public PageModelDto<SysConfigDto> get(ODataObj odataObj) {
         PageModelDto<SysConfigDto> pageModelDto = new PageModelDto<SysConfigDto>();
         List<SysConfig> resultList = sysConfigRepo.findByOdata(odataObj);
-        List<SysConfigDto> resultDtoList = new ArrayList<SysConfigDto>(resultList.size());
-
-        if (resultList != null && resultList.size() > 0) {
+        List<SysConfigDto> resultDtoList = new ArrayList<>();
+        if (Validate.isList(resultList)) {
             resultList.forEach(x -> {
                 SysConfigDto modelDto = new SysConfigDto();
                 BeanCopierUtils.copyProperties(x, modelDto);
@@ -151,9 +150,9 @@ public class SysConfigServiceImpl implements SysConfigService {
     public SysConfigDto findByKey(String key) {
         SysConfigDto modelDto = new SysConfigDto();
         List<SysConfigDto> resultList = queryAll();
-        if (resultList != null && resultList.size() >= 0) {
+        if (Validate.isList(resultList)) {
             for (SysConfigDto sc : resultList) {
-                if (sc.getConfigKey() != null && sc.getConfigKey().equals(key)) {
+                if (Validate.isString(sc.getConfigKey()) && sc.getConfigKey().equals(key)) {
                     modelDto = sc;
                     break;
                 }

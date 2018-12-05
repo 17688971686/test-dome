@@ -50,13 +50,11 @@ public class AssistUnitServiceImpl implements AssistUnitService {
     public PageModelDto<AssistUnitDto> get(ODataObj odataObj) {
         PageModelDto<AssistUnitDto> pageModelDto = new PageModelDto<AssistUnitDto>();
         List<AssistUnit> resultList = assistUnitRepo.findByOdata(odataObj);
-        List<AssistUnitDto> resultDtoList = new ArrayList<AssistUnitDto>(resultList.size());
-
-        if (resultList != null && resultList.size() > 0) {
+        List<AssistUnitDto> resultDtoList = new ArrayList<>();
+        if (Validate.isList(resultList)) {
             resultList.forEach(x -> {
                 AssistUnitDto modelDto = new AssistUnitDto();
                 BeanCopierUtils.copyProperties(x, modelDto);
-
                 resultDtoList.add(modelDto);
             });
         }

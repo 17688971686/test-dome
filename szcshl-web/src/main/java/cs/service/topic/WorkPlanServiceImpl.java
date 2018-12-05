@@ -50,10 +50,9 @@ public class WorkPlanServiceImpl implements WorkPlanService {
     @Override
     public PageModelDto<WorkPlanDto> get(ODataObj odataObj) {
         PageModelDto<WorkPlanDto> pageModelDto = new PageModelDto<WorkPlanDto>();
+        List<WorkPlanDto> resultDtoList = new ArrayList<>();
         List<WorkPlan> resultList = workPlanRepo.findByOdata(odataObj);
-        List<WorkPlanDto> resultDtoList = new ArrayList<WorkPlanDto>(resultList.size());
-
-        if (resultList != null && resultList.size() > 0) {
+        if (Validate.isList(resultList)) {
             resultList.forEach(x -> {
                 WorkPlanDto modelDto = new WorkPlanDto();
                 BeanCopierUtils.copyProperties(x, modelDto);

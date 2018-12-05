@@ -998,7 +998,7 @@ public class RTXSvrApi {
        iResult=Call(iObj,iProp,PRO_SYS_GETSESSIONKEY);
        
        innerCode = GetResultInnerCode(iResult);
-       String szKey = new String ("");
+       String szKey = "";
        if(innerCode!=0){
            	System.out.println("错误代码:" + innerCode + "\t" + "错误信息："+ GetResultErrString(iResult) );
        }else{

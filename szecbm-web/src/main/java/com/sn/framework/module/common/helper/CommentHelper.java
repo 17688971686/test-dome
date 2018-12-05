@@ -43,16 +43,16 @@ public class CommentHelper {
         if (Validate.isList(commentList)) {
             Map<String,String> cacheMap = Maps.newHashMap();
             for(Comment cm : commentList){
-                if("1".equals(cm.getSingle())){     //单个处理环节
+                if(1 == cm.getSingle()){     //单个处理环节
                     if(cacheMap.containsKey(cm.getNodeKey())){
                         continue;
                     }else{
                         newCommentList.add(cm);
                         cacheMap.put(cm.getNodeKey(),cm.getNodeKey());
                     }
-                }else if("0".equals(cm.getSingle())){   //多人处理环节
+                }else if(0 == cm.getSingle()){   //多人处理环节
                     String key = cm.getNodeKey();
-                    if("1".equals(cm.getAgent())){      //如果是代签收，则取实际签收人
+                    if(1 == cm.getAgent()){      //如果是代签收，则取实际签收人
                         key += cm.getSignUserName();
                     }else{
                         key += cm.getCreateName();

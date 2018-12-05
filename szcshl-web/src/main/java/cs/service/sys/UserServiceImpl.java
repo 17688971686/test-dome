@@ -125,10 +125,9 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public ResultMsg createUser(UserDto userDto) {
-        ResultMsg resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败！");
         boolean isUpdate = Validate.isString(userDto.getId());
         if (isUpdate) {
-            resultMsg = updateUser(userDto);
+            return updateUser(userDto);
         } else {
             User findUser = userRepo.findUserByName(userDto.getLoginName());
             // 用户不存在
@@ -141,7 +140,6 @@ public class UserServiceImpl implements UserService {
                 if (!Validate.isString(user.getUserNo())) {
                     user.setUserNo(String.format("%03d", Integer.valueOf(findMaxUserNo()) + 1));
                 }
-
                 if (userDto != null && userDto.getLoginFailCount() == null) {
                     user.setLoginFailCount(0);
                 }
@@ -179,7 +177,6 @@ public class UserServiceImpl implements UserService {
                 return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), String.format("用户：%s 已经存在,请重新输入！", userDto.getLoginName()));
             }
         }
-        return resultMsg;
     }
 
     @Override

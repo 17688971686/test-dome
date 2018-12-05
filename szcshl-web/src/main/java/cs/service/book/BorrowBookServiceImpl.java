@@ -4,6 +4,7 @@ import cs.common.constants.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.SessionUtil;
+import cs.common.utils.Validate;
 import cs.domain.book.*;
 import cs.model.PageModelDto;
 import cs.model.book.BookBorrowInfoDto;
@@ -45,10 +46,9 @@ public class BorrowBookServiceImpl implements BorrowBookService {
     @Override
     public PageModelDto<BookBorrowInfoDto> get(ODataObj odataObj) {
         PageModelDto<BookBorrowInfoDto> pageModelDto = new PageModelDto<BookBorrowInfoDto>();
+        List<BookBorrowInfoDto> resultDtoList = new ArrayList<BookBorrowInfoDto>();
         List<BorrowBookInfo> resultList = borrowBookRepo.findByOdata(odataObj);
-        List<BookBorrowInfoDto> resultDtoList = new ArrayList<BookBorrowInfoDto>(resultList.size());
-
-        if (resultList != null && resultList.size() > 0) {
+        if (Validate.isList(resultList)) {
             resultList.forEach(x -> {
                 BookBorrowInfoDto modelDto = new BookBorrowInfoDto();
                 BeanCopierUtils.copyProperties(x, modelDto);

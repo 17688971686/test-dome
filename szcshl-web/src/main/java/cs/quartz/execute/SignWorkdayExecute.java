@@ -113,7 +113,7 @@ public class SignWorkdayExecute implements Job {
                 }
                 //2、如果没有亮灯的，则设置为默认亮灯状态,如果目前是暂停状态，则改为进行中状态
                 if (!Validate.isString(sign.getIsLightUp())
-                        || Constant.EnumState.STOP.equals(sign.getSignState())
+                        || Constant.EnumState.STOP.getValue().equals(sign.getSignState())
                         || Constant.signEnumState.PAUSE.getValue().equals(sign.getIsLightUp())) {
                     sign.setIsLightUp(Constant.signEnumState.PROCESS.getValue());
                 }

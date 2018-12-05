@@ -3,6 +3,8 @@ package cs.model.project;
 import com.alibaba.fastjson.annotation.JSONField;
 import cs.common.utils.Validate;
 import cs.model.BaseDto;
+import cs.xss.XssShieldUtil;
+
 import java.util.Date;
 
 
@@ -389,9 +391,7 @@ public class AddSuppLetterDto extends BaseDto {
     }
 
     public void setBusinessId(String businessId) {
-        if(Validate.isString(businessId )){
-            this.businessId = businessId;
-        }
+        this.businessId = XssShieldUtil.stripXss(businessId);
     }
 
     public String getBusinessType() {
@@ -399,9 +399,7 @@ public class AddSuppLetterDto extends BaseDto {
     }
 
     public void setBusinessType(String businessType) {
-        if(Validate.isString(businessType)){
-            this.businessType = businessType;
-        }
+        this.businessType = XssShieldUtil.stripXss(businessType);
     }
 
     public String getAppoveStatus() {

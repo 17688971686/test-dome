@@ -28,10 +28,9 @@ public class BookBuyServiceImpl  implements BookBuyService {
 	@Override
 	public PageModelDto<BookBuyDto> get(ODataObj odataObj) {
 		PageModelDto<BookBuyDto> pageModelDto = new PageModelDto<BookBuyDto>();
+		List<BookBuyDto> resultDtoList = new ArrayList<>();
 		List<BookBuy> resultList = bookBuyRepo.findByOdata(odataObj);
-		List<BookBuyDto> resultDtoList = new ArrayList<BookBuyDto>(resultList.size());
-		
-		if(resultList != null && resultList.size() > 0){
+		if(Validate.isList(resultList)){
             resultList.forEach(x->{
 				BookBuyDto modelDto = new BookBuyDto();
 				BeanCopierUtils.copyProperties(x, modelDto);

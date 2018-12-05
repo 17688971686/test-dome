@@ -32,6 +32,10 @@ public class Constant {
      */
     public static final String ERROR_MSG = "操作异常，错误信息已记录，请联系相关人员处理！";
     /**
+     * 默认错误信息
+     */
+    public static final String ERROR_XSS_MSG = "操作异常，参数存在攻击信息，请联系相关人员处理！";
+    /**
      * 系统业务属性文件名
      */
     public static final String businessPropertiesName = "business.properties";

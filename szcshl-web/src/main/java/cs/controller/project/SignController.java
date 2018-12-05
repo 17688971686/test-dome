@@ -104,7 +104,7 @@ public class SignController {
             backActivityId = FlowConstant.FLOW_SIGN_FGLD_FB;
         } else {
             OrgDept orgDept = orgDeptRepo.findById(OrgDept_.directorID.getName(), SessionUtil.getUserId());
-            if (null != orgDept || SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())) {
+            if (Validate.isObject(orgDept) && SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())) {
                 //根据当前用户所在部门ID，查询是哪个分支的取回
                 SignBranch signBranch = signBranchService.findByOrgDirector(businessKey, orgDept.getId());
                 if (signBranch != null) {

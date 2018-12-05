@@ -32,10 +32,9 @@ public class GoodsDetailServiceImpl  implements GoodsDetailService {
 	@Override
 	public PageModelDto<GoodsDetailDto> get(ODataObj odataObj) {
 		PageModelDto<GoodsDetailDto> pageModelDto = new PageModelDto<GoodsDetailDto>();
+		List<GoodsDetailDto> resultDtoList = new ArrayList<>();
 		List<GoodsDetail> resultList = goodsDetailRepo.findByOdata(odataObj);
-		List<GoodsDetailDto> resultDtoList = new ArrayList<GoodsDetailDto>(resultList.size());
-		
-		if(resultList != null && resultList.size() > 0){
+		if(Validate.isList(resultList)){
             resultList.forEach(x->{
 				GoodsDetailDto modelDto = new GoodsDetailDto();
 				BeanCopierUtils.copyProperties(x, modelDto);

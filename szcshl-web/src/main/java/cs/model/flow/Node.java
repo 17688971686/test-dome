@@ -1,6 +1,7 @@
 package cs.model.flow;
 
 import cs.common.utils.Validate;
+import cs.xss.XssShieldUtil;
 
 /**
  * 流程节点信息
@@ -17,15 +18,14 @@ public class Node {
 		return activitiId;
 	}
 	public void setActivitiId(String activitiId) {
-		if(Validate.isString(activitiId)){
-			this.activitiId = activitiId;
-		}
+		this.activitiId = XssShieldUtil.stripXss(activitiId);
 	}
 	public String getActivitiName() {
 		return activitiName;
 	}
+
 	public void setActivitiName(String activitiName) {
-		this.activitiName = activitiName;
+		this.activitiName =  XssShieldUtil.stripXss(activitiName);
 	}
 
 	public boolean getIsConcurrent() {

@@ -66,16 +66,16 @@ public class ArchivesLibraryServiceImpl implements ArchivesLibraryService {
     @Override
     public PageModelDto<ArchivesLibraryDto> get(ODataObj odataObj) {
         PageModelDto<ArchivesLibraryDto> pageModelDto = new PageModelDto<ArchivesLibraryDto>();
+        List<ArchivesLibraryDto> resultDtoList = new ArrayList<>();
         List<ArchivesLibrary> resultList = archivesLibraryRepo.findByOdata(odataObj);
-        List<ArchivesLibraryDto> resultDtoList = new ArrayList<ArchivesLibraryDto>(resultList.size());
-
-        if (resultList != null && resultList.size() > 0) {
+        if(Validate.isList(resultList)){
             resultList.forEach(x -> {
                 ArchivesLibraryDto modelDto = new ArchivesLibraryDto();
                 BeanCopierUtils.copyProperties(x, modelDto);
                 resultDtoList.add(modelDto);
             });
         }
+
         pageModelDto.setCount(odataObj.getCount());
         pageModelDto.setValue(resultDtoList);
         return pageModelDto;

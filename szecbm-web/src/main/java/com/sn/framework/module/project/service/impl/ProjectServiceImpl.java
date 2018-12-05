@@ -57,17 +57,14 @@ public class ProjectServiceImpl extends SServiceImpl<IProjectRepo,Project,Projec
         return false;
     }
 
-
-
     @Override
     public PageModelDto<ProjectDto> getProjectForManage(OdataJPA odata,String status) {
         List<Organ> organList = organRepo.findByOrganByOrgMLeader(SessionUtil.getUsername());
-        if(null != organList && organList.size() > 0 || USER_KEY_ADMIN.equals(SessionUtil.getUsername())){
+        if(Validate.isList(organList)|| USER_KEY_ADMIN.equals(SessionUtil.getUsername())){
             odata.addFilter(Project_.status.getName(), OdataFilter.Operate.EQ, status);
         }else{
-            organList.clear();
             organList = organRepo.findByOrganByOrganManage(SessionUtil.getUsername());
-            if(null != organList && organList.size() > 0){
+            if(Validate.isList(organList)){
                 List<OdataFilter> filters = new ArrayList<>();
                 odata.addFilter(Project_.status.getName(), OdataFilter.Operate.EQ, status);
                 for(int i = 0; i < organList.size(); i++){
@@ -75,11 +72,9 @@ public class ProjectServiceImpl extends SServiceImpl<IProjectRepo,Project,Projec
                 }
                 OdataFilter orFilter = new OdataFilter(null, OdataFilter.Operate.OR, filters);
                 odata.addFilter(orFilter);
-
             }else {
-                organList.clear();
                 organList = organRepo.findByOrganByOrganLead(SessionUtil.getUsername());
-                if(null != organList && organList.size() > 0){
+                if(Validate.isList(organList)){
                     List<OdataFilter> filters = new ArrayList<>();
                     odata.addFilter(Project_.status.getName(), OdataFilter.Operate.EQ, status);
                     filters.add(new OdataFilter(Project_.mainOrgId.getName(), OdataFilter.Operate.EQ, organList.get(0).getOrganId()));
@@ -94,12 +89,9 @@ public class ProjectServiceImpl extends SServiceImpl<IProjectRepo,Project,Projec
                     filters.add(new OdataFilter(Project_.assistUser.getName(), OdataFilter.Operate.LIKE, SessionUtil.getUserInfo().getUserId()));
                     OdataFilter orFilter = new OdataFilter(null, OdataFilter.Operate.OR, filters);
                     odata.addFilter(orFilter);
-
                 }
             }
         }
-
-
         return projectService.findPageByOdata(odata);
     }
 }

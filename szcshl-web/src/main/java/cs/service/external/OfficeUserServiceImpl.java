@@ -33,11 +33,10 @@ public class OfficeUserServiceImpl implements OfficeUserService{
 	@Override
 	public PageModelDto<OfficeUserDto> get(ODataObj odataObj) {
 		PageModelDto<OfficeUserDto> pageModelDto = new PageModelDto<OfficeUserDto>();
-		List<OfficeUser> OfficeUserList = officeUserRepo.findByOdata(odataObj);
-		List<OfficeUserDto> resultDtoList = new ArrayList<OfficeUserDto>(OfficeUserList.size());
-		
-		if(OfficeUserList != null && OfficeUserList.size() > 0){
-			OfficeUserList.forEach(x->{
+		List<OfficeUserDto> resultDtoList = new ArrayList<>();
+		List<OfficeUser> officeUserList = officeUserRepo.findByOdata(odataObj);
+		if(Validate.isList(officeUserList)){
+			officeUserList.forEach(x->{
 				OfficeUserDto modelDto = new OfficeUserDto();
 				BeanCopierUtils.copyProperties(x, modelDto);
 				//cannot copy 
@@ -98,7 +97,7 @@ public class OfficeUserServiceImpl implements OfficeUserService{
 		OfficeUser office = officeUserRepo.getById(id);
 		if (office != null) {
 			officeUserRepo.delete(office);
-			logger.info(String.format("删除办事处", office.getOfficeID()));
+			logger.info(String.format("删除办事处{0}", office.getOfficeID()));
 		}
 		
 		

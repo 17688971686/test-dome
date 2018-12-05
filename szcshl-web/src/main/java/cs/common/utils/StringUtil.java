@@ -1,21 +1,17 @@
 package cs.common.utils;
 
-import com.lowagie.text.html.HtmlEncoder;
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.util.HtmlUtils;
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-import java.util.stream.Collectors;
 
 /**
  * 字符串工具类
@@ -233,107 +229,6 @@ public class StringUtil extends StringUtils {
             isHaveXSSStr = scriptPattern.matcher(value).find();
         }
         return isHaveXSSStr;
-    };
-
-    /**
-     * 处理跨脚本攻击方法
-     *
-     * @param value
-     * @return
-     */
-    public static String cleanXSS(String value) {
-        if (value != null) {
-            //value = filter(value);
-            value = StringEscapeUtils.escapeHtml3(value);
-           /* value = value.replaceAll("", "");
-            Pattern scriptPattern = Pattern.compile("<script>(.*?)</script>", Pattern.CASE_INSENSITIVE);
-            value = scriptPattern.matcher(value).replaceAll("");
-            scriptPattern = Pattern.compile("src[\r\n]*=[\r\n]*\\\'(.*?)\\\'", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
-            value = scriptPattern.matcher(value).replaceAll("");
-            scriptPattern = Pattern.compile("<iframe>(.*?)</iframe>", Pattern.CASE_INSENSITIVE);
-            value = scriptPattern.matcher(value).replaceAll("");
-            scriptPattern = Pattern.compile("</script>", Pattern.CASE_INSENSITIVE);
-            value = scriptPattern.matcher(value).replaceAll("");
-            scriptPattern = Pattern.compile("eval\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
-            value = scriptPattern.matcher(value).replaceAll("");
-            scriptPattern = Pattern.compile("e­xpression\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
-            value = scriptPattern.matcher(value).replaceAll("");
-            scriptPattern = Pattern.compile("javascript:", Pattern.CASE_INSENSITIVE);
-            value = scriptPattern.matcher(value).replaceAll("");
-            scriptPattern = Pattern.compile("vbscript:", Pattern.CASE_INSENSITIVE);
-            value = scriptPattern.matcher(value).replaceAll("");
-            scriptPattern = Pattern.compile("onload(.*?)=", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
-            value = scriptPattern.matcher(value).replaceAll("");
-            scriptPattern = Pattern.compile("<link>(.*?)</link>", Pattern.CASE_INSENSITIVE);
-            value = scriptPattern.matcher(value).replaceAll("");
-            scriptPattern = Pattern.compile("<style>(.*?)</style>", Pattern.CASE_INSENSITIVE);
-            value = scriptPattern.matcher(value).replaceAll("");
-            scriptPattern = Pattern.compile("</script>", Pattern.CASE_INSENSITIVE);
-            value = scriptPattern.matcher(value).replaceAll("");
-            scriptPattern = Pattern.compile("</iframe>", Pattern.CASE_INSENSITIVE);
-            value = scriptPattern.matcher(value).replaceAll("");
-            scriptPattern = Pattern.compile("</link>", Pattern.CASE_INSENSITIVE);
-            value = scriptPattern.matcher(value).replaceAll("");
-            scriptPattern = Pattern.compile("</style>", Pattern.CASE_INSENSITIVE);
-            value = scriptPattern.matcher(value).replaceAll("");
-            scriptPattern = Pattern.compile("<script(.*?)>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
-            value = scriptPattern.matcher(value).replaceAll("");
-            scriptPattern = Pattern.compile("<iframe(.*?)>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
-            value = scriptPattern.matcher(value).replaceAll("");
-            scriptPattern = Pattern.compile("<link(.*?)>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
-            value = scriptPattern.matcher(value).replaceAll("");
-            scriptPattern = Pattern.compile("<style(.*?)>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
-            value = scriptPattern.matcher(value).replaceAll("");*/
-        }
-        return value;
-    }
-
-    /**
-     * 过滤特殊字符
-     */
-    public static String filter(String value) {
-        if (value == null) {
-            return null;
-        }
-        StringBuffer result = new StringBuffer(value.length());
-        for (int i = 0; i < value.length(); ++i) {
-            switch (value.charAt(i)) {
-                case '<':
-                    result.append("<");
-                    break;
-                case '>':
-                    result.append(">");
-                    break;
-                case '"':
-                    result.append("\"");
-                    break;
-                case '\'':
-                    result.append("'");
-                    break;
-                case '%':
-                    result.append("%");
-                    break;
-                case ';':
-                    result.append(";");
-                    break;
-                case '(':
-                    result.append("(");
-                    break;
-                case ')':
-                    result.append(")");
-                    break;
-                case '&':
-                    result.append("&");
-                    break;
-                case '+':
-                    result.append("+");
-                    break;
-                default:
-                    result.append(value.charAt(i));
-                    break;
-            }
-        }
-        return result.toString();
     }
 
     /**
@@ -393,8 +288,8 @@ public class StringUtil extends StringUtils {
     public static void main(String[] args) {
         /*String checkString = "xxxxs第三个是大<script>235325235</script>阿萨德广东省";
         ;*/
-        String querySql = HtmlEncoder.encode("SELECT arp.NAME_,arp.KEY_ FROM act_re_procdef arp where arp.KEY_ >= ? GROUP BY arp.NAME_,arp.KEY_");
-        System.out.println(querySql);
+        String querySql = "1' or '1'='1";
+        System.out.println(StringEscapeUtils.escapeSql(querySql));
     }
 
 

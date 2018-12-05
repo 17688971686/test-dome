@@ -173,7 +173,7 @@ public class ExcelTools {
         cellTiltle.setCellValue(title);
 
         //数据不完整，则返回null
-        if (headerPair == null || headerPair.length == 0 || items == null || items.size() == 0) {
+        if (Validate.isEmpty(headerPair) || !Validate.isList(items)) {
             return wb;
         }
         //2、取表头标签名称和对应的字段值

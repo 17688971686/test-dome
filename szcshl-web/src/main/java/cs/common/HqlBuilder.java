@@ -71,11 +71,6 @@ public class HqlBuilder {
 	 */
 	public HqlBuilder setParam(String param, Object value, Type type) {
 		getParams().add(param);
-		if (value instanceof String) {
-			if (Validate.isString(value)) {
-				value = StringUtil.sqlInjectionFilter(value.toString());
-			}
-		}
 		getValues().add(value);
 		getTypes().add(type);
 		return this;
@@ -106,7 +101,6 @@ public class HqlBuilder {
 					hqlBuilder.append(" :id" + i);
 					setParam("id" + i, idList.get(i));
 					hqlBuilder.append(") or "+propoty+" in (");
-					//hqlBuilder.append(idList.get(i)).append(") or "+propoty+" in (");
 				}else{
 					hqlBuilder.append(" :id" + i);
 					setParam("id" + i, idList.get(i));

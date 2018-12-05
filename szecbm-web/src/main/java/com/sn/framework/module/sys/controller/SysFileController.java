@@ -253,13 +253,6 @@ public class SysFileController {
         }
     }
 
-    @RequestMapping(name = "下载附件", path = "download/{id}", method = RequestMethod.GET)
-    @ResponseStatus(value = HttpStatus.OK)
-    public void download1(@PathVariable String id, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        OutputStream out = response.getOutputStream();
-       // attachmentService.download(id, request, response);
-    }
-
     @RequestMapping(name = "附件删除", path = "", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@RequestParam(required = true) String sysFileId) {

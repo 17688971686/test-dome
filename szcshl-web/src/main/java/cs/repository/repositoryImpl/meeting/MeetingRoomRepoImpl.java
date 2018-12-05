@@ -3,6 +3,7 @@ package cs.repository.repositoryImpl.meeting;
 import cs.common.cache.CacheConstant;
 import cs.common.cache.CacheManager;
 import cs.common.cache.ICache;
+import cs.common.utils.Validate;
 import cs.domain.meeting.MeetingRoom;
 import cs.domain.sys.User_;
 import cs.repository.AbstractRepository;
@@ -33,18 +34,23 @@ public class MeetingRoomRepoImpl extends AbstractRepository<MeetingRoom, String>
     @Override
     public MeetingRoom findMeetingByCacheId(String id) {
         MeetingRoom meetingRoom = null;
+        List<MeetingRoom> roomList = null;
         ICache cache = CacheManager.getCache();
-        List<MeetingRoom> roomList = (List<MeetingRoom>) cache.get(CacheConstant.MEETING_CACHE);
-        for (MeetingRoom room : roomList) {
-            if (room.getId().equals(id)) {
-                meetingRoom = room;
-                break;
+        Object roomObj = cache.get(CacheConstant.MEETING_CACHE);
+        if (Validate.isObject(roomObj)) {
+            roomList = (List<MeetingRoom>) roomObj;
+            for (MeetingRoom room : roomList) {
+                if (room.getId().equals(id)) {
+                    meetingRoom = room;
+                    break;
+                }
             }
         }
-        if (meetingRoom == null) {
+
+        if (null == meetingRoom) {
             meetingRoom = findById(User_.id.getName(), id);
-            if (meetingRoom != null) {
-                roomList = roomList == null ? new ArrayList<>() : roomList;
+            if (null != meetingRoom) {
+                roomList = (null == roomList) ? new ArrayList<>() : roomList;
                 roomList.add(meetingRoom);
                 cache.put(CacheConstant.MEETING_CACHE, roomList);
             }

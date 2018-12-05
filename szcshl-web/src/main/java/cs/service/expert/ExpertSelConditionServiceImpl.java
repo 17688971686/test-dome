@@ -46,10 +46,9 @@ public class ExpertSelConditionServiceImpl implements ExpertSelConditionService 
     @Override
     public PageModelDto<ExpertSelConditionDto> get(ODataObj odataObj) {
         PageModelDto<ExpertSelConditionDto> pageModelDto = new PageModelDto<ExpertSelConditionDto>();
+        List<ExpertSelConditionDto> resultDtoList = new ArrayList<>();
         List<ExpertSelCondition> resultList = expertSelConditionRepo.findByOdata(odataObj);
-        List<ExpertSelConditionDto> resultDtoList = new ArrayList<ExpertSelConditionDto>(resultList.size());
-
-        if (resultList != null && resultList.size() > 0) {
+        if (Validate.isList(resultList)) {
             resultList.forEach(x -> {
                 ExpertSelConditionDto modelDto = new ExpertSelConditionDto();
                 BeanCopierUtils.copyProperties(x, modelDto);

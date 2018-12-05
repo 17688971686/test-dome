@@ -211,7 +211,7 @@ public class StrUtils {
             p_style = Pattern.compile(regEx_style, Pattern.CASE_INSENSITIVE);
             m_style = p_style.matcher(htmlStr);
             htmlStr = m_style.replaceAll(""); // 过滤style标签
-            htmlStr.replace("</p>", "\n");
+            htmlStr = htmlStr.replace("</p>", "\n");
             p_html = Pattern.compile(regEx_html, Pattern.CASE_INSENSITIVE);
             m_html = p_html.matcher(htmlStr);
             htmlStr = m_html.replaceAll(""); // 过滤html标签

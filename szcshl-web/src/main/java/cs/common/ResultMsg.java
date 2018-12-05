@@ -1,12 +1,11 @@
 package cs.common;
 
-
 import cs.common.constants.Constant;
 import cs.common.utils.Validate;
+import cs.xss.XssShieldUtil;
 
 /**
  * 操作返回类
- * 
  * @author ldm
  * 
  */
@@ -24,38 +23,22 @@ public class ResultMsg implements java.io.Serializable {
 
 	public ResultMsg(boolean flag, String reCode, String idCode, String reMsg, Object reObj) {
 		this.flag = flag;
-        if(Validate.isString(reCode)){
-            this.reCode = reCode;
-        }
-        if(Validate.isString(reMsg)){
-            this.reMsg = reMsg;
-        }
-        if(Validate.isString(idCode)){
-            this.idCode = idCode;
-        }
-        if(Validate.isObject(reObj)){
-            this.reObj = reObj;
-        }
+		this.reCode = XssShieldUtil.stripXss(reCode);
+		this.reMsg = XssShieldUtil.stripXss(reMsg);
+		this.idCode = XssShieldUtil.stripXss(idCode);
+		this.reObj = reObj;
 	}
 
 	public ResultMsg(boolean flag, String reCode, String reMsg) {
 		this.flag = flag;
-		if(Validate.isString(reCode)){
-			this.reCode = reCode;
-		}
-		if(Validate.isString(reMsg)){
-			this.reMsg = reMsg;
-		}
+		this.reCode = XssShieldUtil.stripXss(reCode);
+		this.reMsg = XssShieldUtil.stripXss(reMsg);
 	}
 
 	public ResultMsg(boolean flag, String reCode, String reMsg, Object reObj) {
 		this.flag = flag;
-		if(Validate.isString(reCode)){
-			this.reCode = reCode;
-		}
-		if(Validate.isString(reMsg)){
-			this.reMsg = reMsg;
-		}
+		this.reCode = XssShieldUtil.stripXss(reCode);
+		this.reMsg = XssShieldUtil.stripXss(reMsg);
 		if(Validate.isObject(reObj)){
 			this.reObj = reObj;
 		}
@@ -73,7 +56,7 @@ public class ResultMsg implements java.io.Serializable {
 	}
 
 	public void setReCode(String reCode) {
-		this.reCode = reCode;
+		this.reCode = XssShieldUtil.stripXss(reCode);
 	}
 
 	public String getReMsg() {
@@ -81,9 +64,7 @@ public class ResultMsg implements java.io.Serializable {
 	}
 
 	public void setReMsg(String reMsg) {
-	    if(Validate.isString(reMsg)){
-            this.reMsg = reMsg;
-        }
+		this.reMsg = XssShieldUtil.stripXss(reMsg);
 	}
 
 	public Object getReObj() {
@@ -95,7 +76,6 @@ public class ResultMsg implements java.io.Serializable {
             this.reObj = reObj;
         }
 	}
-
 	public boolean isFlag() {
 		return flag;
 	}
@@ -109,7 +89,7 @@ public class ResultMsg implements java.io.Serializable {
 	}
 
 	public void setIdCode(String idCode) {
-		this.idCode = idCode;
+		this.idCode = XssShieldUtil.stripXss(idCode);
 	}
 
 }

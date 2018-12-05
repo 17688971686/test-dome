@@ -1,7 +1,6 @@
 package cs.repository.repositoryImpl.meeting;
 
 import cs.common.HqlBuilder;
-import cs.common.constants.Constant;
 import cs.common.utils.Validate;
 import cs.domain.meeting.RoomBooking;
 import cs.domain.meeting.RoomBooking_;
@@ -17,11 +16,11 @@ import java.util.List;
 
 @Repository
 public class RoomBookingRepoImpl extends AbstractRepository<RoomBooking, String>  implements RoomBookingRepo{
-
+    /*
 	@Override
 	public List<RoomBooking> findByHql(String hql) {		
 		return findByHql(hql);
-	}
+	}*/
 
 	/*@Override
 	public List<RoomBooking> findWeekBook() {

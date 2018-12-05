@@ -13,6 +13,7 @@ public class ConfirmDisMulitiTask {
 
     /**
      * 是否所有环节都完成
+     *
      * @param execution
      * @return
      */
@@ -22,14 +23,15 @@ public class ConfirmDisMulitiTask {
 
         Boolean pass = (Boolean) execution.getVariable(FlowConstant.SignFlowParams.XMFZR_SP.getValue());
         //只要有人不同意，则回退
-        if(pass != null && pass == false){
+        if (pass != null && pass == false) {
             return true;
         }
-        return (nrOfCompletedInstances==nrOfInstances)?true:false;
+        return (nrOfCompletedInstances == nrOfInstances) ? true : false;
     }
 
     /**
      * 协办部长审批
+     *
      * @param execution
      * @return
      */
@@ -39,14 +41,15 @@ public class ConfirmDisMulitiTask {
 
         Boolean pass = (Boolean) execution.getVariable(FlowConstant.SignFlowParams.XBBZ_SP.getValue());
         //只要有人不同意，则回退
-        if(pass != null && pass == false){
+        if (pass != null && pass == false) {
             return true;
         }
-        return (nrOfCompletedInstances==nrOfInstances)?true:false;
+        return (nrOfCompletedInstances == nrOfInstances) ? true : false;
     }
 
     /**
      * 协办副主任审批
+     *
      * @param execution
      * @return
      */
@@ -56,14 +59,15 @@ public class ConfirmDisMulitiTask {
 
         Boolean pass = (Boolean) execution.getVariable(FlowConstant.SignFlowParams.XBFZR_SP.getValue());
         //只要有人不同意，则回退
-        if(pass != null && pass == false){
+        if (pass != null && pass == false) {
             return true;
         }
-        return (nrOfCompletedInstances==nrOfInstances)?true:false;
+        return (nrOfCompletedInstances == nrOfInstances) ? true : false;
     }
 
     /**
      * 领导会签，只要每个领导会签即可
+     *
      * @param execution
      * @return
      */
@@ -71,6 +75,6 @@ public class ConfirmDisMulitiTask {
         Integer nrOfInstances = (Integer) execution.getVariable("nrOfInstances"),
                 nrOfCompletedInstances = (Integer) execution.getVariable("nrOfCompletedInstances");
 
-        return (nrOfCompletedInstances == nrOfInstances)?true:false;
+        return (nrOfCompletedInstances == nrOfInstances) ? true : false;
     }
 }

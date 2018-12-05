@@ -955,7 +955,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append(" left join cs_dispatch_doc d on s.signid = d.signid left join CS_SIGN_PRINCIPAL2 p" +
                 " on s.signid = p.signid");
         StringBuilder orgIds = new StringBuilder();
-        if(Validate.isString(achievementSumDto.getUserId())){
+        if(Validate.isObject(achievementSumDto) && Validate.isString(achievementSumDto.getUserId())){
             sqlBuilder.append(" where s.processstate >= 6  and s.signstate != 7 and p.userid = '"+ achievementSumDto.getUserId()+"' ");
         }else{
             if(level == 0){

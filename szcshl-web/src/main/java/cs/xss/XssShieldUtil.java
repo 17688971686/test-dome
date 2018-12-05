@@ -42,7 +42,6 @@ public class XssShieldUtil {
             }
             patterns = list;
         }
-
         return patterns;
     }
 

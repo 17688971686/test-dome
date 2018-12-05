@@ -9,6 +9,7 @@ import cs.model.project.AddSuppLetterDto;
 import cs.repository.odata.ODataObj;
 import cs.service.project.AddSuppLetterService;
 import cs.service.rtx.RTXService;
+import cs.xss.XssShieldUtil;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -144,11 +145,7 @@ public class AddSuppLetterController {
     @RequestMapping(name = "初始化补充资料函", path = "initSuppLetter", method = RequestMethod.POST)
     @ResponseBody
     public AddSuppLetterDto initSuppLetter(@RequestParam String businessId, String businessType) {
-        AddSuppLetterDto addSuppLetterDto = addSuppLetterService.initSuppLetter(businessId, businessType);
-        if (!Validate.isObject(addSuppLetterDto)) {
-            addSuppLetterDto = new AddSuppLetterDto();
-        }
-        return addSuppLetterDto;
+        return addSuppLetterService.initSuppLetter(businessId, businessType);
     }
 
     @RequiresAuthentication

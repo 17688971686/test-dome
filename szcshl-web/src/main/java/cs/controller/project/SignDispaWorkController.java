@@ -232,7 +232,7 @@ public class SignDispaWorkController {
             funcs.put("proUtils", new ExcelJxlsUtls());
             resp.setCharacterEncoding(UTF_8.name());
             resp.setContentType("application/vnd.ms-excel");
-            String filename = new String("项目查询统计报表.xls"), userAgent = request.getHeader("user-agent");
+            String filename = "项目查询统计报表.xls", userAgent = request.getHeader("user-agent");
             // 判断是否 ie 浏览器
             if (userAgent.indexOf("MSIE") != -1 || userAgent.indexOf("Trident") != -1 || userAgent.indexOf("Edge") != -1) {
                 filename = new String(filename.getBytes(GBK), ISO_8859_1);

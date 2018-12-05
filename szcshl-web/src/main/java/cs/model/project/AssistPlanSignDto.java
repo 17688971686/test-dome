@@ -9,13 +9,14 @@ import cs.common.utils.Validate;
 import cs.domain.project.AssistPlan;
 import cs.domain.project.AssistUnit;
 import cs.domain.project.Sign;
+import cs.xss.XssShieldUtil;
 
 /**
  * Description: 协审项目 页面数据模型
  * author: ldm
  * Date: 2017-6-6 14:50:37
  */
-public class AssistPlanSignDto{
+public class AssistPlanSignDto {
 
     private String id;
     /**
@@ -66,14 +67,12 @@ public class AssistPlanSignDto{
     }
 
     public void setUnitNameStr(String unitNameStr) {
-        if(Validate.isString(unitNameStr)){
-            this.unitNameStr = unitNameStr;
-        }
+        this.unitNameStr = XssShieldUtil.stripXss(unitNameStr);
     }
 
     @JSONField(serialzeFeatures = SerializerFeature.DisableCircularReferenceDetect)
     private AssistUnit assistUnit;
-    
+
     @JSONField(serialzeFeatures = SerializerFeature.DisableCircularReferenceDetect)
     private AssistPlan assistPlan;
 
@@ -93,9 +92,7 @@ public class AssistPlanSignDto{
     }
 
     public void setPlanId(String planId) {
-        if(Validate.isString(planId)){
-            this.planId = planId;
-        }
+        this.planId = XssShieldUtil.stripXss(planId);
     }
 
     public String getSignId() {
@@ -103,7 +100,7 @@ public class AssistPlanSignDto{
     }
 
     public void setSignId(String signId) {
-        this.signId = signId;
+        this.signId = XssShieldUtil.stripXss(signId);
     }
 
     public BigDecimal getAssistCost() {
@@ -138,45 +135,45 @@ public class AssistPlanSignDto{
         this.projectName = projectName;
     }
 
-	public BigDecimal getEstimateCost() {
-		return estimateCost;
-	}
+    public BigDecimal getEstimateCost() {
+        return estimateCost;
+    }
 
-	public void setEstimateCost(BigDecimal estimateCost) {
-		this.estimateCost = estimateCost;
-	}
+    public void setEstimateCost(BigDecimal estimateCost) {
+        this.estimateCost = estimateCost;
+    }
 
-	public BigDecimal getJiananCost() {
-		return jiananCost;
-	}
+    public BigDecimal getJiananCost() {
+        return jiananCost;
+    }
 
-	public void setJiananCost(BigDecimal jiananCost) {
-		this.jiananCost = jiananCost;
-	}
+    public void setJiananCost(BigDecimal jiananCost) {
+        this.jiananCost = jiananCost;
+    }
 
-	public AssistUnit getAssistUnit() {
-		return assistUnit;
-	}
+    public AssistUnit getAssistUnit() {
+        return assistUnit;
+    }
 
-	public void setAssistUnit(AssistUnit assistUnit) {
-		this.assistUnit = assistUnit;
-	}
+    public void setAssistUnit(AssistUnit assistUnit) {
+        this.assistUnit = assistUnit;
+    }
 
-	public AssistPlan getAssistPlan() {
-		return assistPlan;
-	}
+    public AssistPlan getAssistPlan() {
+        return assistPlan;
+    }
 
-	public void setAssistPlan(AssistPlan assistPlan) {
-		this.assistPlan = assistPlan;
-	}
+    public void setAssistPlan(AssistPlan assistPlan) {
+        this.assistPlan = assistPlan;
+    }
 
-	public String getUserName() {
-		return userName;
-	}
+    public String getUserName() {
+        return userName;
+    }
 
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
+    public void setUserName(String userName) {
+        this.userName = XssShieldUtil.stripXss(userName);
+    }
 
     public Integer getSplitNum() {
         return splitNum;

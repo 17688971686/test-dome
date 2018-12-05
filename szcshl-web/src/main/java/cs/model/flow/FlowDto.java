@@ -1,6 +1,7 @@
 package cs.model.flow;
 
 import cs.common.utils.Validate;
+import cs.xss.XssShieldUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -34,9 +35,7 @@ public class FlowDto {
     }
 
     public void setCurNode(Node curNode) {
-        if(Validate.isObject(curNode)){
-            this.curNode = curNode;
-        }
+        this.curNode = curNode;
     }
 
     public List<Node> getNextNode() {
@@ -44,9 +43,7 @@ public class FlowDto {
     }
 
     public void setNextNode(List<Node> nextNode) {
-        if(Validate.isList(nextNode)){
-            this.nextNode = nextNode;
-        }
+         this.nextNode = nextNode;
     }
 
     public String getDealOption() {
@@ -54,7 +51,7 @@ public class FlowDto {
     }
 
     public void setDealOption(String dealOption) {
-        this.dealOption = dealOption;
+        this.dealOption = XssShieldUtil.stripXss(dealOption);
     }
 
     public String getTaskId() {
@@ -62,7 +59,7 @@ public class FlowDto {
     }
 
     public void setTaskId(String taskId) {
-        this.taskId = taskId;
+        this.taskId = XssShieldUtil.stripXss(taskId);
     }
 
     public String getProcessInstanceId() {
@@ -70,7 +67,7 @@ public class FlowDto {
     }
 
     public void setProcessInstanceId(String processInstanceId) {
-        this.processInstanceId = processInstanceId;
+        this.processInstanceId = XssShieldUtil.stripXss(processInstanceId);
     }
 
     public String getNextNodeAcivitiId() {
@@ -78,7 +75,7 @@ public class FlowDto {
     }
 
     public void setNextNodeAcivitiId(String nextNodeAcivitiId) {
-        this.nextNodeAcivitiId = nextNodeAcivitiId;
+        this.nextNodeAcivitiId = XssShieldUtil.stripXss(nextNodeAcivitiId);
     }
 
     public boolean isEnd() {
@@ -94,7 +91,7 @@ public class FlowDto {
     }
 
     public void setRollBackActiviti(String rollBackActiviti) {
-        this.rollBackActiviti = rollBackActiviti;
+        this.rollBackActiviti = XssShieldUtil.stripXss(rollBackActiviti);
     }
 
     public String getBackNodeDealUser() {
@@ -102,7 +99,7 @@ public class FlowDto {
     }
 
     public void setBackNodeDealUser(String backNodeDealUser) {
-        this.backNodeDealUser = backNodeDealUser;
+        this.backNodeDealUser = XssShieldUtil.stripXss(backNodeDealUser);
     }
 
     public String getProcessKey() {
@@ -110,9 +107,7 @@ public class FlowDto {
     }
 
     public void setProcessKey(String processKey) {
-        if(Validate.isString(processKey)){
-            this.processKey = processKey;
-        }
+        this.processKey = XssShieldUtil.stripXss(processKey);
     }
 
     public Map<String, Object> getBusinessMap() {
@@ -138,7 +133,7 @@ public class FlowDto {
     }
 
     public FlowDto(String dealOption) {
-        this.dealOption = dealOption;
+        this.dealOption = this.processKey = XssShieldUtil.stripXss(dealOption);
     }
 
 }

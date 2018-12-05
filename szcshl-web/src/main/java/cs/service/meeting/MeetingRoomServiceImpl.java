@@ -44,9 +44,9 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
     @Override
     @Transactional
     public PageModelDto<MeetingRoomDto> get(ODataObj odataObj) {
+        List<MeetingRoomDto> meetingDtoList = new ArrayList<>();
         List<MeetingRoom> meetingList = meetingRoomRepo.findByOdata(odataObj);
-        List<MeetingRoomDto> meetingDtoList = new ArrayList<MeetingRoomDto>(meetingList.size());
-        if (meetingList != null && meetingList.size() > 0) {
+        if (Validate.isList(meetingList)) {
             meetingList.forEach(x -> {
                 MeetingRoomDto meetingDto = new MeetingRoomDto();
                 BeanCopierUtils.copyProperties(x, meetingDto);
