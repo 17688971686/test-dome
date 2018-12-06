@@ -391,7 +391,7 @@ public class AddSuppLetterDto extends BaseDto {
     }
 
     public void setBusinessId(String businessId) {
-        this.businessId = XssShieldUtil.stripXss(businessId);
+        this.businessId = businessId;
     }
 
     public String getBusinessType() {
@@ -399,7 +399,7 @@ public class AddSuppLetterDto extends BaseDto {
     }
 
     public void setBusinessType(String businessType) {
-        this.businessType = XssShieldUtil.stripXss(businessType);
+        this.businessType = businessType;
     }
 
     public String getAppoveStatus() {

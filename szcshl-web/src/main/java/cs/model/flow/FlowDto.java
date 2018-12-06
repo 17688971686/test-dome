@@ -51,7 +51,7 @@ public class FlowDto {
     }
 
     public void setDealOption(String dealOption) {
-        this.dealOption = XssShieldUtil.stripXss(dealOption);
+        this.dealOption = dealOption;
     }
 
     public String getTaskId() {
@@ -59,7 +59,7 @@ public class FlowDto {
     }
 
     public void setTaskId(String taskId) {
-        this.taskId = XssShieldUtil.stripXss(taskId);
+        this.taskId = taskId;
     }
 
     public String getProcessInstanceId() {
@@ -67,7 +67,7 @@ public class FlowDto {
     }
 
     public void setProcessInstanceId(String processInstanceId) {
-        this.processInstanceId = XssShieldUtil.stripXss(processInstanceId);
+        this.processInstanceId = processInstanceId;
     }
 
     public String getNextNodeAcivitiId() {
@@ -75,7 +75,7 @@ public class FlowDto {
     }
 
     public void setNextNodeAcivitiId(String nextNodeAcivitiId) {
-        this.nextNodeAcivitiId = XssShieldUtil.stripXss(nextNodeAcivitiId);
+        this.nextNodeAcivitiId = nextNodeAcivitiId;
     }
 
     public boolean isEnd() {
@@ -91,7 +91,7 @@ public class FlowDto {
     }
 
     public void setRollBackActiviti(String rollBackActiviti) {
-        this.rollBackActiviti = XssShieldUtil.stripXss(rollBackActiviti);
+        this.rollBackActiviti = rollBackActiviti;
     }
 
     public String getBackNodeDealUser() {
@@ -99,7 +99,7 @@ public class FlowDto {
     }
 
     public void setBackNodeDealUser(String backNodeDealUser) {
-        this.backNodeDealUser = XssShieldUtil.stripXss(backNodeDealUser);
+        this.backNodeDealUser = backNodeDealUser;
     }
 
     public String getProcessKey() {
@@ -107,7 +107,7 @@ public class FlowDto {
     }
 
     public void setProcessKey(String processKey) {
-        this.processKey = XssShieldUtil.stripXss(processKey);
+        this.processKey = processKey;
     }
 
     public Map<String, Object> getBusinessMap() {
@@ -133,7 +133,7 @@ public class FlowDto {
     }
 
     public FlowDto(String dealOption) {
-        this.dealOption = this.processKey = XssShieldUtil.stripXss(dealOption);
+        this.dealOption =dealOption;
     }
 
 }

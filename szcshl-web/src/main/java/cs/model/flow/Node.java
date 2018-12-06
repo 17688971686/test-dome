@@ -18,14 +18,14 @@ public class Node {
 		return activitiId;
 	}
 	public void setActivitiId(String activitiId) {
-		this.activitiId = XssShieldUtil.stripXss(activitiId);
+		this.activitiId = activitiId;
 	}
 	public String getActivitiName() {
 		return activitiName;
 	}
 
 	public void setActivitiName(String activitiName) {
-		this.activitiName =  XssShieldUtil.stripXss(activitiName);
+		this.activitiName =  activitiName;
 	}
 
 	public boolean getIsConcurrent() {

@@ -1,8 +1,8 @@
 package cs.repository.repositoryImpl.project;
 
-import cs.common.constants.Constant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
+import cs.common.constants.Constant;
 import cs.common.utils.DateUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
@@ -13,6 +13,7 @@ import cs.domain.project.Sign_;
 import cs.repository.AbstractRepository;
 import cs.service.flow.FlowService;
 import cs.sql.ProjSql;
+import cs.xss.XssShieldUtil;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,7 +120,6 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
                     } else if ((Constant.OTHERS).equals((String) obj[0])) {
                         map.put(Constant.OTHERS, value);
                     }
-
                 }
                 resultList.add(map);
             }
@@ -127,8 +127,6 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
         } else {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "结束日期必须大于开始日期！", null);
         }
-
-
     }
 
     /**
@@ -398,6 +396,8 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
     public List<SignDispaWork> queryStatistics(String queryData, int page) {
         String[] queryArr = null;
         if (Validate.isString(queryData)) {
+            //反转数据，要不然转义之后，数据无法解析
+            queryData = XssShieldUtil.getInstance().unStripXss(queryData);
             queryData = queryData.replaceAll("\\\\", "");
             queryArr = queryData.split(",");
         }

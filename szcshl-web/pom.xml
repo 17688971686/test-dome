@@ -404,6 +404,17 @@
             <version>0.9.0</version>
         </dependency>
 
+        <!--AntiSamy-->
+        <dependency>
+            <groupId>org.owasp.antisamy</groupId>
+            <artifactId>antisamy</artifactId>
+            <version>1.5.5</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-hibernate5</artifactId>
+            <version>2.9.7</version>
+        </dependency>
         <!-- word2pdf -->
         <dependency>
             <groupId>com.aspose</groupId>

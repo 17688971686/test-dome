@@ -1,68 +1,71 @@
 package cs.xss;
 
-import org.apache.commons.lang3.StringUtils;
+import cs.common.constants.SysConstants;
+import cs.common.utils.Validate;
+import org.apache.commons.lang.StringEscapeUtils;
+import org.owasp.validator.html.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 /**
- * Created by Administrator on 2018/12/4 0004.
+ * Created by ldm on 2018/12/4 0004.
  */
 public class XssShieldUtil {
-    private static List<Pattern> patterns = null;
+    private static volatile XssShieldUtil instance = null;
+    private static Policy policy = null;
 
-    private static List<Object[]> getXssPatternList() {
-        List<Object[]> ret = new ArrayList<Object[]>();
-
-        ret.add(new Object[]{"<(no)?script[^>]*>.*?</(no)?script>", Pattern.CASE_INSENSITIVE});
-        ret.add(new Object[]{"eval\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL});
-        ret.add(new Object[]{"expression\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL});
-        ret.add(new Object[]{"(javascript:|vbscript:|view-source:)*", Pattern.CASE_INSENSITIVE});
-        ret.add(new Object[]{"<(\"[^\"]*\"|\'[^\']*\'|[^\'\">])*>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL});
-        ret.add(new Object[]{"(window\\.location|window\\.|\\.location|document\\.cookie|document\\.|alert\\(.*?\\)|window\\.open\\()*", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL});
-        ret.add(new Object[]{"<+\\s*\\w*\\s*(oncontrolselect|oncopy|oncut|ondataavailable|ondatasetchanged|ondatasetcomplete|ondblclick|ondeactivate|ondrag|ondragend|ondragenter|ondragleave|ondragover|ondragstart|ondrop|onerror=|onerroupdate|onfilterchange|onfinish|onfocus|onfocusin|onfocusout|onhelp|onkeydown|onkeypress|onkeyup|onlayoutcomplete|onload|onlosecapture|onmousedown|onmouseenter|onmouseleave|onmousemove|onmousout|onmouseover|onmouseup|onmousewheel|onmove|onmoveend|onmovestart|onabort|onactivate|onafterprint|onafterupdate|onbefore|onbeforeactivate|onbeforecopy|onbeforecut|onbeforedeactivate|onbeforeeditocus|onbeforepaste|onbeforeprint|onbeforeunload|onbeforeupdate|onblur|onbounce|oncellchange|onchange|onclick|oncontextmenu|onpaste|onpropertychange|onreadystatechange|onreset|onresize|onresizend|onresizestart|onrowenter|onrowexit|onrowsdelete|onrowsinserted|onscroll|onselect|onselectionchange|onselectstart|onstart|onstop|onsubmit|onunload)+\\s*=+", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL});
-        return ret;
-    }
-
-    private static List<Pattern> getPatterns() {
-        if (patterns == null) {
-            List<Pattern> list = new ArrayList<Pattern>();
-            String regex = null;
-            Integer flag = null;
-            int arrLength = 0;
-            for(Object[] arr : getXssPatternList()) {
-                arrLength = arr.length;
-                for(int i = 0; i < arrLength; i++) {
-                    regex = (String)arr[0];
-                    flag = (Integer)arr[1];
-                    list.add(Pattern.compile(regex, flag));
-                }
+    public static XssShieldUtil getInstance() {
+        synchronized (XssShieldUtil.class) {
+            if (instance == null) {
+                instance = new XssShieldUtil();
             }
-            patterns = list;
         }
-        return patterns;
+        return instance;
     }
 
-    public static String stripXss(String value) {
-        if(StringUtils.isNotBlank(value)) {
-            Matcher matcher = null;
-            for(Pattern pattern : getPatterns()) {
-                matcher = pattern.matcher(value);
-                // 匹配
-                if(matcher.find()) {
-                    // 删除相关字符串
-                    value = matcher.replaceAll("");
-                }
+    private XssShieldUtil() {
+        String antiSamyPath = XssHttpServletRequestWrapper.class.getClassLoader().getResource("antisamy-ebay.xml").getFile();
+        System.out.println("policy_filepath:" + antiSamyPath);
+        if (antiSamyPath.startsWith("file")) {
+            antiSamyPath = antiSamyPath.substring(6);
+        }
+        try {
+            policy = Policy.getInstance(antiSamyPath);
+        } catch (PolicyException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //过来xss
+    public String stripXss(String value) {
+        if (Validate.isString(value)) {
+            try {
+                //按utf-8解碼:防止有害脚本
+                value = URLDecoder.decode(value, SysConstants.UTF8);
+                AntiSamy antiSamy = new AntiSamy();
+                CleanResults cr = antiSamy.scan(value, policy);//扫描
+                value = cr.getCleanHTML();//获取清洗后的结果
+            } catch (ScanException e) {
+                e.printStackTrace();
+            } catch (PolicyException e) {
+                e.printStackTrace();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
             }
-            value = xssEncode(value);
         }
         return value;
     }
 
+    //还原原先字符串（有些查询条件含有特殊字符）
+    public String unStripXss(String value) {
+        if (Validate.isString(value)) {
+            return StringEscapeUtils.unescapeHtml(value);
+        }
+        return value;
+    }
     //将容易引起xss漏洞的半角字符直接替换成全角字符
-    public static String xssEncode(String s) {
+    public String xssEncode(String s) {
         if (s == null || s.isEmpty()) {
             return s;
         }
@@ -70,7 +73,6 @@ public class XssShieldUtil {
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
             switch (c) {
-
                 case '>':
                     sb.append('＞');          //全角大于号
                     break;

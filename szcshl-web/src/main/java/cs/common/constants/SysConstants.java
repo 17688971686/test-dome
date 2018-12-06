@@ -12,9 +12,9 @@ public final class SysConstants {
     public final static String SEPARATE_COMMA = ",";
 
     /**
-     * 分隔符：冒号
+     * 分隔符: 分号
      */
-    public final static String SEPARATE_COLON = ":";
+    public final static String SEPARATE_COLON = ";";
 
     /**
      * 参数分隔符

@@ -23,25 +23,23 @@ public class ResultMsg implements java.io.Serializable {
 
 	public ResultMsg(boolean flag, String reCode, String idCode, String reMsg, Object reObj) {
 		this.flag = flag;
-		this.reCode = XssShieldUtil.stripXss(reCode);
-		this.reMsg = XssShieldUtil.stripXss(reMsg);
-		this.idCode = XssShieldUtil.stripXss(idCode);
+		this.reCode = reCode;
+		this.reMsg = reMsg;
+		this.idCode = idCode;
 		this.reObj = reObj;
 	}
 
 	public ResultMsg(boolean flag, String reCode, String reMsg) {
 		this.flag = flag;
-		this.reCode = XssShieldUtil.stripXss(reCode);
-		this.reMsg = XssShieldUtil.stripXss(reMsg);
+		this.reCode = reCode;
+		this.reMsg = reMsg;
 	}
 
 	public ResultMsg(boolean flag, String reCode, String reMsg, Object reObj) {
 		this.flag = flag;
-		this.reCode = XssShieldUtil.stripXss(reCode);
-		this.reMsg = XssShieldUtil.stripXss(reMsg);
-		if(Validate.isObject(reObj)){
-			this.reObj = reObj;
-		}
+		this.reCode = reCode;
+		this.reMsg = reMsg;
+		this.reObj = reObj;
 	}
 
 	public static ResultMsg ok(String msg){
@@ -56,7 +54,7 @@ public class ResultMsg implements java.io.Serializable {
 	}
 
 	public void setReCode(String reCode) {
-		this.reCode = XssShieldUtil.stripXss(reCode);
+		this.reCode = reCode;
 	}
 
 	public String getReMsg() {
@@ -64,7 +62,7 @@ public class ResultMsg implements java.io.Serializable {
 	}
 
 	public void setReMsg(String reMsg) {
-		this.reMsg = XssShieldUtil.stripXss(reMsg);
+		this.reMsg = reMsg;
 	}
 
 	public Object getReObj() {
@@ -72,9 +70,7 @@ public class ResultMsg implements java.io.Serializable {
 	}
 
 	public void setReObj(Object reObj) {
-        if(Validate.isObject(reObj)){
             this.reObj = reObj;
-        }
 	}
 	public boolean isFlag() {
 		return flag;
@@ -89,7 +85,7 @@ public class ResultMsg implements java.io.Serializable {
 	}
 
 	public void setIdCode(String idCode) {
-		this.idCode = XssShieldUtil.stripXss(idCode);
+		this.idCode = idCode;
 	}
 
 }

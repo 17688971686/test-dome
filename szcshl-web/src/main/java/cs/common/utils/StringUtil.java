@@ -2,6 +2,12 @@ package cs.common.utils;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.owasp.validator.html.AntiSamy;
+import org.owasp.validator.html.CleanResults;
+import org.owasp.validator.html.Policy;
+import org.owasp.validator.html.PolicyException;
+import org.owasp.validator.html.ScanException;
+
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -290,6 +296,26 @@ public class StringUtil extends StringUtils {
         ;*/
         String querySql = "1' or '1'='1";
         System.out.println(StringEscapeUtils.escapeSql(querySql));
+/**
+ * 策略文件
+ * 注意，需要将要使用的策略文件放到项目资源文件路径下
+ * */
+        String antiSamyPath = StringUtil.class.getClassLoader() .getResource( "antisamy-ebay.xml").getFile();
+
+
+        String xsshtml = "hyf<script>alert(1)</script>";
+        Policy policy = null;
+        try {
+            policy = Policy.getInstance(antiSamyPath);
+            AntiSamy antiSamy = new AntiSamy();
+            CleanResults cr = antiSamy.scan(xsshtml,policy);
+            xsshtml = cr.getCleanHTML(); //清洗完的
+            System.out.println(xsshtml);
+        } catch (PolicyException e) {
+            e.printStackTrace();
+        } catch (ScanException e) {
+            e.printStackTrace();
+        }
     }
 
 

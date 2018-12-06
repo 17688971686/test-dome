@@ -67,7 +67,7 @@ public class AssistPlanSignDto {
     }
 
     public void setUnitNameStr(String unitNameStr) {
-        this.unitNameStr = XssShieldUtil.stripXss(unitNameStr);
+        this.unitNameStr =unitNameStr;
     }
 
     @JSONField(serialzeFeatures = SerializerFeature.DisableCircularReferenceDetect)
@@ -92,7 +92,7 @@ public class AssistPlanSignDto {
     }
 
     public void setPlanId(String planId) {
-        this.planId = XssShieldUtil.stripXss(planId);
+        this.planId = planId;
     }
 
     public String getSignId() {
@@ -100,7 +100,7 @@ public class AssistPlanSignDto {
     }
 
     public void setSignId(String signId) {
-        this.signId = XssShieldUtil.stripXss(signId);
+        this.signId = signId;
     }
 
     public BigDecimal getAssistCost() {
@@ -172,7 +172,7 @@ public class AssistPlanSignDto {
     }
 
     public void setUserName(String userName) {
-        this.userName = XssShieldUtil.stripXss(userName);
+        this.userName = userName;
     }
 
     public Integer getSplitNum() {

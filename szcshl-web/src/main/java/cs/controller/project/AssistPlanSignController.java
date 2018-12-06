@@ -68,7 +68,6 @@ public class AssistPlanSignController {
     @RequestMapping(name="通过收文ID获取协审单位和协审费用" , path = "findAssistPlanSignById" , method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg findAssistPlanSignById(String signId){
-        signId = XssShieldUtil.stripXss(signId);
         if(!Validate.isString(signId)){
             return ResultMsg.error(ERROR_XSS_MSG);
         }

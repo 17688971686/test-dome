@@ -1,23 +1,15 @@
-package cs.common;
+package cs.ahelper.converter;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONException;
-import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SimpleDateFormatSerializer;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
-import cs.common.utils.StringUtil;
-import cs.xss.XssShieldUtil;
 import org.apache.log4j.Logger;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by ldm on 2017/5/22 0022.

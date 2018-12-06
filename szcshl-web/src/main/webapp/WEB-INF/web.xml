@@ -114,16 +114,19 @@
         <filter-name>xssFilter</filter-name>
         <filter-class>cs.xss.XSSFilter</filter-class>
         <init-param>
-            <param-name>exclude</param-name>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <!-- 白名单，后面需要再设置
+        <init-param>
+            <param-name>excludedUris</param-name>
             <param-value>/;/scripts/*;/styles/*;/images/*</param-value>
         </init-param>
+        -->
     </filter>
     <filter-mapping>
         <filter-name>xssFilter</filter-name>
         <url-pattern>/*</url-pattern>
-        <!-- 直接从客户端过来的请求以及通过forward过来的请求都要经过该过滤器 -->
-        <dispatcher>REQUEST</dispatcher>
-        <dispatcher>FORWARD</dispatcher>
     </filter-mapping>
 
     <listener>
