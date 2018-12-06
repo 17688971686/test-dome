@@ -12,9 +12,6 @@ import java.text.SimpleDateFormat;
 
 /**
  * ObjectMapper工厂类，添加自定义序列化转化器
- *
- * @author: yc
- * @date: 2017-12-25.
  */
 public class ObjectMapperFactory{
 
