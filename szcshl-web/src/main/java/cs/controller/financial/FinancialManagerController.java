@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -210,7 +211,9 @@ public class FinancialManagerController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void costExportExcel(HttpServletResponse response, @RequestParam String fileName, @RequestParam String businessId) {
         ExpertReviewDto expertReviewDto = expertReviewService.initBybusinessId(businessId, "");
+        ServletOutputStream sos = null;
         try {
+
             String title = java.net.URLDecoder.decode(fileName, "UTF-8");
             // 第一步，创建一个webbook，对应一个Excel文件
             HSSFWorkbook wb = new HSSFWorkbook();
@@ -281,67 +284,71 @@ public class FinancialManagerController {
             //如果没有先进行过滤时。直接循环赋值。会造成有一些行会空白的。（也就是说有多少条数据就有多少行,过滤的那行会变成空。所以先进行过滤）
             List<ExpertSelectedDto> expertSelectedDtoList =  expertReviewDto.getExpertSelectedDtoList();
             //把未确认和未参加会议的专家过滤掉
-            expertSelectedDtoList = expertSelectedDtoList.stream().filter(es ->(Constant.EnumState.YES.getValue().equals(es.getIsJoin()) && Constant.EnumState.YES.getValue().equals(es.getIsConfrim()))).collect(Collectors.toList());
-            //然后再进行赋值
-            for (int i = 0,l=expertSelectedDtoList.size(); i <l; i++) {
-                ExpertSelectedDto expertSelectedDto = expertSelectedDtoList.get(i);
-                row = sheet.createRow((int) i + 4);//用来控制数据在第几行开始
-                //定义实体类
-                ExpertDto expertDto = expertSelectedDto.getExpertDto();
-                // 第四步，创建单元格，并设置值
-                //先定义单元格。方便写入样式
-                HSSFCell NameCells = row.createCell(0);//名字
-                HSSFCell cells = row.createCell(1);//是否外境
-                HSSFCell bankCells = row.createCell( 2);//定义银行账号
-                HSSFCell OpeningCells = row.createCell( 3);//定义开户银行
-                HSSFCell costCells = row.createCell(4);//定义评审费
-                HSSFCell ReviewCells = row.createCell(5);//应纳税额
-                HSSFCell TotalCells = row.createCell(6);//合计
-                //写入数据和样式
-                //名字
-                NameCells.setCellValue(expertDto.getName() == null ? "" :expertDto.getName());
-                NameCells.setCellStyle(style);
+            if(Validate.isList(expertSelectedDtoList)){
+                expertSelectedDtoList = expertSelectedDtoList.stream().filter(es ->(Constant.EnumState.YES.getValue().equals(es.getIsJoin()) && Constant.EnumState.YES.getValue().equals(es.getIsConfrim()))).collect(Collectors.toList());
+                if(Validate.isList(expertSelectedDtoList)){
+                    //然后再进行赋值
+                    for (int i = 0,l=expertSelectedDtoList.size(); i <l; i++) {
+                        ExpertSelectedDto expertSelectedDto = expertSelectedDtoList.get(i);
+                        row = sheet.createRow((int) i + 4);//用来控制数据在第几行开始
+                        //定义实体类
+                        ExpertDto expertDto = expertSelectedDto.getExpertDto();
+                        // 第四步，创建单元格，并设置值
+                        //先定义单元格。方便写入样式
+                        HSSFCell NameCells = row.createCell(0);//名字
+                        HSSFCell cells = row.createCell(1);//是否外境
+                        HSSFCell bankCells = row.createCell( 2);//定义银行账号
+                        HSSFCell OpeningCells = row.createCell( 3);//定义开户银行
+                        HSSFCell costCells = row.createCell(4);//定义评审费
+                        HSSFCell ReviewCells = row.createCell(5);//应纳税额
+                        HSSFCell TotalCells = row.createCell(6);//合计
+                        //写入数据和样式
+                        //名字
+                        NameCells.setCellValue(expertDto.getName() == null ? "" :expertDto.getName());
+                        NameCells.setCellStyle(style);
 
-                //是否外境
-                if ((Constant.EnumState.STOP.getValue()).equals(expertDto.getExpertField())) {//判断是否是外境。就是红字字体
-                    cells.setCellValue("是");
-                    cells.setCellStyle(styless);//加样式
-                } else {
-                    cells.setCellValue("否");
-                    cells.setCellStyle(style);//加样式
+                        //是否外境
+                        if ((Constant.EnumState.STOP.getValue()).equals(expertDto.getExpertField())) {//判断是否是外境。就是红字字体
+                            cells.setCellValue("是");
+                            cells.setCellStyle(styless);//加样式
+                        } else {
+                            cells.setCellValue("否");
+                            cells.setCellStyle(style);//加样式
 
-                }
-                //定义银行账号
-                bankCells.setCellValue(expertDto.getBankAccount()==null?"":expertDto.getBankAccount());
-                //定义开户银行
-                OpeningCells.setCellValue((expertDto.getOpeningBank() == null ? "" : expertDto.getOpeningBank()));
-                OpeningCells.setCellStyle(style);//居中
-                //定义评审费
-                BigDecimal b = new BigDecimal("2000");//定义评审费的额度
-                if(expertSelectedDto.getReviewCost()==null){
-                    costCells.setCellValue("");
-                    costCells.setCellStyle(style);
-                }else{
-                    if (expertSelectedDto.getReviewCost().compareTo(b) >= 0) {//判断，当评审费的额度大于或等于2000时，字体红色
-                        costCells.setCellValue(expertSelectedDto.getReviewCost().toString());
-                        costCells.setCellStyle(styless);
-                    } else {
-                        costCells.setCellValue(expertSelectedDto.getReviewCost().toString());
-                        costCells.setCellStyle(style);
+                        }
+                        //定义银行账号
+                        bankCells.setCellValue(expertDto.getBankAccount()==null?"":expertDto.getBankAccount());
+                        //定义开户银行
+                        OpeningCells.setCellValue((expertDto.getOpeningBank() == null ? "" : expertDto.getOpeningBank()));
+                        OpeningCells.setCellStyle(style);//居中
+                        //定义评审费
+                        BigDecimal b = new BigDecimal("2000");//定义评审费的额度
+                        if(expertSelectedDto.getReviewCost()==null){
+                            costCells.setCellValue("");
+                            costCells.setCellStyle(style);
+                        }else{
+                            if (expertSelectedDto.getReviewCost().compareTo(b) >= 0) {//判断，当评审费的额度大于或等于2000时，字体红色
+                                costCells.setCellValue(expertSelectedDto.getReviewCost().toString());
+                                costCells.setCellStyle(styless);
+                            } else {
+                                costCells.setCellValue(expertSelectedDto.getReviewCost().toString());
+                                costCells.setCellStyle(style);
+                            }
+                        }
+
+                        //应纳税额
+                        ReviewCells.setCellValue(expertSelectedDto.getReviewTaxes()== null ? "":expertSelectedDto.getReviewTaxes().toString());
+                        ReviewCells.setCellStyle(style);
+                        //合计
+                        TotalCells.setCellValue(expertSelectedDto.getTotalCost()== null ? "" :expertSelectedDto.getTotalCost().toString());
+                        TotalCells.setCellStyle(style);
                     }
                 }
-
-                //应纳税额
-                ReviewCells.setCellValue(expertSelectedDto.getReviewTaxes()== null ? "":expertSelectedDto.getReviewTaxes().toString());
-                ReviewCells.setCellStyle(style);
-                //合计
-                TotalCells.setCellValue(expertSelectedDto.getTotalCost()== null ? "" :expertSelectedDto.getTotalCost().toString());
-                TotalCells.setCellStyle(style);
-
             }
+
             // 第六步，将文件保存
-            ServletOutputStream sos = response.getOutputStream();
             //FileOutputStream fout = new FileOutputStream("E:/students.xls");
+            sos = response.getOutputStream();
             response.setContentType("application/vnd.ms-excel;charset=GBK");
             response.setHeader("Content-type", "application/x-msexcel");
             response.setHeader("Content_Length", String.valueOf(wb.getBytes().length));
@@ -349,9 +356,17 @@ public class FinancialManagerController {
             response.setHeader("Content-Disposition", "attachment;filename=" + fileName2);
             wb.write(sos);
             sos.flush();
-            sos.close();
+
         } catch (Exception e) {
             e.printStackTrace();
+        }finally {
+            if(Validate.isObject(sos)){
+                try {
+                    sos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
 

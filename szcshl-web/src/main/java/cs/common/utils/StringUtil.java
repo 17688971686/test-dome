@@ -123,10 +123,11 @@ public class StringUtil extends StringUtils {
             return str;
         }
         char f = str.charAt(0);
-        if (Character.isUpperCase(f))
+        if (Character.isUpperCase(f)) {
             return str;
-        else
+        } else {
             return (new StringBuilder()).append(Character.toUpperCase(f)).append(str.substring(1)).toString();
+        }
     }
 
     public static String lowerCaseFirst(String str) {
@@ -134,10 +135,11 @@ public class StringUtil extends StringUtils {
             return str;
         }
         char f = str.charAt(0);
-        if (Character.isUpperCase(f))
+        if (Character.isUpperCase(f)) {
             return str;
-        else
+        } else {
             return (new StringBuilder()).append(Character.toLowerCase(f)).append(str.substring(1)).toString();
+        }
     }
 
     /**

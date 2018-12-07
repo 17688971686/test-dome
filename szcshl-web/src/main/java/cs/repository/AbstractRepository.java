@@ -217,10 +217,10 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         if(!this.checkBuilder(sqlBuilder)){
             return -1;
         }
-        Query<Integer> q = this.getCurrentSession().createNativeQuery(sqlBuilder.getHqlString(),Integer.class);
-        QueryParamBuild<Integer> queryParamBuild = new QueryParamBuild(q);
+        Query<Number> q = this.getCurrentSession().createNativeQuery(sqlBuilder.getHqlString(),Number.class);
+        QueryParamBuild<Number> queryParamBuild = new QueryParamBuild(q);
         q = queryParamBuild.buildParams(sqlBuilder).getQuery();
-        Integer returnValue = -1;
+        int returnValue = -1;
         if (Validate.isObject(q)) {
             returnValue = Integer.parseInt(q.getSingleResult().toString());
         }
@@ -232,8 +232,8 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         if(!this.checkBuilder(hqlBuilder)){
             return -1;
         }
-        Query<Integer> q = this.getCurrentSession().createQuery(hqlBuilder.getHqlString(),Integer.class);
-        QueryParamBuild<Integer> queryParamBuild = new QueryParamBuild(q);
+        Query<Number> q = this.getCurrentSession().createQuery(hqlBuilder.getHqlString(),Number.class);
+        QueryParamBuild<Number> queryParamBuild = new QueryParamBuild(q);
         q = queryParamBuild.buildParams(hqlBuilder).getQuery();
         int updateCount = 0;
         if (Validate.isObject(q)) {
@@ -247,8 +247,8 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         if(!this.checkBuilder(hqlBuilder)){
             return -1;
         }
-        Query<Integer> q = this.getCurrentSession().createNativeQuery(hqlBuilder.getHqlString(),Integer.class);
-        QueryParamBuild<Integer> queryParamBuild = new QueryParamBuild(q);
+        Query<Number> q = this.getCurrentSession().createNativeQuery(hqlBuilder.getHqlString(),Number.class);
+        QueryParamBuild<Number> queryParamBuild = new QueryParamBuild(q);
         q = queryParamBuild.buildParams(hqlBuilder).getQuery();
         int updateCount = 0;
         if (Validate.isObject(q)) {

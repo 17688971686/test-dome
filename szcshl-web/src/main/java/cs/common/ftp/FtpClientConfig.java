@@ -65,17 +65,33 @@ public class FtpClientConfig {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof FtpClientConfig)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof FtpClientConfig)) {
+            return false;
+        }
 
         FtpClientConfig that = (FtpClientConfig) o;
 
-        if (port != that.port) return false;
-        if (transType != that.transType) return false;
-        if (host != null ? !host.equals(that.host) : that.host != null) return false;
-        if (username != null ? !username.equals(that.username) : that.username != null) return false;
-        if (password != null ? !password.equals(that.password) : that.password != null) return false;
-        if (chartset != null ? !chartset.equals(that.chartset) : that.chartset != null) return false;
+        if (port != that.port) {
+            return false;
+        }
+        if (transType != that.transType) {
+            return false;
+        }
+        if (host != null ? !host.equals(that.host) : that.host != null) {
+            return false;
+        }
+        if (username != null ? !username.equals(that.username) : that.username != null) {
+            return false;
+        }
+        if (password != null ? !password.equals(that.password) : that.password != null) {
+            return false;
+        }
+        if (chartset != null ? !chartset.equals(that.chartset) : that.chartset != null) {
+            return false;
+        }
         return ftpRoot != null ? ftpRoot.equals(that.ftpRoot) : that.ftpRoot == null;
     }
 

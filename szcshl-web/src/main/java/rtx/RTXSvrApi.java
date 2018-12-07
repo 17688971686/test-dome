@@ -1032,8 +1032,9 @@ public class RTXSvrApi {
         AddProperty(iProp, KEY_ASSISTANTTYPE, "0");
        //AddProperty(iProp,KEY_UINTYPE,"Account"); 如果设置KEY_UINTYPE 为Account，无论传进去是纯数字还是字符串，都认为是帐号。
 
-        if(!"0".equals(delayTime))
+        if(!"0".equals(delayTime)) {
             AddProperty(iProp, KEY_DELAYTIME, delayTime);
+        }
 
         iResult = Call(iObj, iProp, PRO_EXT_NOTIFY);
         innerCode = GetResultInnerCode(iResult);

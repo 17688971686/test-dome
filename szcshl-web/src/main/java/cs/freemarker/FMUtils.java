@@ -7,7 +7,9 @@ import freemarker.template.*;
 public class FMUtils {
 	
 	public static String getAsString(TemplateModel model) {
-		if(model == null) return null;
+		if(model == null) {
+			return null;
+		}
 		if(model.getClass().getSimpleName().equals("SimpleNumber")) { // 澶勭悊鏁板瓧绫诲瀷鐨勬暟鎹�
 			return ((SimpleNumber) model).toString();
 		}
@@ -15,7 +17,9 @@ public class FMUtils {
 	}
 	
 	public static String getAsString(TemplateModel model, String key) throws TemplateModelException {
-		if(model == null || Validate.isEmpty(key)) return null;
+		if(model == null || Validate.isEmpty(key)) {
+			return null;
+		}
 		if(model.getClass().getSimpleName().equals("SimpleHash")) { // 澶勭悊hash绫诲瀷鐨勬暟鎹�
 			return getAsString(((SimpleHash) model).get(key));
 		}
@@ -23,7 +27,9 @@ public class FMUtils {
 	}
 	
 	public static Double getAsDouble(TemplateModel model) {
-		if(model == null) return null;
+		if(model == null) {
+			return null;
+		}
 		if(model.getClass().getSimpleName().equals("SimpleNumber")) { // 澶勭悊鏁板瓧绫诲瀷鐨勬暟鎹�
 			return ((SimpleNumber) model).getAsNumber().doubleValue();
 		}
@@ -31,7 +37,9 @@ public class FMUtils {
 	}
 	
 	public static Double getAsDouble(TemplateModel model, String key) throws TemplateModelException {
-		if(model == null || Validate.isEmpty(key)) return null;
+		if(model == null || Validate.isEmpty(key)) {
+			return null;
+		}
 		if(model.getClass().getSimpleName().equals("SimpleHash")) { // 澶勭悊hash绫诲瀷鐨勬暟鎹�
 			return getAsDouble(((SimpleHash) model).get(key));
 		}

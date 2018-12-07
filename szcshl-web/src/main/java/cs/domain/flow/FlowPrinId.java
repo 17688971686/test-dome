@@ -36,12 +36,18 @@ public class FlowPrinId implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         FlowPrinId that = (FlowPrinId) o;
 
-        if (busiId != null ? !busiId.equals(that.busiId) : that.busiId != null) return false;
+        if (busiId != null ? !busiId.equals(that.busiId) : that.busiId != null) {
+            return false;
+        }
         return userId != null ? userId.equals(that.userId) : that.userId == null;
     }
 

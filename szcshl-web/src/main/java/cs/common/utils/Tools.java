@@ -30,8 +30,9 @@ public class Tools {
 	}
 
 	public static byte[] hexStringToBytes(String hexString) {
-		if (hexString == null)
+		if (hexString == null) {
 			return null;
+		}
 		int len = hexString.length() / 2;
 		byte b[] = new byte[len];
 		int p = 0;
@@ -389,16 +390,17 @@ public class Tools {
 			return null;
 		}
 
-		if (isMoblie(mobileNum))
+		if (isMoblie(mobileNum)) {
 			return "0";
-		else if (isUnicom(mobileNum))
+		} else if (isUnicom(mobileNum)) {
 			return "1";
-		else if (isTelcom(mobileNum))
+		} else if (isTelcom(mobileNum)) {
 			return "3";
-		else if (mobileNum.substring(0, 3).equals("999"))
+		} else if (mobileNum.substring(0, 3).equals("999")) {
 			return "2";
-		else
+		} else {
 			return null;
+		}
 	}
 
 	/**
@@ -409,17 +411,20 @@ public class Tools {
 	 * @return boolean
 	 */
 	public static boolean isMoblie(String num) {
-		if (num == null)
+		if (num == null) {
 			return false;
+		}
 
 		if (num.substring(0, 3).equals("134") || num.substring(0, 3).equals("135") || num.substring(0, 3).equals("136")
 				|| num.substring(0, 3).equals("137") || num.substring(0, 3).equals("138") || num.substring(0, 3).equals("139")) {
-			if (num.length() == 11)
+			if (num.length() == 11) {
 				return true;
-			else
+			} else {
 				return false;
-		} else
+			}
+		} else {
 			return false;
+		}
 	}
 
 	/**
@@ -430,17 +435,20 @@ public class Tools {
 	 * @return boolean
 	 */
 	public static boolean isUnicom(String num) {
-		if (num == null)
+		if (num == null) {
 			return false;
+		}
 
 		if (num.substring(0, 3).equals("130") || num.substring(0, 3).equals("131") || num.substring(0, 3).equals("132")
 				|| num.substring(0, 3).equals("133")) {
-			if (num.length() == 11)
+			if (num.length() == 11) {
 				return true;
-			else
+			} else {
 				return false;
-		} else
+			}
+		} else {
 			return false;
+		}
 	}
 
 	/**
@@ -451,12 +459,14 @@ public class Tools {
 	 * @return boolean
 	 */
 	public static boolean isTelcom(String num) {
-		if (num == null)
+		if (num == null) {
 			return false;
-		if (num.length() > 7 && num.length() <= 12)
+		}
+		if (num.length() > 7 && num.length() <= 12) {
 			return true;
-		else
+		} else {
 			return false;
+		}
 	}
 
 	/**
@@ -535,8 +545,9 @@ public class Tools {
 	public static String[][] vector2Ary(Vector<String[]> v, int clos) {
 		int int_loop = 0;
 		String tmpAry[][] = {};
-		if (v.size() == 0)
+		if (v.size() == 0) {
 			return tmpAry;
+		}
 		String str_return[][] = new String[v.size()][clos];
 		while (true) {
 			try {

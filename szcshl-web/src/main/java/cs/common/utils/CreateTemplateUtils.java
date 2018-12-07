@@ -23,7 +23,6 @@ import static cs.common.constants.Constant.COMPANY_NAME;
  */
 public class CreateTemplateUtils {
 
-
     /**
      * 获取确认参与的专家名称进行拼接
      *
@@ -1190,12 +1189,13 @@ public class CreateTemplateUtils {
                 }
             }
             if (isAdvanced) {//提前介入
-                if (null != acvanceTotalDto && acvanceTotalDto.getProCount().intValue() > 0)
+                if (null != acvanceTotalDto && acvanceTotalDto.getProCount().intValue() > 0) {
                     dataMap.put("tqjrTotal", "另，完成提前介入项目评审 " + (acvanceTotalDto.getProCount() != null ? acvanceTotalDto.getProCount() : 0) + "项，" +
                             "申报总投资" + (acvanceTotalDto.getDeclareValue() != null ? acvanceTotalDto.getDeclareValue() : 0)
                             + "亿元，审核后总投资" + (acvanceTotalDto.getAuthorizeValue() != null ? acvanceTotalDto.getAuthorizeValue() : 0) + "亿元，" +
                             "累计净核减投资" + (acvanceTotalDto.getLjhj() != null ? acvanceTotalDto.getLjhj() : 0) + "亿元，" +
                             "核减率" + (acvanceTotalDto.getHjl() != null ? acvanceTotalDto.getHjl() : 0) + "%");
+                }
             }
         }
         //项目类别

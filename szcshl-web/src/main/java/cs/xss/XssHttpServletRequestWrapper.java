@@ -66,9 +66,9 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
     @Override
     public String getParameter(String name) {
         String[] results = parameterMap.get(name);
-        if(Validate.isEmpty(results))
+        if(Validate.isEmpty(results)) {
             return null;
-        else{
+        } else{
             return cleanXSS(results[0]);
         }
     }

@@ -31,12 +31,18 @@ public class ExpertSignId implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         ExpertSignId that = (ExpertSignId) o;
 
-        if (signid != null ? !signid.equals(that.signid) : that.signid != null) return false;
+        if (signid != null ? !signid.equals(that.signid) : that.signid != null) {
+            return false;
+        }
         return expertId != null ? expertId.equals(that.expertId) : that.expertId == null;
     }
 

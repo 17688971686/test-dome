@@ -41,13 +41,21 @@ public class SignMergeId implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SignMergeId that = (SignMergeId) o;
 
-        if (signId != null ? !signId.equals(that.signId) : that.signId != null) return false;
-        if (mergeId != null ? !mergeId.equals(that.mergeId) : that.mergeId != null) return false;
+        if (signId != null ? !signId.equals(that.signId) : that.signId != null) {
+            return false;
+        }
+        if (mergeId != null ? !mergeId.equals(that.mergeId) : that.mergeId != null) {
+            return false;
+        }
         return mergeType != null ? mergeType.equals(that.mergeType) : that.mergeType == null;
     }
 

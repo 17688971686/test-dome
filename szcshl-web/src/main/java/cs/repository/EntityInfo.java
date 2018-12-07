@@ -60,13 +60,16 @@ public class EntityInfo implements Serializable {
      * @return
      */
     public EntityFieldInfo getFieldInfo(String fieldName) {
-        if(StringUtil.isBlank(fieldName)) return null;
+        if(StringUtil.isBlank(fieldName)) {
+            return null;
+        }
         if (ObjectUtils.isNotEmpty(fieldInfos)) {
             Iterator<EntityFieldInfo> iterator = fieldInfos.iterator();
             while (iterator.hasNext()) {
                 EntityFieldInfo fieldInfo = iterator.next();
-                if (fieldInfo.getFieldName().equals(fieldName))
+                if (fieldInfo.getFieldName().equals(fieldName)) {
                     return fieldInfo;
+                }
             }
         }
         return null;

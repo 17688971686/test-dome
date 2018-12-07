@@ -93,11 +93,13 @@ public class QuartzSessionValidationScheduler2 implements SessionValidationSched
             }
             this.enabled = true;
 
-            if (log.isDebugEnabled())
+            if (log.isDebugEnabled()) {
                 log.debug("Session validation job successfully scheduled with Quartz.");
+            }
         } catch (SchedulerException e) {
-            if (log.isErrorEnabled())
+            if (log.isErrorEnabled()) {
                 log.error("Error starting the Quartz session validation job.  Session validation may not occur.", e);
+            }
         }
     }
 
@@ -123,8 +125,9 @@ public class QuartzSessionValidationScheduler2 implements SessionValidationSched
         }
         try {
             scheduler.unscheduleJob(new TriggerKey("SessionValidationJob", "DEFAULT"));
-            if (log.isDebugEnabled())
+            if (log.isDebugEnabled()) {
                 log.debug("Quartz session validation job stopped successfully.");
+            }
         } catch (SchedulerException e) {
             if (log.isDebugEnabled()) {
                 log.debug("Could not cleanly remove SessionValidationJob from Quartz scheduler.  Ignoring and stopping.", e);
@@ -134,16 +137,18 @@ public class QuartzSessionValidationScheduler2 implements SessionValidationSched
 
         this.enabled = false;
 
-        if (this.schedulerImplicitlyCreated)
+        if (this.schedulerImplicitlyCreated) {
             try {
                 scheduler.shutdown();
             } catch (SchedulerException e) {
-                if (log.isWarnEnabled())
+                if (log.isWarnEnabled()) {
                     log.warn("Unable to cleanly shutdown implicitly created Quartz Scheduler instance.", e);
+                }
             } finally {
                 setScheduler(null);
                 this.schedulerImplicitlyCreated = false;
             }
+        }
     }
 
 }

@@ -78,7 +78,9 @@ public class ObjectUtils {
      * @return
      */
     public static boolean isEmpty(Object obj) {
-        if (null == obj) return true;
+        if (null == obj) {
+            return true;
+        }
         if (obj instanceof CharSequence) {
             return toString(obj).trim().isEmpty(); // 去除前后空格
         } else if (obj instanceof Collection) {

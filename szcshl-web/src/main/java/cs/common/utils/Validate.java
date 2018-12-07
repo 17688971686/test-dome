@@ -304,11 +304,14 @@ public class Validate {
      */
     public static boolean isBlank(String str) {
         int strLen;
-        if (str == null || (strLen = str.length()) == 0)
+        if (str == null || (strLen = str.length()) == 0) {
             return true;
-        for (int i = 0; i < strLen; i++)
-            if (!Character.isWhitespace(str.charAt(i)))
+        }
+        for (int i = 0; i < strLen; i++) {
+            if (!Character.isWhitespace(str.charAt(i))) {
                 return false;
+            }
+        }
 
         return true;
     }
@@ -337,8 +340,9 @@ public class Validate {
      * @author HZH
      */
     public static boolean isChinaPAS(String str) {
-        if (isEmpty(str))
+        if (isEmpty(str)) {
             return false;
+        }
         if (str.startsWith("013") || str.startsWith("015")) {
             return false;
         } else {
@@ -442,8 +446,9 @@ public class Validate {
      * @author HZH
      */
     public static boolean isMobile(String str) {
-        if (isEmpty(str))
+        if (isEmpty(str)) {
             return false;
+        }
         String regex = "(13\\d{9})|(0\\d{9,11})|(15\\d{9})";
         return Pattern.matches(regex, str) && !str.startsWith("013") && !str.startsWith("015");
     }
@@ -456,11 +461,14 @@ public class Validate {
      * @author HZH
      */
     public static boolean isNumber(String str) {
-        if (isEmpty(str))
+        if (isEmpty(str)) {
             return false;
-        for (int i = 0; i < str.length(); i++)
-            if (str.charAt(i) > '9' || str.charAt(i) < '0')
+        }
+        for (int i = 0; i < str.length(); i++) {
+            if (str.charAt(i) > '9' || str.charAt(i) < '0') {
                 return false;
+            }
+        }
 
         return true;
     }
@@ -475,8 +483,9 @@ public class Validate {
      * @author HZH
      */
     public static boolean isNumber(String str, int min, int max) {
-        if (!isNumber(str))
+        if (!isNumber(str)) {
             return false;
+        }
         int number = Integer.parseInt(str);
         return number >= min && number <= max;
     }
@@ -532,8 +541,9 @@ public class Validate {
      * @author HZH
      */
     public static boolean isPostcode(String str) {
-        if (isEmpty(str))
+        if (isEmpty(str)) {
             return false;
+        }
         return str.length() == 6 && isNumber(str);
     }
 
@@ -547,12 +557,15 @@ public class Validate {
      * @author HZH
      */
     public static boolean isString(String str, int minLength, int maxLength) {
-        if (str == null)
+        if (str == null) {
             return false;
-        if (minLength < 0)
+        }
+        if (minLength < 0) {
             return str.length() <= maxLength;
-        if (maxLength < 0)
+        }
+        if (maxLength < 0) {
             return str.length() >= minLength;
+        }
         return str.length() >= minLength && str.length() <= maxLength;
     }
 
@@ -563,14 +576,18 @@ public class Validate {
      * @return
      */
     public static boolean isTime(String str) {
-        if (isEmpty(str) || str.length() > 8)
+        if (isEmpty(str) || str.length() > 8) {
             return false;
+        }
         String items[] = str.split(":");
-        if (items.length != 2 && items.length != 3)
+        if (items.length != 2 && items.length != 3) {
             return false;
-        for (int i = 0; i < items.length; i++)
-            if (items[i].length() != 2 && items[i].length() != 1)
+        }
+        for (int i = 0; i < items.length; i++) {
+            if (items[i].length() != 2 && items[i].length() != 1) {
                 return false;
+            }
+        }
 
         return isNumber(items[0], 0, 23) && isNumber(items[1], 0, 59) && (items.length != 3 || isNumber(items[2], 0, 59));
     }

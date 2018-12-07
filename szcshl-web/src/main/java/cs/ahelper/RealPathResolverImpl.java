@@ -7,6 +7,7 @@ import javax.servlet.ServletContext;
 
 @Component
 public class RealPathResolverImpl implements RealPathResolver, ServletContextAware {
+    @Override
     public String get(String path) {
         String realpath = context.getRealPath(path);
         //tomcat8.0获取不到真实路径，通过/获取路径
@@ -16,6 +17,7 @@ public class RealPathResolverImpl implements RealPathResolver, ServletContextAwa
         return realpath;
     }
 
+    @Override
     public void setServletContext(ServletContext servletContext) {
         this.context = servletContext;
     }

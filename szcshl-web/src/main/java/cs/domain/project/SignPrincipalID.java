@@ -33,12 +33,18 @@ public class SignPrincipalID implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SignPrincipalID that = (SignPrincipalID) o;
 
-        if (signId != null ? !signId.equals(that.signId) : that.signId != null) return false;
+        if (signId != null ? !signId.equals(that.signId) : that.signId != null) {
+            return false;
+        }
         return userId != null ? userId.equals(that.userId) : that.userId == null;
     }
 

@@ -64,7 +64,7 @@ public class MsgServiceImpl implements MsgService{
                     String resultCode = json.getString("resultCode");
                     if("0000000".equals(resultCode)){
                         JSONObject jo = json.getJSONObject("data");
-                        SMSUtils.resetTokenInfo(jo.getString("accessToken"),new Date().getTime(),jo.getLong("expiredValue"));
+                        SMSUtils.resetTokenInfo(jo.getString("accessToken"),System.currentTimeMillis(),jo.getLong("expiredValue"));
                         resultMsg.setFlag(true);
                     }
                     resultMsg.setReCode(resultCode);

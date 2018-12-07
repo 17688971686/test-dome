@@ -21490,6 +21490,285 @@
     }
 
 })();
+(function () {
+    'use strict';
+
+    angular.module('app').controller('fileRecordEditCtrl', fileRecord);
+
+    fileRecord.$inject = ['fileRecordSvc','$state','sysfileSvc', 'bsWin','$scope' , 'templatePrintSvc' , 'addRegisterFileSvc'];
+
+    function fileRecord(fileRecordSvc,$state,sysfileSvc,bsWin,$scope , templatePrintSvc , addRegisterFileSvc) {
+        var vm = this;
+        vm.title = '项目归档编辑';
+
+        vm.fileRecord = {};
+        vm.fileRecord.signId = $state.params.signid;
+        vm.fileRecord.fileRecordId = "";
+        vm.signId = $state.params.signid;
+        vm.isControl=$state.params.isControl;		//按钮显示
+        //是否协审归档（默认不是）
+        vm.isassistproc = false;
+        vm.drawingFile = [];//图纸资料
+        vm.otherFile = [];//其它资料
+        vm.declareFile = [];//建议书申报资料
+        //初始化附件上传控件
+        vm.initFileUpload = function () {
+            if (!vm.fileRecord.fileRecordId) {
+                //监听ID，如果有新值，则自动初始化上传控件
+                $scope.$watch("vm.fileRecord.fileRecordId", function (newValue, oldValue) {
+                    if (newValue && newValue != oldValue && !vm.initUploadOptionSuccess) {
+                        vm.initFileUpload();
+                    }
+                });
+            }
+            vm.sysFile = {
+                businessId: vm.fileRecord.fileRecordId,
+                mainId: vm.signId,
+                mainType: sysfileSvc.mainTypeValue().SIGN,
+                sysfileType: sysfileSvc.mainTypeValue().DOFILE,
+                sysBusiType: sysfileSvc.mainTypeValue().DOFILE,
+            };
+            sysfileSvc.initUploadOptions({
+                inputId: "sysfileinput",
+                vm: vm
+            });
+        }
+
+        activate();
+        function activate() {
+            fileRecordSvc.initFileRecordData(vm);
+
+        }
+
+        vm.create = function () {
+            fileRecordSvc.saveFileRecord(vm,function(data){
+                vm.isCommit = false;
+                if(data.flag || data.reCode == 'ok'){
+                    //重新加载页面
+                    vm.fileRecord.fileRecordId = data.reObj;
+                    bsWin.alert("修改成功！");
+                }else{
+                    bsWin.error(response.data.reMsg);
+                }
+            });
+        }
+
+        /**
+         * 打印功能 -分页
+         */
+        vm.templatePage = function (id) {
+            templatePrintSvc.templatePage(id);
+        }
+
+        /******以下是其它资料添加*****/
+
+        vm.addOtherFile = function (businessId, businessType) {
+            if(!vm.addRegisters){
+                vm.addRegisters = [];
+            }
+            if (!businessId) {
+                bsWin.alert("请先保存数据！");
+            } else {
+                if(businessType == "2"){
+                    vm.addRegisters = vm.drawingFile;
+                    vm.showFilePage = true;
+                    vm.showFileOther = false;
+                    vm.showSignOther = false;
+                }else{
+                    vm.addRegisters = vm.otherFile;
+                    vm.showFileOther = true;
+                    vm.showFilePage = false;
+                    vm.showSignOther = false;
+                }
+                vm.businessId = businessId;
+                vm.businessType = businessType;
+
+                $("#addOtherFile").kendoWindow({
+                    width: "840px",
+                    height: "480px",
+                    title: "补充资料编辑",
+                    visible: false,
+                    modal: true,
+                    closable: true,
+                    actions: ["Pin", "Minimize", "Maximize", "Close"]
+                }).data("kendoWindow").center().open();
+            }
+
+        }
+
+        //新建其它资料
+        vm.addRegisterFile = function () {
+            vm.addRegister = {};
+            vm.addRegister.businessId = vm.businessId;
+            vm.addRegister.id = common.uuid();
+            vm.addRegisters.push(vm.addRegister);
+        }
+
+        //保存其它资料
+        vm.saveRegisterFile = function () {
+            addRegisterFileSvc.saveRegisterFile(vm.addRegisters, function (data) {
+                if (data.flag || data.reCode == 'ok') {
+                    vm.addRegisters = data.reObj;
+                    bsWin.alert("操作成功");
+                } else {
+                    bsWin.alert(data.reMsg);
+                }
+            });
+        }
+        //删除其它资料
+        vm.deleteRegisterFile = function () {
+            var isCheked = $("#addOtherFile input[name='addRegistersCheck']:checked")
+            if (isCheked.length < 1) {
+                bsWin.alert("请选择要删除的记录！");
+            } else {
+                var ids = [];
+                for (var i = 0; i < isCheked.length; i++) {
+                    vm.addRegisters.forEach(function (f, number) {
+                        if (f.id && isCheked[i].value == f.id) {
+                            ids.push(isCheked[i].value);
+                            vm.addRegisters.splice(number, 1);
+                        }
+                    });
+                }
+                if (ids.length > 0) {
+                    addRegisterFileSvc.deleteByIds(ids.join(","), function (data) {
+                        bsWin.alert("删除成功！");
+                    });
+                }
+            }
+        }
+
+        vm.updateFileCode = function(){
+            $("#fileCodeWin").kendoWindow({
+                width: "660px",
+                height: "400px",
+                title: "归档文号编辑",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Close"]
+            }).data("kendoWindow").center().open();
+        }
+
+        vm.resetCancelBox = function (temp) {
+            var cheboxObj = $("input[name='"+temp+"']:checked");
+           if(cheboxObj.length==0){
+               vm.fileRecord[temp] = '0';
+            }
+        }
+
+        //S_初始化input框的值
+        vm.initInputValue = function($event,defaultValue,temp){
+            var checkbox = $event.target;
+            var checked = checkbox.checked;
+            console.log("333");
+            if (checked) {
+                if((!defaultValue)){
+                    return 1;
+                }else{
+                    return defaultValue;
+                }
+
+            }else{
+                vm.fileRecord[temp] = '0';
+                return defaultValue;
+            }
+        }//E_initInputValue
+    }
+
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').factory('fileRecordSvc', fileRecord);
+
+    fileRecord.$inject = ['bsWin', '$http'];
+
+    function fileRecord(bsWin, $http) {
+        var service = {
+            initFileRecordData: initFileRecordData,		//初始化流程数据
+            saveFileRecord: saveFileRecord,				//保存
+        };
+        return service;
+
+        //S_初始化
+        function initFileRecordData(vm) {
+            vm.otherFile=[];//定义归档其他资料的包含分类5、6、7
+            var httpOptions = {
+                method: 'get',
+                url: rootPath + "/fileRecord/initFillPage",
+                params: {signId: vm.fileRecord.signId}
+            }
+            var httpSuccess = function success(response) {
+                if (response.data != null && response.data != "") {
+                    vm.fileRecord = response.data.file_record;
+                    vm.fileRecord.signId = vm.signId;
+                    vm.signUserList = response.data.sign_user_List;
+                    //是否协审
+                    vm.isassistproc = (vm.fileRecord.isassistproc == '9')?true:false;
+                    //其它资料信息
+                    vm.fileRecord.registerFileDto.forEach(function(registerFile  , x){
+                        if(registerFile.businessType == "5" ||registerFile.businessType == "6" ||registerFile.businessType == "7"){
+                            vm.otherFile.push(registerFile);
+                        }else if(registerFile.businessType == "2"){
+                            vm.drawingFile.push(registerFile);
+                        }
+                        /*else if(registerFile.businessType == "XMJYS_DECLARE_FILE"){
+                            vm.declareFile.push(registerFile);
+                        }*/
+                    })
+
+                    //初始化附件上传
+                    vm.initFileUpload();
+                }
+            }
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//E_初始化
+
+        //S_保存
+        function saveFileRecord(vm,callBack) {
+            common.initJqValidation($("#fileRecord_form"));
+            var isValid = $("#fileRecord_form").valid();
+            if (isValid) {
+                //查找选定的签收人
+                vm.signUserList.forEach(function(su,index){
+                    if(vm.fileRecord.signUserid == su.id){
+                        vm.fileRecord.signUserName = su.displayName;
+                    }
+                })
+
+                vm.isCommit = true;
+                var httpOptions = {
+                    method: 'post',
+                    url: rootPath + "/fileRecord",
+                    data: vm.fileRecord
+                }
+                var httpSuccess = function success(response) {
+                    if (callBack != undefined && typeof callBack == 'function') {
+                        callBack(response.data);
+                    }
+                }
+                common.http({
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess,
+                    onError: function (response) {
+                        vm.isCommit = false;
+                    }
+                });
+            }else{
+
+            }
+        }//E_保存
+
+    }
+})();
 /**
  * 停用
  */
@@ -25379,285 +25658,6 @@
 (function () {
     'use strict';
 
-    angular.module('app').controller('fileRecordEditCtrl', fileRecord);
-
-    fileRecord.$inject = ['fileRecordSvc','$state','sysfileSvc', 'bsWin','$scope' , 'templatePrintSvc' , 'addRegisterFileSvc'];
-
-    function fileRecord(fileRecordSvc,$state,sysfileSvc,bsWin,$scope , templatePrintSvc , addRegisterFileSvc) {
-        var vm = this;
-        vm.title = '项目归档编辑';
-
-        vm.fileRecord = {};
-        vm.fileRecord.signId = $state.params.signid;
-        vm.fileRecord.fileRecordId = "";
-        vm.signId = $state.params.signid;
-        vm.isControl=$state.params.isControl;		//按钮显示
-        //是否协审归档（默认不是）
-        vm.isassistproc = false;
-        vm.drawingFile = [];//图纸资料
-        vm.otherFile = [];//其它资料
-        vm.declareFile = [];//建议书申报资料
-        //初始化附件上传控件
-        vm.initFileUpload = function () {
-            if (!vm.fileRecord.fileRecordId) {
-                //监听ID，如果有新值，则自动初始化上传控件
-                $scope.$watch("vm.fileRecord.fileRecordId", function (newValue, oldValue) {
-                    if (newValue && newValue != oldValue && !vm.initUploadOptionSuccess) {
-                        vm.initFileUpload();
-                    }
-                });
-            }
-            vm.sysFile = {
-                businessId: vm.fileRecord.fileRecordId,
-                mainId: vm.signId,
-                mainType: sysfileSvc.mainTypeValue().SIGN,
-                sysfileType: sysfileSvc.mainTypeValue().DOFILE,
-                sysBusiType: sysfileSvc.mainTypeValue().DOFILE,
-            };
-            sysfileSvc.initUploadOptions({
-                inputId: "sysfileinput",
-                vm: vm
-            });
-        }
-
-        activate();
-        function activate() {
-            fileRecordSvc.initFileRecordData(vm);
-
-        }
-
-        vm.create = function () {
-            fileRecordSvc.saveFileRecord(vm,function(data){
-                vm.isCommit = false;
-                if(data.flag || data.reCode == 'ok'){
-                    //重新加载页面
-                    vm.fileRecord.fileRecordId = data.reObj;
-                    bsWin.alert("修改成功！");
-                }else{
-                    bsWin.error(response.data.reMsg);
-                }
-            });
-        }
-
-        /**
-         * 打印功能 -分页
-         */
-        vm.templatePage = function (id) {
-            templatePrintSvc.templatePage(id);
-        }
-
-        /******以下是其它资料添加*****/
-
-        vm.addOtherFile = function (businessId, businessType) {
-            if(!vm.addRegisters){
-                vm.addRegisters = [];
-            }
-            if (!businessId) {
-                bsWin.alert("请先保存数据！");
-            } else {
-                if(businessType == "2"){
-                    vm.addRegisters = vm.drawingFile;
-                    vm.showFilePage = true;
-                    vm.showFileOther = false;
-                    vm.showSignOther = false;
-                }else{
-                    vm.addRegisters = vm.otherFile;
-                    vm.showFileOther = true;
-                    vm.showFilePage = false;
-                    vm.showSignOther = false;
-                }
-                vm.businessId = businessId;
-                vm.businessType = businessType;
-
-                $("#addOtherFile").kendoWindow({
-                    width: "840px",
-                    height: "480px",
-                    title: "补充资料编辑",
-                    visible: false,
-                    modal: true,
-                    closable: true,
-                    actions: ["Pin", "Minimize", "Maximize", "Close"]
-                }).data("kendoWindow").center().open();
-            }
-
-        }
-
-        //新建其它资料
-        vm.addRegisterFile = function () {
-            vm.addRegister = {};
-            vm.addRegister.businessId = vm.businessId;
-            vm.addRegister.id = common.uuid();
-            vm.addRegisters.push(vm.addRegister);
-        }
-
-        //保存其它资料
-        vm.saveRegisterFile = function () {
-            addRegisterFileSvc.saveRegisterFile(vm.addRegisters, function (data) {
-                if (data.flag || data.reCode == 'ok') {
-                    vm.addRegisters = data.reObj;
-                    bsWin.alert("操作成功");
-                } else {
-                    bsWin.alert(data.reMsg);
-                }
-            });
-        }
-        //删除其它资料
-        vm.deleteRegisterFile = function () {
-            var isCheked = $("#addOtherFile input[name='addRegistersCheck']:checked")
-            if (isCheked.length < 1) {
-                bsWin.alert("请选择要删除的记录！");
-            } else {
-                var ids = [];
-                for (var i = 0; i < isCheked.length; i++) {
-                    vm.addRegisters.forEach(function (f, number) {
-                        if (f.id && isCheked[i].value == f.id) {
-                            ids.push(isCheked[i].value);
-                            vm.addRegisters.splice(number, 1);
-                        }
-                    });
-                }
-                if (ids.length > 0) {
-                    addRegisterFileSvc.deleteByIds(ids.join(","), function (data) {
-                        bsWin.alert("删除成功！");
-                    });
-                }
-            }
-        }
-
-        vm.updateFileCode = function(){
-            $("#fileCodeWin").kendoWindow({
-                width: "660px",
-                height: "400px",
-                title: "归档文号编辑",
-                visible: false,
-                modal: true,
-                closable: true,
-                actions: ["Close"]
-            }).data("kendoWindow").center().open();
-        }
-
-        vm.resetCancelBox = function (temp) {
-            var cheboxObj = $("input[name='"+temp+"']:checked");
-           if(cheboxObj.length==0){
-               vm.fileRecord[temp] = '0';
-            }
-        }
-
-        //S_初始化input框的值
-        vm.initInputValue = function($event,defaultValue,temp){
-            var checkbox = $event.target;
-            var checked = checkbox.checked;
-            console.log("333");
-            if (checked) {
-                if((!defaultValue)){
-                    return 1;
-                }else{
-                    return defaultValue;
-                }
-
-            }else{
-                vm.fileRecord[temp] = '0';
-                return defaultValue;
-            }
-        }//E_initInputValue
-    }
-
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').factory('fileRecordSvc', fileRecord);
-
-    fileRecord.$inject = ['bsWin', '$http'];
-
-    function fileRecord(bsWin, $http) {
-        var service = {
-            initFileRecordData: initFileRecordData,		//初始化流程数据
-            saveFileRecord: saveFileRecord,				//保存
-        };
-        return service;
-
-        //S_初始化
-        function initFileRecordData(vm) {
-            vm.otherFile=[];//定义归档其他资料的包含分类5、6、7
-            var httpOptions = {
-                method: 'get',
-                url: rootPath + "/fileRecord/initFillPage",
-                params: {signId: vm.fileRecord.signId}
-            }
-            var httpSuccess = function success(response) {
-                if (response.data != null && response.data != "") {
-                    vm.fileRecord = response.data.file_record;
-                    vm.fileRecord.signId = vm.signId;
-                    vm.signUserList = response.data.sign_user_List;
-                    //是否协审
-                    vm.isassistproc = (vm.fileRecord.isassistproc == '9')?true:false;
-                    //其它资料信息
-                    vm.fileRecord.registerFileDto.forEach(function(registerFile  , x){
-                        if(registerFile.businessType == "5" ||registerFile.businessType == "6" ||registerFile.businessType == "7"){
-                            vm.otherFile.push(registerFile);
-                        }else if(registerFile.businessType == "2"){
-                            vm.drawingFile.push(registerFile);
-                        }
-                        /*else if(registerFile.businessType == "XMJYS_DECLARE_FILE"){
-                            vm.declareFile.push(registerFile);
-                        }*/
-                    })
-
-                    //初始化附件上传
-                    vm.initFileUpload();
-                }
-            }
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }//E_初始化
-
-        //S_保存
-        function saveFileRecord(vm,callBack) {
-            common.initJqValidation($("#fileRecord_form"));
-            var isValid = $("#fileRecord_form").valid();
-            if (isValid) {
-                //查找选定的签收人
-                vm.signUserList.forEach(function(su,index){
-                    if(vm.fileRecord.signUserid == su.id){
-                        vm.fileRecord.signUserName = su.displayName;
-                    }
-                })
-
-                vm.isCommit = true;
-                var httpOptions = {
-                    method: 'post',
-                    url: rootPath + "/fileRecord",
-                    data: vm.fileRecord
-                }
-                var httpSuccess = function success(response) {
-                    if (callBack != undefined && typeof callBack == 'function') {
-                        callBack(response.data);
-                    }
-                }
-                common.http({
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess,
-                    onError: function (response) {
-                        vm.isCommit = false;
-                    }
-                });
-            }else{
-
-            }
-        }//E_保存
-
-    }
-})();
-(function () {
-    'use strict';
-
     angular.module('app').factory('flowSvc', flow);
 
     flow.$inject = ['$http', '$state', 'bsWin'];
@@ -27003,6 +27003,96 @@
 
 })();
 
+(function () {
+    'use strict';
+
+    angular
+        .module('app')
+        .controller('homeCtrl', home);
+
+    home.$inject = ['$location','homeSvc']; 
+
+    function home($location, homeSvc) {
+        /* jshint validthis:true */
+    	var vm = this;
+        vm.title = '';
+        
+
+        vm.changePwd = function () {        	
+        	 homeSvc.changePwd(vm);
+          
+        }
+       
+        activate();
+        function activate() {
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').factory('homeSvc', home);
+
+    home.$inject = ['$http'];
+
+    function home($http) {
+        var url_account_password = rootPath + "/account/password";
+
+        var service = {
+            changePwd: changePwd
+        };
+
+        return service;
+
+        // begin#updatehome
+        function changePwd(vm) {
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                vm.isSubmit = true;
+
+                var httpOptions = {
+                    method: 'put',
+                    url: url_account_password,
+                    params:{password : vm.model.password}
+                }
+
+                var httpSuccess = function success(response) {
+                    common.requestSuccess({
+                        vm: vm,
+                        response: response,
+                        fn: function () {
+                            common.alert({
+                                vm: vm,
+                                msg: "操作成功",
+                                fn: function () {
+                                    vm.isSubmit = false;
+                                    $('.alertDialog').modal('hide');
+                                }
+                            })
+                        }
+                    })
+                }
+
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+
+            } else {
+                // common.alert({
+                // vm:vm,
+                // msg:"您填写的信息不正确,请核对后提交!"
+                // })
+            }
+
+        }
+
+    }
+})();
 (function(){
     'use strict';
     angular.module('app').controller('headerCtrl' , header);
@@ -27640,96 +27730,6 @@
                 vm.header = true;
             });
         }
-    }
-})();
-(function () {
-    'use strict';
-
-    angular
-        .module('app')
-        .controller('homeCtrl', home);
-
-    home.$inject = ['$location','homeSvc']; 
-
-    function home($location, homeSvc) {
-        /* jshint validthis:true */
-    	var vm = this;
-        vm.title = '';
-        
-
-        vm.changePwd = function () {        	
-        	 homeSvc.changePwd(vm);
-          
-        }
-       
-        activate();
-        function activate() {
-        }
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').factory('homeSvc', home);
-
-    home.$inject = ['$http'];
-
-    function home($http) {
-        var url_account_password = rootPath + "/account/password";
-
-        var service = {
-            changePwd: changePwd
-        };
-
-        return service;
-
-        // begin#updatehome
-        function changePwd(vm) {
-            common.initJqValidation();
-            var isValid = $('form').valid();
-            if (isValid) {
-                vm.isSubmit = true;
-
-                var httpOptions = {
-                    method: 'put',
-                    url: url_account_password,
-                    params:{password : vm.model.password}
-                }
-
-                var httpSuccess = function success(response) {
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-                            common.alert({
-                                vm: vm,
-                                msg: "操作成功",
-                                fn: function () {
-                                    vm.isSubmit = false;
-                                    $('.alertDialog').modal('hide');
-                                }
-                            })
-                        }
-                    })
-                }
-
-                common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
-
-            } else {
-                // common.alert({
-                // vm:vm,
-                // msg:"您填写的信息不正确,请核对后提交!"
-                // })
-            }
-
-        }
-
     }
 })();
 (function () {
@@ -46804,6 +46804,180 @@
 (function () {
     'use strict';
 
+    angular.module('app').controller('sysdeptCtrl', sysdept);
+
+    sysdept.$inject = [ 'sysdeptSvc'];
+
+    function sysdept(sysdeptSvc) {
+        var vm = this;
+        vm.model = {};
+        vm.title = '部门小组列表';
+
+        activate();
+        function activate() {
+            sysdeptSvc.listGrid(vm.gridOptions);
+        }
+
+
+    }//E_sysdept
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').controller('sysdeptEditCtrl', sysdept);
+
+    sysdept.$inject = [ 'sysdeptSvc'];
+
+    function sysdept(sysdeptSvc) {
+        var vm = this;
+        vm.model = {};
+        vm.title = '部门小组编辑';
+        vm.model.id = $state.params.id;
+        if (vm.model.id) {
+            vm.isUpdate = true;
+            vm.title = '更新部门';
+        }
+
+
+        activate();
+        function activate() {
+            if(vm.isUpdate){
+                sysdeptSvc.findById(vm.model.id,function (data) {
+                    vm.model = data;
+                });
+            }
+        }
+
+
+    }//E_sysdept
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').factory('sysdeptSvc', sysdept);
+
+    sysdept.$inject = ['$http'];
+
+    function sysdept($http) {
+        var service = {
+            listGrid : listGrid,			        //初始化表格
+            findById : findById,                    //根据Idc初始化表格
+
+        };
+        return service;
+
+        //S_初始化表格
+        function listGrid(gridOption) {
+            // Begin:dataSource
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(rootPath + "/sysdept/fingByOData", $("#sysDeptForm")),
+                schema: common.kendoGridConfig().schema({
+                    id: "id",
+                    fields: {
+                        createdDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
+            });
+            // End:dataSource
+            //S_序号
+            var  dataBound=function () {
+                var rows = this.items();
+                var page = this.pager.page() - 1;
+                var pagesize = this.pager.pageSize();
+                $(rows).each(function () {
+                    var index = $(this).index() + 1 + page * pagesize;
+                    var rowLabel = $(this).find(".row-number");
+                    $(rowLabel).html(index);
+                });
+            }
+            //S_序号
+            // Begin:column
+            var columns = [
+                {
+                    template: function (item) {
+                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />", item.id)
+                    },
+                    filterable: false,
+                    width: 40,
+                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
+
+                },
+                {
+                    field: "rowNumber",
+                    title: "序号",
+                    width: 50,
+                    filterable : false,
+                    template: "<span class='row-number'></span>"
+                },
+                {
+                    field: "name",
+                    title: "小组名称",
+                    width: 160,
+                    filterable: false
+                },
+                {
+                    field : "",
+                    title : "操作",
+                    width : 200,
+                    template:function(item){
+                        return common.format($('#columnBtns').html(),"vm.del('"+item.id+"')",item.id);
+                    }
+                }
+
+            ];
+
+            gridOption = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                dataBound:dataBound,
+                resizable: true
+            };
+        }//E_listGrid
+
+        //S_根据ID初始化表格
+        function findById(id,callBack){
+            var httpOptions = {
+                method : 'post',
+                url : rootPath+"/sysdept/getSysDeptById",
+                params : {
+                    id:id
+                }
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http:$http,
+                httpOptions:httpOptions,
+                success:httpSuccess
+            });
+        }
+
+
+    }//E_sysConfig
+
+})();
+(function () {
+    'use strict';
+
     angular.module('app').controller('sysConfigCtrl', sysConfig);
 
     sysConfig.$inject = ['$location', 'sysConfigSvc' , 'bsWin'];
@@ -46997,180 +47171,6 @@
                 success:httpSuccess
             });
         }//E_saveConfig
-
-    }//E_sysConfig
-
-})();
-(function () {
-    'use strict';
-
-    angular.module('app').controller('sysdeptCtrl', sysdept);
-
-    sysdept.$inject = [ 'sysdeptSvc'];
-
-    function sysdept(sysdeptSvc) {
-        var vm = this;
-        vm.model = {};
-        vm.title = '部门小组列表';
-
-        activate();
-        function activate() {
-            sysdeptSvc.listGrid(vm.gridOptions);
-        }
-
-
-    }//E_sysdept
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').controller('sysdeptEditCtrl', sysdept);
-
-    sysdept.$inject = [ 'sysdeptSvc'];
-
-    function sysdept(sysdeptSvc) {
-        var vm = this;
-        vm.model = {};
-        vm.title = '部门小组编辑';
-        vm.model.id = $state.params.id;
-        if (vm.model.id) {
-            vm.isUpdate = true;
-            vm.title = '更新部门';
-        }
-
-
-        activate();
-        function activate() {
-            if(vm.isUpdate){
-                sysdeptSvc.findById(vm.model.id,function (data) {
-                    vm.model = data;
-                });
-            }
-        }
-
-
-    }//E_sysdept
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').factory('sysdeptSvc', sysdept);
-
-    sysdept.$inject = ['$http'];
-
-    function sysdept($http) {
-        var service = {
-            listGrid : listGrid,			        //初始化表格
-            findById : findById,                    //根据Idc初始化表格
-
-        };
-        return service;
-
-        //S_初始化表格
-        function listGrid(gridOption) {
-            // Begin:dataSource
-            var dataSource = new kendo.data.DataSource({
-                type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/sysdept/fingByOData", $("#sysDeptForm")),
-                schema: common.kendoGridConfig().schema({
-                    id: "id",
-                    fields: {
-                        createdDate: {
-                            type: "date"
-                        }
-                    }
-                }),
-                serverPaging: true,
-                serverSorting: true,
-                serverFiltering: true,
-                pageSize: 10,
-                sort: {
-                    field: "createdDate",
-                    dir: "desc"
-                }
-            });
-            // End:dataSource
-            //S_序号
-            var  dataBound=function () {
-                var rows = this.items();
-                var page = this.pager.page() - 1;
-                var pagesize = this.pager.pageSize();
-                $(rows).each(function () {
-                    var index = $(this).index() + 1 + page * pagesize;
-                    var rowLabel = $(this).find(".row-number");
-                    $(rowLabel).html(index);
-                });
-            }
-            //S_序号
-            // Begin:column
-            var columns = [
-                {
-                    template: function (item) {
-                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />", item.id)
-                    },
-                    filterable: false,
-                    width: 40,
-                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
-
-                },
-                {
-                    field: "rowNumber",
-                    title: "序号",
-                    width: 50,
-                    filterable : false,
-                    template: "<span class='row-number'></span>"
-                },
-                {
-                    field: "name",
-                    title: "小组名称",
-                    width: 160,
-                    filterable: false
-                },
-                {
-                    field : "",
-                    title : "操作",
-                    width : 200,
-                    template:function(item){
-                        return common.format($('#columnBtns').html(),"vm.del('"+item.id+"')",item.id);
-                    }
-                }
-
-            ];
-
-            gridOption = {
-                dataSource: common.gridDataSource(dataSource),
-                filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
-                noRecords: common.kendoGridConfig().noRecordMessage,
-                columns: columns,
-                dataBound:dataBound,
-                resizable: true
-            };
-        }//E_listGrid
-
-        //S_根据ID初始化表格
-        function findById(id,callBack){
-            var httpOptions = {
-                method : 'post',
-                url : rootPath+"/sysdept/getSysDeptById",
-                params : {
-                    id:id
-                }
-            }
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            };
-            common.http({
-                $http:$http,
-                httpOptions:httpOptions,
-                success:httpSuccess
-            });
-        }
-
 
     }//E_sysConfig
 

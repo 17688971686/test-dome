@@ -181,7 +181,9 @@ public class RandomGUID extends Object {
             StringBuffer sb = new StringBuffer();
             for (int j = 0; j < array.length; ++j) {
                 int b = array[j] & 0xFF;
-                if (b < 0x10) sb.append('0');
+                if (b < 0x10) {
+                    sb.append('0');
+                }
                 sb.append(Integer.toHexString(b));
             }
 
@@ -198,6 +200,7 @@ public class RandomGUID extends Object {
      * (Useful for SQL Server UniqueIdentifiers, etc.)
      * Example: C2FEEEAC-CFCD-11D1-8B05-00600806D9B6
      */
+    @Override
     public String toString() {
         String raw = valueAfterMD5.toUpperCase();
         StringBuffer sb = new StringBuffer();

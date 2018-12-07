@@ -35,12 +35,18 @@ public class SignBranchID implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SignBranchID that = (SignBranchID) o;
 
-        if (signId != null ? !signId.equals(that.signId) : that.signId != null) return false;
+        if (signId != null ? !signId.equals(that.signId) : that.signId != null) {
+            return false;
+        }
         return branchId != null ? branchId.equals(that.branchId) : that.branchId == null;
     }
 
