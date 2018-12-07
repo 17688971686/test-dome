@@ -2,6 +2,10 @@ package cs.common.utils;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.codecs.Codec;
+import org.owasp.esapi.codecs.MySQLCodec;
+import org.owasp.esapi.codecs.OracleCodec;
 import org.owasp.validator.html.AntiSamy;
 import org.owasp.validator.html.CleanResults;
 import org.owasp.validator.html.Policy;
@@ -294,30 +298,10 @@ public class StringUtil extends StringUtils {
     }
 
     public static void main(String[] args) {
-        /*String checkString = "xxxxs第三个是大<script>235325235</script>阿萨德广东省";
-        ;*/
-        String querySql = "1' or '1'='1";
-        System.out.println(StringEscapeUtils.escapeSql(querySql));
-/**
- * 策略文件
- * 注意，需要将要使用的策略文件放到项目资源文件路径下
- * */
-        String antiSamyPath = StringUtil.class.getClassLoader() .getResource( "antisamy-ebay.xml").getFile();
-
-
-        String xsshtml = "hyf<script>alert(1)</script>";
-        Policy policy = null;
-        try {
-            policy = Policy.getInstance(antiSamyPath);
-            AntiSamy antiSamy = new AntiSamy();
-            CleanResults cr = antiSamy.scan(xsshtml,policy);
-            xsshtml = cr.getCleanHTML(); //清洗完的
-            System.out.println(xsshtml);
-        } catch (PolicyException e) {
-            e.printStackTrace();
-        } catch (ScanException e) {
-            e.printStackTrace();
-        }
+        String checkString = "admin or 1=1 ";
+        //生成一个Oracle编码器实例
+        Codec ORACLE_CODEC = new OracleCodec();
+        System.out.println(ESAPI.encoder().encodeForSQL(ORACLE_CODEC, checkString));
     }
 
 
