@@ -1,6 +1,4 @@
 package cs.common.utils;
-
-import com.sn.framework.common.*;
 import org.springframework.http.MediaType;
 
 import javax.servlet.http.HttpServletRequest;

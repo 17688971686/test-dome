@@ -2,7 +2,6 @@ package cs.common;
 
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.hibernate.query.Query;
 import org.hibernate.type.Type;
 

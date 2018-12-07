@@ -12,33 +12,33 @@ import cs.repository.odata.ODataObj;
 
 
 public interface IRepository<T, ID> {
-    public T findById(ID id);
+    T findById(ID id);
 
-    public T findById(String idPropertyName, String idValue);
+    T findById(String idPropertyName, String idValue);
 
-    public T getById(ID id);
+    T getById(ID id);
 
-    public List<T> findAll();
+    List<T> findAll();
 
-    public List<T> findByCriteria(Criterion... criterion);
+    List<T> findByCriteria(Criterion... criterion);
 
-    public List<T> findByOdata(ODataObj oDataObj);
+    List<T> findByOdata(ODataObj oDataObj);
 
-    public T save(T entity);
+    T save(T entity);
 
-    public void bathUpdate(List<T> t);
+    void bathUpdate(List<T> t);
 
-    public void delete(T entity);
+    void delete(T entity);
 
-    public void flush();
+    void flush();
 
-    public void clear();
+    void clear();
 
-    public void setSession(Session session);
+    void setSession(Session session);
 
     Criteria getExecutableCriteria();
 
-    public Session getSession();
+    Session getSession();
 
     List<T> findByHql(HqlBuilder hqlBuilder);
 
