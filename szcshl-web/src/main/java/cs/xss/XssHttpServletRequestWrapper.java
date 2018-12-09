@@ -1,13 +1,9 @@
 package cs.xss;
 
-import cs.common.constants.SysConstants;
 import cs.common.utils.Validate;
-import org.owasp.validator.html.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.Vector;
@@ -17,12 +13,10 @@ import java.util.Vector;
  * @desc 基于AntiSamy的XSS防御
  */
 public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
-    //AntiSamy使用的策略文件
-    private static Policy policy = null;
     private Map<String, String[]> parameterMap;  //所有参数的Map集合
     static {
-        String antiSamyPath = XssHttpServletRequestWrapper.class.getClassLoader().getResource("antisamy-ebay.xml").getFile();
-        System.out.println("policy_filepath:" + antiSamyPath);
+       /* String antiSamyPath = XssHttpServletRequestWrapper.class.getClassLoader().getResource("antisamy-ebay.xml").getFile();
+        //System.out.println("policy_filepath:" + antiSamyPath);
         if (antiSamyPath.startsWith("file")) {
             antiSamyPath = antiSamyPath.substring(6);
         }
@@ -30,7 +24,7 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
             policy = Policy.getInstance(antiSamyPath);
         } catch (PolicyException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
 

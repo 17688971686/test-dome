@@ -4,6 +4,10 @@ import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import org.hibernate.query.Query;
 import org.hibernate.type.Type;
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.codecs.Codec;
+import org.owasp.esapi.codecs.OracleCodec;
+import org.owasp.esapi.codecs.WindowsCodec;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +35,12 @@ public class HqlBuilder {
 	}
 
 	public String getHqlString(){
-		return hqlBuilder.toString();
+		String queryString = hqlBuilder.toString();
+		if(Validate.isString(queryString)){
+			Codec oracleCodec = new OracleCodec();
+			queryString = ESAPI.encoder().encodeForSQL(oracleCodec,queryString);
+		}
+		return queryString;
 	}
 
 	public static HqlBuilder create() {

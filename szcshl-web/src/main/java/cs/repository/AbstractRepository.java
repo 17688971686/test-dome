@@ -11,6 +11,10 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.codecs.Codec;
+import org.owasp.esapi.codecs.OracleCodec;
+import org.owasp.esapi.codecs.WindowsCodec;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;

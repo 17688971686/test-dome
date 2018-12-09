@@ -6,6 +6,7 @@ import org.owasp.esapi.ESAPI;
 import org.owasp.esapi.codecs.Codec;
 import org.owasp.esapi.codecs.MySQLCodec;
 import org.owasp.esapi.codecs.OracleCodec;
+import org.owasp.esapi.codecs.WindowsCodec;
 import org.owasp.validator.html.AntiSamy;
 import org.owasp.validator.html.CleanResults;
 import org.owasp.validator.html.Policy;
@@ -298,10 +299,10 @@ public class StringUtil extends StringUtils {
     }
 
     public static void main(String[] args) {
-        String checkString = "admin or 1=1 ";
+        String checkString = "select u.* from user u";
         //生成一个Oracle编码器实例
-        Codec ORACLE_CODEC = new OracleCodec();
-        System.out.println(ESAPI.encoder().encodeForSQL(ORACLE_CODEC, checkString));
+        Codec windowsCodec = new WindowsCodec();
+        System.out.println(ESAPI.validator().isValidInput("",checkString,"SafeString",64,true));
     }
 
 

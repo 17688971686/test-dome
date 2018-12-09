@@ -26,7 +26,6 @@ public class XssShieldUtil {
 
     private XssShieldUtil() {
         String antiSamyPath = XssHttpServletRequestWrapper.class.getClassLoader().getResource("antisamy-ebay.xml").getFile();
-        System.out.println("policy_filepath:" + antiSamyPath);
         if (antiSamyPath.startsWith("file")) {
             antiSamyPath = antiSamyPath.substring(6);
         }
