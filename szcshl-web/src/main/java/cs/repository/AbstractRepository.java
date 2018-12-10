@@ -115,8 +115,7 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         Criteria crit = getExecutableCriteria();
         crit = oDataObj.buildQuery(crit);
         if (Validate.isObject(crit)) {
-            List<T> list = crit.list();
-            return list;
+            return crit.list();
         }
         return null;
     }
@@ -184,9 +183,6 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
 
     @Override
     public List<T> findByHql(HqlBuilder hqlBuilder) {
-        if(!this.checkBuilder(hqlBuilder)){
-            return null;
-        }
         Query<T> q = this.getCurrentSession().createQuery(hqlBuilder.getHqlString(), this.getPersistentClass());
         QueryParamBuild<T> queryParamBuild = new QueryParamBuild(q);
         q = queryParamBuild.buildParams(hqlBuilder).getQuery();
@@ -198,9 +194,6 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
 
     @Override
     public List<T> findBySql(HqlBuilder hqlBuilder) {
-        if(!this.checkBuilder(hqlBuilder)){
-            return null;
-        }
         Query<T> q = this.getCurrentSession().createNativeQuery(hqlBuilder.getHqlString(), this.getPersistentClass());
         QueryParamBuild<T> queryParamBuild = new QueryParamBuild(q);
         q = queryParamBuild.buildParams(hqlBuilder).getQuery();
@@ -218,9 +211,6 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
      */
     @Override
     public int returnIntBySql(HqlBuilder sqlBuilder) {
-        if(!this.checkBuilder(sqlBuilder)){
-            return -1;
-        }
         Query<Number> q = this.getCurrentSession().createNativeQuery(sqlBuilder.getHqlString(),Number.class);
         QueryParamBuild<Number> queryParamBuild = new QueryParamBuild(q);
         q = queryParamBuild.buildParams(sqlBuilder).getQuery();
@@ -233,13 +223,10 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
 
     @Override
     public int executeHql(HqlBuilder hqlBuilder) {
-        if(!this.checkBuilder(hqlBuilder)){
-            return -1;
-        }
         Query<Number> q = this.getCurrentSession().createQuery(hqlBuilder.getHqlString(),Number.class);
         QueryParamBuild<Number> queryParamBuild = new QueryParamBuild(q);
         q = queryParamBuild.buildParams(hqlBuilder).getQuery();
-        int updateCount = 0;
+        int updateCount = -1;
         if (Validate.isObject(q)) {
             updateCount = q.executeUpdate();
         }
@@ -248,24 +235,14 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
 
     @Override
     public int executeSql(HqlBuilder hqlBuilder) {
-        if(!this.checkBuilder(hqlBuilder)){
-            return -1;
-        }
         Query<Number> q = this.getCurrentSession().createNativeQuery(hqlBuilder.getHqlString(),Number.class);
         QueryParamBuild<Number> queryParamBuild = new QueryParamBuild(q);
         q = queryParamBuild.buildParams(hqlBuilder).getQuery();
-        int updateCount = 0;
+        int updateCount = -1;
         if (Validate.isObject(q)) {
             updateCount = q.executeUpdate();
         }
         return updateCount;
-    }
-
-    protected boolean checkBuilder(HqlBuilder hqlBuilder){
-        if (!Validate.isObject(hqlBuilder)) {
-            return false;
-        }
-        return true;
     }
 
 
@@ -288,13 +265,13 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
      */
     @Override
     public List<Object[]> getObjectArray(HqlBuilder sqlBuilder) {
-        if(!this.checkBuilder(sqlBuilder)){
-            return null;
-        }
         Query q = this.getCurrentSession().createNativeQuery(sqlBuilder.getHqlString());
         QueryParamBuild queryParamBuild = new QueryParamBuild(q);
         q = queryParamBuild.buildParams(sqlBuilder).getQuery();
-        return q.getResultList();
+        if (Validate.isObject(q)) {
+            return q.list();
+        }
+        return null;
     }
 
     @Override

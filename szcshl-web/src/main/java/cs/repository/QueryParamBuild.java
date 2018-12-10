@@ -28,36 +28,33 @@ public class QueryParamBuild<T> {
     public QueryParamBuild(Query<T> query) {
         this.query = query;
     }
-
-
     public QueryParamBuild buildParams(HqlBuilder hqlBuilder){
-        if (!Validate.isObject(query)) {
-            return null;
-        }
-        List<String> params = hqlBuilder.getParams();
-        List<Object> values = hqlBuilder.getValues();
-        List<Type> types = hqlBuilder.getTypes();
-        Codec oracleCodec = new OracleCodec();
-        if (Validate.isList(params)) {
-            for (int i = 0, l = params.size(); i < l; i++) {
-                String paramName = StringUtil.sqlInjectionFilter(params.get(i));
-                Object value = values.get(i);
-                if(!Validate.isString(paramName) || !Validate.isObject(value)){
-                    continue;
-                }
-                if (value instanceof String) {
-                    value = ESAPI.encoder().encodeForSQL(oracleCodec,value.toString());
-                    if (Validate.isString(value)) {
-                        value = StringUtil.sqlInjectionFilter(value.toString());
-                        if(!Validate.isString(value)){
-                            continue;
+        if (Validate.isObject(query)) {
+            List<String> params = hqlBuilder.getParams();
+            List<Object> values = hqlBuilder.getValues();
+            List<Type> types = hqlBuilder.getTypes();
+            Codec oracleCodec = new OracleCodec();
+            if (Validate.isList(params)) {
+                for (int i = 0, l = params.size(); i < l; i++) {
+                    String paramName = params.get(i);
+                    Object value = values.get(i);
+                    if(!Validate.isString(paramName) || !Validate.isObject(value)){
+                        continue;
+                    }
+                    if (value instanceof String) {
+                        value = ESAPI.encoder().encodeForSQL(oracleCodec,value.toString());
+                        if (Validate.isString(value)) {
+                            value = StringUtil.sqlInjectionFilter(value.toString());
+                            if(!Validate.isString(value)){
+                                continue;
+                            }
                         }
                     }
-                }
-                if (types.get(i) == null) {
-                    query.setParameter(paramName, value);
-                } else {
-                    query.setParameter(paramName, value, types.get(i));
+                    if (types.get(i) == null) {
+                        query.setParameter(paramName, value);
+                    } else {
+                        query.setParameter(paramName, value, types.get(i));
+                    }
                 }
             }
         }

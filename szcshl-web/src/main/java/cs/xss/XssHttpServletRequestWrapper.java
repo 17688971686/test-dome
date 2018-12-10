@@ -59,12 +59,8 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
      */
     @Override
     public String getParameter(String name) {
-        String[] results = parameterMap.get(name);
-        if(Validate.isEmpty(results)) {
-            return null;
-        } else{
-            return cleanXSS(results[0]);
-        }
+        String value = super.getParameter(name);
+        return cleanXSS(value);
     }
 
     /**
@@ -73,22 +69,26 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
      * */
     @Override
     public String[] getParameterValues(String name) {
-        String[] values = parameterMap.get(name);
-        if (!Validate.isEmpty(values)) {
-            int length = values.length;
-            String[] escapseValues = new String[length];
-            for (int i = 0; i < length; i++) {
-                escapseValues[i] = cleanXSS(values[i]);
-            }
-            return escapseValues;
+        String[] values = super.getParameterValues(name);
+
+        if (values == null) {
+            return null;
         }
-        return super.getParameterValues(name);
+
+        int count = values.length;
+        String[] encodedValues = new String[count];
+        for (int i = 0; i < count; i++) {
+            encodedValues[i] = cleanXSS(values[i]);
+        }
+
+        return encodedValues;
     }
 
     /**
      * @desc AntiSamy清洗数据
      */
     private String cleanXSS(String taintedHTML) {
+
         return XssShieldUtil.getInstance().stripXss(taintedHTML);
     }
 }
