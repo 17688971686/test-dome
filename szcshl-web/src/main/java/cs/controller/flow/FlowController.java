@@ -34,6 +34,7 @@ import cs.service.rtx.RTXService;
 import cs.service.sys.AnnountmentService;
 import cs.service.sys.UserService;
 import cs.service.topic.TopicInfoService;
+import cs.xss.XssShieldUtil;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
@@ -152,7 +153,7 @@ public class FlowController {
         PageModelDto<RuProcessTask> pageModelDto = new PageModelDto<RuProcessTask>();
         pageModelDto.setCount(Validate.isList(resultList)?resultList.size():0);
         pageModelDto.setValue(Validate.isList(resultList)?resultList:new ArrayList<>());
-        return pageModelDto;
+        return XssShieldUtil.getInstance().cleanPageXss(pageModelDto);
     }
 
     /**
@@ -168,10 +169,7 @@ public class FlowController {
     public PageModelDto<RuTask> queryMyAgendaTask(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<RuTask> pageModelDto = flowService.queryMyAgendaTask(odataObj);
-        if(!Validate.isObject(pageModelDto)){
-            pageModelDto = new PageModelDto();
-        }
-        return pageModelDto;
+        return XssShieldUtil.getInstance().cleanPageXss(pageModelDto);
     }
 
     //@RequiresPermissions("flow#queryAgendaTask#post")
@@ -181,10 +179,7 @@ public class FlowController {
     public PageModelDto<RuTask> queryAgendaTask(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<RuTask> pageModelDto = flowService.queryAgendaTask(odataObj);
-        if(!Validate.isObject(pageModelDto)){
-            pageModelDto = new PageModelDto();
-        }
-        return pageModelDto;
+        return XssShieldUtil.getInstance().cleanPageXss(pageModelDto);
     }
 
     //@RequiresPermissions("flow#html/doingtasks#post")
@@ -227,7 +222,7 @@ public class FlowController {
         }
         pageModelDto.setCount(Validate.isList(finalList)?finalList.size():0);
         pageModelDto.setValue(Validate.isList(finalList)?finalList:new ArrayList<>());
-        return pageModelDto;
+        return XssShieldUtil.getInstance().cleanPageXss(pageModelDto);
     }
 
     //@RequiresPermissions("flow#html/endTasks#post")
@@ -237,10 +232,7 @@ public class FlowController {
     public PageModelDto<SignDispaWork> endTasks(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<SignDispaWork> pageModelDto = flowService.queryETasks(odataObj);
-        if(!Validate.isObject(pageModelDto)){
-            pageModelDto = new PageModelDto();
-        }
-        return pageModelDto;
+        return XssShieldUtil.getInstance().cleanPageXss(pageModelDto);
     }
 
     //@RequiresPermissions("flow#getMyHomeTasks#post")//停用
@@ -258,10 +250,7 @@ public class FlowController {
     public PageModelDto<TaskDto> queryEndTask(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<TaskDto> pageModelDto = flowService.queryEndTasks(odataObj);
-        if(!Validate.isObject(pageModelDto)){
-            pageModelDto = new PageModelDto();
-        }
-        return pageModelDto;
+        return XssShieldUtil.getInstance().cleanPageXss(pageModelDto);
     }
 
     @RequiresAuthentication
@@ -371,7 +360,7 @@ public class FlowController {
         PageModelDto<HiProcessTask> pageModelDto = new PageModelDto<HiProcessTask>();
         pageModelDto.setCount(Validate.isList(list)?list.size():0);
         pageModelDto.setValue(Validate.isList(list)?list:new ArrayList<>());
-        return pageModelDto;
+        return  XssShieldUtil.getInstance().cleanPageXss(pageModelDto);
     }
 
     @RequestMapping(name = "获取流程处理信息", path = "processInstance/flowNodeInfo", method = RequestMethod.POST)
@@ -461,7 +450,7 @@ public class FlowController {
             flowDto.setTaskId(null);
         }
 
-        return flowDto;
+        return  XssShieldUtil.getInstance().cleanObjXss(flowDto);
     }
 
 
@@ -553,7 +542,7 @@ public class FlowController {
             rtxService.dealPoolRTXMsg(task.getTaskDefinitionKey(),taskId,resultMsg,processDefinitionEntity.getName(), MsgType.task_type.name());
         }
 
-        return resultMsg;
+        return  XssShieldUtil.getInstance().cleanResultMsgXss(resultMsg);
     }
 
     @RequiresAuthentication
@@ -562,10 +551,7 @@ public class FlowController {
     @Transactional
     public ResultMsg rollBackLast(@RequestBody FlowDto flowDto) {
         ResultMsg resultMsg = flowService.rollBackLastNode(flowDto);
-        if(!Validate.isObject(resultMsg)){
-            resultMsg = ResultMsg.error(ERROR_MSG);
-        }
-        return resultMsg;
+        return  XssShieldUtil.getInstance().cleanResultMsgXss(resultMsg);
     }
 
     @RequiresAuthentication
@@ -575,10 +561,7 @@ public class FlowController {
     public ResultMsg activeFlow(@PathVariable("businessKey") String businessKey) {
         log.info("流程激活成功！businessKey=" + businessKey);
         ResultMsg resultMsg = flowService.restartFlow(businessKey);
-        if(!Validate.isObject(resultMsg)){
-            resultMsg = ResultMsg.error(ERROR_MSG);
-        }
-        return resultMsg;
+        return  XssShieldUtil.getInstance().cleanResultMsgXss(resultMsg);
     }
 
     /**
@@ -593,10 +576,7 @@ public class FlowController {
     public ResultMsg suspendFlow(@PathVariable("businessKey") String businessKey) {
         log.info("流程挂起成功！businessKey=" + businessKey);
         ResultMsg resultMsg = flowService.stopFlow(businessKey);
-        if(!Validate.isObject(resultMsg)){
-            resultMsg = ResultMsg.error(ERROR_MSG);
-        }
-        return resultMsg;
+        return  XssShieldUtil.getInstance().cleanResultMsgXss(resultMsg);
     }
 
     @RequiresAuthentication
@@ -643,7 +623,7 @@ public class FlowController {
             runtimeService.deleteProcessInstance(processInstance.getId(), comment);
         }
         log.info("流程终止成功！businessKey=" + processInstance.getBusinessKey());
-        return resultMsg;
+        return  XssShieldUtil.getInstance().cleanResultMsgXss(resultMsg);
     }
 
     @RequiresAuthentication
@@ -651,10 +631,7 @@ public class FlowController {
     @ResponseBody
     public ResultMsg taskTransferAssignee(@RequestParam String taskId, @RequestParam String oldUserId, @RequestParam String newUserId){
         ResultMsg resultMsg = flowService.taskTransferAssignee(taskId,oldUserId,newUserId);
-        if(!Validate.isObject(resultMsg)){
-            resultMsg = ResultMsg.error(ERROR_MSG);
-        }
-        return resultMsg;
+        return XssShieldUtil.getInstance().cleanResultMsgXss(resultMsg);
     }
     /******************************   以下是页面处理  ******************************/
     //@RequiresPermissions("flow#flowDeal/processKey#get")
@@ -788,10 +765,7 @@ public class FlowController {
     @ResponseBody
     public List<Map<String, Object>> getProc(){
         List<Map<String, Object>> resultList = flowService.getProc();
-        if(!Validate.isList(resultList)){
-            resultList = new ArrayList<>();
-        }
-        return  resultList;
+        return  XssShieldUtil.getInstance().cleanMapListXss(resultList);
     }
 
     @RequiresAuthentication
@@ -822,7 +796,7 @@ public class FlowController {
             });
             resultMap.put("userList",userDtoList);
         }
-        return resultMap;
+        return  XssShieldUtil.getInstance().cleanMapXss(resultMap);
     }
 
     /**

@@ -14,6 +14,7 @@ import java.util.Vector;
  */
 public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
     private Map<String, String[]> parameterMap;  //所有参数的Map集合
+    HttpServletRequest orgRequest = null;
     static {
        /* String antiSamyPath = XssHttpServletRequestWrapper.class.getClassLoader().getResource("antisamy-ebay.xml").getFile();
         //System.out.println("policy_filepath:" + antiSamyPath);
@@ -30,6 +31,7 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
     public XssHttpServletRequestWrapper(HttpServletRequest request) {
         super(request);
+        orgRequest = request;
         parameterMap = request.getParameterMap();
     }
     /** * 获取所有参数名 * @return 返回所有参数名 * */
@@ -84,6 +86,25 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
         return encodedValues;
     }
 
+    /**
+     * 获取最原始的request
+     *
+     * @return
+     */
+    public HttpServletRequest getOrgRequest() {
+        return orgRequest;
+    }
+    /**
+     * 获取最原始的request的静态方法
+     *
+     * @return
+     */
+    public static HttpServletRequest getOrgRequest(HttpServletRequest req) {
+        if (req instanceof XssHttpServletRequestWrapper) {
+            return ((XssHttpServletRequestWrapper) req).getOrgRequest();
+        }
+        return req;
+    }
     /**
      * @desc AntiSamy清洗数据
      */

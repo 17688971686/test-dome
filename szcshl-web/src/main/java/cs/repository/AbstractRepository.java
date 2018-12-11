@@ -3,6 +3,7 @@ package cs.repository;
 import cs.common.HqlBuilder;
 import cs.common.utils.Validate;
 import cs.repository.odata.ODataObj;
+import cs.xss.XssShieldUtil;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -11,10 +12,6 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.codecs.Codec;
-import org.owasp.esapi.codecs.OracleCodec;
-import org.owasp.esapi.codecs.WindowsCodec;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
@@ -82,7 +79,7 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         if (Validate.isObject(q)) {
             List<T> resultList = q.list();
             if (Validate.isList(resultList)) {
-                return resultList.get(0);
+                return  XssShieldUtil.getInstance().cleanObjXss(resultList.get(0));
             }
         }
         return null;
@@ -187,7 +184,7 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         QueryParamBuild<T> queryParamBuild = new QueryParamBuild(q);
         q = queryParamBuild.buildParams(hqlBuilder).getQuery();
         if (Validate.isObject(q)) {
-            return q.list();
+            return XssShieldUtil.getInstance().cleanListXss(q.list());
         }
         return null;
     }
@@ -198,7 +195,7 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         QueryParamBuild<T> queryParamBuild = new QueryParamBuild(q);
         q = queryParamBuild.buildParams(hqlBuilder).getQuery();
         if (Validate.isObject(q)) {
-            return q.list();
+            return XssShieldUtil.getInstance().cleanListXss(q.list());
         }
         return null;
     }
@@ -269,7 +266,7 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         QueryParamBuild queryParamBuild = new QueryParamBuild(q);
         q = queryParamBuild.buildParams(sqlBuilder).getQuery();
         if (Validate.isObject(q)) {
-            return q.list();
+            return  XssShieldUtil.getInstance().cleanXssObjectArr(q.list());
         }
         return null;
     }

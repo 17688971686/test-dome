@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class XSSFilter implements Filter {
@@ -29,6 +30,7 @@ public class XSSFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest servletRequest = (HttpServletRequest) request;
+
         boolean excludedUri = false;
         String uri = servletRequest.getRequestURI();
         String contextPath = servletRequest.getContextPath();
