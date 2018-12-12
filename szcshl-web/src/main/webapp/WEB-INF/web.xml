@@ -8,10 +8,12 @@
             classpath:spring.xml,classpath:spring-hibernate.xml,classpath:spring-shiro.xml,classpath:spring-httpclient.xml
         </param-value>
     </context-param>
-    <!--<context-param>
+
+    <context-param>
         <param-name>defaultHtmlEscape</param-name>
         <param-value>true</param-value>
-    </context-param>-->
+    </context-param>
+
     <error-page>
         <error-code>404</error-code>
         <location>/</location>

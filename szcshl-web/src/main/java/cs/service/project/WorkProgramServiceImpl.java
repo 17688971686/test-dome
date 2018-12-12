@@ -787,8 +787,8 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         List<ProMeetDto> proPmMeetDtoList = workProgramRepo.findPmProMeetInfo();
         List<ProMeetShow> proMeetShowList1 = proAmMeetInfoUpdate(proAmMeetDtoList);
         List<ProMeetShow> proMeetShowList2 = proAmMeetInfoUpdate(proPmMeetDtoList);
-        resultMap.put("proAmMeetDtoList", Validate.isList(proMeetShowList1)?proMeetShowList1:new ArrayList<>());
-        resultMap.put("proPmMeetDtoList", Validate.isList(proMeetShowList2)?proMeetShowList2:new ArrayList<>());
+        resultMap.put("proAmMeetDtoList", proMeetShowList1);
+        resultMap.put("proPmMeetDtoList", proMeetShowList2);
         return resultMap;
     }
 

@@ -11,10 +11,6 @@ import java.util.List;
  */
 public class FlowSql {
 
-    public static final String activityProSql = "SELECT arp.NAME_,arp.KEY_ FROM act_re_procdef arp where arp.KEY_ != ? GROUP BY arp.NAME_,arp.KEY_";
-
-    public static final String activityUserSql = "SELECT distinct ACT.USER_ID_ USER_ID from ACT_HI_IDENTITYLINK act where act.PROC_INST_ID_ = ?";
-
     public static HqlBuilder activityCommentSql(String procInstId, List<String> nodeKeys){
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append(" SELECT hm.*, CU.DISPLAYNAME AS DISPLAYNAME_ FROM ( ");
@@ -26,6 +22,30 @@ public class FlowSql {
         }
         sqlBuilder.append(" AND ha.ACT_TYPE_ = 'userTask' ) hm,cs_user cu WHERE hm.ASSIGNEE_ = CU.ID ORDER BY hm.TIME_");
 
+        return sqlBuilder;
+    }
+
+    /**
+     * 查询流程部署信息
+     * @param flowType
+     * @return
+     */
+    public static HqlBuilder activityFlowArpSql(String flowType){
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" SELECT arp.NAME_,arp.KEY_ FROM act_re_procdef arp where arp.KEY_ != ? GROUP BY arp.NAME_,arp.KEY_ ");
+        sqlBuilder.setParam("0",flowType);
+        return sqlBuilder;
+    }
+
+    /**
+     * 获取流程经办人信息
+     * @param processInstanceId
+     * @return
+     */
+    public static HqlBuilder activityFlowUserSql(String processInstanceId){
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" SELECT distinct ACT.USER_ID_ USER_ID from ACT_HI_IDENTITYLINK act where act.PROC_INST_ID_ = ? ");
+        sqlBuilder.setParam("0",processInstanceId);
         return sqlBuilder;
     }
 }

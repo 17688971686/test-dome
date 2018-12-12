@@ -67,7 +67,7 @@ import static cs.common.constants.Constant.ERROR_MSG;
 
 @Controller
 @RequestMapping(name = "流程", path = "flow")
-@MudoleAnnotation(name = "我的工作台",value = "permission#workbench")
+@MudoleAnnotation(name = "我的工作台", value = "permission#workbench")
 public class FlowController {
     private static Logger log = Logger.getLogger(FlowController.class);
 
@@ -149,15 +149,17 @@ public class FlowController {
     @ResponseBody
     public PageModelDto<RuProcessTask> tasks(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        List<RuProcessTask> resultList = flowService.queryRunProcessTasks(odataObj,true,null,null);
+        List<RuProcessTask> resultList = flowService.queryRunProcessTasks(odataObj, true, null, null);
         PageModelDto<RuProcessTask> pageModelDto = new PageModelDto<RuProcessTask>();
-        pageModelDto.setCount(Validate.isList(resultList)?resultList.size():0);
-        pageModelDto.setValue(Validate.isList(resultList)?resultList:new ArrayList<>());
-        return XssShieldUtil.getInstance().cleanPageXss(pageModelDto);
+        pageModelDto.setCount(Validate.isList(resultList) ? resultList.size() : 0);
+        pageModelDto.setValue(Validate.isList(resultList) ? resultList : new ArrayList<>());
+        XssShieldUtil.getInstance().cleanPageXss(pageModelDto);
+        return pageModelDto;
     }
 
     /**
      * 查询我的待办任务（除项目流程外）
+     *
      * @param request
      * @return
      * @throws ParseException
@@ -169,7 +171,8 @@ public class FlowController {
     public PageModelDto<RuTask> queryMyAgendaTask(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<RuTask> pageModelDto = flowService.queryMyAgendaTask(odataObj);
-        return XssShieldUtil.getInstance().cleanPageXss(pageModelDto);
+        XssShieldUtil.getInstance().cleanPageXss(pageModelDto);
+        return pageModelDto;
     }
 
     //@RequiresPermissions("flow#queryAgendaTask#post")
@@ -179,7 +182,8 @@ public class FlowController {
     public PageModelDto<RuTask> queryAgendaTask(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<RuTask> pageModelDto = flowService.queryAgendaTask(odataObj);
-        return XssShieldUtil.getInstance().cleanPageXss(pageModelDto);
+        XssShieldUtil.getInstance().cleanPageXss(pageModelDto);
+        return pageModelDto;
     }
 
     //@RequiresPermissions("flow#html/doingtasks#post")
@@ -190,29 +194,29 @@ public class FlowController {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<RuProcessTask> pageModelDto = new PageModelDto<RuProcessTask>();
 
-        Map<String,Object> authMap = userService.getUserSignAuth();
+        Map<String, Object> authMap = userService.getUserSignAuth();
         Integer authFlag = new Integer(authMap.get("leaderFlag").toString());
         List<String> orgIdList = (List<String>) authMap.get("orgIdList");
-        List<RuProcessTask> resultList = flowService.queryRunProcessTasks(odataObj,false,authFlag,orgIdList);
-        if(!Validate.isList(resultList)){
+        List<RuProcessTask> resultList = flowService.queryRunProcessTasks(odataObj, false, authFlag, orgIdList);
+        if (!Validate.isList(resultList)) {
             return pageModelDto;
         }
         //已项目为单位，要过滤掉重复的项目
         List<RuProcessTask> finalList = new ArrayList<>();
         List<String> existList = new ArrayList<>();
-        for (int i = 0,l=resultList.size(); i < l; i++) {
+        for (int i = 0, l = resultList.size(); i < l; i++) {
             RuProcessTask rpt = resultList.get(i);
             if (existList.contains(rpt.getBusinessKey())) {
                 //判断是否是主分支，是则替换为主分支
-                if(workProgramService.mainBranch(rpt.getBusinessKey())){
-                    for(int j = 0 ; j < finalList.size() ; j++){
+                if (workProgramService.mainBranch(rpt.getBusinessKey())) {
+                    for (int j = 0; j < finalList.size(); j++) {
                         RuProcessTask r = finalList.get(j);
-                        if(rpt.getBusinessKey().equals(r.getBusinessKey())){
-                            finalList.set(j , r);
+                        if (rpt.getBusinessKey().equals(r.getBusinessKey())) {
+                            finalList.set(j, r);
                             break;
                         }
                     }
-                }else{
+                } else {
                     continue;
                 }
             } else {
@@ -220,9 +224,10 @@ public class FlowController {
                 finalList.add(rpt);
             }
         }
-        pageModelDto.setCount(Validate.isList(finalList)?finalList.size():0);
-        pageModelDto.setValue(Validate.isList(finalList)?finalList:new ArrayList<>());
-        return XssShieldUtil.getInstance().cleanPageXss(pageModelDto);
+        pageModelDto.setCount(Validate.isList(finalList) ? finalList.size() : 0);
+        pageModelDto.setValue(Validate.isList(finalList) ? finalList : new ArrayList<>());
+        XssShieldUtil.getInstance().cleanPageXss(pageModelDto);
+        return pageModelDto;
     }
 
     //@RequiresPermissions("flow#html/endTasks#post")
@@ -232,15 +237,18 @@ public class FlowController {
     public PageModelDto<SignDispaWork> endTasks(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<SignDispaWork> pageModelDto = flowService.queryETasks(odataObj);
-        return XssShieldUtil.getInstance().cleanPageXss(pageModelDto);
+        XssShieldUtil.getInstance().cleanPageXss(pageModelDto);
+        return pageModelDto;
     }
 
     //@RequiresPermissions("flow#getMyHomeTasks#post")//停用
     @RequiresAuthentication
     @RequestMapping(name = "查询主页我的待办任务", path = "getMyHomeTasks", method = RequestMethod.POST)
     @ResponseBody
-    public  List<RuProcessTask> getMyHomeTasks() {
-        return flowService.queryMyRunProcessTasks(6);
+    public List<RuProcessTask> getMyHomeTasks() {
+        List<RuProcessTask> ruProcessTaskList = flowService.queryMyRunProcessTasks(6);
+        XssShieldUtil.getInstance().cleanListXss(ruProcessTaskList);
+        return ruProcessTaskList;
     }
 
     //@RequiresPermissions("flow#getMyHomeEndTask#post")
@@ -250,7 +258,8 @@ public class FlowController {
     public PageModelDto<TaskDto> queryEndTask(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<TaskDto> pageModelDto = flowService.queryEndTasks(odataObj);
-        return XssShieldUtil.getInstance().cleanPageXss(pageModelDto);
+        XssShieldUtil.getInstance().cleanPageXss(pageModelDto);
+        return pageModelDto;
     }
 
     @RequiresAuthentication
@@ -258,10 +267,10 @@ public class FlowController {
     public void readProccessInstanceImg(@PathVariable("processInstanceId") String processInstanceId, HttpServletResponse response)
             throws Exception {
         InputStream imageStream = getProcessInstanceImage(processInstanceId);
-        if(imageStream == null){
+        if (imageStream == null) {
             String resultMsg = "已找不到流程信息";
             response.getOutputStream().write(resultMsg.getBytes());
-        }else{
+        } else {
             // 输出资源内容到相应对象
             byte[] b = new byte[1024];
             int len;
@@ -274,7 +283,7 @@ public class FlowController {
 
     private InputStream getProcessInstanceImage(String processInstanceId) {
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
-        if(processInstance == null){
+        if (processInstance == null) {
             return null;
         }
         BpmnModel bpmnModel = repositoryService.getBpmnModel(processInstance.getProcessDefinitionId());
@@ -331,6 +340,7 @@ public class FlowController {
         return inputStream;
 
     }
+
     /*
     * 递归查询经过的流
     */
@@ -358,9 +368,10 @@ public class FlowController {
     public PageModelDto<HiProcessTask> findHisActivitiList(@PathVariable("processInstanceId") String processInstanceId) {
         List<HiProcessTask> list = flowService.getProcessHistory(processInstanceId);
         PageModelDto<HiProcessTask> pageModelDto = new PageModelDto<HiProcessTask>();
-        pageModelDto.setCount(Validate.isList(list)?list.size():0);
-        pageModelDto.setValue(Validate.isList(list)?list:new ArrayList<>());
-        return  XssShieldUtil.getInstance().cleanPageXss(pageModelDto);
+        pageModelDto.setCount(Validate.isList(list) ? list.size() : 0);
+        pageModelDto.setValue(Validate.isList(list) ? list : new ArrayList<>());
+        XssShieldUtil.getInstance().cleanPageXss(pageModelDto);
+        return pageModelDto;
     }
 
     @RequestMapping(name = "获取流程处理信息", path = "processInstance/flowNodeInfo", method = RequestMethod.POST)
@@ -388,84 +399,84 @@ public class FlowController {
             flowDto.setSuspended(task.isSuspended());
             flowDto.setProcessKey(processInstance.getProcessDefinitionKey());
 
-            Map<String,Object> dealFlowMap = new HashMap<>();
+            Map<String, Object> dealFlowMap = new HashMap<>();
             /**
              * 流程的一些参数处理
              */
-            switch (processInstance.getProcessDefinitionKey()){
+            switch (processInstance.getProcessDefinitionKey()) {
                 case FlowConstant.SIGN_FLOW:
-                    dealFlowMap = signFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey());
+                    dealFlowMap = signFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(), task.getTaskDefinitionKey());
                     break;
                 case FlowConstant.TOPIC_FLOW:
-                    dealFlowMap = topicFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey());
+                    dealFlowMap = topicFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(), task.getTaskDefinitionKey());
                     break;
                 case FlowConstant.BOOKS_BUY_FLOW:
-                    dealFlowMap = booksBuyBusFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey());
+                    dealFlowMap = booksBuyBusFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(), task.getTaskDefinitionKey());
                     break;
                 case FlowConstant.ASSERT_STORAGE_FLOW:
-                    dealFlowMap = assertStorageFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey());
+                    dealFlowMap = assertStorageFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(), task.getTaskDefinitionKey());
                     break;
                 case FlowConstant.PROJECT_STOP_FLOW:
-                    dealFlowMap = projectStopFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey());
+                    dealFlowMap = projectStopFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(), task.getTaskDefinitionKey());
                     break;
                 case FlowConstant.FLOW_ARCHIVES:
-                    dealFlowMap = archivesFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey());
+                    dealFlowMap = archivesFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(), task.getTaskDefinitionKey());
                     break;
                 case FlowConstant.FLOW_APPRAISE_REPORT:
-                    dealFlowMap = appraiseFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey());
+                    dealFlowMap = appraiseFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(), task.getTaskDefinitionKey());
                     break;
                 case FlowConstant.FLOW_SUPP_LETTER:
-                    dealFlowMap = suppLetterFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey());
+                    dealFlowMap = suppLetterFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(), task.getTaskDefinitionKey());
                     break;
                 case FlowConstant.MONTHLY_BULLETIN_FLOW:
-                    dealFlowMap = monthFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey());
+                    dealFlowMap = monthFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(), task.getTaskDefinitionKey());
                     break;
                 case FlowConstant.ANNOUNT_MENT_FLOW:
-                    dealFlowMap = annountMentFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey());
+                    dealFlowMap = annountMentFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(), task.getTaskDefinitionKey());
                     break;
                 default:
                     ;
             }
-            if(Validate.isMap(dealFlowMap)){
+            if (Validate.isMap(dealFlowMap)) {
                 flowDto.setBusinessMap(dealFlowMap);
             }
             //获取下一环节信息
-            if(false == flowDto.isEnd()){
+            if (false == flowDto.isEnd()) {
                 //获取下一环节信息--获取从某个节点出来的所有线路
                 ProcessDefinitionEntity def = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService)
                         .getDeployedProcessDefinition(task.getProcessDefinitionId());
                 ActivityImpl activityImpl = def.findActivity(task.getTaskDefinitionKey());
                 List<Node> nextNodeList = new ArrayList<>();
-                flowService.nextTaskDefinition(nextNodeList,activityImpl,task.getTaskDefinitionKey());
+                flowService.nextTaskDefinition(nextNodeList, activityImpl, task.getTaskDefinitionKey());
                 //如果有环节需要过滤，则过滤
                 FlowNextNodeFilter flowNextNodeFilter = FlowNextNodeFilter.getInstance(task.getTaskDefinitionKey());
-                if(flowNextNodeFilter != null){
-                    nextNodeList = flowNextNodeFilter.filterNextNode(flowDto.getBusinessMap(),nextNodeList);
+                if (flowNextNodeFilter != null) {
+                    nextNodeList = flowNextNodeFilter.filterNextNode(flowDto.getBusinessMap(), nextNodeList);
                 }
                 flowDto.setNextNode(nextNodeList);
             }
 
-        }else{
+        } else {
             //如果任务已处理，则任务ID为空
             flowDto.setTaskId(null);
         }
-
-        return  XssShieldUtil.getInstance().cleanObjXss(flowDto);
+        XssShieldUtil.getInstance().cleanObjXss(flowDto);
+        return flowDto;
     }
 
 
     @RequiresAuthentication
     @RequestMapping(name = "流程提交", path = "commit", method = RequestMethod.POST)
-    @LogMsg(module = "流程提交",logLevel = "1")
+    @LogMsg(module = "流程提交", logLevel = "1")
     @ResponseBody
     @Transactional(rollbackFor = {Exception.class})
-    public ResultMsg flowCommit(@RequestBody FlowDto flowDto){
+    public ResultMsg flowCommit(@RequestBody FlowDto flowDto) {
         ResultMsg resultMsg = null;
-        String errorMsg = "",module="";
+        String errorMsg = "", module = "";
         ProcessInstance processInstance = null;
         boolean isProj = false;
         Task task = null;
-        try{
+        try {
             processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(flowDto.getProcessInstanceId()).singleResult();
             if (Validate.isString(flowDto.getTaskId())) {
                 task = taskService.createTaskQuery().taskId(flowDto.getTaskId()).active().singleResult();
@@ -480,69 +491,70 @@ public class FlowController {
             }
             module = processInstance.getProcessDefinitionKey();
 
-            switch (module){
+            switch (module) {
                 case FlowConstant.SIGN_FLOW:
                     isProj = true;
-                    resultMsg = signService.dealFlow(processInstance, task,flowDto);
+                    resultMsg = signService.dealFlow(processInstance, task, flowDto);
                     break;
                 case FlowConstant.WORK_HIS_FLOW:
-                    resultMsg = workProgramService.dealFlow(processInstance, task,flowDto);
+                    resultMsg = workProgramService.dealFlow(processInstance, task, flowDto);
                     break;
                 case FlowConstant.TOPIC_FLOW:
-                    resultMsg = topicInfoService.dealFlow(processInstance, task,flowDto);
+                    resultMsg = topicInfoService.dealFlow(processInstance, task, flowDto);
                     break;
                 //图书流程，已给委里处理
                 case FlowConstant.BOOKS_BUY_FLOW:
-                    resultMsg = bookBuyBusinessService.dealFlow(processInstance, task,flowDto);
+                    resultMsg = bookBuyBusinessService.dealFlow(processInstance, task, flowDto);
                     break;
                 //固定资产，已给委里处理
                 case FlowConstant.ASSERT_STORAGE_FLOW:
-                    resultMsg = assertStorageBusinessService.dealFlow(processInstance,task,flowDto);
+                    resultMsg = assertStorageBusinessService.dealFlow(processInstance, task, flowDto);
                     break;
                 case FlowConstant.PROJECT_STOP_FLOW:
-                    resultMsg = projectStopService.dealFlow(processInstance, task,flowDto);
+                    resultMsg = projectStopService.dealFlow(processInstance, task, flowDto);
                     break;
                 case FlowConstant.FLOW_ARCHIVES:
-                    resultMsg = archivesLibraryService.dealFlow(processInstance, task,flowDto);
+                    resultMsg = archivesLibraryService.dealFlow(processInstance, task, flowDto);
                     break;
                 case FlowConstant.FLOW_APPRAISE_REPORT:
-                    resultMsg = appraiseService.dealFlow(processInstance, task,flowDto);
+                    resultMsg = appraiseService.dealFlow(processInstance, task, flowDto);
                     break;
                 case FlowConstant.FLOW_SUPP_LETTER:
-                    resultMsg = addSuppLetterService.dealSignSupperFlow(processInstance, task,flowDto);
+                    resultMsg = addSuppLetterService.dealSignSupperFlow(processInstance, task, flowDto);
                     break;
                 case FlowConstant.MONTHLY_BULLETIN_FLOW:
-                    resultMsg = monthlyNewsletterService.dealSignSupperFlow(processInstance, task,flowDto);
+                    resultMsg = monthlyNewsletterService.dealSignSupperFlow(processInstance, task, flowDto);
                     break;
                 case FlowConstant.ANNOUNT_MENT_FLOW:
-                    resultMsg = annountmentService.dealSignSupperFlow(processInstance, task,flowDto);
+                    resultMsg = annountmentService.dealSignSupperFlow(processInstance, task, flowDto);
                     break;
                 default:
-                    resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"操作失败，没有对应的流程！");
+                    resultMsg = new ResultMsg(false, MsgCode.ERROR.getValue(), "操作失败，没有对应的流程！");
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             errorMsg = e.getMessage();
-            log.info("流程提交异常："+errorMsg);
-            resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"操作异常，错误信息已记录，请联系管理员查看！异常信息："+errorMsg);
+            log.info("流程提交异常：" + errorMsg);
+            resultMsg = new ResultMsg(false, MsgCode.ERROR.getValue(), "操作异常，错误信息已记录，请联系管理员查看！异常信息：" + errorMsg);
         }
-        if(!Validate.isObject(resultMsg)){
+        if (!Validate.isObject(resultMsg)) {
             return ResultMsg.error(ERROR_MSG);
         }
 
         String taskId = flowDto.getTaskId();
-        if(Validate.isString(resultMsg.getIdCode())){
+        if (Validate.isString(resultMsg.getIdCode())) {
             taskId = resultMsg.getIdCode();
             resultMsg.setIdCode(null);
         }
         //腾讯通消息处理
-        if(isProj){
-            rtxService.dealPoolRTXMsg(task.getTaskDefinitionKey(),taskId,resultMsg,processInstance.getName(), MsgType.project_type.name());
-        }else{
+        if (isProj) {
+            rtxService.dealPoolRTXMsg(task.getTaskDefinitionKey(), taskId, resultMsg, processInstance.getName(), MsgType.project_type.name());
+        } else {
             ProcessDefinitionEntity processDefinitionEntity = (ProcessDefinitionEntity) repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());
-            rtxService.dealPoolRTXMsg(task.getTaskDefinitionKey(),taskId,resultMsg,processDefinitionEntity.getName(), MsgType.task_type.name());
+            rtxService.dealPoolRTXMsg(task.getTaskDefinitionKey(), taskId, resultMsg, processDefinitionEntity.getName(), MsgType.task_type.name());
         }
 
-        return  XssShieldUtil.getInstance().cleanResultMsgXss(resultMsg);
+        XssShieldUtil.getInstance().cleanResultMsgXss(resultMsg);
+        return resultMsg;
     }
 
     @RequiresAuthentication
@@ -551,7 +563,8 @@ public class FlowController {
     @Transactional
     public ResultMsg rollBackLast(@RequestBody FlowDto flowDto) {
         ResultMsg resultMsg = flowService.rollBackLastNode(flowDto);
-        return  XssShieldUtil.getInstance().cleanResultMsgXss(resultMsg);
+        XssShieldUtil.getInstance().cleanResultMsgXss(resultMsg);
+        return resultMsg;
     }
 
     @RequiresAuthentication
@@ -561,11 +574,13 @@ public class FlowController {
     public ResultMsg activeFlow(@PathVariable("businessKey") String businessKey) {
         log.info("流程激活成功！businessKey=" + businessKey);
         ResultMsg resultMsg = flowService.restartFlow(businessKey);
-        return  XssShieldUtil.getInstance().cleanResultMsgXss(resultMsg);
+        XssShieldUtil.getInstance().cleanResultMsgXss(resultMsg);
+        return resultMsg;
     }
 
     /**
      * 流程挂起
+     *
      * @param businessKey
      * @return
      */
@@ -576,18 +591,19 @@ public class FlowController {
     public ResultMsg suspendFlow(@PathVariable("businessKey") String businessKey) {
         log.info("流程挂起成功！businessKey=" + businessKey);
         ResultMsg resultMsg = flowService.stopFlow(businessKey);
-        return  XssShieldUtil.getInstance().cleanResultMsgXss(resultMsg);
+        XssShieldUtil.getInstance().cleanResultMsgXss(resultMsg);
+        return resultMsg;
     }
 
     @RequiresAuthentication
     @Transactional
     @RequestMapping(name = "终止流程", path = "deleteFLow", method = RequestMethod.POST)
     @ResponseBody
-    public ResultMsg deleteFlow(@RequestParam String processInstanceId,String comment) {
-        ResultMsg resultMsg =  ResultMsg.error("操作失败，没有对应的流程！");
+    public ResultMsg deleteFlow(@RequestParam String processInstanceId, String comment) {
+        ResultMsg resultMsg = ResultMsg.error("操作失败，没有对应的流程！");
         //流程实例
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
-        switch (processInstance.getProcessDefinitionKey()){
+        switch (processInstance.getProcessDefinitionKey()) {
             case FlowConstant.SIGN_FLOW:
                 resultMsg = signService.endFlow(processInstance.getBusinessKey());
                 break;
@@ -619,27 +635,30 @@ public class FlowController {
                 ;
         }
         //成功再删除流程
-        if(resultMsg.isFlag()){
+        if (resultMsg.isFlag()) {
             runtimeService.deleteProcessInstance(processInstance.getId(), comment);
         }
         log.info("流程终止成功！businessKey=" + processInstance.getBusinessKey());
-        return  XssShieldUtil.getInstance().cleanResultMsgXss(resultMsg);
+        XssShieldUtil.getInstance().cleanResultMsgXss(resultMsg);
+        return resultMsg;
     }
 
     @RequiresAuthentication
-    @RequestMapping(name = "任务转办", path = "taskTransferAssignee", method ={RequestMethod.POST,RequestMethod.GET} )
+    @RequestMapping(name = "任务转办", path = "taskTransferAssignee", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
-    public ResultMsg taskTransferAssignee(@RequestParam String taskId, @RequestParam String oldUserId, @RequestParam String newUserId){
-        ResultMsg resultMsg = flowService.taskTransferAssignee(taskId,oldUserId,newUserId);
-        return XssShieldUtil.getInstance().cleanResultMsgXss(resultMsg);
+    public ResultMsg taskTransferAssignee(@RequestParam String taskId, @RequestParam String oldUserId, @RequestParam String newUserId) {
+        ResultMsg resultMsg = flowService.taskTransferAssignee(taskId, oldUserId, newUserId);
+        XssShieldUtil.getInstance().cleanResultMsgXss(resultMsg);
+        return resultMsg;
     }
+
     /******************************   以下是页面处理  ******************************/
     //@RequiresPermissions("flow#flowDeal/processKey#get")
     @RequiresAuthentication
     @RequestMapping(name = "待办任务页面", path = "flowDeal/{processKey}", method = RequestMethod.GET)
     public String ruProcessTask(@PathVariable("processKey") String processKey) {
         String resultPage = "";
-        switch (processKey){
+        switch (processKey) {
             case FlowConstant.TOPIC_FLOW:
                 resultPage = "topicInfo/flowDeal";
                 break;
@@ -681,7 +700,7 @@ public class FlowController {
     @RequestMapping(name = "在办任务", path = "flowDetail/{processKey}", method = RequestMethod.GET)
     public String flowDetail(@PathVariable("processKey") String processKey) {
         String resultPage = "";
-        switch (processKey){
+        switch (processKey) {
             case FlowConstant.TOPIC_FLOW:
                 resultPage = "topicInfo/flowDetail";
                 break;
@@ -723,13 +742,13 @@ public class FlowController {
     @RequestMapping(name = "办结任务", path = "flowEnd/{processKey}", method = RequestMethod.GET)
     public String flowEnd(@PathVariable("processKey") String processKey) {
         String resultPage = "";
-        switch (processKey){
+        switch (processKey) {
             case FlowConstant.TOPIC_FLOW:
                 resultPage = "topicInfo/flowEnd";
                 break;
             case FlowConstant.ASSERT_STORAGE_FLOW:
-                 resultPage = "asserts/assertStorageBusiness/flowEnd";
-                 break;
+                resultPage = "asserts/assertStorageBusiness/flowEnd";
+                break;
             case FlowConstant.PROJECT_STOP_FLOW:
                 resultPage = "projectStop/flowEnd";
                 break;
@@ -761,55 +780,58 @@ public class FlowController {
     }
 
     @RequiresAuthentication
-    @RequestMapping(name = "获取流程列表",path = "proc",method = RequestMethod.GET)
+    @RequestMapping(name = "获取流程列表", path = "proc", method = RequestMethod.GET)
     @ResponseBody
-    public List<Map<String, Object>> getProc(){
+    public List<Map<String, Object>> getProc() {
         List<Map<String, Object>> resultList = flowService.getProc();
-        return  XssShieldUtil.getInstance().cleanMapListXss(resultList);
+        XssShieldUtil.getInstance().cleanMapListXss(resultList);
+        return resultList;
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "获取重写工作方案分支", path = "getBranchInfo", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String,Object> getReWorkBranch(@RequestParam String signId) {
-        Map<String,Object> resultMap = new HashMap<>();
+    public Map<String, Object> getReWorkBranch(@RequestParam String signId) {
+        Map<String, Object> resultMap = new HashMap<>();
 
         //分支列表
         List<Map<String, Object>> branchList = flowService.getBranchInfo(signId);
-        if(!Validate.isList(branchList)){
-            branchList = new ArrayList<>();
+        if (Validate.isList(branchList)) {
+            XssShieldUtil.getInstance().cleanMapListXss(branchList);
         }
-        resultMap.put("branchList",branchList);
+        resultMap.put("branchList", branchList);
 
         //用户列表，直接选择项目负责人即可
         List<User> userList = signPrincipalService.getAllSecondPriUser(signId);
-        if(null == userList){
+        if (null == userList) {
             userList = new ArrayList<>();
         }
         userList.add(signPrincipalService.getMainPriUser(signId));
-        if(Validate.isList(userList)){
+        if (Validate.isList(userList)) {
             List<UserDto> userDtoList = new ArrayList<>(userList.size());
-            userList.forEach(pul ->{
+            userList.forEach(pul -> {
                 UserDto userDto = new UserDto();
-                BeanCopierUtils.copyProperties(pul,userDto);
+                BeanCopierUtils.copyProperties(pul, userDto);
                 userDtoList.add(userDto);
             });
-            resultMap.put("userList",userDtoList);
+            XssShieldUtil.getInstance().cleanListXss(userDtoList);
+            resultMap.put("userList", userDtoList);
         }
-        return  XssShieldUtil.getInstance().cleanMapXss(resultMap);
+        return resultMap;
     }
 
     /**
      * 校验是否是领导
+     *
      * @return
      */
-    private boolean checkIsLeader(List<Role> roles){
+    private boolean checkIsLeader(List<Role> roles) {
         boolean isLeader = false;
-        if(Validate.isList(roles)){
-            for(Role role : roles){
-                if(role.getRoleName().equals(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())
+        if (Validate.isList(roles)) {
+            for (Role role : roles) {
+                if (role.getRoleName().equals(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())
                         || role.getRoleName().equals(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())
-                        || role.getRoleName().equals(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())){
+                        || role.getRoleName().equals(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())) {
                     isLeader = true;
                 }
             }

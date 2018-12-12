@@ -1,9 +1,9 @@
 package cs.repository;
 
 import cs.common.HqlBuilder;
+import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import cs.repository.odata.ODataObj;
-import cs.xss.XssShieldUtil;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -12,11 +12,17 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
+import org.hibernate.type.Type;
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.codecs.Codec;
+import org.owasp.esapi.codecs.OracleCodec;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
+import java.util.Map;
 
 public class AbstractRepository<T, ID extends Serializable> implements IRepository<T, ID> {
     protected static Logger logger = Logger.getLogger(AbstractRepository.class);
@@ -25,6 +31,8 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
     private Session session;
     @Autowired
     private SessionFactory sessionFactory;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     public Class<T> getPersistentClass() {
         return persistentClass;
@@ -53,7 +61,7 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         logger.debug("findById");
         if (null != id) {
             Session session = getSession();
-            if(null != session){
+            if (null != session) {
                 return session.load(this.getPersistentClass(), id);
             }
         }
@@ -74,17 +82,45 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         hqlBuilder.append(" where " + idPropertyName + " = :id ");
         hqlBuilder.setParam("id", idValue);
         Query<T> q = this.getCurrentSession().createQuery(hqlBuilder.getHqlString(), this.getPersistentClass());
-        QueryParamBuild<T> queryParamBuild = new QueryParamBuild(q);
-        q = queryParamBuild.buildParams(hqlBuilder).getQuery();
-        if (Validate.isObject(q)) {
-            List<T> resultList = q.list();
-            if (Validate.isList(resultList)) {
-                return  XssShieldUtil.getInstance().cleanObjXss(resultList.get(0));
-            }
+        this.buildParams(q, hqlBuilder);
+        List<T> resultList = q.list();
+        if (Validate.isList(resultList)) {
+            return resultList.get(0);
         }
         return null;
     }
 
+    protected void buildParams(Query<T> query, HqlBuilder hqlBuilder) {
+        if (Validate.isObject(query)) {
+            List<String> params = hqlBuilder.getParams();
+            List<Object> values = hqlBuilder.getValues();
+            List<Type> types = hqlBuilder.getTypes();
+            Codec oracleCodec = new OracleCodec();
+            if (Validate.isList(params)) {
+                for (int i = 0, l = params.size(); i < l; i++) {
+                    String paramName = params.get(i);
+                    Object value = values.get(i);
+                    if (!Validate.isString(paramName) || !Validate.isObject(value)) {
+                        continue;
+                    }
+                    if (value instanceof String) {
+                        value = ESAPI.encoder().encodeForSQL(oracleCodec, value.toString());
+                        if (Validate.isString(value)) {
+                            value = StringUtil.sqlInjectionFilter(value.toString());
+                            if (!Validate.isString(value)) {
+                                continue;
+                            }
+                        }
+                    }
+                    if (types.get(i) == null) {
+                        query.setParameter(paramName, value);
+                    } else {
+                        query.setParameter(paramName, value, types.get(i));
+                    }
+                }
+            }
+        }
+    }
 
     @Override
     public List<T> findAll() {
@@ -181,23 +217,15 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
     @Override
     public List<T> findByHql(HqlBuilder hqlBuilder) {
         Query<T> q = this.getCurrentSession().createQuery(hqlBuilder.getHqlString(), this.getPersistentClass());
-        QueryParamBuild<T> queryParamBuild = new QueryParamBuild(q);
-        q = queryParamBuild.buildParams(hqlBuilder).getQuery();
-        if (Validate.isObject(q)) {
-            return XssShieldUtil.getInstance().cleanListXss(q.list());
-        }
-        return null;
+        this.buildParams(q, hqlBuilder);
+        return q.list();
     }
 
     @Override
     public List<T> findBySql(HqlBuilder hqlBuilder) {
         Query<T> q = this.getCurrentSession().createNativeQuery(hqlBuilder.getHqlString(), this.getPersistentClass());
-        QueryParamBuild<T> queryParamBuild = new QueryParamBuild(q);
-        q = queryParamBuild.buildParams(hqlBuilder).getQuery();
-        if (Validate.isObject(q)) {
-            return XssShieldUtil.getInstance().cleanListXss(q.list());
-        }
-        return null;
+        this.buildParams(q, hqlBuilder);
+        return q.list();
     }
 
     /**
@@ -208,44 +236,34 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
      */
     @Override
     public int returnIntBySql(HqlBuilder sqlBuilder) {
-        Query<Number> q = this.getCurrentSession().createNativeQuery(sqlBuilder.getHqlString(),Number.class);
-        QueryParamBuild<Number> queryParamBuild = new QueryParamBuild(q);
-        q = queryParamBuild.buildParams(sqlBuilder).getQuery();
+        Query q = this.getCurrentSession().createNativeQuery(sqlBuilder.getHqlString());
+        this.buildParams(q, sqlBuilder);
+        Object value = q.getSingleResult();
         int returnValue = -1;
-        if (Validate.isObject(q)) {
-            returnValue = Integer.parseInt(q.getSingleResult().toString());
+        if (Validate.isObject(value)) {
+            returnValue = Integer.parseInt(value.toString());
         }
         return returnValue;
     }
 
     @Override
     public int executeHql(HqlBuilder hqlBuilder) {
-        Query<Number> q = this.getCurrentSession().createQuery(hqlBuilder.getHqlString(),Number.class);
-        QueryParamBuild<Number> queryParamBuild = new QueryParamBuild(q);
-        q = queryParamBuild.buildParams(hqlBuilder).getQuery();
-        int updateCount = -1;
-        if (Validate.isObject(q)) {
-            updateCount = q.executeUpdate();
-        }
-        return updateCount;
+        Query q = this.getCurrentSession().createQuery(hqlBuilder.getHqlString());
+        this.buildParams(q, hqlBuilder);
+        return q.executeUpdate();
     }
 
     @Override
     public int executeSql(HqlBuilder hqlBuilder) {
-        Query<Number> q = this.getCurrentSession().createNativeQuery(hqlBuilder.getHqlString(),Number.class);
-        QueryParamBuild<Number> queryParamBuild = new QueryParamBuild(q);
-        q = queryParamBuild.buildParams(hqlBuilder).getQuery();
-        int updateCount = -1;
-        if (Validate.isObject(q)) {
-            updateCount = q.executeUpdate();
-        }
-        return updateCount;
+        Query q = this.getCurrentSession().createNativeQuery(hqlBuilder.getHqlString());
+        this.buildParams(q, hqlBuilder);
+        return q.executeUpdate();
     }
 
 
     @Override
     public int deleteById(String idPropertyName, String idValue) {
-        if(!Validate.isString(idPropertyName) || !Validate.isString(idValue)){
+        if (!Validate.isString(idPropertyName) || !Validate.isString(idValue)) {
             return -1;
         }
         HqlBuilder hqlBuilder = HqlBuilder.create();
@@ -263,12 +281,8 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
     @Override
     public List<Object[]> getObjectArray(HqlBuilder sqlBuilder) {
         Query q = this.getCurrentSession().createNativeQuery(sqlBuilder.getHqlString());
-        QueryParamBuild queryParamBuild = new QueryParamBuild(q);
-        q = queryParamBuild.buildParams(sqlBuilder).getQuery();
-        if (Validate.isObject(q)) {
-            return  XssShieldUtil.getInstance().cleanXssObjectArr(q.list());
-        }
-        return null;
+        this.buildParams(q, sqlBuilder);
+        return q.list();
     }
 
     @Override
@@ -298,5 +312,13 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         } catch (Exception ex) {
         }
         return dataBaseTime;
+    }
+
+    @Override
+    public List<Map<String, Object>> findByJdbc(HqlBuilder queryBuilder) {
+        if (Validate.isEmpty(queryBuilder.getJdbcValue())) {
+            return jdbcTemplate.queryForList(queryBuilder.getHqlString());
+        }
+        return jdbcTemplate.queryForList(queryBuilder.getHqlString(), queryBuilder.getJdbcValue());
     }
 }

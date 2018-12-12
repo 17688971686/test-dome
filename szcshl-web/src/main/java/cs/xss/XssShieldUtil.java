@@ -6,6 +6,7 @@ import cs.common.utils.ReflectionUtils;
 import cs.common.utils.Validate;
 import cs.model.PageModelDto;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.owasp.encoder.Encode;
 import org.owasp.esapi.ESAPI;
 import org.owasp.esapi.errors.EncodingException;
 import org.owasp.validator.html.*;
@@ -43,9 +44,8 @@ public class XssShieldUtil {
         }
     }
 
-    public List<Object[]> cleanXssObjectArr(List<Object[]> sourceObjArr) {
+    public void cleanXssObjectArr(List<Object[]> sourceObjArr) {
         if (Validate.isList(sourceObjArr)) {
-            List<Object[]> resultList = new ArrayList<>();
             for (int i = 0, l = sourceObjArr.size(); i < l; i++) {
                 Object[] objectArr = sourceObjArr.get(i);
                 if (!Validate.isEmpty(objectArr)) {
@@ -59,14 +59,11 @@ public class XssShieldUtil {
                         }
                     }
                 }
-                resultList.add(objectArr);
             }
-            return resultList;
         }
-        return null;
     }
 
-    public Map<String, Object> cleanMapXss(Map<String, Object> resultMap) {
+    public void cleanMapXss(Map<String, Object> resultMap) {
         if (Validate.isMap(resultMap)) {
             Iterator entries = resultMap.entrySet().iterator();
             while (entries.hasNext()) {
@@ -82,18 +79,14 @@ public class XssShieldUtil {
                 }
             }
         }
-        return resultMap;
     }
 
-    public List<Map<String, Object>> cleanMapListXss(List<Map<String, Object>> mapList) {
+    public void cleanMapListXss(List<Map<String, Object>> mapList) {
         if (Validate.isList(mapList)) {
-            List<Map<String, Object>> resultList = new ArrayList<>();
             for (Map<String, Object> map : mapList) {
-                resultList.add(cleanMapXss(map));
+                cleanMapXss(map);
             }
-            return resultList;
         }
-        return mapList;
     }
 
     /**
@@ -103,12 +96,12 @@ public class XssShieldUtil {
      * @param <T>
      * @return
      */
-    public <T> PageModelDto<T> cleanPageXss(PageModelDto<T> pageModelDto) {
+    public <T> void cleanPageXss(PageModelDto<T> pageModelDto) {
         if (Validate.isObject(pageModelDto)) {
             List<T> pageValueList = pageModelDto.getValue();
-            pageModelDto.setValue(cleanListXss(pageValueList));
+            cleanListXss(pageValueList);
+            pageModelDto.setValue(pageValueList);
         }
-        return pageModelDto;
     }
 
     /**
@@ -117,31 +110,29 @@ public class XssShieldUtil {
      * @param resultMsg
      * @return
      */
-    public ResultMsg cleanResultMsgXss(ResultMsg resultMsg) {
+    public void cleanResultMsgXss(ResultMsg resultMsg) {
         if (Validate.isObject(resultMsg)) {
             if (Validate.isString(resultMsg.getIdCode())) {
-                resultMsg.setIdCode(responseCleanXss(resultMsg.getIdCode(),1));
+                resultMsg.setIdCode(responseCleanXss2(resultMsg.getIdCode()));
             }
             if (Validate.isString(resultMsg.getReCode())) {
-                resultMsg.setReCode(responseCleanXss(resultMsg.getReCode(),1));
+                resultMsg.setReCode(responseCleanXss2(resultMsg.getReCode()));
             }
             if (Validate.isString(resultMsg.getReMsg())) {
-                resultMsg.setReMsg(responseCleanXss(resultMsg.getReMsg(),1));
+                resultMsg.setReMsg(responseCleanXss2(resultMsg.getReMsg()));
             }
             if (Validate.isObject(resultMsg.getReObj())) {
                 Object value = resultMsg.getReObj();
                 if (value instanceof String) {
                     if (Validate.isString(value)) {
-                        resultMsg.setReObj(responseCleanXss(value.toString(),1));
+                        resultMsg.setReObj(responseCleanXss2(value.toString()));
                     }
                 }
             }
-            return resultMsg;
         }
-        return null;
     }
 
-    public <T> T cleanObjXss(T t) {
+    public <T> void cleanObjXss(T t) {
         Class<?> clazz1 = t.getClass();
         List<Field> field1 = ReflectionUtils.getClassAllField(clazz1);
         //遍历属性列表field1
@@ -157,20 +148,23 @@ public class XssShieldUtil {
                 }
             }
         }
-        return t;
     }
 
-    public <T> List<T> cleanListXss(List<T> list) {
-        if (list != null && list.size() > 0) {
-            List<T> resultList = new ArrayList<>();
+    public <T> void cleanListXss(List<T> list) {
+        if (Validate.isList(list)) {
             for (T t : list) {
-                t = cleanObjXss(t);
-                resultList.add(t);
+                cleanObjXss(t);
             }
-            return resultList;
-        } else {
-            return list;
         }
+    }
+
+    public String responseCleanXss2(String value){
+        if(Validate.isString(value)){
+            //规范化字符串
+            value = ESAPI.encoder().canonicalize(value);
+            return Encode.forHtml(value);
+        }
+        return value;
     }
 
     /**
@@ -186,6 +180,9 @@ public class XssShieldUtil {
      */
     public String responseCleanXss(String value, int encodeType) {
         if (Validate.isString(value)) {
+            //规范化字符串
+            value = ESAPI.encoder().canonicalize(value);
+            //输出转码
             switch (encodeType) {
                 case 1:
                     value = ESAPI.encoder().encodeForHTML(value);
@@ -209,20 +206,25 @@ public class XssShieldUtil {
                 default:
                     value = ESAPI.encoder().encodeForHTML(value);
             }
-
         }
         return value;
     }
 
-    //输入字符串过滤
+    /**
+     * 输入字符串过滤
+     * @param value
+     * @return
+     */
     public String stripXss(String value) {
         if (Validate.isString(value)) {
             try {
                 //按utf-8解碼:防止有害脚本
                 value = URLDecoder.decode(value, SysConstants.UTF8);
                 AntiSamy antiSamy = new AntiSamy();
-                CleanResults cr = antiSamy.scan(value, policy);//扫描
-                value = cr.getCleanHTML();//获取清洗后的结果
+                //扫描
+                CleanResults cr = antiSamy.scan(value, policy);
+                //获取清洗后的结果
+                value = cr.getCleanHTML();
             } catch (ScanException e) {
                 e.printStackTrace();
             } catch (PolicyException e) {

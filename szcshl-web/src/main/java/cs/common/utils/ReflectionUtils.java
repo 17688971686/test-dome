@@ -82,8 +82,7 @@ public class ReflectionUtils {
             if (type.equals(double.class) || type.equals(Double.class)) {
                 return number.doubleValue();
             }
-        }
-        if (type.equals(String.class)) {
+        }else if (type.equals(String.class)) {
             return object == null ? "" : object.toString();
         }
         return object;

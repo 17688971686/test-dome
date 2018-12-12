@@ -67,7 +67,6 @@ import org.hibernate.query.NativeQuery;
 import org.hibernate.type.StringType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -150,8 +149,7 @@ public class FlowServiceImpl implements FlowService {
     @Autowired
     @Qualifier("workHisFlowBackImpl")
     private IFlowBack workHisFlowBackImpl;
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+
     @Autowired
     private LogService logService;
     @Autowired
@@ -1336,7 +1334,8 @@ public class FlowServiceImpl implements FlowService {
      */
     @Override
     public List<Map<String, Object>> getProc() {
-        return jdbcTemplate.queryForList(FlowSql.activityProSql, SIGN_FLOW);
+        HqlBuilder procBuilder = FlowSql.activityFlowArpSql(SIGN_FLOW);
+        return signRepo.findByJdbc(procBuilder);
     }
 
     /**
@@ -1347,7 +1346,8 @@ public class FlowServiceImpl implements FlowService {
      */
     @Override
     public List<String> findUserIdByProcessInstanceId(String processInstanceId) {
-        List<Map<String, Object>> resultMapList = jdbcTemplate.queryForList(FlowSql.activityUserSql, processInstanceId);
+        HqlBuilder procBuilder = FlowSql.activityFlowUserSql(processInstanceId);
+        List<Map<String, Object>> resultMapList = signRepo.findByJdbc(procBuilder);
         List<String> resultList = new ArrayList<>();
         for (Map<String, Object> map : resultMapList) {
             resultList.add(map.get("USER_ID") == null ? "" : map.get("USER_ID").toString());
@@ -1460,8 +1460,8 @@ public class FlowServiceImpl implements FlowService {
 
     @Override
     public List<Map<String, Object>> getBranchInfo(String signId) {
-        HqlBuilder hqlBuilder = WorkSql.getReWorkSql();
-        return jdbcTemplate.queryForList(hqlBuilder.getHqlString(), signId);
+        HqlBuilder hqlBuilder = WorkSql.getReWorkSql(signId);
+        return signRepo.findByJdbc(hqlBuilder);
     }
 
     /**

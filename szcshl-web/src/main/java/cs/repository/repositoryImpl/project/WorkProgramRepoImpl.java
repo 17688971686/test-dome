@@ -32,7 +32,7 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram,String> implements WorkProgramRepo {
+public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram, String> implements WorkProgramRepo {
 
     @Autowired
     private SignMergeRepo signMergeRepo;
@@ -46,6 +46,7 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram,String> 
     private ExpertReviewRepo expertReviewRepo;
     @Autowired
     private SignBranchRepo signBranchRepo;
+
     /**
      * 根据收文编号，查询对应工作方案
      *
@@ -76,7 +77,7 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram,String> 
         hqlBuilder.append(" from " + WorkProgram.class.getSimpleName() + " where " + WorkProgram_.sign.getName() + "." + Sign_.signid.getName() + " =:signId ");
         hqlBuilder.setParam("signId", signId);
         hqlBuilder.append(" and " + WorkProgram_.branchId.getName() + " =:branchId ").setParam("branchId", branchId);
-        if(isBaseInfo){
+        if (isBaseInfo) {
             hqlBuilder.append(" and " + WorkProgram_.baseInfo.getName() + " =:wpstate ").setParam("wpstate", Constant.EnumState.YES.getValue());
         }
         List<WorkProgram> wpList = findByHql(hqlBuilder);
@@ -243,9 +244,9 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram,String> 
     @Override
     public Boolean mainBranch(String signId) {
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append(" select id from cs_work_program where signid =:signid ").setParam("signid", signId);
+        hqlBuilder.append(" select count(id) from cs_work_program where signid =:signid ").setParam("signid", signId);
         hqlBuilder.append(" and branchId = '1'");
-        return this.executeSql(hqlBuilder) > 0 ? true : false;
+        return this.returnIntBySql(hqlBuilder) > 0 ? true : false;
     }
 
     /**
@@ -255,138 +256,138 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram,String> 
      */
     @Override
     public List<ProMeetDto> findAmProMeetInfo() {
+        List<ProMeetDto> proAmMeetDtoList = new ArrayList<>();
         List<Object[]> objList = getObjectArray(WorkSql.homeMeetCountSql());
-        List<ProMeetDto> proAmMeetDtoList = new ArrayList<ProMeetDto>();
-        for (int i = 0; i < objList.size(); i++) {
-            ProMeetDto proMeetDto = new ProMeetDto();
-            Object[] objRow = objList.get(i);
-            if (null != objRow[0]) {
-                proMeetDto.setProMeetDate((Date) objRow[0]);
+        if (Validate.isList(objList)) {
+            for (int i = 0, l = objList.size(); i < l; i++) {
+                ProMeetDto proMeetDto = new ProMeetDto();
+                Object[] objRow = objList.get(i);
+                if (null != objRow[0]) {
+                    proMeetDto.setProMeetDate((Date) objRow[0]);
+                }
+                if (null != objRow[1]) {
+                    proMeetDto.setRbName((String) objRow[1]);
+                }
+                if (null != objRow[2]) {
+                    proMeetDto.setAddressName((String) objRow[2]);
+                }
+                if (null != objRow[3]) {
+                    proMeetDto.setInnerSeq((BigDecimal) objRow[3]);
+                }
+                proAmMeetDtoList.add(proMeetDto);
             }
-            if (null != objRow[1]) {
-                proMeetDto.setRbName((String)objRow[1]);
-            }
-
-            if (null != objRow[2]) {
-                proMeetDto.setAddressName((String)objRow[2]);
-            }
-
-            if (null != objRow[3]) {
-                proMeetDto.setInnerSeq((BigDecimal) objRow[3]);
-            }
-            proAmMeetDtoList.add(proMeetDto);
         }
-
 
         HqlBuilder sqlBuilder1 = HqlBuilder.create();
-        sqlBuilder1.append(" select a.*,row_number() over(partition by a.studyallday order by a.studyallday) innerSeq from(" +
-                " select t.studyallday,t.projectname from CS_WORK_PROGRAM t " +
-                " where t.studyallday between TRUNC(SYSDATE) and TRUNC(SYSDATE + 4) " +
-                " and to_number(to_char(t.studybegintime,'hh24')) between 8 and 12 " +
-                " and to_number(to_char(t.studyendtime,'hh24')) between 8 and 12 " +
-                " union all " +
-                " select  t.studyallday,t.projectname from CS_WORK_PROGRAM t " +
-                " where t.studyallday between TRUNC(SYSDATE) and TRUNC(SYSDATE + 4) " +
-                " and ( (to_number(to_char(t.studybegintime,'hh24')) between 8 and 12 and to_number(to_char(t.studyendtime,'hh24')) > 12)" +
-                " or (t.studyquantum='全天') ) " +
-                " ) a order by innerSeq,studyallday");
-        List<Object[]>objList2 = getObjectArray(sqlBuilder1);
-        for (int i = 0; i < objList2.size(); i++) {
-            ProMeetDto proMeetDto = new ProMeetDto();
-            Object[] objRow = objList2.get(i);
-            if (null != objRow[0]) {
-                proMeetDto.setProMeetDate((Date) objRow[0]);
+        sqlBuilder1.append(" select a.*,row_number() over(partition by a.studyallday order by a.studyallday) innerSeq from(");
+        sqlBuilder1.append(" select t.studyallday,t.projectname from CS_WORK_PROGRAM t ");
+        sqlBuilder1.append(" where t.studyallday between TRUNC(SYSDATE) and TRUNC(SYSDATE + 4) ");
+        sqlBuilder1.append(" and to_number(to_char(t.studybegintime,'hh24')) between 8 and 12 ");
+        sqlBuilder1.append(" and to_number(to_char(t.studyendtime,'hh24')) between 8 and 12 ");
+        sqlBuilder1.append(" union all ");
+        sqlBuilder1.append(" select  t.studyallday,t.projectname from CS_WORK_PROGRAM t ");
+        sqlBuilder1.append(" where t.studyallday between TRUNC(SYSDATE) and TRUNC(SYSDATE + 4) ");
+        sqlBuilder1.append(" and ( (to_number(to_char(t.studybegintime,'hh24')) between 8 and 12 and to_number(to_char(t.studyendtime,'hh24')) > 12)");
+        sqlBuilder1.append(" or (t.studyquantum='全天') ) ");
+        sqlBuilder1.append(" ) a order by innerSeq,studyallday");
+        List<Object[]> objList2 = getObjectArray(sqlBuilder1);
+        if (Validate.isList(objList2)) {
+            for (int i = 0, l = objList2.size(); i < l; i++) {
+                ProMeetDto proMeetDto = new ProMeetDto();
+                Object[] objRow = objList2.get(i);
+                if (null != objRow[0]) {
+                    proMeetDto.setProMeetDate((Date) objRow[0]);
+                }
+                if (null != objRow[1]) {
+                    proMeetDto.setProName((String) objRow[1]);
+                }
+                if (null != objRow[2]) {
+                    proMeetDto.setInnerSeq((BigDecimal) objRow[2]);
+                }
+                proAmMeetDtoList.add(proMeetDto);
             }
-
-            if (null != objRow[1]) {
-                proMeetDto.setProName((String)objRow[1]);
-            }
-
-            if (null != objRow[2]) {
-                proMeetDto.setInnerSeq((BigDecimal) objRow[2]);
-            }
-            proAmMeetDtoList.add(proMeetDto);
         }
+
         return proAmMeetDtoList;
     }
 
     /**
      * 获取工作方案调研及会议信息
+     *
      * @return
      */
     @Override
-    public  List<ProMeetDto> findPmProMeetInfo(){
-        HqlBuilder sqlBuilder = HqlBuilder.create();
-
-        sqlBuilder.append(" select a.*,row_number() over(partition by a.rbday order by a.rbday) innerSeq from (" +
-                " select t.rbday,t.rbname,t.addressname from cs_room_booking t " +
-                " where t.rbday between TRUNC(SYSDATE) and TRUNC(SYSDATE + 4)" +
-                " and to_number(to_char(t.begintime,'hh24')) > 12 " +
-                " union all " +
-                " select t.rbday,t.rbname,t.addressname from cs_room_booking t " +
-                " where t.rbday between TRUNC(SYSDATE) and TRUNC(SYSDATE + 4) " +
-                " and to_number(to_char(t.begintime,'hh24')) between 8 and 12 " +
-                " and to_number(to_char(t.endtime,'hh24')) > 12 " +
-                "  ) a  order by innerSeq,rbday");
-        List<Object[]> objList = getObjectArray(sqlBuilder);
+    public List<ProMeetDto> findPmProMeetInfo() {
         List<ProMeetDto> proAmMeetDtoList = new ArrayList<ProMeetDto>();
-        for (int i = 0; i < objList.size(); i++) {
-            ProMeetDto proMeetDto = new ProMeetDto();
-            Object[] objRow = objList.get(i);
-            if (null != objRow[0]) {
-                proMeetDto.setProMeetDate((Date) objRow[0]);
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" select a.*,row_number() over(partition by a.rbday order by a.rbday) innerSeq from (");
+        sqlBuilder.append(" select t.rbday,t.rbname,t.addressname from cs_room_booking t ");
+        sqlBuilder.append(" where t.rbday between TRUNC(SYSDATE) and TRUNC(SYSDATE + 4)");
+        sqlBuilder.append(" and to_number(to_char(t.begintime,'hh24')) > 12 ");
+        sqlBuilder.append(" union all ");
+        sqlBuilder.append(" select t.rbday,t.rbname,t.addressname from cs_room_booking t ");
+        sqlBuilder.append(" where t.rbday between TRUNC(SYSDATE) and TRUNC(SYSDATE + 4) ");
+        sqlBuilder.append(" and to_number(to_char(t.begintime,'hh24')) between 8 and 12 ");
+        sqlBuilder.append(" and to_number(to_char(t.endtime,'hh24')) > 12 ");
+        sqlBuilder.append("  ) a  order by innerSeq,rbday");
+        List<Object[]> objList = getObjectArray(sqlBuilder);
+        if (Validate.isList(objList)) {
+            for (int i = 0, l = objList.size(); i < l; i++) {
+                ProMeetDto proMeetDto = new ProMeetDto();
+                Object[] objRow = objList.get(i);
+                if (null != objRow[0]) {
+                    proMeetDto.setProMeetDate((Date) objRow[0]);
+                }
+                if (null != objRow[1]) {
+                    proMeetDto.setRbName((String) objRow[1]);
+                }
+                if (null != objRow[2]) {
+                    proMeetDto.setAddressName((String) objRow[2]);
+                }
+                if (null != objRow[3]) {
+                    proMeetDto.setInnerSeq((BigDecimal) objRow[3]);
+                }
+                proAmMeetDtoList.add(proMeetDto);
             }
-
-            if (null != objRow[1]) {
-                proMeetDto.setRbName((String)objRow[1]);
-            }
-
-            if (null != objRow[2]) {
-                proMeetDto.setAddressName((String)objRow[2]);
-            }
-
-            if (null != objRow[3]) {
-                proMeetDto.setInnerSeq((BigDecimal) objRow[3]);
-            }
-            proAmMeetDtoList.add(proMeetDto);
         }
 
 
         HqlBuilder sqlBuilder1 = HqlBuilder.create();
-        sqlBuilder1.append(" select a.*,row_number() over(partition by a.studyallday order by a.studyallday) innerSeq from( " +
-                " select t.studyallday,t.projectname from CS_WORK_PROGRAM t " +
-                " where t.studyallday between TRUNC(SYSDATE) and TRUNC(SYSDATE + 4) " +
-                " and to_number(to_char(t.studybegintime,'hh24')) > 12 " +
-                " union all " +
-                " select  t.studyallday,t.projectname from CS_WORK_PROGRAM t " +
-                " where t.studyallday between TRUNC(SYSDATE) and TRUNC(SYSDATE + 4) " +
-                " and ( (to_number(to_char(t.studybegintime,'hh24')) between 8 and 12 and to_number(to_char(t.studyendtime,'hh24')) > 12)" +
-                " or (t.studyquantum='全天') ) " +
-                " ) a order by innerSeq,studyallday");
-        List<Object[]>objList2 = getObjectArray(sqlBuilder1);
-        for (int i = 0; i < objList2.size(); i++) {
-            ProMeetDto proMeetDto = new ProMeetDto();
-            Object[] objRow = objList2.get(i);
-            if (null != objRow[0]) {
-                proMeetDto.setProMeetDate((Date) objRow[0]);
+        sqlBuilder1.append(" select a.*,row_number() over(partition by a.studyallday order by a.studyallday) innerSeq from( ");
+        sqlBuilder1.append(" select t.studyallday,t.projectname from CS_WORK_PROGRAM t ");
+        sqlBuilder1.append(" where t.studyallday between TRUNC(SYSDATE) and TRUNC(SYSDATE + 4) ");
+        sqlBuilder1.append(" and to_number(to_char(t.studybegintime,'hh24')) > 12 ");
+        sqlBuilder1.append(" union all ");
+        sqlBuilder1.append(" select  t.studyallday,t.projectname from CS_WORK_PROGRAM t ");
+        sqlBuilder1.append(" where t.studyallday between TRUNC(SYSDATE) and TRUNC(SYSDATE + 4) ");
+        sqlBuilder1.append(" and ( (to_number(to_char(t.studybegintime,'hh24')) between 8 and 12 and to_number(to_char(t.studyendtime,'hh24')) > 12)");
+        sqlBuilder1.append(" or (t.studyquantum='全天') ) ");
+        sqlBuilder1.append(" ) a order by innerSeq,studyallday");
+        List<Object[]> objList2 = getObjectArray(sqlBuilder1);
+        if (Validate.isList(objList2)) {
+            for (int i = 0, l = objList2.size(); i < l; i++) {
+                ProMeetDto proMeetDto = new ProMeetDto();
+                Object[] objRow = objList2.get(i);
+                if (null != objRow[0]) {
+                    proMeetDto.setProMeetDate((Date) objRow[0]);
+                }
+                if (null != objRow[1]) {
+                    proMeetDto.setProName((String) objRow[1]);
+                }
+                if (null != objRow[2]) {
+                    proMeetDto.setInnerSeq((BigDecimal) objRow[2]);
+                }
+                proAmMeetDtoList.add(proMeetDto);
             }
-
-            if (null != objRow[1]) {
-                proMeetDto.setProName((String)objRow[1]);
-            }
-
-            if (null != objRow[2]) {
-                proMeetDto.setInnerSeq((BigDecimal) objRow[2]);
-            }
-            proAmMeetDtoList.add(proMeetDto);
         }
+
         return proAmMeetDtoList;
     }
 
     @Override
-    public void removeWPCascade(String signId,String brandId) {
-        WorkProgram workProgram = findBySignIdAndBranchId(signId,brandId,false);
-        if(Validate.isObject(workProgram) && Validate.isString(workProgram.getId())){
+    public void removeWPCascade(String signId, String brandId) {
+        WorkProgram workProgram = findBySignIdAndBranchId(signId, brandId, false);
+        if (Validate.isObject(workProgram) && Validate.isString(workProgram.getId())) {
             //1、删除会议室
             roomBookingRepo.deleteByBusinessId(workProgram.getId());
             //2、删除专家抽取等信息
@@ -395,24 +396,25 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram,String> 
             expertSelConditionRepo.deleteByBusinessId(workProgram.getId());
             //4、判断专家抽取方案，如果只有一个，则删除
             int bCount = signBranchRepo.countNeedWP(signId);
-            if(bCount == 1){
+            if (bCount == 1) {
                 expertReviewRepo.deleteByBusinessId(signId);
             }
             //5、删除工作方案
-            executeSql(WorkSql.deleteWorkProgran(signId,brandId));
+            executeSql(WorkSql.deleteWorkProgran(signId, brandId));
         }
 
-        signBranchRepo.isNeedWP(signId,brandId, Constant.EnumState.NO.getValue());
+        signBranchRepo.isNeedWP(signId, brandId, Constant.EnumState.NO.getValue());
     }
 
     /**
      * 更新工作方案状态
+     *
      * @param signId
      * @param brandIds
      */
     @Override
-    public void updateWPState(String signId, String brandIds,String state) {
-        executeSql(WorkSql.updateWPState(signId,brandIds,state));
+    public void updateWPState(String signId, String brandIds, String state) {
+        executeSql(WorkSql.updateWPState(signId, brandIds, state));
     }
 
 }

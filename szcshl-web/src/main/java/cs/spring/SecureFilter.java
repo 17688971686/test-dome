@@ -18,7 +18,7 @@ public class SecureFilter implements Filter {
         HttpServletResponse resp = (HttpServletResponse)response;
 
         String sessionid = req.getSession().getId();
-        resp.setHeader("SET-COOKIE", "JSESSIONID=" + sessionid + "; HttpOnly");
+        resp.setHeader("SET-COOKIE", "JSESSIONID=" + sessionid + "; Secure; HttpOnly");
         resp.setHeader("x-frame-options","SAMEORIGIN"); //X-Frame-Options
 
         chain.doFilter(request, response);

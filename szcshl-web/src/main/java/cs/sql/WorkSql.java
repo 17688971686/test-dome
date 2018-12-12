@@ -10,7 +10,7 @@ import cs.domain.project.WorkProgram_;
  */
 public class WorkSql {
 
-    public static HqlBuilder getReWorkSql() {
+    public static HqlBuilder getReWorkSql(String signId) {
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" SELECT bu.bId,bu.gId,bu.userNames,vg.name FROM ( ");
         hqlBuilder.append(" SELECT bi.bId, bi.gId, wm_concat (CU.DISPLAYNAME) AS userNames ");
@@ -20,7 +20,7 @@ public class WorkSql {
         hqlBuilder.append(" ORDER BY SP.SORT) bi,CS_USER cu ");
         hqlBuilder.append(" WHERE bi.urid = CU.ID ");
         hqlBuilder.append(" GROUP BY bi.bId, bi.gId) bu,V_ORG_DEPT vg WHERE bu.gId = vg.id");
-
+        hqlBuilder.setParam("0",signId);
         return hqlBuilder;
     }
 
