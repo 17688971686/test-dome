@@ -151,15 +151,15 @@ public interface ExpertSelectedRepo extends IRepository<ExpertSelected, String> 
      * @param achievementSumDto
      * @return
      */
-    List<AchievementSumDto> findAchievementSum(AchievementSumDto achievementSumDto,Map<String,Object> levelMap,List<OrgDept> orgDeptList);
-
+    /*List<AchievementSumDto> findAchievementSum(AchievementSumDto achievementSumDto,Map<String,Object> levelMap,List<OrgDept> orgDeptList);
+*/
     /**
      * 业绩明细
      * @param achievementSumDto
      * @return
      */
-    List<AchievementDetailDto> findAchievementDetail(AchievementSumDto achievementSumDto,Map<String,Object> levelMap,List<OrgDept> orgDeptList);
-
+    /*List<AchievementDetailDto> findAchievementDetail(AchievementSumDto achievementSumDto,Map<String,Object> levelMap,List<OrgDept> orgDeptList);
+*/
     /**
      * 根据业务ID查询已经确认的专家抽取信息
      * @param businessID
@@ -173,13 +173,16 @@ public interface ExpertSelectedRepo extends IRepository<ExpertSelected, String> 
      * @return
      */
     List<ExpertSelected> findAllByBusinessId(String businessID);
+
     /**
      * 查询部门业绩明细
-     * @param achievementSumDto
-     * @param levelMap
+     * @param orgIds
+     * @param yearName
+     * @param quartterType
+     * @param level
      * @return
      */
-    List<AchievementDeptDetailDto> findDeptAchievementDetail(AchievementDeptDetailDto achievementSumDto,Map<String,Object> levelMap);
+   /* List<AchievementDeptDetailDto> findDeptAchievementDetail(String orgIds,String yearName,String quartterType, int level);*/
 
     /**
      * 根据业务ID删除

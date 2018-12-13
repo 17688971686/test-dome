@@ -2,6 +2,7 @@ package cs.repository.repositoryImpl.project;
 
 import cs.common.ResultMsg;
 import cs.domain.project.SignDispaWork;
+import cs.model.project.Achievement;
 import cs.repository.IRepository;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public interface SignDispaWorkRepo extends IRepository<SignDispaWork, String> {
      * @param endTime
      * @return
      */
-   ResultMsg findByTime(String startTime , String endTime);
+    ResultMsg findByTime(String startTime, String endTime);
 
     /**
      * 通过评审阶段，项目类别，统计项目信息
@@ -71,4 +72,15 @@ public interface SignDispaWorkRepo extends IRepository<SignDispaWork, String> {
      */
     List<Map<String, Object>> dtasksLineSign();
 
+    /**
+     * 业绩统计查询
+     *
+     * @param year
+     * @param quarter
+     * @param deptIds
+     * @param userId
+     * @param level
+     * @return
+     */
+    List<Achievement> countAchievement(String year, String quarter, String deptIds, String userId, int level);
 }

@@ -1,26 +1,34 @@
 package cs.service.project;
 
+import cs.ahelper.projhelper.ProjUtil;
 import cs.common.constants.Constant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
+import cs.common.constants.SysConstants;
 import cs.common.utils.*;
 import cs.domain.expert.ExpertReview;
 import cs.domain.expert.ExpertReview_;
 import cs.domain.flow.RuProcessTask;
 import cs.domain.meeting.RoomBooking_;
 import cs.domain.project.*;
+import cs.domain.sys.OrgDept;
+import cs.domain.sys.OrgDept_;
 import cs.domain.sys.Workday;
 import cs.model.PageModelDto;
+import cs.model.project.Achievement;
+import cs.model.project.AchievementDeptDetailDto;
+import cs.model.project.AchievementSumDto;
 import cs.model.project.SignDispaWorkDto;
 import cs.quartz.unit.QuartzUnit;
 import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
 import cs.repository.odata.ODataObjFilterStrategy;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
-import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.project.*;
-import cs.service.sys.OrgDeptService;
+import cs.repository.repositoryImpl.sys.OrgDeptRepo;
+import cs.repository.repositoryImpl.sys.UserRepo;
+import cs.service.sys.UserService;
 import cs.service.sys.WorkdayService;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -31,10 +39,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static cs.common.constants.FlowConstant.FLOW_SIGN_FW;
 import static cs.common.constants.SysConstants.SEPARATE_COMMA;
@@ -63,12 +68,14 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
     @Autowired
     private SignBranchRepo signBranchRepo;
     @Autowired
-    private OrgDeptService orgDeptService;
-    @Autowired
-    private RuProcessTaskRepo ruProcessTaskRepo;
-
-    @Autowired
     private WorkdayService workdayService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private OrgDeptRepo orgDeptRepo;
+    @Autowired
+    private UserRepo userRepo;
+
     /**
      * 查询个人经办项目
      *
@@ -104,7 +111,7 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
             }
         }
         List<SignDispaWork> signDispaWorkList = criteria.list();
-        pageModelDto.setValue(Validate.isList(signDispaWorkList)?signDispaWorkList:new ArrayList<>());
+        pageModelDto.setValue(Validate.isList(signDispaWorkList) ? signDispaWorkList : new ArrayList<>());
         return pageModelDto;
     }
 
@@ -119,7 +126,7 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         PageModelDto<SignDispaWorkDto> pageModelDto = new PageModelDto<SignDispaWorkDto>();
         Criteria criteria = signDispaWorkRepo.getExecutableCriteria();
         Integer processState = null;
-        String dispatchType = "",signDateValue = "";
+        String dispatchType = "", signDateValue = "";
         if (Validate.isList(odataObj.getFilter())) {
             Object value;
             for (ODataFilterItem item : odataObj.getFilter()) {
@@ -130,66 +137,66 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
                 //项目状态查询修改
                 if (SignDispaWork_.processState.getName().equals(item.getField())) {
                     processState = Integer.parseInt(item.getValue().toString());
-                    switch (processState){
+                    switch (processState) {
                         case 1:
                         case 2:
                             //在办项目或者暂停项目
-                            criteria.add(Restrictions.eq(SignDispaWork_.signState.getName(),String.valueOf(processState)));
+                            criteria.add(Restrictions.eq(SignDispaWork_.signState.getName(), String.valueOf(processState)));
                             criteria.add(Restrictions.le(SignDispaWork_.processState.getName(), Constant.SignProcessState.END_WP.getValue()));
                             break;
                         case 17:
                             //未发送存档
                             criteria.add(Restrictions.ge(SignDispaWork_.processState.getName(), Constant.SignProcessState.IS_START.getValue()));
-                            criteria.add(Restrictions.le(SignDispaWork_.processState.getName(),Constant.SignProcessState.SEND_CW.getValue()));
+                            criteria.add(Restrictions.le(SignDispaWork_.processState.getName(), Constant.SignProcessState.SEND_CW.getValue()));
                             break;
                         case 68:
                             //已发文未存档
                             criteria.add(Restrictions.or(Restrictions.eq(SignDispaWork_.processState.getName(), Constant.SignProcessState.END_DIS_NUM.getValue()),
-                                    Restrictions.eq(SignDispaWork_.processState.getName(),Constant.SignProcessState.SEND_CW.getValue()),
-                                    Restrictions.eq(SignDispaWork_.processState.getName(),Constant.SignProcessState.SEND_FILE.getValue())));
+                                    Restrictions.eq(SignDispaWork_.processState.getName(), Constant.SignProcessState.SEND_CW.getValue()),
+                                    Restrictions.eq(SignDispaWork_.processState.getName(), Constant.SignProcessState.SEND_FILE.getValue())));
                             break;
                         case 69:
                             //已发文项目
-                            criteria.add(Restrictions.ge(SignDispaWork_.processState.getName(),Constant.SignProcessState.END_DIS_NUM.getValue()));
+                            criteria.add(Restrictions.ge(SignDispaWork_.processState.getName(), Constant.SignProcessState.END_DIS_NUM.getValue()));
                             break;
                         case 89:
                             //已发送存档
-                            criteria.add(Restrictions.ge(SignDispaWork_.processState.getName(),Constant.SignProcessState.SEND_FILE.getValue()));
+                            criteria.add(Restrictions.ge(SignDispaWork_.processState.getName(), Constant.SignProcessState.SEND_FILE.getValue()));
                             break;
                         case 24:
                             //曾经暂停
-                            criteria.add(Restrictions.eq(SignDispaWork_.isProjectStop.getName(),Constant.EnumState.YES.getValue()));
-                            criteria.add(Restrictions.eq(SignDispaWork_.signState.getName(),Constant.EnumState.PROCESS.getValue()));
+                            criteria.add(Restrictions.eq(SignDispaWork_.isProjectStop.getName(), Constant.EnumState.YES.getValue()));
+                            criteria.add(Restrictions.eq(SignDispaWork_.signState.getName(), Constant.EnumState.PROCESS.getValue()));
                             break;
                         case 8:
-                            criteria.add(Restrictions.eq(SignDispaWork_.processState.getName(),Constant.SignProcessState.SEND_FILE.getValue()));
+                            criteria.add(Restrictions.eq(SignDispaWork_.processState.getName(), Constant.SignProcessState.SEND_FILE.getValue()));
                             break;
                         case 9:
-                            criteria.add(Restrictions.eq(SignDispaWork_.processState.getName(),Constant.SignProcessState.FINISH.getValue()));
+                            criteria.add(Restrictions.eq(SignDispaWork_.processState.getName(), Constant.SignProcessState.FINISH.getValue()));
                             break;
                     }
                     continue;
                 }
 
                 //项目发文
-                if(SignDispaWork_.dispatchType.getName().equals(item.getField())){
+                if (SignDispaWork_.dispatchType.getName().equals(item.getField())) {
                     dispatchType = item.getValue().toString();
-                    if("非暂不实施项目".equals(dispatchType)){
+                    if ("非暂不实施项目".equals(dispatchType)) {
                         //非暂不实施项目=项目发文+退文
                         criteria.add(Restrictions.or(Restrictions.eq(SignDispaWork_.dispatchType.getName(), "项目发文"),
                                 Restrictions.eq(SignDispaWork_.dispatchType.getName(), "项目退文")));
-                    }else if("非退文项目".equals(dispatchType)){
+                    } else if ("非退文项目".equals(dispatchType)) {
                         //非退文项目=暂不实施+项目发文
                         criteria.add(Restrictions.or(Restrictions.eq(SignDispaWork_.dispatchType.getName(), "项目发文"),
                                 Restrictions.eq(SignDispaWork_.dispatchType.getName(), "暂不实施")));
-                    }else{
+                    } else {
                         criteria.add(ODataObjFilterStrategy.getStrategy(item.getOperator()).getCriterion(item.getField(), value));
                     }
                     continue;
                 }
                 //提前介入
-                if(Sign_.isAdvanced.getName().equals(item.getField())){
-                    if(!Constant.EnumState.YES.getValue().equals(value.toString())){
+                if (Sign_.isAdvanced.getName().equals(item.getField())) {
+                    if (!Constant.EnumState.YES.getValue().equals(value.toString())) {
                         Disjunction disj = Restrictions.disjunction();
                         disj.add(Restrictions.isNull(Sign_.isAdvanced.getName()));
                         disj.add(Restrictions.ne(Sign_.isAdvanced.getName(), Constant.EnumState.YES.getValue()));
@@ -284,7 +291,7 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         SignDispaWork mergeSign = signDispaWorkRepo.findById(signId);
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append("select sd from " + SignDispaWork.class.getSimpleName() + " sd , ");
-        hqlBuilder.append( RuProcessTask.class.getSimpleName() + " rt where sd.signid = rt.businessKey ");
+        hqlBuilder.append(RuProcessTask.class.getSimpleName() + " rt where sd.signid = rt.businessKey ");
         //正式签收
         hqlBuilder.append(" and sd.issign = :signState ");
         hqlBuilder.setParam("signState", Constant.EnumState.YES.getValue(), StringType.INSTANCE);
@@ -292,9 +299,9 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         hqlBuilder.append(" and sd.signid != :selfId ");
         hqlBuilder.setParam("selfId", signId, StringType.INSTANCE);
         //排除已经合并发文的项目
-        hqlBuilder.append(" and sd.signid not in (select mergeId from "+ SignMerge.class.getSimpleName()+" where mergeType = :mergeType1 ) ");
+        hqlBuilder.append(" and sd.signid not in (select mergeId from " + SignMerge.class.getSimpleName() + " where mergeType = :mergeType1 ) ");
         hqlBuilder.setParam("mergeType1", Constant.MergeType.DIS_MERGE.getValue());
-        hqlBuilder.append(" and sd.signid not in (select signId from "+ SignMerge.class.getSimpleName()+" where mergeType = :mergeType2 ) ");
+        hqlBuilder.append(" and sd.signid not in (select signId from " + SignMerge.class.getSimpleName() + " where mergeType = :mergeType2 ) ");
         hqlBuilder.setParam("mergeType2", Constant.MergeType.DIS_MERGE.getValue());
         //正在做发文项目
         hqlBuilder.append(" and rt.nodeDefineKey = :nodeKey and rt.processState = :processState ");
@@ -607,52 +614,125 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
 
     /**
      * 超级管理员修改收文日期，重新计算剩余工作日
-     * @param  oldSignDate
+     *
+     * @param oldSignDate
      * @param signDate
      * @return
      */
     @Override
-    public ResultMsg countWeekDays(Date oldSignDate , Date signDate) {
-
-        Long countDay = (long) 0;
-
-        if(DateUtils.compareIgnoreSecond(oldSignDate , signDate) <0){
-            List<Workday> workdayList = workdayService.getBetweenTimeDay(oldSignDate , signDate);
-            countDay = (long)countBetweentDay(workdayList , oldSignDate , signDate);
-        }else{
-            List<Workday> workdayList = workdayService.getBetweenTimeDay(signDate , oldSignDate);
-            countDay = - (long)countBetweentDay(workdayList , signDate , oldSignDate );
+    public ResultMsg countWeekDays(Date oldSignDate, Date signDate) {
+        Long countDay = 0L;
+        if (DateUtils.compareIgnoreSecond(oldSignDate, signDate) < 0) {
+            List<Workday> workdayList = workdayService.getBetweenTimeDay(oldSignDate, signDate);
+            countDay = (long) countBetweentDay(workdayList, oldSignDate, signDate);
+        } else {
+            List<Workday> workdayList = workdayService.getBetweenTimeDay(signDate, oldSignDate);
+            countDay = -(long) countBetweentDay(workdayList, signDate, oldSignDate);
         }
 
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功", countDay);
+    }
 
+    /**
+     * 部门业绩统计信息
+     *
+     * @param achievementSumDto
+     * @return
+     */
+    @Override
+    public Map<String, Object> countAchievementSum(AchievementSumDto achievementSumDto) {
+        Map<String, Object> resultMap = new HashMap<>();
+        //当前用户级别,默认为普通用户
+        int level = 0;
+        //当前用户ID
+        String userId = SessionUtil.getUserId();
+        //分管组织部门列表
+        List<OrgDept> orgDeptList = new ArrayList<>();
+        //一、查询用户等级
+        Map<String, Object> levelMap = userService.getUserLevel();
+        if (Validate.isMap(levelMap) && null != levelMap.get("leaderFlag")) {
+            level = Integer.parseInt(levelMap.get("leaderFlag").toString());
+            resultMap.put("level", level);
+            if (level > 0) {
+                Criteria criteria = orgDeptRepo.getExecutableCriteria();
+                switch (level) {
+                    case 1:
+                        break;
+                    case 2:
+                        criteria.add(Restrictions.eq(OrgDept_.sLeaderID.getName(), SessionUtil.getUserId()));
+                        break;
+                    case 3:
+                    case 4:
+                        criteria.add(Restrictions.eq(OrgDept_.directorID.getName(), SessionUtil.getUserId()));
+                        break;
+                    default:
+                        ;
+                }
+                //加上排序
+                criteria.addOrder(Order.asc(OrgDept_.sort.getName()));
 
-        return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "操作成功" , countDay);
+                orgDeptList = criteria.list();
+                resultMap.put("orgDeptList", orgDeptList);
+
+                if (Validate.isList(orgDeptList) && !Validate.isString(achievementSumDto.getDeptIds())) {
+                    StringBuffer orgIdString = new StringBuffer();
+                    for (int i = 0, l = orgDeptList.size(); i < l; i++) {
+                        if (i > 0) {
+                            orgIdString.append(SysConstants.SEPARATE_COMMA);
+                        }
+                        OrgDept orgDept = orgDeptList.get(i);
+                        orgIdString.append(orgDept.getId());
+                    }
+                    achievementSumDto.setDeptIds(orgIdString.toString());
+                }
+            }
+        }
+        //二、查询业绩统计信息
+        List<Achievement> countList = signDispaWorkRepo.countAchievement(achievementSumDto.getYear(), achievementSumDto.getQuarter(), achievementSumDto.getDeptIds(), userId, level);
+        //三、统计，分3个档次统计
+        switch (level) {
+            //1、主任和分管主任统计，按分管部门统计
+            case 1:
+            case 2:
+                Map<String,AchievementSumDto> orgDeptCount = ProjUtil.countOrgDept(countList,orgDeptList);
+                List<Achievement> deptDetailList = ProjUtil.orgDeptDetail(countList,orgDeptList,orgDeptCount);
+                resultMap.put("orgDeptCount",orgDeptCount);
+                resultMap.put("orgDeptDetailList",deptDetailList);
+                break;
+            //、部长和组长统计，统计一个部门
+            case 3:
+            case 4:
+                break;
+            //普通用户统计
+            case 0:
+                break;
+            default:
+                ;
+        }
+        return resultMap;
     }
 
 
-    private int countBetweentDay(List<Workday> workdayList , Date beginDate , Date endDate){
+    private int countBetweentDay(List<Workday> workdayList, Date beginDate, Date endDate) {
         int result = 0;
-        int countDay = (int) DateUtils.daysBetween(beginDate , endDate);
+        int countDay = (int) DateUtils.daysBetween(beginDate, endDate);
         result = countDay;
-        if(Validate.isList(workdayList)){
+        if (Validate.isList(workdayList)) {
             Date date = beginDate;
-            for( int i = 0 ; i < countDay ; i++ ) {
+            for (int i = 0; i < countDay; i++) {
                 Workday workday = workdayList.get(i);
-                if(DateUtils.compareIgnoreSecond(date , workday.getDates()) == 0){
+                if (DateUtils.compareIgnoreSecond(date, workday.getDates()) == 0) {
                     //将工作日改为休息日
                     if (!QuartzUnit.isWeekend(workday.getDates()) && "1".equals(workday.getStatus())) {
-                        result --;
+                        result--;
                         //将休息日改成工作日的
                     } else if (QuartzUnit.isWeekend(workday.getDates()) && "2".equals(workday.getStatus())) {
-                        result ++ ;
+                        result++;
                     }
                     break;
                 }
-
-
-
             }
-        }else {
+        } else {
             Date date = beginDate;
             for (int i = 0; i < countDay; i++) {
                 Calendar cal = Calendar.getInstance();

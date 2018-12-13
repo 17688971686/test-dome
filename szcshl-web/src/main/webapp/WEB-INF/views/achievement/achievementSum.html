@@ -1,513 +1,572 @@
 <#assign path=request.contextPath/>
 <style>
-	.ul_left li{
-		float: left;
-		border: 1px solid;
-	}
-
-
+    .ul_left li {
+        float: left;
+        border: 1px solid;
+    }
 </style>
 <meta charset="UTF-8">
-<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
-<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
 
 <div class="well well-sm" style="background:white;">
-	<ol class="breadcrumb">
-		<li><a>{{vm.title}}</a></li>
-	</ol>
-	<form id="form" name="form">
-		<div class="well well-print">
-			<span>年度：</span>
-			<select name="year" ng-model="vm.model.year" ng-change="">
-				<option ng-repeat="x in DICT.NDBG.dicts"
-						value="{{x.dictName}}">{{x.dictName}}
-				</option>
-			</select>
-			<select name="quarter" ng-model="vm.model.quarter">
-				<option value="0" ng-selected="vm.model.quarter == 0">全年</option>
-				<option value="1" ng-selected="vm.model.quarter == 1">第一季度</option>
-				<option value="2" ng-selected="vm.model.quarter == 2">第二季度</option>
-				<option value="3" ng-selected="vm.model.quarter == 3">第三季度</option>
-				<option value="4" ng-selected="vm.model.quarter == 4">第四季度</option>
-			</select>
-			<button ng-click="vm.countAchievementDetail()" class="btn btn-sm btn-primary">统计</button>
-			<button ng-if="vm.isLeader !=1" ng-click="vm.showMainDocDetail()" class="btn btn-sm btn-primary">主办人评审项目一览表</button>
-			<button ng-if="vm.isLeader !=1" ng-click="vm.showAssistDocDetail()" class="btn btn-sm btn-primary">协办人评审项目一览表</button>
-			<button ng-if="vm.level=='0'" ng-click="vm.showTopicDetail()" class="btn btn-sm btn-primary">课题研究及其他业务工作一览表</button>
-			<button ng-if="vm.level!='0'" ng-click="vm.showAchievementDetail()" class="btn btn-sm btn-primary">部门工作业绩统计表</button>
-			<button ng-if="vm.level=='0'" class="btn btn-sm btn-success" ng-click="vm.exportAchievementDetail()">导出</button>
-		</div>
-	</form>
-	<table ng-if="vm.isLeader==1" class="table table-bordered">
-		<caption class="text-center h4">
-			<strong>评审中心员工工作业绩统计表</strong>
-			<p></p>
-			<strong>
-				({{vm.model.year}}年度
-				<span ng-if="vm.model.quarter==0">1月至12月</span>
-				<span ng-if="vm.model.quarter==1">1月至3月</span>
-				<span ng-if="vm.model.quarter==2">4月至6月</span>
-				<span ng-if="vm.model.quarter==3">7月至9月</span>
-				<span ng-if="vm.model.quarter==4">10月至12月</span>
-				)
-			</strong>
-		</caption>
-		<tr>
-			<td style="width:15%;vertical-align: middle;"  class="text-center">姓名</td>
-			<td style="width:15%;vertical-align: middle;"  class="text-center">${CURRENT_USER.displayName}</td>
-			<td style="width:15%;vertical-align: middle;"  class="text-center">所在部门</td>
-			<td colspan="3" ng-if="vm.level=='1' || vm.level=='2' || vm.level=='3'" style="width:30%;vertical-align: middle;"  class="text-left">
-				<ul id="orgDeptList_ul">
-					<li ng-repeat="u in vm.orgDeptList"  style="float: left;width: 180px;">
-						<input type="checkbox"  tit="{{u.name}}" value="{{u.id}}" name="orgDept" ng-checked="true" ng-click="vm.initAchievementSum($event)"/>{{u.name}}
-					</li>
-				</ul>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="6" style="vertical-align: middle;" class="text-left">一、项目评审</td>
-		</tr>
-		<tr>
-			<td style="vertical-align: middle;width: 15%"  class="text-center">综合部</td>
-			<td style="vertical-align: middle;width: 15%"  class="text-center">评估一部</td>
-			<td style="vertical-align: middle;width: 15%"  class="text-center">评估二部</td>
-			<td style="vertical-align: middle;width: 15%"  class="text-center">概算一部</td>
-			<td style="vertical-align: middle;width: 15%"  class="text-center">概算二部</td>
-			<td style="vertical-align: middle;width: 15%"  class="text-center">评估一部信息化组</td>
-		</tr>
-		<tr >
-			<td>
-				<table class="table table-bordered">
-					<tr>
-						<td style="vertical-align: middle;"  class="text-center">主办人发文</td>
-						<td style="vertical-align: middle;"  class="text-center">协办人出文数</td>
-					</tr>
-					<tr>
-						<td style="vertical-align: middle;"  class="text-center">{{vm.mainDocComprehensive.disSum}} </td>
-						<td style="vertical-align: middle;"  class="text-center">{{vm.assistDocComprehensive.disSum}}</td>
-					</tr>
-				</table>
-			</td>
-			<td>
-				<table class="table table-bordered">
-					<tr>
-						<td style="vertical-align: middle;"  class="text-center">主办人发文</td>
-						<td style="vertical-align: middle;"  class="text-center">协办人出文数</td>
-					</tr>
-					<tr>
-						<td style="vertical-align: middle;"  class="text-center">{{vm.mainDocEvaluateOne.disSum}}</td>
-						<td style="vertical-align: middle;"  class="text-center">{{vm.assistDocEvaluateOne.disSum}}</td>
-					</tr>
-				</table>
-			</td>
-			<td>
-				<table class="table table-bordered">
-					<tr>
-						<td style="vertical-align: middle;"  class="text-center">主办人发文</td>
-						<td style="vertical-align: middle;"  class="text-center">协办人出文数</td>
-					</tr>
-					<tr>
-						<td style="vertical-align: middle;"  class="text-center">{{vm.mainDocEvaluateTwo.disSum}}</td>
-						<td style="vertical-align: middle;"  class="text-center">{{vm.assistDocEvaluateTwo.disSum}}</td>
-					</tr>
-				</table>
-			</td>
-			<td>
-				<table class="table table-bordered">
-					<tr>
-						<td style="vertical-align: middle;"  class="text-center">主办人发文</td>
-						<td style="vertical-align: middle;"  class="text-center">协办人出文数</td>
-					</tr>
-					<tr>
-						<td style="vertical-align: middle;"  class="text-center">{{vm.mainDocBudgetaryOne.disSum}}</td>
-						<td style="vertical-align: middle;"  class="text-center">{{vm.assistDocBudgetaryOne.disSum}}</td>
-					</tr>
-				</table>
-			</td>
-			<td>
-				<table class="table table-bordered">
-					<tr>
-						<td style="vertical-align: middle;"  class="text-center">主办人发文</td>
-						<td style="vertical-align: middle;"  class="text-center">协办人出文数</td>
-					</tr>
-					<tr>
-						<td style="vertical-align: middle;"  class="text-center">{{vm.mainDocBudgetaryTwo.disSum}}</td>
-						<td style="vertical-align: middle;"  class="text-center">{{vm.assistDocBudgetaryTwo.disSum}}</td>
-					</tr>
-				</table>
-			</td>
-			<td>
-				<table class="table table-bordered">
-					<tr>
-						<td style="vertical-align: middle;"  class="text-center">主办人发文</td>
-						<td style="vertical-align: middle;"  class="text-center">协办人出文数</td>
-					</tr>
-					<tr>
-						<td style="vertical-align: middle;"  class="text-center">{{vm.mainDocDeptInfo.disSum}}</td>
-						<td style="vertical-align: middle;"  class="text-center">{{vm.assistDocOneDeptInfo.disSum}}</td>
-					</tr>
-				</table>
-			</td>
-		</tr>
+    <ol class="breadcrumb">
+        <li><a>查询统计</a></li>
+        <li><a>{{vm.title}}</a></li>
+    </ol>
+    <!-- form 搜索框 begin -->
+    <form id="form" name="form">
+        <div class="well well-print">
+            <span>年度：</span>
+            <select name="year" ng-model="vm.model.year" ng-change="">
+                <option ng-repeat="x in DICT.NDBG.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+            </select>
+            <select name="quarter" ng-model="vm.model.quarter">
+                <option value="0" ng-selected="vm.model.quarter == 0">全年</option>
+                <option value="1" ng-selected="vm.model.quarter == 1">第一季度</option>
+                <option value="2" ng-selected="vm.model.quarter == 2">第二季度</option>
+                <option value="3" ng-selected="vm.model.quarter == 3">第三季度</option>
+                <option value="4" ng-selected="vm.model.quarter == 4">第四季度</option>
+            </select>
+            <button ng-click="vm.countAchievementDetail()" class="btn btn-sm btn-primary">统计</button>
+            <button ng-if="vm.level !=1 && vm.level !=2" ng-click="vm.showMainDocDetail()"
+                    class="btn btn-sm btn-primary">
+                主办人评审项目一览表
+            </button>
+            <button ng-if="vm.level !=1 && vm.level !=2" ng-click="vm.showAssistDocDetail()"
+                    class="btn btn-sm btn-primary">
+                协办人评审项目一览表
+            </button>
+            <button ng-if="vm.level=='0'" ng-click="vm.showTopicDetail()" class="btn btn-sm btn-primary">
+                课题研究及其他业务工作一览表
+            </button>
+            <button ng-if="vm.level!='0'" ng-click="vm.showAchievementDetail()" class="btn btn-sm btn-primary">
+                部门工作业绩统计表
+            </button>
+            <button ng-if="vm.level=='0'" class="btn btn-sm btn-success" ng-click="vm.exportAchievementDetail()">导出
+            </button>
+        </div>
+    </form>
+    <!-- form 搜索框 end -->
+
+    <table ng-if="vm.level == 1 || vm.level ==2 " class="table table-bordered" style="margin-bottom: 0px;">
+        <caption class="text-center h4">
+            <strong>评审中心员工工作业绩统计表</strong>
+            <p></p>
+            <strong>
+                ({{vm.model.year}}年度
+                <span ng-if="vm.model.quarter==0">1月至12月</span>
+                <span ng-if="vm.model.quarter==1">1月至3月</span>
+                <span ng-if="vm.model.quarter==2">4月至6月</span>
+                <span ng-if="vm.model.quarter==3">7月至9月</span>
+                <span ng-if="vm.model.quarter==4">10月至12月</span>
+                )
+            </strong>
+        </caption>
+        <tr>
+            <td colspan="2" style="width:15%;vertical-align: middle;" class="text-center active">姓名</td>
+            <td colspan="2" style="width:15%;vertical-align: middle;" class="text-center">${CURRENT_USER.displayName}
+            </td>
+            <td colspan="2" style="width:15%;vertical-align: middle;" class="text-center active">统计部门</td>
+            <td colspan="6" ng-if="vm.level=='1' || vm.level=='2' || vm.level=='3'"
+                style="width:30%;vertical-align: middle;" class="text-left">
+                <ul id="orgDeptList_ul_leader">
+                    <li ng-repeat="u in vm.orgDeptList" style="float: left;width: 180px;">
+                        <input type="checkbox" tit="{{u.name}}" value="{{u.id}}" name="orgDept" ng-checked="true"
+                               ng-click="vm.initAchievementSum($event)"/>{{u.name}}
+                    </li>
+                </ul>
+            </td>
+        </tr>
+    </table>
+    <table ng-if="vm.level == 1 || vm.level ==2 " class="table table-bordered">
+        <tr>
+            <td colspan="12" style="vertical-align: middle;border-top: 0px;" class="text-left">一、项目评审</td>
+        </tr>
+        <tr class="active">
+            <td colspan="2" style="vertical-align: middle;width: 15%" class="text-center"
+                ng-show="vm.checkIsHaveDept(vm.model.deptNames,'综合部')">综合部
+            </td>
+            <td colspan="2" style="vertical-align: middle;width: 15%" class="text-center"
+                ng-show="vm.checkIsHaveDept(vm.model.deptNames,'评估一部')">评估一部
+            </td>
+            <td colspan="2" style="vertical-align: middle;width: 15%" class="text-center"
+                ng-show="vm.checkIsHaveDept(vm.model.deptNames,'评估二部')">评估二部
+            </td>
+            <td colspan="2" style="vertical-align: middle;width: 15%" class="text-center"
+                ng-show="vm.checkIsHaveDept(vm.model.deptNames,'概算一部')">概算一部
+            </td>
+            <td colspan="2" style="vertical-align: middle;width: 15%" class="text-center"
+                ng-show="vm.checkIsHaveDept(vm.model.deptNames,'概算二部')">概算二部
+            </td>
+            <td colspan="2" style="vertical-align: middle;width: 15%" class="text-center"
+                ng-show="vm.checkIsHaveDept(vm.model.deptNames,'评估一部信息化组')">评估一部信息化组
+            </td>
+        </tr>
+        <tr class="active">
+            <td style="vertical-align: middle;" class="text-center"
+                ng-show="vm.checkIsHaveDept(vm.model.deptNames,'综合部')">主办发文
+            </td>
+            <td style="vertical-align: middle;" class="text-center"
+                ng-show="vm.checkIsHaveDept(vm.model.deptNames,'综合部')">协办出文
+            </td>
+            <td style="vertical-align: middle;" class="text-center"
+                ng-show="vm.checkIsHaveDept(vm.model.deptNames,'评估一部')">主办发文
+            </td>
+            <td style="vertical-align: middle;" class="text-center"
+                ng-show="vm.checkIsHaveDept(vm.model.deptNames,'评估一部')">协办出文
+            </td>
+            <td style="vertical-align: middle;" class="text-center"
+                ng-show="vm.checkIsHaveDept(vm.model.deptNames,'评估二部')">主办发文
+            </td>
+            <td style="vertical-align: middle;" class="text-center"
+                ng-show="vm.checkIsHaveDept(vm.model.deptNames,'评估二部')">协办出文
+            </td>
+            <td style="vertical-align: middle;" class="text-center"
+                ng-show="vm.checkIsHaveDept(vm.model.deptNames,'概算一部')">主办发文
+            </td>
+            <td style="vertical-align: middle;" class="text-center"
+                ng-show="vm.checkIsHaveDept(vm.model.deptNames,'概算一部')">协办出文
+            </td>
+            <td style="vertical-align: middle;" class="text-center"
+                ng-show="vm.checkIsHaveDept(vm.model.deptNames,'概算二部')">主办发文
+            </td>
+            <td style="vertical-align: middle;" class="text-center"
+                ng-show="vm.checkIsHaveDept(vm.model.deptNames,'概算二部')">协办出文
+            </td>
+            <td style="vertical-align: middle;" class="text-center"
+                ng-show="vm.checkIsHaveDept(vm.model.deptNames,'评估一部信息化组')">主办发文
+            </td>
+            <td style="vertical-align: middle;" class="text-center"
+                ng-show="vm.checkIsHaveDept(vm.model.deptNames,'评估一部信息化组')">协办出文
+            </td>
+        </tr>
+        <tr>
+            <td style="vertical-align: middle;" class="text-center"
+                ng-show="vm.checkIsHaveDept(vm.model.deptNames,'综合部')">{{vm.comprehensive?vm.comprehensive.mainDisSum:0}}
+            </td>
+            <td style="vertical-align: middle;" class="text-center"
+                ng-show="vm.checkIsHaveDept(vm.model.deptNames,'综合部')">{{vm.comprehensive?vm.comprehensive.assistDisSum:0}}
+            </td>
+            <td style="vertical-align: middle;" class="text-center"
+                ng-show="vm.checkIsHaveDept(vm.model.deptNames,'评估一部')">{{vm.evaluateOne?vm.evaluateOne.mainDisSum:0}}
+            </td>
+            <td style="vertical-align: middle;" class="text-center"
+                ng-show="vm.checkIsHaveDept(vm.model.deptNames,'评估一部')">{{vm.evaluateOne?vm.evaluateOne.assistDisSum:0}}
+            </td>
+            <td style="vertical-align: middle;" class="text-center"
+                ng-show="vm.checkIsHaveDept(vm.model.deptNames,'评估二部')">{{vm.evaluateTwo?vm.evaluateTwo.mainDisSum:0}}
+            </td>
+            <td style="vertical-align: middle;" class="text-center"
+                ng-show="vm.checkIsHaveDept(vm.model.deptNames,'评估二部')">{{vm.evaluateTwo?vm.evaluateTwo.assistDisSum:0}}
+            </td>
+            <td style="vertical-align: middle;" class="text-center"
+                ng-show="vm.checkIsHaveDept(vm.model.deptNames,'概算一部')">{{vm.budgetaryOne?vm.budgetaryOne.mainDisSum:0}}
+            </td>
+            <td style="vertical-align: middle;" class="text-center"
+                ng-show="vm.checkIsHaveDept(vm.model.deptNames,'概算一部')">{{vm.budgetaryOne?vm.budgetaryOne.assistDisSum:0}}
+            </td>
+            <td style="vertical-align: middle;" class="text-center"
+                ng-show="vm.checkIsHaveDept(vm.model.deptNames,'概算二部')">{{vm.budgetaryTwo?vm.budgetaryTwo.mainDisSum:0}}
+            </td>
+            <td style="vertical-align: middle;" class="text-center"
+                ng-show="vm.checkIsHaveDept(vm.model.deptNames,'概算二部')">{{vm.budgetaryTwo?vm.budgetaryTwo.assistDisSum:0}}
+            </td>
+            <td style="vertical-align: middle;" class="text-center"
+                ng-show="vm.checkIsHaveDept(vm.model.deptNames,'评估一部信息化组')">{{vm.evaluateOneGroup?vm.evaluateOneGroup.mainDisSum:0}}
+            </td>
+            <td style="vertical-align: middle;" class="text-center"
+                ng-show="vm.checkIsHaveDept(vm.model.deptNames,'评估一部信息化组')">{{vm.evaluateOneGroup?vm.evaluateOneGroup.assistDisSum:0}}
+            </td>
+        </tr>
+    </table>
+
+    <table ng-if="vm.level != 1 && vm.level !=2 " class="table table-bordered">
+        <caption class="text-center h4">
+            <strong>评审中心员工工作业绩统计表</strong>
+            <p></p>
+            <strong>
+                ({{vm.model.year}}年度
+                <span ng-if="vm.model.quarter==0">1月至12月</span>
+                <span ng-if="vm.model.quarter==1">1月至3月</span>
+                <span ng-if="vm.model.quarter==2">4月至6月</span>
+                <span ng-if="vm.model.quarter==3">7月至9月</span>
+                <span ng-if="vm.model.quarter==4">10月至12月</span>
+                )
+            </strong>
+        </caption>
+        <tr>
+            <td style="width:25%;vertical-align: middle;" class="text-center">姓名</td>
+            <td style="width:25%;vertical-align: middle;" class="text-center">${CURRENT_USER.displayName}</td>
+            <td style="width:20%;vertical-align: middle;" class="text-center">所在部门</td>
+            <td ng-if="vm.level=='0'" style="width:25%;vertical-align: middle;" class="text-center">
+                ${CURRENT_USER.org.name}
+            </td>
+            <td ng-if="vm.level=='1' || vm.level=='2' || vm.level=='3'" style="width:30%;vertical-align: middle;"
+                class="text-left">
+                <ul id="orgDeptList_ul">
+                    <li ng-repeat="u in vm.orgDeptList" style="float: left;width: 180px;">
+                        <input type="checkbox" tit="{{u.name}}" value="{{u.id}}" name="orgDept" ng-checked="true"
+                               ng-click="vm.initAchievementSum($event)"/>{{u.name}}
+                    </li>
+                </ul>
+            </td>
+            <td ng-if="vm.level=='4'" style="width:30%;vertical-align: middle;" class="text-center">
+                <ul id="orgDeptListInfo_ul">
+                    <li ng-repeat="u in vm.orgDeptList" style="float: left;width: 150px;">
+                        <input type="checkbox" tit="{{u.name}}" name="orgDept" value="{{u.id}}" ng-checked="true"
+                               ng-click="vm.initAchievementSum($event)"/>{{u.name}}
+                    </li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4" style="vertical-align: middle;" class="text-left">一、项目评审</td>
+        </tr>
+
+        <tr>
+            <td style="width:25%;vertical-align: middle;" class="text-center"></td>
+            <td style="width:25%;vertical-align: middle;" class="text-center">主办发文</td>
+            <td style="vertical-align: middle;" class="text-center">协办出文</td>
+            <td style="vertical-align: middle;" class="text-center">合计</td>
+
+        </tr>
+
+        <tr>
+            <td style="width:25%;vertical-align: middle;" class="text-center">出文总数</td>
+            <td style="width:25%;vertical-align: middle;" class="text-center">{{vm.mainDoc.disSum}}</td>
+            <td style="vertical-align: middle;" class="text-center">{{vm.assistDoc.disSum}}</td>
+            <td style="vertical-align: middle;" class="text-center">{{vm.mainDoc.disSum + vm.assistDoc.disSum}}</td>
+        </tr>
+
+        <tr>
+            <td style="width:25%;vertical-align: middle;" class="text-center">报审投资总数</td>
+            <td style="width:25%;vertical-align: middle;" class="text-center">{{vm.mainDoc.declarevalueSum}}</td>
+            <td style="vertical-align: middle;" class="text-center">{{vm.assistDoc.declarevalueSum}}</td>
+            <td style="vertical-align: middle;" class="text-center"><span
+                    ng-if="vm.mainDoc.declarevalueSum || vm.assistDoc.declarevalueSum">{{(vm.mainDoc.declarevalueSum*1000 + vm.assistDoc.declarevalueSum*1000)/1000}}</span>
+            </td>
+        </tr>
+
+        <tr>
+            <td style="width:25%;vertical-align: middle;" class="text-center">审核后投资总额</td>
+            <td style="width:25%;vertical-align: middle;" class="text-center">{{vm.mainDoc.authorizevalueSum}}</td>
+            <td style="vertical-align: middle;" class="text-center">{{vm.assistDoc.authorizevalueSum}}</td>
+            <td style="vertical-align: middle;" class="text-center"><span
+                    ng-if="vm.mainDoc.authorizevalueSum ||vm.assistDoc.authorizevalueSum">{{(vm.mainDoc.authorizevalueSum*1000 + vm.assistDoc.authorizevalueSum*1000)/1000}}</span>
+            </td>
+        </tr>
+
+        <tr>
+            <td style="width:25%;vertical-align: middle;" class="text-center">核减(核增)投资总金额</td>
+            <td style="width:25%;vertical-align: middle;" class="text-center">{{vm.mainDoc.extravalueSum}}</td>
+            <td style="vertical-align: middle;" class="text-center">{{vm.assistDoc.extravalueSum}}</td>
+            <td style="vertical-align: middle;" class="text-center"><span
+                    ng-if="vm.mainDoc.extravalueSum || vm.assistDoc.extravalueSum">{{(vm.mainDoc.extravalueSum*1000 + vm.assistDoc.extravalueSum*1000)/1000}}</span>
+            </td>
+        </tr>
+
+        <tr>
+            <td style="width:25%;vertical-align: middle;" class="text-center">核减(核增)投资率</td>
+            <td style="width:25%;vertical-align: middle;" class="text-center"><span ng-if="vm.mainDoc.extraRateSum">{{vm.mainDoc.extraRateSum}}%</span>
+            </td>
+            <td style="vertical-align: middle;" class="text-center"><span ng-if="vm.assistDoc.extraRateSum">{{vm.assistDoc.extraRateSum}}%</span>
+            </td>
+            <td style="vertical-align: middle;" class="text-center"></td>
+        </tr>
+        <tr ng-if="vm.level=='0'">
+            <td colspan="4" style="vertical-align: middle;" class="text-left">二、课题研究及其他业务工作（如完成领导交办的其他业务工作等）</td>
+        </tr>
+        <tr>
+            <td colspan="4">
+                <table class="table table-bordered">
+                    <tr ng-if="vm.level=='0'">
+                        <td style="width:5%;vertical-align: middle;" class="text-center">序号</td>
+                        <td style="width:15%;vertical-align: middle;" class="text-center">时间</td>
+                        <td colspan="2" style="vertical-align: middle;" class="text-center">内容</td>
+                    </tr>
+                    <tr ng-repeat="x in vm.conditions|filter:{businessType:'1'}" ng-if="vm.level=='0'">
+                        <td style="width:5%;vertical-align: middle;" class="text-center">{{$index+1}}</td>
+                        <td style="width:15%;vertical-align: middle;" class="text-center">{{x.endTime}}</td>
+                        <td colspan="2" style="vertical-align: middle;" class="text-center">{{x.topicName}}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
 
 
-	</table>
+        <tr ng-if="vm.level=='0'">
+            <td colspan="4" style="vertical-align: middle;" class="text-left">三、其他工作（如参与各项集体活动的组织、主持等）</td>
+        </tr>
 
-	<table ng-if="vm.isLeader!=1" class="table table-bordered">
-		<caption class="text-center h4">
-			<strong>评审中心员工工作业绩统计表</strong>
-			<p></p>
-			<strong>
-				({{vm.model.year}}年度
-				<span ng-if="vm.model.quarter==0">1月至12月</span>
-				<span ng-if="vm.model.quarter==1">1月至3月</span>
-				<span ng-if="vm.model.quarter==2">4月至6月</span>
-				<span ng-if="vm.model.quarter==3">7月至9月</span>
-				<span ng-if="vm.model.quarter==4">10月至12月</span>
-				)
-			</strong>
-		</caption>
-		<tr>
-			<td style="width:25%;vertical-align: middle;"  class="text-center">姓名</td>
-			<td style="width:25%;vertical-align: middle;"  class="text-center">${CURRENT_USER.displayName}</td>
-			<td style="width:20%;vertical-align: middle;"  class="text-center">所在部门</td>
-			<td ng-if="vm.level=='0'" style="width:25%;vertical-align: middle;"  class="text-center">${CURRENT_USER.org.name}</td>
-			<td ng-if="vm.level=='1' || vm.level=='2' || vm.level=='3'" style="width:30%;vertical-align: middle;"  class="text-left">
-				<ul id="orgDeptList_ul">
-					<li ng-repeat="u in vm.orgDeptList"  style="float: left;width: 180px;">
-						<input type="checkbox"  tit="{{u.name}}" value="{{u.id}}" name="orgDept" ng-checked="true" ng-click="vm.initAchievementSum($event)"/>{{u.name}}
-					</li>
-				</ul>
-			</td>
-			<td ng-if="vm.level=='4'" style="width:30%;vertical-align: middle;"  class="text-center">
-				<ul id="orgDeptListInfo_ul">
-					<li ng-repeat="u in vm.orgDeptList" style="float: left;width: 150px;">
-						<input type="checkbox"  tit="{{u.name}}" name="orgDept" value="{{u.id}}" ng-checked="true" ng-click="vm.initAchievementSum($event)"/>{{u.name}}
-					</li>
-				</ul>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="4" style="vertical-align: middle;" class="text-left">一、项目评审</td>
-		</tr>
-
-		<tr>
-			<td style="width:25%;vertical-align: middle;"  class="text-center"></td>
-			<td style="width:25%;vertical-align: middle;"  class="text-center">主办人发文</td>
-			<td style="vertical-align: middle;"  class="text-center">协办人出文数</td>
-			<td style="vertical-align: middle;"  class="text-center">合计</td>
-
-		</tr>
-
-		<tr>
-			<td style="width:25%;vertical-align: middle;"  class="text-center">出文总数</td>
-			<td style="width:25%;vertical-align: middle;"  class="text-center">{{vm.mainDoc.disSum}}</td>
-			<td style="vertical-align: middle;"  class="text-center">{{vm.assistDoc.disSum}}</td>
-			<td style="vertical-align: middle;"  class="text-center">{{vm.mainDoc.disSum + vm.assistDoc.disSum}}</td>
-		</tr>
-
-		<tr>
-			<td style="width:25%;vertical-align: middle;"  class="text-center">报审投资总数</td>
-			<td style="width:25%;vertical-align: middle;"  class="text-center">{{vm.mainDoc.declarevalueSum}}</td>
-			<td style="vertical-align: middle;"  class="text-center">{{vm.assistDoc.declarevalueSum}}</td>
-			<td style="vertical-align: middle;"  class="text-center"><span ng-if="vm.mainDoc.declarevalueSum || vm.assistDoc.declarevalueSum">{{(vm.mainDoc.declarevalueSum*1000 + vm.assistDoc.declarevalueSum*1000)/1000}}</span></td>
-		</tr>
-
-		<tr>
-			<td style="width:25%;vertical-align: middle;"  class="text-center">审核后投资总额</td>
-			<td style="width:25%;vertical-align: middle;"  class="text-center">{{vm.mainDoc.authorizevalueSum}}</td>
-			<td style="vertical-align: middle;"  class="text-center">{{vm.assistDoc.authorizevalueSum}}</td>
-			<td style="vertical-align: middle;"  class="text-center"><span ng-if="vm.mainDoc.authorizevalueSum ||vm.assistDoc.authorizevalueSum">{{(vm.mainDoc.authorizevalueSum*1000 + vm.assistDoc.authorizevalueSum*1000)/1000}}</span></td>
-		</tr>
-
-		<tr>
-			<td style="width:25%;vertical-align: middle;"  class="text-center">核减(核增)投资总金额</td>
-			<td style="width:25%;vertical-align: middle;"  class="text-center">{{vm.mainDoc.extravalueSum}}</td>
-			<td style="vertical-align: middle;"  class="text-center">{{vm.assistDoc.extravalueSum}}</td>
-			<td style="vertical-align: middle;"  class="text-center"><span ng-if="vm.mainDoc.extravalueSum || vm.assistDoc.extravalueSum">{{(vm.mainDoc.extravalueSum*1000 + vm.assistDoc.extravalueSum*1000)/1000}}</span></td>
-		</tr>
-
-		<tr>
-			<td style="width:25%;vertical-align: middle;"  class="text-center">核减(核增)投资率</td>
-			<td style="width:25%;vertical-align: middle;"  class="text-center"><span ng-if="vm.mainDoc.extraRateSum">{{vm.mainDoc.extraRateSum}}%</span></td>
-			<td style="vertical-align: middle;"  class="text-center"><span ng-if="vm.assistDoc.extraRateSum">{{vm.assistDoc.extraRateSum}}%</span></td>
-			<td style="vertical-align: middle;"  class="text-center"></td>
-		</tr>
-		<tr ng-if="vm.level=='0'">
-			<td colspan="4" style="vertical-align: middle;" class="text-left">二、课题研究及其他业务工作（如完成领导交办的其他业务工作等）</td>
-		</tr>
-		<tr>
-			<td colspan="4">
-				<table class="table table-bordered">
-					<tr ng-if="vm.level=='0'">
-						<td style="width:5%;vertical-align: middle;"  class="text-center">序号</td>
-						<td style="width:15%;vertical-align: middle;"  class="text-center">时间</td>
-						<td colspan="2" style="vertical-align: middle;"  class="text-center">内容</td>
-					</tr>
-					<tr ng-repeat="x in vm.conditions|filter:{businessType:'1'}" ng-if="vm.level=='0'">
-						<td style="width:5%;vertical-align: middle;"  class="text-center">{{$index+1}}</td>
-						<td style="width:15%;vertical-align: middle;"  class="text-center">{{x.endTime}}</td>
-						<td colspan="2" style="vertical-align: middle;"  class="text-center">{{x.topicName}}</td>
-					</tr>
-				</table>
-			</td>
-		</tr>
+        <tr>
+            <td colspan="4">
+                <table class="table table-bordered">
+                    <tr ng-if="vm.level=='0'">
+                        <td style="width:5%;vertical-align: middle;" class="text-center">序号</td>
+                        <td style="width:15%;vertical-align: middle;" class="text-center">时间</td>
+                        <td colspan="2" style="vertical-align: middle;" class="text-center">内容</td>
+                    </tr>
+                    <tr ng-repeat="x in vm.conditions|filter:{businessType:'2'}" ng-if="vm.level=='0'">
+                        <td style="width:5%;vertical-align: middle;" class="text-center">{{$index+1}}</td>
+                        <td style="width:15%;vertical-align: middle;" class="text-center">{{x.endTime}}</td>
+                        <td colspan="2" style="vertical-align: middle;" class="text-center">{{x.topicName}}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
 
 
-		<tr ng-if="vm.level=='0'">
-			<td colspan="4" style="vertical-align: middle;" class="text-left">三、其他工作（如参与各项集体活动的组织、主持等）</td>
-		</tr>
+    </table>
 
-		<tr>
-			<td colspan="4">
-				<table class="table table-bordered">
-					<tr ng-if="vm.level=='0'">
-						<td style="width:5%;vertical-align: middle;"  class="text-center">序号</td>
-						<td style="width:15%;vertical-align: middle;"  class="text-center">时间</td>
-						<td colspan="2" style="vertical-align: middle;"  class="text-center">内容</td>
-					</tr>
-					<tr ng-repeat="x in vm.conditions|filter:{businessType:'2'}" ng-if="vm.level=='0'">
-						<td style="width:5%;vertical-align: middle;"  class="text-center">{{$index+1}}</td>
-						<td style="width:15%;vertical-align: middle;"  class="text-center">{{x.endTime}}</td>
-						<td colspan="2" style="vertical-align: middle;"  class="text-center">{{x.topicName}}</td>
-					</tr>
-				</table>
-			</td>
-		</tr>
+    <div id="mainDocDetail" class="well well-sm" style="display:none;">
+        <div class="toolbar">
+            <button class="btn btn-sm btn-success" ng-click="vm.exportProReview('9')">导出</button>
+        </div>
+        <table class="table table-bordered">
+            <caption class="text-center h4">
+                <strong>主办人评审项目一览表</strong>
+            </caption>
+            <tr class="active">
+                <td style="width:5%;vertical-align: middle;" class="text-center">序号</td>
+                <td style="width:10%;vertical-align: middle;" class="text-center">发文时间</td>
+                <td style="width:20%;vertical-align: middle;" class="text-center">发文号</td>
+                <td style="width:14%;vertical-align: middle;" class="text-center">项目名称</td>
+                <td style="width:14%;vertical-align: middle;" class="text-center">报审投资额</td>
+                <td style="width:14%;vertical-align: middle;" class="text-center">审核后投资额</td>
+                <td style="width:14%;vertical-align: middle;" class="text-center">核增核减资额</td>
+                <td style="width:14%;vertical-align: middle;" class="text-center">核增核减率</td>
+            </tr>
+            <tr ng-repeat="x in vm.achievementMainList">
+                <td align="center">{{$index+1}}</td>
+                <td class="text-center">{{x.dispatchDate}}</td>
+                <td class="text-center">{{x.fileNum}}</td>
+                <td class="text-center">{{x.projectName}}</td>
+                <td class="text-center">{{x.declareValue}}</td>
+                <td class="text-center">{{x.authorizeValue}}</td>
+                <td class="text-center">{{x.extraValue}}</td>
+                <td class="text-center"><span ng-if="x.extraRate">{{x.extraRate}}%</span></td>
+            </tr>
+        </table>
+    </div>
 
+    <div id="assistDocDetail" class="well well-sm" style="display:none;">
+        <div class="toolbar">
+            <button class="btn btn-sm btn-success" ng-click="vm.exportProReview('0')">导出</button>
+        </div>
+        <table class="table table-bordered">
+            <caption class="text-center h4">
+                <strong>协办人评审项目一览表</strong>
+            </caption>
+            <tr class="active">
+                <td style="width:5%;vertical-align: middle;" class="text-center">序号</td>
+                <td style="width:10%;vertical-align: middle;" class="text-center">发文时间</td>
+                <td style="width:20%;vertical-align: middle;" class="text-center">发文号</td>
+                <td style="width:14%;vertical-align: middle;" class="text-center">项目名称</td>
+                <td style="width:14%;vertical-align: middle;" class="text-center">报审投资额</td>
+                <td style="width:14%;vertical-align: middle;" class="text-center">审核后投资额</td>
+                <td style="width:14%;vertical-align: middle;" class="text-center">核增核减资额</td>
+                <td style="width:14%;vertical-align: middle;" class="text-center">核增核减率</td>
+            </tr>
+            <tr ng-repeat="x in vm.achievementAssistList">
+                <td align="center">{{$index+1}}</td>
+                <td class="text-center">{{x.dispatchDate}}</td>
+                <td class="text-center">{{x.fileNum}}</td>
+                <td class="text-center">{{x.projectName}}</td>
+                <td class="text-center">{{x.declareValue}}</td>
+                <td class="text-center">{{x.authorizeValue}}</td>
+                <td class="text-center">{{x.extraValue}}</td>
+                <td class="text-center"><span ng-if="x.extraRate">{{x.extraRate}}%</span></td>
+            </tr>
+        </table>
+    </div>
 
-	</table>
+    <div id="achievementDeptDetail" class="well well-sm" style="display:none;">
+        <div class="toolbar">
+            <button class="btn btn-sm btn-success" ng-click="vm.exportDeptAchievementDetail()">导出</button>
+        </div>
+        <table id="achievementDept" name="achievementDept" class="table table-bordered">
+            <caption class="text-center h4">
+                <strong>{{vm.model.year}}度部门工作业绩统计表</strong>
+            </caption>
 
-	<div id="mainDocDetail" class="well well-sm" style="display:none;">
-		<div class="toolbar">
-			<button class="btn btn-sm btn-success" ng-click="vm.exportProReview('9')">导出</button>
-		</div>
-		<table class="table table-bordered">
-			<caption class="text-center h4">
-				<strong>主办人评审项目一览表</strong>
-			</caption>
-			<tr class="active">
-				<td style="width:5%;vertical-align: middle;"  class="text-center">序号</td>
-				<td style="width:10%;vertical-align: middle;"  class="text-center">发文时间</td>
-				<td style="width:20%;vertical-align: middle;"  class="text-center">发文号</td>
-				<td style="width:14%;vertical-align: middle;"  class="text-center">项目名称</td>
-				<td style="width:14%;vertical-align: middle;"  class="text-center">报审投资额</td>
-				<td style="width:14%;vertical-align: middle;"  class="text-center">审核后投资额</td>
-				<td style="width:14%;vertical-align: middle;"  class="text-center">核增核减资额</td>
-				<td style="width:14%;vertical-align: middle;"  class="text-center">核增核减率</td>
-			</tr>
-			<tr  ng-repeat="x in vm.achievementMainList">
-				<td align="center">{{$index+1}}</td>
-				<td class="text-center">{{x.dispatchDate}}</td>
-				<td class="text-center">{{x.fileNum}}</td>
-				<td class="text-center">{{x.projectName}}</td>
-				<td class="text-center">{{x.declareValue}}</td>
-				<td class="text-center">{{x.authorizeValue}}</td>
-				<td class="text-center">{{x.extraValue}}</td>
-				<td class="text-center"><span ng-if="x.extraRate">{{x.extraRate}}%</span></td>
-			</tr>
-		</table>
-	</div>
+            <tr class="active">
+                <td style="width:5%;vertical-align: middle;" class="text-center">序号</td>
+                <td style="width:5%;vertical-align: middle;" class="text-center">姓名</td>
+                <td style="width:15%;vertical-align: middle;" class="text-center">主办发文数</td>
+                <td style="width:15%;vertical-align: middle;" class="text-center">协办人发文数</td>
+                <td style="width:15%;vertical-align: middle;" class="text-center">总发文数</td>
+                <td style="width:15%;vertical-align: middle;" class="text-center">主办人项目数</td>
+                <td style="width:15%;vertical-align: middle;" class="text-center">协办人项目数</td>
+                <td style="width:15%;vertical-align: middle;" class="text-center">总项目数</td>
+            </tr>
 
-	<div id="assistDocDetail" class="well well-sm" style="display:none;">
-		<div class="toolbar">
-			<button class="btn btn-sm btn-success" ng-click="vm.exportProReview('0')">导出</button>
-		</div>
-		<table class="table table-bordered">
-			<caption class="text-center h4">
-				<strong>协办人评审项目一览表</strong>
-			</caption>
-			<tr class="active">
-				<td style="width:5%;vertical-align: middle;"  class="text-center">序号</td>
-				<td style="width:10%;vertical-align: middle;"  class="text-center">发文时间</td>
-				<td style="width:20%;vertical-align: middle;"  class="text-center">发文号</td>
-				<td style="width:14%;vertical-align: middle;"  class="text-center">项目名称</td>
-				<td style="width:14%;vertical-align: middle;"  class="text-center">报审投资额</td>
-				<td style="width:14%;vertical-align: middle;"  class="text-center">审核后投资额</td>
-				<td style="width:14%;vertical-align: middle;"  class="text-center">核增核减资额</td>
-				<td style="width:14%;vertical-align: middle;"  class="text-center">核增核减率</td>
-			</tr>
-			<tr  ng-repeat="x in vm.achievementAssistList">
-				<td align="center">{{$index+1}}</td>
-				<td class="text-center">{{x.dispatchDate}}</td>
-				<td class="text-center">{{x.fileNum}}</td>
-				<td class="text-center">{{x.projectName}}</td>
-				<td class="text-center">{{x.declareValue}}</td>
-				<td class="text-center">{{x.authorizeValue}}</td>
-				<td class="text-center">{{x.extraValue}}</td>
-				<td class="text-center"><span ng-if="x.extraRate">{{x.extraRate}}%</span></td>
-			</tr>
-		</table>
-	</div>
+            <tr ng-dblclick="vm.showPersonalAchievementDetail(x.userId,x.name)"
+                ng-repeat="x in vm.achievementDeptDetailList">
+                <td align="center">{{$index+1}}</td>
+                <td class="text-center">{{x.name}}</td>
+                <td class="text-center">{{x.mainDisSum}}</td>
+                <td class="text-center">{{x.assistDisSum}}</td>
+                <td class="text-center">{{x.mainDisSum+x.assistDisSum}}</td>
+                <td class="text-center">{{x.mainProCount}}</td>
+                <td class="text-center">{{x.assistProCount}}</td>
+                <td class="text-center">{{x.mainProCount+x.assistProCount}}</td>
+            </tr>
+        </table>
+    </div>
 
-	<div id="achievementDeptDetail" class="well well-sm" style="display:none;">
-		<div class="toolbar">
-			<button class="btn btn-sm btn-success" ng-click="vm.exportDeptAchievementDetail()">导出</button>
-		</div>
-		<table id="achievementDept" name="achievementDept" class="table table-bordered">
-			<caption class="text-center h4">
-				<strong>{{vm.model.year}}度部门工作业绩统计表</strong>
-			</caption>
+    <div id="topicDetail" class="well well-sm" style="display:none;">
+        <form id="topicform" name="topicform">
+            <div class="toolbar">
+                <button class="btn btn-sm btn-success" ng-click="vm.addTopic()"><span
+                        class="glyphicon glyphicon-ok"></span>添加
+                </button>
+                <button class="btn btn-sm btn-danger" ng-click="vm.removeTopic()"><span
+                        class="glyphicon glyphicon-remove"></span>删除
+                </button>
+                <button class="btn btn-sm btn-success" ng-click="vm.saveTopic()"><span
+                        class="glyphicon glyphicon-ok"></span>保存
+                </button>
+                <button class="btn btn-sm btn-success" ng-click="vm.exportTopicMaintainInfo()">导出</button>
+            </div>
+            <table class="table table-bordered">
+                <caption class="text-center h4">
+                    <strong>课题研究及其他业务工作一览表</strong>
+                </caption>
+                <tr class="active">
+                    <td style="width:5%;min-width:30px;" class="text-center"></td>
+                    <td style="width:5%;vertical-align: middle;" class="text-center">序号</td>
+                    <td style="width:20%;vertical-align: middle;" class="text-center">业务类型</td>
+                    <td style="width:20%;vertical-align: middle;" class="text-center">时间</td>
+                    <td style="width:50%;vertical-align: middle;" class="text-center">工作内容</td>
+                </tr>
 
-			<tr class="active">
-				<td style="width:5%;vertical-align: middle;"  class="text-center">序号</td>
-				<td style="width:5%;vertical-align: middle;"  class="text-center">姓名</td>
-				<td style="width:15%;vertical-align: middle;"  class="text-center">主办人发文数</td>
-				<td style="width:15%;vertical-align: middle;"  class="text-center">协办人发文数</td>
-				<td style="width:15%;vertical-align: middle;"  class="text-center">总发文数</td>
-				<td style="width:15%;vertical-align: middle;"  class="text-center">主办人项目数</td>
-				<td style="width:15%;vertical-align: middle;"  class="text-center">协办人项目数</td>
-				<td style="width:15%;vertical-align: middle;"  class="text-center">总项目数</td>
-			</tr>
+                <tr id="conTr{{x.sort}}" ng-repeat="x in vm.conditions">
+                    <td align="center">
+                        <input type='checkbox' name="topicInfo" value="{{x.sort}}"/></td>
+                    <td align="center">{{$index+1}}</td>
+                    <td align="center">
+                        <select id="businessType{{x.sort}}" data-val="true" data-val-required="请选择业务类型">
+                            <option value="">请选择</option>
+                            <option ng-repeat="y in DICT.TOPIC_BUSINESS_TYPE.dicts"
+                                    ng-selected="x.businessType ==y.dictKey" value="{{y.dictKey}}">{{y.dictName}}
+                            </option>
+                            <span data-valmsg-for="businessType{{x.sort}}" data-valmsg-replace="true"
+                                  class="errors"></span>
+                        </select>
+                    </td>
 
-			<tr ng-dblclick="vm.showPersonalAchievementDetail(x.userId,x.name)" ng-repeat="x in vm.achievementDeptDetailList">
-				<td align="center">{{$index+1}}</td>
-				<td class="text-center">{{x.name}}</td>
-				<td class="text-center">{{x.mainDisSum}}</td>
-				<td class="text-center">{{x.assistDisSum}}</td>
-				<td class="text-center">{{x.mainDisSum+x.assistDisSum}}</td>
-				<td class="text-center">{{x.mainProCount}}</td>
-				<td class="text-center">{{x.assistProCount}}</td>
-				<td class="text-center">{{x.mainProCount+x.assistProCount}}</td>
-			</tr>
-		</table>
-	</div>
+                    <td align="center" valign="center">
+                        <input type="text" id="endTime{{x.sort}}" value="{{x.endTime}}" kendo-date-picker
+                               k-format="'yyyy-MM-dd'" class="form-control input-sm "/>
+                    </td>
 
-	<div id="topicDetail" class="well well-sm" style="display:none;">
-		<form id="topicform" name="topicform">
-			<div class="toolbar">
-				<button class="btn btn-sm btn-success" ng-click="vm.addTopic()"><span
-						class="glyphicon glyphicon-ok"></span>添加
-				</button>
-				<button class="btn btn-sm btn-danger" ng-click="vm.removeTopic()"><span
-						class="glyphicon glyphicon-remove"></span>删除
-				</button>
-				<button class="btn btn-sm btn-success" ng-click="vm.saveTopic()"><span class="glyphicon glyphicon-ok"></span>保存</button>
-				<button class="btn btn-sm btn-success" ng-click="vm.exportTopicMaintainInfo()">导出</button>
-			</div>
-			<table class="table table-bordered">
-				<caption class="text-center h4">
-					<strong>课题研究及其他业务工作一览表</strong>
-				</caption>
-				<tr class="active">
-					<td style="width:5%;min-width:30px;" class="text-center"></td>
-					<td style="width:5%;vertical-align: middle;"  class="text-center">序号</td>
-					<td style="width:20%;vertical-align: middle;"  class="text-center">业务类型</td>
-					<td style="width:20%;vertical-align: middle;"  class="text-center">时间</td>
-					<td style="width:50%;vertical-align: middle;"  class="text-center">工作内容</td>
-				</tr>
+                    <td align="center">
+                        <input type="text" maxlength="200" class="form-control input-sm" style="width: 90%"
+                               id="topicName{{x.sort}}" data-val="true" data-val-required="必填" value="{{x.topicName}}"/>
+                        <span data-valmsg-for="topicName{{x.sort}}" data-valmsg-replace="true" class="errors"></span>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
 
-				<tr id="conTr{{x.sort}}"  ng-repeat="x in vm.conditions">
-					<td align="center">
-						<input type='checkbox' name="topicInfo"  value="{{x.sort}}"/></td>
-					<td align="center">{{$index+1}}</td>
-					<td align="center">
-						<select   id="businessType{{x.sort}}"  data-val="true" data-val-required="请选择业务类型">
-							<option value="">请选择</option>
-							<option ng-repeat="y in DICT.TOPIC_BUSINESS_TYPE.dicts"  ng-selected="x.businessType ==y.dictKey" value="{{y.dictKey}}">{{y.dictName}}</option>
-							<span data-valmsg-for="businessType{{x.sort}}" data-valmsg-replace="true" class="errors"></span>
-						</select>
-					</td>
+    <div id="achievementPersonal" class="well well-sm" style="display:none;">
+        <table class="table table-bordered" ng-if="vm.achievementPersonalSumList.length>0">
+            <caption class="text-center h4">
+                <strong>评审中心员工工作业绩统计表</strong>
+            </caption>
+            <tr>
+                <td style="width:25%;vertical-align: middle;" class="text-center">姓名</td>
+                <td style="width:25%;vertical-align: middle;" class="text-center">{{vm.userName}}</td>
+                <td style="width:20%;vertical-align: middle;" class="text-center">所在部门</td>
+                <td style="width:30%;vertical-align: middle;" class="text-center">{{vm.deptName}}</td>
+            </tr>
+            <tr>
+                <td colspan="4" style="vertical-align: middle;" class="text-left">一、项目评审</td>
+            </tr>
+            <tr>
+                <td style="width:25%;vertical-align: middle;" class="text-center"></td>
+                <td style="width:25%;vertical-align: middle;" class="text-center">主办发文</td>
+                <td style="vertical-align: middle;" class="text-center">协办出文</td>
+                <td style="vertical-align: middle;" class="text-center">合计</td>
+            </tr>
 
-					<td align="center" valign="center">
-						<input type="text" id="endTime{{x.sort}}"  value="{{x.endTime}}" kendo-date-picker k-format="'yyyy-MM-dd'" class="form-control input-sm "/>
-					</td>
+            <tr>
+                <td style="width:25%;vertical-align: middle;" class="text-center">出文总数</td>
+                <td style="width:25%;vertical-align: middle;" class="text-center">{{vm.mainPersonalDoc.disSum}}</td>
+                <td style="vertical-align: middle;" class="text-center">{{vm.assistPersonalDoc.disSum}}</td>
+                <td style="vertical-align: middle;" class="text-center">{{vm.mainPersonalDoc.disSum +
+                    vm.assistPersonalDoc.disSum}}
+                </td>
+            </tr>
 
-					<td align="center">
-						<input type="text" maxlength="200" class="form-control input-sm" style="width: 90%" id="topicName{{x.sort}}" data-val="true" data-val-required="必填" value="{{x.topicName}}" />
-						<span data-valmsg-for="topicName{{x.sort}}" data-valmsg-replace="true" class="errors"></span>
-					</td>
-				</tr>
-			</table>
-		</form>
-	</div>
+            <tr>
+                <td style="width:25%;vertical-align: middle;" class="text-center">报审投资总数</td>
+                <td style="width:25%;vertical-align: middle;" class="text-center">
+                    {{vm.mainPersonalDoc.declarevalueSum}}
+                </td>
+                <td style="vertical-align: middle;" class="text-center">{{vm.assistPersonalDoc.declarevalueSum}}</td>
+                <td style="vertical-align: middle;" class="text-center"><span
+                        ng-if="vm.mainPersonalDoc.declarevalueSum || vm.assistPersonalDoc.declarevalueSum">{{(vm.mainPersonalDoc.declarevalueSum*1000 + vm.assistPersonalDoc.declarevalueSum*1000)/1000}}</span>
+                </td>
+            </tr>
 
-	<div id="achievementPersonal" class="well well-sm" style="display:none;">
-		<table class="table table-bordered" ng-if="vm.achievementPersonalSumList.length>0">
-			<caption class="text-center h4">
-				<strong>评审中心员工工作业绩统计表</strong>
-			</caption>
-			<tr>
-				<td style="width:25%;vertical-align: middle;"  class="text-center">姓名</td>
-				<td style="width:25%;vertical-align: middle;"  class="text-center">{{vm.userName}}</td>
-				<td style="width:20%;vertical-align: middle;"  class="text-center">所在部门</td>
-				<td style="width:30%;vertical-align: middle;"  class="text-center">{{vm.deptName}}</td>
-			</tr>
-			<tr>
-				<td colspan="4" style="vertical-align: middle;" class="text-left">一、项目评审</td>
-			</tr>
+            <tr>
+                <td style="width:25%;vertical-align: middle;" class="text-center">审核后投资总额</td>
+                <td style="width:25%;vertical-align: middle;" class="text-center">
+                    {{vm.mainPersonalDoc.authorizevalueSum}}
+                </td>
+                <td style="vertical-align: middle;" class="text-center">{{vm.assistPersonalDoc.authorizevalueSum}}</td>
+                <td style="vertical-align: middle;" class="text-center"><span
+                        ng-if="vm.mainPersonalDoc.authorizevalueSum || vm.assistPersonalDoc.authorizevalueSum">{{(vm.mainPersonalDoc.authorizevalueSum*1000 + vm.assistPersonalDoc.authorizevalueSum*1000)/1000}}</span>
+                </td>
+            </tr>
 
-			<tr>
-				<td style="width:25%;vertical-align: middle;"  class="text-center"></td>
-				<td style="width:25%;vertical-align: middle;"  class="text-center">主办人发文</td>
-				<td style="vertical-align: middle;"  class="text-center">协办人出文数</td>
-				<td style="vertical-align: middle;"  class="text-center">合计</td>
+            <tr>
+                <td style="width:25%;vertical-align: middle;" class="text-center">核减(核增)投资总金额</td>
+                <td style="width:25%;vertical-align: middle;" class="text-center">{{vm.mainPersonalDoc.extravalueSum}}
+                </td>
+                <td style="vertical-align: middle;" class="text-center">{{vm.assistPersonalDoc.extravalueSum}}</td>
+                <td style="vertical-align: middle;" class="text-center"><span
+                        ng-if="vm.mainPersonalDoc.extravalueSum || vm.assistPersonalDoc.extravalueSum">{{(vm.mainPersonalDoc.extravalueSum*1000 + vm.assistPersonalDoc.extravalueSum*1000)/1000}}</span>
+                </td>
+            </tr>
 
-			</tr>
+            <tr>
+                <td style="width:25%;vertical-align: middle;" class="text-center">核减(核增)投资率</td>
+                <td style="width:25%;vertical-align: middle;" class="text-center"><span
+                        ng-if="vm.mainPersonalDoc.extraRateSum">{{vm.mainPersonalDoc.extraRateSum}}%</span></td>
+                <td style="vertical-align: middle;" class="text-center"><span ng-if="vm.assistPersonalDoc.extraRateSum">{{vm.assistPersonalDoc.extraRateSum}}%</span>
+                </td>
+                <td style="vertical-align: middle;" class="text-center"></td>
+            </tr>
+            <tr>
+                <td colspan="4" style="vertical-align: middle;" class="text-left">二、课题研究及其他业务工作（如完成领导交办的其他业务工作等）</td>
+            </tr>
 
-			<tr>
-				<td style="width:25%;vertical-align: middle;"  class="text-center">出文总数</td>
-				<td style="width:25%;vertical-align: middle;"  class="text-center">{{vm.mainPersonalDoc.disSum}}</td>
-				<td style="vertical-align: middle;"  class="text-center">{{vm.assistPersonalDoc.disSum}}</td>
-				<td style="vertical-align: middle;"  class="text-center">{{vm.mainPersonalDoc.disSum + vm.assistPersonalDoc.disSum}}</td>
-
-			</tr>
-
-			<tr>
-				<td style="width:25%;vertical-align: middle;"  class="text-center">报审投资总数</td>
-				<td style="width:25%;vertical-align: middle;"  class="text-center">{{vm.mainPersonalDoc.declarevalueSum}}</td>
-				<td style="vertical-align: middle;"  class="text-center">{{vm.assistPersonalDoc.declarevalueSum}}</td>
-				<td style="vertical-align: middle;"  class="text-center"><span ng-if="vm.mainPersonalDoc.declarevalueSum || vm.assistPersonalDoc.declarevalueSum">{{(vm.mainPersonalDoc.declarevalueSum*1000 + vm.assistPersonalDoc.declarevalueSum*1000)/1000}}</span></td>
-			</tr>
-
-			<tr>
-				<td style="width:25%;vertical-align: middle;"  class="text-center">审核后投资总额</td>
-				<td style="width:25%;vertical-align: middle;"  class="text-center">{{vm.mainPersonalDoc.authorizevalueSum}}</td>
-				<td style="vertical-align: middle;"  class="text-center">{{vm.assistPersonalDoc.authorizevalueSum}}</td>
-				<td style="vertical-align: middle;"  class="text-center"><span ng-if="vm.mainPersonalDoc.authorizevalueSum || vm.assistPersonalDoc.authorizevalueSum">{{(vm.mainPersonalDoc.authorizevalueSum*1000 + vm.assistPersonalDoc.authorizevalueSum*1000)/1000}}</span></td>
-			</tr>
-
-			<tr>
-				<td style="width:25%;vertical-align: middle;"  class="text-center">核减(核增)投资总金额</td>
-				<td style="width:25%;vertical-align: middle;"  class="text-center">{{vm.mainPersonalDoc.extravalueSum}}</td>
-				<td style="vertical-align: middle;"  class="text-center">{{vm.assistPersonalDoc.extravalueSum}}</td>
-				<td style="vertical-align: middle;"  class="text-center"><span ng-if="vm.mainPersonalDoc.extravalueSum || vm.assistPersonalDoc.extravalueSum">{{(vm.mainPersonalDoc.extravalueSum*1000 + vm.assistPersonalDoc.extravalueSum*1000)/1000}}</span></td>
-			</tr>
-
-			<tr>
-				<td style="width:25%;vertical-align: middle;"  class="text-center">核减(核增)投资率</td>
-				<td style="width:25%;vertical-align: middle;"  class="text-center"><span ng-if="vm.mainPersonalDoc.extraRateSum">{{vm.mainPersonalDoc.extraRateSum}}%</span></td>
-				<td style="vertical-align: middle;"  class="text-center"><span ng-if="vm.assistPersonalDoc.extraRateSum">{{vm.assistPersonalDoc.extraRateSum}}%</span></td>
-				<td style="vertical-align: middle;"  class="text-center"></td>
-			</tr>
-			<tr>
-				<td colspan="4" style="vertical-align: middle;" class="text-left">二、课题研究及其他业务工作（如完成领导交办的其他业务工作等）</td>
-			</tr>
-
-			<tr>
-				<td style="width:5%;vertical-align: middle;"  class="text-center">序号</td>
-				<td style="width:15%;vertical-align: middle;"  class="text-center">时间</td>
-				<td colspan="2" style="vertical-align: middle;"  class="text-center">内容</td>
-			</tr>
-			<tr ng-repeat="x in vm.conditions|filter:{businessType:'1'}">
-				<td style="width:5%;vertical-align: middle;"  class="text-center">{{$index+1}}</td>
-				<td style="width:15%;vertical-align: middle;"  class="text-center">{{x.endTime}}</td>
-				<td colspan="2" style="vertical-align: middle;"  class="text-center">{{x.topicName}}</td>
-			</tr>
-			<tr>
-				<td colspan="4" style="vertical-align: middle;" class="text-left">三、其他工作（如参与各项集体活动的组织、主持等）</td>
-			</tr>
-			<tr>
-				<td style="width:5%;vertical-align: middle;"  class="text-center">序号</td>
-				<td style="width:15%;vertical-align: middle;"  class="text-center">时间</td>
-				<td colspan="2" style="vertical-align: middle;"  class="text-center">内容</td>
-			</tr>
-			<tr ng-repeat="x in vm.conditions|filter:{businessType:'2'}">
-				<td style="width:5%;vertical-align: middle;"  class="text-center">{{$index+1}}</td>
-				<td style="width:15%;vertical-align: middle;"  class="text-center">{{x.endTime}}</td>
-				<td colspan="2" style="vertical-align: middle;"  class="text-center">{{x.topicName}}</td>
-			</tr>
-		</table>
-	</div>
+            <tr>
+                <td style="width:5%;vertical-align: middle;" class="text-center">序号</td>
+                <td style="width:15%;vertical-align: middle;" class="text-center">时间</td>
+                <td colspan="2" style="vertical-align: middle;" class="text-center">内容</td>
+            </tr>
+            <tr ng-repeat="x in vm.conditions|filter:{businessType:'1'}">
+                <td style="width:5%;vertical-align: middle;" class="text-center">{{$index+1}}</td>
+                <td style="width:15%;vertical-align: middle;" class="text-center">{{x.endTime}}</td>
+                <td colspan="2" style="vertical-align: middle;" class="text-center">{{x.topicName}}</td>
+            </tr>
+            <tr>
+                <td colspan="4" style="vertical-align: middle;" class="text-left">三、其他工作（如参与各项集体活动的组织、主持等）</td>
+            </tr>
+            <tr>
+                <td style="width:5%;vertical-align: middle;" class="text-center">序号</td>
+                <td style="width:15%;vertical-align: middle;" class="text-center">时间</td>
+                <td colspan="2" style="vertical-align: middle;" class="text-center">内容</td>
+            </tr>
+            <tr ng-repeat="x in vm.conditions|filter:{businessType:'2'}">
+                <td style="width:5%;vertical-align: middle;" class="text-center">{{$index+1}}</td>
+                <td style="width:15%;vertical-align: middle;" class="text-center">{{x.endTime}}</td>
+                <td colspan="2" style="vertical-align: middle;" class="text-center">{{x.topicName}}</td>
+            </tr>
+        </table>
+    </div>
 </div>
 

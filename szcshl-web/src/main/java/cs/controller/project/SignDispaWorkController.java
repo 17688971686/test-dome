@@ -4,15 +4,13 @@ import com.sn.framework.jxls.JxlsUtils;
 import cs.ahelper.MudoleAnnotation;
 import cs.common.constants.Constant;
 import cs.common.ResultMsg;
-import cs.common.constants.SysConstants;
 import cs.common.utils.*;
 import cs.domain.project.SignDispaWork;
 import cs.domain.project.SignDispaWork_;
 import cs.domain.sys.Header;
 import cs.model.PageModelDto;
-import cs.model.expert.AchievementDeptDetailDto;
-import cs.model.expert.AchievementDetailDto;
-import cs.model.expert.AchievementSumDto;
+import cs.model.project.AchievementDeptDetailDto;
+import cs.model.project.AchievementSumDto;
 import cs.model.project.SignDispaWorkDto;
 import cs.model.sys.HeaderDto;
 import cs.model.topic.TopicMaintainDto;
@@ -21,7 +19,6 @@ import cs.repository.repositoryImpl.project.SignDispaWorkRepo;
 import cs.service.expert.ExpertSelectedService;
 import cs.service.project.SignDispaWorkService;
 import cs.service.sys.HeaderService;
-import cs.service.topic.TopicInfoService;
 import cs.service.topic.TopicMaintainService;
 import cs.sql.ProjSql;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -38,7 +35,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.*;
 import static com.sn.framework.common.StringUtil.GBK;
@@ -303,21 +299,18 @@ public class SignDispaWorkController {
     }
 
     @RequiresAuthentication
-    @RequestMapping(name = "获取员工业绩汇总" , path = "getAchievementSum" , method = RequestMethod.POST)
+    @RequestMapping(name = "业绩统计汇总" , path = "getAchievementSum" , method = RequestMethod.POST)
     @ResponseBody
-    public ResultMsg getAchievementSum(@RequestBody AchievementSumDto achievementSumDto){
-        ResultMsg resultMsg = expertSelectedService.findAchievementSum(achievementSumDto);
-        if(!Validate.isObject(resultMsg)){
-            resultMsg = ResultMsg.error(ERROR_MSG);
-        }
-        return resultMsg;
+    public Map<String,Object> getAchievementSum(@RequestBody AchievementSumDto achievementSumDto){
+        /*return  expertSelectedService.findAchievementSum(achievementSumDto);*/
+        return signDispaWorkService.countAchievementSum(achievementSumDto);
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "员工业绩统计表导出" , path = "exportAchievementSum" , method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
     public void exportPersonalAchievement(HttpServletResponse resp, @RequestBody AchievementSumDto achievementSumDto){
-        ServletOutputStream sos = null;
+        /*ServletOutputStream sos = null;
         InputStream is = null ;
         try{
             ResultMsg resultMsg = expertSelectedService.findAchievementSum(achievementSumDto);
@@ -394,14 +387,14 @@ public class SignDispaWorkController {
                 }
             }
 
-        }
+        }*/
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "部门业绩统计表导出" , path = "exportDeptAchievementSum" , method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
     public void exportDeptAchievement(HttpServletResponse resp, @RequestBody AchievementDeptDetailDto achievementSumDto){
-        ServletOutputStream sos = null;
+        /*ServletOutputStream sos = null;
         InputStream is = null ;
         try{
             ResultMsg resultMsg = expertSelectedService.findDeptAchievementDetail(achievementSumDto);
@@ -450,7 +443,7 @@ public class SignDispaWorkController {
                 }
             }
 
-        }
+        }*/
     }
 
     @RequiresAuthentication
@@ -511,7 +504,7 @@ public class SignDispaWorkController {
         ServletOutputStream sos = null;
         InputStream is = null ;
         try{
-            ResultMsg resultMsg = expertSelectedService.findAchievementSum(achievementSumDto);
+            /*ResultMsg resultMsg = expertSelectedService.findAchievementSum(achievementSumDto);
             Map<String , Object> dataMap = new HashMap<>();
             Map<String,Object> resultMap = (Map<String,Object>) resultMsg.getReObj();
             List<AchievementDetailDto> achievementMainList = new ArrayList<AchievementDetailDto>();
@@ -552,7 +545,7 @@ public class SignDispaWorkController {
             while ( (byteread = is.read(buffer)) != -1) {
                 bytesum += byteread; //字节数 文件大小
                 sos.write(buffer, 0, byteread);
-            }
+            }*/
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -570,11 +563,10 @@ public class SignDispaWorkController {
                     e.printStackTrace();
                 }
             }
-
         }
     }
 
-    private String[] getMonthByQuarterFlag(String quarter){
+    /*private String[] getMonthByQuarterFlag(String quarter){
         String[] quarterArr = new String[2];
         if(Validate.isString(quarter)){
             if("0".equals(quarter)){
@@ -598,18 +590,14 @@ public class SignDispaWorkController {
             quarterArr[1]="12";
         }
         return  quarterArr;
-    }
+    }*/
 
-    @RequiresAuthentication
+    /*@RequiresAuthentication
     @RequestMapping(name = "获取部门业绩明细" , path = "getAchievementDeptDetail" , method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg getAchievementDeptDetail(@RequestBody AchievementDeptDetailDto achievementSumDto){
-        ResultMsg resultMsg = expertSelectedService.findDeptAchievementDetail(achievementSumDto);
-        if(!Validate.isObject(resultMsg)){
-            resultMsg = ResultMsg.error(ERROR_MSG);
-        }
-        return resultMsg;
-    }
+        return expertSelectedService.findDeptAchievementDetail(achievementSumDto);
+    }*/
 
     @RequiresAuthentication
     @RequestMapping(name="项目评审情况汇总(按照申报投资金额)" , path="pieDate" , method = RequestMethod.POST)

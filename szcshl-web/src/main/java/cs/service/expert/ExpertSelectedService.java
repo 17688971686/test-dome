@@ -147,19 +147,13 @@ public interface ExpertSelectedService {
 	 * 业绩汇总
 	 * @return
 	 */
-	ResultMsg findAchievementSum(AchievementSumDto achievementSumDto);
-
-	/**
-	 * 业绩明细
-	 * @return
-	 */
-	ResultMsg findAchievementDetail(AchievementSumDto achievementSumDto,Map<String,Object> levelMap);
+	/*ResultMsg findAchievementSum(AchievementSumDto achievementSumDto);*/
 
 	/**
 	 * 部门业绩明细
 	 * @return
 	 */
-	ResultMsg findDeptAchievementDetail(AchievementDeptDetailDto achievementSumDto);
+	/*ResultMsg findDeptAchievementDetail(AchievementDeptDetailDto achievementSumDto);*/
 
 	/**
 	 *

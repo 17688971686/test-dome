@@ -1,28 +1,59 @@
-package cs.model.expert;
+package cs.model.project;
+
+import java.util.List;
 
 /**
  * 部门业绩明细
  *
  * @author zsl
  */
+@Deprecated
 public class AchievementDeptDetailDto {
+    /**
+     * 用户ID
+     */
     private String userId;
-    //姓名
+    /**
+     * 姓名
+     */
     private String name;
-    //发文数
+    /**
+     * 发文数
+     */
     private Integer mainDisSum;
-    //协办发文数
+    /**
+     * 协办发文数
+     */
     private Integer assistDisSum;
-    //主办人项目数
+    /**
+     * 主办人项目数
+     */
     private Integer mainProCount;
-    //协办人项目数
+    /**
+     * 协办人项目数
+     */
     private Integer assistProCount;
-    //部门id
+    /**
+     * 部门id
+     */
     private String deptIds;
-
-    //部门deptNames
+    /**
+     * 部门名称
+     */
     private String deptNames;
 
+    /**
+     * 子集（如一级是部门，子集则为用户）
+     */
+    List<AchievementDeptDetailDto> childList;
+
+    public List<AchievementDeptDetailDto> getChildList() {
+        return childList;
+    }
+
+    public void setChildList(List<AchievementDeptDetailDto> childList) {
+        this.childList = childList;
+    }
 
     String year;
 

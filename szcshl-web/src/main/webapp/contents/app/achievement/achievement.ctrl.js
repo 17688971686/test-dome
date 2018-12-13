@@ -7,207 +7,29 @@
 
     function achievementList($location, achievementSvc,$state,$http,bsWin) {
         var vm = this;
-        vm.title = '工作业绩统计表';
+        vm.title = '业绩统计';
         vm.model={};
         vm.mainDoc = {};
         vm.assistDoc = {};
         vm.model.year = $state.params.year;
         vm.model.quarter = $state.params.quarter;
-        vm.conMaxIndex = 0;                   //条件号
-        vm.conditions = [];         //条件列表
-        vm.isCreate = false;      //是否已经创建课题业务信息
+        vm.conMaxIndex = 0;        //条件号
+        vm.conditions = [];        //条件列表
         activate();
         function activate() {
             achievementSvc.achievementSum(vm,function (data) {
-                if(data.flag || data.reCode == 'ok'){
-                    vm.isLeader = data.reObj.isLeader;
-                    if(vm.isLeader == '1'){
-                        vm.comprehensiveDept = data.reObj.综合部;
-                        vm.evaluateOneDept = data.reObj.评估一部;
-                        vm.evaluateTwoDept = data.reObj.评估二部;
-                        vm.budgetaryOneDept = data.reObj.概算一部;
-                        vm.budgetaryTwoDept = data.reObj.概算二部;
-                        vm.evaluateOneDeptInfo = data.reObj.评估一部信息化组;
-                        if(vm.comprehensiveDept != undefined && vm.comprehensiveDept.length > 0){
-                            if(vm.comprehensiveDept.length ==2){
-                                vm.assistDocComprehensive = vm.comprehensiveDept[0];
-                                vm.mainDocComprehensive = vm.comprehensiveDept[1];
-                            }else{
-                                if(vm.comprehensiveDept[0].ismainuser=='9'){
-                                    vm.mainDocComprehensive = vm.comprehensiveDept[0];
-                                    vm.assistDocComprehensive={};
-                                    vm.assistDocComprehensive.disSum = 0;
-                                    vm.assistDocComprehensive.declarevalueSum = 0;
-                                    vm.assistDocComprehensive.authorizevalueSum = 0;
-                                    vm.assistDocComprehensive.extravalueSum = 0;
-                                    vm.assistDocComprehensive.extraRateSum = 0;
-                                }else if(vm.comprehensiveDept[0].ismainuser=='0'){
-                                    vm.assistDocComprehensive = vm.comprehensiveDept[0];
-                                    vm.mainDocComprehensive = {};
-                                    vm.mainDocComprehensive.disSum = 0;
-                                    vm.mainDocComprehensive.declarevalueSum = 0;
-                                    vm.mainDocComprehensive.authorizevalueSum = 0;
-                                    vm.mainDocComprehensive.extravalueSum = 0;
-                                    vm.mainDocComprehensive.extraRateSum = 0;
-                                }
-                            }
-                        }else{
-                            vm.mainDocComprehensive = {};
-                            vm.mainDocComprehensive.disSum = 0;
-                            vm.assistDocComprehensive={};
-                            vm.assistDocComprehensive.disSum = 0;
-                        }
+                if(data){
+                    var level = data.level;
+                    //如果是主任或者副主任
+                    if(level == 1 || level == 2){
+                        vm.comprehensive = data.orgDeptCount["综合部"];
+                        vm.evaluateOne = data.orgDeptCount["评估一部"];
+                        vm.evaluateTwo = data.orgDeptCount["评估二部"];
+                        vm.budgetaryOne = data.orgDeptCount["概算一部"];
+                        vm.budgetaryTwo = data.orgDeptCount["概算二部"];
+                        vm.evaluateOneGroup = data.orgDeptCount["评估一部信息化组"];
 
-                        if(vm.evaluateOneDept != undefined && vm.evaluateOneDept.length > 0){
-                            if(vm.evaluateOneDept.length ==2){
-                                vm.assistDocEvaluateOne = vm.evaluateOneDept[0];
-                                vm.mainDocEvaluateOne= vm.evaluateOneDept[1];
-                            }else{
-                                if(vm.evaluateOneDept[0].ismainuser=='9'){
-                                    vm.mainDocEvaluateOne = vm.evaluateOneDept[0];
-                                    vm.assistDocEvaluateOne={};
-                                    vm.assistDocEvaluateOne.disSum = 0;
-                                    vm.assistDocEvaluateOne.declarevalueSum = 0;
-                                    vm.assistDocEvaluateOne.authorizevalueSum = 0;
-                                    vm.assistDocEvaluateOne.extravalueSum = 0;
-                                    vm.assistDocEvaluateOne.extraRateSum = 0;
-                                }else if(vm.evaluateOneDept[0].ismainuser=='0'){
-                                    vm.assistDocEvaluateOne = vm.evaluateOneDept[0];
-                                    vm.mainDocEvaluateOne = {};
-                                    vm.mainDocEvaluateOne.disSum = 0;
-                                    vm.mainDocEvaluateOne.declarevalueSum = 0;
-                                    vm.mainDocEvaluateOne.authorizevalueSum = 0;
-                                    vm.mainDocEvaluateOne.extravalueSum = 0;
-                                    vm.mainDocEvaluateOne.extraRateSum = 0;
-                                }
-                            }
-                        }else{
-                            vm.mainDocEvaluateOne = {};
-                            vm.mainDocEvaluateOne.disSum = 0;
-                            vm.assistDocEvaluateOne={};
-                            vm.assistDocEvaluateOne.disSum = 0
-                        }
-
-                        if(vm.evaluateTwoDept != undefined && vm.evaluateTwoDept.length > 0){
-                            if(vm.evaluateTwoDept.length ==2){
-                                vm.assistDocEvaluateTwo = vm.evaluateTwoDept[0];
-                                vm.mainDocEvaluateTwo= vm.evaluateTwoDept[1];
-                            }else{
-                                if(vm.evaluateTwoDept[0].ismainuser=='9'){
-                                    vm.mainDocEvaluateTwo = vm.evaluateTwoDept[0];
-                                    vm.assistDocEvaluateTwo={};
-                                    vm.assistDocEvaluateTwo.disSum = 0;
-                                    vm.assistDocEvaluateTwo.declarevalueSum = 0;
-                                    vm.assistDocEvaluateTwo.authorizevalueSum = 0;
-                                    vm.assistDocEvaluateTwo.extravalueSum = 0;
-                                    vm.assistDocEvaluateTwo.extraRateSum = 0;
-                                }else if(vm.evaluateTwoDept[0].ismainuser=='0'){
-                                    vm.assistDocEvaluateTwo = vm.evaluateTwoDept[0];
-                                    vm.mainDocEvaluateTwo = {};
-                                    vm.mainDocEvaluateTwo.disSum = 0;
-                                    vm.mainDocEvaluateTwo.declarevalueSum = 0;
-                                    vm.mainDocEvaluateTwo.authorizevalueSum = 0;
-                                    vm.mainDocEvaluateTwo.extravalueSum = 0;
-                                    vm.mainDocEvaluateTwo.extraRateSum = 0;
-                                }
-                            }
-                        }else{
-                            vm.mainDocEvaluateTwo = {};
-                            vm.mainDocEvaluateTwo.disSum = 0;
-                            vm.assistDocEvaluateTwo={};
-                            vm.assistDocEvaluateTwo.disSum = 0;
-                        }
-
-                        if(vm.budgetaryOneDept != undefined && vm.budgetaryOneDept.length > 0){
-                            if(vm.budgetaryOneDept.length ==2){
-                                vm.assistDocBudgetaryOne = vm.budgetaryOneDept[0];
-                                vm.mainDocBudgetaryOne= vm.budgetaryOneDept[1];
-                            }else{
-                                if(vm.budgetaryOneDept[0].ismainuser=='9'){
-                                    vm.mainDocBudgetaryOne = vm.budgetaryOneDept[0];
-                                    vm.assistDocBudgetaryOne={};
-                                    vm.assistDocBudgetaryOne.disSum = 0;
-                                    vm.assistDocBudgetaryOne.declarevalueSum = 0;
-                                    vm.assistDocBudgetaryOne.authorizevalueSum = 0;
-                                    vm.assistDocBudgetaryOne.extravalueSum = 0;
-                                    vm.assistDocBudgetaryOne.extraRateSum = 0;
-                                }else if(vm.budgetaryOneDept[0].ismainuser=='0'){
-                                    vm.assistDocBudgetaryOne = vm.budgetaryOneDept[0];
-                                    vm.mainDocBudgetaryOne = {};
-                                    vm.mainDocBudgetaryOne.disSum = 0;
-                                    vm.mainDocBudgetaryOne.declarevalueSum = 0;
-                                    vm.mainDocBudgetaryOne.authorizevalueSum = 0;
-                                    vm.mainDocBudgetaryOne.extravalueSum = 0;
-                                    vm.mainDocBudgetaryOne.extraRateSum = 0;
-                                }
-                            }
-                        }else{
-                            vm.mainDocBudgetaryOne = {};
-                            vm.mainDocBudgetaryOne.disSum = 0;
-                            vm.assistDocBudgetaryOne={};
-                            vm.assistDocBudgetaryOne.disSum = 0;
-                        }
-
-                        if(vm.budgetaryTwoDept != undefined && vm.budgetaryTwoDept.length > 0){
-                            if(vm.budgetaryTwoDept.length ==2){
-                                vm.assistDocBudgetaryTwo = vm.budgetaryTwoDept[0];
-                                vm.mainDocBudgetaryTwo = vm.budgetaryTwoDept[1];
-                            }else{
-                                if(vm.budgetaryTwoDept[0].ismainuser=='9'){
-                                    vm.mainDocBudgetaryTwo = vm.budgetaryTwoDept[0];
-                                    vm.assistDocBudgetaryTwo={};
-                                    vm.assistDocBudgetaryTwo.disSum = 0;
-                                    vm.assistDocBudgetaryTwo.declarevalueSum = 0;
-                                    vm.assistDocBudgetaryTwo.authorizevalueSum = 0;
-                                    vm.assistDocBudgetaryTwo.extravalueSum = 0;
-                                    vm.assistDocBudgetaryTwo.extraRateSum = 0;
-                                }else if(vm.budgetaryTwoDept[0].ismainuser=='0'){
-                                    vm.assistDocBudgetaryTwo = vm.budgetaryTwoDept[0];
-                                    vm.mainDocBudgetaryTwo = {};
-                                    vm.mainDocBudgetaryTwo.disSum = 0;
-                                    vm.mainDocBudgetaryTwo.declarevalueSum = 0;
-                                    vm.mainDocBudgetaryTwo.authorizevalueSum = 0;
-                                    vm.mainDocBudgetaryTwo.extravalueSum = 0;
-                                    vm.mainDocBudgetaryTwo.extraRateSum = 0;
-                                }
-                            }
-                        }else{
-                            vm.mainDocBudgetaryTwo = {};
-                            vm.mainDocBudgetaryTwo.disSum = 0;
-                            vm.assistDocBudgetaryTwo={};
-                            vm.assistDocBudgetaryTwo.disSum = 0;
-                        }
-
-                        if(vm.evaluateOneDeptInfo != undefined && vm.evaluateOneDeptInfo.length > 0){
-                            if(vm.evaluateOneDeptInfo.length ==2){
-                                vm.assistDocOneDeptInfo = vm.evaluateOneDeptInfo[0];
-                                vm.mainDocDeptInfo= vm.evaluateOneDeptInfo[1];
-                            }else{
-                                if(vm.evaluateOneDeptInfo[0].ismainuser=='9'){
-                                    vm.mainDocDeptInfo = vm.evaluateOneDeptInfo[0];
-                                    vm.assistDocOneDeptInfo={};
-                                    vm.assistDocOneDeptInfo.disSum = 0;
-                                    vm.assistDocOneDeptInfo.declarevalueSum = 0;
-                                    vm.assistDocOneDeptInfo.authorizevalueSum = 0;
-                                    vm.assistDocOneDeptInfo.extravalueSum = 0;
-                                    vm.assistDocOneDeptInfo.extraRateSum = 0;
-                                }else if(vm.evaluateOneDeptInfo[0].ismainuser=='0'){
-                                    vm.assistDocOneDeptInfo = vm.evaluateOneDeptInfo[0];
-                                    vm.mainDocDeptInfo = {};
-                                    vm.mainDocDeptInfo.disSum = 0;
-                                    vm.mainDocDeptInfo.declarevalueSum = 0;
-                                    vm.mainDocDeptInfo.authorizevalueSum = 0;
-                                    vm.mainDocDeptInfo.extravalueSum = 0;
-                                    vm.mainDocDeptInfo.extraRateSum = 0;
-                                }
-                            }
-                        }else{
-                            vm.mainDocDeptInfo = {};
-                            vm.mainDocDeptInfo.disSum = 0;
-                            vm.assistDocOneDeptInfo={};
-                            vm.assistDocOneDeptInfo.disSum = 0;
-                        }
-
+                        console.log(data.orgDeptDetailList);
                     }else{
                         vm.achievementSumList = data.reObj.achievementSumList;
                         if(vm.achievementSumList.length > 0){
@@ -241,8 +63,19 @@
                         vm.achievementAssistList =  data.reObj.achievementAssistList;
                     }
 
-                    vm.level = data.reObj.level;
-                    vm.orgDeptList = data.reObj.orgDeptList;
+                    vm.level = data.level;
+                    //分管的部门列表
+                    vm.orgDeptList = data.orgDeptList;
+                    if(vm.orgDeptList){
+                        vm.model.deptNames = "";
+                        for(var i=0,l=vm.orgDeptList.length;i<l;i++){
+                            if(i > 0){
+                                vm.model.deptNames += ",";
+                            }
+                            vm.model.deptNames += vm.orgDeptList[i].name;
+                        }
+                    }
+
                     if(vm.level == 0){
                         vm.userId = data.reObj.userId;
                         achievementSvc.findTopicDetail(vm.userId,function(data){
@@ -757,196 +590,17 @@
             }
             vm.model.deptIds = orgIds.join(",");
             vm.model.deptNames = deptNamesArr.join(",");
-            vm.model.initFlag = "1";
             achievementSvc.achievementSum(vm,function (data) {
-                if(data.flag || data.reCode == 'ok'){
-                    if(vm.isLeader == '1'){
-                        vm.comprehensiveDept = data.reObj.综合部;
-                        vm.evaluateOneDept = data.reObj.评估一部;
-                        vm.evaluateTwoDept = data.reObj.评估二部;
-                        vm.budgetaryOneDept = data.reObj.概算一部;
-                        vm.budgetaryTwoDept = data.reObj.概算二部;
-                        vm.evaluateOneDeptInfo = data.reObj.评估一部信息化组;
-                        if(vm.comprehensiveDept != undefined && vm.comprehensiveDept.length > 0){
-                            if(vm.comprehensiveDept.length ==2){
-                                vm.assistDocComprehensive = vm.comprehensiveDept[0];
-                                vm.mainDocComprehensive = vm.comprehensiveDept[1];
-                            }else{
-                                if(vm.comprehensiveDept[0].ismainuser=='9'){
-                                    vm.mainDocComprehensive = vm.comprehensiveDept[0];
-                                    vm.assistDocComprehensive={};
-                                    vm.assistDocComprehensive.disSum = 0;
-                                    vm.assistDocComprehensive.declarevalueSum = 0;
-                                    vm.assistDocComprehensive.authorizevalueSum = 0;
-                                    vm.assistDocComprehensive.extravalueSum = 0;
-                                    vm.assistDocComprehensive.extraRateSum = 0;
-                                }else if(vm.comprehensiveDept[0].ismainuser=='0'){
-                                    vm.assistDocComprehensive = vm.comprehensiveDept[0];
-                                    vm.mainDocComprehensive = {};
-                                    vm.mainDocComprehensive.disSum = 0;
-                                    vm.mainDocComprehensive.declarevalueSum = 0;
-                                    vm.mainDocComprehensive.authorizevalueSum = 0;
-                                    vm.mainDocComprehensive.extravalueSum = 0;
-                                    vm.mainDocComprehensive.extraRateSum = 0;
-                                }
-                            }
-                        }else{
-                            vm.mainDocComprehensive = {};
-                            vm.mainDocComprehensive.disSum = 0;
-                            vm.assistDocComprehensive={};
-                            vm.assistDocComprehensive.disSum = 0;
-                        }
-
-                        if(vm.evaluateOneDept != undefined && vm.evaluateOneDept.length > 0){
-                            if(vm.evaluateOneDept.length ==2){
-                                vm.assistDocEvaluateOne = vm.evaluateOneDept[0];
-                                vm.mainDocEvaluateOne= vm.evaluateOneDept[1];
-                            }else{
-                                if(vm.evaluateOneDept[0].ismainuser=='9'){
-                                    vm.mainDocEvaluateOne = vm.evaluateOneDept[0];
-                                    vm.assistDocEvaluateOne={};
-                                    vm.assistDocEvaluateOne.disSum = 0;
-                                    vm.assistDocEvaluateOne.declarevalueSum = 0;
-                                    vm.assistDocEvaluateOne.authorizevalueSum = 0;
-                                    vm.assistDocEvaluateOne.extravalueSum = 0;
-                                    vm.assistDocEvaluateOne.extraRateSum = 0;
-                                }else if(vm.evaluateOneDept[0].ismainuser=='0'){
-                                    vm.assistDocEvaluateOne = vm.evaluateOneDept[0];
-                                    vm.mainDocEvaluateOne = {};
-                                    vm.mainDocEvaluateOne.disSum = 0;
-                                    vm.mainDocEvaluateOne.declarevalueSum = 0;
-                                    vm.mainDocEvaluateOne.authorizevalueSum = 0;
-                                    vm.mainDocEvaluateOne.extravalueSum = 0;
-                                    vm.mainDocEvaluateOne.extraRateSum = 0;
-                                }
-                            }
-                        }else{
-                            vm.mainDocEvaluateOne = {};
-                            vm.mainDocEvaluateOne.disSum = 0;
-                            vm.assistDocEvaluateOne={};
-                            vm.assistDocEvaluateOne.disSum = 0
-                        }
-
-                        if(vm.evaluateTwoDept != undefined && vm.evaluateTwoDept.length > 0){
-                            if(vm.evaluateTwoDept.length ==2){
-                                vm.assistDocEvaluateTwo = vm.evaluateTwoDept[0];
-                                vm.mainDocEvaluateTwo= vm.evaluateTwoDept[1];
-                            }else{
-                                if(vm.evaluateTwoDept[0].ismainuser=='9'){
-                                    vm.mainDocEvaluateTwo = vm.evaluateTwoDept[0];
-                                    vm.assistDocEvaluateTwo={};
-                                    vm.assistDocEvaluateTwo.disSum = 0;
-                                    vm.assistDocEvaluateTwo.declarevalueSum = 0;
-                                    vm.assistDocEvaluateTwo.authorizevalueSum = 0;
-                                    vm.assistDocEvaluateTwo.extravalueSum = 0;
-                                    vm.assistDocEvaluateTwo.extraRateSum = 0;
-                                }else if(vm.evaluateTwoDept[0].ismainuser=='0'){
-                                    vm.assistDocEvaluateTwo = vm.evaluateTwoDept[0];
-                                    vm.mainDocEvaluateTwo = {};
-                                    vm.mainDocEvaluateTwo.disSum = 0;
-                                    vm.mainDocEvaluateTwo.declarevalueSum = 0;
-                                    vm.mainDocEvaluateTwo.authorizevalueSum = 0;
-                                    vm.mainDocEvaluateTwo.extravalueSum = 0;
-                                    vm.mainDocEvaluateTwo.extraRateSum = 0;
-                                }
-                            }
-                        }else{
-                            vm.mainDocEvaluateTwo = {};
-                            vm.mainDocEvaluateTwo.disSum = 0;
-                            vm.assistDocEvaluateTwo={};
-                            vm.assistDocEvaluateTwo.disSum = 0;
-                        }
-
-                        if(vm.budgetaryOneDept != undefined && vm.budgetaryOneDept.length > 0){
-                            if(vm.budgetaryOneDept.length ==2){
-                                vm.assistDocBudgetaryOne = vm.budgetaryOneDept[0];
-                                vm.mainDocBudgetaryOne= vm.budgetaryOneDept[1];
-                            }else{
-                                if(vm.budgetaryOneDept[0].ismainuser=='9'){
-                                    vm.mainDocBudgetaryOne = vm.budgetaryOneDept[0];
-                                    vm.assistDocBudgetaryOne={};
-                                    vm.assistDocBudgetaryOne.disSum = 0;
-                                    vm.assistDocBudgetaryOne.declarevalueSum = 0;
-                                    vm.assistDocBudgetaryOne.authorizevalueSum = 0;
-                                    vm.assistDocBudgetaryOne.extravalueSum = 0;
-                                    vm.assistDocBudgetaryOne.extraRateSum = 0;
-                                }else if(vm.budgetaryOneDept[0].ismainuser=='0'){
-                                    vm.assistDocBudgetaryOne = vm.budgetaryOneDept[0];
-                                    vm.mainDocBudgetaryOne = {};
-                                    vm.mainDocBudgetaryOne.disSum = 0;
-                                    vm.mainDocBudgetaryOne.declarevalueSum = 0;
-                                    vm.mainDocBudgetaryOne.authorizevalueSum = 0;
-                                    vm.mainDocBudgetaryOne.extravalueSum = 0;
-                                    vm.mainDocBudgetaryOne.extraRateSum = 0;
-                                }
-                            }
-                        }else{
-                            vm.mainDocBudgetaryOne = {};
-                            vm.mainDocBudgetaryOne.disSum = 0;
-                            vm.assistDocBudgetaryOne={};
-                            vm.assistDocBudgetaryOne.disSum = 0;
-                        }
-
-                        if(vm.budgetaryTwoDept != undefined && vm.budgetaryTwoDept.length > 0){
-                            if(vm.budgetaryTwoDept.length ==2){
-                                vm.assistDocBudgetaryTwo = vm.budgetaryTwoDept[0];
-                                vm.mainDocBudgetaryTwo = vm.budgetaryTwoDept[1];
-                            }else{
-                                if(vm.budgetaryTwoDept[0].ismainuser=='9'){
-                                    vm.mainDocBudgetaryTwo = vm.budgetaryTwoDept[0];
-                                    vm.assistDocBudgetaryTwo={};
-                                    vm.assistDocBudgetaryTwo.disSum = 0;
-                                    vm.assistDocBudgetaryTwo.declarevalueSum = 0;
-                                    vm.assistDocBudgetaryTwo.authorizevalueSum = 0;
-                                    vm.assistDocBudgetaryTwo.extravalueSum = 0;
-                                    vm.assistDocBudgetaryTwo.extraRateSum = 0;
-                                }else if(vm.budgetaryTwoDept[0].ismainuser=='0'){
-                                    vm.assistDocBudgetaryTwo = vm.budgetaryTwoDept[0];
-                                    vm.mainDocBudgetaryTwo = {};
-                                    vm.mainDocBudgetaryTwo.disSum = 0;
-                                    vm.mainDocBudgetaryTwo.declarevalueSum = 0;
-                                    vm.mainDocBudgetaryTwo.authorizevalueSum = 0;
-                                    vm.mainDocBudgetaryTwo.extravalueSum = 0;
-                                    vm.mainDocBudgetaryTwo.extraRateSum = 0;
-                                }
-                            }
-                        }else{
-                            vm.mainDocBudgetaryTwo = {};
-                            vm.mainDocBudgetaryTwo.disSum = 0;
-                            vm.assistDocBudgetaryTwo={};
-                            vm.assistDocBudgetaryTwo.disSum = 0;
-                        }
-
-                        if(vm.evaluateOneDeptInfo != undefined && vm.evaluateOneDeptInfo.length > 0){
-                            if(vm.evaluateOneDeptInfo.length ==2){
-                                vm.assistDocOneDeptInfo = vm.evaluateOneDeptInfo[0];
-                                vm.mainDocDeptInfo= vm.evaluateOneDeptInfo[1];
-                            }else{
-                                if(vm.evaluateOneDeptInfo[0].ismainuser=='9'){
-                                    vm.mainDocDeptInfo = vm.evaluateOneDeptInfo[0];
-                                    vm.assistDocOneDeptInfo={};
-                                    vm.assistDocOneDeptInfo.disSum = 0;
-                                    vm.assistDocOneDeptInfo.declarevalueSum = 0;
-                                    vm.assistDocOneDeptInfo.authorizevalueSum = 0;
-                                    vm.assistDocOneDeptInfo.extravalueSum = 0;
-                                    vm.assistDocOneDeptInfo.extraRateSum = 0;
-                                }else if(vm.evaluateOneDeptInfo[0].ismainuser=='0'){
-                                    vm.assistDocOneDeptInfo = vm.evaluateOneDeptInfo[0];
-                                    vm.mainDocDeptInfo = {};
-                                    vm.mainDocDeptInfo.disSum = 0;
-                                    vm.mainDocDeptInfo.declarevalueSum = 0;
-                                    vm.mainDocDeptInfo.authorizevalueSum = 0;
-                                    vm.mainDocDeptInfo.extravalueSum = 0;
-                                    vm.mainDocDeptInfo.extraRateSum = 0;
-                                }
-                            }
-                        }else{
-                            vm.mainDocDeptInfo = {};
-                            vm.mainDocDeptInfo.disSum = 0;
-                            vm.assistDocOneDeptInfo={};
-                            vm.assistDocOneDeptInfo.disSum = 0;
-                        }
-
+                if(data){
+                    var level = data.level;
+                    //如果是主任或者副主任
+                    if(level == 1 || level == 2){
+                        vm.comprehensive = data.orgDeptCount["综合部"];
+                        vm.evaluateOne = data.orgDeptCount["评估一部"];
+                        vm.evaluateTwo = data.orgDeptCount["评估二部"];
+                        vm.budgetaryOne = data.orgDeptCount["概算一部"];
+                        vm.budgetaryTwo = data.orgDeptCount["概算二部"];
+                        vm.evaluateOneGroup = data.orgDeptCount["评估一部信息化组"];
                     }else{
                         vm.achievementSumList = data.reObj.achievementSumList;
                         if(vm.achievementSumList.length > 0){
@@ -955,7 +609,6 @@
                         }else{
                             vm.assistDoc = {};
                             vm.mainDoc = {};
-
                         }
                         vm.achievementMainList =  data.reObj.achievementMainList;
                         vm.achievementAssistList =  data.reObj.achievementAssistList;
@@ -993,6 +646,22 @@
         vm.exportProReview = function (isMainPro) {
             vm.model.isMainPro = isMainPro;
             achievementSvc.exportProReview(vm);
+        }
+
+        /**
+         * 统计统计的部门是否包含校验的部门
+         * @param deptNames
+         * @param checkDeptName
+         * @returns {boolean}
+         */
+        vm.checkIsHaveDept = function(deptNames,checkDeptName){
+            var deptNameArr = deptNames.split(",");
+            for(var i=0,l=deptNameArr.length;i<l;i++){
+                if(deptNameArr[i] == checkDeptName){
+                    return true;
+                }
+            }
+            return false;
         }
     }
 })();

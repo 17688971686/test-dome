@@ -928,13 +928,13 @@ public class UserServiceImpl implements UserService {
             for (OrgDept od : allOrgDeptList) {
                 if (leaderFlag == 0) {
                     if (curUserId.equals(od.getDirectorID())) {
-                        if (!od.getName().equals("评估一部信息化组")) {
+                        if (od.getName().equals(Constant.OrgType.ORXXHZ.getKey())) {
+                            //评估一部信息化组
+                            leaderFlag = 4;
+                        } else {
                             leaderFlag = 3;
                             orgIdStr = od.getId();
-                        } else {
-                            leaderFlag = 4;
                         }
-
                     }
                     if (curUserId.equals(od.getsLeaderID())) {
                         leaderFlag = 2;

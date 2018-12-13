@@ -5,10 +5,13 @@ import cs.common.constants.FlowConstant;
 import cs.common.utils.Validate;
 import cs.domain.project.Sign;
 import cs.domain.project.WorkProgram;
+import cs.domain.sys.OrgDept;
+import cs.model.project.Achievement;
+import cs.model.project.AchievementDeptDetailDto;
+import cs.model.project.AchievementSumDto;
 import cs.model.project.SignDto;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -243,5 +246,130 @@ public class ProjUtil {
         sign.setaUserID("");
         sign.setaUserName("");
         return sign;
+    }
+
+    /**
+     * 部门用户业绩详情信息统计
+     * @param countList
+     * @param orgDeptList
+     * @return
+     */
+    public static List<Achievement> orgDeptDetail(List<Achievement> countList, List<OrgDept> orgDeptList,Map<String,AchievementSumDto> orgDeptCount) {
+        List<Achievement> resultList = new ArrayList<>();
+        //初始化已经统计好的
+        for(OrgDept orgDept : orgDeptList){
+            Achievement achievementDeptDetailDto = new Achievement();
+            achievementDeptDetailDto.setOrgId(orgDept.getId());
+            achievementDeptDetailDto.setOrgName(orgDept.getName());
+            boolean isHave = false;
+            Iterator entries = orgDeptCount.entrySet().iterator();
+            while (entries.hasNext()) {
+                Map.Entry entry = (Map.Entry) entries.next();
+                String key = entry.getKey().toString();
+                if(key.equals(orgDept.getName())){
+                    isHave = true;
+                    AchievementSumDto achievementSumDto = (AchievementSumDto) entry.getValue();
+                    achievementDeptDetailDto.setAssistDisSum(achievementSumDto.getAssistDisSum());
+                    achievementDeptDetailDto.setMainDisSum(achievementSumDto.getMainDisSum());
+                }
+            }
+            if(!isHave){
+                achievementDeptDetailDto.setAssistDisSum(0);
+                achievementDeptDetailDto.setMainDisSum(0);
+            }
+            resultList.add(achievementDeptDetailDto);
+        }
+        //遍历统计list
+        if(Validate.isList(countList)){
+            Map<String,List<Achievement>> cacheMap = new HashMap<>();
+            for(int i=0,l=countList.size();i<l;i++){
+                Achievement achievement = countList.get(i);
+                countAchievementDetail(cacheMap,achievement);
+            }
+
+            //合并List
+            for(Achievement achievement :resultList){
+                Object value = cacheMap.get(achievement.getOrgId());
+                if(Validate.isObject(value)){
+                    achievement.setChildList((List<Achievement>) value);
+                }
+            }
+        }
+        return resultList;
+    }
+
+    private static void countAchievementDetail(Map<String, List<Achievement>> cacheMap, Achievement achievement) {
+        List<Achievement> achievementList = cacheMap.get(achievement.getOrgId());
+        if(!Validate.isList(achievementList)){
+            achievementList = new ArrayList<>();
+        }
+        achievementList.add(achievement);
+        cacheMap.put(achievement.getOrgId(),achievementList);
+    }
+
+    /**
+     * 部门业绩发文数统计
+     * @param countList
+     * @param orgDeptList
+     * @return
+     */
+    public static Map<String,AchievementSumDto> countOrgDept(List<Achievement> countList, List<OrgDept> orgDeptList) {
+        Map<String,AchievementSumDto> resultMap = new HashMap<>();
+        if(Validate.isList(countList)){
+            String lastSignId = "",lastOrgId = "";
+            Map<String,AchievementSumDto> countOrgDept = new HashMap<>();
+            for(int i=0,l=countList.size();i<l;i++){
+                Achievement achievement = countList.get(i);
+                String signId = achievement.getSignId();
+                String orgId = achievement.getOrgId();
+                String branchId = achievement.getBranchId();
+                //两者有一个不等，则是新的
+                if(!lastSignId.equals(signId) || !lastOrgId.equals(orgId)){
+                    countAchievementSum(countOrgDept,orgId,branchId);
+                    lastSignId = signId;
+                    lastOrgId = orgId;
+                }
+                //最后一个也要进行统计
+                if(i == (l-1)){
+                    countAchievementSum(countOrgDept,orgId,branchId);
+                }
+            }
+            //替换map的key值
+            Iterator entries = countOrgDept.entrySet().iterator();
+            while (entries.hasNext()) {
+                Map.Entry entry = (Map.Entry) entries.next();
+                String key = entry.getKey().toString();
+                resultMap.put(getOrgName(key,orgDeptList),(AchievementSumDto) entry.getValue());
+            }
+        }
+        return resultMap;
+    }
+
+    private static String getOrgName(String key, List<OrgDept> orgDeptList) {
+        for(OrgDept orgDept : orgDeptList){
+            if(Validate.isString(key) && key.equals(orgDept.getId())){
+                return orgDept.getName();
+            }
+        }
+        return "";
+    }
+
+    /**
+     * 统计数量
+     * @param countOrgDept
+     * @param orgId
+     * @param branchId
+     */
+    private static void countAchievementSum(Map<String, AchievementSumDto> countOrgDept, String orgId, String branchId) {
+        AchievementSumDto achievementSumDto = countOrgDept.get(orgId);
+        if(!Validate.isObject(achievementSumDto)){
+            achievementSumDto = new AchievementSumDto();
+        }
+        if(isMainBranch(branchId)){
+            achievementSumDto.setMainDisSum(achievementSumDto.getMainDisSum()+1);
+        }else{
+            achievementSumDto.setAssistDisSum(achievementSumDto.getAssistDisSum()+1);
+        }
+        countOrgDept.put(orgId,achievementSumDto);
     }
 }

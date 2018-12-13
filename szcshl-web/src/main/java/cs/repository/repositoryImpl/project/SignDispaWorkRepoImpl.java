@@ -10,6 +10,8 @@ import cs.domain.project.Sign;
 import cs.domain.project.SignDispaWork;
 import cs.domain.project.SignDispaWork_;
 import cs.domain.project.Sign_;
+import cs.model.project.Achievement;
+import cs.model.project.AchievementSumDto;
 import cs.repository.AbstractRepository;
 import cs.service.flow.FlowService;
 import cs.sql.ProjSql;
@@ -17,6 +19,7 @@ import cs.xss.XssShieldUtil;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -606,6 +609,45 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
     @Override
     public List<Map<String, Object>> dtasksLineSign() {
         return jdbcTemplate.queryForList(ProjSql.COUNT_DEAL_PROJ);
+    }
+
+    /**
+     * 业绩统计查询
+     * @param year
+     * @param quarter
+     * @param deptIds
+     * @param userId
+     * @param level
+     * @return
+     */
+    @Override
+    public List<Achievement> countAchievement(String year, String quarter, String deptIds, String userId, int level) {
+        String beginTime = year + "-01-01 00:00:00",endTime = year + "-12-31 23:59:59";
+        if (Validate.isString(year) && Validate.isString(quarter)) {
+            switch (quarter) {
+                case "1":
+                    beginTime = year + "-01-01 00:00:00";
+                    endTime = year + "-03-31 23:59:59";
+                    break;
+                case "2":
+                    beginTime = year + "-04-01 00:00:00";
+                    endTime = year + "-06-30 23:59:59";
+                    break;
+                case "3":
+                    beginTime = year + "-07-01 00:00:00";
+                    endTime = year + "-09-30 23:59:59";
+                    break;
+                case "4":
+                    beginTime = year + "-10-01 00:00:00";
+                    endTime = year + "-12-31 23:59:59";
+                    break;
+                default:
+                    ;
+            }
+        }
+        HqlBuilder hqlBuilder = ProjSql.countAchievement(deptIds,userId,level,beginTime,endTime);
+        List<Achievement> achievementList = jdbcTemplate.query(hqlBuilder.getHqlString(),hqlBuilder.getJdbcValue(), new BeanPropertyRowMapper<Achievement>(Achievement.class) );
+        return achievementList;
     }
 
 

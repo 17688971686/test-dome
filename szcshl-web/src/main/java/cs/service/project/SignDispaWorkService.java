@@ -3,6 +3,7 @@ package cs.service.project;
 import cs.common.ResultMsg;
 import cs.domain.project.SignDispaWork;
 import cs.model.PageModelDto;
+import cs.model.project.AchievementSumDto;
 import cs.model.project.SignDispaWorkDto;
 import cs.repository.odata.ODataObj;
 
@@ -120,4 +121,10 @@ public interface SignDispaWorkService {
      */
     ResultMsg countWeekDays(Date oldSignDate , Date signDate);
 
+    /**
+     * 业绩统计汇总
+     * @param achievementSumDto
+     * @return
+     */
+    Map<String,Object> countAchievementSum(AchievementSumDto achievementSumDto);
 }

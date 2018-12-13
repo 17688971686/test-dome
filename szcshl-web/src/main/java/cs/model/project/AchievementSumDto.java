@@ -1,4 +1,4 @@
-package cs.model.expert;
+package cs.model.project;
 import java.math.BigDecimal;
 
 
@@ -8,8 +8,10 @@ import java.math.BigDecimal;
  * @author zsl
  */
 public class AchievementSumDto {
-    //发文数
-    private Integer disSum;
+    //主办发文
+    private int mainDisSum;
+    //协办出文
+    private int assistDisSum;
     //申报金额
     private BigDecimal declarevalueSum;
     //审定金额
@@ -18,12 +20,6 @@ public class AchievementSumDto {
     private BigDecimal extravalueSum;
     //核减率
     private BigDecimal extraRateSum;
-
-    private String beginTime;
-
-    private String endTime;
-
-    private String ismainuser;
 
     private String year;
 
@@ -34,11 +30,6 @@ public class AchievementSumDto {
     private String deptIds;
 
     private String deptNames;
-
-    private String isMainPro;
-
-    private String initFlag;
-
 
     public BigDecimal getDeclarevalueSum() {
         return declarevalueSum;
@@ -70,38 +61,6 @@ public class AchievementSumDto {
 
     public void setExtraRateSum(BigDecimal extraRateSum) {
         this.extraRateSum = extraRateSum;
-    }
-
-    public String getBeginTime() {
-        return beginTime;
-    }
-
-    public void setBeginTime(String beginTime) {
-        this.beginTime = beginTime;
-    }
-
-    public String getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(String endTime) {
-        this.endTime = endTime;
-    }
-
-    public Integer getDisSum() {
-        return disSum;
-    }
-
-    public void setDisSum(Integer disSum) {
-        this.disSum = disSum;
-    }
-
-    public String getIsmainuser() {
-        return ismainuser;
-    }
-
-    public void setIsmainuser(String ismainuser) {
-        this.ismainuser = ismainuser;
     }
 
     public String getYear() {
@@ -136,22 +95,6 @@ public class AchievementSumDto {
         this.deptIds = deptIds;
     }
 
-    public String getIsMainPro() {
-        return isMainPro;
-    }
-
-    public void setIsMainPro(String isMainPro) {
-        this.isMainPro = isMainPro;
-    }
-
-    public String getInitFlag() {
-        return initFlag;
-    }
-
-    public void setInitFlag(String initFlag) {
-        this.initFlag = initFlag;
-    }
-
     public String getDeptNames() {
         return deptNames;
     }
@@ -160,4 +103,19 @@ public class AchievementSumDto {
         this.deptNames = deptNames;
     }
 
+    public int getMainDisSum() {
+        return mainDisSum;
+    }
+
+    public void setMainDisSum(int mainDisSum) {
+        this.mainDisSum = mainDisSum;
+    }
+
+    public int getAssistDisSum() {
+        return assistDisSum;
+    }
+
+    public void setAssistDisSum(int assistDisSum) {
+        this.assistDisSum = assistDisSum;
+    }
 }

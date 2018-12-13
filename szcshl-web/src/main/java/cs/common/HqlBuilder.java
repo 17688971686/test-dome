@@ -84,16 +84,17 @@ public class HqlBuilder {
 	 */
 	public 	HqlBuilder bulidPropotyString(String sqlKeyWord,String propoty,String values){
 		List<String> idList = StringUtil.getSplit(values, ",");
-		if (idList.size() > 1) {
+		int sizeL = idList.size();
+		if (sizeL > 1) {
 			hqlBuilder.append(sqlKeyWord +" "+ propoty + " in (");
 		}else{
 			if(Validate.isString(sqlKeyWord)){
 				hqlBuilder.append(sqlKeyWord +" ");
 			}
 		}
-		for (int i = 0; i< idList.size(); i++) {
-			if (idList.size() > 1) {
-				if (i == (idList.size() - 1)) {
+		for (int i = 0; i< sizeL; i++) {
+			if (sizeL > 1) {
+				if (i == (sizeL - 1)) {
 					hqlBuilder.append(" :id" + i);
 					setParam("id" + i, idList.get(i));
 				}else if((i%999)==0 && i>0){
@@ -109,16 +110,49 @@ public class HqlBuilder {
 				hqlBuilder.append(propoty + " = :id ");
 				setParam("id", idList.get(0));
 			}
+		}
+		if (sizeL > 1) {
+			hqlBuilder.append(") ");
+		}
+		return this;
+	}
 
+	public 	HqlBuilder bulidJdbcPropotyString(String sqlKeyWord,String propoty,String values){
+		List<String> idList = StringUtil.getSplit(values, ",");
+		int sizeL = idList.size();
+		if (sizeL > 1) {
+			hqlBuilder.append(sqlKeyWord +" "+ propoty + " in (");
+		}else{
+			if(Validate.isString(sqlKeyWord)){
+				hqlBuilder.append(sqlKeyWord +" ");
+			}
+		}
+		for (int i = 0; i< sizeL; i++) {
+			if (sizeL > 1) {
+				if (i == (sizeL - 1)) {
+					hqlBuilder.append(" ? " );
+					setParam("id" + i, idList.get(i));
+				}else if((i%999)==0 && i>0){
+					hqlBuilder.append(" ? " );
+					setParam("id" + i, idList.get(i));
+					hqlBuilder.append(") or "+propoty+" in (");
+				}else{
+					hqlBuilder.append(" ? ");
+					setParam("id" + i, idList.get(i));
+					hqlBuilder.append(",");
+				}
+			}else{
+				hqlBuilder.append(propoty + " = ? ");
+				setParam("id", idList.get(0));
+			}
 		}
 
-		if (idList.size() > 1) {
+		if (sizeL > 1) {
 			hqlBuilder.append(") ");
 		}
 
 		return this;
 	}
-
 	/**
 	 * 转成jdbc值
 	 *
