@@ -5,6 +5,9 @@ import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import org.hibernate.query.Query;
 import org.hibernate.type.Type;
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.codecs.Codec;
+import org.owasp.esapi.codecs.OracleCodec;
 
 import java.util.List;
 
@@ -34,6 +37,7 @@ public class QueryParamBuild<T> {
         List<String> params = hqlBuilder.getParams();
         List<Object> values = hqlBuilder.getValues();
         List<Type> types = hqlBuilder.getTypes();
+        Codec oracleCodec = new OracleCodec();
         if (Validate.isList(params)) {
             for (int i = 0, l = params.size(); i < l; i++) {
                 String paramName = StringUtil.sqlInjectionFilter(params.get(i));
@@ -42,6 +46,7 @@ public class QueryParamBuild<T> {
                     continue;
                 }
                 if (value instanceof String) {
+                    value = ESAPI.encoder().encodeForSQL(oracleCodec,value.toString());
                     if (Validate.isString(value)) {
                         value = StringUtil.sqlInjectionFilter(value.toString());
                         if(!Validate.isString(value)){
