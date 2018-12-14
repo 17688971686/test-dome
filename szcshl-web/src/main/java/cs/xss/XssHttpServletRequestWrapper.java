@@ -14,6 +14,7 @@ import java.util.Vector;
  */
 public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
     private Map<String, String[]> parameterMap;  //所有参数的Map集合
+    HttpServletRequest orgRequest = null;
     static {
        /* String antiSamyPath = XssHttpServletRequestWrapper.class.getClassLoader().getResource("antisamy-ebay.xml").getFile();
         //System.out.println("policy_filepath:" + antiSamyPath);
@@ -30,6 +31,7 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
     public XssHttpServletRequestWrapper(HttpServletRequest request) {
         super(request);
+        orgRequest = request;
         parameterMap = request.getParameterMap();
     }
     /** * 获取所有参数名 * @return 返回所有参数名 * */
@@ -59,12 +61,8 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
      */
     @Override
     public String getParameter(String name) {
-        String[] results = parameterMap.get(name);
-        if(Validate.isEmpty(results)) {
-            return null;
-        } else{
-            return cleanXSS(results[0]);
-        }
+        String value = super.getParameter(name);
+        return cleanXSS(value);
     }
 
     /**
@@ -73,22 +71,45 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
      * */
     @Override
     public String[] getParameterValues(String name) {
-        String[] values = parameterMap.get(name);
-        if (!Validate.isEmpty(values)) {
-            int length = values.length;
-            String[] escapseValues = new String[length];
-            for (int i = 0; i < length; i++) {
-                escapseValues[i] = cleanXSS(values[i]);
-            }
-            return escapseValues;
+        String[] values = super.getParameterValues(name);
+
+        if (values == null) {
+            return null;
         }
-        return super.getParameterValues(name);
+
+        int count = values.length;
+        String[] encodedValues = new String[count];
+        for (int i = 0; i < count; i++) {
+            encodedValues[i] = cleanXSS(values[i]);
+        }
+
+        return encodedValues;
     }
 
+    /**
+     * 获取最原始的request
+     *
+     * @return
+     */
+    public HttpServletRequest getOrgRequest() {
+        return orgRequest;
+    }
+    /**
+     * 获取最原始的request的静态方法
+     *
+     * @return
+     */
+    public static HttpServletRequest getOrgRequest(HttpServletRequest req) {
+        if (req instanceof XssHttpServletRequestWrapper) {
+            return ((XssHttpServletRequestWrapper) req).getOrgRequest();
+        }
+        return req;
+    }
     /**
      * @desc AntiSamy清洗数据
      */
     private String cleanXSS(String taintedHTML) {
+
         return XssShieldUtil.getInstance().stripXss(taintedHTML);
     }
 }

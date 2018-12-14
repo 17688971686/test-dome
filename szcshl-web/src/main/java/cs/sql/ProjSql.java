@@ -7,8 +7,20 @@ import cs.common.HqlBuilder;
  */
 public class ProjSql {
 
-    public static final String COUNT_PROJ = "select COUNT(signid)  as SIGNNUMBER ,reviewstage  from SIGN_DISP_WORK t where signstate<>7 and signstate<>2 group by t.reviewstage";
-    public static final String COUNT_DEAL_PROJ ="select t.signid, t.projectname,t.receivedate,t.surplusdays,t.processInstanceId from SIGN_DISP_WORK t where signstate<>7 and signstate<>2";
+
+    public static HqlBuilder countPorj(){
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" select COUNT(signid)  as SIGNNUMBER ,reviewstage  ");
+        sqlBuilder.append(" from SIGN_DISP_WORK t where signstate<>7 and signstate<>2 group by t.reviewstage ");
+        return sqlBuilder;
+    }
+
+    public static HqlBuilder countDealPorj(){
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" select t.signid, t.projectname,t.receivedate,t.surplusdays,t.processInstanceId ");
+        sqlBuilder.append(" from SIGN_DISP_WORK t where signstate<>7 and signstate<>2 ");
+        return sqlBuilder;
+    }
 
     public static HqlBuilder updateRunFlowName(String processInstanceId,String newName){
         HqlBuilder sqlBuilder = HqlBuilder.create();

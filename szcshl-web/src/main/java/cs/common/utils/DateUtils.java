@@ -38,6 +38,22 @@ public class DateUtils {
     };
 
     /**
+     * 是否相同
+     * @param d1
+     * @param d2
+     * @return
+     */
+    public static boolean isSameDay(Date d1, Date d2) {
+        if (null == d1 || null == d2)
+            return false;
+        Calendar cal1 = Calendar.getInstance();
+        cal1.setTime(d1);
+        Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(d2);
+        return cal1.get(0) == cal2.get(0) && cal1.get(1) == cal2.get(1) && cal1.get(6) == cal2.get(6);
+    }
+
+    /**
      * 取随机日期核心方法
      *
      * @param begin

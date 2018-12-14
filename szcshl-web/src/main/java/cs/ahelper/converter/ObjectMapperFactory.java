@@ -20,7 +20,7 @@ public class ObjectMapperFactory{
   static {
     SimpleModule module = new SimpleModule();
     module.addDeserializer(String.class, new DefaultJsonDeserializer());
-    module.addSerializer(String.class, new DefaultJsonSerializer());
+    //module.addSerializer(String.class, new DefaultJsonSerializer());
     mapper.registerModule(module);
     mapper.registerModule(new Hibernate5Module());
     SimpleDateFormat smt = new SimpleDateFormat(DateUtils.DATE_TIME_PATTERN);

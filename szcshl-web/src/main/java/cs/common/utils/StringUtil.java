@@ -1,18 +1,9 @@
 package cs.common.utils;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.owasp.esapi.ESAPI;
 import org.owasp.esapi.codecs.Codec;
-import org.owasp.esapi.codecs.MySQLCodec;
-import org.owasp.esapi.codecs.OracleCodec;
 import org.owasp.esapi.codecs.WindowsCodec;
-import org.owasp.validator.html.AntiSamy;
-import org.owasp.validator.html.CleanResults;
-import org.owasp.validator.html.Policy;
-import org.owasp.validator.html.PolicyException;
-import org.owasp.validator.html.ScanException;
-
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;

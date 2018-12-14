@@ -36,10 +36,8 @@ import static cs.common.constants.Constant.SUPER_ROLE;
  */
 @Repository
 public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, String> implements SignDispaWorkRepo {
-
     @Autowired
     private JdbcTemplate jdbcTemplate;
-
     @Autowired
     private FlowService flowService;
 
@@ -598,7 +596,8 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
      */
     @Override
     public List<Map<String, Object>> dataskCount() {
-        return jdbcTemplate.queryForList(ProjSql.COUNT_PROJ);
+        HqlBuilder hqlBuilder = ProjSql.countPorj();
+        return signRepo.findByJdbc(hqlBuilder);
     }
 
     /**
@@ -608,7 +607,8 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
      */
     @Override
     public List<Map<String, Object>> dtasksLineSign() {
-        return jdbcTemplate.queryForList(ProjSql.COUNT_DEAL_PROJ);
+        HqlBuilder hqlBuilder = ProjSql.countDealPorj();
+        return signRepo.findByJdbc(hqlBuilder);
     }
 
     /**

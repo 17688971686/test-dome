@@ -35,12 +35,7 @@ public class HqlBuilder {
 	}
 
 	public String getHqlString(){
-		String queryString = hqlBuilder.toString();
-		if(Validate.isString(queryString)){
-			Codec oracleCodec = new OracleCodec();
-			queryString = ESAPI.encoder().encodeForSQL(oracleCodec,queryString);
-		}
-		return queryString;
+		return hqlBuilder.toString();
 	}
 
 	public static HqlBuilder create() {
@@ -172,9 +167,11 @@ public class HqlBuilder {
 		if (Validate.isList(paramsValue)) {
 			int paramsL = paramsValue.size();
 			Object[] valueArr = new Object[paramsL];
+			Codec oracleCodec = new OracleCodec();
 			for (int i = 0; i < paramsL; i++) {
 				Object value =  paramsValue.get(i);
 				if( value instanceof String ) {
+					value = ESAPI.encoder().encodeForSQL(oracleCodec,value.toString());
 					if(Validate.isString(value)){
 						value = StringUtil.sqlInjectionFilter(value.toString());
 					}

@@ -57,4 +57,11 @@ public interface IRepository<T, ID> {
     List<Object[]> getObjectArray(HqlBuilder hqlBuilder);
 
     String getDataBaseTime(String format);
+
+    /**
+     * 根据JDBC查询
+     * @param queryBuilder
+     * @return
+     */
+    List<Map<String, Object>> findByJdbc(HqlBuilder queryBuilder);
 }
