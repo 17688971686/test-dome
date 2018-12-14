@@ -73,8 +73,6 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
     private UserService userService;
     @Autowired
     private OrgDeptRepo orgDeptRepo;
-    @Autowired
-    private UserRepo userRepo;
 
     /**
      * 查询个人经办项目
@@ -689,7 +687,21 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         }
         //二、查询业绩统计信息
         List<Achievement> countList = signDispaWorkRepo.countAchievement(achievementSumDto.getYear(), achievementSumDto.getQuarter(), achievementSumDto.getDeptIds(), userId, level);
-        //三、统计，分3个档次统计
+        //三、统计，
+        countAchievementDetail(resultMap,level,countList,orgDeptList);
+        return resultMap;
+    }
+
+    /**
+     * 对查询出来的业绩信息进行统计
+     * @param resultMap
+     * @param level
+     * @param countList
+     * @param orgDeptList
+     */
+    @Override
+    public void countAchievementDetail(Map<String, Object> resultMap,int level,List<Achievement> countList,List<OrgDept> orgDeptList) {
+        //分3个档次统计
         switch (level) {
             //1、主任和分管主任统计，按分管部门统计
             case 1:
@@ -711,7 +723,6 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
             default:
                 ;
         }
-        return resultMap;
     }
 
     private int countBetweentDay(List<Workday> workdayList, Date beginDate, Date endDate) {

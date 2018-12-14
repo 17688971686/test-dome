@@ -1,8 +1,8 @@
 package cs.model.topic;
 
+
 import com.alibaba.fastjson.annotation.JSONField;
 import cs.model.BaseDto;
-import javax.persistence.Column;
 import java.util.Date;
 
 

@@ -153,7 +153,6 @@ public class FlowController {
         PageModelDto<RuProcessTask> pageModelDto = new PageModelDto<RuProcessTask>();
         pageModelDto.setCount(Validate.isList(resultList) ? resultList.size() : 0);
         pageModelDto.setValue(Validate.isList(resultList) ? resultList : new ArrayList<>());
-        XssShieldUtil.getInstance().cleanPageXss(pageModelDto);
         return pageModelDto;
     }
 
@@ -171,7 +170,6 @@ public class FlowController {
     public PageModelDto<RuTask> queryMyAgendaTask(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<RuTask> pageModelDto = flowService.queryMyAgendaTask(odataObj);
-        XssShieldUtil.getInstance().cleanPageXss(pageModelDto);
         return pageModelDto;
     }
 
@@ -182,7 +180,6 @@ public class FlowController {
     public PageModelDto<RuTask> queryAgendaTask(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<RuTask> pageModelDto = flowService.queryAgendaTask(odataObj);
-        XssShieldUtil.getInstance().cleanPageXss(pageModelDto);
         return pageModelDto;
     }
 
@@ -226,7 +223,6 @@ public class FlowController {
         }
         pageModelDto.setCount(Validate.isList(finalList) ? finalList.size() : 0);
         pageModelDto.setValue(Validate.isList(finalList) ? finalList : new ArrayList<>());
-        XssShieldUtil.getInstance().cleanPageXss(pageModelDto);
         return pageModelDto;
     }
 
@@ -237,7 +233,6 @@ public class FlowController {
     public PageModelDto<SignDispaWork> endTasks(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<SignDispaWork> pageModelDto = flowService.queryETasks(odataObj);
-        XssShieldUtil.getInstance().cleanPageXss(pageModelDto);
         return pageModelDto;
     }
 
@@ -247,7 +242,6 @@ public class FlowController {
     @ResponseBody
     public List<RuProcessTask> getMyHomeTasks() {
         List<RuProcessTask> ruProcessTaskList = flowService.queryMyRunProcessTasks(6);
-        XssShieldUtil.getInstance().cleanListXss(ruProcessTaskList);
         return ruProcessTaskList;
     }
 
@@ -258,7 +252,6 @@ public class FlowController {
     public PageModelDto<TaskDto> queryEndTask(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<TaskDto> pageModelDto = flowService.queryEndTasks(odataObj);
-        XssShieldUtil.getInstance().cleanPageXss(pageModelDto);
         return pageModelDto;
     }
 
@@ -370,7 +363,6 @@ public class FlowController {
         PageModelDto<HiProcessTask> pageModelDto = new PageModelDto<HiProcessTask>();
         pageModelDto.setCount(Validate.isList(list) ? list.size() : 0);
         pageModelDto.setValue(Validate.isList(list) ? list : new ArrayList<>());
-        XssShieldUtil.getInstance().cleanPageXss(pageModelDto);
         return pageModelDto;
     }
 
@@ -460,7 +452,6 @@ public class FlowController {
             //如果任务已处理，则任务ID为空
             flowDto.setTaskId(null);
         }
-        XssShieldUtil.getInstance().cleanObjXss(flowDto);
         return flowDto;
     }
 
@@ -552,8 +543,6 @@ public class FlowController {
             ProcessDefinitionEntity processDefinitionEntity = (ProcessDefinitionEntity) repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());
             rtxService.dealPoolRTXMsg(task.getTaskDefinitionKey(), taskId, resultMsg, processDefinitionEntity.getName(), MsgType.task_type.name());
         }
-
-        XssShieldUtil.getInstance().cleanResultMsgXss(resultMsg);
         return resultMsg;
     }
 
@@ -563,7 +552,6 @@ public class FlowController {
     @Transactional
     public ResultMsg rollBackLast(@RequestBody FlowDto flowDto) {
         ResultMsg resultMsg = flowService.rollBackLastNode(flowDto);
-        XssShieldUtil.getInstance().cleanResultMsgXss(resultMsg);
         return resultMsg;
     }
 
@@ -574,7 +562,6 @@ public class FlowController {
     public ResultMsg activeFlow(@PathVariable("businessKey") String businessKey) {
         log.info("流程激活成功！businessKey=" + businessKey);
         ResultMsg resultMsg = flowService.restartFlow(businessKey);
-        XssShieldUtil.getInstance().cleanResultMsgXss(resultMsg);
         return resultMsg;
     }
 
@@ -591,7 +578,6 @@ public class FlowController {
     public ResultMsg suspendFlow(@PathVariable("businessKey") String businessKey) {
         log.info("流程挂起成功！businessKey=" + businessKey);
         ResultMsg resultMsg = flowService.stopFlow(businessKey);
-        XssShieldUtil.getInstance().cleanResultMsgXss(resultMsg);
         return resultMsg;
     }
 
@@ -639,7 +625,6 @@ public class FlowController {
             runtimeService.deleteProcessInstance(processInstance.getId(), comment);
         }
         log.info("流程终止成功！businessKey=" + processInstance.getBusinessKey());
-        XssShieldUtil.getInstance().cleanResultMsgXss(resultMsg);
         return resultMsg;
     }
 
@@ -648,7 +633,6 @@ public class FlowController {
     @ResponseBody
     public ResultMsg taskTransferAssignee(@RequestParam String taskId, @RequestParam String oldUserId, @RequestParam String newUserId) {
         ResultMsg resultMsg = flowService.taskTransferAssignee(taskId, oldUserId, newUserId);
-        XssShieldUtil.getInstance().cleanResultMsgXss(resultMsg);
         return resultMsg;
     }
 

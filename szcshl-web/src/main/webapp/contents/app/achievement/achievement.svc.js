@@ -8,7 +8,7 @@
     function achievement($http) {
         var service = {
             achievementSum: achievementSum, //业绩汇总
-            achievementDeptDetail: achievementDeptDetail, //部门业绩明细
+            findAchievementDetail: findAchievementDetail, //部门业绩明细
             saveTopicDetailList: saveTopicDetailList, // 保存课题明细
             deleteTopicMaintainDel: deleteTopicMaintainDel,//删除课题明细
             findTopicDetail: findTopicDetail, //初始化课题明细
@@ -20,7 +20,7 @@
         return service;
 
         //S_业绩汇总
-        function achievementSum(vm,callBack) {
+        function achievementSum(vm, callBack) {
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/signView/getAchievementSum",
@@ -38,11 +38,16 @@
             });
         }//E_
 
-        function achievementDeptDetail(vm,callBack) {
+        function findAchievementDetail(model, id, level, callBack) {
             var httpOptions = {
                 method: 'post',
-                url: rootPath + "/signView/getAchievementDeptDetail",
-                data: vm.model
+                url: rootPath + "/signView/findAchievementDetail",
+                params: {
+                    yearName: model.year,
+                    quarter: model.quarter,
+                    id: id,
+                    level: level
+                }
             }
             var httpSuccess = function success(response) {
                 if (callBack != undefined && typeof callBack == 'function') {
@@ -57,18 +62,17 @@
         }//E_
 
 
-
         //S_保存课题业务
-        function saveTopicDetailList(conditions,callBack){
+        function saveTopicDetailList(conditions, callBack) {
             var httpOptions = {
-                method : 'post',
-                url : rootPath + "/topicInfo/saveTopicDetailList",
-                headers:{
-                    "contentType":"application/json;charset=utf-8"  //设置请求头信息
+                method: 'post',
+                url: rootPath + "/topicInfo/saveTopicDetailList",
+                headers: {
+                    "contentType": "application/json;charset=utf-8"  //设置请求头信息
                 },
                 traditional: true,
-                dataType : "json",
-                data : angular.toJson(conditions)//将Json对象序列化成Json字符串，JSON.stringify()原生态方法
+                dataType: "json",
+                data: angular.toJson(conditions)//将Json对象序列化成Json字符串，JSON.stringify()原生态方法
             }
             var httpSuccess = function success(response) {
                 if (callBack != undefined && typeof callBack == 'function') {
@@ -76,9 +80,9 @@
                 }
             };
             common.http({
-                $http : $http,
-                httpOptions : httpOptions,
-                success : httpSuccess
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
             });
         }
 
@@ -88,12 +92,12 @@
          * @param isCommit
          * @param callBack
          */
-        function deleteTopicMaintainDel(delIds,callBack){
+        function deleteTopicMaintainDel(delIds, callBack) {
             var httpOptions = {
-                method : 'delete',
+                method: 'delete',
                 url: rootPath + "/topicInfo/topicMaintainDel",
-                params:{
-                    ids : delIds
+                params: {
+                    ids: delIds
                 }
             }
             var httpSuccess = function success(response) {
@@ -102,19 +106,19 @@
                 }
             }
             common.http({
-                $http : $http,
-                httpOptions : httpOptions,
-                success : httpSuccess,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess,
             });
         }
 
 
         //S_初始化课题详情信息
-        function findTopicDetail(userId,callBack){
+        function findTopicDetail(userId, callBack) {
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/topicInfo/findTopicDetail",
-                params:{userId:userId}
+                params: {userId: userId}
             };
             var httpSuccess = function success(response) {
                 if (callBack != undefined && typeof callBack == 'function') {
@@ -125,7 +129,8 @@
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess,
-                onError : function(){}
+                onError: function () {
+                }
             });
         }
 
@@ -136,10 +141,10 @@
                 url: rootPath + "/signView/exportAchievementSum",
                 data: vm.model
             }
-            var httpSuccess = function success(response){
-                var fileName =  "员工业绩统计表.doc";
-                var fileType ="msword";
-                common.downloadReport(response.data , fileName , fileType);
+            var httpSuccess = function success(response) {
+                var fileName = "员工业绩统计表.doc";
+                var fileType = "msword";
+                common.downloadReport(response.data, fileName, fileType);
             }
             common.http({
                 $http: $http,
@@ -155,10 +160,10 @@
                 url: rootPath + "/signView/exportDeptAchievementSum",
                 data: vm.model
             }
-            var httpSuccess = function success(response){
-                var fileName =  "部门业绩统计表.doc";
-                var fileType ="msword";
-                common.downloadReport(response.data , fileName , fileType);
+            var httpSuccess = function success(response) {
+                var fileName = "部门业绩统计表.doc";
+                var fileType = "msword";
+                common.downloadReport(response.data, fileName, fileType);
             }
             common.http({
                 $http: $http,
@@ -174,10 +179,10 @@
                 url: rootPath + "/signView/exportDeptAchievementSum",
                 data: vm.model
             }
-            var httpSuccess = function success(response){
-                var fileName =  "部门业绩统计表.doc";
-                var fileType ="msword";
-                common.downloadReport(response.data , fileName , fileType);
+            var httpSuccess = function success(response) {
+                var fileName = "部门业绩统计表.doc";
+                var fileType = "msword";
+                common.downloadReport(response.data, fileName, fileType);
             }
             common.http({
                 $http: $http,
@@ -191,12 +196,12 @@
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/signView/exportTopicMaintainInfo",
-                params:{userId:vm.userId}
+                params: {userId: vm.userId}
             };
-            var httpSuccess = function success(response){
-                var fileName =  "课题研究一览表.doc";
-                var fileType ="msword";
-                common.downloadReport(response.data , fileName , fileType);
+            var httpSuccess = function success(response) {
+                var fileName = "课题研究一览表.doc";
+                var fileType = "msword";
+                common.downloadReport(response.data, fileName, fileType);
             }
             common.http({
                 $http: $http,
@@ -207,20 +212,20 @@
 
         //主/协办项目一览表
         function exportProReview(vm) {
-            if(vm.model.isMainPro == '9'){
-                var fileName1 =  "主办项目一览表.doc";
-            }else{
-                var fileName1 =  "协办项目一览表.doc";
+            if (vm.model.isMainPro == '9') {
+                var fileName1 = "主办项目一览表.doc";
+            } else {
+                var fileName1 = "协办项目一览表.doc";
             }
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/signView/exportProReview",
                 data: vm.model
             }
-            var httpSuccess = function success(response){
+            var httpSuccess = function success(response) {
                 var fileName = fileName1;
-                var fileType ="msword";
-                common.downloadReport(response.data , fileName , fileType);
+                var fileType = "msword";
+                common.downloadReport(response.data, fileName, fileType);
             }
             common.http({
                 $http: $http,

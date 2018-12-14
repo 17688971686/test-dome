@@ -27,7 +27,8 @@
         <bean class="cs.common.ApiFilter"/>
     </mvc:interceptors>
 
-    <mvc:annotation-driven>
+    <!-- MappingJackson2HttpMessageConverter begin -->
+    <!--<mvc:annotation-driven>
         <mvc:message-converters register-defaults="true">
             <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
                 <constructor-arg ref="ObjectMapper"></constructor-arg>
@@ -40,14 +41,16 @@
                 </property>
             </bean>
         </mvc:message-converters>
-    </mvc:annotation-driven>
+    </mvc:annotation-driven>-->
 
     <!-- 使用工厂模式 -->
-    <bean id="ObjectMapper" class="cs.ahelper.converter.ObjectMapperFactory" factory-method="getMapper"/>
+    <!-- <bean id="ObjectMapper" class="cs.ahelper.converter.ObjectMapperFactory" factory-method="getMapper"/>-->
+    <!-- MappingJackson2HttpMessageConverter end -->
+
 
     <!-- 以下为SpringMVC配置 -->
-   <!-- <mvc:annotation-driven>
-        &lt;!&ndash; 返回json数据，@response使用 &ndash;&gt;
+    <mvc:annotation-driven>
+        <!-- 返回json数据，@response使用 begin -->
         <mvc:message-converters register-defaults="true">
             <bean class="cs.ahelper.converter.CustomerFastJsonHttpMessageConverter">
                 <property name="supportedMediaTypes">
@@ -59,18 +62,19 @@
                 </property>
                 <property name="features">
                     <list>
-                        &lt;!&ndash; Boolean字段如果为null,输出为false,而非null &ndash;&gt;
+                        <!--Boolean字段如果为null,输出为false,而非null -->
                         <value>WriteNullBooleanAsFalse</value>
-                        &lt;!&ndash; null String不输出  &ndash;&gt;
-                        &lt;!&ndash;<value>WriteNullStringAsEmpty</value>&ndash;&gt;
-                        &lt;!&ndash; Date的日期转换器 &ndash;&gt;
+                        <!--null String不输出 -->
+                        <!--<value>WriteNullStringAsEmpty</value>-->
+                        <!--Date的日期转换器-->
                         <value>WriteDateUseDateFormat</value>
                     </list>
                 </property>
                 <property name="defaultDateFormat" value="yyyy-MM-dd HH:mm:ss"></property>
             </bean>
         </mvc:message-converters>
-    </mvc:annotation-driven>-->
+    </mvc:annotation-driven>
+    <!-- 返回json数据，@response使用 end -->
 
     <!-- 支持上传文件-->
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">

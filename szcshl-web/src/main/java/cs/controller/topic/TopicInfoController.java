@@ -91,13 +91,13 @@ public class TopicInfoController {
     @RequiresAuthentication
     @RequestMapping(name = "主键查询", path = "findById", method = RequestMethod.POST)
     public @ResponseBody
-    TopicInfoDto findById(@RequestParam(required = true) String id) {
+    TopicInfoDto findById(@RequestParam String id) {
         return topicInfoService.findById(id);
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "查询详情", path = "findDetailById", method = RequestMethod.POST)
-    public @ResponseBody TopicInfoDto findDetailById(@RequestParam(required = true) String id) {
+    public @ResponseBody TopicInfoDto findDetailById(@RequestParam String id) {
         return topicInfoService.findDetailById(id);
     }
 
@@ -105,11 +105,7 @@ public class TopicInfoController {
     @RequestMapping(name = "查询课题维护详情", path = "findTopicDetail", method = RequestMethod.POST)
     @ResponseBody
     public List<TopicMaintainDto> findTopicDetail(@RequestParam String userId) {
-        List<TopicMaintainDto> resultList = topicMaintainService.findTopicAll(userId);
-        if(!Validate.isList(resultList)){
-            resultList = new ArrayList<>();
-        }
-        return resultList;
+        return topicMaintainService.findTopicAll(userId);
     }
 
 

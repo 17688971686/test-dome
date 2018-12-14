@@ -8,7 +8,10 @@ import cs.common.utils.*;
 import cs.domain.project.SignDispaWork;
 import cs.domain.project.SignDispaWork_;
 import cs.domain.sys.Header;
+import cs.domain.sys.OrgDept;
+import cs.domain.sys.User;
 import cs.model.PageModelDto;
+import cs.model.project.Achievement;
 import cs.model.project.AchievementDeptDetailDto;
 import cs.model.project.AchievementSumDto;
 import cs.model.project.SignDispaWorkDto;
@@ -16,6 +19,8 @@ import cs.model.sys.HeaderDto;
 import cs.model.topic.TopicMaintainDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.project.SignDispaWorkRepo;
+import cs.repository.repositoryImpl.sys.OrgDeptRepo;
+import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.service.expert.ExpertSelectedService;
 import cs.service.project.SignDispaWorkService;
 import cs.service.sys.HeaderService;
@@ -65,7 +70,10 @@ public class SignDispaWorkController {
 
     @Autowired
     private TopicMaintainService topicMaintainService;
-
+    @Autowired
+    private OrgDeptRepo orgDeptRepo;
+    @Autowired
+    private UserRepo userRepo;
 
     //@RequiresPermissions("signView#getSignList#post")
     @RequiresAuthentication
@@ -566,38 +574,24 @@ public class SignDispaWorkController {
         }
     }
 
-    /*private String[] getMonthByQuarterFlag(String quarter){
-        String[] quarterArr = new String[2];
-        if(Validate.isString(quarter)){
-            if("0".equals(quarter)){
-                quarterArr[0]="1";
-                quarterArr[1]="12";
-            }else if("1".equals(quarter)){
-                quarterArr[0]="1";
-                quarterArr[1]="3";
-            }else if("2".equals(quarter)){
-                quarterArr[0]="4";
-                quarterArr[1]="6";
-            }else if("3".equals(quarter)){
-                quarterArr[0]="7";
-                quarterArr[1]="9";
-            }else if("4".equals(quarter)){
-                quarterArr[0]="10";
-                quarterArr[1]="12";
-            }
-        }else{
-            quarterArr[0]="1";
-            quarterArr[1]="12";
-        }
-        return  quarterArr;
-    }*/
 
-    /*@RequiresAuthentication
-    @RequestMapping(name = "获取部门业绩明细" , path = "getAchievementDeptDetail" , method = RequestMethod.POST)
+    @RequiresAuthentication
+    @RequestMapping(name = "获取业绩明细" , path = "findAchievementDetail" , method = RequestMethod.POST)
     @ResponseBody
-    public ResultMsg getAchievementDeptDetail(@RequestBody AchievementDeptDetailDto achievementSumDto){
-        return expertSelectedService.findDeptAchievementDetail(achievementSumDto);
-    }*/
+    public Map<String,Object> findAchievementDetail(@RequestParam String yearName,@RequestParam String quarter,@RequestParam String id,@RequestParam int level){
+        Map<String,Object> resultMap = new HashMap<>();
+        List<OrgDept> orgDeptList = new ArrayList<>();
+        if(level > 0){
+            OrgDept orgDept = orgDeptRepo.findOrgDeptById(id);
+            orgDeptList.add(orgDept);
+            resultMap.put("showObj",orgDept);
+        }
+        //二、查询业绩统计信息
+        List<Achievement> countList = signDispaWorkRepo.countAchievement(yearName, quarter, id, id, level);
+        signDispaWorkService.countAchievementDetail(resultMap,level,countList,orgDeptList);
+
+        return resultMap;
+    }
 
     @RequiresAuthentication
     @RequestMapping(name="项目评审情况汇总(按照申报投资金额)" , path="pieDate" , method = RequestMethod.POST)

@@ -2,7 +2,9 @@ package cs.service.project;
 
 import cs.common.ResultMsg;
 import cs.domain.project.SignDispaWork;
+import cs.domain.sys.OrgDept;
 import cs.model.PageModelDto;
+import cs.model.project.Achievement;
 import cs.model.project.AchievementSumDto;
 import cs.model.project.SignDispaWorkDto;
 import cs.repository.odata.ODataObj;
@@ -127,4 +129,13 @@ public interface SignDispaWorkService {
      * @return
      */
     Map<String,Object> countAchievementSum(AchievementSumDto achievementSumDto);
+
+    /**
+     * 业绩查询结果统计
+     * @param resultMap
+     * @param level
+     * @param countList
+     * @param orgDeptList
+     */
+    void countAchievementDetail(Map<String, Object> resultMap, int level, List<Achievement> countList, List<OrgDept> orgDeptList);
 }
