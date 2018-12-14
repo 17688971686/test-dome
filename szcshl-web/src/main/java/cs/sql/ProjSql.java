@@ -35,7 +35,7 @@ public class ProjSql {
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append(" SELECT sd.signid as signId,sd.projectname as projName,sd.dispatchdate as dispatchDate,sd.filenum as fileNum, ");
         sqlBuilder.append(" sd.declarevalue as declareValue,sd.authorizevalue as authorizeValue,sd.extravalue as extraValue, ");
-        sqlBuilder.append(" sd.extrarate as extraRate,pu.orgid as orgId,pu.userid as userId,pu.ismainuser as isMainUser,pu.branchid as branchId ");
+        sqlBuilder.append(" sd.extrarate as extraRate,pu.orgid as orgId,pu.userid as userId,pu.ismainuser as isMainUser,pu.branchid as branchId,pu.DISPLAYNAME as userName");
         sqlBuilder.append(" FROM (SELECT s.signid,s.projectname,d.dispatchdate,d.filenum,d.declarevalue,d.authorizevalue,d.extravalue,d.extrarate ");
         sqlBuilder.append(" FROM cs_sign s, cs_dispatch_doc d WHERE s.signid = d.signid ");
         sqlBuilder.append(" AND s.processstate >= 6 AND s.signstate != 7 ");
@@ -43,9 +43,9 @@ public class ProjSql {
         sqlBuilder.append(" AND D.dispatchdate <= TO_DATE (?,'yyyy-mm-dd hh24:mi:ss')");
         sqlBuilder.setParam("beginTime",beginTime).setParam("endTime",endTime);
         sqlBuilder.append(" ) sd ,");
-        sqlBuilder.append(" (SELECT pbo.signid,pbo.branchid,pbo.orgid,ppu.userid,ppu.ismainuser ");
-        sqlBuilder.append(" FROM CS_SIGN_BRANCH pbo, CS_SIGN_PRINCIPAL2 ppu ");
-        sqlBuilder.append(" WHERE pbo.signid = ppu.signid AND pbo.branchid = ppu.flowbranch ");
+        sqlBuilder.append(" (SELECT pbo.signid,pbo.branchid,pbo.orgid,ppu.userid,ppu.ismainuser,CU.DISPLAYNAME ");
+        sqlBuilder.append(" FROM CS_SIGN_BRANCH pbo, CS_SIGN_PRINCIPAL2 ppu ,cs_user cu");
+        sqlBuilder.append(" WHERE pbo.signid = ppu.signid AND pbo.branchid = ppu.flowbranch  and cu.id = ppu.userId ");
         if(level == 0){
             //如果是普通用户，则按用户ID查询
             sqlBuilder.append(" and PPU.USERID = ? ").setParam("userId",userId);

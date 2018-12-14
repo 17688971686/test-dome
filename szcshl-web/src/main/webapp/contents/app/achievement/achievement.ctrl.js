@@ -20,8 +20,21 @@
             achievementSvc.achievementSum(vm,function (data) {
                 if(data){
                     var level = data.level;
-                    //如果是主任或者副主任
-                    if(level == 1 || level == 2){
+                    if(level == 0){
+                        //普通用户
+                        vm.orgAchievement =  data.userSum;
+                        console.log(vm.orgAchievement);
+                        vm.userId = vm.orgAchievement.userId;
+                        achievementSvc.findTopicDetail(vm.userId,function(data){
+                            if(data != undefined){
+                                vm.conditions = data;
+                                for(var i=0;i<vm.conditions.length;i++){
+                                    vm.conditions[i]["sort"]= (i+1);
+                                }
+                            }
+                        });
+                    }else if(level == 1 || level == 2){
+                        //如果是主任或者副主任
                         vm.comprehensive = data.orgDeptCount["综合部"];
                         vm.evaluateOne = data.orgDeptCount["评估一部"];
                         vm.evaluateTwo = data.orgDeptCount["评估二部"];
@@ -29,38 +42,11 @@
                         vm.budgetaryTwo = data.orgDeptCount["概算二部"];
                         vm.evaluateOneGroup = data.orgDeptCount["评估一部信息化组"];
 
-                        console.log(data.orgDeptDetailList);
-                    }else{
-                        vm.achievementSumList = data.reObj.achievementSumList;
-                        if(vm.achievementSumList.length > 0){
-                            if(vm.achievementSumList.length ==2){
-                                vm.assistDoc = vm.achievementSumList[0];
-                                vm.mainDoc = vm.achievementSumList[1];
-                            }else{
-                                if(vm.achievementSumList[0].ismainuser=='9'){
-                                    vm.mainDoc = vm.achievementSumList[0];
-                                    vm.assistDoc={};
-                                    vm.assistDoc.disSum = 0;
-                                    vm.assistDoc.declarevalueSum = 0;
-                                    vm.assistDoc.authorizevalueSum = 0;
-                                    vm.assistDoc.extravalueSum = 0;
-                                    vm.assistDoc.extraRateSum = 0;
-                                }else if(vm.achievementSumList[0].ismainuser=='0'){
-                                    vm.assistDoc = vm.achievementSumList[0];
-                                    vm.mainDoc = {};
-                                    vm.mainDoc.disSum = 0;
-                                    vm.mainDoc.declarevalueSum = 0;
-                                    vm.mainDoc.authorizevalueSum = 0;
-                                    vm.mainDoc.extravalueSum = 0;
-                                    vm.mainDoc.extraRateSum = 0;
-                                }
-                            }
-                        }else{
-                            vm.mainDoc = {};
-                            vm.assistDoc={};
-                        }
-                        vm.achievementMainList =  data.reObj.achievementMainList;
-                        vm.achievementAssistList =  data.reObj.achievementAssistList;
+                        //部门员工业绩统计明细
+                        vm.achievementDeptDetailList = data.orgDeptDetailList;
+                    }else if(level == 3 || level == 4){
+                        //部长或者组长
+                        vm.orgAchievement =  data.orgDeptSum;
                     }
 
                     vm.level = data.level;
@@ -74,18 +60,6 @@
                             }
                             vm.model.deptNames += vm.orgDeptList[i].name;
                         }
-                    }
-
-                    if(vm.level == 0){
-                        vm.userId = data.reObj.userId;
-                        achievementSvc.findTopicDetail(vm.userId,function(data){
-                            if(data != undefined){
-                                vm.conditions = data;
-                                for(var i=0;i<vm.conditions.length;i++){
-                                    vm.conditions[i]["sort"]= (i+1);
-                                }
-                            }
-                        });
                     }
                 }
             })
@@ -540,7 +514,7 @@
         /**
          * 部门业绩明细
          */
-        vm.showAchievementDetail = function () {
+        /*vm.showAchievementDetail = function () {
             //初始化部门工作业绩
             var orgCheck = $("input[name='orgDept']:checked");
             var ids = [];
@@ -566,7 +540,7 @@
                     }).data("kendoWindow").center().open();
                 }
             })
-        }
+        }*/
 
         /***
          * 初始化业绩汇总
@@ -601,6 +575,9 @@
                         vm.budgetaryOne = data.orgDeptCount["概算一部"];
                         vm.budgetaryTwo = data.orgDeptCount["概算二部"];
                         vm.evaluateOneGroup = data.orgDeptCount["评估一部信息化组"];
+                        //部门员工业绩统计明细
+                        vm.achievementDeptDetailList = data.orgDeptDetailList;
+                        console.log(vm.achievementDeptDetailList);
                     }else{
                         vm.achievementSumList = data.reObj.achievementSumList;
                         if(vm.achievementSumList.length > 0){

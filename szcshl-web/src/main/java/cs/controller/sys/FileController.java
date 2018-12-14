@@ -482,13 +482,13 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             FtpClientConfig k = ConfigProvider.getDownloadConfig(ftp);
 
             //需要转换的类型，自己在方法实现
-            if(AsposeUtil.neddConvertToPdf(fileType)){
+            if (AsposeUtil.neddConvertToPdf(fileType)) {
                 out = response.getOutputStream();
-                if(AsposeUtil.getLicense()){
+                if (AsposeUtil.getLicense()) {
                     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                     ftpUtils.downLoadFile(removeRelativeUrl, storeFileName, k, byteArrayOutputStream);
                     inputStream = IOStreamUtil.parse(byteArrayOutputStream);
-                    switch (fileType){
+                    switch (fileType) {
                         case ".doc":
                         case ".docx":
                             Document doc = new Document(inputStream);
@@ -504,11 +504,13 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                             Presentation pres = new Presentation(inputStream);//输入pdf路径
                             pres.save(out, com.aspose.slides.SaveFormat.Pdf);
                             break;
+                        default:
+                            ;
                     }
                 }
             }
             //如果是pdf文件，直接输出流，否则要先转为pdf
-            else if (fileType.equals(".pdf") || fileType.equals(".png") || fileType.equals(".jpg") || fileType.equals(".gif")|| fileType.equals(".txt")|| fileType.equals(".text")) {
+            else if (fileType.equals(".pdf") || fileType.equals(".png") || fileType.equals(".jpg") || fileType.equals(".gif") || fileType.equals(".txt") || fileType.equals(".text")) {
                 out = response.getOutputStream();
                 ftpUtils.downLoadFile(removeRelativeUrl, storeFileName, k, out);
             } else {
@@ -586,7 +588,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             String path = SysFileUtil.getUploadPath() + File.separator + Tools.generateRandomFilename() + Template.WORD_SUFFIX.getKey();
             //String filePath = path.substring(0, path.lastIndexOf(".")) + Template.PDF_SUFFIX.getKey();
             String fileName = "";
-            file = createFile(businessId , businessType , stageType , path);
+            file = createFile(businessId, businessType, stageType, path);
             /*if (file != null) {
                 OfficeConverterUtil.convert2PDF(file.getAbsolutePath(), filePath);
             }
@@ -633,9 +635,10 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
     /**
      * 生成打印文件
+     *
      * @return
      */
-    private File createFile(String businessId, String businessType,  String stageType , String path){
+    private File createFile(String businessId, String businessType, String stageType, String path) {
         File file = null;
         switch (businessType) {
             case "SIGN":
@@ -724,7 +727,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     } else if (stageType.equals("STAGEBUDGET")) {
                         workData.put("wpTile", "项目概算评审工作方案");
                         workData.put("wpCode", " QR-4.7-01-A2");
-                    }else if (stageType.equals("REGISTERCODE")) {
+                    } else if (stageType.equals("REGISTERCODE")) {
                         workData.put("wpTile", "登记赋码评审工作方案");
                         workData.put("wpCode", "QR-4.3-02-A3");
                     }
@@ -773,7 +776,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     //进口
                     file = TemplateUtil.createDoc(fileData, Template.IMPORT_DEVICE_FILERECORD.getKey(), path);
 
-                }else if (stageType.equals(RevireStageKey.KEY_REGISTERCODE.getValue())) {
+                } else if (stageType.equals(RevireStageKey.KEY_REGISTERCODE.getValue())) {
                     //登记赋码
                     file = TemplateUtil.createDoc(fileData, Template.DJFM_FILERECORD.getKey(), path);
 
@@ -845,9 +848,9 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
             case "DISPATCHDOC":
                 DispatchDoc dispatchDoc = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
-                SignDto signDto = null ;
-                if(Validate.isObject(dispatchDoc.getSign())){
-                     signDto = signService.findById(dispatchDoc.getSign().getSignid(), true);
+                SignDto signDto = null;
+                if (Validate.isObject(dispatchDoc.getSign())) {
+                    signDto = signService.findById(dispatchDoc.getSign().getSignid(), true);
                 }
 
                 Map<String, Object> dispatchData = TemplateUtil.entryAddMap(dispatchDoc);
@@ -887,15 +890,15 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     //建议书
                     dispatchData.put("wpTile", "项目建议书发文审批表");
                     file = TemplateUtil.createDoc(dispatchData, Template.STAGE_SUG_DISPATCHDOC.getKey(), path);
-                }else if(stageType.equals(RevireStageKey.KEY_REGISTERCODE.getValue())){
+                } else if (stageType.equals(RevireStageKey.KEY_REGISTERCODE.getValue())) {
                     //登记赋码
                     dispatchData.put("wpTile", "登记赋码发文审批表");
                     file = TemplateUtil.createDoc(dispatchData, Template.DJFM_DISPATCHDOC.getKey(), path);
 
                 } else if (stageType.equals(RevireStageKey.KEY_STUDY.getValue())) {
                     //可研
-                    List<SignDto> signDtoList = null ;
-                    if(signDto != null ){
+                    List<SignDto> signDtoList = null;
+                    if (signDto != null) {
                         signDtoList = signDto.getAssociateSignDtoList();
                     }
 
@@ -914,8 +917,8 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
                 } else if (stageType.equals(RevireStageKey.KEY_BUDGET.getValue())) {
                     //概算
-                    List<SignDto> signDtoList = null ;
-                    if(signDto != null ){
+                    List<SignDto> signDtoList = null;
+                    if (signDto != null) {
                         signDtoList = signDto.getAssociateSignDtoList();
                     }
                     List<DispatchDocDto> dispatchList = new ArrayList<DispatchDocDto>();
@@ -938,8 +941,8 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
                 } else if (stageType.equals(Constant.RevireStageKey.KEY_REPORT.getValue())) {
                     //资金
-                    List<SignDto> signDtoList = null ;
-                    if(signDto != null ){
+                    List<SignDto> signDtoList = null;
+                    if (signDto != null) {
                         signDtoList = signDto.getAssociateSignDtoList();
                     }
                     List<DispatchDocDto> dispatchList = new ArrayList<DispatchDocDto>();
@@ -1055,8 +1058,8 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 //                    String[] projectNames = expertReview.getReviewTitle().split("》");
 //                    expertData.put("projectName", projectNames.length > 0 ? projectNames[0].substring(1, projectNames[0].length()) : expertReview.getReviewTitle());
                     String reviewTitle = expertReview.getReviewTitle();
-                    expertData.put("projectName" , reviewTitle);
-                    expertData.put("projectName2" , reviewTitle.replaceAll("专家" , "外地专家"));
+                    expertData.put("projectName", reviewTitle);
+                    expertData.put("projectName2", reviewTitle.replaceAll("专家", "外地专家"));
                     if (isSplit) {
                         expertData.put("expertList", expertSelectedList1);
                         expertData.put("expertList2", expertSelectedList2);
@@ -1242,14 +1245,14 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
             case "PROJECTSTOP":
 
-                ProjectStop projectStop = projectStopRepo.findById(ProjectStop_.stopid.getName() , businessId);
+                ProjectStop projectStop = projectStopRepo.findById(ProjectStop_.stopid.getName(), businessId);
                 Sign sign1 = signRepo.findById(projectStop.getSign().getSignid());
                 Map<String, Object> psData = TemplateUtil.entryAddMap(projectStop);
                 psData.put("projectname", sign1.getProjectname());
                 psData.put("builtcompanyname", sign1.getBuiltcompanyName());
                 psData.put("mOrgName", sign1.getmOrgName());
                 psData.put("mUserName", sign1.getmUserName());
-                psData.put("receivedate", DateUtils.converToString(sign1.getReceivedate() , "yyyy-MM-dd"));
+                psData.put("receivedate", DateUtils.converToString(sign1.getReceivedate(), "yyyy-MM-dd"));
                 file = TemplateUtil.createDoc(psData, Template.PROJECT_STOP.getKey(), path);
                 break;
 
@@ -1263,14 +1266,14 @@ public class FileController implements ServletConfigAware, ServletContextAware {
      * 导出功能
      */
     @RequiresAuthentication
-    @RequestMapping(name = "导出" , path = "exportInfo", method = RequestMethod.POST)
+    @RequestMapping(name = "导出", path = "exportInfo", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
-    public void exportInfo(@RequestParam String businessId, @RequestParam String businessType, @RequestParam String stageType,@RequestParam String fileName , HttpServletResponse response){
-        ServletOutputStream ouputStream= null;
+    public void exportInfo(@RequestParam String businessId, @RequestParam String businessType, @RequestParam String stageType, @RequestParam String fileName, HttpServletResponse response) {
+        ServletOutputStream ouputStream = null;
         InputStream inStream = null;
         try {
             String path = SysFileUtil.getUploadPath() + File.separator + Tools.generateRandomFilename() + Template.WORD_SUFFIX.getKey();
-            File file = createFile(businessId , businessType , stageType , path);
+            File file = createFile(businessId, businessType, stageType, path);
             ResponseUtils.setResponeseHead(Template.WORD_SUFFIX.getKey(), response);
             response.setHeader("Content-Disposition", "attachment; filename="
                     + new String(fileName.getBytes("GB2312"), "ISO8859-1"));
@@ -1280,7 +1283,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             inStream = new FileInputStream(file); //读入原文件
             ouputStream = response.getOutputStream();
             byte[] buffer = new byte[1444];
-            while ( (byteread = inStream.read(buffer)) != -1) {
+            while ((byteread = inStream.read(buffer)) != -1) {
                 bytesum += byteread; //字节数 文件大小
                 ouputStream.write(buffer, 0, byteread);
             }
@@ -1440,7 +1443,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         File parent = new File(realPathResolver.get(Constant.plugin_file_path));
         if (parent.exists()) {
             File flist[] = parent.listFiles();
-            if(!Validate.isEmpty(flist)){
+            if (!Validate.isEmpty(flist)) {
                 for (File f : flist) {
                     if (!f.isDirectory() && !f.getName().toLowerCase().endsWith("png")) {
                         list.add(new PluginFileDto(f, Constant.plugin_file_path));
@@ -1462,7 +1465,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         File parent = new File(realPathResolver.get(Constant.plugin_file_path));
         if (parent.exists()) {
             File flist[] = parent.listFiles();
-            if(!Validate.isEmpty(flist)){
+            if (!Validate.isEmpty(flist)) {
                 for (File f : flist) {
                     if (!f.isDirectory() && !f.getName().toLowerCase().endsWith("png")) {
                         list.add(new PluginFileDto(f, Constant.plugin_file_path));

@@ -56,6 +56,10 @@ public class Achievement {
      */
     private String userId;
     /**
+     * 用户名称
+     */
+    private String userName;
+    /**
      * 是否主办人员
      */
     private String isMainUser;
@@ -75,7 +79,7 @@ public class Achievement {
     private int assistDisSum;
 
     /**
-     * 子集
+     * 主任、副主任子集（如一级是部门，子集则为用户）
      */
     List<Achievement> childList;
 
@@ -205,5 +209,13 @@ public class Achievement {
 
     public void setAssistDisSum(int assistDisSum) {
         this.assistDisSum = assistDisSum;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

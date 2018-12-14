@@ -2,6 +2,8 @@ package cs.ahelper.projhelper;
 
 import cs.common.constants.Constant;
 import cs.common.constants.FlowConstant;
+import cs.common.utils.Arith;
+import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.project.Sign;
 import cs.domain.project.WorkProgram;
@@ -11,6 +13,7 @@ import cs.model.project.AchievementDeptDetailDto;
 import cs.model.project.AchievementSumDto;
 import cs.model.project.SignDto;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -286,7 +289,6 @@ public class ProjUtil {
                 Achievement achievement = countList.get(i);
                 countAchievementDetail(cacheMap,achievement);
             }
-
             //合并List
             for(Achievement achievement :resultList){
                 Object value = cacheMap.get(achievement.getOrgId());
@@ -300,10 +302,35 @@ public class ProjUtil {
 
     private static void countAchievementDetail(Map<String, List<Achievement>> cacheMap, Achievement achievement) {
         List<Achievement> achievementList = cacheMap.get(achievement.getOrgId());
-        if(!Validate.isList(achievementList)){
+        //如果已经初始化，则判断人员
+        boolean isHaveUser = false;
+        if(Validate.isList(achievementList)){
+            for(Achievement achievement1 : achievementList){
+                if(achievement1.getUserId().equals(achievement.getUserId())){
+                    if(Constant.EnumState.YES.getValue().equals(achievement.getIsMainUser())){
+                        achievement1.setMainDisSum(achievement1.getMainDisSum()+1);
+                    }else{
+                        achievement1.setAssistDisSum(achievement1.getAssistDisSum()+1);
+                    }
+                    isHaveUser = true;
+                }
+            }
+        }else{
+            //如果没有初始化，则创建一个新的
             achievementList = new ArrayList<>();
         }
-        achievementList.add(achievement);
+        if(!isHaveUser){
+            Achievement newAchievement = new Achievement();
+            if(Constant.EnumState.YES.getValue().equals(achievement.getIsMainUser())){
+                newAchievement.setMainDisSum(1);
+            }else{
+                newAchievement.setAssistDisSum(1);
+            }
+            newAchievement.setUserId(achievement.getUserId());
+            newAchievement.setOrgId(achievement.getOrgId());
+            newAchievement.setUserName(achievement.getUserName());
+            achievementList.add(newAchievement);
+        }
         cacheMap.put(achievement.getOrgId(),achievementList);
     }
 
@@ -316,22 +343,18 @@ public class ProjUtil {
     public static Map<String,AchievementSumDto> countOrgDept(List<Achievement> countList, List<OrgDept> orgDeptList) {
         Map<String,AchievementSumDto> resultMap = new HashMap<>();
         if(Validate.isList(countList)){
-            String lastSignId = "",lastOrgId = "";
+            String lastSignId = countList.get(0).getSignId(),lastOrgId = countList.get(0).getOrgId();
             Map<String,AchievementSumDto> countOrgDept = new HashMap<>();
             for(int i=0,l=countList.size();i<l;i++){
                 Achievement achievement = countList.get(i);
                 String signId = achievement.getSignId();
                 String orgId = achievement.getOrgId();
                 String branchId = achievement.getBranchId();
-                //两者有一个不等，则是新的
-                if(!lastSignId.equals(signId) || !lastOrgId.equals(orgId)){
+                //两者有一个不等，则是新的;最后一个也要进行统计
+                if(!lastSignId.equals(signId) || !lastOrgId.equals(orgId) || i == (l-1)){
                     countAchievementSum(countOrgDept,orgId,branchId);
                     lastSignId = signId;
                     lastOrgId = orgId;
-                }
-                //最后一个也要进行统计
-                if(i == (l-1)){
-                    countAchievementSum(countOrgDept,orgId,branchId);
                 }
             }
             //替换map的key值
@@ -371,5 +394,115 @@ public class ProjUtil {
             achievementSumDto.setAssistDisSum(achievementSumDto.getAssistDisSum()+1);
         }
         countOrgDept.put(orgId,achievementSumDto);
+    }
+
+    /**
+     * 部长业绩统计
+     * @param countList
+     * @param orgDeptList
+     * @return
+     */
+    public static AchievementSumDto sumOrgDeptAchievement(List<Achievement> countList, List<OrgDept> orgDeptList) {
+        AchievementSumDto achievementSumDto = new AchievementSumDto();
+        achievementSumDto.init();
+        if(Validate.isList(orgDeptList)){
+            OrgDept orgDept = orgDeptList.get(0);
+            achievementSumDto.setDeptIds(orgDept.getId());
+            achievementSumDto.setDeptNames(orgDept.getName());
+            String signId = countList.get(0).getSignId();
+            for(int i=0,l=countList.size();i<l;i++){
+                Achievement achievement = countList.get(i);
+                //如果项目名称不同,或者是最后一个的时候
+                if(!signId.equals(achievement.getSignId()) || i == (l-1)){
+                    sumAchievementInfo(achievementSumDto,achievement);
+                }
+                //统计子集信息
+                if(Constant.EnumState.YES.getValue().equals(achievement.getIsMainUser())){
+                    List<Achievement> mainChileLit = achievementSumDto.getMainChildList();
+                    mainChileLit.add(achievement);
+                    achievementSumDto.setMainChildList(mainChileLit);
+                }else{
+                    List<Achievement> assistChileLit = achievementSumDto.getAssistChildList();
+                    assistChileLit.add(achievement);
+                    achievementSumDto.setAssistChildList(assistChileLit);
+                }
+            }
+            //计算核增核减率
+            //1、主办
+            BigDecimal mainExtraRate = BigDecimal.ZERO;
+            if(achievementSumDto.getMainDeclarevalueSum().compareTo(BigDecimal.ZERO) == 1){
+                mainExtraRate = achievementSumDto.getMainExtravalueSum().divide(achievementSumDto.getMainDeclarevalueSum(), 4, BigDecimal.ROUND_HALF_UP);
+                mainExtraRate = Arith.safeMultiply(mainExtraRate,100);
+            }
+            achievementSumDto.setMainExtraRateSum(mainExtraRate);
+            //协办
+            BigDecimal assistExtraRate = BigDecimal.ZERO;
+            if(achievementSumDto.getAssistDeclarevalueSum().compareTo(BigDecimal.ZERO) == 1){
+                assistExtraRate = achievementSumDto.getAssistExtravalueSum().divide(achievementSumDto.getAssistDeclarevalueSum(), 4, BigDecimal.ROUND_HALF_UP);
+                assistExtraRate = Arith.safeMultiply(assistExtraRate,100);
+            }
+            achievementSumDto.setAssistExtraRateSum(assistExtraRate);
+        }
+        return achievementSumDto;
+    }
+
+    private static void sumAchievementInfo(AchievementSumDto achievementSumDto, Achievement achievement) {
+        if(Constant.EnumState.YES.getValue().equals(achievement.getIsMainUser())){
+            //主办发文
+            achievementSumDto.setMainDisSum(achievementSumDto.getMainDisSum()+1);
+            achievementSumDto.setMainAuthorizevalueSum(Arith.safeAdd(achievementSumDto.getMainAuthorizevalueSum(),achievement.getAuthorizeValue()));
+            achievementSumDto.setMainDeclarevalueSum(Arith.safeAdd(achievementSumDto.getMainDeclarevalueSum(),achievement.getDeclareValue()));
+            achievementSumDto.setMainExtravalueSum(Arith.safeAdd(achievementSumDto.getMainExtravalueSum(),achievement.getExtraValue()));
+        }else{
+            //协办发文
+            achievementSumDto.setAssistDisSum(achievementSumDto.getAssistDisSum()+1);
+            achievementSumDto.setAssistAuthorizevalueSum(Arith.safeAdd(achievementSumDto.getAssistAuthorizevalueSum(),achievement.getAuthorizeValue()));
+            achievementSumDto.setAssistDeclarevalueSum(Arith.safeAdd(achievementSumDto.getAssistDeclarevalueSum(),achievement.getDeclareValue()));
+            achievementSumDto.setAssistExtravalueSum(Arith.safeAdd(achievementSumDto.getAssistExtravalueSum(),achievement.getExtraValue()));
+        }
+    }
+
+    /**
+     * 普通用户业绩统计信息
+     * @param countList
+     * @return
+     */
+    public static AchievementSumDto sumUserAchievement(List<Achievement> countList) {
+        AchievementSumDto achievementSumDto = new AchievementSumDto();
+        achievementSumDto.init();
+        achievementSumDto.setUserId(SessionUtil.getUserId());
+        if(Validate.isList(countList)){
+            for(int i=0,l=countList.size();i<l;i++){
+                Achievement achievement = countList.get(i);
+                sumAchievementInfo(achievementSumDto,achievement);
+                //统计子集信息
+                if(Constant.EnumState.YES.getValue().equals(achievement.getIsMainUser())){
+                    List<Achievement> mainChileLit = achievementSumDto.getMainChildList();
+                    mainChileLit.add(achievement);
+                    achievementSumDto.setMainChildList(mainChileLit);
+                }else{
+                    List<Achievement> assistChileLit = achievementSumDto.getAssistChildList();
+                    assistChileLit.add(achievement);
+                    achievementSumDto.setAssistChildList(assistChileLit);
+                }
+            }
+            //计算核增核减率
+            //1、主办
+            BigDecimal mainExtraRate = BigDecimal.ZERO;
+            if(achievementSumDto.getMainDeclarevalueSum().compareTo(BigDecimal.ZERO) == 1){
+                mainExtraRate = achievementSumDto.getMainExtravalueSum().divide(achievementSumDto.getMainDeclarevalueSum(), 4, BigDecimal.ROUND_HALF_UP);
+                mainExtraRate = Arith.safeMultiply(mainExtraRate,100);
+            }
+            achievementSumDto.setMainExtraRateSum(mainExtraRate);
+            //协办
+            BigDecimal assistExtraRate = BigDecimal.ZERO;
+            if(achievementSumDto.getAssistDeclarevalueSum().compareTo(BigDecimal.ZERO) == 1){
+                assistExtraRate = achievementSumDto.getAssistExtravalueSum().divide(achievementSumDto.getAssistDeclarevalueSum(), 4, BigDecimal.ROUND_HALF_UP);
+                assistExtraRate = Arith.safeMultiply(assistExtraRate,100);
+            }
+            achievementSumDto.setAssistExtraRateSum(assistExtraRate);
+        }
+
+        return achievementSumDto;
     }
 }

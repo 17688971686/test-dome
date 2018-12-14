@@ -702,16 +702,17 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
             //、部长和组长统计，统计一个部门
             case 3:
             case 4:
+                resultMap.put("orgDeptSum",ProjUtil.sumOrgDeptAchievement(countList,orgDeptList));
                 break;
             //普通用户统计
             case 0:
+                resultMap.put("userSum",ProjUtil.sumUserAchievement(countList));
                 break;
             default:
                 ;
         }
         return resultMap;
     }
-
 
     private int countBetweentDay(List<Workday> workdayList, Date beginDate, Date endDate) {
         int result = 0;

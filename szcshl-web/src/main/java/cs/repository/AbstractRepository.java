@@ -217,8 +217,8 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         if(!this.checkBuilder(sqlBuilder)){
             return -1;
         }
-        Query<Number> q = this.getCurrentSession().createNativeQuery(sqlBuilder.getHqlString(),Number.class);
-        QueryParamBuild<Number> queryParamBuild = new QueryParamBuild(q);
+        Query q = this.getCurrentSession().createNativeQuery(sqlBuilder.getHqlString());
+        QueryParamBuild queryParamBuild = new QueryParamBuild(q);
         q = queryParamBuild.buildParams(sqlBuilder).getQuery();
         int returnValue = -1;
         if (Validate.isObject(q)) {
@@ -232,8 +232,8 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         if(!this.checkBuilder(hqlBuilder)){
             return -1;
         }
-        Query<Number> q = this.getCurrentSession().createQuery(hqlBuilder.getHqlString(),Number.class);
-        QueryParamBuild<Number> queryParamBuild = new QueryParamBuild(q);
+        Query q = this.getCurrentSession().createQuery(hqlBuilder.getHqlString());
+        QueryParamBuild queryParamBuild = new QueryParamBuild(q);
         q = queryParamBuild.buildParams(hqlBuilder).getQuery();
         int updateCount = 0;
         if (Validate.isObject(q)) {
@@ -247,8 +247,8 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         if(!this.checkBuilder(hqlBuilder)){
             return -1;
         }
-        Query<Number> q = this.getCurrentSession().createNativeQuery(hqlBuilder.getHqlString(),Number.class);
-        QueryParamBuild<Number> queryParamBuild = new QueryParamBuild(q);
+        Query q = this.getCurrentSession().createNativeQuery(hqlBuilder.getHqlString());
+        QueryParamBuild queryParamBuild = new QueryParamBuild(q);
         q = queryParamBuild.buildParams(hqlBuilder).getQuery();
         int updateCount = 0;
         if (Validate.isObject(q)) {
