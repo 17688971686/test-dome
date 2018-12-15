@@ -13,6 +13,7 @@ import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.postdoctor.PostdoctorStaffRepo;
 import cs.service.postdoctor.PostdoctoralStaffService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Property;
@@ -51,7 +52,7 @@ public class PostdoctoralStaffController {
            PageModelDto<PostdoctoralStaffDto> pageModelDto = new PageModelDto<>();
            Criteria criteria = postdoctorStaffRepo.getExecutableCriteria();
            criteria = odataObj.buildFilterToCriteria(criteria);
-           criteria.add(Restrictions.in(PostdoctoralStaff_.status.getName(), StringUtil.getSplit("1,2,3",",")));
+           criteria.add(Restrictions.in(PostdoctoralStaff_.status.getName(), StringUtil.getSplit("2,3",",")));
            //统计总数
            Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
            pageModelDto.setCount(totalResult);
@@ -132,6 +133,7 @@ public class PostdoctoralStaffController {
         return ctrlName + "/postdoctoralPopStaffAdd";
     }
 
+    @RequiresPermissions("postdoctoralStaff#html/postdoctoralStaffList#get")
     @RequestMapping(name = "博士后在站人员列表" , path = "html/postdoctoralStaffList" , method = RequestMethod.GET)
     public String postdoctoralStaffList(){
         SessionUtil.getSession().setAttribute("POSTDOCTORAL_ADMIN",SessionUtil.hashRole(Constant.EnumPostdoctoralName.POSTDOCTORAL_ADMIN.getValue())==true
@@ -148,6 +150,7 @@ public class PostdoctoralStaffController {
     }
 
 
+    @RequiresPermissions("postdoctoralStaff#html/postdoctoralPopStaffList#get")
     @RequestMapping(name = "博士后出站人员列表" , path = "html/postdoctoralPopStaffList" , method = RequestMethod.GET)
     public String postdoctoralPopStaffList(){
         SessionUtil.getSession().setAttribute("POSTDOCTORAL_ADMIN",SessionUtil.hashRole("博士后基地管理员")==true

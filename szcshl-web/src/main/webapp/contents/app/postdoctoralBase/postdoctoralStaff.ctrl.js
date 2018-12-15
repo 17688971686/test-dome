@@ -11,9 +11,10 @@
         vm.postdoctoralStaff = {};
         vm.businessFlag = {};
         vm.searchModel = {};
-        vm.searchModel.status = '1,2,3';
+        vm.searchModel.status = '2,3';
         vm.id = $state.params.id;
         vm.name = $state.params.name;
+
 
         //初始化附件上传控件
         vm.initFileUpload = function () {
@@ -60,7 +61,7 @@
         }
 
         /**
-         * 保存博士后基地
+         * 保存博士后人员
          */
         vm.createPostdoctoralStaff = function(){
             common.initJqValidation();
@@ -73,13 +74,15 @@
                         vm.id = vm.postdoctoralStaff.id;
                         vm.initFileUpload();
                         bsWin.alert("保存成功！");
+                    }else{
+                        bsWin.alert(data.reMsg);
                     }
                 });
             }
         }
 
         /**
-         * 更新博士后基地
+         * 更新博士后人员
          * @constructor
          */
         vm.updatePostdoctoralStaff = function(){
@@ -94,7 +97,7 @@
 
 
         /**
-         * 提交博士后基地
+         * 提交博士后人员
          * @constructor
          */
         vm.commitPostdoctoralStaff = function(){
@@ -110,7 +113,7 @@
 
 
         /**
-         * 提交博士后基地
+         * 提交博士后人员
          * @constructor
          */
         vm.commitPostdoctoralPopStaff = function(){

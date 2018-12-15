@@ -196,7 +196,7 @@
                     width: 100,
                     filterable: false,
                     template: function (item) {
-                        return common.format($('#columnNames').html(),item.id ,item.name);
+                        return common.format($('#columnNames').html(),item.id ,item.name,item.status);
                        // return '<a  href="#/postdoctoralStaffDetail/' + item.id + '">'+item.name+'</a>'
                     }
                 },
@@ -242,7 +242,10 @@
                     title: "操作",
                     width: 120,
                     template: function (item) {
-                        return common.format($('#columnBtns').html(),   item.id , "vm.approvePostdoctoralStaff('" + item.id + "','"+item.status+"')","vm.deletePostdoctoralStaff('" + item.id + "')",item.name,item.status,"vm.backPostdoctoralStaff('" + item.id + "','"+item.status+"')",item.createdBy);
+                        return common.format($('#columnBtns').html(),   item.id ,
+                            "vm.approvePostdoctoralStaff('" + item.id + "','"+item.status+"')",
+                            "vm.deletePostdoctoralStaff('" + item.id + "')",item.name,item.status,
+                            "vm.backPostdoctoralStaff('" + item.id + "','"+item.status+"')",item.createdBy);
                     }
                 }
             ];
@@ -317,7 +320,7 @@
                     width: 100,
                     filterable: false,
                     template: function (item) {
-                        return common.format($('#columnNames').html(),item.id ,item.name);
+                        return common.format($('#columnNames').html(),item.id ,item.name,item.status);
                         // return '<a  href="#/postdoctoralStaffDetail/' + item.id + '">'+item.name+'</a>'
                     }
                 },

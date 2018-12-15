@@ -74,7 +74,7 @@ public class PostdoctoralBaseController {
     }
 
     @RequiresPermissions("postdoctoralBase#html/postdoctoralBaseList#get")
-    @RequestMapping(name = "博士后基地息列表" , path = "html/postdoctoralBaseList" , method = RequestMethod.GET)
+    @RequestMapping(name = "博士后基地查询" , path = "html/postdoctoralBaseList" , method = RequestMethod.GET)
     public String postdoctoralBaseList(){
         SessionUtil.getSession().setAttribute("POSTDOCTORAL_ADMIN",SessionUtil.hashRole(Constant.EnumPostdoctoralName.POSTDOCTORAL_ADMIN.getValue())==true
                 ?"1":"0");

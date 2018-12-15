@@ -152,7 +152,7 @@
                     width: 100,
                     filterable: false,
                     template: function (item) {
-                        return '<a  href="#/postdoctoralBaseDetail/' + item.id + '">'+item.baseName+'</a>'
+                        return '<a  href="#/postdoctoralBaseAdd/' + item.id + '">'+item.baseName+'</a>'
                     }
                 },
                 {
