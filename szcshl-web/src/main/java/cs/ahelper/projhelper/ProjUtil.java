@@ -301,16 +301,19 @@ public class ProjUtil {
     }
 
     private static void countAchievementDetail(Map<String, List<Achievement>> cacheMap, Achievement achievement) {
-        List<Achievement> achievementList = cacheMap.get(achievement.getOrgId());
+        String orgId = achievement.getOrgId();
+        //从缓存中取出对应的用户办理详情信息
+        List<Achievement> achievementList = cacheMap.get(orgId);
         //如果已经初始化，则判断人员
         boolean isHaveUser = false;
         if(Validate.isList(achievementList)){
-            for(Achievement achievement1 : achievementList){
-                if(achievement1.getUserId().equals(achievement.getUserId())){
+            for(Achievement ach : achievementList){
+                if(ach.getUserId().equals(achievement.getUserId())){
+                    //判断新的评审项目信息是否是主办人
                     if(Constant.EnumState.YES.getValue().equals(achievement.getIsMainUser())){
-                        achievement1.setMainDisSum(achievement1.getMainDisSum()+1);
+                        ach.setMainDisSum(ach.getMainDisSum()+1);
                     }else{
-                        achievement1.setAssistDisSum(achievement1.getAssistDisSum()+1);
+                        ach.setAssistDisSum(ach.getAssistDisSum()+1);
                     }
                     isHaveUser = true;
                 }
@@ -331,7 +334,7 @@ public class ProjUtil {
             newAchievement.setUserName(achievement.getUserName());
             achievementList.add(newAchievement);
         }
-        cacheMap.put(achievement.getOrgId(),achievementList);
+        cacheMap.put(orgId,achievementList);
     }
 
     /**
@@ -343,18 +346,24 @@ public class ProjUtil {
     public static Map<String,AchievementSumDto> countOrgDept(List<Achievement> countList, List<OrgDept> orgDeptList) {
         Map<String,AchievementSumDto> resultMap = new HashMap<>();
         if(Validate.isList(countList)){
+            //缓存信息
             String lastSignId = countList.get(0).getSignId(),lastOrgId = countList.get(0).getOrgId();
+            int lastIndex = 0;
             Map<String,AchievementSumDto> countOrgDept = new HashMap<>();
             for(int i=0,l=countList.size();i<l;i++){
                 Achievement achievement = countList.get(i);
                 String signId = achievement.getSignId();
                 String orgId = achievement.getOrgId();
-                String branchId = achievement.getBranchId();
-                //两者有一个不等，则是新的;最后一个也要进行统计
-                if(!lastSignId.equals(signId) || !lastOrgId.equals(orgId) || i == (l-1)){
-                    countAchievementSum(countOrgDept,orgId,branchId);
+                //两者有一个不等，则是新的;
+                if(!lastSignId.equals(signId) || !lastOrgId.equals(orgId)){
+                    countAchievementSum(countOrgDept,lastOrgId,(countList.get(lastIndex)).getBranchId());
                     lastSignId = signId;
                     lastOrgId = orgId;
+                    lastIndex = i;
+                }
+                //最后一个也要进行统计
+                if(i == (l-1)){
+                    countAchievementSum(countOrgDept,orgId,achievement.getBranchId());
                 }
             }
             //替换map的key值
@@ -409,11 +418,19 @@ public class ProjUtil {
             OrgDept orgDept = orgDeptList.get(0);
             achievementSumDto.setDeptIds(orgDept.getId());
             achievementSumDto.setDeptNames(orgDept.getName());
-            String signId = countList.get(0).getSignId();
+            String lastSignId  = countList.get(0).getSignId();
+            //上一个数据的下标
+            int lastIndex = 0;
             for(int i=0,l=countList.size();i<l;i++){
                 Achievement achievement = countList.get(i);
-                //如果项目名称不同,或者是最后一个的时候
-                if(!signId.equals(achievement.getSignId()) || i == (l-1)){
+                //如果项目名称不同，进行统计
+                if(!lastSignId.equals(achievement.getSignId())){
+                    sumAchievementInfo(achievementSumDto,countList.get(lastIndex));
+                    lastSignId = achievement.getSignId();
+                    lastIndex = i;
+                }
+                //如果是最后一位，也要进行统计
+                if(i == (l-1)){
                     sumAchievementInfo(achievementSumDto,achievement);
                 }
                 //统计子集信息
@@ -446,8 +463,13 @@ public class ProjUtil {
         return achievementSumDto;
     }
 
+    /**
+     * 统计部门业绩的评审数，评审金额等信息
+     * @param achievementSumDto
+     * @param achievement
+     */
     private static void sumAchievementInfo(AchievementSumDto achievementSumDto, Achievement achievement) {
-        if(Constant.EnumState.YES.getValue().equals(achievement.getIsMainUser())){
+        if(isMainBranch(achievement.getBranchId())){
             //主办发文
             achievementSumDto.setMainDisSum(achievementSumDto.getMainDisSum()+1);
             achievementSumDto.setMainAuthorizevalueSum(Arith.safeAdd(achievementSumDto.getMainAuthorizevalueSum(),achievement.getAuthorizeValue()));
