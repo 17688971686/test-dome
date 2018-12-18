@@ -102,16 +102,7 @@
                                 <w:sz w:val="44"/>
                                 <w:szCs w:val="44"/>
                             </w:rPr>
-                            <w:t>主</w:t>
-                        </w:r>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:ascii="黑体" w:eastAsia="黑体"/>
-                                <w:bCs/>
-                                <w:sz w:val="44"/>
-                                <w:szCs w:val="44"/>
-                            </w:rPr>
-                            <w:t>办人评审项目一览表</w:t>
+                            <w:t>主办人评审项目一览表</w:t>
                         </w:r>
                     </w:p>
                     <w:p w:rsidR="00752749" w:rsidRDefault="00752749" w:rsidP="00752749">
@@ -131,70 +122,7 @@
                                 <w:sz w:val="32"/>
                                 <w:szCs w:val="32"/>
                             </w:rPr>
-                            <w:t>(</w:t>
-                        </w:r>
-                        <w:r w:rsidR="005E1466">
-                            <w:rPr>
-                                <w:rFonts w:ascii="黑体" w:eastAsia="黑体"/>
-                                <w:bCs/>
-                                <w:sz w:val="32"/>
-                                <w:szCs w:val="32"/>
-                            </w:rPr>
-                            <w:t>${year!}</w:t>
-                        </w:r>
-                        <w:r w:rsidRPr="00E27175">
-                            <w:rPr>
-                                <w:rFonts w:ascii="黑体" w:eastAsia="黑体" w:hint="eastAsia"/>
-                                <w:bCs/>
-                                <w:sz w:val="32"/>
-                                <w:szCs w:val="32"/>
-                            </w:rPr>
-                            <w:t>年度</w:t>
-                        </w:r>
-                        <w:r w:rsidR="005E1466">
-                            <w:rPr>
-                                <w:rFonts w:ascii="黑体" w:eastAsia="黑体"/>
-                                <w:bCs/>
-                                <w:sz w:val="32"/>
-                                <w:szCs w:val="32"/>
-                            </w:rPr>
-                            <w:t>${beginMonth!}</w:t>
-                        </w:r>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:ascii="黑体" w:eastAsia="黑体" w:hint="eastAsia"/>
-                                <w:bCs/>
-                                <w:sz w:val="32"/>
-                                <w:szCs w:val="32"/>
-                            </w:rPr>
-                            <w:t>月</w:t>
-                        </w:r>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:ascii="黑体" w:eastAsia="黑体"/>
-                                <w:bCs/>
-                                <w:sz w:val="32"/>
-                                <w:szCs w:val="32"/>
-                            </w:rPr>
-                            <w:t>至</w:t>
-                        </w:r>
-                        <w:r w:rsidR="005E1466">
-                            <w:rPr>
-                                <w:rFonts w:ascii="黑体" w:eastAsia="黑体"/>
-                                <w:bCs/>
-                                <w:sz w:val="32"/>
-                                <w:szCs w:val="32"/>
-                            </w:rPr>
-                            <w:t>${endMonth!}</w:t>
-                        </w:r>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:ascii="黑体" w:eastAsia="黑体" w:hint="eastAsia"/>
-                                <w:bCs/>
-                                <w:sz w:val="32"/>
-                                <w:szCs w:val="32"/>
-                            </w:rPr>
-                            <w:t>月)</w:t>
+                            <w:t>(${year!}年度${beginMonth!}月至${endMonth!}月)</w:t>
                         </w:r>
                     </w:p>
                     <w:p w:rsidR="00752749" w:rsidRDefault="00752749" w:rsidP="00752749">
@@ -212,15 +140,7 @@
                                 <w:bCs/>
                                 <w:sz w:val="24"/>
                             </w:rPr>
-                            <w:t>姓</w:t>
-                        </w:r>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
-                                <w:bCs/>
-                                <w:sz w:val="24"/>
-                            </w:rPr>
-                            <w:t>名</w:t>
+                            <w:t>姓名</w:t>
                         </w:r>
                         <w:r>
                             <w:rPr>
@@ -260,7 +180,7 @@
                                 <w:bCs/>
                                 <w:sz w:val="24"/>
                             </w:rPr>
-                            <w:t xml:space="preserve">         填表日期：${currentYear!}年${currentMonth!}月${currentDay!}日</w:t>
+                            <w:t xml:space="preserve">填表日期：${currentYear!}年${currentMonth!}月${currentDay!}日</w:t>
                         </w:r>
                     </w:p>
                     <w:tbl>
@@ -342,21 +262,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:szCs w:val="21"/>
                                         </w:rPr>
-                                        <w:t>发</w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:szCs w:val="21"/>
-                                        </w:rPr>
-                                        <w:t>文</w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
-                                            <w:szCs w:val="21"/>
-                                        </w:rPr>
-                                        <w:t>时间</w:t>
+                                        <w:t>发文时间</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -386,14 +292,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:szCs w:val="21"/>
                                         </w:rPr>
-                                        <w:t>发文</w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:szCs w:val="21"/>
-                                        </w:rPr>
-                                        <w:t>号</w:t>
+                                        <w:t>发文号</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -441,14 +340,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:szCs w:val="21"/>
                                         </w:rPr>
-                                        <w:t>报审投资</w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:szCs w:val="21"/>
-                                        </w:rPr>
-                                        <w:t>额</w:t>
+                                        <w:t>报审投资额</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -471,14 +363,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:szCs w:val="21"/>
                                         </w:rPr>
-                                        <w:t>审核</w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:szCs w:val="21"/>
-                                        </w:rPr>
-                                        <w:t>后投资额</w:t>
+                                        <w:t>审核后投资额</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -501,14 +386,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:szCs w:val="21"/>
                                         </w:rPr>
-                                        <w:t>核增</w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:szCs w:val="21"/>
-                                        </w:rPr>
-                                        <w:t>核减投资</w:t>
+                                        <w:t>核增/核减投资</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -531,21 +409,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:szCs w:val="21"/>
                                         </w:rPr>
-                                        <w:t>核增</w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:szCs w:val="21"/>
-                                        </w:rPr>
-                                        <w:t>核减</w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
-                                            <w:szCs w:val="21"/>
-                                        </w:rPr>
-                                        <w:t>率</w:t>
+                                        <w:t>核增/核减率</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>

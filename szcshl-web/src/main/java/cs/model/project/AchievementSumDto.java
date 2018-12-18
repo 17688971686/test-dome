@@ -75,6 +75,8 @@ public class AchievementSumDto {
 
     private String userId;
 
+    private String isMainPro;
+
     public int getMainDisSum() {
         return mainDisSum;
     }
@@ -209,6 +211,14 @@ public class AchievementSumDto {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getIsMainPro() {
+        return isMainPro;
+    }
+
+    public void setIsMainPro(String isMainPro) {
+        this.isMainPro = isMainPro;
     }
 
     public void init() {

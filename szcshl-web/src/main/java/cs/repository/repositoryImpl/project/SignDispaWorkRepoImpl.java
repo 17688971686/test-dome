@@ -1,5 +1,6 @@
 package cs.repository.repositoryImpl.project;
 
+import cs.ahelper.projhelper.ProjUtil;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.constants.Constant;
@@ -622,29 +623,8 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
      */
     @Override
     public List<Achievement> countAchievement(String year, String quarter, String deptIds, String userId, int level) {
-        String beginTime = year + "-01-01 00:00:00",endTime = year + "-12-31 23:59:59";
-        if (Validate.isString(year) && Validate.isString(quarter)) {
-            switch (quarter) {
-                case "1":
-                    beginTime = year + "-01-01 00:00:00";
-                    endTime = year + "-03-31 23:59:59";
-                    break;
-                case "2":
-                    beginTime = year + "-04-01 00:00:00";
-                    endTime = year + "-06-30 23:59:59";
-                    break;
-                case "3":
-                    beginTime = year + "-07-01 00:00:00";
-                    endTime = year + "-09-30 23:59:59";
-                    break;
-                case "4":
-                    beginTime = year + "-10-01 00:00:00";
-                    endTime = year + "-12-31 23:59:59";
-                    break;
-                default:
-                    ;
-            }
-        }
+        String[] queryTimes = ProjUtil.getQueryTime(year,quarter);
+        String beginTime = queryTimes[0],endTime = queryTimes[1];
         HqlBuilder hqlBuilder = ProjSql.countAchievement(deptIds,userId,level,beginTime,endTime);
         List<Achievement> achievementList = jdbcTemplate.query(hqlBuilder.getHqlString(),hqlBuilder.getJdbcValue(), new BeanPropertyRowMapper<Achievement>(Achievement.class) );
         return achievementList;

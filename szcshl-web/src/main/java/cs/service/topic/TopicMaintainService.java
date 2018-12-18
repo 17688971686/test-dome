@@ -1,10 +1,6 @@
 package cs.service.topic;
 
-import cs.common.ResultMsg;
-import cs.model.PageModelDto;
-import cs.model.topic.FilingDto;
 import cs.model.topic.TopicMaintainDto;
-import cs.repository.odata.ODataObj;
 
 import java.util.List;
 
@@ -15,5 +11,5 @@ import java.util.List;
  */
 public interface TopicMaintainService {
 
-    List<TopicMaintainDto> findTopicAll(String userId);
+    List<TopicMaintainDto> findTopicAll(String userId,String yearName,String quarter);
 }

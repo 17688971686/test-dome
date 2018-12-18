@@ -388,7 +388,7 @@ public class Constant {
     /**
      * 模板枚举
      */
-    public static enum Template {
+    public enum Template {
         EXPORTROOM("exportRoom", "导出会议室安排"),
         EXCEL_SUFFIX(".xls", "xls表格"),
         WORD_SUFFIX(".doc", "work文档"),
@@ -525,9 +525,9 @@ public class Constant {
 
         ACHIEVEMENT_DETAIL("achievement/achievementDetail","员工业绩统计表"),
         ACHIEVEMENT_DEPT_DETAIL("achievement/achievementDeptDetail","部门业绩统计表"),
-        ACHIEVEMENT_TOPIC_MAINTAIN("achievement/topicMaintain","课题研究及其他业务一览表"),
-        ACHIEVEMENT_MAIN_PROREVIEW("achievement/mainProReview","主办人评审项目一览表"),
-        ACHIEVEMENT_ASSIST_PROREVIEW("achievement/assistProReview","协办人评审项目一览表"),
+        //ACHIEVEMENT_TOPIC_MAINTAIN("achievement/topicMaintain","课题研究及其他业务一览表"),
+        ACHIEVEMENT_USER_DETAIL("achievement/achievementUserDetail","员工业绩统计一栏表"),
+        //ACHIEVEMENT_ASSIST_PROREVIEW("achievement/assistProReview","协办人评审项目一览表"),
         PROJECT_STOP("print/projectStop" , "项目暂停申请表")
         ;
 

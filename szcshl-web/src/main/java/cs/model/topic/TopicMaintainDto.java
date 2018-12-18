@@ -32,6 +32,18 @@ public class TopicMaintainDto extends BaseDto {
     private Date endTime;
 
     private String topicId;
+    /**
+     * 字符串结题时间
+     */
+    private String endTimeStr;
+
+    public String getEndTimeStr() {
+        return endTimeStr;
+    }
+
+    public void setEndTimeStr(String endTimeStr) {
+        this.endTimeStr = endTimeStr;
+    }
 
     public String getId() {
         return id;

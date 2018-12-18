@@ -101,11 +101,18 @@ public class TopicInfoController {
         return topicInfoService.findDetailById(id);
     }
 
+    /**
+     * 根据用户ID和时间查询对应的课题信息
+     * @param userId
+     * @param yearName
+     * @param quarter
+     * @return
+     */
     @RequiresAuthentication
     @RequestMapping(name = "查询课题维护详情", path = "findTopicDetail", method = RequestMethod.POST)
     @ResponseBody
-    public List<TopicMaintainDto> findTopicDetail(@RequestParam String userId) {
-        return topicMaintainService.findTopicAll(userId);
+    public List<TopicMaintainDto> findTopicDetail(@RequestParam String userId,@RequestParam String yearName, @RequestParam String quarter) {
+        return topicMaintainService.findTopicAll(userId,yearName,quarter);
     }
 
 

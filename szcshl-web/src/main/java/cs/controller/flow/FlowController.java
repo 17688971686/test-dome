@@ -768,7 +768,7 @@ public class FlowController {
     @ResponseBody
     public List<Map<String, Object>> getProc() {
         List<Map<String, Object>> resultList = flowService.getProc();
-        XssShieldUtil.getInstance().cleanMapListXss(resultList);
+        //XssShieldUtil.getInstance().cleanMapListXss(resultList);
         return resultList;
     }
 
@@ -781,7 +781,7 @@ public class FlowController {
         //分支列表
         List<Map<String, Object>> branchList = flowService.getBranchInfo(signId);
         if (Validate.isList(branchList)) {
-            XssShieldUtil.getInstance().cleanMapListXss(branchList);
+           // XssShieldUtil.getInstance().cleanMapListXss(branchList);
         }
         resultMap.put("branchList", branchList);
 

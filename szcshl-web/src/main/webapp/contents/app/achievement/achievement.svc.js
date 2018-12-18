@@ -9,11 +9,11 @@
         var service = {
             achievementSum: achievementSum, //业绩汇总
             findAchievementDetail: findAchievementDetail, //部门业绩明细
-            saveTopicDetailList: saveTopicDetailList, // 保存课题明细
+            saveTopicDetailList: saveTopicDetailList,     // 保存课题明细
             deleteTopicMaintainDel: deleteTopicMaintainDel,//删除课题明细
-            findTopicDetail: findTopicDetail, //初始化课题明细
+            findTopicDetail: findTopicDetail,              //初始化课题明细
             exportAchievementDetail: exportAchievementDetail,  //员工业绩汇总导出
-            exportDeptAchievementDetail: exportDeptAchievementDetail,  //部门业绩汇总导出
+            exportDeptAchievementDetail: exportDeptAchievementDetail,  //部门业绩汇总导出（）
             exportTopicMaintainInfo: exportTopicMaintainInfo, //课题维护导出
             exportProReview: exportProReview //主办协办项目导出
         };
@@ -114,11 +114,15 @@
 
 
         //S_初始化课题详情信息
-        function findTopicDetail(userId, callBack) {
+        function findTopicDetail(vm, callBack) {
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/topicInfo/findTopicDetail",
-                params: {userId: userId}
+                params: {
+                    userId: vm.userId,
+                    yearName:vm.model.year,
+                    quarter:vm.model.quarter
+                }
             };
             var httpSuccess = function success(response) {
                 if (callBack != undefined && typeof callBack == 'function') {
@@ -138,8 +142,11 @@
         function exportAchievementDetail(vm) {
             var httpOptions = {
                 method: 'post',
-                url: rootPath + "/signView/exportAchievementSum",
-                data: vm.model
+                url: rootPath + "/signView/exportUserAchievement",
+                params: {
+                    yearName:vm.model.year,
+                    quarter:vm.model.quarter
+                }
             }
             var httpSuccess = function success(response) {
                 var fileName = "员工业绩统计表.doc";
@@ -211,16 +218,22 @@
         }
 
         //主/协办项目一览表
-        function exportProReview(vm) {
-            if (vm.model.isMainPro == '9') {
-                var fileName1 = "主办项目一览表.doc";
+        function exportProReview(vm,isMain) {
+            var fileName1 = "";
+            if (isMain == '9') {
+                fileName1 = "主办项目一览表.doc";
             } else {
-                var fileName1 = "协办项目一览表.doc";
+                fileName1 = "协办项目一览表.doc";
             }
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/signView/exportProReview",
-                data: vm.model
+                params: {
+                    yearName:vm.model.year,
+                    quarter:vm.model.quarter,
+                    level:vm.level,
+                    isMainUser:isMain
+                }
             }
             var httpSuccess = function success(response) {
                 var fileName = fileName1;

@@ -527,4 +527,62 @@ public class ProjUtil {
 
         return achievementSumDto;
     }
+
+    public static String[] getQuarterMonth(String quarter){
+        String smonth = "1",emonth="12";
+        switch (quarter) {
+            case "1":
+                smonth = "1";
+                emonth = "3";
+                break;
+            case "2":
+                smonth = "4";
+                emonth = "6";
+                break;
+            case "3":
+                smonth = "7";
+                emonth = "9";
+                break;
+            case "4":
+                smonth = "10";
+                emonth = "12";
+                break;
+            default:
+                ;
+        }
+        return new String[]{smonth,emonth};
+    }
+
+    /**
+     * 根据年份和季度，查出对应的时间信息
+     * @param year
+     * @param quarter
+     * @return
+     */
+    public static String[] getQueryTime(String year,String quarter){
+        String beginTime = year + "-01-01 00:00:00",endTime = year + "-12-31 23:59:59";
+        if (Validate.isString(year) && Validate.isString(quarter)) {
+            switch (quarter) {
+                case "1":
+                    beginTime = year + "-01-01 00:00:00";
+                    endTime = year + "-03-31 23:59:59";
+                    break;
+                case "2":
+                    beginTime = year + "-04-01 00:00:00";
+                    endTime = year + "-06-30 23:59:59";
+                    break;
+                case "3":
+                    beginTime = year + "-07-01 00:00:00";
+                    endTime = year + "-09-30 23:59:59";
+                    break;
+                case "4":
+                    beginTime = year + "-10-01 00:00:00";
+                    endTime = year + "-12-31 23:59:59";
+                    break;
+                default:
+                    ;
+            }
+        }
+        return new String[]{beginTime,endTime};
+    }
 }

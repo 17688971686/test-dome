@@ -47,6 +47,7 @@
             <button ng-if="vm.level=='0'" ng-click="vm.showTopicDetail()" class="btn btn-sm btn-primary">
                 课题研究及其他业务工作一览表
             </button>
+            <!--普通员工的业绩统计导出-->
             <button ng-if="vm.level=='0'" class="btn btn-sm btn-primary" ng-click="vm.exportAchievementDetail()">
                 <span class="glyphicon glyphicon-file"></span>导出
             </button>
@@ -448,7 +449,6 @@
                 <button class="btn btn-sm btn-success" ng-click="vm.saveTopic()"><span
                         class="glyphicon glyphicon-ok"></span>保存
                 </button>
-                <button class="btn btn-sm btn-success" ng-click="vm.exportTopicMaintainInfo()">导出</button>
             </div>
             <table class="table table-bordered">
                 <caption class="text-center h4">

@@ -24,7 +24,7 @@
                         //普通用户
                         vm.orgAchievement =  data.userSum;
                         vm.userId = vm.orgAchievement.userId;
-                        achievementSvc.findTopicDetail(vm.userId,function(data){
+                        achievementSvc.findTopicDetail(vm,function(data){
                             if(data != undefined){
                                 vm.conditions = data;
                                 for(var i=0;i<vm.conditions.length;i++){
@@ -54,11 +54,14 @@
                         vm.orgDeptList = data.orgDeptList;
                         if(vm.orgDeptList ){
                             vm.model.deptNames = "";
+                            vm.model.deptIds = "";
                             for(var i=0,l=vm.orgDeptList.length;i<l;i++){
                                 if(i > 0){
                                     vm.model.deptNames += ",";
+                                    vm.model.deptIds += ",";
                                 }
                                 vm.model.deptNames += vm.orgDeptList[i].name;
+                                vm.model.deptIds += vm.orgDeptList[i].id;
                             }
                         }
                     }
@@ -234,7 +237,6 @@
          * @param userId
          */
         vm.showAchievementDetail = function (id,level,orgName,userName) {
-            console.log(level+"==="+orgName+"===="+userName);
             vm.achievementDetail = {};
             achievementSvc.findAchievementDetail(vm.model,id,level,function(data){
                 vm.showDetailType = level;
@@ -242,7 +244,6 @@
                 vm.showUserName = userName;
                 if(level==3){
                     vm.achievementDetail = data.orgDeptSum;
-                    console.log(vm.achievementDetail);
                     $("#achievementDetail").kendoWindow({
                         width: "75%",
                         height: "500px",
@@ -343,27 +344,24 @@
         }
 
         /**
-         * 部门业绩汇总导出
+         * 部门业绩汇总导出（主任、分管主任角色导出）
          */
         vm.exportDeptAchievementDetail = function () {
-            //设置部门名字
             achievementSvc.exportDeptAchievementDetail(vm);
-
         }
 
         /**
-         * 课题维护导出
+         * 课题维护导出(课题维护不用导出)
          */
-        vm.exportTopicMaintainInfo = function () {
+       /* vm.exportTopicMaintainInfo = function () {
             achievementSvc.exportTopicMaintainInfo(vm);
-        }
+        }*/
 
         /**
-         * 主/协办项目一览表
+         * 主/协办项目一览表导出
          */
         vm.exportProReview = function (isMainPro) {
-            vm.model.isMainPro = isMainPro;
-            achievementSvc.exportProReview(vm);
+            achievementSvc.exportProReview(vm,isMainPro);
         }
 
         /**
