@@ -10,7 +10,7 @@ public class FMUtils {
 		if(model == null) {
 			return null;
 		}
-		if(model.getClass().getSimpleName().equals("SimpleNumber")) { // 澶勭悊鏁板瓧绫诲瀷鐨勬暟鎹�
+		if("SimpleNumber".equals(model.getClass().getSimpleName())) { // 澶勭悊鏁板瓧绫诲瀷鐨勬暟鎹�
 			return ((SimpleNumber) model).toString();
 		}
 		return ((SimpleScalar) model).getAsString();  // 澶勭悊瀛楃涓茬被鍨嬬殑鏁版嵁
@@ -20,7 +20,7 @@ public class FMUtils {
 		if(model == null || Validate.isEmpty(key)) {
 			return null;
 		}
-		if(model.getClass().getSimpleName().equals("SimpleHash")) { // 澶勭悊hash绫诲瀷鐨勬暟鎹�
+		if("SimpleHash".equals(model.getClass().getSimpleName())) { // 澶勭悊hash绫诲瀷鐨勬暟鎹�
 			return getAsString(((SimpleHash) model).get(key));
 		}
 		return getAsString(((BeanModel) model).get(key));  // 澶勭悊ben瀵硅薄绫诲瀷鐨勬暟鎹�
@@ -30,7 +30,7 @@ public class FMUtils {
 		if(model == null) {
 			return null;
 		}
-		if(model.getClass().getSimpleName().equals("SimpleNumber")) { // 澶勭悊鏁板瓧绫诲瀷鐨勬暟鎹�
+		if("SimpleNumber".equals(model.getClass().getSimpleName())) { // 澶勭悊鏁板瓧绫诲瀷鐨勬暟鎹�
 			return ((SimpleNumber) model).getAsNumber().doubleValue();
 		}
 		return Double.valueOf(((SimpleScalar) model).toString());  // 澶勭悊瀛楃涓茬被鍨嬬殑鏁版嵁
@@ -40,7 +40,7 @@ public class FMUtils {
 		if(model == null || Validate.isEmpty(key)) {
 			return null;
 		}
-		if(model.getClass().getSimpleName().equals("SimpleHash")) { // 澶勭悊hash绫诲瀷鐨勬暟鎹�
+		if("SimpleHash".equals(model.getClass().getSimpleName())) { // 澶勭悊hash绫诲瀷鐨勬暟鎹�
 			return getAsDouble(((SimpleHash) model).get(key));
 		}
 		return getAsDouble(((BeanModel) model).get(key));  // 澶勭悊ben瀵硅薄绫诲瀷鐨勬暟鎹�

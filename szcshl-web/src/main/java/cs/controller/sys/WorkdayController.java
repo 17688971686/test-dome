@@ -107,7 +107,7 @@ public class WorkdayController {
 				resultMsg=  workdayService.createWorkday(workdayDto);
 			}
 		}
-		if(!isNodate.equals("")){//当有重复日期时，返回重复日期的提示
+		if(!"".equals(isNodate)){//当有重复日期时，返回重复日期的提示
 			if(resultMsg==null){
 				resultMsg=new ResultMsg(false, Constant.MsgCode.OK.getValue(),isNodate);
 			}else{

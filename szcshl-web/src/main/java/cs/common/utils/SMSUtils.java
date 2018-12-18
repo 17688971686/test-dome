@@ -141,6 +141,8 @@ public class SMSUtils {
                         case FlowConstant.FLOW_SIGN_BMFB4:
                             stringBuffer.append("请到综合部领取项目资料").append("\n");
                             break;
+                            default:
+                                ;
                     }
                 }
                 break;

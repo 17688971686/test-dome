@@ -13,7 +13,7 @@ import cs.repository.AbstractRepository;
 public class ProjectExpeRepoImpl extends AbstractRepository<ProjectExpe, String> implements ProjectExpeRepo {
 	@Override
 	public ProjectExpe findProjectByName(String projectName) {
-		Criteria criteria = this.getSession().createCriteria(ProjectExpe.class);
+		Criteria criteria = getExecutableCriteria();
 		criteria.add(Restrictions.eq(ProjectExpe_.projectName.getName(), projectName));
 		List<ProjectExpe> projects = criteria.list();
 		if (projects.size() > 0) {

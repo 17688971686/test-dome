@@ -1,9 +1,9 @@
 package cs.service.project;
 
 import cs.ahelper.projhelper.ProjUtil;
-import cs.common.constants.Constant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
+import cs.common.constants.Constant;
 import cs.common.constants.SysConstants;
 import cs.common.utils.*;
 import cs.domain.expert.ExpertReview;
@@ -16,7 +16,6 @@ import cs.domain.sys.OrgDept_;
 import cs.domain.sys.Workday;
 import cs.model.PageModelDto;
 import cs.model.project.Achievement;
-import cs.model.project.AchievementDeptDetailDto;
 import cs.model.project.AchievementSumDto;
 import cs.model.project.SignDispaWorkDto;
 import cs.quartz.unit.QuartzUnit;
@@ -27,7 +26,6 @@ import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.project.*;
 import cs.repository.repositoryImpl.sys.OrgDeptRepo;
-import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.service.sys.UserService;
 import cs.service.sys.WorkdayService;
 import org.apache.log4j.Logger;
@@ -172,6 +170,8 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
                         case 9:
                             criteria.add(Restrictions.eq(SignDispaWork_.processState.getName(), Constant.SignProcessState.FINISH.getValue()));
                             break;
+                            default:
+                                ;
                     }
                     continue;
                 }

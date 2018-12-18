@@ -1,20 +1,14 @@
 package cs.common.utils;
 
-import cs.common.constants.SysConstants;
 import org.apache.http.Consts;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.URISyntaxException;
-import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -39,13 +33,15 @@ public class DateUtils {
 
     /**
      * 是否相同
+     *
      * @param d1
      * @param d2
      * @return
      */
     public static boolean isSameDay(Date d1, Date d2) {
-        if (null == d1 || null == d2)
+        if (null == d1 || null == d2) {
             return false;
+        }
         Calendar cal1 = Calendar.getInstance();
         cal1.setTime(d1);
         Calendar cal2 = Calendar.getInstance();
@@ -360,7 +356,7 @@ public class DateUtils {
         if (month == 2 && isLeapYear(year)) {
             return 29;
         } else {
-            return DAY_OF_MONTH[month-1];
+            return DAY_OF_MONTH[month - 1];
         }
     }
 
@@ -755,6 +751,8 @@ public class DateUtils {
             case 7:
                 Dw = 6;
                 break;
+            default:
+                ;
         }
         return Dw;
     }
@@ -838,7 +836,7 @@ public class DateUtils {
         System.out.println(jo.getString("accessToken"));*/
         System.out.println(DateUtils.converToString(new Date(), "yy"));
         System.out.println(DateUtils.converToString(new Date(), "yy"));
-        String smsUrl = SMSUtils.SM_URL+"?mobile=135811,55555,3333";
+        String smsUrl = SMSUtils.SM_URL + "?mobile=135811,55555,3333";
 
         // 构造一个form表单式的实体
 
@@ -846,13 +844,13 @@ public class DateUtils {
         params.put("accessToken", SMSUtils.getTOKEN());
         params.put("content", "发送短信");
         List<NameValuePair> parameters = new ArrayList<NameValuePair>(0);
-        if(params != null){
-            for(String key : params.keySet()){
+        if (params != null) {
+            for (String key : params.keySet()) {
                 parameters.add(new BasicNameValuePair(key, params.get(key)));
             }
         }
         String url = EntityUtils.toString(new UrlEncodedFormEntity(parameters, Consts.UTF_8));
-        smsUrl += "&"+url;
+        smsUrl += "&" + url;
         System.out.println(smsUrl);
     }
 }

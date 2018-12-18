@@ -510,7 +510,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 }
             }
             //如果是pdf文件，直接输出流，否则要先转为pdf
-            else if (fileType.equals(".pdf") || fileType.equals(".png") || fileType.equals(".jpg") || fileType.equals(".gif") || fileType.equals(".txt") || fileType.equals(".text")) {
+            else if (".pdf".equals(fileType) || ".png".equals(fileType) || ".jpg".equals(fileType) || ".gif".equals(fileType) || ".txt".equals(fileType) || ".text".equals(fileType)) {
                 out = response.getOutputStream();
                 ftpUtils.downLoadFile(removeRelativeUrl, storeFileName, k, out);
             } else {
@@ -712,39 +712,39 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 workData.put("rbDate", rbDate);//评审会时间
                 workData.put("studyBeginTimeStr", DateUtils.getTimeNow(workProgramDto.getStudyBeginTime()));//调研开始时间
                 workData.put("studyEndTimeStr", DateUtils.getTimeNow(workProgramDto.getStudyEndTime()));//调研结束时间
-                if (null != stageType && (stageType.equals("STAGESUG") || stageType.equals("STAGESTUDY")
-                        || stageType.equals("STAGEBUDGET") || stageType.equals("STAGEOTHER")
-                        || stageType.equals("REGISTERCODE"))) {
-                    if (stageType.equals("STAGESUG")) {
+                if (null != stageType && ("STAGESUG".equals(stageType) || "STAGESTUDY".equals(stageType)
+                        || "STAGEBUDGET".equals(stageType) || "STAGEOTHER".equals(stageType)
+                        || "REGISTERCODE".equals(stageType))) {
+                    if ("STAGESUG".equals(stageType)) {
                         workData.put("wpTile", "项目建议书评审工作方案");
                         workData.put("wpCode", " QR-4.3-02-A3");
-                    } else if (stageType.equals("STAGEOTHER")) {
+                    } else if ("STAGEOTHER".equals(stageType)) {
                         workData.put("wpTile", "其它评审工作方案");
                         workData.put("wpCode", " QR-4.3-02-A3");
-                    } else if (stageType.equals("STAGESTUDY")) {
+                    } else if ("STAGESTUDY".equals(stageType)) {
                         workData.put("wpTile", "可行性研究报告评审工作方案");
                         workData.put("wpCode", " QR-4.4-01-A3");
-                    } else if (stageType.equals("STAGEBUDGET")) {
+                    } else if ("STAGEBUDGET".equals(stageType)) {
                         workData.put("wpTile", "项目概算评审工作方案");
                         workData.put("wpCode", " QR-4.7-01-A2");
-                    } else if (stageType.equals("REGISTERCODE")) {
+                    } else if ("REGISTERCODE".equals(stageType)) {
                         workData.put("wpTile", "登记赋码评审工作方案");
                         workData.put("wpCode", "QR-4.3-02-A3");
                     }
                     file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_SUG_WORKPROGRAM.getKey(), path);
-                } else if (null != stageType && stageType.equals("STAGEREPORT")) {
+                } else if (null != stageType && "STAGEREPORT".equals(stageType)) {
                     workData.put("wpTile", "资金申请报告工作方案");
                     workData.put("wpCode", "QR-4.9-02-A0");
                     file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_REPORT_WORKPROGRAM.getKey(), path);
-                } else if (null != stageType && stageType.equals("STAGEDEVICE")) {
+                } else if (null != stageType && "STAGEDEVICE".equals(stageType)) {
                     workData.put("wpTile", "进口设备工作方案");
                     workData.put("wpCode", "QR-4.9-02-A0");
                     file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_DEVICE_WORKPROGRAM.getKey(), path);
-                } else if (null != stageType && stageType.equals("STAGEIMPORT")) {
+                } else if (null != stageType && "STAGEIMPORT".equals(stageType)) {
                     workData.put("wpTile", "设备清单工作方案");
                     workData.put("wpCode", "QR-4.9-02-A0");
                     file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_HOMELAND_WORKPROGRAM.getKey(), path);
-                } else if (null != stageType && stageType.equals("INFORMATION")) {
+                } else if (null != stageType && "INFORMATION".equals(stageType)) {
 
                     file = TemplateUtil.createDoc(workData, Constant.Template.INFORMATION.getKey(), path);
                 }

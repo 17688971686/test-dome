@@ -80,9 +80,9 @@ public class SignAppController {
         String username = request.getParameter("username");
         User user = userService.findByName(username);
         String level = userService.getUserLevel(user);
-        if ((Validate.isString(level) && level.equals("3")) ) {
+        if ((Validate.isString(level) && "3".equals(level)) ) {
             isOrgLeader = true;
-        } else  if (Validate.isString(level) && (level.equals("1") || level.equals("2"))) {
+        } else  if (Validate.isString(level) && ("1".equals(level) || "2".equals(level))) {
             isOrgLeader = false;
         } else {
             return signDispaWork;

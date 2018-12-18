@@ -123,6 +123,8 @@ public class SignController {
                             case 4:
                                 backActivityId = FlowConstant.FLOW_SIGN_BMFB4;
                                 break;
+                                default:
+                                    ;
                         }
                     }
                 } else {

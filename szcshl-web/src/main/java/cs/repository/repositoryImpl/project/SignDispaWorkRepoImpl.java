@@ -521,6 +521,8 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
                             case 9:
                                 hqlBuilder.append(" processState =:processState10 ").setParam("processState10", Constant.SignProcessState.FINISH.getValue());
                                 break;
+                                default:
+                                    ;
                         }
                         break;
                     case "dispatchType":

@@ -37,15 +37,15 @@ public class OfficeConverterUtil {
             System.out.println("文件不存在！");
             return false;
         }
-        if (suffix.equals("pdf")) {
+        if ("pdf".equals(suffix)) {
             System.out.println("PDF not need to convert!");
             return false;
         }
-        if (suffix.equals("doc") || suffix.equals("docx") || suffix.equals("txt")) {
+        if ("doc".equals(suffix) || "docx".equals(suffix) || "txt".equals(suffix)) {
             return word2PDF(inputFile, pdfFile);
-        } else if (suffix.equals("ppt") || suffix.equals("pptx")) {
+        } else if ("ppt".equals(suffix) || "pptx".equals(suffix)) {
             return ppt2PDF(inputFile, pdfFile);
-        } else if (suffix.equals("xls") || suffix.equals("xlsx")) {
+        } else if ("xls".equals(suffix) || "xlsx".equals(suffix)) {
             return excel2PDF(inputFile, pdfFile);
         } else {
             System.out.println("文件格式不支持转换!");
@@ -61,7 +61,7 @@ public class OfficeConverterUtil {
             return false;
         }
 
-        if (suffix.equals("doc") || suffix.equals("docx") ) {
+        if ("doc".equals(suffix) || "docx".equals(suffix)) {
             return wordSaveAsWork(inputFile, wordfFile);
         }
         return false;

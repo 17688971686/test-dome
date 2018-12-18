@@ -19,10 +19,7 @@ public class SMSLogRepoImpl extends AbstractRepository<SMSLog, String> implement
 
     @Override
     public boolean isSMSlogExist(String smsLogType, String projectName, String smsUserPhone, String smsUserName, String fileCode,String infoType) {
-        WebApplicationContext wac = ContextLoader.getCurrentWebApplicationContext();
-        SessionFactory factory=wac.getBean(SessionFactory.class);
-        Session session=factory.openSession();
-        Criteria criteria = session.createCriteria(this.getPersistentClass()); //getExecutableCriteria();
+        Criteria criteria = getExecutableCriteria(); //getExecutableCriteria();
         criteria.add(Restrictions.eq(SMSLog_.smsLogType.getName(), smsLogType));
         criteria.add(Restrictions.eq(SMSLog_.smsUserPhone.getName(), smsUserPhone));
         criteria.add(Restrictions.eq(SMSLog_.userName.getName(), smsUserName));

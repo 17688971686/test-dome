@@ -60,6 +60,7 @@ public class QuartzSessionValidationScheduler2 implements SessionValidationSched
         this.sessionManager = sessionManager;
     }
 
+    @Override
     public boolean isEnabled() {
         return this.enabled;
     }
@@ -68,6 +69,7 @@ public class QuartzSessionValidationScheduler2 implements SessionValidationSched
         this.sessionValidationInterval = sessionValidationInterval;
     }
 
+    @Override
     public void enableSessionValidation() {
         if (log.isDebugEnabled()) {
             log.debug("Scheduling session validation job using Quartz with session validation interval of ["
@@ -103,6 +105,7 @@ public class QuartzSessionValidationScheduler2 implements SessionValidationSched
         }
     }
 
+    @Override
     public void disableSessionValidation() {
         if (log.isDebugEnabled()) {
             log.debug("Stopping Quartz session validation job...");

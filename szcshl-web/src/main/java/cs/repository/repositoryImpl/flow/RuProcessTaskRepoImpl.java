@@ -37,7 +37,7 @@ public class RuProcessTaskRepoImpl extends AbstractRepository<RuProcessTask, Str
     @Override
 
     public List<RuProcessTask> findRuProcessList(String processInstanceId){
-        Criteria criteria= this.getSession().createCriteria(RuProcessTask.class);
+        Criteria criteria= getExecutableCriteria();
         criteria.add(Restrictions.eq(RuProcessTask_.processInstanceId.getName() , processInstanceId));
         return criteria.list();
     }

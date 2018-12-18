@@ -19,7 +19,7 @@ import java.util.List;
 public class HeaderRepoImpl extends AbstractRepository<Header, String > implements  HeaderRepo {
     @Override
     public boolean isHeaderExist(String headerType, String headerKdy) {
-        Criteria criteria = this.getSession().createCriteria(Header.class);
+        Criteria criteria = getExecutableCriteria();
         criteria.add(Restrictions.eq(Header_.headerType.getName() , headerType));
         criteria.add(Restrictions.eq(Header_.headerKey.getName() , headerKdy));
         List<Header> headerList = criteria.list();

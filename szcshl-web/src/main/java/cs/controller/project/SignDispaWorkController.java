@@ -3,18 +3,16 @@ package cs.controller.project;
 import com.sn.framework.jxls.JxlsUtils;
 import cs.ahelper.MudoleAnnotation;
 import cs.ahelper.projhelper.ProjUtil;
-import cs.common.constants.Constant;
 import cs.common.ResultMsg;
+import cs.common.constants.Constant;
 import cs.common.utils.*;
 import cs.domain.project.SignDispaWork;
 import cs.domain.project.SignDispaWork_;
 import cs.domain.sys.Header;
 import cs.domain.sys.OrgDept;
 import cs.domain.sys.OrgDept_;
-import cs.domain.sys.User;
 import cs.model.PageModelDto;
 import cs.model.project.Achievement;
-import cs.model.project.AchievementDeptDetailDto;
 import cs.model.project.AchievementSumDto;
 import cs.model.project.SignDispaWorkDto;
 import cs.model.sys.HeaderDto;
@@ -48,9 +46,7 @@ import java.io.InputStream;
 import java.text.ParseException;
 import java.util.*;
 
-import static com.sn.framework.common.StringUtil.GBK;
-import static com.sn.framework.common.StringUtil.ISO_8859_1;
-import static com.sn.framework.common.StringUtil.UTF_8;
+import static com.sn.framework.common.StringUtil.*;
 import static cs.common.constants.Constant.ERROR_MSG;
 
 /**

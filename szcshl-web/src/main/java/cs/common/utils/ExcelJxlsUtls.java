@@ -17,7 +17,7 @@ public class ExcelJxlsUtls {
      */
     public static String getAssist(String isAssist) {
         String assistFlag = "";
-        if(StringUtil.isBlank( isAssist) || isAssist.equals("0")){
+        if(StringUtil.isBlank( isAssist) || "0".equals(isAssist)){
                 assistFlag = "否";
 
         }else{

@@ -109,7 +109,7 @@ public class ODataObj {
         if (ObjectUtils.isNotEmpty(orderby)) {
             String[] orderbyItems = orderby.trim().split(" ");
             this.orderby = orderbyItems[0];
-            if (orderbyItems.length == 2 && orderbyItems[1].toLowerCase().equals("desc")) {
+            if (orderbyItems.length == 2 && "desc".equals(orderbyItems[1].toLowerCase())) {
                 this.orderbyDesc = true;
             }
         }

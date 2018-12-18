@@ -968,6 +968,8 @@ public class FlowServiceImpl implements FlowService {
             case FlowConstant.SIGN_FLOW:
                 resultMsg = signService.dealFlow(processInstance, task, flowDto);
                 break;
+            default:
+                    ;
         }
         if (resultMsg == null) {
             resultMsg = new ResultMsg(false, Constant.MsgCode.FLOW_NOT_MATCH.getValue(), "没有匹配的流程！");
@@ -1227,7 +1229,7 @@ public class FlowServiceImpl implements FlowService {
         }
 
         // 根据流程定义，获取该流程实例的结束节点
-        if (activityId.toUpperCase().equals("END")) {
+        if ("END".equals(activityId.toUpperCase())) {
             for (ActivityImpl activityImpl : processDefinition.getActivities()) {
                 List<PvmTransition> pvmTransitionList = activityImpl
                         .getOutgoingTransitions();
@@ -1647,6 +1649,8 @@ public class FlowServiceImpl implements FlowService {
                     }
                 }
                 break;
+                default:
+                    ;
         }
 
         //放入腾讯通消息缓冲池
@@ -1695,6 +1699,8 @@ public class FlowServiceImpl implements FlowService {
                     case "flowName":
                         hq = hq.processInstanceNameLike("%" + value.toString() + "%");
                         break;
+                    default:
+                            ;
                 }
             }
         }

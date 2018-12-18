@@ -365,11 +365,11 @@ public class FlowAppController {
         UserDto userDto = userService.findUserByName(username);
         User user = userService.findByName(username);
         String level = userService.getUserLevel(user);
-        if (Validate.isString(level) && (level.equals("1") || level.equals("2"))) {
+        if (Validate.isString(level) && ("1".equals(level) || "2".equals(level))) {
             backActivityId = FlowConstant.FLOW_SIGN_FGLD_FB;
         } else {
             OrgDept orgDept = orgDeptRepo.findById(OrgDept_.directorID.getName(),user.getId());
-            if ((Validate.isString(level) && level.equals("3")) || null != orgDept) {
+            if ((Validate.isString(level) && "3".equals(level)) || null != orgDept) {
                 //根据当前用户所在部门ID，查询是哪个分支的取回
                 SignBranch signBranch = signBranchService.findByOrgDirector(businessKey, orgDept.getId());
                 if (signBranch != null) {

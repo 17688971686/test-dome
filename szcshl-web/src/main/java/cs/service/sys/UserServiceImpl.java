@@ -874,11 +874,11 @@ public class UserServiceImpl implements UserService {
     public String getUserLevel(User u) {
         //定义领导标识参数（0表示普通用户，1表示主任，2表示分管领导，3表示部长或者组长）
         String leaderFlag = SUPER_ACCOUNT.equals(u.getLoginName()) ? "1" : "0";
-        if (leaderFlag.equals("0")) {
+        if ("0".equals(leaderFlag)) {
             //查询所有的部门和组织
             List<OrgDept> allOrgDeptList = orgDeptService.queryAll();
             for (OrgDept od : allOrgDeptList) {
-                if (leaderFlag.equals("0")) {
+                if ("0".equals(leaderFlag)) {
                     if (u.getId().equals(od.getDirectorID())) {
                         leaderFlag = "3";
                     }

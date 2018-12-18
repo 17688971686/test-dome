@@ -174,7 +174,7 @@ public class Tools {
 		if (sMobile.length() != 11) {
 			return false;
 		}
-		return sMobile.substring(0, 2).equals("13");
+		return "13".equals(sMobile.substring(0, 2));
 	}
 
 	/**
@@ -396,7 +396,7 @@ public class Tools {
 			return "1";
 		} else if (isTelcom(mobileNum)) {
 			return "3";
-		} else if (mobileNum.substring(0, 3).equals("999")) {
+		} else if ("999".equals(mobileNum.substring(0, 3))) {
 			return "2";
 		} else {
 			return null;
@@ -415,8 +415,8 @@ public class Tools {
 			return false;
 		}
 
-		if (num.substring(0, 3).equals("134") || num.substring(0, 3).equals("135") || num.substring(0, 3).equals("136")
-				|| num.substring(0, 3).equals("137") || num.substring(0, 3).equals("138") || num.substring(0, 3).equals("139")) {
+		if ("134".equals(num.substring(0, 3)) || "135".equals(num.substring(0, 3)) || "136".equals(num.substring(0, 3))
+				|| "137".equals(num.substring(0, 3)) || "138".equals(num.substring(0, 3)) || "139".equals(num.substring(0, 3))) {
 			if (num.length() == 11) {
 				return true;
 			} else {
@@ -439,8 +439,8 @@ public class Tools {
 			return false;
 		}
 
-		if (num.substring(0, 3).equals("130") || num.substring(0, 3).equals("131") || num.substring(0, 3).equals("132")
-				|| num.substring(0, 3).equals("133")) {
+		if ("130".equals(num.substring(0, 3)) || "131".equals(num.substring(0, 3)) || "132".equals(num.substring(0, 3))
+				|| "133".equals(num.substring(0, 3))) {
 			if (num.length() == 11) {
 				return true;
 			} else {

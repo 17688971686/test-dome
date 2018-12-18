@@ -131,10 +131,10 @@ public class SysRestController {
             //  JSON.
             String msg = "";
             Map resultMap = (Map) JSON.parse(signPreInfo);
-            if (resultMap.get("data") != null && !resultMap.get("data").equals("null")) {
+            if (resultMap.get("data") != null && !"null".equals(resultMap.get("data"))) {
                 SignPreDto signPreDto = JSON.parseObject(signPreInfo, SignPreDto.class);
                 //json转出对象
-                if (Validate.isString(signType) && signType.equals("1")) {
+                if (Validate.isString(signType) && "1".equals(signType)) {
                     //获取项目预签收信息
                     resultMsg = signRestService.pushPreProject(signPreDto.getData(), false);
                 } else {

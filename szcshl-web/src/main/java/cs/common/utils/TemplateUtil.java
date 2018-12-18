@@ -207,9 +207,9 @@ public class TemplateUtil {
                     //获取属性类型
                     String type = field.getGenericType().toString();
                     //如果数据类型是Date类型，则需要转换为yyyy年MM月dd日
-                    if(type.equals("class java.util.Date")){
+                    if("class java.util.Date".equals(type)){
                         dataMap.put(field.getName() , DateUtils.converToString((Date) method.invoke(obj) , "yyyy年MM月dd日"));
-                    }else if(type.equals("class java.lang.String")){
+                    }else if("class java.lang.String".equals(type)){
                         dataMap.put( field.getName() , method.invoke(obj) == null ? "" : method.invoke(obj).toString().replaceAll("<" , "﹤").replaceAll(">" , "﹥"));
                     }else{
                         dataMap.put( field.getName() , method.invoke(obj));

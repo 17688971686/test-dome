@@ -51,13 +51,13 @@ public class EncodingFilter extends OncePerRequestFilter {
     public String filter(HttpServletRequest request, String input) {
         String ret = input;
         // 客户端请求参数值可能为(null)服务端过滤掉当null处理即可
-        if (input == null || input.trim().equals("(null)")) {
+        if (input == null || "(null)".equals(input.trim())) {
             ret = null;
             return ret;
         }
         final String method = request.getMethod();
         // 该处可以实现各种业务的自定义的过滤机制
-        if (method.equalsIgnoreCase("get")) {
+        if ("get".equalsIgnoreCase(method)) {
             try {
                 ret = new String(input.getBytes("ISO8859-1"), this.encoding);
             } catch (UnsupportedEncodingException e) {

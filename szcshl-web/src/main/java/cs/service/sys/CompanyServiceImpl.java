@@ -69,14 +69,12 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    @Transactional
     public void createCompany(CompanyDto companyDto) {
         //判断单位名称是否添加
-        Criteria criteria = companyRepo.getSession().createCriteria(Company.class);
-        criteria.add(Restrictions.eq("coName", companyDto.getCoName()));
+        Criteria criteria = companyRepo.getExecutableCriteria();
+        criteria.add(Restrictions.eq(Company_.coName.getName(), companyDto.getCoName()));
         List<Company> com = criteria.list();
-        if (com.isEmpty()) {
-
+        if (!Validate.isList(com)) {
             Company c = new Company();
             c.setId(UUID.randomUUID().toString());
             c.setCoAddress(companyDto.getCoAddress());
@@ -91,14 +89,11 @@ public class CompanyServiceImpl implements CompanyService {
             c.setCoSynopsis(companyDto.getCoSynopsis());
             c.setCreatedBy(SessionUtil.getLoginName());
             c.setModifiedBy(SessionUtil.getLoginName());
-
             companyRepo.save(c);
             logger.info(String.format("创建单位，单位名:%s", companyDto.getCoName()));
         } else {
             throw new IllegalArgumentException(String.format("该单位已存在：%s 已经存在，请重新输入", companyDto.getCoName()));
-
         }
-
     }
 
     @Override

@@ -15,7 +15,7 @@ public class DictRepoImpl extends AbstractRepository<Dict, String> implements Di
 
 	@Override
 	public Dict findByCodeOrName(String code, String dictGroupName) {
-		Criteria criteria = this.getSession().createCriteria(Dict.class);
+		Criteria criteria = getExecutableCriteria();
 		//criteria.add(Restrictions.eq(DictGroup_.dictCode.getName(), code));
 		//criteria.add(Restrictions.eq(DictGroup_.dictGroupName.getName(), name));
 		//criteria.add(Restrictions.or(Restrictions.eq(Dict_.dictCode.getName(), code),Restrictions.eq(DictGroup_.dictGroupName.getName(), dictGroupName)));
@@ -30,7 +30,7 @@ public class DictRepoImpl extends AbstractRepository<Dict, String> implements Di
 
 	@Override
 	public Dict findByName(String dictGroupName) {
-		Criteria criteria = this.getSession().createCriteria(Dict.class);
+		Criteria criteria =getExecutableCriteria();
 		List<Dict> dictGroups = criteria.list();
 		if (dictGroups.size() > 0) {
 			return dictGroups.get(0);
@@ -101,7 +101,7 @@ public class DictRepoImpl extends AbstractRepository<Dict, String> implements Di
 
 	@Override
 	public List<Dict> findByPdictId(String parentId) {
-		Criteria criteria = this.getSession().createCriteria(Dict.class);	
+		Criteria criteria = getExecutableCriteria();
 		criteria.add(Restrictions.eqOrIsNull(Dict_.parentId.getName(), parentId));	
 //		criteria.addOrder((Order.asc(Dict_.dictSort.getName())));
 		return criteria.list();

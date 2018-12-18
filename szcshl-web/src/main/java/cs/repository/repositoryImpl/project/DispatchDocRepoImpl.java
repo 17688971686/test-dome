@@ -23,16 +23,6 @@ public class DispatchDocRepoImpl extends AbstractRepository<DispatchDoc, String>
     @Autowired
     private SignRepo signRepo;
 
-    @SuppressWarnings("unchecked")
-    @Override
-    @Deprecated
-    public List<DispatchDoc> findDispatchBySignId(String signId) {
-        Criteria criteria = getExecutableCriteria();
-        List<DispatchDoc> list = criteria.createAlias(DispatchDoc_.sign.getName(), DispatchDoc_.sign.getName())
-                .add(Restrictions.eq(DispatchDoc_.sign.getName() + "." + Sign_.signid.getName(), signId)).list();
-        return list;
-    }
-
     /**
      * 根据合并发文，修改发文的发文方式
      *

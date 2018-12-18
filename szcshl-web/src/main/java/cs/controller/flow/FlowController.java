@@ -339,7 +339,7 @@ public class FlowController {
     */
     private void getHighLightedFlows(List<ActivityImpl> activityList, List<String> highLightedFlows, List<String> historicActivityInstanceList) {
         for (ActivityImpl activity : activityList) {
-            if (activity.getProperty("type").equals("subProcess")) {
+            if ("subProcess".equals(activity.getProperty("type"))) {
                 getHighLightedFlows(activity.getActivities(), highLightedFlows, historicActivityInstanceList);
             }
 

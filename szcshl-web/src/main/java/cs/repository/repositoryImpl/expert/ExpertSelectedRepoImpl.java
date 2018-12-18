@@ -1,14 +1,15 @@
 package cs.repository.repositoryImpl.expert;
 
-import cs.common.constants.Constant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
-import cs.common.utils.*;
+import cs.common.constants.Constant;
+import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.DateUtils;
+import cs.common.utils.StringUtil;
+import cs.common.utils.Validate;
 import cs.domain.expert.Expert;
 import cs.domain.expert.ExpertSelected;
 import cs.domain.expert.ExpertSelected_;
-import cs.domain.sys.OrgDept;
-import cs.model.PageModelDto;
 import cs.model.expert.*;
 import cs.repository.AbstractRepository;
 import org.hibernate.Criteria;
@@ -297,7 +298,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                         ExpertReviewConSimpleDto expertReviewConSimpleDto1 = expertRevConSimDtoList.get(expertRevConSimDtoList.size() - 1);
                         if (null != expertReviewConSim[2]) {
                             String temp = (String) expertReviewConSim[2];
-                            if (temp.equals("0")) {//评审
+                            if ("0".equals(temp)) {//评审
                                 if (null != expertReviewConSim[1]) {
                                     expertReviewConSimpleDto1.setReviewNum((BigDecimal) expertReviewConSim[1]);
                                 } else {
@@ -332,7 +333,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
 
                 if (null != expertReviewConSim[2]) {
                     String temp = (String) expertReviewConSim[2];
-                    if (temp.equals("0")) {//评审
+                    if ("0".equals(temp)) {//评审
                         if (null != expertReviewConSim[1]) {
                             expertReviewSimDto.setReviewNum((BigDecimal) expertReviewConSim[1]);
                         } else {
@@ -1318,7 +1319,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                 }
                 if (null != projectReviewCon[3]) {
                     proReviewConditionDto.setIsadvanced((String) projectReviewCon[3]);
-                    if (proReviewConditionDto.getIsadvanced().equals("9")) {
+                    if ("9".equals(proReviewConditionDto.getIsadvanced())) {
                         proReviewConditionDto.setReviewStage("提前介入");
                     }
                 } else {
@@ -1403,7 +1404,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                 }
                 if (null != projectReviewCon[3]) {
                     proReviewConditionDto.setIsadvanced((String) projectReviewCon[3]);
-                    if (proReviewConditionDto.getIsadvanced().equals("9")) {
+                    if ("9".equals(proReviewConditionDto.getIsadvanced())) {
                         proReviewConditionDto.setReviewStage("提前介入");
                     }
                 } else {

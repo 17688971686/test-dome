@@ -94,7 +94,7 @@ public class RTXUtils {
         url += RTX_MSG_NOTICE;
         PrintWriter out = null;
         BufferedReader in = null;
-        String result = "";
+        String result = "false";
         try {
             String param = "msg=" + URLEncoder.encode(sendMsg, "GBK")
                     + "&receiver=" + URLEncoder.encode(receiver, "GBK")
@@ -118,12 +118,12 @@ public class RTXUtils {
             // 定义BufferedReader输入流来读取URL的响应
             in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String line;
+            result = "";
             while ((line = in.readLine()) != null) {
                 result += line;
             }
         } catch (Exception e) {
             System.out.println("发送 POST 请求出现异常！" + e);
-            return "false";
         }
         //使用finally块来关闭输出流、输入流
         finally {
@@ -135,7 +135,7 @@ public class RTXUtils {
                     in.close();
                 }
             } catch (IOException ex) {
-                return "false";
+
             }
         }
         return result;

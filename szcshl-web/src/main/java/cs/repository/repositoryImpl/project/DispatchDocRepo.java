@@ -1,15 +1,13 @@
 package cs.repository.repositoryImpl.project;
 
+import cs.domain.project.DispatchDoc;
+import cs.repository.IRepository;
+
 import java.math.BigDecimal;
 import java.util.List;
 
-import cs.domain.project.DispatchDoc;
-import cs.model.project.DispatchDocDto;
-import cs.repository.IRepository;
-
 public interface DispatchDocRepo extends IRepository<DispatchDoc,String>{
-	@Deprecated
-	List<DispatchDoc> findDispatchBySignId(String signId);
+
 
     void updateRWType(String reviewType, String isMain, String signIds);
 

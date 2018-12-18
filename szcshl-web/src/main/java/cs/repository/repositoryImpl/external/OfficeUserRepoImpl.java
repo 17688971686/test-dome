@@ -17,7 +17,7 @@ public class OfficeUserRepoImpl extends AbstractRepository<OfficeUser, String> i
 
 	@Override
 	public List<OfficeUser> getOfficeNotIn(List<String> officeIds, ODataObj odataObj) {
-		Criteria citer = this.getSession().createCriteria(OfficeUser.class);
+		Criteria citer = getExecutableCriteria();
 		officeIds.forEach(x->{
 			citer.add(Restrictions.ne(OfficeUser_.officeID.getName(), x));
 		});

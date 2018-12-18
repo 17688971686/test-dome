@@ -28,6 +28,8 @@ public class WorkHisFlowBackImpl implements IFlowBack {
                 backActivitiId = FlowConstant.WPHIS_BMLD_SPW;
                 dealUserParam = FlowConstant.FlowParams.USER_BZ.getValue();
                 break;
+            default:
+                    ;
 
         }
         resultMap.put(FLOW_BACK_NODEKEY,backActivitiId);

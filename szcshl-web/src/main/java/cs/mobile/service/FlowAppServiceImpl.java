@@ -1613,7 +1613,7 @@ public class FlowAppServiceImpl implements FlowAppService {
         }
 
         // 根据流程定义，获取该流程实例的结束节点
-        if (activityId.toUpperCase().equals("END")) {
+        if ("END".equals(activityId.toUpperCase())) {
             for (ActivityImpl activityImpl : processDefinition.getActivities()) {
                 List<PvmTransition> pvmTransitionList = activityImpl
                         .getOutgoingTransitions();

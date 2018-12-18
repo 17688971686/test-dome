@@ -1,9 +1,8 @@
 package cs.controller.sys;
 
 import cs.ahelper.IgnoreAnnotation;
-import cs.ahelper.LogMsg;
-import cs.common.constants.Constant;
 import cs.common.ResultMsg;
+import cs.common.constants.Constant;
 import cs.common.utils.Tools;
 import cs.common.utils.Validate;
 import cs.service.sys.UserService;
@@ -73,7 +72,7 @@ public class AccountController {
         }
         model.addAttribute("msg", msg);
        String browerVerson =  Tools.getBrowserName(request.getHeader("User-Agent").toLowerCase());
-       if(Validate.isString(browerVerson) && (browerVerson.equals("ie8")|| (browerVerson.equals("ie7")))){
+       if(Validate.isString(browerVerson) && ("ie8".equals(browerVerson) || ("ie7".equals(browerVerson)))){
            return "home/loginLow";
        }
         return "home/login";

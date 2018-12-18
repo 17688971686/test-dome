@@ -13,18 +13,18 @@ import cs.repository.AbstractRepository;
 @Repository
 public class RoleRepoImpl extends AbstractRepository<Role, String> implements RoleRepo {
 
-	@Override
-	public boolean isRoleExist(String roleName) {
-		Criteria criteria=this.getSession().createCriteria(Role.class); 
-		criteria.add(Restrictions.eq(Role_.roleName.getName(), roleName) );
-		List<Role> roles=criteria.list();
-		return !roles.isEmpty();
-	}
+    @Override
+    public boolean isRoleExist(String roleName) {
+        Criteria criteria = getExecutableCriteria();
+        criteria.add(Restrictions.eq(Role_.roleName.getName(), roleName));
+        List<Role> roles = criteria.list();
+        return !roles.isEmpty();
+    }
 
-	@Override
-	public Role findById(String id) {
-		return super.findById(id);
-	}
-	
+    @Override
+    public Role findById(String id) {
+        return super.findById(id);
+    }
+
 
 }
