@@ -31,7 +31,6 @@
                 queryParams: vm.queryParams,
                 data: vm
             });
-
         }
         activate();
         function activate() {
@@ -49,7 +48,6 @@
                 if (preView.queryParams) {
                     vm.queryParams = preView.queryParams;
                 }
-
                 adminSvc.getSignList(vm);
                 //清除返回页面数据
                 $rootScope.view[vm.stateName] = undefined;

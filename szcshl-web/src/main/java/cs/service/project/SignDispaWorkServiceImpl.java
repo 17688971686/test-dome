@@ -670,19 +670,34 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
                 criteria.addOrder(Order.asc(OrgDept_.sort.getName()));
 
                 orgDeptList = criteria.list();
+                if(Validate.isList(orgDeptList)){
+                    if(Validate.isString(achievementSumDto.getDeptIds())){
+                        //如果参数有部门ID，则只查询对应部门列表
+                        List<OrgDept> newOrgDeptList = new ArrayList<>();
+                        List<String> ids = StringUtil.getSplit(achievementSumDto.getDeptIds(),SysConstants.SEPARATE_COMMA);
+                        for(OrgDept orgDept : orgDeptList){
+                            for(String id : ids){
+                                if(id.equals(orgDept.getId())){
+                                    newOrgDeptList.add(orgDept);
+                                }
+                            }
+                        }
+                        orgDeptList = newOrgDeptList;
+                    }else{
+                        //参数没有部门ID，则初始化ID
+                        StringBuffer orgIdString = new StringBuffer();
+                        for (int i = 0, l = orgDeptList.size(); i < l; i++) {
+                            if (i > 0) {
+                                orgIdString.append(SysConstants.SEPARATE_COMMA);
+                            }
+                            OrgDept orgDept = orgDeptList.get(i);
+                            orgIdString.append(orgDept.getId());
+                        }
+                        achievementSumDto.setDeptIds(orgIdString.toString());
+                    }
+                }
                 resultMap.put("orgDeptList", orgDeptList);
 
-                if (Validate.isList(orgDeptList) && !Validate.isString(achievementSumDto.getDeptIds())) {
-                    StringBuffer orgIdString = new StringBuffer();
-                    for (int i = 0, l = orgDeptList.size(); i < l; i++) {
-                        if (i > 0) {
-                            orgIdString.append(SysConstants.SEPARATE_COMMA);
-                        }
-                        OrgDept orgDept = orgDeptList.get(i);
-                        orgIdString.append(orgDept.getId());
-                    }
-                    achievementSumDto.setDeptIds(orgIdString.toString());
-                }
             }
         }
         //二、查询业绩统计信息

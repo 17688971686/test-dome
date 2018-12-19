@@ -21,11 +21,13 @@
                 if(data){
                     var level = data.level;
                     if(level == 0){
+                        //加载前，先初始化值
+                        vm.conditions = [];
                         //普通用户
                         vm.orgAchievement =  data.userSum;
                         vm.userId = vm.orgAchievement.userId;
                         achievementSvc.findTopicDetail(vm,function(data){
-                            if(data != undefined){
+                            if(data && data.length > 0){
                                 vm.conditions = data;
                                 for(var i=0;i<vm.conditions.length;i++){
                                     vm.conditions[i]["sort"]= (i+1);
@@ -108,9 +110,9 @@
                     ids.push(obj.value);
                 });
                 vm.model.deptIds = ids.join(",");
-                //直接调用查询
-                activate(false);
             }
+            //直接调用查询
+            activate(false);
         }
 
         /**

@@ -268,7 +268,7 @@
                         },
                         data: function () {
                             if (form) {
-                                var filterParam = common.buildOdataFilter(form);
+                                var filterParam = common.buildOdataFilter(form,paramObj);
                                 if (filterParam) {
                                     if (paramObj && paramObj.$filter) {
                                         var extendFilter = paramObj.$filter;
@@ -429,11 +429,15 @@
     }//end
 
     // S_封装filer的参数
-    function buildOdataFilter(from) {
+    function buildOdataFilter(from,initParams) {
         var manipulation_rcheckableType = /^(?:checkbox|radio)$/i,
             rsubmitterTypes = /^(?:submit|button|image|reset|file)$/i,
             rsubmittable = /^(?:input|select|textarea|keygen)/i;
-
+        //原有的过滤条件
+        var oldFilter;
+        if(initParams){
+            oldFilter = initParams.$filter;
+        }
         return $(from).map(function () {
             var elements = jQuery.prop(this, "elements");
             return elements ? jQuery.makeArray(elements) : this;
@@ -447,8 +451,7 @@
                     && !rsubmitterTypes.test(type)
                     && (this.checked || !manipulation_rcheckableType
                         .test(type));
-            }).map(
-            function (i, elem) {
+            }).map(function (i, elem) {
                 var $me = $(this), val = $me.val();
                 if (!val) {
                     return false;
@@ -464,13 +467,19 @@
                 }
 
                 var operator = $me.attr("operator") || "eq",
-                    dataRole = $me.attr("data-role") || ""; // data-role="datepicker"
+                    dataRole = $me.attr("data-role") || "";
                 if (dataRole == "datepicker") {
                     val = "date" + val;
                 } else if (dataRole == "datetimepicker") {
                     val = "datetime" + val;
                 }
-
+                if(oldFilter){
+                    var linkValue = elem.name + " " + operator + " " + val;
+                    //如果有重复的查询条件，则不用添加
+                    if(oldFilter.indexOf(linkValue) > -1 ){
+                        return null;
+                    }
+                }
                 return operator == "like" ? ("substringof(" + val + ", " + elem.name + ")") : (elem.name + " " + operator + " " + val);
             }).get().join(" and ");
     }// E_封装filer的参数

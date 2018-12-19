@@ -53,8 +53,8 @@ public class TopicMaintainServiceImpl implements TopicMaintainService {
         Criteria criteria1 = topicInfoRepo.getExecutableCriteria();
         criteria1.add(Restrictions.eq(TopicInfo_.state.getName(), Constant.EnumState.YES.getValue()));
         criteria1.add(Restrictions.isNull(TopicInfo_.isMaintain.getName()));
-        criteria.add(Restrictions.ge(TopicInfo_.endTime.getName(), DateUtils.converToDate(beginTime,DateUtils.DATE_TIME_PATTERN)));
-        criteria.add(Restrictions.le(TopicInfo_.endTime.getName(), DateUtils.converToDate(endTime,DateUtils.DATE_TIME_PATTERN)));
+        criteria1.add(Restrictions.ge(TopicInfo_.endTime.getName(), DateUtils.converToDate(beginTime,DateUtils.DATE_TIME_PATTERN)));
+        criteria1.add(Restrictions.le(TopicInfo_.endTime.getName(), DateUtils.converToDate(endTime,DateUtils.DATE_TIME_PATTERN)));
         StringBuffer sqlSB = new StringBuffer();
         sqlSB.append(" (select count(p.BUSIID) from cs_flow_principal p where p.BUSIID = " + criteria1.getAlias() + "_.ID AND P.USERID = ?)>0");
         criteria1.add(Restrictions.sqlRestriction(sqlSB.toString(),userId, StringType.INSTANCE));
