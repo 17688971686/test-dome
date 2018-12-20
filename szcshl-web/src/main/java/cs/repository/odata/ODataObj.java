@@ -229,6 +229,9 @@ public class ODataObj {
      * @return
      */
     private static String[] getFilterItems(String filterItem) {
+        if(Validate.isString(filterItem) && filterItem.contains("\n")){
+            filterItem = filterItem.replace("\n"," ");
+        }
         String[] filterItems = new String[3];
         int site1 = filterItem.indexOf(" "), site2 = site1 + 1;
         if (site1 > 1) {

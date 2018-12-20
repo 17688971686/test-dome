@@ -43,7 +43,7 @@
                                operator="ge" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
                         至
                         <input type="text" name="enterBaseDate" style="width:45%;min-width: 115px;max-width: 150px;" ng-model="vm.searchModel.enterBaseEndDate"
-                               operator="le" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
+                               operator="\nle" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
                     </td>
                 </tr>
             </table>
@@ -56,7 +56,7 @@
     <a class="btn btn-xs btn-primary" ng-if="( ('${CURRENT_USER.loginName}'=='admin') || ${POSTDOCTORAL_ADMIN} || ('${CURRENT_USER.loginName}'=='{3}') || ('${CURRENT_USER.loginName}'=='{6}') || '{4}' == '2' )" href="#/postdoctoralStaffDetail/{0}"  ><span class="glyphicon glyphicon-edit"></span>查看</a>
     <a class="btn btn-xs btn-primary" ng-if="( ('${CURRENT_USER.loginName}'=='admin') || ${POSTDOCTORAL_ADMIN} || (('${CURRENT_USER.loginName}'=='{3}' || '${CURRENT_USER.loginName}'=='{6}') && '{4}' == '0' ) )"  href="#/postdoctoralStaffAdd/{0}" ><span class="glyphicon glyphicon-pencil"></span>编辑</a>
     <button  ng-if="( (('${CURRENT_USER.loginName}'=='admin') || ${POSTDOCTORAL_ADMIN}) && ('{4}' == '1' || '{4}' == '3') )"  class="btn btn-xs btn-warning" ng-click="{1}" ><span class="glyphicon glyphicon-warning-sign"></span>审核</button>
-    <button ng-if="( (('${CURRENT_USER.loginName}'=='admin') || ${POSTDOCTORAL_ADMIN}) && ('{4}' == '2' || '{4}' == '4') )" class="btn btn-xs btn-warning" ng-click="{5}" ><span class="glyphicon glyphicon-warning-sign"></span>回退</button>
+    <button ng-if="( (('${CURRENT_USER.loginName}'=='admin') || ${POSTDOCTORAL_ADMIN}) && '{4}' == '4' )" class="btn btn-xs btn-warning" ng-click="{5}" ><span class="glyphicon glyphicon-warning-sign"></span>回退</button>
     <a ng-if="( ((('${CURRENT_USER.loginName}'=='admin') || ${POSTDOCTORAL_ADMIN}) || '${CURRENT_USER.loginName}'=='{3}') && '{4}' == '2' )" class="btn btn-xs btn-primary" href="#/postdoctoralPopStaff/{0}/'${CURRENT_USER.loginName}'" ><span class="glyphicon glyphicon-pencil"></span>出站申请</a>
    <button ng-if="( ('${CURRENT_USER.loginName}'=='admin') || ${POSTDOCTORAL_ADMIN}|| (('${CURRENT_USER.loginName}'=='{3}' || '${CURRENT_USER.loginName}'=='{6}') && '{4}' == '0' ))" class="btn btn-xs btn-warning" ng-click="{2}" ><span class="glyphicon glyphicon-remove"></span>删除</button>
 </script>

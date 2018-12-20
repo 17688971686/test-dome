@@ -73,6 +73,7 @@ public class PostdoctoralStaffServiceImpl implements PostdoctoralStaffService {
             u.setDisplayName(record.getName());
             u.setLoginName(record.getName());
             u.setPassword("1");
+            u.setJobState("f");
             u.setCreatedDate(now);
             u.setModifiedDate(now);
             u.setCreatedBy(SessionUtil.getDisplayName());
@@ -81,7 +82,6 @@ public class PostdoctoralStaffServiceImpl implements PostdoctoralStaffService {
             u.getRoles().add(r);
             userRepo.save(u);
         }
-
 
         PostdoctoralStaff domain = new PostdoctoralStaff();
         BeanCopierUtils.copyProperties(record, domain);
@@ -129,7 +129,13 @@ public class PostdoctoralStaffServiceImpl implements PostdoctoralStaffService {
         PostdoctoralStaff domain =  postdoctorStaffRepo.findById(id);
         if(Validate.isString(status) && status.equals("1")){
             domain.setStatus("2");
+            User u = userRepo.findUserByName(domain.getName());
+            if(null == u){
+                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "用户不存在请核查！");
+            }
+            u.setJobState("t");
             domain.setEnterStackApproveDate(new Date());
+            userRepo.save(u);
         }else if(Validate.isString(status) && status.equals("3")){
             domain.setStatus("4");
             domain.setPooStackDate(new Date());

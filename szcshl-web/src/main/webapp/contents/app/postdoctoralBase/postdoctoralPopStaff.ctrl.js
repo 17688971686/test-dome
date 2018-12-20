@@ -80,7 +80,7 @@
 
 
         /**
-         * 更新博士后基地
+         * 更新博士后人员
          * @constructor
          */
         vm.commitPostdoctoralPopStaff = function(){
