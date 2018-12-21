@@ -34871,7 +34871,7 @@
 
 
         /**
-         * 更新博士后基地
+         * 更新博士后人员
          * @constructor
          */
         vm.commitPostdoctoralPopStaff = function(){
@@ -35311,7 +35311,7 @@
 
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/postdoctoralStaff/findByOData?initFlag=1", $("#postdoctoralStaffForm"),{$filter:"status ne '4'"},true),
+                transport: common.kendoGridConfig().transport(rootPath + "/postdoctoralStaff/findByOData?initFlag=1", $("#postdoctoralStaffForm"),{$filter:" status ne '4' "},true),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {

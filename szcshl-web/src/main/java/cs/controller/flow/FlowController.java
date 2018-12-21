@@ -391,7 +391,7 @@ public class FlowController {
             flowDto.setSuspended(task.isSuspended());
             flowDto.setProcessKey(processInstance.getProcessDefinitionKey());
 
-            Map<String, Object> dealFlowMap = new HashMap<>();
+            Map<String, Object> dealFlowMap = null;
             /**
              * 流程的一些参数处理
              */
@@ -429,9 +429,9 @@ public class FlowController {
                 default:
                     ;
             }
-            if (Validate.isMap(dealFlowMap)) {
-                flowDto.setBusinessMap(dealFlowMap);
-            }
+            //如果为空，则要初始化
+            flowDto.setBusinessMap((null == dealFlowMap)?new HashMap<>(0):dealFlowMap);
+
             //获取下一环节信息
             if (false == flowDto.isEnd()) {
                 //获取下一环节信息--获取从某个节点出来的所有线路
@@ -443,7 +443,7 @@ public class FlowController {
                 //如果有环节需要过滤，则过滤
                 FlowNextNodeFilter flowNextNodeFilter = FlowNextNodeFilter.getInstance(task.getTaskDefinitionKey());
                 if (flowNextNodeFilter != null) {
-                    nextNodeList = flowNextNodeFilter.filterNextNode(flowDto.getBusinessMap(), nextNodeList);
+                    nextNodeList = flowNextNodeFilter.filterNextNode(dealFlowMap, nextNodeList);
                 }
                 flowDto.setNextNode(nextNodeList);
             }
@@ -551,8 +551,7 @@ public class FlowController {
     @ResponseBody
     @Transactional
     public ResultMsg rollBackLast(@RequestBody FlowDto flowDto) {
-        ResultMsg resultMsg = flowService.rollBackLastNode(flowDto);
-        return resultMsg;
+        return flowService.rollBackLastNode(flowDto);
     }
 
     @RequiresAuthentication
@@ -561,8 +560,7 @@ public class FlowController {
     @ResponseBody
     public ResultMsg activeFlow(@PathVariable("businessKey") String businessKey) {
         log.info("流程激活成功！businessKey=" + businessKey);
-        ResultMsg resultMsg = flowService.restartFlow(businessKey);
-        return resultMsg;
+        return flowService.restartFlow(businessKey);
     }
 
     /**
@@ -577,8 +575,7 @@ public class FlowController {
     @ResponseBody
     public ResultMsg suspendFlow(@PathVariable("businessKey") String businessKey) {
         log.info("流程挂起成功！businessKey=" + businessKey);
-        ResultMsg resultMsg = flowService.stopFlow(businessKey);
-        return resultMsg;
+        return flowService.stopFlow(businessKey);
     }
 
     @RequiresAuthentication
@@ -632,8 +629,7 @@ public class FlowController {
     @RequestMapping(name = "任务转办", path = "taskTransferAssignee", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
     public ResultMsg taskTransferAssignee(@RequestParam String taskId, @RequestParam String oldUserId, @RequestParam String newUserId) {
-        ResultMsg resultMsg = flowService.taskTransferAssignee(taskId, oldUserId, newUserId);
-        return resultMsg;
+        return flowService.taskTransferAssignee(taskId, oldUserId, newUserId);
     }
 
     /******************************   以下是页面处理  ******************************/
@@ -767,9 +763,7 @@ public class FlowController {
     @RequestMapping(name = "获取流程列表", path = "proc", method = RequestMethod.GET)
     @ResponseBody
     public List<Map<String, Object>> getProc() {
-        List<Map<String, Object>> resultList = flowService.getProc();
-        //XssShieldUtil.getInstance().cleanMapListXss(resultList);
-        return resultList;
+        return flowService.getProc();
     }
 
     @RequiresAuthentication
@@ -777,13 +771,8 @@ public class FlowController {
     @ResponseBody
     public Map<String, Object> getReWorkBranch(@RequestParam String signId) {
         Map<String, Object> resultMap = new HashMap<>();
-
         //分支列表
-        List<Map<String, Object>> branchList = flowService.getBranchInfo(signId);
-        if (Validate.isList(branchList)) {
-           // XssShieldUtil.getInstance().cleanMapListXss(branchList);
-        }
-        resultMap.put("branchList", branchList);
+        resultMap.put("branchList", flowService.getBranchInfo(signId));
 
         //用户列表，直接选择项目负责人即可
         List<User> userList = signPrincipalService.getAllSecondPriUser(signId);
@@ -798,28 +787,8 @@ public class FlowController {
                 BeanCopierUtils.copyProperties(pul, userDto);
                 userDtoList.add(userDto);
             });
-            XssShieldUtil.getInstance().cleanListXss(userDtoList);
             resultMap.put("userList", userDtoList);
         }
         return resultMap;
-    }
-
-    /**
-     * 校验是否是领导
-     *
-     * @return
-     */
-    private boolean checkIsLeader(List<Role> roles) {
-        boolean isLeader = false;
-        if (Validate.isList(roles)) {
-            for (Role role : roles) {
-                if (role.getRoleName().equals(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())
-                        || role.getRoleName().equals(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())
-                        || role.getRoleName().equals(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())) {
-                    isLeader = true;
-                }
-            }
-        }
-        return isLeader;
     }
 }

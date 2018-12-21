@@ -9,12 +9,17 @@ import cs.model.flow.Node;
 
 /**
  * 下一环节优化，主要是筛出已经确定的项
- * <p>
- * Created by ldm on 2017/8/21.
+ * @author ldm
+ * @date  2017/8/21.
  */
 public enum FlowNextNodeFilter {
+    /**
+     * 项目发文，有项目负责人，则隐藏部长审核环节
+     * @param businessMap
+     * @param nextNodeList
+     * @return
+     */
     SIGN_FW {
-        //项目发文，有项目负责人，则隐藏部长审核环节
         @Override
         public List<Node> filterNextNode(Map<String, Object> businessMap, List<Node> nextNodeList) {
             List<Node> resultList = new ArrayList<>(1);
@@ -35,8 +40,10 @@ public enum FlowNextNodeFilter {
             return resultList;
         }
     },
+    /**
+     * 项目归档，如果有第二负责人，则隐藏确认归档环节
+     */
     SIGN_GD {
-        //项目归档，如果有第二负责人，则隐藏确认归档环节
         @Override
         public List<Node> filterNextNode(Map<String, Object> businessMap, List<Node> nextNodeList) {
             List<Node> resultList = new ArrayList<>(1);
@@ -56,8 +63,10 @@ public enum FlowNextNodeFilter {
             return resultList;
         }
     },
+    /**
+     * 部门分办，只显示一个就好
+     */
     SIGN_FGLD_FB {
-        //部门分办，只显示一个就好
         @Override
         public List<Node> filterNextNode(Map<String, Object> businessMap, List<Node> nextNodeList) {
             List<Node> resultList = new ArrayList<>(1);
@@ -65,8 +74,10 @@ public enum FlowNextNodeFilter {
             return resultList;
         }
     },
+    /**
+     * 项目负责人确认发文
+     */
     SIGN_QRFW {
-        //项目负责人确认发文
         @Override
         public List<Node> filterNextNode(Map<String, Object> businessMap, List<Node> nextNodeList) {
             List<Node> resultList = new ArrayList<>(1);
@@ -89,8 +100,10 @@ public enum FlowNextNodeFilter {
             return resultList;
         }
     },
+    /**
+     * 协办部长审批发文
+     */
     SIGN_BMLD_QRFW_XB {
-        //协办部长审批发文
         @Override
         public List<Node> filterNextNode(Map<String, Object> businessMap, List<Node> nextNodeList) {
             List<Node> resultList = new ArrayList<>(1);
@@ -103,8 +116,10 @@ public enum FlowNextNodeFilter {
             return resultList;
         }
     },
+    /**
+     * 主办部长审批
+     */
     SIGN_BMLD_QRFW {
-        //主办部长审批
         @Override
         public List<Node> filterNextNode(Map<String, Object> businessMap, List<Node> nextNodeList) {
             List<Node> resultList = new ArrayList<>(1);
@@ -127,8 +142,10 @@ public enum FlowNextNodeFilter {
             return resultList;
         }
     },
+    /**
+     * 协办分管领导审批发文
+     */
     SIGN_FGLD_QRFW_XB {
-        //协办分管领导审批发文
         @Override
         public List<Node> filterNextNode(Map<String, Object> businessMap, List<Node> nextNodeList) {
             List<Node> resultList = new ArrayList<>(1);
@@ -141,8 +158,10 @@ public enum FlowNextNodeFilter {
             return resultList;
         }
     },
+    /**
+     * 生成发文编号
+     */
     SIGN_FWBH {
-        //生成发文编号
         @Override
         public List<Node> filterNextNode(Map<String, Object> businessMap, List<Node> nextNodeList) {
             List<Node> resultList = new ArrayList<>(1);
@@ -189,8 +208,10 @@ public enum FlowNextNodeFilter {
             return resultList;
         }
     },
+    /**
+     * 分管领导审批档案借阅
+     */
     ARC_FGLD_SP {
-        //分管领导审批档案借阅
         @Override
         public List<Node> filterNextNode(Map<String, Object> businessMap, List<Node> nextNodeList) {
             List<Node> resultList = new ArrayList<>(1);
@@ -213,8 +234,10 @@ public enum FlowNextNodeFilter {
             return resultList;
         }
     },
+    /**
+     * 主办部长审批拟补充资料函
+     */
     SPL_BZ_SP {
-        //主办部长审批拟补充资料函
         @Override
         public List<Node> filterNextNode(Map<String, Object> businessMap, List<Node> nextNodeList) {
             List<Node> resultList = new ArrayList<>(1);
@@ -233,9 +256,11 @@ public enum FlowNextNodeFilter {
             return resultList;
         }
     },
-    //以下是课题流程
+    /**
+     * ===============以下是课题流程
+     * 主办部长审批拟补充资料函
+     */
     TOPIC_ZRSH_JH {
-        //主办部长审批拟补充资料函
         @Override
         public List<Node> filterNextNode(Map<String, Object> businessMap, List<Node> nextNodeList) {
             List<Node> resultList = new ArrayList<>(1);
@@ -254,9 +279,11 @@ public enum FlowNextNodeFilter {
             return resultList;
         }
     },
-    //以下是通知公告
+    /**
+     * ===============以下是通知公告
+     * 通知公告填报
+     */
     ANNOUNT_TZ {
-        //通知公告填报
         @Override
         public List<Node> filterNextNode(Map<String, Object> businessMap, List<Node> nextNodeList) {
             List<Node> resultList = new ArrayList<>(1);
@@ -278,8 +305,11 @@ public enum FlowNextNodeFilter {
             return resultList;
         }
     },
+    /**
+     * ===============以下月报填报
+     * 月报填报
+     */
     MONTH_YB{
-        //月报填报
         @Override
         public List<Node> filterNextNode(Map<String, Object> businessMap, List<Node> nextNodeList) {
             List<Node> resultList = new ArrayList<>(1);

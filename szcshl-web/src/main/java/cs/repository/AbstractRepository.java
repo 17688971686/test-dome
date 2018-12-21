@@ -90,12 +90,12 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         return null;
     }
 
-    protected void buildParams(Query<T> query, HqlBuilder hqlBuilder) {
+    protected void buildParams(Query<?> query, HqlBuilder hqlBuilder) {
         if (Validate.isObject(query)) {
             List<String> params = hqlBuilder.getParams();
             List<Object> values = hqlBuilder.getValues();
             List<Type> types = hqlBuilder.getTypes();
-            Codec oracleCodec = new OracleCodec();
+            //Codec oracleCodec = new OracleCodec();
             if (Validate.isList(params)) {
                 for (int i = 0, l = params.size(); i < l; i++) {
                     String paramName = params.get(i);
@@ -104,7 +104,7 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
                         continue;
                     }
                     if (value instanceof String) {
-                        value = ESAPI.encoder().encodeForSQL(oracleCodec, value.toString());
+                        //value = ESAPI.encoder().encodeForSQL(oracleCodec, value.toString());
                         if (Validate.isString(value)) {
                             value = StringUtil.sqlInjectionFilter(value.toString());
                             if (!Validate.isString(value)) {
@@ -248,14 +248,14 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
 
     @Override
     public int executeHql(HqlBuilder hqlBuilder) {
-        Query q = this.getCurrentSession().createQuery(hqlBuilder.getHqlString());
+        Query<? extends Integer> q = this.getCurrentSession().createQuery(hqlBuilder.getHqlString());
         this.buildParams(q, hqlBuilder);
         return q.executeUpdate();
     }
 
     @Override
     public int executeSql(HqlBuilder hqlBuilder) {
-        Query q = this.getCurrentSession().createNativeQuery(hqlBuilder.getHqlString());
+        NativeQuery<? extends Integer> q = this.getCurrentSession().createNativeQuery(hqlBuilder.getHqlString());
         this.buildParams(q, hqlBuilder);
         return q.executeUpdate();
     }

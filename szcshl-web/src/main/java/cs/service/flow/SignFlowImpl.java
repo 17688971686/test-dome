@@ -62,19 +62,28 @@ public class SignFlowImpl implements IFlow {
     @Override
     public Map<String, Object> getFlowBusinessMap(String businessKey,String taskDefinitionKey) {
         Map<String, Object> businessMap = new HashMap<>();
-        List<User> userList = null;     //用户列表
-        String branchIndex = "";        //分支序号
+        //用户列表
+        List<User> userList = null;
+        //分支序号
+        String branchIndex = "";
 
         switch (taskDefinitionKey) {
-            //综合部拟办
+            /**
+             * 综合部拟办
+             */
             case FlowConstant.FLOW_SIGN_ZHB:
                 businessMap.put("viceDirectors", userService.findUserByRoleName(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue()));
                 break;
-            //分管领导审核(所有部门和小组)
+            /**
+             * 分管领导审核(所有部门和小组)
+             */
             case FlowConstant.FLOW_SIGN_FGLD_FB:
                 businessMap.put("orgs", orgDeptService.queryAll());
                 break;
-            //部门分办（选择项目负责人）
+            /**
+             * 部门分办（选择项目负责人）
+             * 执行到 FlowConstant.FLOW_SIGN_BMFB4
+             */
             case FlowConstant.FLOW_SIGN_BMFB1:
                 branchIndex =  FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue();
             case FlowConstant.FLOW_SIGN_BMFB2:
@@ -105,7 +114,9 @@ public class SignFlowImpl implements IFlow {
                 }
                 businessMap.put("users", resultList);
                 break;
-            //项目负责人办理
+            /**
+             * 项目负责人办理
+             */
             case FlowConstant.FLOW_SIGN_XMFZR1:
                 branchIndex =  FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue();
             case FlowConstant.FLOW_SIGN_XMFZR2:
@@ -130,7 +141,9 @@ public class SignFlowImpl implements IFlow {
                     businessMap.put("isFinishWP", false);
                 }
                 break;
-            //发文申请
+            /**
+             * 发文申请
+             */
             case FlowConstant.FLOW_SIGN_FW:
                 userList = signPrincipalService.getAllSecondPriUser(businessKey);
                 if(Validate.isList(userList)){
@@ -143,14 +156,18 @@ public class SignFlowImpl implements IFlow {
                     businessMap.put("prilUserList", userDtoList);
                 }
                 break;
-            //项目负责人确认
+            /**
+             * 项目负责人确认
+             */
             case FlowConstant.FLOW_SIGN_QRFW:
                 //判断是否有协办部门
                 if(signBranchRepo.allAssistCount(businessKey) > 0){
                     businessMap.put("hasAssistDept", true);
                 }
                 break;
-            //部长审批发文
+            /**
+             * 部长审批发文
+             */
             case FlowConstant.FLOW_SIGN_BMLD_QRFW :
                 //获取所有分管领导信息
                 userList = signBranchRepo.findAssistSLeader(businessKey);
@@ -170,7 +187,9 @@ public class SignFlowImpl implements IFlow {
                     businessMap.put(FlowConstant.SignFlowParams.HAVE_XB.getValue(), isHaveTwoSLeader);
                 }
                 break;
-            //生成发文编号，
+            /**
+             * 生成发文编号
+             */
             case FlowConstant.FLOW_SIGN_FWBH:
                 //如果是合并发文次项目，则不生成发文编号
                 boolean isMerge =signMergeRepo.checkIsMerege(businessKey, Constant.MergeType.DISPATCH.getValue());
@@ -184,7 +203,9 @@ public class SignFlowImpl implements IFlow {
 
                 }
                 break;
-            //项目归档
+            /**
+             * 项目归档
+             */
             case FlowConstant.FLOW_SIGN_GD:
                 //项目负责人获取第一个作为处理人
                 userList = signPrincipalService.getAllSecondPriUser(businessKey);

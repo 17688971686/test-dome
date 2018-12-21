@@ -8,6 +8,8 @@ import cs.model.PageModelDto;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.owasp.encoder.Encode;
 import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.codecs.Codec;
+import org.owasp.esapi.codecs.OracleCodec;
 import org.owasp.esapi.errors.EncodingException;
 import org.owasp.validator.html.*;
 
@@ -254,31 +256,38 @@ public class XssShieldUtil {
             char c = s.charAt(i);
             switch (c) {
                 case '>':
-                    sb.append('＞');          //全角大于号
+                    //全角大于号
+                    sb.append('＞');
                     break;
 
                 case '<':
-                    sb.append('＜');          //全角小于号
+                    //全角小于号
+                    sb.append('＜');
                     break;
 
                 case '\'':
-                    sb.append('‘');           //全角单引号
+                    //全角单引号
+                    sb.append('‘');
                     break;
 
                 case '\"':
-                    sb.append('“');           //全角双引号
+                    //全角双引号
+                    sb.append('“');
                     break;
 
                 case '&':
-                    sb.append('＆');          //全角
+                    //全角
+                    sb.append('＆');
                     break;
 
                 case '\\':
-                    sb.append('＼');          //全角斜线
+                    //全角斜线
+                    sb.append('＼');
                     break;
 
                 case '#':
-                    sb.append('＃');          //全角井号
+                    //全角井号
+                    sb.append('＃');
                     break;
 
                 default:
@@ -287,5 +296,16 @@ public class XssShieldUtil {
             }
         }
         return sb.toString();
+    }
+
+    public static void main(String[] args){
+        /*String outputString = "<script ff>sss</script>12142141";
+        //规范化字符串
+        outputString = ESAPI.encoder().canonicalize(outputString);
+        System.out.println(outputString);
+        System.out.println(ESAPI.encoder().encodeForHTML(outputString));
+        System.out.println(Encode.forHtml(outputString));*/
+        Codec oracleCodec = new OracleCodec();
+        System.out.println(ESAPI.encoder().encodeForSQL(oracleCodec, "delete from cs_user where id = '124' "));
     }
 }
