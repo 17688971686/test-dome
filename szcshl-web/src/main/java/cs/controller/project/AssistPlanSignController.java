@@ -1,24 +1,17 @@
 package cs.controller.project;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import cs.ahelper.IgnoreAnnotation;
-import cs.common.constants.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.Validate;
-import cs.xss.XssShieldUtil;
+import cs.model.project.AssistPlanSignDto;
+import cs.service.project.AssistPlanSignService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
-import cs.model.project.AssistPlanSignDto;
-import cs.service.project.AssistPlanSignService;
+import java.util.ArrayList;
+import java.util.List;
 
 import static cs.common.constants.Constant.ERROR_MSG;
 import static cs.common.constants.Constant.ERROR_XSS_MSG;

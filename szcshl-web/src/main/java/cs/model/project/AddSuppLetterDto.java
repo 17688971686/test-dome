@@ -1,9 +1,7 @@
 package cs.model.project;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import cs.common.utils.Validate;
 import cs.model.BaseDto;
-import cs.xss.XssShieldUtil;
 
 import java.util.Date;
 

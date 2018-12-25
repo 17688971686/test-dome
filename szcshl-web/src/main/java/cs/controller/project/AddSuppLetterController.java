@@ -1,15 +1,14 @@
 package cs.controller.project;
 
 import cs.ahelper.MudoleAnnotation;
-import cs.common.constants.Constant;
 import cs.common.ResultMsg;
+import cs.common.constants.Constant;
 import cs.common.utils.Validate;
 import cs.model.PageModelDto;
 import cs.model.project.AddSuppLetterDto;
 import cs.repository.odata.ODataObj;
 import cs.service.project.AddSuppLetterService;
 import cs.service.rtx.RTXService;
-import cs.xss.XssShieldUtil;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;

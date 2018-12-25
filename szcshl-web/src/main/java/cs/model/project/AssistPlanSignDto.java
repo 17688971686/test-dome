@@ -1,15 +1,11 @@
 package cs.model.project;
 
-import java.math.BigDecimal;
-
 import com.alibaba.fastjson.annotation.JSONField;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-
-import cs.common.utils.Validate;
 import cs.domain.project.AssistPlan;
 import cs.domain.project.AssistUnit;
-import cs.domain.project.Sign;
-import cs.xss.XssShieldUtil;
+
+import java.math.BigDecimal;
 
 /**
  * Description: 协审项目 页面数据模型

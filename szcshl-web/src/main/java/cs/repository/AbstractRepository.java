@@ -95,7 +95,7 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
             List<String> params = hqlBuilder.getParams();
             List<Object> values = hqlBuilder.getValues();
             List<Type> types = hqlBuilder.getTypes();
-            //Codec oracleCodec = new OracleCodec();
+            Codec oracleCodec = new OracleCodec();
             if (Validate.isList(params)) {
                 for (int i = 0, l = params.size(); i < l; i++) {
                     String paramName = params.get(i);
@@ -104,13 +104,7 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
                         continue;
                     }
                     if (value instanceof String) {
-                        //value = ESAPI.encoder().encodeForSQL(oracleCodec, value.toString());
-                        if (Validate.isString(value)) {
-                            value = StringUtil.sqlInjectionFilter(value.toString());
-                            if (!Validate.isString(value)) {
-                                continue;
-                            }
-                        }
+                        value = ESAPI.encoder().encodeForSQL(oracleCodec, value.toString());
                     }
                     if (types.get(i) == null) {
                         query.setParameter(paramName, value);

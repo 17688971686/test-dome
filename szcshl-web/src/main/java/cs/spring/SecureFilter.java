@@ -7,7 +7,9 @@ import java.io.IOException;
 
 
 /**
- * Created by ldm on 2018/12/3 0003.
+ * @author ldm
+ * @date 2018/12/3
+ * cookie 只读过滤器
  */
 public class SecureFilter implements Filter {
 
@@ -16,10 +18,10 @@ public class SecureFilter implements Filter {
 
         HttpServletRequest req = (HttpServletRequest)request;
         HttpServletResponse resp = (HttpServletResponse)response;
-
         String sessionid = req.getSession().getId();
         resp.setHeader("SET-COOKIE", "JSESSIONID=" + sessionid + "; Secure; HttpOnly");
-        resp.setHeader("x-frame-options","SAMEORIGIN"); //X-Frame-Options
+        //X-Frame-Options
+        resp.setHeader("x-frame-options","SAMEORIGIN");
 
         chain.doFilter(request, response);
     }

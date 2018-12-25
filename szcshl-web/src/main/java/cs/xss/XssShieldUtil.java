@@ -6,17 +6,17 @@ import cs.common.utils.ReflectionUtils;
 import cs.common.utils.Validate;
 import cs.model.PageModelDto;
 import org.apache.commons.lang.StringEscapeUtils;
-import org.owasp.encoder.Encode;
 import org.owasp.esapi.ESAPI;
 import org.owasp.esapi.codecs.Codec;
 import org.owasp.esapi.codecs.OracleCodec;
-import org.owasp.esapi.errors.EncodingException;
 import org.owasp.validator.html.*;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.URLDecoder;
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by ldm on 2018/12/4 0004.
@@ -55,7 +55,7 @@ public class XssShieldUtil {
                         if (value != null) {
                             if (value instanceof String) {
                                 if (Validate.isString(value)) {
-                                    objectArr[i] = responseCleanXss(value.toString(),1);
+                                    objectArr[i] = responseEncodeForHTML(value.toString());
                                 }
                             }
                         }
@@ -75,7 +75,7 @@ public class XssShieldUtil {
                 if (value != null) {
                     if (value instanceof String) {
                         if (Validate.isString(value)) {
-                            resultMap.put(key, responseCleanXss(value.toString(),1));
+                            resultMap.put(key, responseEncodeForHTML(value.toString()));
                         }
                     }
                 }
@@ -115,19 +115,19 @@ public class XssShieldUtil {
     public void cleanResultMsgXss(ResultMsg resultMsg) {
         if (Validate.isObject(resultMsg)) {
             if (Validate.isString(resultMsg.getIdCode())) {
-                resultMsg.setIdCode(responseCleanXss2(resultMsg.getIdCode()));
+                resultMsg.setIdCode(responseEncodeForHTML(resultMsg.getIdCode()));
             }
             if (Validate.isString(resultMsg.getReCode())) {
-                resultMsg.setReCode(responseCleanXss2(resultMsg.getReCode()));
+                resultMsg.setReCode(responseEncodeForHTML(resultMsg.getReCode()));
             }
             if (Validate.isString(resultMsg.getReMsg())) {
-                resultMsg.setReMsg(responseCleanXss2(resultMsg.getReMsg()));
+                resultMsg.setReMsg(responseEncodeForHTML(resultMsg.getReMsg()));
             }
             if (Validate.isObject(resultMsg.getReObj())) {
                 Object value = resultMsg.getReObj();
                 if (value instanceof String) {
                     if (Validate.isString(value)) {
-                        resultMsg.setReObj(responseCleanXss2(value.toString()));
+                        resultMsg.setReObj(responseEncodeForHTML(value.toString()));
                     }
                 }
             }
@@ -144,7 +144,7 @@ public class XssShieldUtil {
             if (value != null) {
                 if (value instanceof String) {
                     if (Validate.isString(value)) {
-                        value = responseCleanXss(value.toString(),1);
+                        value = responseEncodeForHTML(value.toString());
                         ReflectionUtils.setFieldValue(t, fieldName1, value);
                     }
                 }
@@ -160,54 +160,10 @@ public class XssShieldUtil {
         }
     }
 
-    public String responseCleanXss2(String value){
+    public String responseEncodeForHTML(String value){
         if(Validate.isString(value)){
             //规范化字符串
-            value = ESAPI.encoder().canonicalize(value);
-            return Encode.forHtml(value);
-        }
-        return value;
-    }
-
-    /**
-     * 对输出字符串进行encode
-     * @param value
-     * @param encodeType
-     * 1.HTML编码
-     * 2.HTML属性编码
-     * 3.JavaScript编码
-     * 4.URL编码
-     * 5.DN编码
-     * @return
-     */
-    public String responseCleanXss(String value, int encodeType) {
-        if (Validate.isString(value)) {
-            //规范化字符串
-            value = ESAPI.encoder().canonicalize(value);
-            //输出转码
-            switch (encodeType) {
-                case 1:
-                    value = ESAPI.encoder().encodeForHTML(value);
-                    break;
-                case 2:
-                    value = ESAPI.encoder().encodeForHTMLAttribute(value);
-                    break;
-                case 3:
-                    value = ESAPI.encoder().encodeForJavaScript(value);
-                    break;
-                case 4:
-                    try {
-                        value = ESAPI.encoder().encodeForURL(value);
-                    } catch (EncodingException e) {
-                        e.printStackTrace();
-                    }
-                    break;
-                case 5:
-                    value = ESAPI.encoder().encodeForDN(value);
-                    break;
-                default:
-                    value = ESAPI.encoder().encodeForHTML(value);
-            }
+            return ESAPI.encoder().encodeForHTML(ESAPI.encoder().canonicalize(value));
         }
         return value;
     }

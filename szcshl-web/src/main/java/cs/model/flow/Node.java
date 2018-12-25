@@ -1,8 +1,5 @@
 package cs.model.flow;
 
-import cs.common.utils.Validate;
-import cs.xss.XssShieldUtil;
-
 /**
  * 流程节点信息
  * @author ldm
