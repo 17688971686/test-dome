@@ -426,13 +426,13 @@ public class ProjUtil {
                     Achievement achievement = countList.get(i);
                     //如果项目名称不同，进行统计
                     if(!lastSignId.equals(achievement.getSignId())){
-                        sumAchievementInfo(achievementSumDto,countList.get(lastIndex));
+                        sumAchievementInfo(achievementSumDto,countList.get(lastIndex),true);
                         lastSignId = achievement.getSignId();
                         lastIndex = i;
                     }
                     //如果是最后一位，也要进行统计
                     if(i == (l-1)){
-                        sumAchievementInfo(achievementSumDto,achievement);
+                        sumAchievementInfo(achievementSumDto,achievement,true);
                     }
                     //统计子集信息
                     if(Constant.EnumState.YES.getValue().equals(achievement.getIsMainUser())){
@@ -482,8 +482,16 @@ public class ProjUtil {
      * @param achievementSumDto
      * @param achievement
      */
-    private static void sumAchievementInfo(AchievementSumDto achievementSumDto, Achievement achievement) {
-        if(isMainBranch(achievement.getBranchId())){
+    private static void sumAchievementInfo(AchievementSumDto achievementSumDto, Achievement achievement,boolean isDept) {
+        boolean isMain = false;
+        //如果是部门，主分支就是主办
+        if(isDept && isMainBranch(achievement.getBranchId())){
+            isMain = true;
+        //如果是人员，第一负责人才是主办
+        }else if(Constant.EnumState.YES.getValue().equals(achievement.getIsMainUser())){
+            isMain = true;
+        }
+        if(isMain){
             //主办发文
             achievementSumDto.setMainDisSum(achievementSumDto.getMainDisSum()+1);
             achievementSumDto.setMainAuthorizevalueSum(Arith.safeAdd(achievementSumDto.getMainAuthorizevalueSum(),achievement.getAuthorizeValue()));
@@ -511,7 +519,7 @@ public class ProjUtil {
         if(Validate.isList(countList)){
             for(int i=0,l=countList.size();i<l;i++){
                 Achievement achievement = countList.get(i);
-                sumAchievementInfo(achievementSumDto,achievement);
+                sumAchievementInfo(achievementSumDto,achievement,false);
                 //统计子集信息
                 if(Constant.EnumState.YES.getValue().equals(achievement.getIsMainUser())){
                     List<Achievement> mainChileLit = achievementSumDto.getMainChildList();
