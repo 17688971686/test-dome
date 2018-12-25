@@ -145,7 +145,7 @@
                                             <w:szCs w:val="40"/>
                                             <w:lang w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>评估论证报审登记表补充资料清单</w:t>
+                                        <w:t>${stage!}报审登记表补充资料清单</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -611,7 +611,7 @@
                                     <w:tcBorders>
                                         <w:top w:val="single" w:color="auto" w:sz="4" w:space="0"/>
                                         <w:left w:val="single" w:color="auto" w:sz="4" w:space="0"/>
-                                        <w:bottom w:val="nil"/>
+                                        <w:bottom w:val="single" w:color="auto" w:sz="4" w:space="0"/>
                                         <w:right w:val="single" w:color="000000" w:sz="4" w:space="0"/>
                                     </w:tcBorders>
                                     <w:tcMar>
@@ -643,7 +643,6 @@
                                 <w:p>
                                     <w:pPr>
                                         <w:ind w:firstLine="2400" w:firstLineChars="1000"/>
-                                        <w:jc w:val="both"/>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
                                             <w:sz w:val="24"/>

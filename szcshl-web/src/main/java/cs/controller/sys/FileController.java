@@ -1232,6 +1232,11 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             case "ADDSUPPLEFILE":
                 Sign signss = signRepo.findById(Sign_.signid.getName(), businessId);
                 List<AddRegisterFile> addRegisterFileList2 = addRegisterFileService.findByBusIdAndBusType(businessId, 3);
+
+                String stage = "评估论证";
+                if(Constant.STAGE_BUDGET.equals(signss.getReviewstage())){
+                    stage = "项目概算";
+                }
                 Map<String, Object> addFileData = new HashMap<>();
                 addFileData.put("addFileList", addRegisterFileList2);
                 addFileData.put("signNum", signss.getSignNum());
@@ -1239,6 +1244,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 addFileData.put("builtcompanyName", signss.getBuiltcompanyName());
                 addFileData.put("projectcode", signss.getProjectcode());
                 addFileData.put("strDate", DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
+                addFileData.put("stage" , stage);
                 file = TemplateUtil.createDoc(addFileData, Template.ADD_REGISTER_FILE.getKey(), path);
 
                 break;

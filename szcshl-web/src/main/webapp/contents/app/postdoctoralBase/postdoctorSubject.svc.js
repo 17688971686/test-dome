@@ -9,9 +9,31 @@
             createSubject : createSubject , //创建课题
             findStationStaff : findStationStaff , //查询在站人员
             isPermission : isPermission , //判断是否有权限查看
+            deleteSubject : deleteSubject , //删除课题
 
         };
         return service;
+
+        //begin deleteSubject
+        function deleteSubject(vm , callBack){
+            var httpOptions = {
+                method : 'post',
+                url : rootPath + "/postdoctorSubject/deleteSubject",
+                params : {id : vm.id}
+            }
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof  callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+        }
+        //end deleteSubject
 
         //begin isPermission
         function isPermission(callBack){
@@ -157,7 +179,7 @@
                     title: "操作",
                     width: 120,
                     template: function (item) {
-                        return common.format($('#columnBtns').html(),   item.id , "vm.deleteSubject('" + item.id + "')" , item.pricipalName);
+                        return common.format($('#columnBtns').html(),   item.id , item.pricipalName);
                     }
                 }
             ];

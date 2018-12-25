@@ -16,4 +16,11 @@ public interface PostdoctorSubjectService  {
 
     ResultMsg createSubject(PostdoctorSubjectDto dto);
 
+    /**
+     * 删除课题
+     * @param id
+     * @return
+     */
+    ResultMsg deleteSubject(String id);
+
 }

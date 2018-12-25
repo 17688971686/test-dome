@@ -33,4 +33,12 @@ public interface PostdoctorSubjectRepo extends IRepository<PostdoctorSubject , S
      * @return
      */
     ResultMsg createSubject(PostdoctorSubjectDto dto);
+
+    /**
+     * 删除课题
+     * @param id
+     * @return
+     */
+    public ResultMsg deleteSubject(String id);
+
 }
