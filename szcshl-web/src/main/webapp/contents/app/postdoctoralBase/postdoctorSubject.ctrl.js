@@ -19,6 +19,18 @@
          * @param id
          */
         vm.deleteSubject = function(id){
+            vm.id = id;
+            bsWin.confirm("确定删除？" , function(){
+                postdoctorSubjectSvc.deleteSubject(vm , function(data){
+                    if (data.flag || data.reCode == 'ok') {
+                        vm.subject = data.reObj;
+                        bsWin.success("删除成功！");
+                        vm.subjectGridOptions.dataSource.read();
+                    } else {
+                        bsWin.error(data.reMsg);
+                    }
+                })
+            })
 
         }
 

@@ -6,7 +6,9 @@ import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.postdoctor.PostdoctorSubject;
+import cs.domain.postdoctor.PostdoctorSubject_;
 import cs.domain.postdoctor.PostdoctoralStaff;
+import cs.domain.postdoctor.PostdoctoralStaff_;
 import cs.model.PageModelDto;
 import cs.model.postdoctor.PostdoctorSubjectDto;
 import cs.repository.AbstractRepository;
@@ -42,7 +44,7 @@ public class PostdoctorSubjectRepoImpl extends AbstractRepository<PostdoctorSubj
             for (PostdoctorSubject ps : psList) {
                 PostdoctorSubjectDto dto = new PostdoctorSubjectDto();
                 if (Validate.isString(ps.getPricipalId())) {
-                    PostdoctoralStaff p = postdoctorStaffRepo.findById(ps.getPricipalId());
+                    PostdoctoralStaff p = postdoctorStaffRepo.findById(PostdoctoralStaff_.id.getName() , ps.getPricipalId());
                     dto.setPricipalName(Validate.isObject(p) ? p.getName() : "");
                 } else {
                     dto.setPricipalName(ps.getPricipalId());
@@ -87,6 +89,19 @@ public class PostdoctorSubjectRepoImpl extends AbstractRepository<PostdoctorSubj
         this.save(ps);
 
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "创建成功", dto);
+    }
+
+    @Override
+    @Transactional
+    public ResultMsg deleteSubject(String id) {
+
+        if(Validate.isString(id)){
+            PostdoctorSubject postdoctorSubject = this.findById(PostdoctorSubject_.id.getName() , id);
+            if(Validate.isObject(postdoctorSubject)){
+                this.delete(postdoctorSubject);
+            }
+        }
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "删除成功", null);
     }
 
 

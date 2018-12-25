@@ -78,6 +78,16 @@ public class PostdoctorSubjectController {
         return resultMsg;
     }
 
+    @RequestMapping(name = "删除课题", path = "deleteSubject", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg deleteSubject(@RequestParam String id) {
+        ResultMsg resultMsg = postdoctorSubjectService.deleteSubject(id);
+        if (!Validate.isObject(resultMsg)) {
+            resultMsg = ResultMsg.error(ERROR_MSG);
+        }
+        return resultMsg;
+    }
+
     @RequestMapping(name = "查询在站人员", path = "findStationStaff", method = RequestMethod.POST)
     @ResponseBody
     public List<PostdoctoralStaffDto> findStationStaff() {
@@ -103,6 +113,8 @@ public class PostdoctorSubjectController {
     public String subjectList() {
         //设置是否是在站人员
         SessionUtil.getSession().setAttribute("ISSTAFF", postdoctoralStaffService.findByName() ? 1 : 0);
+        //博士后基地管理员
+        SessionUtil.getSession().setAttribute("isManagement" , SessionUtil.hashRole(Constant.EnumPostdoctoralName.POSTDOCTORAL_ADMIN.getValue()) ? 1 : 0 );
         return ctrlName + "/postdoctorSubjectList";
     }
 

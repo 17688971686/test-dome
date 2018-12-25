@@ -1,6 +1,9 @@
 package cs.service.postdoctor;
 
 import cs.common.ResultMsg;
+import cs.common.utils.Validate;
+import cs.domain.postdoctor.PostdoctorSubject;
+import cs.domain.postdoctor.PostdoctorSubject_;
 import cs.model.PageModelDto;
 import cs.model.postdoctor.PostdoctorSubjectDto;
 import cs.repository.odata.ODataObj;
@@ -32,5 +35,16 @@ public class PostdoctorSubjectServiceImpl implements PostdoctorSubjectService {
     @Override
     public ResultMsg createSubject(PostdoctorSubjectDto dto) {
         return postdoctorSubjectRepo.createSubject(dto);
+    }
+
+    /**
+     * 删除课题
+     * @param id
+     * @return
+     */
+    @Override
+    public ResultMsg deleteSubject(String id) {
+
+        return postdoctorSubjectRepo.deleteSubject(id);
     }
 }
