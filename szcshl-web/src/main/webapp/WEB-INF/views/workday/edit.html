@@ -1,29 +1,27 @@
 <#assign path=request.contextPath/>
 <meta charset="UTF-8">
-<link href="${path}/contents/libs/zTree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
-<script src="${path}/contents/libs/zTree/js/jquery.ztree.all.min.js"></script>
-
-<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 
 <div class=" well-sm" style="background:white;">
 	<div class="toolbar">
 		<button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.isSubmit" ng-hide="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>创建</button>
 		<button class="btn btn-sm btn-success" ng-click="vm.update()" ng-disabled="vm.isSubmit" ng-show="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>更新</button>
 	</div>
-     <ol class="breadcrumb" style="font-size: 12px;">
-        <li class="active">温馨提示：1、休：表示将工作日调为休息日     &nbsp;&nbsp;&nbsp;&nbsp;2、 班：表示将休息日调为工作日 </li>
-    </ol>
+	<ol class="breadcrumb" style="font-size: 12px;">
+		<li class="active">温馨提示：1、休：表示将工作日调为休息日 &nbsp;&nbsp;2、 班：表示将休息日调为工作日 </li>
+	</ol>
      <form id="form" name="form">
-         <table style="width:500px;" class="table table-bordered  dataTable">
+         <table class="table table-bordered">
 	         <tr>
 		         <td class="formAlignRight">月份：<span class="required">*</span></td>
-		         <td> <select style="width:20%" ng-model="vm.workday.month" name="month"
+		         <td> <!-- 原先只能选择月份，改为日期选择对应的月份
+		             <select style="width:20%" ng-model="vm.workday.month" name="month"
 						 data-val="true" data-val-required="必填">
-					 <option value="">请选择</option>
-					 <option ng-repeat="x in DICT.BGYF.dicts" ng-selected="vm.monthly.theMonths == x.dictName"
-							 value="{{x.dictName}}">{{x.dictName}}
-					 </option>
-				 </select>
+                         <option value="">请选择</option>
+                         <option ng-repeat="x in DICT.BGYF.dicts" ng-selected="vm.monthly.theMonths == x.dictName"
+                                 value="{{x.dictName}}">{{x.dictName}}
+                         </option>
+                    </select>-->
+                     <input type="text" ng-model="vm.workday.month" name="month" k-options={start:"year",depth:"year"} kendo-date-picker k-format="'yyyy-MM'" />
 					 <span data-valmsg-for="month" data-valmsg-replace="true" class="errors"></span>
 				 </td>
 
@@ -35,7 +33,6 @@
 					<span style="color:red;font-size: 10px;">日期的用逗号隔开，如1,2,3</span>
 					 <span style="margin-left: 40%" data-valmsg-for="datess" data-valmsg-replace="true" class="errors"></span>
 				 </td>
-
 			 </tr>
 	         <tr>
 		         <td class="formAlignRight">状态：</td>

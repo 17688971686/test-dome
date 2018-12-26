@@ -20,11 +20,9 @@
             $("#workDay").kendoWindow({
                 width: "45%",
                 height: "auto",
-                title: "新增工作日",
+                title: "系统工作日编辑",
                 visible: false,
                 modal: true,
-     /*           open:function(){
-                },*/
                 closable: true,
                 actions: ["Pin", "Minimize", "Maximize", "Close"]
             }).data("kendoWindow").center().open();
@@ -36,8 +34,8 @@
             if (isValid) {
                 workdaySvc.createWorkday(vm);
             }
-
         }
+
         vm.del=function(id){
         	common.confirm({
                 vm: vm,

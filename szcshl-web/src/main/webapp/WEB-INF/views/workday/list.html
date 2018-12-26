@@ -22,12 +22,12 @@
         </select>
         <button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.queryWorkday()">
             <span class="glyphicon glyphicon-search"></span>查询</button>
-        <button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.ResetWorkday()">
+        <button class="btn btn-sm btn-primary" ng-click="vm.ResetWorkday()">
             <span class="glyphicon glyphicon-repeat"></span> 重置</button>
-
-       <!--  <a class="btn btn-sm btn-primary" href="#/workdayEdit/"><span class="glyphicon glyphicon-plus"></span>新增工作日</a>-->
-        <a class="btn btn-sm btn-primary" ng-click="vm.addWorkDay()"><span class="glyphicon glyphicon-plus"></span>新增工作日</a>
-         <button class="btn btn-sm btn-danger" ng-click="vm.dels()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-remove"></span>批量删除</button>
+        <button class="btn btn-sm btn-primary" ng-click="vm.addWorkDay()">
+            <span class="glyphicon glyphicon-plus"></span>新增工作日</button>
+        <button class="btn btn-sm btn-danger" ng-click="vm.dels()" ng-disabled="vm.isSubmit">
+            <span class="glyphicon glyphicon-remove"></span>批量删除</button>
     </form>
 
     <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
@@ -36,7 +36,5 @@
     <@shiro.hasPermission name="workday##delete">
     <button class="btn btn-xs btn-danger"  ng-click="{0}" ><span class="glyphicon glyphicon-remove"></span>删除</button>
     </@shiro.hasPermission>
-<!--    <@shiro.hasPermission name="workday##put">
-    <a class="btn btn-xs btn-primary" href="#/workdayEdit/{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
-    </@shiro.hasPermission>-->
+
 </script>

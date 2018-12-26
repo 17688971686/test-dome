@@ -6,11 +6,15 @@ import com.alibaba.fastjson.annotation.JSONField;
 
 import cs.model.BaseDto;
 
+/**
+ * @author mcl
+ * 工作日管理Dto
+ */
 public class WorkdayDto extends BaseDto{
 	
 	private String id;
-	private  String month;
-	private  String datess;
+	private String month;
+	private String datess;
 	@JSONField(format = "yyyy-MM-dd")
 	private Date dates;
 	private String status;

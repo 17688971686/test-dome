@@ -60,25 +60,21 @@
 		
 		//begin createWorkday
 		function createWorkday(vm){
+		    console.log(vm.workday);
 			var httpOptions={
 				method :'post',
 				url : url_workday+"/createWorkday",
 				data : vm.workday
 			}
 			var httpSuccess=function success(response){
-				console.log(response);
 				if(response.data.flag){
                     bsWin.alert("保存成功！", function(){
-                        vm.gridOptions.dataSource.read();
                         window.parent.$("#workDay").data("kendoWindow").close();
+                        vm.gridOptions.dataSource.read();
                         vm.workday="";
                     });
 				}else{
-                    bsWin.alert(response.data.reMsg+"已存在，不能重复添加！", function(){
-                        vm.gridOptions.dataSource.read();
-                        window.parent.$("#workDay").data("kendoWindow").close();
-                        vm.workday="";
-                    });
+                    bsWin.alert(response.data.reMsg+"已存在，不能重复添加！");
 				}
 
 
