@@ -60,7 +60,6 @@
 		
 		//begin createWorkday
 		function createWorkday(vm){
-		    console.log(vm.workday);
 			var httpOptions={
 				method :'post',
 				url : url_workday+"/createWorkday",
@@ -71,13 +70,11 @@
                     bsWin.alert("保存成功！", function(){
                         window.parent.$("#workDay").data("kendoWindow").close();
                         vm.gridOptions.dataSource.read();
-                        vm.workday="";
+                        vm.workday = {};
                     });
 				}else{
-                    bsWin.alert(response.data.reMsg+"已存在，不能重复添加！");
+                    bsWin.alert(response.data.reMsg);
 				}
-
-
 			}
 			 common.http({
                     vm: vm,

@@ -67,8 +67,8 @@ public class WorkdayController {
     public ResultMsg cresateWorkday(@RequestBody WorkdayDto workdayDto) {
         ResultMsg resultMsg = null;
         //获取日期值
-        String monthValue = workdayDto.getMonth(), month = "", year = "";
-        if (!Validate.isString(monthValue)) {
+        String monthValue = workdayDto.getMonth(),dateStr = workdayDto.getDatess(), month = "", year = "", isNodate = "";
+        if (!Validate.isString(monthValue) || !Validate.isString(dateStr)) {
             resultMsg = ResultMsg.error("请先输入日期");
             return resultMsg;
         }
@@ -83,15 +83,11 @@ public class WorkdayController {
             }
         }
 
-        //存重复的日期
-        String isNodate = "";
-        //判断是否已存在的日期
         boolean isrepeat = false;
-        String str = workdayDto.getDatess();
         //把中文字符串转换为英文字符串
-        str = str.replace("，", SEPARATE_COMMA);
+        dateStr = dateStr.replace("，", SEPARATE_COMMA);
         //截取字符串
-        List strs = StringUtil.getSplit(str, SEPARATE_COMMA);
+        List strs = StringUtil.getSplit(dateStr, SEPARATE_COMMA);
         if (strs.size() > 1) {
             for (int i = 0; i < strs.size(); i++) {
                 String dates = year + DATE_COLON + month + DATE_COLON + strs.get(i);
@@ -108,18 +104,18 @@ public class WorkdayController {
                 }
             }
         } else {
-            String dates = year + DATE_COLON + month + DATE_COLON + str;
+            String dates = year + DATE_COLON + month + DATE_COLON + dateStr;
             workdayDto.setDates(DateUtils.converToDate(dates, null));
             isrepeat = workdayService.isRepeat(workdayDto.getDates());
             if (isrepeat) {
-                isNodate += month + "月" + str + "号";
+                isNodate += month + "月" + dateStr + "号";
             } else {
                 resultMsg = workdayService.createWorkday(workdayDto);
             }
         }
         //当有重复日期时，返回重复日期的提示
         if (Validate.isString(isNodate)) {
-            resultMsg = ResultMsg.error(isNodate);
+            resultMsg = ResultMsg.error(isNodate+"已存在，不能重复添加！");
         }
 
         return resultMsg;

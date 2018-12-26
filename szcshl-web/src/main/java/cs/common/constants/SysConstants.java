@@ -17,7 +17,7 @@ public final class SysConstants {
     public final static String SEPARATE_COLON = ";";
 
     /**
-     * 日期链接副
+     * 日期链接符
      */
     public final static String DATE_COLON = "-";
 
