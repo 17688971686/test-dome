@@ -787,15 +787,6 @@
                                 </w:p>
                                 <w:p>
                                     <w:pPr>
-                                        <w:jc w:val="left"/>
-                                        <w:rPr>
-                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                </w:p>
-                                <w:p>
-                                    <w:pPr>
                                         <w:jc w:val="right"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
@@ -922,23 +913,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>评审意见</w:t>
-                                    </w:r>
-                                </w:p>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:jc w:val="center"/>
-                                        <w:rPr>
-                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                        <w:t>摘要</w:t>
+                                        <w:t>评审意见摘要</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1030,40 +1005,10 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">第一负责人： </w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                        <w:t xml:space="preserve">                     </w:t>
+                                        <w:t xml:space="preserve">第一负责人：<w:br />${mianChargeSuggest!}</w:t>
                                     </w:r>
                                 </w:p>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:rPr>
-                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                        <w:t>${mianChargeSuggest!}</w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                        <w:t xml:space="preserve">                     </w:t>
-                                    </w:r>
-                                </w:p>
+
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
@@ -1086,25 +1031,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>第二负责人：</w:t>
-                                    </w:r>
-                                </w:p>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:jc w:val="left"/>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                        <w:t>${secondChargeSuggest!}</w:t>
+                                        <w:t>第二负责人：<w:br />${secondChargeSuggest!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1391,23 +1318,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>主任</w:t>
-                                    </w:r>
-                                </w:p>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:jc w:val="center"/>
-                                        <w:rPr>
-                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                        <w:t>签发</w:t>
+                                        <w:t>主任签发</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1438,7 +1349,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">          </w:t>
+                                        <w:t xml:space="preserve"> </w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p>
@@ -1531,23 +1442,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>项目</w:t>
-                                    </w:r>
-                                </w:p>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:jc w:val="center"/>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                        <w:t>概况</w:t>
+                                        <w:t>项目概况</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1598,7 +1493,7 @@
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="1276" w:type="dxa"/>
+                                    <w:tcW w:w="1000" w:type="dxa"/>
                                     <w:gridSpan w:val="2"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
@@ -1638,7 +1533,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>核减（增）</w:t>
+                                        <w:t>核减<w:br />（增）</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1661,29 +1556,13 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>核减</w:t>
-                                    </w:r>
-                                </w:p>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:jc w:val="center"/>
-                                        <w:rPr>
-                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                        <w:t>（增）率</w:t>
+                                        <w:t>核减<w:br />（增）率</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="1141" w:type="dxa"/>
+                                    <w:tcW w:w="1417" w:type="dxa"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
@@ -1699,23 +1578,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>批复</w:t>
-                                    </w:r>
-                                </w:p>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:jc w:val="center"/>
-                                        <w:rPr>
-                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                        <w:t>金额</w:t>
+                                        <w:t>批复<w:br />金额</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1799,23 +1662,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>投资额</w:t>
-                                    </w:r>
-                                </w:p>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:jc w:val="center"/>
-                                        <w:rPr>
-                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                        <w:t>（万元）</w:t>
+                                        <w:t>投资额<w:br />（万元）</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2031,23 +1878,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>项目建设</w:t>
-                                    </w:r>
-                                </w:p>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:jc w:val="center"/>
-                                        <w:rPr>
-                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                        <w:t>必要性</w:t>
+                                        <w:t>项目建设必要性</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2104,7 +1935,6 @@
                                 <w:tcPr>
                                     <w:tcW w:w="1252" w:type="dxa"/>
                                     <w:vMerge w:val="continue"/>
-                                    <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
                                     <w:pPr>
@@ -2307,23 +2137,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>下一阶段</w:t>
-                                    </w:r>
-                                </w:p>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:jc w:val="center"/>
-                                        <w:rPr>
-                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                        <w:t>工作要求</w:t>
+                                        <w:t>下一阶段工作要求</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2333,15 +2147,6 @@
                                     <w:gridSpan w:val="10"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:jc w:val="center"/>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                </w:p>
                                 <w:p>
                                     <w:pPr>
                                         <w:jc w:val="left"/>
@@ -2359,24 +2164,6 @@
                                         </w:rPr>
                                         <w:t>${nextWorkPlan!}</w:t>
                                     </w:r>
-                                </w:p>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:jc w:val="center"/>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                </w:p>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:jc w:val="center"/>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                    </w:pPr>
                                 </w:p>
                             </w:tc>
                         </w:tr>

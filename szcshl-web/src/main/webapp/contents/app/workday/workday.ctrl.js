@@ -17,6 +17,8 @@
 
         //打开增加窗口
         vm.addWorkDay=function(){
+            //初始化对象
+            vm.workday = {};
             $("#workDay").kendoWindow({
                 width: "45%",
                 height: "auto",

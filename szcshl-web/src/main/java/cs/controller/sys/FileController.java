@@ -582,6 +582,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     @ResponseStatus(value = HttpStatus.OK)
     public void printPreview(@PathVariable String businessId, @PathVariable String businessType, @PathVariable String stageType, HttpServletResponse response) {
         InputStream inputStream = null;
+        OutputStream out = null;
         File file = null;
         File printFile = null;
         try {
@@ -599,26 +600,30 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             byte[] buffer = new byte[inputStream.available()];
             inputStream.read(buffer);  //读取文件流
             inputStream.close();*/
+            //重置结果集
+            response.reset();
             //使用新的转换控件
-            response.reset();  //重置结果集
-            OutputStream out = response.getOutputStream();
+            out = response.getOutputStream();
             if (file != null) {
                 inputStream = new FileInputStream(file);
                 Document doc = new Document(inputStream);
                 doc.save(out, com.aspose.words.SaveFormat.PDF);
             }
             response.setContentType("application/pdf");
-            response.addHeader("Content-Length", "" + file.length());  //返回头 文件大小
+            //返回头 文件大小
+            //response.addHeader("Content-Length", "" + file.length());
             response.setHeader("Content-Disposition", "inline;filename=" + new String(fileName.getBytes(), "ISO-8859-1"));
 
             out.flush();
-            out.close();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             try {
                 if (inputStream != null) {
                     inputStream.close();
+                }
+                if(out != null){
+                    out.close();
                 }
                 if (file != null) {
                     Tools.deleteFile(file);
@@ -852,7 +857,6 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 if (Validate.isObject(dispatchDoc.getSign())) {
                     signDto = signService.findById(dispatchDoc.getSign().getSignid(), true);
                 }
-
                 Map<String, Object> dispatchData = TemplateUtil.entryAddMap(dispatchDoc);
                 String mianChargeSuggest = dispatchDoc.getMianChargeSuggest();
                 String main = null;
@@ -872,19 +876,18 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 if (Validate.isString(ministerSuggesttion)) {
                     sugge = ministerSuggesttion.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", " ")
                             .replaceAll("<p style='text-align:right;'>", "").replaceAll("</p>", "");
-
                 }
                 String viceDirectorSuggesttion = dispatchDoc.getViceDirectorSuggesttion();
                 if (Validate.isString(viceDirectorSuggesttion)) {
                     vice = viceDirectorSuggesttion.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", " ")
                             .replaceAll("<p style='text-align:right;'>", "").replaceAll("</p>", "");
-
                 }
                 dispatchData.put("mianChargeSuggest", main);
                 dispatchData.put("secondChargeSuggest", second);
                 dispatchData.put("ministerSuggesttion", sugge);
                 dispatchData.put("viceDirectorSuggesttion", vice);
-                dispatchData.put("ischangeEstimate", signDto == null ? "" : signDto.getIschangeEstimate());//是否调概
+                //是否调概
+                dispatchData.put("ischangeEstimate", signDto == null ? "" : signDto.getIschangeEstimate());
 
                 if (stageType.equals(RevireStageKey.KEY_SUG.getValue())) {
                     //建议书

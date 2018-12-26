@@ -77,7 +77,7 @@
 
         </tr>
         <tr>
-            <td class="text-center">文件标题 <span class="required">*</span></td>
+            <td class="text-center">文件标题</td>
             <td colspan="5">
                 {{vm.dispatchDoc.fileTitle}}
             </td>
@@ -86,9 +86,10 @@
         <tr>
             <td style="vertical-align: middle;" class="text-center">发行范围</td>
             <td colspan="5">
-                <div style="height: 50px;">
+                <p style="height: 50px;">
                     {{vm.dispatchDoc.dispatchScope}}
-                </div>
+                </p>
+                <p style="float: right;">(印{{vm.dispatchDoc.printCount||''}}份)</p>
             </td>
         </tr>
 

@@ -787,15 +787,6 @@
                                 </w:p>
                                 <w:p>
                                     <w:pPr>
-                                        <w:jc w:val="left"/>
-                                        <w:rPr>
-                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                </w:p>
-                                <w:p>
-                                    <w:pPr>
                                         <w:jc w:val="right"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
@@ -807,7 +798,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>（印 ${printCount} 份）</w:t>
+                                        <w:t>（印 ${printCount!} 份）</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1030,38 +1021,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">第一负责人： </w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                        <w:t xml:space="preserve">                     </w:t>
-                                    </w:r>
-                                </w:p>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:rPr>
-                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                        <w:t>${mianChargeSuggest!}</w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                        <w:t xml:space="preserve">                     </w:t>
+                                        <w:t xml:space="preserve">第一负责人：<w:br />${mianChargeSuggest!} </w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1086,25 +1046,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>第二负责人：</w:t>
-                                    </w:r>
-                                </w:p>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:jc w:val="left"/>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                        <w:t>${secondChargeSuggest!}</w:t>
+                                        <w:t>第二负责人：<w:br />${secondChargeSuggest!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>

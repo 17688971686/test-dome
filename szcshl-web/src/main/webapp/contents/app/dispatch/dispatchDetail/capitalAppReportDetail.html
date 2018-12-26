@@ -23,10 +23,8 @@
 
                 <span style="padding: 5px 10px;float:right;">发文类型：{{vm.dispatchDoc.dispatchType}}</span>
             </p>
-
         </caption>
         <tbody>
-
         <tr>
             <td style="width:15%;" class="text-center">文件标题</td>
             <td colspan="5">
@@ -79,8 +77,11 @@
 
         <tr>
             <td class="text-center">发行范围 </td>
-            <td colspan="5" style="min-height: 30px;">
-                {{vm.dispatchDoc.dispatchScope}}
+            <td colspan="5" >
+                <p style="height: 50px;">
+                    {{vm.dispatchDoc.dispatchScope}}
+                </p>
+                <p style="float: right;">(印{{vm.dispatchDoc.printCount||''}}份)</p>
             </td>
         </tr>
 

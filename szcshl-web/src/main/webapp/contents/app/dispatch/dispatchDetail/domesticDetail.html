@@ -47,8 +47,7 @@
         <tr>
             <td class="text-center">发文日期</td>
             <td>
-                <input type="text" kendo-date-picker k-format="'yyyy-MM-dd'" class="form-control input-sm "
-                       ng-model="vm.dispatchDoc.dispatchDate" name="dispatchDate">
+                {{vm.dispatchDoc.dispatchDate}}
             </td>
 
             <td class="text-center">文件字号</td>
@@ -68,8 +67,11 @@
 
         <tr>
             <td style="vertical-align: middle;" class="text-center">发行范围</td>
-            <td colspan="5" style="min-height: 50px;">
-                {{vm.dispatchDoc.dispatchScope}}
+            <td colspan="5">
+                <p style="height: 50px;">
+                    {{vm.dispatchDoc.dispatchScope}}
+                </p>
+                <p style="float: right;">(印{{vm.dispatchDoc.printCount||''}}份)</p>
             </td>
         </tr>
 
