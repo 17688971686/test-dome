@@ -25,6 +25,7 @@ import cs.service.sys.LogService;
 import cs.service.sys.MsgService;
 import cs.service.sys.WorkdayService;
 import cs.threadtask.MsgThread;
+import cs.xss.XssShieldUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -75,15 +76,18 @@ public class SysRestController {
     @RequestMapping(name = "项目签收信息", value = "/pushProject", method = RequestMethod.POST)
     @LogMsg(module = "系统接口【委里推送数据接口】", logLevel = "1")
     public ResultMsg pushProject(@RequestParam String signDtoJson) {
+        //解析json串
+        signDtoJson = XssShieldUtil.getInstance().unStripXss(signDtoJson);
         ResultMsg resultMsg = null;
         String projName = "";
         String fileCode = "";
-        SignDto signDto = JSON.parseObject(signDtoJson, SignDto.class);
-        if(Validate.isObject(signDto)){
-            projName = signDto.getProjectname();
-            fileCode = signDto.getFilecode();
-        }
         try {
+            SignDto signDto = JSON.parseObject(signDtoJson, SignDto.class);
+            if(Validate.isObject(signDto)){
+                projName = signDto.getProjectname();
+                fileCode = signDto.getFilecode();
+            }
+
             resultMsg = signRestService.pushProject(signDto, true);
         } catch (Exception e) {
             resultMsg = new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(), e.getMessage());
@@ -163,6 +167,8 @@ public class SysRestController {
     @LogMsg(module = "系统接口【通过收文编号存储批复金额下载pdf文件】", logLevel = "1")
     public synchronized ResultMsg downRemoteFile(@RequestParam String signDtoJson) {
         ResultMsg resultMsg = null;
+        //解析json串
+        signDtoJson = XssShieldUtil.getInstance().unStripXss(signDtoJson);
         SignDto signDto = JSON.parseObject(signDtoJson, SignDto.class);
         try {
             resultMsg = signRestService.signProjAppr(signDto, true);
@@ -313,116 +319,81 @@ public class SysRestController {
 
     @RequestMapping(name = "项目签收信息", value = "/testJson")
     public void testJson() throws IOException {
-//        List<User> receiverList = new ArrayList<>();
-//        User user = new User();
-//        user.setDisplayName("郭冬冬");
-//        ;
-//        user.setUserMPhone("13640950289");
-//        receiverList.add(user);
-//
-//        User user3 = new User();
-//        user3.setDisplayName("开发者");
-//        ;
-//        user3.setUserMPhone("18038078167");
-//        receiverList.add(user3);
-//        if(smsContent.querySmsNumber(receiverList,"测试项目","4324D","t","34","开始查询")== null){
-//            System.out.println("能查询");
-//
-//        }
-
-        /*
-{declaration=3, filecode=D201800155, sysFileDtoList=[{fileSize=363, showName=新建文本文档.txt,
-fileUrl=http://172.18.225.38:8089/FGWPM/LEAP/Download/default/2018/6/26/f31b20acd6ca4ec8849a6194f40846b7.txt
-
-}, {fileSize=363, showName=新建文本文档.txt,
-fileUrl=http://172.18.225.38:8089/FGWPM/LEAP/Download/default/2018/6/26/236c4c695127434faeb0e86d5a07c835.txt
-
-}]}
-        *
-        * */
-        //、、
-        //{"declaration":3,"filecode":"D201800150","isAssociate":0,"sysFileDtoList":[{"fileSize":6,"fileUrl":"
-        // http://172.18.225.38:8089/FGWPM/LEAP/Download/default/2018/6/25/8a74dcc5d89e491595d06a8117c8fe72.txt","showName":"评审报告.txt"},
-        // {"fileSize":363,"fileUrl":"http://172.18.225.38:8089/FGWPM/LEAP/Download/default/2018/6/25/9dd4bd5c85f94e169817526ea29c0065.txt","showName":"新建文本文档.txt"}]}
-
-        //批复金额pdf下载案例
-        String REST_SERVICE_URI2 = "http://localhost:8080/szcshl-web/intfc/downRemoteFile";
-        SignDto signDto2 = new SignDto();
-        //委里收文编号
-        signDto2.setFilecode("D201800155");
-        signDto2.setDeclaration(new BigDecimal(3));
-        //附件列表
-        List<SysFileDto> fileDtoList2 = new ArrayList<>();
-        SysFileDto sysFileDto2 = new SysFileDto();
-        //显示名称，后缀名也要
-        sysFileDto2.setShowName("新建文本文档.txt");
-        //附件大小，Long类型
-        sysFileDto2.setFileSize(363L);
-        //附件下载地址
-        sysFileDto2.setFileUrl("http://172.18.225.38:8089/FGWPM/LEAP/Download/default/2018/6/26/f31b20acd6ca4ec8849a6194f40846b7.txt");
-        fileDtoList2.add(sysFileDto2);
-
-        SysFileDto sysFileDto3 = new SysFileDto();
-        //显示名称，后缀名也要
-        sysFileDto3.setShowName("新建文本文档.txt");
-        //附件大小，Long类型
-        sysFileDto3.setFileSize(363L);
-        //附件下载地址
-        sysFileDto3.setFileUrl("http://172.18.225.38:8089/FGWPM/LEAP/Download/default/2018/6/26/236c4c695127434faeb0e86d5a07c835.txt ");
-        fileDtoList2.add(sysFileDto3);
-        //项目添加附件列表
-        signDto2.setSysFileDtoList(fileDtoList2);
-        Map<String, String> params = new HashMap<>();
-        logger.info("委里批复数据:   " + JSON.toJSONString(signDto2));
-        params.put("signDtoJson", JSON.toJSONString(signDto2));
-        HttpResult hst2 = httpClientOperate.doPost(REST_SERVICE_URI2, params);
-        //System.out.println(params.get("signDtoJson"));
-        System.out.println(hst2.toString());
-
 
 //        signRestService.getListUser("收文成功");
         //项目签收案例
-       /* String REST_SERVICE_URI = "http://localhost:8080/szcshl-web/intfc/pushProject";
+        String REST_SERVICE_URI = "http://localhost:9080/szcshl-web/intfc/pushProject";
         SignDto signDto = new SignDto();
         //委里收文编号
-        signDto.setFilecode("D201800117");
+        signDto.setFilecode("D201800732");
         signDto.setIschangeEstimate(null);
-        signDto.setDeclaration(null);
-        signDto.setMaindeptName("投资处");
-        signDto.setAssistDeptUserName("罗松");
-        signDto.setCountryCode("2018-440300-65-01-502631");
-        signDto.setReviewstage("STAGEBUDGET");
-        signDto.setProjectcode("Z-2018-I65-502631-03-01");
-        signDto.setProjectname("深圳市投资项目在线审批 监管平台升级拓展项目");
+        signDto.setDeclaration((BigDecimal.valueOf(6835)));
         signDto.setUrgencydegree("一般");
-        signDto.setBuiltCompUserName("田云");
-        signDto.setAssistdeptName("高技术产业处");
-        signDto.setDesigncompanyName("深圳市艾泰克工程咨询监理有限公司");
+        signDto.setMaindeptName("社会发展处");
+        signDto.setAssistDeptUserName("李斌");
+        signDto.setCountryCode("2017-440300-83-01-102870");
+        signDto.setProjectname("深圳大学卡尔森国际肿瘤中心用房改造装修工程");
+        signDto.setProjectcode("Z-2017-Q83-102870-02-01");
+        signDto.setBuiltCompUserName("刘泽慧");
+        signDto.setAssistdeptName("投资处");
+        signDto.setDesigncompanyName(null);
         signDto.setYearplantype("C类");
-        signDto.setAcceptDate(DateUtils.converToDate("2018-05-17 00:00:00","yyyy-MM-dd HH:mm:ss"));
+        signDto.setReviewstage("STAGESTUDY");
+        signDto.setSendusersign("张路");
+        signDto.setAcceptDate(DateUtils.converToDate("2018-12-26 09:48:54.0","yyyy-MM-dd HH:mm:ss"));
         signDto.setSecrectlevel("公开");
-        signDto.setMainDeptContactPhone("13510285489");
-        signDto.setMainDeptUserName("李斌");
-        signDto.setBuiltcompanyName("深圳市政务服务管理办公室");
-        signDto.setMaindeptOpinion("请李斌同志主办。[投资处]2018-05-17;\n项目单位申报项目总概算1656.75万元，主要功能模块包括业务应用平台升级拓展、数据补充登记系统、数据分析与监管、业务梳理交叉设计、协同审批业务实施等。建议将有关资料转请评审中心评审，妥否，请领导审定。[李斌]2018-05-17;\n同意转请评审中心评审。[吴江]2018-05-18;\n转请评审中心进行评审。[李斌]2018-05-18");
+        signDto.setMainDeptContactPhone("13723444083");
+        signDto.setMainDeptUserName("张路");
+        signDto.setBuiltcompanyName("深圳大学");
+        signDto.setMaindeptOpinion("请张路主办。[社会处处长]2018-12-26;经核，该项目申报材料已完备，建议送审。妥否，请领导审定。[张路]2018-12-26;请评审中心评审。[社会处处长]2018-12-27");
+
+
+
+
         //附件列表
         List<SysFileDto> fileDtoList = new ArrayList<>();
         SysFileDto sysFileDto = new SysFileDto();
         //显示名称，后缀名也要
-        sysFileDto.setShowName("空白.docx.docx");
+        sysFileDto.setShowName("卡尔森可研报告申报请示.pdf");
         //附件大小，Long类型
-        sysFileDto.setFileSize(11213L);
+        sysFileDto.setFileSize(1002398L);
         //附件下载地址
-        sysFileDto.setFileUrl("http://172.18.225.56:8089/FGWPM/LEAP/Download/default/2018/5/17/20180517143816590.docx");
+        sysFileDto.setFileUrl("http://192.168.1.31:80/FGWPM/LEAP/Download/default/2018/12/26/20181226095006791.pdf");
         fileDtoList.add(sysFileDto);
+
+        SysFileDto sysFileDto1 = new SysFileDto();
+        //显示名称，后缀名也要
+        sysFileDto1.setShowName("附件2深圳市发展和改革委员会关于深圳大学卡尔森国际肿瘤中心用房改造装修工程的项目建议书的批复.pdf");
+        //附件大小，Long类型
+        sysFileDto1.setFileSize(1423571L);
+        //附件下载地址
+        sysFileDto1.setFileUrl("http://192.168.1.31:80/FGWPM/LEAP/Download/default/2018/12/26/20181226095006096.pdf");
+        fileDtoList.add(sysFileDto1);
+        SysFileDto sysFileDto2 = new SysFileDto();
+        //显示名称，后缀名也要
+        sysFileDto2.setShowName("卡尔森可研申报表.pdf");
+        //附件大小，Long类型
+        sysFileDto2.setFileSize(608288L);
+        //附件下载地址
+        sysFileDto2.setFileUrl("http://192.168.1.31:80/FGWPM/LEAP/Download/default/2018/12/26/20181226095006914.pdf");
+        fileDtoList.add(sysFileDto2);
+
+        SysFileDto sysFileDto3 = new SysFileDto();
+        //显示名称，后缀名也要
+        sysFileDto3.setShowName("附件3深圳大学卡尔森国际肿瘤中心用房改造装修工程可行性研究报告.rar");
+        //附件大小，Long类型
+        sysFileDto3.setFileSize(13270274L);
+        //附件下载地址
+        sysFileDto3.setFileUrl("http://192.168.1.31:80/FGWPM/LEAP/Download/default/2018/12/26/20181226095006246.rar");
+        fileDtoList.add(sysFileDto3);
         //项目添加附件列表
         signDto.setSysFileDtoList(fileDtoList);
 
         Map<String, String> params = new HashMap<>();
         params.put("signDtoJson", JSON.toJSONString(signDto));
         HttpResult hst = httpClientOperate.doPost(REST_SERVICE_URI, params);
-        //System.out.println(params.get("signDtoJson"));
-        System.out.println(hst.toString());*/
+        System.out.println(params.get("signDtoJson"));
+        System.out.println(hst.toString());
     }
 
     @RequestMapping(name = "项目签收信息", value = "/checkWorkDay")
