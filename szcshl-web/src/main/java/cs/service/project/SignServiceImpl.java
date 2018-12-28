@@ -845,7 +845,8 @@ public class SignServiceImpl implements SignService {
             //项目签收
             case FlowConstant.FLOW_SIGN_QS:
                 task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
-                taskService.addComment(task.getId(), processInstance.getId(), flowDto.getDealOption());    //添加处理信息
+                //添加处理信息
+                taskService.addComment(task.getId(), processInstance.getId(), flowDto.getDealOption());
                 taskService.complete(task.getId(), ActivitiUtil.setAssigneeValue(FlowConstant.SignFlowParams.USER_ZHB.getValue(), SessionUtil.getUserId()));
 
                 sign = signRepo.findById(Sign_.signid.getName(), signid);
@@ -867,7 +868,8 @@ public class SignServiceImpl implements SignService {
                 sign = signRepo.findById(Sign_.signid.getName(), signid);
                 //流程分支
                 List<SignBranch> saveBranchList = new ArrayList<>();
-                businessId = flowDto.getBusinessMap().get("MAIN_ORG").toString();   //主办部门ID
+                //主办部门ID
+                businessId = flowDto.getBusinessMap().get("MAIN_ORG").toString();
                 SignBranch signBranch1 = new SignBranch(signid, FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue(), EnumState.YES.getValue(), EnumState.NO.getValue(), EnumState.YES.getValue(), businessId, EnumState.NO.getValue());
                 saveBranchList.add(signBranch1);
                 //设置流程参数
@@ -1214,17 +1216,17 @@ public class SignServiceImpl implements SignService {
                 }
                 break;
 
-            //部长审批工作方案1
+               //部长审批工作方案1
             case FlowConstant.FLOW_SIGN_BMLD_SPW1:
                 branchIndex = FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue();
                 nextNodeKey = FlowConstant.FLOW_SIGN_FGLD_SPW1;
-                //部长审批工作方案1
+                //部长审批工作方案2
             case FlowConstant.FLOW_SIGN_BMLD_SPW2:
                 if (!Validate.isString(branchIndex)) {
                     branchIndex = FlowConstant.SignFlowParams.BRANCH_INDEX2.getValue();
                     nextNodeKey = FlowConstant.FLOW_SIGN_FGLD_SPW2;
                 }
-                //部长审批工作方案1
+                //部长审批工作方案3
             case FlowConstant.FLOW_SIGN_BMLD_SPW3:
                 if (!Validate.isString(branchIndex)) {
                     branchIndex = FlowConstant.SignFlowParams.BRANCH_INDEX3.getValue();
@@ -1370,6 +1372,9 @@ public class SignServiceImpl implements SignService {
                 break;
             //发文申请
             case FLOW_SIGN_FW:
+                if (!expertReviewRepo.isFinishEPGrade(signid)) {
+                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还未对专家进行评分,不能提交到下一步操作！");
+                }
                 businessId = flowDto.getBusinessMap().get("DIS_ID").toString();
                 dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
                 disUtil = DisUtil.create(dp);
@@ -1779,7 +1784,7 @@ public class SignServiceImpl implements SignService {
 
             //第一负责人归档
             case FlowConstant.FLOW_SIGN_GD:
-                //如果没有完成专家评分，则不可以提交到下一步
+                //如果没有完成专家评分，则不可以提交到下一步（移到发文申请环节，没有评分不能进行下一步操作2018-12-28）
                 if (!expertReviewRepo.isFinishEPGrade(signid)) {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还未对专家进行评分,不能提交到下一步操作！");
                 }
