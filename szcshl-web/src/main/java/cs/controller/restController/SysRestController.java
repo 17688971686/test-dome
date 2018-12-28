@@ -77,7 +77,6 @@ public class SysRestController {
     @LogMsg(module = "系统接口【委里推送数据接口】", logLevel = "1")
     public ResultMsg pushProject(@RequestParam String signDtoJson) {
         //解析json串
-        signDtoJson = XssShieldUtil.getInstance().unStripXss(signDtoJson);
         ResultMsg resultMsg = null;
         String projName = "";
         String fileCode = "";
@@ -168,7 +167,6 @@ public class SysRestController {
     public synchronized ResultMsg downRemoteFile(@RequestParam String signDtoJson) {
         ResultMsg resultMsg = null;
         //解析json串
-        signDtoJson = XssShieldUtil.getInstance().unStripXss(signDtoJson);
         SignDto signDto = JSON.parseObject(signDtoJson, SignDto.class);
         try {
             resultMsg = signRestService.signProjAppr(signDto, true);
@@ -322,7 +320,7 @@ public class SysRestController {
 
 //        signRestService.getListUser("收文成功");
         //项目签收案例
-        String REST_SERVICE_URI = "http://localhost:9080/szcshl-web/intfc/pushProject";
+        String REST_SERVICE_URI = "http://localhost:8181/szcshl-web/intfc/pushProject";
         SignDto signDto = new SignDto();
         //委里收文编号
         signDto.setFilecode("D201800732");

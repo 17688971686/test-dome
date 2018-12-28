@@ -12,7 +12,6 @@ import cs.domain.project.SignDispaWork;
 import cs.domain.project.SignDispaWork_;
 import cs.domain.project.Sign_;
 import cs.model.project.Achievement;
-import cs.model.project.AchievementSumDto;
 import cs.repository.AbstractRepository;
 import cs.service.flow.FlowService;
 import cs.sql.ProjSql;

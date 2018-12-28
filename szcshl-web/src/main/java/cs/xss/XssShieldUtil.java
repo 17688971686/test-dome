@@ -35,7 +35,7 @@ public class XssShieldUtil {
     }
 
     private XssShieldUtil() {
-        String antiSamyPath = XssHttpServletRequestWrapper.class.getClassLoader().getResource("antisamy-ebay.xml").getFile();
+        String antiSamyPath = XssHttpServletRequestWrapper.class.getClassLoader().getResource("antisamy-anythinggoes.xml").getFile();
         if (antiSamyPath.startsWith("file")) {
             antiSamyPath = antiSamyPath.substring(6);
         }
@@ -180,7 +180,7 @@ public class XssShieldUtil {
                 value = URLDecoder.decode(value, SysConstants.UTF8);
                 AntiSamy antiSamy = new AntiSamy();
                 //扫描
-                CleanResults cr = antiSamy.scan(value, policy);
+                CleanResults cr = antiSamy.scan(xssEncode(value), policy);
                 //获取清洗后的结果
                 value = cr.getCleanHTML();
             } catch (ScanException e) {
@@ -203,6 +203,11 @@ public class XssShieldUtil {
     }
 
     //将容易引起xss漏洞的半角字符直接替换成全角字符
+    /**
+     * 将容易引起xss漏洞的半角字符直接替换成全角字符
+     * @param s
+     * @return
+     */
     public String xssEncode(String s) {
         if (s == null || s.isEmpty()) {
             return s;
@@ -215,37 +220,22 @@ public class XssShieldUtil {
                     //全角大于号
                     sb.append('＞');
                     break;
-
                 case '<':
                     //全角小于号
                     sb.append('＜');
                     break;
-
-                case '\'':
-                    //全角单引号
-                    sb.append('‘');
-                    break;
-
                 case '\"':
                     //全角双引号
-                    sb.append('“');
+                    sb.append('＂');
                     break;
-
-                case '&':
-                    //全角
-                    sb.append('＆');
+                case '+':
+                    //全角双引号
+                    sb.append('＋');
                     break;
-
-                case '\\':
-                    //全角斜线
-                    sb.append('＼');
+                case '%':
+                    //全角百分号
+                    sb.append('％');
                     break;
-
-                case '#':
-                    //全角井号
-                    sb.append('＃');
-                    break;
-
                 default:
                     sb.append(c);
                     break;

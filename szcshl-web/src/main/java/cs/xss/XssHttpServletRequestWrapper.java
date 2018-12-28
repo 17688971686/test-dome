@@ -1,31 +1,30 @@
 package cs.xss;
 
 import cs.common.utils.Validate;
+import cs.domain.sys.Annountment_;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
-import java.util.Enumeration;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * @author ldm on 2018/12/6 0006.
  * @desc 基于AntiSamy的XSS防御
  */
 public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
-    private Map<String, String[]> parameterMap;  //所有参数的Map集合
+    //所有参数的Map集合
+    private Map<String, String[]> parameterMap;
+    private static Set<String> EXCLUDE_PARAMS_SET = null;
     HttpServletRequest orgRequest = null;
     static {
-       /* String antiSamyPath = XssHttpServletRequestWrapper.class.getClassLoader().getResource("antisamy-ebay.xml").getFile();
-        //System.out.println("policy_filepath:" + antiSamyPath);
-        if (antiSamyPath.startsWith("file")) {
-            antiSamyPath = antiSamyPath.substring(6);
-        }
-        try {
-            policy = Policy.getInstance(antiSamyPath);
-        } catch (PolicyException e) {
-            e.printStackTrace();
-        }*/
+        /**
+         * 不需要拦截参数名称
+         */
+        EXCLUDE_PARAMS_SET = new HashSet<String>(){{
+            add(Annountment_.anContent.getName());
+            add("signDtoJson");
+        }};
+
     }
 
 
@@ -62,6 +61,10 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
     @Override
     public String getParameter(String name) {
         String value = super.getParameter(name);
+        //如果不用过滤的参数名，则直接过滤
+        if(EXCLUDE_PARAMS_SET.contains(name)){
+           return  value;
+        }
         return cleanXSS(value);
     }
 
@@ -72,17 +75,14 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
     @Override
     public String[] getParameterValues(String name) {
         String[] values = super.getParameterValues(name);
-
         if (values == null) {
             return null;
         }
-
         int count = values.length;
         String[] encodedValues = new String[count];
         for (int i = 0; i < count; i++) {
             encodedValues[i] = cleanXSS(values[i]);
         }
-
         return encodedValues;
     }
 
