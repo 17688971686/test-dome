@@ -163,6 +163,7 @@ public class XssShieldUtil {
     public String responseEncodeForHTML(String value){
         if(Validate.isString(value)){
             //规范化字符串
+            System.out.println("encode输出数据");
             return ESAPI.encoder().encodeForHTML(ESAPI.encoder().canonicalize(value));
         }
         return value;
@@ -176,6 +177,7 @@ public class XssShieldUtil {
     public String stripXss(String value) {
         if (Validate.isString(value)) {
             try {
+                System.out.println("解析输入数据");
                 //按utf-8解碼:防止有害脚本
                 value = URLDecoder.decode(value, SysConstants.UTF8);
                 AntiSamy antiSamy = new AntiSamy();

@@ -1,6 +1,5 @@
 package cs.xss;
 
-import cs.common.utils.Validate;
 import cs.domain.sys.Annountment_;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,9 +23,7 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
             add(Annountment_.anContent.getName());
             add("signDtoJson");
         }};
-
     }
-
 
     public XssHttpServletRequestWrapper(HttpServletRequest request) {
         super(request);

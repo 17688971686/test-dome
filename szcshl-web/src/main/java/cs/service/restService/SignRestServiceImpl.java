@@ -303,7 +303,7 @@ public class SignRestServiceImpl implements SignRestService {
             }
             params.put("dataMap", JSON.toJSONString(dataMap));
             params.put("dataList", JSON.toJSONString(dataList));
-            HttpResult hst = httpClientOperate.doPost(fgwUrl, params);
+            HttpResult hst = httpClientOperate.doPost(fgwUrl, params,true);
             //调用接口成功才开始解析
             if (Validate.isObject(hst) && (200 == hst.getStatusCode())) {
                 FGWResponse fGWResponse = JSON.toJavaObject(JSON.parseObject(hst.getContent()), FGWResponse.class);

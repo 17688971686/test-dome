@@ -76,11 +76,13 @@ public class SysRestController {
     @RequestMapping(name = "项目签收信息", value = "/pushProject", method = RequestMethod.POST)
     @LogMsg(module = "系统接口【委里推送数据接口】", logLevel = "1")
     public ResultMsg pushProject(@RequestParam String signDtoJson) {
-        //解析json串
         ResultMsg resultMsg = null;
         String projName = "";
         String fileCode = "";
         try {
+            //反编译json串
+            //signDtoJson = XssShieldUtil.getInstance().unStripXss(signDtoJson);
+            //解析json串
             SignDto signDto = JSON.parseObject(signDtoJson, SignDto.class);
             if(Validate.isObject(signDto)){
                 projName = signDto.getProjectname();
@@ -166,6 +168,8 @@ public class SysRestController {
     @LogMsg(module = "系统接口【通过收文编号存储批复金额下载pdf文件】", logLevel = "1")
     public synchronized ResultMsg downRemoteFile(@RequestParam String signDtoJson) {
         ResultMsg resultMsg = null;
+        //反编译json串
+        //signDtoJson = XssShieldUtil.getInstance().unStripXss(signDtoJson);
         //解析json串
         SignDto signDto = JSON.parseObject(signDtoJson, SignDto.class);
         try {
@@ -260,7 +264,7 @@ public class SysRestController {
             params.put("dataMap", JSON.toJSONString(dataMap));
             params.put("dataList", JSON.toJSONString(dataList));
 
-            HttpResult hst = httpClientOperate.doPost(endpoint, params);
+            HttpResult hst = httpClientOperate.doPost(endpoint, params,true);
             System.out.println(hst.toString());
 
             if (Validate.isObject(hst) && (200 == hst.getStatusCode())) {
@@ -345,9 +349,6 @@ public class SysRestController {
         signDto.setBuiltcompanyName("深圳大学");
         signDto.setMaindeptOpinion("请张路主办。[社会处处长]2018-12-26;经核，该项目申报材料已完备，建议送审。妥否，请领导审定。[张路]2018-12-26;请评审中心评审。[社会处处长]2018-12-27");
 
-
-
-
         //附件列表
         List<SysFileDto> fileDtoList = new ArrayList<>();
         SysFileDto sysFileDto = new SysFileDto();
@@ -389,7 +390,7 @@ public class SysRestController {
 
         Map<String, String> params = new HashMap<>();
         params.put("signDtoJson", JSON.toJSONString(signDto));
-        HttpResult hst = httpClientOperate.doPost(REST_SERVICE_URI, params);
+        HttpResult hst = httpClientOperate.doPost(REST_SERVICE_URI, params,false);
         System.out.println(params.get("signDtoJson"));
         System.out.println(hst.toString());
     }

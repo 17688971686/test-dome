@@ -119,12 +119,12 @@
             <param-name>encoding</param-name>
             <param-value>UTF-8</param-value>
         </init-param>
-        <!-- 白名单，后面需要再设置
+        <!-- 白名单，后面需要再设置-->
         <init-param>
             <param-name>excludedUris</param-name>
-            <param-value>/;/scripts/*;/styles/*;/images/*</param-value>
+            <param-value>/intfc/pushProject;/intfc/getPreSign;/intfc/downRemoteFile</param-value>
         </init-param>
-        -->
+
     </filter>
     <filter-mapping>
         <filter-name>xssFilter</filter-name>

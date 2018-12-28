@@ -37,7 +37,7 @@ public class XSSFilter implements Filter {
         String mappingURL = uri.replaceAll(contextPath, "");
         if (!Validate.isEmpty(excludedUriArr)) {
             for (int i = 0, l = excludedUriArr.length; i < l; i++) {
-                if (excludedUriArr[i].equals(mappingURL)) {
+                if (excludedUriArr[i].equals(mappingURL) || excludedUriArr[i].endsWith(mappingURL)) {
                     excludedUri = true;
                     break;
                 }

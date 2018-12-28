@@ -120,8 +120,7 @@ public class HttpClientOperate implements BeanFactoryAware{
      * @throws ClientProtocolException
      * @throws IOException
      */
-    public HttpResult doPost(String url , Map<String, String> params) throws ClientProtocolException, IOException{
-
+    public HttpResult doPost(String url , Map<String, String> params,boolean isEcode) throws ClientProtocolException, IOException{
         // 创建http POST请求
         HttpPost httpPost = new HttpPost(url);
         httpPost.setConfig(requestConfig);
@@ -129,7 +128,11 @@ public class HttpClientOperate implements BeanFactoryAware{
             // 设置2个post参数，一个是scope、一个是q
             List<NameValuePair> parameters = new ArrayList<NameValuePair>(0);
             for(String key : params.keySet()){
-                parameters.add(new BasicNameValuePair(key, URLEncoder.encode(params.get(key), SysConstants.UTF8)));
+                if(isEcode){
+                    parameters.add(new BasicNameValuePair(key,URLEncoder.encode(params.get(key), SysConstants.UTF8)));
+                }else{
+                    parameters.add(new BasicNameValuePair(key,params.get(key)));
+                }
             }
             // 构造一个form表单式的实体
             UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(parameters, Consts.UTF_8);
@@ -191,6 +194,6 @@ public class HttpClientOperate implements BeanFactoryAware{
      * @throws IOException
      */
     public HttpResult doPost(String url) throws ClientProtocolException, IOException{
-        return this.doPost(url, null);
+        return this.doPost(url, null,false);
     }
 }

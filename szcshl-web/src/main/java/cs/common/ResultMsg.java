@@ -1,8 +1,6 @@
 package cs.common;
 
 import cs.common.constants.Constant;
-import cs.common.utils.Validate;
-import cs.xss.XssShieldUtil;
 
 /**
  * 操作返回类
