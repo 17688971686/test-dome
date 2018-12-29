@@ -1,8 +1,11 @@
+<#assign path=request.contextPath/>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>温岭系统版本更新记录</title>
+    <title>深圳市政府投资项目评审中心评审管理系统版本更新记录</title>
+    <link rel="shortcut icon" href="${path}/contents/libs/adminLTE/dist/img/logo2.ico"/>
+    <link rel="bookmark" href="${path}/contents/libs/adminLTE/dist/img/logo2.ico"/>
 </head>
 <style type="text/css">
     * {
@@ -61,13 +64,32 @@
 </style>
 <body>
 <ul id="myul">
-    <li class="myli active"><a href="#181015">2018.10.15</a></li>
+    <li class="myli active"><a href="#181229">2018.12.29</a></li>
+    <li class="myli "><a href="#181225">2018.12.25</a></li>
+    <li class="myli"><a href="#181015">2018.10.15</a></li>
     <li class="myli"><a href="#181008">2018.10.08</a></li>
     <li class="myli"><a href="#180918">2018.09.18</a></li>
     <li class="myli"><a href="#180827">2018.08.27</a></li>
 </ul>
 
 <div class="bigbox">
+    <div id="181229" class="div">
+        <h2>2018-12-29 更新说明</h2>
+        <ol>
+            <li>【优化】优化了xss的防御策略，增加了xss防御的白名单，对一些不用过滤的请求直接放行。</li>
+            <li>【优化】所有项目的发文预览导出模板。</li>
+            <li>【修改】项目审批，专家评分移到第一负责人填报发文环节进行判断。</li>
+        </ol>
+    </div>
+    <div id="181225" class="div">
+        <h2>2018-12-25 更新说明</h2>
+        <ol>
+            <li>【新增】系统增加了xss的防御拦截功能，过滤存在隐患的数据信息。</li>
+            <li>【修复】系统博士后基地bug。</li>
+            <li>【优化】业绩统计，主任、分管主任、部长和普通用户的业绩统计功能。</li>
+            <li>【优化】业绩统计，主任、分管主任、部长和普通用户的业绩统计导出功能。</li>
+        </ol>
+    </div>
     <div id="181015" class="div">
         <h2>2018-10-15 更新说明</h2>
         <ol>
