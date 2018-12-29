@@ -160,13 +160,15 @@ public class XssShieldUtil {
         }
     }
 
+    /**
+     * 返回页面的字符串进行加密处理
+     * 术语解释：canonicalize是指将数据转换或解码成一个常见字符集的过程。这里的数据可以是经过多重混合编码的。
+     * 比如：%3cscript%3ealert(%22xss%22)%3c%2fscript%3e还原成<script>alert("xss")</script>。在对输入数据进行过滤之前应进行规范化！
+     * @param value
+     * @return
+     */
     public String responseEncodeForHTML(String value){
-        if(Validate.isString(value)){
-            //规范化字符串
-            System.out.println("encode输出数据");
-            return ESAPI.encoder().encodeForHTML(ESAPI.encoder().canonicalize(value));
-        }
-        return value;
+        return ESAPI.encoder().encodeForHTML(ESAPI.encoder().canonicalize(value));
     }
 
     /**
@@ -177,7 +179,6 @@ public class XssShieldUtil {
     public String stripXss(String value) {
         if (Validate.isString(value)) {
             try {
-                System.out.println("解析输入数据");
                 //按utf-8解碼:防止有害脚本
                 value = URLDecoder.decode(value, SysConstants.UTF8);
                 AntiSamy antiSamy = new AntiSamy();
