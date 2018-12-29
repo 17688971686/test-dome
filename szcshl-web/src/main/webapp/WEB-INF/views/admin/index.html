@@ -1,21 +1,15 @@
 <#assign path=request.contextPath/>
 <!DOCTYPE html>
-<!--
-This is a starter template page. Use this page to start your new project from
-scratch. This page gets rid of all links and provides the needed markup only.
--->
-<!-- REQUIRED JS SCRIPTS -->
-<script src="${path}/contents/libs/jquery/jquery.min.js"></script>
-<script src="${path}/contents/libs/raty/lib/jquery.raty.js"></script>
-<script src="${path}/contents/libs/bootstrap/customize/js/bootstrap.min.js"></script>
-<script src="${path}/contents/libs/angular/angular.min.js"></script>
-<script src="${path}/contents/libs/angular/angular-sanitize.min.js"></script>
-<script src="${path}/contents/libs/angular/angular-ui-router0.4.3.min.js"></script>
-<script src="${path}/contents/libs/angular/toArrayFilter.js"></script>
-<script src="${path}/contents/libs/boilerplate/plugins.js"></script>
-
-<ul lang="zh-CN">
     <head>
+        <!-- REQUIRED JS SCRIPTS -->
+        <script src="${path}/contents/libs/jquery/jquery.min.js"></script>
+        <script src="${path}/contents/libs/raty/lib/jquery.raty.js"></script>
+        <script src="${path}/contents/libs/bootstrap/customize/js/bootstrap.min.js"></script>
+        <script src="${path}/contents/libs/angular/angular.min.js"></script>
+        <script src="${path}/contents/libs/angular/angular-sanitize.min.js"></script>
+        <script src="${path}/contents/libs/angular/angular-ui-router0.4.3.min.js"></script>
+        <script src="${path}/contents/libs/angular/toArrayFilter.js"></script>
+        <script src="${path}/contents/libs/boilerplate/plugins.js"></script>
         <script>
             function buildDict(dictsObj, dicts, parentId) {
                 if (!dicts || dicts.length == 0) {
@@ -97,11 +91,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <link href="${path}/contents/shared/css.css" rel="stylesheet"/>
 
         <!--Begin:自定义css-->
-        <!--
-            作者：xdf
-            时间：2017-04-08
-            描述：独立页面配置-样式初始化则删除本链接
-        -->
         <link rel="stylesheet" href="${path}/contents/shared/styleversion.css"/>
         <!-- 网站图标 -->
         <link rel="shortcut icon" href="${path}/contents/images/favorite.ico"/>
@@ -114,26 +103,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
         </style>
         <![endif]-->
     </head>
-    <!--
-    BODY TAG OPTIONS:
-    =================
-    Apply one or more of the following classes to get the
-    desired effect
-    |---------------------------------------------------------|
-    | SKINS         | skin-blue                               |
-    |               | skin-black                              |
-    |               | skin-purple                             |
-    |               | skin-yellow                             |
-    |               | skin-red                                |
-    |               | skin-green                              |
-    |---------------------------------------------------------|
-    |LAYOUT OPTIONS | fixed                                   |
-    |               | layout-boxed                            |
-    |               | layout-top-nav                          |
-    |               | sidebar-collapse                        |
-    |               | sidebar-mini                            |
-    |---------------------------------------------------------|
-    -->
     <!-- S_腾讯通控件 -->
     <OBJECT classid=clsid:5EEEA87D-160E-4A2D-8427-B6C333FEDA4D id=RTXAX style="display: none;"></OBJECT>
     <!-- E_腾讯通控件 -->
