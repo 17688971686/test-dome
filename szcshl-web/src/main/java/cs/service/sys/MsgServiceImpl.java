@@ -127,11 +127,11 @@ public class MsgServiceImpl implements MsgService{
                     //url和密钥参数
                     String smsUrl = "",authorSecret="";
                     //创建一个json对象
-                    JSONObject jsonObject = new JSONObject();
+                    Map<String,String> paramsMap = new HashMap<>();
                     //添加电话号码参数
-                    jsonObject.append(SMSUtils.MSG_PARAMS.Phone.name(),phone);
+                    paramsMap.put(SMSUtils.MSG_PARAMS.Phone.toString(),phone);
                     //添加短信内容参数
-                    jsonObject.append(SMSUtils.MSG_PARAMS.SmsContent.name(),msgContent);
+                    paramsMap.put(SMSUtils.MSG_PARAMS.SmsContent.toString(),msgContent);
 
                     if(mphoneCount == 1){
                         //1、单人发送
@@ -145,8 +145,8 @@ public class MsgServiceImpl implements MsgService{
                         smsLog.setManyOrOne("2");
                     }
                     smsLog.setIsCallApi(Constant.EnumState.YES.getValue());
-
-                    String smsResultJson = httpClientOperate.sendMsgByPost(smsUrl, JSON.toJSONString(jsonObject),authorSecret,SMSUtils.getTOKEN());
+                    String msgJsonInfo = JSON.toJSONString(paramsMap);
+                    String smsResultJson = httpClientOperate.sendMsgByPost(smsUrl, msgJsonInfo,authorSecret,SMSUtils.getTOKEN());
                     if(Validate.isString(smsResultJson)){
                         //先把String 形式的 JSON 转换位 JSON 对象
                         JSONObject json = new JSONObject(smsResultJson);
@@ -166,7 +166,7 @@ public class MsgServiceImpl implements MsgService{
                                 ResultMsg newResultMsg = getMsgToken();
                                 if (newResultMsg.isFlag()) {
                                     //重新发一次
-                                    smsResultJson = httpClientOperate.sendMsgByPost(smsUrl, JSON.toJSONString(jsonObject),authorSecret,SMSUtils.getTOKEN());
+                                    smsResultJson = httpClientOperate.sendMsgByPost(smsUrl, msgJsonInfo,authorSecret,SMSUtils.getTOKEN());
                                     if(Validate.isString(smsResultJson)) {
                                         //先把String 形式的 JSON 转换位 JSON 对象
                                         JSONObject json2 = new JSONObject(smsResultJson);
