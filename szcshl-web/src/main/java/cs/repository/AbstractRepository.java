@@ -90,7 +90,7 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         return null;
     }
 
-    protected void buildParams(Query<?> query, HqlBuilder hqlBuilder) {
+    private void buildParams(Query<?> query, HqlBuilder hqlBuilder) {
         if (Validate.isObject(query)) {
             List<String> params = hqlBuilder.getParams();
             List<Object> values = hqlBuilder.getValues();
