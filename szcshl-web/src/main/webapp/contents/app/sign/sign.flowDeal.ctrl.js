@@ -222,14 +222,15 @@
                     vm.drawingFile = [];//图纸资料
                     vm.otherFile = [];//归档的其他资料
                     vm.model.registerFileDtoDtoList.forEach(function (registerFile, x) {
-                        if (registerFile.businessType == 3 || registerFile.businessType =="5"
-                            ||registerFile.businessType =="6"||registerFile.businessType =="7") {
+                        if (registerFile.businessType == 3/* || registerFile.businessType =="5"
+                            ||registerFile.businessType =="6"||registerFile.businessType =="7"*/) {
                             vm.supply.push(registerFile);
+                            vm.otherFile.push(registerFile);
                         } else if (registerFile.businessType == 2) {
                             vm.drawingFile.push(registerFile);
                         } else if (registerFile.businessType == 1 || registerFile.businessType == 4) {
                             vm.registerFile.push(registerFile);
-                        } else if (registerFile.businessType == 5 || registerFile.businessType == 6 || registerFile.businessType == 7) {
+                        } else if ( registerFile.businessType == 5 || registerFile.businessType == 6 || registerFile.businessType == 7) {
                             vm.otherFile.push(registerFile);
                         }
                     })

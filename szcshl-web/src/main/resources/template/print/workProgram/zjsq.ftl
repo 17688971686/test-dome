@@ -2609,10 +2609,16 @@
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>${(ExpertDto.remark)!}</w:t>
+                                    </w:r>
                                 </w:p>
                             </w:tc>
                         </w:tr>
-                        <#if ExpertDto_index == 9> <#break> </#if>
                     </#list>
                         <w:tr>
                             <w:tblPrEx>

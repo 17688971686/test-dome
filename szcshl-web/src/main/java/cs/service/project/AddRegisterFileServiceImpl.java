@@ -234,8 +234,11 @@ public class AddRegisterFileServiceImpl implements AddRegisterFileService {
         if (Validate.isList(fileList)) {
             fileList.forEach(fl -> {
                 AddRegisterFileDto rfDto = new AddRegisterFileDto();
-                BeanCopierUtils.copyProperties(fl, rfDto);
-                resultList.add(rfDto);
+                if("3".equals(fl.getBusinessType())){
+
+                    BeanCopierUtils.copyProperties(fl, rfDto);
+                    resultList.add(rfDto);
+                }
             });
         }
         return resultList;

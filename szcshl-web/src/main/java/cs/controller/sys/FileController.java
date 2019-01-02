@@ -686,16 +686,34 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
 //                List<ExpertSelectedDto> expertSelectedDtoLists = expertSelectedRepo.findByBusinessId(workProgramDto.getId());
                 List<ExpertSelectedDto> expertSelectedDtoLists = workProgramDto.getExpertSelectedDtoList();
-                List<ExpertDto> expertDtoList = workProgramDto.getExpertDtoList();
-                ExpertDto[] expertDtos = new ExpertDto[10];
+//                List<ExpertDto> expertDtoList = workProgramDto.getExpertDtoList();
+                ExpertDto[] expertDtos = null;
 
                 if (expertSelectedDtoLists != null && expertSelectedDtoLists.size() > 0) {
-                    for (int i = 0; i < expertSelectedDtoLists.size() && i < 10; i++) {
+                    //控制专家信息列表
+                    int length = expertSelectedDtoLists.size();
+                    int size = length;
+                    if(length <=10){
+                        size = 10;
+                    }else if(length > 10 && length <=30){
+                        size = 30;
+                    }else{
+                        int s = (length - 30 )/20;
+                        if(length - (s*20 + 30) > 13){
+                            size = (s+1)*20 + 30;
+                        }else{
+                            size = s*20 + 30 + 20;
+                        }
+                    }
+
+                    expertDtos = new ExpertDto[size];
+                    for (int i = 0; i < expertSelectedDtoLists.size(); i++) {
                         ExpertDto expertDto = expertSelectedDtoLists.get(i).getExpertDto();
                         //目前先改代码，后期有时间转换为改模板，直接遍历select表就可以的
                         //重新设置专业和专家类别，其中专业对应select表的专家小类 ， 专家类别对应select的专家类别
                         expertDto.setMajorStudy(expertSelectedDtoLists.get(i).getMaJorSmall());
                         expertDto.setExpertSort(expertSelectedDtoLists.get(i).getExpeRttype());
+                        expertDto.setRemark(expertSelectedDtoLists.get(i).getRemark());
                         expertDtos[i] = expertDto;
                     }
                 }
@@ -1260,8 +1278,14 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 file = TemplateUtil.createDoc(psData, Template.PROJECT_STOP.getKey(), path);
                 break;
 
-            default:
-                ;
+            case "VPROJECT":
+                //委项目处理表
+                Sign vSign = signRepo.findById(Sign_.signid.getName() , businessId);
+                Map<String, Object> vData = TemplateUtil.entryAddMap(vSign);
+                file = TemplateUtil.createDoc(vData, Template.PROJECT_VPROJECT.getKey(), path);
+                break;
+
+            default: break;
         }
         return file;
     }
