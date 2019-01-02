@@ -1241,14 +1241,6 @@
                                 <w:sz w:val="44"/>
                             </w:rPr>
                         </w:pPr>
-                    <#--<w:r>
-                        <w:rPr>
-                            <w:rFonts w:hint="eastAsia"/>
-                            <w:spacing w:val="0"/>
-                            <w:sz w:val="44"/>
-                        </w:rPr>
-                        <w:t>《</w:t>
-                    </w:r>-->
                         <w:r>
                             <w:rPr>
                                 <w:rFonts w:hint="eastAsia"/>
@@ -1260,14 +1252,6 @@
                             </w:rPr>
                             <w:t>${projectName2!}</w:t>
                         </w:r>
-                    <#-- <w:r>
-                         <w:rPr>
-                             <w:rFonts w:hint="eastAsia"/>
-                             <w:spacing w:val="0"/>
-                             <w:sz w:val="44"/>
-                         </w:rPr>
-                         <w:t>》外地专家评审费发放表</w:t>
-                     </w:r>-->
                     </w:p>
                     <w:p>
                         <w:pPr>
@@ -1283,8 +1267,6 @@
                     <w:tbl>
                         <w:tblPr>
                             <w:tblStyle w:val="45"/>
-                            <w:tblpPr w:leftFromText="180" w:rightFromText="180" w:vertAnchor="text"
-                                      w:horzAnchor="margin" w:tblpXSpec="center" w:tblpY="132"/>
                             <w:tblW w:w="11023" w:type="dxa"/>
                             <w:jc w:val="center"/>
                             <w:tblInd w:w="0" w:type="dxa"/>
@@ -1403,7 +1385,7 @@
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="2400" w:type="dxa"/>
+                                    <w:tcW w:w="2000" w:type="dxa"/>
                                     <w:vMerge w:val="restart"/>
                                     <w:tcBorders>
                                         <w:top w:val="single" w:color="auto" w:sz="4" w:space="0"/>
@@ -1530,7 +1512,7 @@
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="900" w:type="dxa"/>
+                                    <w:tcW w:w="1300" w:type="dxa"/>
                                     <w:vMerge w:val="restart"/>
                                     <w:tcBorders>
                                         <w:top w:val="single" w:color="auto" w:sz="4" w:space="0"/>

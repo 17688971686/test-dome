@@ -190,4 +190,11 @@ public interface ExpertSelectedRepo extends IRepository<ExpertSelected, String> 
      */
     void deleteByBusinessId(String businessId);
 
+    /**
+     * 通过id获取专家抽取信息
+     * @param ids
+     * @return
+     */
+    List<ExpertSelectedDto> expertSelectedByIds(String ids);
+
 }

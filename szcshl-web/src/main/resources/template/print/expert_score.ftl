@@ -77,20 +77,6 @@
                                 <w:rFonts w:hint="eastAsia" w:ascii="黑体" w:hAnsi="宋体" w:eastAsia="黑体"/>
                                 <w:sz w:val="44"/>
                                 <w:szCs w:val="44"/>
-                                <w:lang w:eastAsia="zh-CN"/>
-                            </w:rPr>
-                        </w:pPr>
-
-                    </w:p>
-                    <w:p>
-                        <w:pPr>
-                            <w:spacing w:before="120" w:beforeLines="50" w:line="360" w:lineRule="auto"/>
-                            <w:jc w:val="center"/>
-                            <w:outlineLvl w:val="1"/>
-                            <w:rPr>
-                                <w:rFonts w:hint="eastAsia" w:ascii="黑体" w:hAnsi="宋体" w:eastAsia="黑体"/>
-                                <w:sz w:val="44"/>
-                                <w:szCs w:val="44"/>
                             </w:rPr>
                         </w:pPr>
                         <w:r>
@@ -510,7 +496,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${(expertSelect.expertDto.name)!}</w:t>
+                                        <w:t>${(expertSelect.expert.name)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -534,7 +520,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${(expertSelect.expertDto.comPany)!}</w:t>
+                                        <w:t>${(expertSelect.expert.comPany)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -558,7 +544,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${(expertSelect.expertDto.job)!}<#if expertSelect.expertDto.post??>/</#if>${(expertSelect.expertDto.post)!}</w:t>
+                                        <w:t>${(expertSelect.expert.job)!}<#if expertSelect.expert.post??>/</#if>${(expertSelect.expert.post)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -582,7 +568,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${(expertSelect.expertDto.majorStudy)!}</w:t>
+                                        <w:t>${(expertSelect.expert.majorStudy)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
