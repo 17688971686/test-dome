@@ -528,7 +528,8 @@ public class Constant {
         //ACHIEVEMENT_TOPIC_MAINTAIN("achievement/topicMaintain","课题研究及其他业务一览表"),
         ACHIEVEMENT_USER_DETAIL("achievement/achievementUserDetail","员工业绩统计一栏表"),
         //ACHIEVEMENT_ASSIST_PROREVIEW("achievement/assistProReview","协办人评审项目一览表"),
-        PROJECT_STOP("print/projectStop" , "项目暂停申请表")
+        PROJECT_STOP("print/projectStop" , "项目暂停申请表"),
+        PROJECT_VPROJECT("print/vProject" , "委项目处理表")
         ;
 
         private String key;

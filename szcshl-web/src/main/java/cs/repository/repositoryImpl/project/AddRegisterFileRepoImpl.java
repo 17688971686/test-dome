@@ -83,7 +83,7 @@ public class AddRegisterFileRepoImpl extends AbstractRepository<AddRegisterFile,
         }
         //归档阶段
         else if(Validate.isString(type) && "FILERECORD".equals(type)){
-            hqlBuilder.append(" and " + AddRegisterFile_.businessType.getName() + " in(5,6,7)");
+            hqlBuilder.append(" and " + AddRegisterFile_.businessType.getName() + " in(3,5,6,7)");
         }
         hqlBuilder.setParam("businessId" , businessId);
         List<AddRegisterFile> addRegisterFileList = findByHql(hqlBuilder);

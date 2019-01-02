@@ -39,7 +39,7 @@
     </tr>
     <tr>
         <td class="text-center">总投资金额</td>
-        <td >{{vm.model.appalyInvestment}}</td>
+        <td colspan="3">{{vm.model.appalyInvestment}}</td>
     </tr>
     <tr>
         <td class="text-center" style="vertical-align: middle;">备审资料</td>
@@ -72,3 +72,7 @@
         </td>
     </tr>
 </table>
+<p style="text-align: center; margin-top: 10px;">
+    <button class="btn btn-sm btn-primary" style="width: 100px; " ng-click="printFile(vm.model.signid,'VPROJECT','VPROJECT')">
+        打印预览</button>
+</p>
