@@ -183,7 +183,7 @@ public class XssShieldUtil {
                 value = URLDecoder.decode(value, SysConstants.UTF8);
                 AntiSamy antiSamy = new AntiSamy();
                 //扫描
-                CleanResults cr = antiSamy.scan(xssEncode(value), policy);
+                CleanResults cr = antiSamy.scan(value, policy);
                 //获取清洗后的结果
                 value = cr.getCleanHTML();
             } catch (ScanException e) {
@@ -226,10 +226,6 @@ public class XssShieldUtil {
                 case '<':
                     //全角小于号
                     sb.append('＜');
-                    break;
-                case '\"':
-                    //全角双引号
-                    sb.append('＂');
                     break;
                 case '+':
                     //全角双引号

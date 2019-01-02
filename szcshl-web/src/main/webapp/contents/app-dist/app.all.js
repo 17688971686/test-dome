@@ -1580,37 +1580,49 @@
             }
         }
         //评审费打印。判断开户行和银行账户信息完不完整
-        $rootScope.isBankCard = function (expertSelectedDtoList, signid, payData) {
+        $rootScope.isBankCard = function (signid, payData) {
             var flag = false;
             if (payData == undefined) {
                 flag = true;
                 bsWin.alert("评审费未发放，不能进行打印操作！");
             } else {
-                for (var i = 0; i < expertSelectedDtoList.length; i++) {
-                    //必须是确认参与的专家
-                    if (expertSelectedDtoList[i].isConfrim == "9"
-                        && expertSelectedDtoList[i].isJoin == "9") {
+                var isCheck = $("input[name = 'selectExpert']:checked");
+                if(!isCheck || isCheck.length == 0 ){
+                    bsWin.alert("请选择数据！");
+                }else{
+                    var ids = [];
+                    for (var i = 0; i < isCheck.length; i++) {
+                        var expertSelectedDtoList = JSON.parse(isCheck[i].value)  ;
+                        ids.push(expertSelectedDtoList.id);
+                        //必须是确认参与的专家
+                        if (expertSelectedDtoList.isConfrim == "9"
+                            && expertSelectedDtoList.isJoin == "9") {
 
 
-                        if (expertSelectedDtoList[i].expertDto.bankAccount == undefined
-                            || expertSelectedDtoList[i].expertDto.openingBank == undefined) {
+                            if (expertSelectedDtoList.expertDto.bankAccount == undefined
+                                || expertSelectedDtoList.expertDto.openingBank == undefined) {
 
-                            flag = true;
-                            bsWin.alert("专家的开户行和银行账户信息不全，请填写完整！");
-                            break;
-                        }
+                                flag = true;
+                                bsWin.alert("专家的开户行和银行账户信息不全，请填写完整！");
+                                break;
+                            }
 
-                        if (expertSelectedDtoList[i].reviewTaxes == undefined) {
-                            flag = true;
-                            bsWin.alert("评审费未计纳税额，不能进行打印操作！");
-                            break;
+                            if (expertSelectedDtoList.reviewTaxes == undefined) {
+                                flag = true;
+                                bsWin.alert("评审费未计纳税额，不能进行打印操作！");
+                                break;
+                            }
                         }
                     }
+                    var idStr = ids.join(',');
+
+                    if (!flag) {
+                        $rootScope.printFile(idStr, 'SIGN_EXPERT', 'SIGN_EXPERT_PAY');
+                    }
                 }
+
             }
-            if (!flag) {
-                $rootScope.printFile(signid, 'SIGN_EXPERT', 'SIGN_EXPERT_PAY');
-            }
+
         }
 
         /**
