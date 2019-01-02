@@ -8,6 +8,7 @@ import cs.common.utils.DateUtils;
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import cs.domain.expert.Expert;
+import cs.domain.expert.ExpertReview;
 import cs.domain.expert.ExpertSelected;
 import cs.domain.expert.ExpertSelected_;
 import cs.model.expert.*;
@@ -34,6 +35,8 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
     private ExpertSelectedRepo expertSelectedRepo;
     @Autowired
     private ExpertRepo expertRepo;
+    @Autowired
+    private ExpertReviewRepo expertReviewRepo;
 
     /**
      * 根据大类，小类和专家类别，综合评分确认已经抽取的专家
@@ -1245,6 +1248,31 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append(" delete from CS_EXPERT_SELECTED where BUSINESSID =:businessId ");
         sqlBuilder.setParam("businessId", businessId);
         executeSql(sqlBuilder);
+    }
+
+    @Override
+    public List<ExpertSelectedDto> expertSelectedByIds(String ids) {
+        List<ExpertSelectedDto> expertSelectedDtoList = new ArrayList<>();
+        if(Validate.isString(ids)){
+            String[] idArr = ids.split(",");
+            if(idArr != null && idArr.length > 0 ){
+                for(String id : idArr){
+                    ExpertSelected expertSelected = expertSelectedRepo.findById(ExpertSelected_.id.getName() , id);
+                    ExpertReview expertReview = expertSelected.getExpertReview();
+                    Expert expert = expertSelected.getExpert();
+                   ExpertSelectedDto dto = new ExpertSelectedDto();
+                   BeanCopierUtils.copyPropertiesIgnoreNull(expertSelected , dto);
+                   ExpertReviewDto expertReviewDto = new ExpertReviewDto();
+                   BeanCopierUtils.copyPropertiesIgnoreNull(expertReview , expertReviewDto);
+                   ExpertDto expertDto = new ExpertDto();
+                   BeanCopierUtils.copyPropertiesIgnoreNull(expert , expertDto);
+                   dto.setExpertReviewDto(expertReviewDto);
+                   dto.setExpertDto(expertDto);
+                   expertSelectedDtoList.add(dto);
+                }
+            }
+        }
+        return expertSelectedDtoList;
     }
 
     /**

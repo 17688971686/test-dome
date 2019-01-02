@@ -45,6 +45,7 @@
                 <table class="table table-bordered">
                     <caption class="text-center h3"><strong>{{vm.model.expertReviewDto.reviewTitle}}</strong></caption>
                     <tr class="active">
+                        <td style="max-width: 60px;"><input type="checkbox" ng-model="epCondtion"/></td>
                         <td style="max-width: 60px;">序号</td>
                         <td style="max-width: 180px;">姓名</td>
                         <td style="max-width: 360px;">身份证号码</td>
@@ -55,6 +56,7 @@
                         <td style="max-width: 260px;">是否函评</td>
                     </tr>
                     <tr ng-repeat="x in vm.model.expertReviewDto.expertSelectedDtoList | filter:{isConfrim:'9',isJoin:'9'}">
+                       <td><input type="checkbox" name="selectExpert" value="{{x}}" ng-checked="epCondtion"/></td>
                         <td>{{$index+1}}</td>
                         <td ng-if="x.reviewCost >1000" ng-dblclick="vm.splitPayment(x.id , x.expertDto , x.reviewCost)">{{x.expertDto.name}}</td>
                         <td ng-if="x.reviewCost <=1000">{{x.expertDto.name}}</td>
@@ -92,7 +94,14 @@
 </form>
 <!--
 <button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印</button>-->
-<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="isBankCard(vm.model.expertReviewDto.expertSelectedDtoList,vm.model.signid , vm.model.expertReviewDto.payDate)">打印预览</button>
+<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;"
+        ng-click="isBankCard(vm.model.signid , vm.model.expertReviewDto.payDate)">打印预览</button>
+<#--
+<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;"
+        ng-click="vm.printPayment(vm.model.signid , vm.model.expertReviewDto.payDate)">打印预览</button>
+-->
+
+
 
 <div style="display: none;" id="splitPayment">
     <form id="form" name="form">
