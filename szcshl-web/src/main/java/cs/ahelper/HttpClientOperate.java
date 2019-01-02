@@ -5,6 +5,7 @@ package cs.ahelper;
  */
 
 import cs.common.constants.SysConstants;
+import cs.common.utils.SMSUtils;
 import cs.common.utils.Validate;
 import org.apache.http.Consts;
 import org.apache.http.NameValuePair;
@@ -72,7 +73,8 @@ public class HttpClientOperate implements BeanFactoryAware{
     public String doGet(String url) throws ClientProtocolException, IOException{
         // 创建http GET请求
         HttpGet httpGet = new HttpGet(url);
-        httpGet.setConfig(requestConfig);//设置请求参数
+        //设置请求参数
+        httpGet.setConfig(requestConfig);
         CloseableHttpResponse response = null;
         try {
             // 执行请求
@@ -80,7 +82,7 @@ public class HttpClientOperate implements BeanFactoryAware{
             if(Validate.isObject(response)){
                 // 判断返回状态是否为200
                 if (response.getStatusLine().getStatusCode() == 200) {
-                    String content = EntityUtils.toString(response.getEntity(), "UTF-8");
+                    String content = EntityUtils.toString(response.getEntity(), SysConstants.UTF8);
                     return content;
                 }
             }
@@ -148,10 +150,49 @@ public class HttpClientOperate implements BeanFactoryAware{
             if (response != null) {
                 response.close();
             }
-            //httpclient.close();
         }
     }
 
+    /**
+     * 多人发送短信的post方法
+     * @param url
+     * @param json
+     * @param authorSecret
+     * @param accessToken
+     * @return
+     * @throws ClientProtocolException
+     * @throws IOException
+     */
+    public String sendMsgByPost(String url,String json,String authorSecret,String accessToken) throws IOException{
+        // 创建http POST请求
+        HttpPost httpPost = new HttpPost(url);
+        httpPost.setConfig(requestConfig);
+        /**
+         * addHeader，如果同名header已存在，则追加至原同名header后面。
+         * setHeader，如果同名header已存在，则覆盖一个同名header。
+         */
+        // 参数
+        httpPost.setHeader(SMSUtils.MSG_PARAMS.authorSecret.toString(), authorSecret);
+        httpPost.setHeader(SMSUtils.MSG_PARAMS.accessToken.toString(), accessToken);
+        // 传输的类型
+        httpPost.setHeader("Content-Type", "application/json");
+
+        if(Validate.isString(json)){
+            //标识出传递的参数是 application/json
+            StringEntity stringEntity = new StringEntity(json, ContentType.APPLICATION_JSON);
+            httpPost.setEntity(stringEntity);
+        }
+        CloseableHttpResponse response = null;
+        try {
+            // 执行请求
+            response = this.getHttpClient().execute(httpPost);
+            return EntityUtils.toString(response.getEntity(), SysConstants.UTF8);
+        } finally {
+            if (response != null) {
+                response.close();
+            }
+        }
+    }
     /**
      * 有参post请求,json交互
      * @autho 
@@ -175,12 +216,11 @@ public class HttpClientOperate implements BeanFactoryAware{
         try {
             // 执行请求
             response = this.getHttpClient().execute(httpPost);
-            return new HttpResult(response.getStatusLine().getStatusCode(),EntityUtils.toString(response.getEntity(), "UTF-8"));
+            return new HttpResult(response.getStatusLine().getStatusCode(),EntityUtils.toString(response.getEntity(), SysConstants.UTF8));
         } finally {
             if (response != null) {
                 response.close();
             }
-            //httpclient.close();
         }
     }
 
