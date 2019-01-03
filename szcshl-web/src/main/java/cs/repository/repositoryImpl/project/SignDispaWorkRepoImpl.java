@@ -532,6 +532,8 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
                         } else if ("非退文项目".equals(value)) {
                             //非退文项目=暂不实施+项目发文
                             hqlBuilder.append(" (dispatchType ='项目发文' or dispatchType ='暂不实施') ");
+                        }else{
+                            hqlBuilder.append(" dispatchType ='" + value + "' ");
                         }
                         break;
                     default:
