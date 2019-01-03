@@ -684,8 +684,8 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 }
                 Map<String, Object> workData = TemplateUtil.entryAddMap(workProgramDto);
 
-//                List<ExpertSelectedDto> expertSelectedDtoLists = expertSelectedRepo.findByBusinessId(workProgramDto.getId());
-                List<ExpertSelectedDto> expertSelectedDtoLists = workProgramDto.getExpertSelectedDtoList();
+                List<ExpertSelectedDto> expertSelectedDtoLists = expertSelectedRepo.findByBusinessId(workProgramDto.getId());
+//                List<ExpertSelectedDto> expertSelectedDtoLists = workProgramDto.getExpertSelectedDtoList();
 //                List<ExpertDto> expertDtoList = workProgramDto.getExpertDtoList();
                 ExpertDto[] expertDtos = null;
 
@@ -1105,7 +1105,17 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 if ("SIGN_EXPERT_SCORE".equals(stageType)) {
                     Map<String, Object> expertData = new HashMap<>();
                     ExpertReview expertReview = expertReviewRepo.findByBusinessId(businessId);
-                    expertData.put("expertList", expertReview.getExpertSelectedList());
+                    List<ExpertSelected> expertSelectedList = expertReview.getExpertSelectedList();
+                    List<ExpertSelected> expertSelectedList2 = new ArrayList<>();
+
+                    if(expertSelectedList != null && expertSelectedList.size() > 0 ){
+                        for(ExpertSelected expertSelected : expertSelectedList){
+                            if(EnumState.YES.getValue().equals( expertSelected.getIsJoin()) && EnumState.YES.getValue().equals(expertSelected.getIsConfrim()) ){
+                                expertSelectedList2.add(expertSelected);
+                            }
+                        }
+                    }
+                    expertData.put("expertList", expertSelectedList2 );
                     file = TemplateUtil.createDoc(expertData, Template.EXPERT_SCORD.getKey(), path);
                 }
                 break;
