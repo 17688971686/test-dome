@@ -1644,7 +1644,6 @@
          * @param vm
          */
         function QueryStatistics(vm, callBack) {
-
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/signView/QueryStatistics",

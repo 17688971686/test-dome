@@ -4,6 +4,7 @@ import cs.ahelper.projhelper.ProjUtil;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.constants.Constant;
+import cs.common.constants.SysConstants;
 import cs.common.utils.DateUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
@@ -400,7 +401,7 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
             //反转数据，要不然转义之后，数据无法解析
             queryData = XssShieldUtil.getInstance().unStripXss(queryData);
             queryData = queryData.replaceAll("\\\\", "");
-            queryArr = queryData.split(",");
+            queryArr = queryData.split(SysConstants.SEPARATE_COMMA);
         }
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append("select * from (select a.* , rownum rn from (");

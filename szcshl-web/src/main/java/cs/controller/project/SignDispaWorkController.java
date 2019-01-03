@@ -175,7 +175,6 @@ public class SignDispaWorkController {
     @RequestMapping(name = "通过条件查询进行统计分析", path = "QueryStatistics", method = RequestMethod.POST)
     @ResponseBody
     public List<SignDispaWork> queryStatistics(@RequestParam String queryData, @RequestParam int page) {
-        queryData = XssShieldUtil.getInstance().unStripXss(queryData);
         List<SignDispaWork> signDispaWorkList = signDispaWorkService.queryStatistics(queryData, page);
         if (!Validate.isList(signDispaWorkList)) {
             signDispaWorkList = new ArrayList<>();

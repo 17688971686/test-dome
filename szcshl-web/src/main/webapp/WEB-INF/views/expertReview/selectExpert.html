@@ -580,7 +580,7 @@
                 <td style="width:10%" align="center">备注</td>
             </tr>
 
-            <tr ng-if="vm.confirmEPListReplace.length==0" ng-repeat="x in vm.confirmEPList|filter:{isConfrim:'9',isJoin:'9'}|orderBy:x.index">
+            <tr ng-if="vm.confirmEPListReplace.length==0" ng-repeat="x in vm.confirmEPList|filter:{isConfrim:'9',isJoin:'9'} | orderBy:'expertSeq'">
                 <td>
                     <button  class="btn btn-sm btn-default" ng-click="vm.upRecord(vm.confirmEPList|filter:{isConfrim:'9',isJoin:'9'}, $index)"><span
                             class="glyphicon glyphicon-arrow-up"></span>上移
