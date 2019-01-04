@@ -1,6 +1,5 @@
 package cs.service.sys;
 
-import com.alibaba.fastjson.JSON;
 import cs.ahelper.HttpClientOperate;
 import cs.ahelper.HttpResult;
 import cs.common.RandomGUID;
@@ -31,7 +30,6 @@ import java.util.*;
 import static cs.common.cache.CacheConstant.IP_CACHE;
 import static cs.common.constants.SysConstants.SEPARATE_COMMA;
 import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
-import static cs.common.utils.SMSUtils.TOKEN_UNVALIABLE_CODE;
 
 /**
  * Created by ldm on 2018/6/31.
@@ -52,19 +50,21 @@ public class MsgServiceImpl implements MsgService{
 
     @Override
     public ResultMsg getMsgToken() {
-        ResultMsg resultMsg = ResultMsg.error("获取token没有返回信息！");
+        ResultMsg resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"获取token没有返回信息！");
+        Map<String, String> params = new HashMap<>();
+        params.put("account", SMSUtils.USER_NAME);
+        params.put("password", SMSUtils.USER_PASS);
         try {
-            String jsonInfo = httpClientOperate.doGet(SMSUtils.GET_TOKEN_URL, null);
+            String jsonInfo = httpClientOperate.doGet(SMSUtils.GET_TOKEN_URL, params);
             if(Validate.isString(jsonInfo)){
                 //先把String 形式的 JSON 转换位 JSON 对象
                 JSONObject json = new JSONObject(jsonInfo);
                 //得到 JSON 属性对象列表
                 if(Validate.isObject(json) ){
-                    String resultCode = json.getString(SMSUtils.MSG_PARAMS.resultCode.toString());
-                    if(SMSUtils.RESULT_CODE.SUCCESS.ordinal() == Integer.parseInt(resultCode)){
-                        JSONObject jo = json.getJSONObject(SMSUtils.MSG_PARAMS.resultData.toString());
-                        //token5分钟有效
-                        SMSUtils.resetTokenInfo(jo.getString(SMSUtils.MSG_PARAMS.accessToken.toString()),System.currentTimeMillis(),300L);
+                    String resultCode = json.getString("resultCode");
+                    if("0000000".equals(resultCode)){
+                        JSONObject jo = json.getJSONObject("data");
+                        SMSUtils.resetTokenInfo(jo.getString("accessToken"),System.currentTimeMillis(),jo.getLong("expiredValue"));
                         resultMsg.setFlag(true);
                     }
                     resultMsg.setReCode(resultCode);
@@ -83,14 +83,10 @@ public class MsgServiceImpl implements MsgService{
     public void sendMsg(List<User> recvUserList, String msgContent,SMSLog smsLog) {
         //是否多个人
         int mphoneCount = 0,error = 0;
-        //异常用户信息
-        String errorInfo = "",
-                //所用的用户
-               allUserName = "",
-                //发送短信的用户
-               sendUserName = "",
-                //发送的手机号码
-               phone="";
+        String errorInfo = "",       //异常用户信息
+               allUserName = "",     //所用的用户
+               sendUserName = "",    //发送短信的用户
+               phone="";             //发送的手机号码
         ResultMsg resultMsg =  new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"");
         for(User user : recvUserList){
             allUserName += user.getDisplayName()+" ";
@@ -102,10 +98,6 @@ public class MsgServiceImpl implements MsgService{
                 phone += Validate.removeSpace(user.getUserMPhone());
                 sendUserName += Validate.removeSpace(user.getDisplayName());
                 mphoneCount ++;
-                //多人发送，最多只能发送50个人
-                if(mphoneCount >= 50){
-                    break;
-                }
             }else{
                 errorInfo += "用户["+user.getDisplayName()+"]的手机号码无效;";
                 error ++;
@@ -124,66 +116,51 @@ public class MsgServiceImpl implements MsgService{
                 resultMsg.setReCode(Constant.MsgCode.ERROR.getValue());
                 resultMsg.setReMsg("发送短信没有返回信息!");
                 try {
-                    //url和密钥参数
-                    String smsUrl = "",authorSecret="";
-                    //创建一个json对象
-                    Map<String,String> paramsMap = new HashMap<>();
-                    //添加电话号码参数
-                    paramsMap.put(SMSUtils.MSG_PARAMS.Phone.toString(),phone);
-                    //添加短信内容参数
-                    paramsMap.put(SMSUtils.MSG_PARAMS.SmsContent.toString(),msgContent);
-
+                    String smsUrl = SMSUtils.SM_URL + "?mobile="+phone;
+                    //发送短信
+                    Map<String, String> params = new HashMap<>();
+                    params.put("accessToken", SMSUtils.getTOKEN());
+                    //params.put("mobile", phone);
+                    params.put("content", msgContent);
+                    //1、多人发送
                     if(mphoneCount == 1){
-                        //1、单人发送
-                        smsUrl = SMSUtils.SM_ONE_URL;
-                        authorSecret = SMSUtils.apiSecret_one;
+                        params.put("apiSecret", SMSUtils.apiSecret_one);
+                        params.put("serCode", SMSUtils.ONE_SERCODE);
                         smsLog.setManyOrOne("1");
+                    //2、单人发送
                     }else{
-                        //2、多人发送
-                        smsUrl = SMSUtils.SM_MORE_URL;
-                        authorSecret = SMSUtils.apiSecret_many;
+                        params.put("apiSecret", SMSUtils.apiSecret_many);
+                        params.put("serCode", SMSUtils.MANY_SERCODE);
                         smsLog.setManyOrOne("2");
                     }
                     smsLog.setIsCallApi(Constant.EnumState.YES.getValue());
-                    String msgJsonInfo = JSON.toJSONString(paramsMap);
-                    String smsResultJson = httpClientOperate.sendMsgByPost(smsUrl, msgJsonInfo,authorSecret,SMSUtils.getTOKEN());
-                    if(Validate.isString(smsResultJson)){
-                        //先把String 形式的 JSON 转换位 JSON 对象
-                        JSONObject json = new JSONObject(smsResultJson);
-                        //得到 JSON 属性对象列表
-                        if(Validate.isObject(json) ){
-                            String resultCode = json.getString(SMSUtils.MSG_PARAMS.resultCode.toString());
-
-                            resultMsg.setReMsg(json.getString(SMSUtils.MSG_PARAMS.resultMsg.toString()));
-                            resultMsg.setReCode(resultCode);
-
-                            if(SMSUtils.RESULT_CODE.SUCCESS.ordinal() == Integer.parseInt(resultCode)){
-                                //发送成功
-                                resultMsg.setFlag(true);
-                            }else{
-                                //发送失败，重新获取一次token
-                                SMSUtils.resetTokenInfo("", 0L, 0L);
-                                ResultMsg newResultMsg = getMsgToken();
-                                if (newResultMsg.isFlag()) {
-                                    //重新发一次
-                                    smsResultJson = httpClientOperate.sendMsgByPost(smsUrl, msgJsonInfo,authorSecret,SMSUtils.getTOKEN());
-                                    if(Validate.isString(smsResultJson)) {
-                                        //先把String 形式的 JSON 转换位 JSON 对象
-                                        JSONObject json2 = new JSONObject(smsResultJson);
-                                        //得到 JSON 属性对象列表
-                                        if (Validate.isObject(json2)) {
-                                            String resultCode2 = json2.getString(SMSUtils.MSG_PARAMS.resultCode.toString());
-                                            resultMsg.setReMsg(json2.getString(SMSUtils.MSG_PARAMS.resultMsg.toString()));
-                                            resultMsg.setReCode(resultCode2);
-                                            if (SMSUtils.RESULT_CODE.SUCCESS.ordinal() == Integer.parseInt(resultCode2)) {
-                                                //发送成功
-                                                resultMsg.setFlag(true);
-                                            }
-                                        }
-                                    }
+                    List<NameValuePair> parameters = new ArrayList<>();
+                    if(params != null){
+                        for(String key : params.keySet()){
+                            parameters.add(new BasicNameValuePair(key, params.get(key)));
+                        }
+                    }
+                    String url = EntityUtils.toString(new UrlEncodedFormEntity(parameters, Consts.UTF_8));
+                    smsUrl += "&"+url;
+                    String smsContent = httpClientOperate.doGet(smsUrl);
+                    String resultCode = SMSUtils.analysisResult(smsContent);
+                    if(Validate.isString(resultCode)) {
+                        if ("0000000".equals(resultCode)) {
+                            resultMsg.setFlag(true);
+                            //如果是token失效，则获取新token重新发送
+                        } else if ("0190007".equals(resultCode)) {
+                            SMSUtils.resetTokenInfo("", 0L, 0L);
+                            ResultMsg newResultMsg = getMsgToken();
+                            if (newResultMsg.isFlag()) {
+                                smsContent = httpClientOperate.doGet(smsUrl);
+                                resultCode = SMSUtils.analysisResult(smsContent);
+                                if ("0000000".equals(resultCode)) {
+                                    resultMsg.setFlag(true);
                                 }
                             }
                         }
+                        resultMsg.setReCode(resultCode);
+                        resultMsg.setReMsg(SMSUtils.getMsgInfoByCode(resultCode));
                     }
                 }catch (Exception e){
                     logger.error("发送短信异常："+e.getMessage());

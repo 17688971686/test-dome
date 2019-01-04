@@ -16,14 +16,9 @@ import java.util.Date;
 public class SMSUtils {
     private static Logger logger = Logger.getLogger(SMSUtils.class);
     /**
-     * 单条发送短信地址（旧地址：http://172.18.225.30:8080/jxh/open/serApi.do）
+     * 单条发送短信地址
      */
-    public static final String SM_ONE_URL = "http://172.18.225.31:9016/N/SmsApi/SendSmsToUser";
-
-    /**
-     * 多条发送地址
-     */
-    public static final String SM_MORE_URL = "http://172.18.225.31:9016/N/SmsApi/SendSmsToGroupUser";
+    public static final String SM_URL = "http://172.18.225.30:8080/jxh/open/serApi.do";
     /**
      * 单条短信的sercode
      */
@@ -42,9 +37,9 @@ public class SMSUtils {
     public static final String apiSecret_many = "d948e206924748b2d58396ead55108fc";
 
     /**
-     * 获取token地址(旧地址：http://172.18.225.30:8080/jxh/open/getAccessToken)
+     * 获取token地址
      */
-    public static final String GET_TOKEN_URL = "http://172.18.225.31:9016/N/BasicApi/GetAccessToken?appid=31ad58a4247d40b2940fc6a416b5d1ad&appsecret=f3435e901865420b937f2dc2161e3520";
+    public static final String GET_TOKEN_URL = "http://172.18.225.30:8080/jxh/open/getAccessToken";
 
     /**
      * MD5加密之后的账号密码，（但龙）
@@ -68,10 +63,6 @@ public class SMSUtils {
 
     public static final String COMPANY_SIGN = "【评审中心项目管理系统】";
 
-    /**
-     * token实现返回码
-     */
-    public static final String TOKEN_UNVALIABLE_CODE = "0190007";
 
     /**
      * 短信发送返回码

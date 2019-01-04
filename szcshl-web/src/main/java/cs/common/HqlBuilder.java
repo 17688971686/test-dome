@@ -203,4 +203,16 @@ public class HqlBuilder {
 		}
 		return types;
 	}
+
+	public void setParams(List<String> params) {
+		this.params = params;
+	}
+
+	public void setValues(List<Object> values) {
+		this.values = values;
+	}
+
+	public void setTypes(List<Type> types) {
+		this.types = types;
+	}
 }

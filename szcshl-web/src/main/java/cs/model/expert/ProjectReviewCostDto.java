@@ -13,17 +13,30 @@ import java.util.List;
  * @author zsl
  */
 public class ProjectReviewCostDto {
-    //
+    /**
+     * 项目编码
+     */
     private String projectcode;
-    //项目名称
+    /**
+     * 项目名称
+     */
     private String projectname;
-    //建设单位
+    /**
+     * 建设单位
+     */
     private String builtcompanyname;
+    /**
+     * 评审阶段
+     */
     private String reviewstage;
-    //负责人
+    /**
+     * 负责人
+     */
     private String principal;
 
-    //评审费用
+    /**
+     * 评审费用
+     */
     private BigDecimal totalCost;
     /**
      * 评审费发放日期
@@ -31,13 +44,19 @@ public class ProjectReviewCostDto {
     @JSONField(format = "yyyy-MM-dd")
     private Date payDate;
 
-    //申报金额
+    /**
+     * 申报金额
+     */
     private BigDecimal declareValue;
 
-    //审定金额
+    /**
+     * 审定金额
+     */
     private BigDecimal authorizeValue;
 
-    //签收时间
+    /**
+     * 签收时间
+     */
     @JSONField(format = "yyyy-MM-dd")
     private Date signdate;
     
@@ -230,5 +249,26 @@ public class ProjectReviewCostDto {
 	public void setSignNum(String signNum) {
 		this.signNum = signNum;
 	}
-    
+
+
+    /**
+     * 初始化信息
+     * @param reObj
+     */
+	public void initData(Object[] reObj){
+        this.setBusinessId(reObj[0].toString());
+        this.setProjectcode(reObj[1] == null ? "" : reObj[1].toString());
+        this.setProjectname(reObj[2] == null ? "" : reObj[2].toString());
+        this.setBuiltcompanyname(reObj[3] == null ? "" : reObj[3].toString());
+        this.setReviewstage(reObj[4] == null ? "" : reObj[4].toString());
+        this.setDeclareValue(reObj[5] == null ? null : (BigDecimal) reObj[5]);
+        this.setAuthorizeValue(reObj[6] == null ? null : (BigDecimal) reObj[6]);
+        this.setSigndate(reObj[7] == null ? null : (Date) reObj[7]);
+        this.setDeptName(reObj[8] == null ? "" : reObj[8].toString());
+        this.setPrincipal(reObj[9] == null ? "" : reObj[9].toString());
+        //费用只取专家评审费
+        this.setTotalCost(reObj[11] == null ? null : (BigDecimal) reObj[11]);
+        this.setPayDate(reObj[13] == null ? null : (Date) reObj[13]);
+
+    }
 }

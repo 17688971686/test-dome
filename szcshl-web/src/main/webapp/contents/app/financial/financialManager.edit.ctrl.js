@@ -82,15 +82,13 @@
         vm.queryFinancl = function (){
             //统计评审费信息
             financialManagerSvc.initfinancial(vm, function (data) {
-
                 vm.stageCountList = [];
                 if (data) {
                     vm.stageCountList = data.value;
                     vm.page.callback(data.count);//请求回调时传入总记录数
+                    vm.page.selPage(1);          //跳回第一页
                 }
-
             });
-
         }
 
         /**

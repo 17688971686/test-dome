@@ -67,27 +67,27 @@
         <span class="label-primary span_flag"></span> 已发送报销
         <span class="label-success span_flag" ></span> 已发送存档
         <span class="label-default span_flag" ></span> 已办结
-        <span id="span1" style="margin-left: 15px;"><img src="${path}/contents/images/purple.png" style="width: 16px; height: 16px;"></span></span>暂停
-        <span id="span2"><img src="${path}/contents/images/yellow.png" style="width: 16px; height: 16px;">少于3个工作日
+        <span id="span1" style="margin-left: 15px;"><img src="${path}/contents/images/purple.png" style="width: 16px; height: 16px;"/></span>暂停
+        <span id="span2"><img src="${path}/contents/images/yellow.png" style="width: 16px; height: 16px;" /></span>少于3个工作日
         <span id="span3"><img src="${path}/contents/images/red.png" style="width: 16px; height: 16px;"></span>发文超期
         <span id="span4"><img src="${path}/contents/images/dark.png" style="width: 16px; height: 16px;"></span>超过25个工作日未存档
         <span id="span5"><img src="${path}/contents/images/black.png" style="width: 16px; height: 16px;"></span>存档超期
         】
     </div>
 
+    <!--<div id="expertPaymentGrid" class="grid" kendo-grid="grid" k-options="vm.paymentListOptions"></div>-->
 
     <div>
         <table class="table table-bordered"  style="margin-top: 5px;">
             <tr>
-                <td width="5%"></td>
-                <td width="5%">序号</td>
-                <td width="15%">项目名称</td>
-                <th class="text-center" style="width:20%">建设单位</th>
-                <td width="15%">项目阶段</td>
-                <td width="10%">项目负责人</td>
-                <th class="text-center" style="width:10%">计划专家费用</th>
-                <th class="text-center" style="width:10%;">付款日期</th>
-
+                <th width="5%"></th>
+                <th width="5%">序号</th>
+                <th width="15%">项目名称</th>
+                <th style="width:20%">建设单位</th>
+                <th width="15%">项目阶段</th>
+                <th width="10%">项目负责人</th>
+                <th style="width:10%">计划专家费用</th>
+                <th style="width:10%;">付款日期</th>
             </tr>
             <tr ng-repeat="s in vm.stageCountList">
                 <td class="text-center">
@@ -115,12 +115,12 @@
                               {{ $index + vm.price.skip }}
                     </span>
                 </td>
-                <td class="text-center"><a href="" ng-click="vm.showCostWindow(s,'reviewCostWindow')">{{s.projectname}}</a></td>
-                <td class="text-center">{{s.builtcompanyname}}</td>
-                <td class="text-center">{{s.reviewstage}}</td>
-                <td class="text-center">{{s.principal}}</td>
-                <td class="text-center">{{s.totalCost}}</td>
-                <td class="text-center">{{s.payDate}}</td>
+                <td ><a href="" ng-click="vm.showCostWindow(s,'reviewCostWindow')">{{s.projectname}}</a></td>
+                <td >{{s.builtcompanyname}}</td>
+                <td >{{s.reviewstage}}</td>
+                <td >{{s.principal}}</td>
+                <td >{{s.totalCost}}</td>
+                <td >{{s.payDate}}</td>
             </tr>
             <tr>
                 <td colspan="9">

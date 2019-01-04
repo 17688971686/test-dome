@@ -952,15 +952,17 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
     @Override
     public PageModelDto<ProjectReviewCostDto> findProjectRevireCostBak(ProjectReviewCostDto projectReviewCostDto, String skip, String size) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
-        HqlBuilder sqlBuilders = HqlBuilder.create(); //返回list的语句
-        HqlBuilder sqlBuilder1 = HqlBuilder.create();//返回总页数的语句
         sqlBuilder.append(" SELECT sdk.signid,sdk.projectcode,sdk.projectname,sdk.builtcompanyname,sdk.reviewstage, ");
         sqlBuilder.append(" sdk.appalyInvestment,sdk.authorizevalue,sdk.signdate,sdk.MORGNAME,sdk.ALLPRIUSER, ");
         sqlBuilder.append(" CFM.CHARGENAME,CFM.CHARGE,CFM.STAGECOUNT,CFM.PAYMENTDATA ");
         sqlBuilder.append(" FROM SIGN_DISP_WORK sdk LEFT JOIN CS_FINANCIAL_MANAGER cfm on CFM.BUSINESSID = SDK.SIGNID ");
-        sqlBuilder.append(" WHERE sdk.signState != '" + Constant.EnumState.STOP.getValue() + "' and sdk.signState != '" + Constant.EnumState.DELETE.getValue() + "'");
-        sqlBuilder.append(" AND (sdk.isassistproc is null or sdk.isassistproc = '" + Constant.EnumState.NO.getValue() + "') ");
-        sqlBuilder.append(" AND (CFM.ID is null or (CFM.CHARGETYPE = '" + Constant.EnumState.PROCESS.getValue() + "' AND CFM.CHARGENAME = '专家评审费' AND CFM.PAYMENTDATA IS NOT NULL ");
+        sqlBuilder.append(" WHERE sdk.signState != :signState1 and sdk.signState != :signState2 ");
+        sqlBuilder.setParam("signState1", Constant.EnumState.STOP.getValue());
+        sqlBuilder.setParam("signState2", Constant.EnumState.DELETE.getValue());
+        sqlBuilder.append(" AND (sdk.isassistproc is null or sdk.isassistproc = :isassistproc ) ");
+        sqlBuilder.setParam("isassistproc", Constant.EnumState.NO.getValue());
+        sqlBuilder.append(" AND (CFM.ID is null or (CFM.CHARGETYPE = :chargeType AND CFM.CHARGENAME = '专家评审费' AND CFM.PAYMENTDATA IS NOT NULL ");
+        sqlBuilder.setParam("chargeType", Constant.EnumState.PROCESS.getValue());
 
         if (Validate.isObject(projectReviewCostDto)) {
             if (StringUtil.isNotEmpty(projectReviewCostDto.getBeginTime())) {
@@ -1000,20 +1002,22 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
         sqlBuilder.append(" ORDER BY CFM.PAYMENTDATA DESC ");
 
         //返回总页数
-       /* sqlBuilder.append("select count(*)");
-        sqlBuilder1.append(sqlBuilder.getHqlString());
-        int total = signDispaWorkRepo.returnIntBySql(sqlBuilder1);*/
-
-
-        //返回总页数
+        HqlBuilder sqlBuilder1 = HqlBuilder.create();
         sqlBuilder1.append("select count(*) from ( ");
         sqlBuilder1.append(sqlBuilder.getHqlString());
+        sqlBuilder1.setParams(sqlBuilder.getParams());
+        sqlBuilder1.setValues(sqlBuilder.getValues());
+        sqlBuilder1.setTypes(sqlBuilder.getTypes());
         sqlBuilder1.append(" )");
         int total = expertSelectedRepo.returnIntBySql(sqlBuilder1);
         //返回list
+        HqlBuilder sqlBuilders = HqlBuilder.create();
         sqlBuilders.append("select * from ( select s.*,rownum as num  from  ( ");
         sqlBuilders.append(sqlBuilder.getHqlString() + ")s ");
-        sqlBuilders.append(") where num between :skip and :size ");
+        sqlBuilders.setParams(sqlBuilder.getParams());
+        sqlBuilders.setValues(sqlBuilder.getValues());
+        sqlBuilders.setTypes(sqlBuilder.getTypes());
+        sqlBuilders.append(" ) where num between :skip and :size ");
         sqlBuilders.setParam("skip", skip).setParam("size", size);
 
         PageModelDto<ProjectReviewCostDto> pageModelDto = new PageModelDto<ProjectReviewCostDto>();
@@ -1023,22 +1027,8 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
 
         if (Validate.isList(projectReviewCostList)) {
             for (int i = 0; i < projectReviewCostList.size(); i++) {
-                Object[] reObj = projectReviewCostList.get(i);
                 ProjectReviewCostDto projCostDto = new ProjectReviewCostDto();
-                projCostDto.setBusinessId(reObj[0].toString());
-                projCostDto.setProjectcode(reObj[1] == null ? "" : reObj[1].toString());
-                projCostDto.setProjectname(reObj[2] == null ? "" : reObj[2].toString());
-                projCostDto.setBuiltcompanyname(reObj[3] == null ? "" : reObj[3].toString());
-                projCostDto.setReviewstage(reObj[4] == null ? "" : reObj[4].toString());
-                projCostDto.setDeclareValue(reObj[5] == null ? null : (BigDecimal) reObj[5]);
-                projCostDto.setAuthorizeValue(reObj[6] == null ? null : (BigDecimal) reObj[6]);
-                projCostDto.setSigndate(reObj[7] == null ? null : (Date) reObj[7]);
-                projCostDto.setDeptName(reObj[8] == null ? "" : reObj[8].toString());
-                projCostDto.setPrincipal(reObj[9] == null ? "" : reObj[9].toString());
-                //费用只取专家评审费
-                projCostDto.setTotalCost(reObj[11] == null ? null : (BigDecimal) reObj[11]);
-                projCostDto.setPayDate(reObj[13] == null ? null : (Date) reObj[13]);
-
+                projCostDto.initData(projectReviewCostList.get(i));
                 projectReviewCostDtoList.add(projCostDto);
             }
         }
