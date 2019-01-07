@@ -45,8 +45,8 @@
 	padding: 5px 10px;
 }
 .lgx_page_l select.lgx_page_class{
-	padding: 12px 8px;
-	float: left;
+	/*padding: 12px 8px;
+	float: left;*/
 }
 .lgx_page_l input.lgx_page_class{
 	width: 3em;

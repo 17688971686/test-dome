@@ -45,7 +45,8 @@
                             skip = o.skip
                         }
                         vm.price.skip = skip;//页码
-                        vm.price.size = o.size + o.skip;//页数
+                        vm.price.size = parseInt(o.size) + parseInt(o.skip);//页数
+
                         financialManagerSvc.initfinancial(vm, function (data) {
                             vm.stageCountList = [];
                             if(data){
