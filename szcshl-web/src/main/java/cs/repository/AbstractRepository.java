@@ -1,7 +1,6 @@
 package cs.repository;
 
 import cs.common.HqlBuilder;
-import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import cs.repository.odata.ODataObj;
 import org.apache.log4j.Logger;
