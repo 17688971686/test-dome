@@ -18,11 +18,13 @@ import cs.domain.sys.SMSLog;
 import cs.domain.sys.User;
 import cs.model.project.SignDto;
 import cs.model.project.SignPreDto;
+import cs.model.sys.SysConfigDto;
 import cs.model.sys.SysFileDto;
 import cs.service.restService.SignRestService;
 import cs.service.rtx.RTXService;
 import cs.service.sys.LogService;
 import cs.service.sys.MsgService;
+import cs.service.sys.SysConfigService;
 import cs.service.sys.WorkdayService;
 import cs.threadtask.MsgThread;
 import cs.xss.XssShieldUtil;
@@ -67,6 +69,9 @@ public class SysRestController {
 
     @Autowired
     private WorkdayService workdayService;
+
+    @Autowired
+    private SysConfigService sysConfigService;
     /**
      * 项目签收信息
      *
@@ -80,15 +85,12 @@ public class SysRestController {
         String projName = "";
         String fileCode = "";
         try {
-            //反编译json串
-            //signDtoJson = XssShieldUtil.getInstance().unStripXss(signDtoJson);
             //解析json串
             SignDto signDto = JSON.parseObject(signDtoJson, SignDto.class);
             if(Validate.isObject(signDto)){
                 projName = signDto.getProjectname();
                 fileCode = signDto.getFilecode();
             }
-
             resultMsg = signRestService.pushProject(signDto, true);
         } catch (Exception e) {
             resultMsg = new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(), e.getMessage());
@@ -107,8 +109,9 @@ public class SysRestController {
                     Sign sign = (Sign) resultMsg.getReObj();
                     smsLog.setBuninessId(sign.getSignid());
                 }
+                SysConfigDto msgTypeDto = sysConfigService.findByKey(Constant.RevireStageKey.MSG_TYPE.getValue());
                 ExecutorService threadPool = Executors.newSingleThreadExecutor();
-                threadPool.execute(new MsgThread(msgService,recvUserList,msgContent,smsLog));
+                threadPool.execute(new MsgThread(msgService,recvUserList,msgContent,smsLog,SMSUtils.checkMsgType(msgTypeDto)));
                 threadPool.shutdown();
             }
         }

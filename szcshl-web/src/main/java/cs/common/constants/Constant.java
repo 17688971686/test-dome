@@ -106,10 +106,6 @@ public class Constant {
      * 3
      */
     public static Float WORK_DAY_3 = 3f;
-    /**
-     * 初始化用户密码
-     */
-    public static final String PASSWORD = "1";
 
     /**
      * 插件默认地址
@@ -785,6 +781,7 @@ public class Constant {
         SMS_SING_NOTICE_USER("SMS_SING_NOTICE_USER"),     //委里项目推送短信通知人配置
         SMS_SENDFGW_FAIL_USER("SMS_SENDFGW_FAIL_USER"),    //回传委里失败推送的短信通知人配置
         FILE_UPLOAD_PATH("FILE_UPLOAD_PATH"),              //缓存地址
+        MSG_TYPE("MSG_TYPE"),           //系统发送短信方式（1：旧方式，2：新方式）
         LOCAL_URL("LOCAL_URL");         //系统访问地址
         private String value;
 

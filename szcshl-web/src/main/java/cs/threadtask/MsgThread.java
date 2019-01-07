@@ -20,15 +20,22 @@ public class MsgThread implements Runnable{
 
     private SMSLog smsLog;
 
-    public MsgThread(MsgService msgService,List<User> recvUserList,String  msgContent,SMSLog smsLog) {
+    private boolean newType;
+
+    public MsgThread(MsgService msgService,List<User> recvUserList,String  msgContent,SMSLog smsLog,boolean newType) {
         this.msgService = msgService;
         this.recvUserList = recvUserList;
         this.msgContent = msgContent;
         this.smsLog = smsLog;
+        this.newType = newType;
     }
 
     @Override
     public void run() {
-        msgService.sendMsg(recvUserList,msgContent,smsLog);
+        if(newType){
+            msgService.sendMsgNew(recvUserList,msgContent,smsLog);
+        }else{
+            msgService.sendMsg(recvUserList,msgContent,smsLog);
+        }
     }
 }
