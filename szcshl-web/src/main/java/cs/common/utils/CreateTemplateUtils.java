@@ -1071,7 +1071,7 @@ public class CreateTemplateUtils {
      * @param proReviewConditionDtoList
      * @return
      */
-    public static File createMonthTemplate(MonthlyNewsletterDto monthlyNewsletterDto, Integer signCount, Integer reviewCount, List<ProReviewConditionDto> proReviewConditionDtoList, List<ProReviewConditionDto> proReviewConditionDtoAllList, List<ProReviewConditionDto> proReviewConditionByTypeList, Integer totalNum, ProReviewConditionDto proReviewConditionCur, ProReviewConditionDto proReviewConditionSum, Map<String, List<ProReviewConditionDto>> proReviewCondDetailMap, Integer[] proCountArr, ProReviewConditionDto acvanceCurDto, ProReviewConditionDto acvanceTotalDto, ProReviewConditionDto backDispatchTotalCur, List<ProReviewConditionDto> backDispatchList) {
+    public static File createMonthTemplate(MonthlyNewsletterDto monthlyNewsletterDto, Integer signCount, Integer reviewCount, List<ProReviewConditionDto> proReviewConditionDtoList, List<ProReviewConditionDto> proReviewConditionDtoAllList, List<ProReviewConditionDto> proReviewConditionByTypeList, Integer totalNum, ProReviewConditionDto proReviewConditionCur, ProReviewConditionDto proReviewConditionSum, Map<String, List<ProReviewConditionDto>> proReviewCondDetailMap, Integer[] proCountArr, ProReviewConditionDto acvanceCurDto, ProReviewConditionDto acvanceTotalDto, ProReviewConditionDto backDispatchTotalCur, List<ProReviewConditionDto> backDispatchList , String[] expertReviewMeeting) {
         Map<String, Object> dataMap = new HashMap<>();
         //报告年度
         dataMap.put("reportMultiyear", monthlyNewsletterDto.getReportMultiyear());
@@ -1123,7 +1123,13 @@ public class CreateTemplateUtils {
                     String[] tempArr = reviewStage[i].split("-");
                     if (tempArr[1].equals(proReviewConditionDtoList.get(j).getReviewStage())) {
                         if (null == proReviewConditionDtoList.get(j).getIsadvanced() || "0".equals(proReviewConditionDtoList.get(j).getIsadvanced())) {
-                            dataMap.put(tempArr[0], "完成" + tempArr[1] + "评审" + (proReviewConditionDtoList.get(j).getProCount() != null ? proReviewConditionDtoList.get(j).getProCount() : 0) + "项，" +
+                            String temp = tempArr[1];
+                            if(tempArr[1] != null && Constant.STAGE_BUDGET.equals(tempArr[1])){
+                                temp = "完成初步涉及概算审核";
+                            }else{
+                                temp = "完成" + temp + "评审";
+                            }
+                            dataMap.put(tempArr[0], temp + (proReviewConditionDtoList.get(j).getProCount() != null ? proReviewConditionDtoList.get(j).getProCount() : 0) + "项，" +
                                     "申报总投资" + (proReviewConditionDtoList.get(j).getDeclareValue() != null ? proReviewConditionDtoList.get(j).getDeclareValue() : 0)
                                     + "亿元，审核后总投资 " + (proReviewConditionDtoList.get(j).getAuthorizeValue() != null ? proReviewConditionDtoList.get(j).getAuthorizeValue() : 0) + "亿元，" +
                                     "累计净核减投资 " + (proReviewConditionDtoList.get(j).getLjhj() != null ? proReviewConditionDtoList.get(j).getLjhj() : 0)
@@ -1177,7 +1183,13 @@ public class CreateTemplateUtils {
                             if (reviewTotal != 0) {
                                 proCent = String.format("%.2f", (proReviewConditionDtoAllList.get(j).getProCount().floatValue() / (float) reviewTotal) * 100) + "%";
                             }
-                            dataMap.put(tempArr[0], "完成" + tempArr[1] + "评审" + (proReviewConditionDtoAllList.get(j).getProCount() != null ? proReviewConditionDtoAllList.get(j).getProCount() : 0) + "项，" +
+                            String temp = tempArr[1];
+                            if(tempArr[1] != null && Constant.STAGE_BUDGET.equals(tempArr[1])){
+                                temp = "完成初步涉及概算审核";
+                            }else{
+                                temp = "完成" + temp + "评审";
+                            }
+                            dataMap.put(tempArr[0], temp + (proReviewConditionDtoAllList.get(j).getProCount() != null ? proReviewConditionDtoAllList.get(j).getProCount() : 0) + "项，" +
                                     "占评审项目数的" + (proCent != null ? proCent : 0) + "" +
                                     "申报总投资" + (proReviewConditionDtoAllList.get(j).getDeclareValue() != null ? proReviewConditionDtoAllList.get(j).getDeclareValue() : 0)
                                     + "亿元，审核后总投资 " + (proReviewConditionDtoAllList.get(j).getAuthorizeValue() != null ? proReviewConditionDtoAllList.get(j).getAuthorizeValue() : 0) + "亿元，" +
@@ -1251,6 +1263,27 @@ public class CreateTemplateUtils {
         String showName = Constant.Template.MONTH_REPORT.getValue() + Constant.Template.WORD_SUFFIX.getKey();
         String path = SysFileUtil.getUploadPath();
         String relativeFileUrl = SysFileUtil.generatRelativeUrl(path, Constant.Template.MONTH_REPORT.getValue(), null, null, showName);
+
+        //设置被退文项目
+        if (backDispatchList != null && backDispatchList.size() > 0 ) {
+            String twProjects = "";
+            for (ProReviewConditionDto p : backDispatchList) {
+                if(Validate.isString(twProjects)){
+                    twProjects += "、";
+                }
+                twProjects += p.getProjectName();
+            }
+
+            dataMap.put("twProjectList" , twProjects);
+        }
+
+        //记录专家评审场次
+        if(expertReviewMeeting != null){
+
+            String expertReviewMeetingMsg = "本月共组织召开" + expertReviewMeeting[0] + "等专家评审会" + expertReviewMeeting[1] + "场。";
+
+            dataMap.put("expertReviewMeeting" , expertReviewMeetingMsg);
+        }
 
         File docFile = TemplateUtil.createDoc(dataMap, Constant.Template.MONTH_REPORT.getKey(), path + File.separator + relativeFileUrl);
        /* String filePath = docFile.getAbsolutePath();

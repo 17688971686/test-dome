@@ -164,4 +164,11 @@ public interface ExpertSelectedService {
 	 */
 	PageModelDto<ProjectReviewCostDto> findProjectRevireCostBak(ProjectReviewCostDto projectReviewCostDto,String skip, String size);
 
+	/**
+	 * 本月专家评审会情况统计
+	 * @param projectReviewConditionDto
+	 * @return
+	 */
+	String[] expertReviewMeeting(ProReviewConditionDto projectReviewConditionDto);
+
 }

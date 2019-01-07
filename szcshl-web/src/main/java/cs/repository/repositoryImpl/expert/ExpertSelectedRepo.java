@@ -197,4 +197,11 @@ public interface ExpertSelectedRepo extends IRepository<ExpertSelected, String> 
      */
     List<ExpertSelectedDto> expertSelectedByIds(String ids);
 
+    /**
+     * 本月专家评审会情况统计
+     * @param projectReviewConditionDto
+     * @return
+     */
+    String[] expertReviewMeeting(ProReviewConditionDto projectReviewConditionDto);
+
 }
