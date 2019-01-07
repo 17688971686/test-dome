@@ -43,4 +43,9 @@ public interface MsgService {
      */
     List<User> getNoticeUserByConfigKey(String configKey);
 
+    /**
+     * 确定短信发送方式
+     * @return
+     */
+    boolean checkMsgType();
 }

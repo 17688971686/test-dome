@@ -1,7 +1,9 @@
 package cs.threadtask;
 
+import cs.common.constants.Constant;
 import cs.domain.sys.SMSLog;
 import cs.domain.sys.User;
+import cs.model.sys.SysConfigDto;
 import cs.service.sys.MsgService;
 
 import java.util.List;
@@ -20,18 +22,16 @@ public class MsgThread implements Runnable{
 
     private SMSLog smsLog;
 
-    private boolean newType;
-
-    public MsgThread(MsgService msgService,List<User> recvUserList,String  msgContent,SMSLog smsLog,boolean newType) {
+    public MsgThread(MsgService msgService,List<User> recvUserList,String  msgContent,SMSLog smsLog) {
         this.msgService = msgService;
         this.recvUserList = recvUserList;
         this.msgContent = msgContent;
         this.smsLog = smsLog;
-        this.newType = newType;
     }
 
     @Override
     public void run() {
+        boolean newType = msgService.checkMsgType();
         if(newType){
             msgService.sendMsgNew(recvUserList,msgContent,smsLog);
         }else{

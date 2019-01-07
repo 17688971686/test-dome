@@ -417,4 +417,10 @@ public class MsgServiceImpl implements MsgService {
         return null;
     }
 
+    @Override
+    public boolean checkMsgType() {
+        SysConfigDto msgTypeDto = sysConfigService.findByKey(Constant.RevireStageKey.MSG_TYPE.getValue());
+        return SMSUtils.checkMsgType(msgTypeDto);
+    }
+
 }

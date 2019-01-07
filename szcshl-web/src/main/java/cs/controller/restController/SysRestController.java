@@ -18,7 +18,6 @@ import cs.domain.sys.SMSLog;
 import cs.domain.sys.User;
 import cs.model.project.SignDto;
 import cs.model.project.SignPreDto;
-import cs.model.sys.SysConfigDto;
 import cs.model.sys.SysFileDto;
 import cs.service.restService.SignRestService;
 import cs.service.rtx.RTXService;
@@ -27,7 +26,6 @@ import cs.service.sys.MsgService;
 import cs.service.sys.SysConfigService;
 import cs.service.sys.WorkdayService;
 import cs.threadtask.MsgThread;
-import cs.xss.XssShieldUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -109,9 +107,8 @@ public class SysRestController {
                     Sign sign = (Sign) resultMsg.getReObj();
                     smsLog.setBuninessId(sign.getSignid());
                 }
-                SysConfigDto msgTypeDto = sysConfigService.findByKey(Constant.RevireStageKey.MSG_TYPE.getValue());
                 ExecutorService threadPool = Executors.newSingleThreadExecutor();
-                threadPool.execute(new MsgThread(msgService,recvUserList,msgContent,smsLog,SMSUtils.checkMsgType(msgTypeDto)));
+                threadPool.execute(new MsgThread(msgService,recvUserList,msgContent,smsLog));
                 threadPool.shutdown();
             }
         }
