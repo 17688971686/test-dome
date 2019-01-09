@@ -2,6 +2,7 @@ package cs.service.monthly;
 
 import cs.common.ResultMsg;
 import cs.model.PageModelDto;
+import cs.model.expert.ProReviewConditionDto;
 import cs.model.flow.FlowDto;
 import cs.model.monthly.MonthlyNewsletterDto;
 import cs.repository.odata.ODataObj;
@@ -73,4 +74,5 @@ public interface MonthlyNewsletterService {
     ResultMsg endFlow(String businessKey);
 
 	ResultMsg restoreMonthlyData(String id);
+
 }

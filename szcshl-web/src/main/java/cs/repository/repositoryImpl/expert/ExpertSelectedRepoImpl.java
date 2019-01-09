@@ -767,8 +767,8 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         Integer proCount = 0;
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("select count(s.projectcode) from cs_sign s  ");
-        sqlBuilder.append("left join cs_dispatch_doc d ");
-        sqlBuilder.append("on s.signid = d.signid ");
+//        sqlBuilder.append("left join cs_dispatch_doc d ");
+//        sqlBuilder.append("on s.signid = d.signid ");
         sqlBuilder.append("where 1 = 1 ");
         //sqlBuilder.append("and s.signstate = '1'  ");
         sqlBuilder.append("and s.signstate != '7' ");//过滤删除
@@ -1477,7 +1477,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
 
         }
 //        }
-        sqlBuilder.append("and d.declarevalue < 3000  ");
+        sqlBuilder.append("and d.declarevalue < 5000  ");
         sqlBuilder.append("union all  ");
         sqlBuilder.append("select count(s.projectcode) procount  from cs_sign s  ");
         sqlBuilder.append("left join cs_dispatch_doc d  ");
@@ -1489,7 +1489,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  "); //排除预签收
         sqlBuilder.append("and D.DISPATCHDATE >= to_date('" + beginTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
         sqlBuilder.append("and D.DISPATCHDATE <= to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
-        sqlBuilder.append("and d.declarevalue >= 3000  and d.declarevalue < 10000   ");
+        sqlBuilder.append("and d.declarevalue >= 5000  and d.declarevalue < 10000   ");
         sqlBuilder.append("union all  ");
         sqlBuilder.append("select count(s.projectcode) procount  from cs_sign s  ");
         sqlBuilder.append("left join cs_dispatch_doc d  ");
@@ -1507,13 +1507,24 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("left join cs_dispatch_doc d  ");
         sqlBuilder.append("on s.signid = d.signid  ");
         sqlBuilder.append("where 1 = 1 ");
+        sqlBuilder.append("and s.signstate != '7' ");//过滤删除
+        sqlBuilder.append("and s.processstate >= 6  ");//已发文
+        sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  "); //排除预签收
+        sqlBuilder.append("and D.DISPATCHDATE >= to_date('" + beginTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
+        sqlBuilder.append("and D.DISPATCHDATE <= to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
+        sqlBuilder.append("and d.declarevalue >= 100000  and d.declarevalue < 500000   ");
+        sqlBuilder.append("union all  ");
+        sqlBuilder.append("select count(s.projectcode) procount  from cs_sign s  ");
+        sqlBuilder.append("left join cs_dispatch_doc d  ");
+        sqlBuilder.append("on s.signid = d.signid  ");
+        sqlBuilder.append("where 1 = 1 ");
 //        sqlBuilder.append("and s.signstate = '9'  ");
         sqlBuilder.append("and s.signstate != '7' ");//过滤删除
         sqlBuilder.append("and s.processstate >= 6  ");//已发文
         sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  "); //排除预签收
         sqlBuilder.append("and D.DISPATCHDATE >= to_date('" + beginTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
         sqlBuilder.append("and D.DISPATCHDATE <= to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
-        sqlBuilder.append("and d.declarevalue >= 100000   ");
+        sqlBuilder.append("and d.declarevalue >= 500000   ");
 
         List projectReviewConList = expertSelectedRepo.getObjectArray(sqlBuilder);
         Integer[] proCountArr = new Integer[projectReviewConList.size() + 1];
@@ -1946,7 +1957,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
 
             if (null != projectReviewCon[0]) {
                if(Validate.isString(reviewName)){
-                   reviewName += "，";
+                   reviewName += "、";
                }
                if(Constant.STAGE_BUDGET.equals(projectReviewCon[0])){
                    reviewName += "初步涉及概算审核";

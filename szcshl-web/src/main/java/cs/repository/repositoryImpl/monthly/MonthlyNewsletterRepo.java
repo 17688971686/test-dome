@@ -2,7 +2,11 @@ package cs.repository.repositoryImpl.monthly;
 
 import cs.common.ResultMsg;
 import cs.domain.monthly.MonthlyNewsletter;
+import cs.model.expert.ProReviewConditionDto;
 import cs.repository.IRepository;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Description: 月报简报 数据操作实现接口
@@ -26,4 +30,11 @@ public interface MonthlyNewsletterRepo extends IRepository<MonthlyNewsletter, St
      * @return
      */
     ResultMsg updateMonthlyType(String id, String value);
+
+    /**
+     * 生成月报中附件数据
+     * @param projectReviewConditionDto
+     * @return
+     */
+    Map<String , List<ProReviewConditionDto>> proReviewConditionCount(ProReviewConditionDto projectReviewConditionDto);
 }
