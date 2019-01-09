@@ -7,6 +7,7 @@ import cs.common.ResultMsg;
 import cs.common.cache.CacheManager;
 import cs.common.cache.ICache;
 import cs.common.constants.Constant;
+import cs.common.constants.SysConstants;
 import cs.common.utils.SMSUtils;
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
@@ -83,10 +84,14 @@ public class MsgServiceImpl implements MsgService{
     public void sendMsg(List<User> recvUserList, String msgContent,SMSLog smsLog) {
         //是否多个人
         int mphoneCount = 0,error = 0;
-        String errorInfo = "",       //异常用户信息
-               allUserName = "",     //所用的用户
-               sendUserName = "",    //发送短信的用户
-               phone="";             //发送的手机号码
+        //异常用户信息
+        String errorInfo = "",
+                //所用的用户
+               allUserName = "",
+                //发送短信的用户
+               sendUserName = "",
+                //发送的手机号码
+               phone="";
         ResultMsg resultMsg =  new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"");
         for(User user : recvUserList){
             allUserName += user.getDisplayName()+" ";
@@ -214,7 +219,7 @@ public class MsgServiceImpl implements MsgService{
             if(Validate.isList(totalUser)){
                 List<User> resultList = new ArrayList<>();
                 for(String userInfo :totalUser){
-                    List<String> user = StringUtil.getSplit(userInfo,",");
+                    List<String> user = StringUtil.getSplit(userInfo, SysConstants.SEPARATE_COMMA);
                     if(Validate.isList(user)){
                         User u = new User();
                         u.setUserMPhone(Validate.removeSpace(user.get(0)));

@@ -1,5 +1,6 @@
 package cs.common.utils;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import cs.common.sysprop.BusinessProperties;
 import cs.domain.sys.User;
 import cs.service.rtx.RTXSendMsgPool;
@@ -15,10 +16,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 /**
  * 腾讯通
@@ -35,7 +33,8 @@ public class RTXUtils {
      * @return
      */
     public static void sendRTXThread(String taskId, List<User> receiverList, String seekContent, LogService logService) {
-        ExecutorService threadPool = Executors.newSingleThreadExecutor();
+        ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("thread-rtxmsg-runner-%d").build();
+        ExecutorService threadPool = new ThreadPoolExecutor(1,5,0L, TimeUnit.MILLISECONDS,new LinkedBlockingQueue<Runnable>(),namedThreadFactory);
         //线程池提交一个异步任务
         Future<HashMap<String, String>> future = threadPool.submit(new Callable<HashMap<String, String>>() {
             @Override

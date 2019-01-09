@@ -85,17 +85,7 @@ public class SignRestServiceImpl implements SignRestService {
                 stageCode = signDto.getReviewstage();
                 String stageCHName = Constant.RevireStageKey.getZHCNName(stageCode);
                 if (!Validate.isString(stageCHName)) {
-                    StringBuffer msgBuffer = new StringBuffer("各阶段对应的标识如下：");
-                    msgBuffer.append("(" + Constant.RevireStageKey.KEY_SUG.getValue() + ":" + Constant.STAGE_SUG);
-                    msgBuffer.append("|" + Constant.RevireStageKey.KEY_REGISTERCODE.getValue() + ":" + Constant.REGISTER_CODE);
-                    msgBuffer.append("|" + Constant.RevireStageKey.KEY_STUDY.getValue() + ":" + Constant.STAGE_STUDY);
-                    msgBuffer.append("|" + Constant.RevireStageKey.KEY_BUDGET.getValue() + ":" + Constant.STAGE_BUDGET);
-                    msgBuffer.append("|" + Constant.RevireStageKey.KEY_REPORT.getValue() + ":" + Constant.APPLY_REPORT);
-                    msgBuffer.append("|" + Constant.RevireStageKey.KEY_HOMELAND.getValue() + ":" + Constant.DEVICE_BILL_HOMELAND);
-                    msgBuffer.append("|" + Constant.RevireStageKey.KEY_IMPORT.getValue() + ":" + Constant.DEVICE_BILL_IMPORT);
-                    msgBuffer.append("|" + Constant.RevireStageKey.KEY_DEVICE.getValue() + ":" + Constant.IMPORT_DEVICE);
-                    msgBuffer.append("|" + Constant.RevireStageKey.KEY_OTHER.getValue() + ":" + Constant.OTHERS + ")");
-                    return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_04.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_04.getValue() + msgBuffer.toString());
+                    return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_04.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_04.getValue() + getStageString());
                 }
                 //对应系统的阶段名称
                 signDto.setReviewstage(stageCHName);
@@ -127,7 +117,21 @@ public class SignRestServiceImpl implements SignRestService {
         return resultMsg;
     }
 
-    public void checkDownLoadFile(ResultMsg resultMsg, boolean isGetFiles, String businessId, List<SysFileDto> sysFileDtoList, String userId, String mainType, String busiType) throws MissingServletRequestParameterException {
+    private String getStageString() {
+        StringBuffer msgBuffer = new StringBuffer("各阶段对应的标识如下：");
+        msgBuffer.append("(" + Constant.RevireStageKey.KEY_SUG.getValue() + ":" + Constant.STAGE_SUG);
+        msgBuffer.append("|" + Constant.RevireStageKey.KEY_REGISTERCODE.getValue() + ":" + Constant.REGISTER_CODE);
+        msgBuffer.append("|" + Constant.RevireStageKey.KEY_STUDY.getValue() + ":" + Constant.STAGE_STUDY);
+        msgBuffer.append("|" + Constant.RevireStageKey.KEY_BUDGET.getValue() + ":" + Constant.STAGE_BUDGET);
+        msgBuffer.append("|" + Constant.RevireStageKey.KEY_REPORT.getValue() + ":" + Constant.APPLY_REPORT);
+        msgBuffer.append("|" + Constant.RevireStageKey.KEY_HOMELAND.getValue() + ":" + Constant.DEVICE_BILL_HOMELAND);
+        msgBuffer.append("|" + Constant.RevireStageKey.KEY_IMPORT.getValue() + ":" + Constant.DEVICE_BILL_IMPORT);
+        msgBuffer.append("|" + Constant.RevireStageKey.KEY_DEVICE.getValue() + ":" + Constant.IMPORT_DEVICE);
+        msgBuffer.append("|" + Constant.RevireStageKey.KEY_OTHER.getValue() + ":" + Constant.OTHERS + ")");
+        return msgBuffer.toString();
+    }
+
+    public void checkDownLoadFile(ResultMsg resultMsg, boolean isGetFiles, String businessId, List<SysFileDto> sysFileDtoList, String userId, String mainType, String busiType){
         //如果获取附件
         if (isGetFiles) {
             //获取传送过来的附件
@@ -172,17 +176,7 @@ public class SignRestServiceImpl implements SignRestService {
                 stageCode = signDto.getReviewstage();
                 String stageCHName = Constant.RevireStageKey.getZHCNName(stageCode);
                 if (!Validate.isString(stageCHName)) {
-                    StringBuffer msgBuffer = new StringBuffer("各阶段对应的标识如下：");
-                    msgBuffer.append("(" + Constant.RevireStageKey.KEY_SUG.getValue() + ":" + Constant.STAGE_SUG);
-                    msgBuffer.append("|" + Constant.RevireStageKey.KEY_REGISTERCODE.getValue() + ":" + Constant.REGISTER_CODE);
-                    msgBuffer.append("|" + Constant.RevireStageKey.KEY_STUDY.getValue() + ":" + Constant.STAGE_STUDY);
-                    msgBuffer.append("|" + Constant.RevireStageKey.KEY_BUDGET.getValue() + ":" + Constant.STAGE_BUDGET);
-                    msgBuffer.append("|" + Constant.RevireStageKey.KEY_REPORT.getValue() + ":" + Constant.APPLY_REPORT);
-                    msgBuffer.append("|" + Constant.RevireStageKey.KEY_HOMELAND.getValue() + ":" + Constant.DEVICE_BILL_HOMELAND);
-                    msgBuffer.append("|" + Constant.RevireStageKey.KEY_IMPORT.getValue() + ":" + Constant.DEVICE_BILL_IMPORT);
-                    msgBuffer.append("|" + Constant.RevireStageKey.KEY_DEVICE.getValue() + ":" + Constant.IMPORT_DEVICE);
-                    msgBuffer.append("|" + Constant.RevireStageKey.KEY_OTHER.getValue() + ":" + Constant.OTHERS + ")");
-                    return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_04.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_04.getValue() + msgBuffer.toString());
+                    return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_04.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_04.getValue() + getStageString());
                 }
                 //对应系统的阶段名称
                 signDto.setReviewstage(stageCHName);

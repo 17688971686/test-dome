@@ -57,7 +57,7 @@ public class SysFileServiceImpl implements SysFileService {
                           String mainId, String mainType, String sysfileType, String sysBusiType) {
         try {
             String fileUploadPath = SysFileUtil.getUploadPath();
-            String relativeFileUrl = SysFileUtil.generatRelativeUrl(fileUploadPath, mainType,mainId, sysBusiType, fileName);
+            String relativeFileUrl = SysFileUtil.generatRelativeUrl(fileUploadPath, mainType, mainId, sysBusiType, fileName);
 
             SysFile sysFile = new SysFile();
             sysFile.setSysFileId(UUID.randomUUID().toString());
@@ -84,11 +84,11 @@ public class SysFileServiceImpl implements SysFileService {
             stream.write(multipartFile.getBytes());
             stream.close();
             SysFileDto sysFileDto = new SysFileDto();
-            BeanCopierUtils.copyProperties(sysFile,sysFileDto);
-            return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"文件上传成功！",sysFileDto);
+            BeanCopierUtils.copyProperties(sysFile, sysFileDto);
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "文件上传成功！", sysFileDto);
 
         } catch (Exception e) {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"文件上传错误，请联系系统管理员确认！");
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "文件上传错误，请联系系统管理员确认！");
         }
     }
 
@@ -100,7 +100,7 @@ public class SysFileServiceImpl implements SysFileService {
 
     @Override
     @Transactional
-    public ResultMsg saveToFtp(long size, String fileName, String businessId, String fileType,String relativeFileUrl,
+    public ResultMsg saveToFtp(long size, String fileName, String businessId, String fileType, String relativeFileUrl,
                                String mainId, String mainType, String sysfileType, String sysBusiType, Ftp ftp) {
         try {
             SysFile sysFile = new SysFile();
@@ -125,11 +125,11 @@ public class SysFileServiceImpl implements SysFileService {
 
             //先保存成功，
             SysFileDto sysFileDto = new SysFileDto();
-            BeanCopierUtils.copyProperties(sysFile,sysFileDto);
-            return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"文件上传成功！",sysFileDto);
+            BeanCopierUtils.copyProperties(sysFile, sysFileDto);
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "文件上传成功！", sysFileDto);
 
         } catch (Exception e) {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"文件上传错误，请联系系统管理员确认！");
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "文件上传错误，请联系系统管理员确认！");
         }
     }
 
@@ -167,6 +167,7 @@ public class SysFileServiceImpl implements SysFileService {
 
     /**
      * 根据ID获取附件信息
+     *
      * @param sysfileId
      * @return
      */
@@ -179,6 +180,7 @@ public class SysFileServiceImpl implements SysFileService {
 
     /**
      * 根据主业务ID获取附件信息
+     *
      * @param mainId
      * @return
      */
@@ -190,7 +192,7 @@ public class SysFileServiceImpl implements SysFileService {
             sysFiles.forEach(sf -> {
                 SysFileDto sysFileDto = new SysFileDto();
                 BeanCopierUtils.copyProperties(sf, sysFileDto);
-                if(null != sf.getFileSize()){
+                if (null != sf.getFileSize()) {
                     sysFileDto.setFileSizeStr(SysFileUtil.getFileSize(sf.getFileSize()));
                 }
                 sysFileDtoList.add(sysFileDto);
@@ -201,12 +203,13 @@ public class SysFileServiceImpl implements SysFileService {
 
     /**
      * 根据主业务ID和分类获取附件信息
+     *
      * @param mainId
      * @return
      */
     @Override
-    public List<SysFileDto> queryFile(String mainId,String sysBusiType) {
-        List<SysFile> sysFiles = sysFileRepo.queryFileList(mainId,sysBusiType);
+    public List<SysFileDto> queryFile(String mainId, String sysBusiType) {
+        List<SysFile> sysFiles = sysFileRepo.queryFileList(mainId, sysBusiType);
         List<SysFileDto> sysFileDtoList = new ArrayList<SysFileDto>(sysFiles == null ? 0 : sysFiles.size());
         if (sysFiles != null) {
             sysFiles.forEach(sf -> {
@@ -220,6 +223,7 @@ public class SysFileServiceImpl implements SysFileService {
 
     /**
      * 批量更新
+     *
      * @param saveFileList
      */
     @Override
@@ -229,91 +233,96 @@ public class SysFileServiceImpl implements SysFileService {
 
     /**
      * 获取默认的ftpId
+     *
      * @return
      */
     @Override
     public String findFtpId() {
         SysConfigDto sysConfigDto = sysConfigService.findByKey(KEY_FTPIP.getValue());
-        if(sysConfigDto == null || !Validate.isString(sysConfigDto.getConfigValue())) {
+        if (sysConfigDto == null || !Validate.isString(sysConfigDto.getConfigValue())) {
             return "";
-        }else{
+        } else {
             return sysConfigDto.getConfigValue();
         }
     }
 
     /**
      * 获取文件服务器地址
+     *
      * @param relativeFileUrl
      * @return
      */
     @Override
     public String getFtpRoot(String relativeFileUrl) {
         SysConfigDto sysConfigDto = sysConfigService.findByKey(KEY_FTPROOT.getValue());
-        if( !Validate.isObject(sysConfigDto) || !Validate.isString(sysConfigDto.getConfigValue())){
+        if (!Validate.isObject(sysConfigDto) || !Validate.isString(sysConfigDto.getConfigValue())) {
             return null;
-        }else{
-            String ftpRoot  = sysConfigDto.getConfigValue();
+        } else {
+            String ftpRoot = sysConfigDto.getConfigValue();
             if (relativeFileUrl.startsWith(File.separator) || relativeFileUrl.startsWith("/")) {
                 relativeFileUrl = File.separator + ftpRoot + relativeFileUrl;
             } else {
                 relativeFileUrl = File.separator + ftpRoot + relativeFileUrl + File.separator;
             }
-            return  relativeFileUrl;
+            return relativeFileUrl;
         }
     }
 
     /**
      * 通过业务ID和业务类型删除对应的文件
+     *
      * @param businessId
      * @param businessType
      */
     @Override
     public void deleteByBusinessIdAndBusinessType(String businessId, String businessType) {
-        HqlBuilder hqlBuilder =  HqlBuilder.create();
-        hqlBuilder.append("delete from " + SysFile.class.getSimpleName() + " where " + SysFile_.mainId.getName() + "=:mainId "  );
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append("delete from " + SysFile.class.getSimpleName() + " where " + SysFile_.mainId.getName() + "=:mainId ");
         hqlBuilder.append(" and " + SysFile_.sysBusiType.getName() + "=:businessType");
-        hqlBuilder.setParam("mainId" , businessId);
-        hqlBuilder.setParam("businessType" , businessType);
+        hqlBuilder.setParam("mainId", businessId);
+        hqlBuilder.setParam("businessType", businessType);
         sysFileRepo.executeHql(hqlBuilder);
     }
 
     /**
      * 获取远程连接文件
+     *
      * @param businessId
      * @param sysFileDtoList
      * @return
      */
     @Override
-    public ResultMsg downRemoteFile(String businessId, List<SysFileDto> sysFileDtoList,String userId,String mainType,String busiType){
-        ResultMsg resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"没有附件信息！");
+    public ResultMsg downRemoteFile(String businessId, List<SysFileDto> sysFileDtoList, String userId, String mainType, String busiType) {
+        ResultMsg resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "没有附件信息！");
         if (Validate.isList(sysFileDtoList)) {
             List<SysFile> saveFileList = new ArrayList<>();
-            int totalFileCount = sysFileDtoList.size();
-            int sucessCount = 0,errorCount = 0;
+            int totalFileCount = sysFileDtoList.size(), errorCount = 0;
             //连接ftp
             Ftp f = ftpRepo.findById(cs.domain.sys.Ftp_.ipAddr.getName(), findFtpId());
             FtpUtils ftpUtils = new FtpUtils();
             FtpClientConfig k = ConfigProvider.getUploadConfig(f);
-            String relativeFileUrl = File.separator +mainType + File.separator + businessId + File.separator + busiType;
+            String relativeFileUrl = File.separator + mainType + File.separator + businessId + File.separator + busiType;
             //上传到ftp,如果有根目录，则加入根目录
-            if(Validate.isString(k.getFtpRoot())){
+            if (Validate.isString(k.getFtpRoot())) {
                 relativeFileUrl = File.separator + k.getFtpRoot() + relativeFileUrl;
             }
             //读取附件
             for (int i = 0, l = totalFileCount; i < l; i++) {
-                try{
+                try {
                     SysFileDto sysFileDto = sysFileDtoList.get(i);
                     String showName = sysFileDto.getShowName();
                     if (!Validate.isString(sysFileDto.getFileUrl())) {
                         continue;
                     }
-                    URL url = new URL(sysFileDto.getFileUrl());
+                    /******  旧的下载方式 begin *****/
+                   /* URL url = new URL(sysFileDto.getFileUrl());
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     //设置超时间为3秒
                     conn.setConnectTimeout(600000);
                     //防止屏蔽程序抓取而返回403错误
                     conn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
-                    //得到输入流
+                    //得到输入流*/
+                    /******  旧的下载方式 end *****/
 
                     boolean fileExist = false;
                     String uploadFileName = "";
@@ -338,7 +347,14 @@ public class SysFileServiceImpl implements SysFileService {
                         uploadFileName = Tools.generateRandomFilename().concat(sysFile.getFileType());
                     }
 
-                    boolean uploadResult = ftpUtils.putFile(k,relativeFileUrl, uploadFileName, conn.getInputStream());
+
+                    /******  旧的下载方式 begin *****/
+                    /*boolean uploadResult = ftpUtils.putFile(k, relativeFileUrl, uploadFileName, conn.getInputStream());
+                    conn.disconnect();*/
+                    /******  旧的下载方式 end *****/
+
+                    boolean uploadResult = ftpUtils.putFile(k, relativeFileUrl, uploadFileName, IOStreamUtil.getStreamDownloadOutFile(sysFileDto.getFileUrl()));
+
                     if (uploadResult) {
                         //保存数据库记录
                         if (fileExist) {
@@ -355,11 +371,11 @@ public class SysFileServiceImpl implements SysFileService {
                             sysFile.setBusinessId(businessId);
                         }
                         saveFileList.add(sysFile);
-                        sucessCount ++;
                     } else {
                         errorCount++;
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
+                    logger.error("保存附件异常：" + e.getMessage());
                     errorCount++;
                 }
             }
@@ -367,20 +383,20 @@ public class SysFileServiceImpl implements SysFileService {
             if (Validate.isList(saveFileList)) {
                 bathSave(saveFileList);
             }
-            if(errorCount == 0){
+            if (errorCount == 0) {
                 resultMsg.setFlag(true);
                 resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getCode());
                 resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getValue());
-            }else{
-                if(errorCount == totalFileCount){
+            } else {
+                if (errorCount == totalFileCount) {
                     resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_FILE_EMPTY.getCode());
                     resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_FILE_EMPTY.getValue());
-                }else if(errorCount < totalFileCount){
+                } else if (errorCount < totalFileCount) {
                     resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_FILE_NOT_ALL.getCode());
                     resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_FILE_NOT_ALL.getValue());
                 }
             }
-        }else{
+        } else {
             resultMsg.setFlag(true);
             resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getCode());
             resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getValue());
@@ -394,13 +410,14 @@ public class SysFileServiceImpl implements SysFileService {
      */
     /**
      * 根据业务ID获取相应的附件信息
+     *
      * @param businessId
      * @return
      */
     @Override
     public List<SysFileDto> findByBusinessId(String businessId) {
         Criteria criteria = sysFileRepo.getExecutableCriteria();
-        criteria.add(Restrictions.eq(SysFile_.businessId.getName(),businessId));
+        criteria.add(Restrictions.eq(SysFile_.businessId.getName(), businessId));
         List<SysFile> sysFiles = criteria.list();
         List<SysFileDto> sysFileDtoList = new ArrayList<SysFileDto>(sysFiles == null ? 0 : sysFiles.size());
         if (Validate.isString(sysFiles)) {

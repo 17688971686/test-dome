@@ -1,6 +1,7 @@
 package cs.controller.restController;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import cs.ahelper.HttpClientOperate;
 import cs.ahelper.HttpResult;
 import cs.ahelper.IgnoreAnnotation;
@@ -33,8 +34,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 import static cs.common.constants.Constant.MsgType.incoming_type;
 import static cs.common.constants.Constant.RevireStageKey.SMS_SING_NOTICE_USER;
@@ -80,8 +80,7 @@ public class SysRestController {
         String projName = "";
         String fileCode = "";
         try {
-            //反编译json串
-            //signDtoJson = XssShieldUtil.getInstance().unStripXss(signDtoJson);
+            logger.info("接收到委里推送项目数据："+signDtoJson);
             //解析json串
             SignDto signDto = JSON.parseObject(signDtoJson, SignDto.class);
             if(Validate.isObject(signDto)){
@@ -91,8 +90,8 @@ public class SysRestController {
 
             resultMsg = signRestService.pushProject(signDto, true);
         } catch (Exception e) {
+            logger.info("保存委里推送项目异常："+e.getMessage());
             resultMsg = new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(), e.getMessage());
-            e.printStackTrace();
         }
         //如果已经启用短信提醒,并且在早上8点-晚上8点时间段内
         if (rtxService.rtxSMSEnabled() && SMSUtils.isSendTime()) {
@@ -107,9 +106,8 @@ public class SysRestController {
                     Sign sign = (Sign) resultMsg.getReObj();
                     smsLog.setBuninessId(sign.getSignid());
                 }
-                ExecutorService threadPool = Executors.newSingleThreadExecutor();
-                threadPool.execute(new MsgThread(msgService,recvUserList,msgContent,smsLog));
-                threadPool.shutdown();
+                //发送短信
+                SMSUtils.sendMsg(msgService,recvUserList,msgContent,smsLog);
             }
         }
         resultMsg.setReObj(null);
@@ -327,63 +325,63 @@ public class SysRestController {
         String REST_SERVICE_URI = "http://localhost:8181/szcshl-web/intfc/pushProject";
         SignDto signDto = new SignDto();
         //委里收文编号
-        signDto.setFilecode("D201800732");
+        signDto.setFilecode("D201900005");
         signDto.setIschangeEstimate(null);
-        signDto.setDeclaration((BigDecimal.valueOf(6835)));
+        signDto.setDeclaration((BigDecimal.valueOf(11771.7)));
         signDto.setUrgencydegree("一般");
-        signDto.setMaindeptName("社会发展处");
-        signDto.setAssistDeptUserName("李斌");
+        signDto.setMaindeptName("maindeptName");
+        signDto.setAssistDeptUserName("张路");
         signDto.setCountryCode("2017-440300-83-01-102870");
-        signDto.setProjectname("深圳大学卡尔森国际肿瘤中心用房改造装修工程");
-        signDto.setProjectcode("Z-2017-Q83-102870-02-01");
-        signDto.setBuiltCompUserName("刘泽慧");
-        signDto.setAssistdeptName("投资处");
+        signDto.setProjectname("深圳市口腔医院");
+        signDto.setProjectcode("Z-2012-Q83-100280-03-01");
+        signDto.setBuiltCompUserName("张志聪");
+        signDto.setAssistdeptName("社会发展处");
         signDto.setDesigncompanyName(null);
         signDto.setYearplantype("C类");
-        signDto.setReviewstage("STAGESTUDY");
-        signDto.setSendusersign("张路");
-        signDto.setAcceptDate(DateUtils.converToDate("2018-12-26 09:48:54.0","yyyy-MM-dd HH:mm:ss"));
+        signDto.setReviewstage("STAGEBUDGET");
+        signDto.setSendusersign("李斌");
+        signDto.setAcceptDate(DateUtils.converToDate("2019-01-04 09:27:36","yyyy-MM-dd HH:mm:ss"));
         signDto.setSecrectlevel("公开");
         signDto.setMainDeptContactPhone("13723444083");
-        signDto.setMainDeptUserName("张路");
-        signDto.setBuiltcompanyName("深圳大学");
+        signDto.setMainDeptUserName("李斌");
+        signDto.setBuiltcompanyName("深圳市建筑工务署");
         signDto.setMaindeptOpinion("请张路主办。[社会处处长]2018-12-26;经核，该项目申报材料已完备，建议送审。妥否，请领导审定。[张路]2018-12-26;请评审中心评审。[社会处处长]2018-12-27");
 
         //附件列表
         List<SysFileDto> fileDtoList = new ArrayList<>();
         SysFileDto sysFileDto = new SysFileDto();
         //显示名称，后缀名也要
-        sysFileDto.setShowName("卡尔森可研报告申报请示.pdf");
+        sysFileDto.setShowName("第二册-概算文件 计价文件.rar");
         //附件大小，Long类型
-        sysFileDto.setFileSize(1002398L);
+        sysFileDto.setFileSize(9504385L);
         //附件下载地址
-        sysFileDto.setFileUrl("http://192.168.1.31:80/FGWPM/LEAP/Download/default/2018/12/26/20181226095006791.pdf");
+        sysFileDto.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/1/4/20190104093013274.rar");
         fileDtoList.add(sysFileDto);
 
         SysFileDto sysFileDto1 = new SysFileDto();
         //显示名称，后缀名也要
-        sysFileDto1.setShowName("附件2深圳市发展和改革委员会关于深圳大学卡尔森国际肿瘤中心用房改造装修工程的项目建议书的批复.pdf");
+        sysFileDto1.setShowName("第二册-概算文件 询价资料.zip");
         //附件大小，Long类型
-        sysFileDto1.setFileSize(1423571L);
+        sysFileDto1.setFileSize(22638671L);
         //附件下载地址
-        sysFileDto1.setFileUrl("http://192.168.1.31:80/FGWPM/LEAP/Download/default/2018/12/26/20181226095006096.pdf");
+        sysFileDto1.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/1/4/20190104093013596.zip");
         fileDtoList.add(sysFileDto1);
         SysFileDto sysFileDto2 = new SysFileDto();
         //显示名称，后缀名也要
-        sysFileDto2.setShowName("卡尔森可研申报表.pdf");
+        sysFileDto2.setShowName("口腔医院概算函.pdf");
         //附件大小，Long类型
-        sysFileDto2.setFileSize(608288L);
+        sysFileDto2.setFileSize(780404L);
         //附件下载地址
-        sysFileDto2.setFileUrl("http://192.168.1.31:80/FGWPM/LEAP/Download/default/2018/12/26/20181226095006914.pdf");
+        sysFileDto2.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/1/4/20190104093013149.pdf");
         fileDtoList.add(sysFileDto2);
 
         SysFileDto sysFileDto3 = new SysFileDto();
         //显示名称，后缀名也要
-        sysFileDto3.setShowName("附件3深圳大学卡尔森国际肿瘤中心用房改造装修工程可行性研究报告.rar");
+        sysFileDto3.setShowName("第二册-概算文件 计算式.rar");
         //附件大小，Long类型
-        sysFileDto3.setFileSize(13270274L);
+        sysFileDto3.setFileSize(30470686L);
         //附件下载地址
-        sysFileDto3.setFileUrl("http://192.168.1.31:80/FGWPM/LEAP/Download/default/2018/12/26/20181226095006246.rar");
+        sysFileDto3.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/1/4/20190104093006013.rar");
         fileDtoList.add(sysFileDto3);
         //项目添加附件列表
         signDto.setSysFileDtoList(fileDtoList);

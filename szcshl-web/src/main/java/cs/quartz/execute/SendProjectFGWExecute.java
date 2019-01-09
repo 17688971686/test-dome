@@ -2,6 +2,7 @@ package cs.quartz.execute;
 
 import cs.common.ResultMsg;
 import cs.common.constants.Constant;
+import cs.common.constants.SysConstants;
 import cs.common.utils.DateUtils;
 import cs.common.utils.SMSUtils;
 import cs.common.utils.Validate;
@@ -149,11 +150,12 @@ public class SendProjectFGWExecute implements Job {
                             String msgContent = SMSUtils.buildSendMsgContent(null,sendfgw_type.name(),msgBuffer.toString(),resultMsg.isFlag());
                             SMSLog smsLog = new SMSLog();
                             smsLog.setSmsLogType(sendfgw_type.name());
-                            smsLog.setBuninessId(StringUtils.join(sucessIdList, ","));
-
-                            ExecutorService threadPool = Executors.newSingleThreadExecutor();
+                            smsLog.setBuninessId(StringUtils.join(sucessIdList, SysConstants.SEPARATE_COMMA));
+                            //发送短信
+                            SMSUtils.sendMsg(msgService,recvUserList,msgContent,smsLog);
+                            /*ExecutorService threadPool = Executors.newSingleThreadExecutor();
                             threadPool.execute(new MsgThread(msgService,recvUserList,msgContent,smsLog));
-                            threadPool.shutdown();
+                            threadPool.shutdown();*/
                         }
                     }
                     log.setLogCode(resultMsg.getReCode());

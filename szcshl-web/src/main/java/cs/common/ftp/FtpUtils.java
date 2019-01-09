@@ -102,7 +102,9 @@ public class FtpUtils {
             e.printStackTrace();
         } finally {
             try {
-                in.close();
+                if(null != in){
+                    in.close();
+                }
             } catch (IOException ex) {
             }
         }

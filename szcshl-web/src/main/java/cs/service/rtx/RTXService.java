@@ -142,10 +142,8 @@ public class RTXService {
                     smsLog.setSmsLogType(msgType);
                     smsLog.setProjectName(procInstName);
                     smsLog.setBuninessId(taskId);
-
-                    ExecutorService threadPool = Executors.newSingleThreadExecutor();
-                    threadPool.execute(new MsgThread(msgService,receiverList,msgContent,smsLog));
-                    threadPool.shutdown();
+                    //发送短信
+                    SMSUtils.sendMsg(msgService,receiverList,msgContent,smsLog);
                 }
             }
             //如果使用腾讯通，并处理成功！

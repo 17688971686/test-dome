@@ -1,13 +1,20 @@
 package cs.common.utils;
 
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import cs.common.constants.Constant;
 import cs.common.constants.FlowConstant;
+import cs.domain.sys.SMSLog;
+import cs.domain.sys.User;
+import cs.service.sys.MsgService;
+import cs.threadtask.MsgThread;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.concurrent.*;
 
 /**
  * Created by ldm on 2018/5/29.
@@ -62,6 +69,21 @@ public class SMSUtils {
     private static String TOKEN = null;
 
     public static final String COMPANY_SIGN = "【评审中心项目管理系统】";
+
+    /**
+     * 发送手机短信
+     * @param msgService
+     * @param recvUserList
+     * @param msgContent
+     * @param smsLog
+     */
+    public static void sendMsg(MsgService msgService, List<User> recvUserList, String msgContent, SMSLog smsLog) {
+        //手动创建线程池
+        ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("thread-sendsms-runner-%d").build();
+        ExecutorService threadPool = new ThreadPoolExecutor(1,5,0L, TimeUnit.MILLISECONDS,new LinkedBlockingQueue<Runnable>(),namedThreadFactory);
+        threadPool.execute(new MsgThread(msgService,recvUserList,msgContent,smsLog));
+        threadPool.shutdown();
+    }
 
 
     /**

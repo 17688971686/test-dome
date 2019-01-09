@@ -74,5 +74,5 @@ public interface SysFileService {
      * @param businessId
      * @param sysFileDtoList
      */
-    ResultMsg downRemoteFile(String businessId,List<SysFileDto> sysFileDtoList,String userId,String mainType,String busiType) throws MissingServletRequestParameterException;
+    ResultMsg downRemoteFile(String businessId,List<SysFileDto> sysFileDtoList,String userId,String mainType,String busiType);
 }
