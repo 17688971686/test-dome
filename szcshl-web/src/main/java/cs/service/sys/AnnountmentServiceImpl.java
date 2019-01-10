@@ -45,6 +45,7 @@ import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 @Service
 public class AnnountmentServiceImpl implements AnnountmentService {
     private static Logger logger = Logger.getLogger(AnnountmentServiceImpl.class);
+    private static String AGREE = "AGREE";
 
     @Autowired
     private AnnountmentRepo annountmentRepo;
@@ -359,12 +360,13 @@ public class AnnountmentServiceImpl implements AnnountmentService {
         hqlBuilder.append(" update " + Annountment.class.getSimpleName() + " set " + Annountment_.issue.getName() + " =:issue ");
         hqlBuilder.setParam("issue", issueState);
         if (isaPublish) {
-            hqlBuilder.append("," + Annountment_.issueDate.getName() + " =sysdate ");
-            hqlBuilder.append("," + Annountment_.issueUser.getName() + " = " + Annountment_.modifiedBy.getName());
+            hqlBuilder.append("," + Annountment_.issueDate.getName() + " = sysdate ");
+            hqlBuilder.append("," + Annountment_.issueUser.getName() + " = :displayName ");
+            hqlBuilder.setParam("displayName",SessionUtil.getDisplayName());
         }
         annountmentRepo.executeHql(hqlBuilder);
 
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "更新成功！");
+        return ResultMsg.ok("更新成功！");
     }
 
 
@@ -526,13 +528,13 @@ public class AnnountmentServiceImpl implements AnnountmentService {
                 if (assigneeValue.equals(SessionUtil.getUserId())) {
                     isNextUser = true;
                     nextNodeKey = FlowConstant.ANNOUNT_ZR;
-                    flowDto.getBusinessMap().put("AGREE", Constant.EnumState.YES.getValue());
+                    flowDto.getBusinessMap().put(AGREE, Constant.EnumState.YES.getValue());
                 }
                 break;
 
             //主任审批
             case FlowConstant.ANNOUNT_ZR:
-                boolean isPass = Validate.isObject(flowDto.getBusinessMap().get("AGREE")) && Constant.EnumState.YES.getValue().equals(flowDto.getBusinessMap().get("AGREE").toString());
+                boolean isPass = Validate.isObject(flowDto.getBusinessMap().get(AGREE)) && Constant.EnumState.YES.getValue().equals(flowDto.getBusinessMap().get(AGREE).toString());
                 if (isPass) {
                     annountment.setIssue(Constant.EnumState.YES.getValue());
                     annountment.setIssueDate(new Date());

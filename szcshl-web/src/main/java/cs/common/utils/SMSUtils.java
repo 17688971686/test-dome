@@ -6,6 +6,7 @@ import cs.common.constants.Constant;
 import cs.common.constants.FlowConstant;
 import cs.domain.sys.SMSLog;
 import cs.domain.sys.User;
+import cs.model.sys.SysConfigDto;
 import cs.service.sys.MsgService;
 import cs.threadtask.MsgThread;
 import org.apache.log4j.Logger;
@@ -21,7 +22,6 @@ import java.util.concurrent.*;
  * 短信工具类
  */
 public class SMSUtils {
-    private static Logger logger = Logger.getLogger(SMSUtils.class);
     /**
      * 单条发送短信地址（旧地址）
      */
@@ -45,9 +45,15 @@ public class SMSUtils {
     /**
      * 获取token地址(新地址)
      */
-    public static final String GET_TOKEN_URL_NEW = "http://172.18.225.31:9016/N/BasicApi/GetAccessToken";
-    public static final String GET_TOKEN_APPID_NEW = "31ad58a4247d40b2940fc6a416b5d1ad";
-    public static final String GET_TOKEN_APPSECRET_NEW = "f3435e901865420b937f2dc2161e3520";
+    public static final String SM_TOKEN_URL_NEW = "http://172.18.225.31:9016/N/BasicApi/GetAccessToken";
+    /**
+     * APPID 新
+     */
+    public static final String SM_APPID_NEW = "31ad58a4247d40b2940fc6a416b5d1ad";
+    /**
+     * APPSECRET 新
+     */
+    public static final String SM_APPSECRET_NEW = "f3435e901865420b937f2dc2161e3520";
 
     /**
      * 单条短信的sercode
@@ -60,12 +66,22 @@ public class SMSUtils {
     /**
      * 单条发送密钥
      */
-    public static final String apiSecret_one = "dc5bd5fa7dad814200c732948b369928";
+    public static final String APISECRET_ONE = "dc5bd5fa7dad814200c732948b369928";
+
+    /**
+     * 单条发送密钥
+     */
+    public static final String APISECRET_ONE_NEW = "47971e1a6eec4e18b8747f81b9a4fa40";
+
     /**
      * 多条发送密钥
      */
-    public static final String apiSecret_many = "d948e206924748b2d58396ead55108fc";
+    public static final String APISECRET_MANY = "d948e206924748b2d58396ead55108fc";
 
+    /**
+     * 多条发送密钥
+     */
+    public static final String APISECRET_MANY_NEW = "f34534b282d24ce78b1ef12c0b28a087";
     /**
      * MD5加密之后的账号密码，（但龙）
      */
@@ -83,42 +99,14 @@ public class SMSUtils {
      */
     private static long TOKEN_EXPIRE_VALUE = 0L;
 
-
     private static String TOKEN = null;
 
     public static final String COMPANY_SIGN = "【评审中心项目管理系统】";
 
     /**
-     * 发送手机短信
-     * @param msgService
-     * @param recvUserList
-     * @param msgContent
-     * @param smsLog
-     */
-    public static void sendMsg(MsgService msgService, List<User> recvUserList, String msgContent, SMSLog smsLog) {
-        //手动创建线程池
-        ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("thread-sendsms-runner-%d").build();
-        ExecutorService threadPool = new ThreadPoolExecutor(1,5,0L, TimeUnit.MILLISECONDS,new LinkedBlockingQueue<Runnable>(),namedThreadFactory);
-        threadPool.execute(new MsgThread(msgService,recvUserList,msgContent,smsLog));
-        threadPool.shutdown();
-    }
-
-    /**
      * token实现返回码
      */
     public static final String TOKEN_UNVALIABLE_CODE = "0190007";
-
-    /**
-     * 验证短信发送方式
-     * @param msgTypeDto
-     * @return
-     */
-    public static boolean checkMsgType(SysConfigDto msgTypeDto) {
-        if(Validate.isObject(msgTypeDto) && String.valueOf(SEND_MSG_TYPE.OLD.ordinal()).equals(msgTypeDto.getConfigValue())){
-            return false;
-        }
-        return true;
-    }
 
     /**
      * 短信发送方式
@@ -230,6 +218,32 @@ public class SMSUtils {
                 ;
         }
         return codeMsg;
+    }
+
+    /**
+     * 验证短信发送方式
+     * @param msgTypeDto
+     * @return
+     */
+    public static boolean checkMsgType(SysConfigDto msgTypeDto) {
+        if(Validate.isObject(msgTypeDto) && String.valueOf(SEND_MSG_TYPE.OLD.ordinal()).equals(msgTypeDto.getConfigValue())){
+            return false;
+        }
+        return true;
+    }
+    /**
+     * 发送手机短信
+     * @param msgService
+     * @param recvUserList
+     * @param msgContent
+     * @param smsLog
+     */
+    public static void sendMsg(MsgService msgService, List<User> recvUserList, String msgContent, SMSLog smsLog) {
+        //手动创建线程池
+        ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("thread-sendsms-runner-%d").build();
+        ExecutorService threadPool = new ThreadPoolExecutor(1,5,0L, TimeUnit.MILLISECONDS,new LinkedBlockingQueue<Runnable>(),namedThreadFactory);
+        threadPool.execute(new MsgThread(msgService,recvUserList,msgContent,smsLog));
+        threadPool.shutdown();
     }
 
     public static String buildSendMsgContent(String flowTaskDefindKey,String msgType, String procInstName,boolean isSucess) {

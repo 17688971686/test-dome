@@ -2,7 +2,6 @@ package cs.service.sys;
 
 import com.alibaba.fastjson.JSON;
 import cs.ahelper.HttpClientOperate;
-import cs.ahelper.HttpResult;
 import cs.common.RandomGUID;
 import cs.common.ResultMsg;
 import cs.common.cache.CacheManager;
@@ -26,16 +25,12 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.*;
 
 import static cs.common.cache.CacheConstant.IP_CACHE;
 import static cs.common.constants.SysConstants.SEPARATE_COMMA;
 import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
-import static cs.common.utils.SMSUtils.GET_TOKEN_APPID_NEW;
-import static cs.common.utils.SMSUtils.GET_TOKEN_APPSECRET_NEW;
-import static cs.common.utils.SMSUtils.TOKEN_UNVALIABLE_CODE;
+import static cs.common.utils.SMSUtils.*;
 
 /**
  * Created by ldm on 2018/6/31.
@@ -134,12 +129,12 @@ public class MsgServiceImpl implements MsgService{
                     params.put("content", msgContent);
                     //1、多人发送
                     if (mphoneCount == 1) {
-                        params.put("apiSecret", SMSUtils.apiSecret_one);
+                        params.put("apiSecret", SMSUtils.APISECRET_ONE);
                         params.put("serCode", SMSUtils.ONE_SERCODE);
                         smsLog.setManyOrOne("1");
                         //2、单人发送
                     } else {
-                        params.put("apiSecret", SMSUtils.apiSecret_many);
+                        params.put("apiSecret", SMSUtils.APISECRET_MANY);
                         params.put("serCode", SMSUtils.MANY_SERCODE);
                         smsLog.setManyOrOne("2");
                     }
@@ -217,9 +212,9 @@ public class MsgServiceImpl implements MsgService{
         ResultMsg resultMsg = ResultMsg.error("获取token没有返回信息！");
         try {
             Map<String, String> params = new HashMap<>();
-            params.put(SMSUtils.MSG_PARAMS.appid.toString(), GET_TOKEN_APPID_NEW);
-            params.put(SMSUtils.MSG_PARAMS.appsecret.toString(), GET_TOKEN_APPSECRET_NEW);
-            String jsonInfo = httpClientOperate.doGet(SMSUtils.GET_TOKEN_URL_NEW, params);
+            params.put(SMSUtils.MSG_PARAMS.appid.toString(), SM_APPID_NEW);
+            params.put(SMSUtils.MSG_PARAMS.appsecret.toString(), SM_APPSECRET_NEW);
+            String jsonInfo = httpClientOperate.doGet(SMSUtils.SM_TOKEN_URL_NEW, params);
             logger.error("发送短信获取token返回信息：" + jsonInfo);
             if (Validate.isString(jsonInfo)) {
                 //先把String 形式的 JSON 转换位 JSON 对象
@@ -291,7 +286,7 @@ public class MsgServiceImpl implements MsgService{
                 resultMsg.setReMsg("发送短信没有返回信息!");
                 try {
                     //url和密钥参数
-                    String smsUrl = "", authorSecret = "";
+                    String smsUrl,authorSecret;
                     //创建一个json对象
                     Map<String, String> paramsMap = new HashMap<>();
                     //添加电话号码参数
@@ -302,13 +297,13 @@ public class MsgServiceImpl implements MsgService{
                     if (mphoneCount == 1) {
                         //1、单人发送
                         smsUrl = SMSUtils.SM_ONE_URL;
-                        authorSecret = SMSUtils.apiSecret_one;
                         smsLog.setManyOrOne("1");
+                        authorSecret = APISECRET_ONE_NEW;
                     } else {
                         //2、多人发送
                         smsUrl = SMSUtils.SM_MORE_URL;
-                        authorSecret = SMSUtils.apiSecret_many;
                         smsLog.setManyOrOne("2");
+                        authorSecret = APISECRET_MANY_NEW;
                     }
                     smsLog.setIsCallApi(Constant.EnumState.YES.getValue());
                     String msgJsonInfo = JSON.toJSONString(paramsMap);
@@ -332,7 +327,7 @@ public class MsgServiceImpl implements MsgService{
                                 ResultMsg newResultMsg = getMsgToken();
                                 if (newResultMsg.isFlag()) {
                                     //重新发一次
-                                    smsResultJson = httpClientOperate.sendMsgByPost(smsUrl, msgJsonInfo, authorSecret, SMSUtils.getTOKEN());
+                                    smsResultJson = httpClientOperate.sendMsgByPost(smsUrl, msgJsonInfo, SM_APPSECRET_NEW, SMSUtils.getTOKEN());
                                     logger.error("发送短信返回信息2：" + smsResultJson);
                                     if (Validate.isString(smsResultJson)) {
                                         //先把String 形式的 JSON 转换位 JSON 对象
