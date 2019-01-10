@@ -322,7 +322,8 @@ public class SysRestController {
 
 //        signRestService.getListUser("收文成功");
         //项目签收案例
-        String REST_SERVICE_URI = "http://121.201.66.221:9090/szcshl-web/intfc/pushProject";
+        //String REST_SERVICE_URI = "http://121.201.66.221:9090/szcshl-web/intfc/pushProject";
+        String REST_SERVICE_URI = "http://localhost:8181/szcshl-web/intfc/pushProject";
         SignDto signDto = new SignDto();
         //委里收文编号
         signDto.setFilecode("D201900005");
