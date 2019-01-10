@@ -767,8 +767,8 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         Integer proCount = 0;
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("select count(s.projectcode) from cs_sign s  ");
-        sqlBuilder.append("left join cs_dispatch_doc d ");
-        sqlBuilder.append("on s.signid = d.signid ");
+//        sqlBuilder.append("left join cs_dispatch_doc d ");
+//        sqlBuilder.append("on s.signid = d.signid ");
         sqlBuilder.append("where 1 = 1 ");
         //sqlBuilder.append("and s.signstate = '1'  ");
         sqlBuilder.append("and s.signstate != '7' ");//过滤删除
@@ -1477,7 +1477,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
 
         }
 //        }
-        sqlBuilder.append("and d.declarevalue < 3000  ");
+        sqlBuilder.append("and d.declarevalue < 5000  ");
         sqlBuilder.append("union all  ");
         sqlBuilder.append("select count(s.projectcode) procount  from cs_sign s  ");
         sqlBuilder.append("left join cs_dispatch_doc d  ");
@@ -1489,7 +1489,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  "); //排除预签收
         sqlBuilder.append("and D.DISPATCHDATE >= to_date('" + beginTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
         sqlBuilder.append("and D.DISPATCHDATE <= to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
-        sqlBuilder.append("and d.declarevalue >= 3000  and d.declarevalue < 10000   ");
+        sqlBuilder.append("and d.declarevalue >= 5000  and d.declarevalue < 10000   ");
         sqlBuilder.append("union all  ");
         sqlBuilder.append("select count(s.projectcode) procount  from cs_sign s  ");
         sqlBuilder.append("left join cs_dispatch_doc d  ");
@@ -1507,13 +1507,24 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("left join cs_dispatch_doc d  ");
         sqlBuilder.append("on s.signid = d.signid  ");
         sqlBuilder.append("where 1 = 1 ");
+        sqlBuilder.append("and s.signstate != '7' ");//过滤删除
+        sqlBuilder.append("and s.processstate >= 6  ");//已发文
+        sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  "); //排除预签收
+        sqlBuilder.append("and D.DISPATCHDATE >= to_date('" + beginTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
+        sqlBuilder.append("and D.DISPATCHDATE <= to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
+        sqlBuilder.append("and d.declarevalue >= 100000  and d.declarevalue < 500000   ");
+        sqlBuilder.append("union all  ");
+        sqlBuilder.append("select count(s.projectcode) procount  from cs_sign s  ");
+        sqlBuilder.append("left join cs_dispatch_doc d  ");
+        sqlBuilder.append("on s.signid = d.signid  ");
+        sqlBuilder.append("where 1 = 1 ");
 //        sqlBuilder.append("and s.signstate = '9'  ");
         sqlBuilder.append("and s.signstate != '7' ");//过滤删除
         sqlBuilder.append("and s.processstate >= 6  ");//已发文
         sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  "); //排除预签收
         sqlBuilder.append("and D.DISPATCHDATE >= to_date('" + beginTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
         sqlBuilder.append("and D.DISPATCHDATE <= to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
-        sqlBuilder.append("and d.declarevalue >= 100000   ");
+        sqlBuilder.append("and d.declarevalue >= 500000   ");
 
         List projectReviewConList = expertSelectedRepo.getObjectArray(sqlBuilder);
         Integer[] proCountArr = new Integer[projectReviewConList.size() + 1];
@@ -1889,6 +1900,80 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         Criteria criteria = expertSelectedRepo.getExecutableCriteria();
         criteria.add(Restrictions.eq(ExpertSelected_.businessId.getName(), businessID));
         return criteria.list();
+    }
+
+
+    /**
+     * 本月专家评审会情况统计
+     * @param projectReviewConditionDto
+     * @return
+     */
+    @Override
+    public String[] expertReviewMeeting(ProReviewConditionDto projectReviewConditionDto) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append("select s.reviewstage, count(s.projectcode) projectcount from cs_sign s  ");
+        sqlBuilder.append("left join cs_dispatch_doc d   ");
+        sqlBuilder.append("on s.signid = d.signid   ");
+        sqlBuilder.append("where 1 = 1 ");
+        sqlBuilder.append("and s.signstate != '7' ");//过滤删除
+        sqlBuilder.append("and D.DISPATCHTYPE != '项目退文函' ");//过滤退文项目
+        sqlBuilder.append("and s.processstate >= 6  ");//已发文
+        sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  "); //排除预签收
+        //添加查询条件
+        if (Validate.isObject(projectReviewConditionDto)) {
+            if (Validate.isString(projectReviewConditionDto.getBeginTime()) && Validate.isString(projectReviewConditionDto.getEndTime())) {
+                String beginTime = projectReviewConditionDto.getBeginTime() + "-01 00:00:00";
+                String[] timeArr = projectReviewConditionDto.getEndTime().split("-");
+                String day = "";
+                day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
+                String endTime = projectReviewConditionDto.getEndTime() + "-" + day + " 23:59:59";
+                sqlBuilder.append("and D.DISPATCHDATE >= to_date('" + beginTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE <= to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
+            } else if (Validate.isString(projectReviewConditionDto.getBeginTime()) && !Validate.isString(projectReviewConditionDto.getEndTime())) {
+                String[] timeArr = projectReviewConditionDto.getBeginTime().split("-");
+                String day = "";
+                day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
+                String beginTime = projectReviewConditionDto.getBeginTime() + "-01 00:00:00";
+                String endTime = projectReviewConditionDto.getBeginTime() + "-" + day + " 23:59:59";
+                sqlBuilder.append("and D.DISPATCHDATE >= to_date('" + beginTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE <= to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
+            } else if (Validate.isString(projectReviewConditionDto.getEndTime()) && !Validate.isString(projectReviewConditionDto.getBeginTime())) {
+                String[] timeArr = projectReviewConditionDto.getEndTime().split("-");
+                ;
+                String day = "";
+                day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
+                String beginTime = projectReviewConditionDto.getEndTime() + "-01 00:00:00";
+                String endTime = projectReviewConditionDto.getEndTime() + "-" + day + " 23:59:59";
+                sqlBuilder.append("and D.DISPATCHDATE >= to_date('" + beginTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE <= to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
+            }
+        }
+        sqlBuilder.append("group by s.reviewstage  ");
+        List<Object[]> projectReviewConList = expertSelectedRepo.getObjectArray(sqlBuilder);
+        String reviewName = "";
+        int count = 0;
+        if (projectReviewConList.size() > 0) {
+            Object[] projectReviewCon = projectReviewConList.get(0);
+
+            if (null != projectReviewCon[0]) {
+               if(Validate.isString(reviewName)){
+                   reviewName += "、";
+               }
+               if(Constant.STAGE_BUDGET.equals(projectReviewCon[0])){
+                   reviewName += "初步涉及概算审核";
+               }else{
+                   reviewName += projectReviewCon[0];
+               }
+
+            }
+            if (null != projectReviewCon[1]) {
+                count += Integer.parseInt(projectReviewCon[1].toString());
+            }
+        }
+
+        String[] result = new String[]{reviewName , String.valueOf(count)};
+
+        return result;
     }
 
 }

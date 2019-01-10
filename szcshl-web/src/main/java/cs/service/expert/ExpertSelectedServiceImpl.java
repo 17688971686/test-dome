@@ -1038,6 +1038,18 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
         return pageModelDto;
     }
 
+
+    /**
+     * 本月专家评审会情况统计
+     * @param projectReviewConditionDto
+     * @return
+     */
+    @Override
+    public String[] expertReviewMeeting(ProReviewConditionDto projectReviewConditionDto) {
+
+        return expertSelectedRepo.expertReviewMeeting(projectReviewConditionDto);
+    }
+
     /**
      * 根据业务ID统计已经确认的抽取专家
      *

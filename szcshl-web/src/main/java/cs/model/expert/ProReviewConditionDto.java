@@ -35,6 +35,10 @@ public class ProReviewConditionDto {
 
     private String isadvanced;//是否提前介入
 
+    //指标名称（审核项目，审核投资项目，建议重编项目，暂不实施项目）
+    private String indexName;
+
+
 
 
     /**
@@ -188,5 +192,13 @@ public class ProReviewConditionDto {
 
     public void setIsadvanced(String isadvanced) {
         this.isadvanced = isadvanced;
+    }
+
+    public String getIndexName() {
+        return indexName;
+    }
+
+    public void setIndexName(String indexName) {
+        this.indexName = indexName;
     }
 }

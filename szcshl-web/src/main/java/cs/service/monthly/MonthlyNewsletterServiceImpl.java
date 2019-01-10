@@ -418,7 +418,36 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
             ProReviewConditionDto acvanceCurDto =  expertSelectedService.getAdvancedCon(proReviewConditionDto);
             //专家评审明细
             List<ProReviewConditionDto> proReviewCondDetailList = expertSelectedService.proReviewConditionDetail(proReviewConditionDto);
+            //获取当前月专家评审会情况
+            String[] expertReviewMeeting = expertSelectedService.expertReviewMeeting(proReviewConditionDto);
+
+            //附件一内容
+            Map<String , List<ProReviewConditionDto>> attachementContentList = monthlyNewsletterRepo.proReviewConditionCount(proReviewConditionDto);
+
+            //评审阶段排序
+            String[] reviewStageArr = new String[]{Constant.REGISTER_CODE , Constant.STAGE_SUG , Constant.STAGE_STUDY
+                    , Constant.STAGE_BUDGET , Constant.APPLY_REPORT , Constant.OTHERS , Constant.IMPORT_DEVICE ,
+                    Constant.DEVICE_BILL_HOMELAND , Constant.DEVICE_BILL_IMPORT};
             Map<String, List<ProReviewConditionDto>> proReviewCondDetailMap = new LinkedHashMap<String, List<ProReviewConditionDto>>();
+            int index = 0 ;
+            for(int i = 0 ; i < reviewStageArr.length ; i ++ ){
+                List<ProReviewConditionDto> proReviewConditionDetailList = new ArrayList<ProReviewConditionDto>();
+                String key = "";
+                for (int j = 0; j < proReviewCondDetailList.size(); j++) {
+                    if (StringUtil.isNotEmpty(proReviewCondDetailList.get(j).getReviewStage()) &&
+                            proReviewCondDetailList.get(j).getReviewStage().equals(reviewStageArr[i])) {
+                        proReviewConditionDetailList.add(proReviewCondDetailList.get(j));
+                        key =   NumUtils.NumberToChn(index + 1) + "、" + reviewStageArr[i];
+                        if(j == proReviewCondDetailList.size() - 1){
+                            index++ ;
+                        }
+                    }
+                }
+                proReviewCondDetailMap.put(key, proReviewConditionDetailList);
+
+            }
+
+          /*  Map<String, List<ProReviewConditionDto>> proReviewCondDetailMap = new LinkedHashMap<String, List<ProReviewConditionDto>>();
             for (int i = 0; i < proReviewConditionDtoList.size(); i++) {
                 List<ProReviewConditionDto> proReviewConditionDetailList = new ArrayList<ProReviewConditionDto>();
                 String key = "";
@@ -427,14 +456,14 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
                             StringUtil.isNotEmpty(proReviewCondDetailList.get(j).getReviewStage()) &&
                             proReviewConditionDtoList.get(i).getReviewStage().equals(proReviewCondDetailList.get(j).getReviewStage())) {
                         proReviewConditionDetailList.add(proReviewCondDetailList.get(j));
-                        key = NumUtils.NumberToChn(i + 1) + "、" + proReviewConditionDtoList.get(i).getReviewStage();
+                        key =  proReviewConditionDtoList.get(i).getReviewStage();
                     }
                     if (j == (proReviewCondDetailList.size() - 1)) {
                         proReviewCondDetailMap.put(key, proReviewConditionDetailList);
                         break;
                     }
                 }
-            }
+            }*/
             signCount = expertSelectedService.proReviewCount(proReviewConditionDto);
             reviewCount = expertSelectedService.proReviewMeetingCount(proReviewConditionDto);//本月完成項目评审次数
             //至当前月月报
@@ -442,6 +471,7 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
             resultMap.clear();
             List<ProReviewConditionDto> proReviewConditionDtoAllList = new ArrayList<ProReviewConditionDto>();
             List<ProReviewConditionDto> proReviewConditionByTypeAllList = new ArrayList<ProReviewConditionDto>();
+            Map<String , List<ProReviewConditionDto>> attachementContentAllList = new HashMap<>();
             Integer[] proCountArr = null; //按投资金额的项目数
             Integer totalNum = 0; //项目数
             ProReviewConditionDto acvanceTotalDto = new ProReviewConditionDto();
@@ -456,6 +486,9 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
                 proReviewConditionSum = expertSelectedService.proReviewConditionSum(proReviewConditionDto);
                 //项目类别
                 resultMap.clear();
+                //附件er内容
+                attachementContentAllList = monthlyNewsletterRepo.proReviewConditionCount(proReviewConditionDto);
+
                 resultMsg = expertSelectedService.proReviewConditionByTypeCount(proReviewConditionDto);
                 resultMap = (Map<String, Object>) resultMsg.getReObj();
                 proReviewConditionByTypeAllList = (List<ProReviewConditionDto>) resultMap.get("protReviewConditionList");
@@ -469,7 +502,27 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
                 proCountArr = expertSelectedService.proReviewCondByDeclare(beginTime, endTime);
             }
 
-            docFile = CreateTemplateUtils.createMonthTemplate(monthlyNewsletterDto, signCount, reviewCount, proReviewConditionDtoList, proReviewConditionDtoAllList, proReviewConditionByTypeAllList, totalNum, proReviewConditionCur, proReviewConditionSum, proReviewCondDetailMap, proCountArr,acvanceCurDto,acvanceTotalDto,backDispatchTotalCur,backDispatchList);
+            Map<String , Object> paramsMap = new HashMap<>();
+            paramsMap.put("monthlyNewsletterDto" , monthlyNewsletterDto);
+            paramsMap.put("signCount" , signCount);
+            paramsMap.put("reviewCount" , reviewCount);
+            paramsMap.put("proReviewConditionDtoList" , proReviewConditionDtoList);
+            paramsMap.put("proReviewConditionDtoAllList" , proReviewConditionDtoAllList);
+            paramsMap.put("proReviewConditionByTypeAllList" , proReviewConditionByTypeAllList);
+            paramsMap.put("totalNum" , totalNum);
+            paramsMap.put("proReviewConditionCur" , proReviewConditionCur);
+            paramsMap.put("proReviewConditionSum" , proReviewConditionSum);
+            paramsMap.put("proReviewCondDetailMap" , proReviewCondDetailMap);
+            paramsMap.put("proCountArr" , proCountArr);
+            paramsMap.put("acvanceCurDto" , acvanceCurDto);
+            paramsMap.put("acvanceTotalDto" , acvanceTotalDto);
+            paramsMap.put("backDispatchTotalCur" , backDispatchTotalCur);
+            paramsMap.put("backDispatchList" , backDispatchList);
+            paramsMap.put("expertReviewMeeting" , expertReviewMeeting);
+            paramsMap.put("attachmentContentList" , attachementContentList );
+            paramsMap.put("attachmentContentAllList" , attachementContentAllList);
+
+            docFile = CreateTemplateUtils.createMonthTemplate(paramsMap);
         }
         return docFile;
     }
