@@ -18,7 +18,11 @@ public interface MsgService {
      */
     ResultMsg getMsgToken();
 
-
+    /**
+     * 新的获取发送短信token
+     * @return
+     */
+    ResultMsg getMsgTokenNew();
     /**
      * 发送短信
      * @param recvUserList 用户列表
@@ -28,8 +32,20 @@ public interface MsgService {
     void sendMsg(List<User> recvUserList, String msgContent,SMSLog smsLog);
 
     /**
+     * 新的发送短信接口
+     * @param recvUserList
+     * @param msgContent
+     * @param smsLog
+     */
+    void sendMsgNew(List<User> recvUserList, String msgContent,SMSLog smsLog);
+    /**
      * 通过配置值获取通知的用户信息
      */
     List<User> getNoticeUserByConfigKey(String configKey);
 
+    /**
+     * 确定短信发送方式
+     * @return
+     */
+    boolean checkMsgType();
 }

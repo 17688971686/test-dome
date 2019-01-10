@@ -23,9 +23,32 @@ import java.util.concurrent.*;
 public class SMSUtils {
     private static Logger logger = Logger.getLogger(SMSUtils.class);
     /**
-     * 单条发送短信地址
+     * 单条发送短信地址（旧地址）
      */
     public static final String SM_URL = "http://172.18.225.30:8080/jxh/open/serApi.do";
+
+    /**
+     * 单条发送短信地址（新地址）
+     */
+    public static final String SM_ONE_URL = "http://172.18.225.31:9016/N/SmsApi/SendSmsToUser";
+
+    /**
+     * 多条发送地址（新地址）
+     */
+    public static final String SM_MORE_URL = "http://172.18.225.31:9016/N/SmsApi/SendSmsToGroupUser";
+
+    /**
+     * 获取token地址
+     */
+    public static final String GET_TOKEN_URL = "http://172.18.225.30:8080/jxh/open/getAccessToken";
+
+    /**
+     * 获取token地址(新地址)
+     */
+    public static final String GET_TOKEN_URL_NEW = "http://172.18.225.31:9016/N/BasicApi/GetAccessToken";
+    public static final String GET_TOKEN_APPID_NEW = "31ad58a4247d40b2940fc6a416b5d1ad";
+    public static final String GET_TOKEN_APPSECRET_NEW = "f3435e901865420b937f2dc2161e3520";
+
     /**
      * 单条短信的sercode
      */
@@ -42,11 +65,6 @@ public class SMSUtils {
      * 多条发送密钥
      */
     public static final String apiSecret_many = "d948e206924748b2d58396ead55108fc";
-
-    /**
-     * 获取token地址
-     */
-    public static final String GET_TOKEN_URL = "http://172.18.225.30:8080/jxh/open/getAccessToken";
 
     /**
      * MD5加密之后的账号密码，（但龙）
@@ -85,6 +103,34 @@ public class SMSUtils {
         threadPool.shutdown();
     }
 
+    /**
+     * token实现返回码
+     */
+    public static final String TOKEN_UNVALIABLE_CODE = "0190007";
+
+    /**
+     * 验证短信发送方式
+     * @param msgTypeDto
+     * @return
+     */
+    public static boolean checkMsgType(SysConfigDto msgTypeDto) {
+        if(Validate.isObject(msgTypeDto) && String.valueOf(SEND_MSG_TYPE.OLD.ordinal()).equals(msgTypeDto.getConfigValue())){
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 短信发送方式
+     */
+    public enum SEND_MSG_TYPE {
+        //预留
+        UNDEFIND,
+        //旧方式
+        OLD,
+        //新方式
+        NEW
+    }
 
     /**
      * 短信发送返回码
@@ -115,7 +161,15 @@ public class SMSUtils {
         //短信内容
         SmsContent,
         //密钥
-        authorSecret
+        authorSecret,
+        /**
+         * 认证平台，预先申请的appid
+         */
+        appid,
+        /**
+         * 认证平台，预先申请的服务密钥
+         */
+        appsecret
     }
 
     /**

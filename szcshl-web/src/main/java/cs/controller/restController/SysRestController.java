@@ -1,7 +1,6 @@
 package cs.controller.restController;
 
 import com.alibaba.fastjson.JSON;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import cs.ahelper.HttpClientOperate;
 import cs.ahelper.HttpResult;
 import cs.ahelper.IgnoreAnnotation;
@@ -34,7 +33,8 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static cs.common.constants.Constant.MsgType.incoming_type;
 import static cs.common.constants.Constant.RevireStageKey.SMS_SING_NOTICE_USER;
@@ -322,67 +322,66 @@ public class SysRestController {
 
 //        signRestService.getListUser("收文成功");
         //项目签收案例
-        //String REST_SERVICE_URI = "http://121.201.66.221:9090/szcshl-web/intfc/pushProject";
         String REST_SERVICE_URI = "http://localhost:8181/szcshl-web/intfc/pushProject";
         SignDto signDto = new SignDto();
         //委里收文编号
-        signDto.setFilecode("D201900005");
+        signDto.setFilecode("D201800732");
         signDto.setIschangeEstimate(null);
-        signDto.setDeclaration((BigDecimal.valueOf(11771.7)));
+        signDto.setDeclaration((BigDecimal.valueOf(6835)));
         signDto.setUrgencydegree("一般");
-        signDto.setMaindeptName("maindeptName");
-        signDto.setAssistDeptUserName("张路");
+        signDto.setMaindeptName("社会发展处");
+        signDto.setAssistDeptUserName("李斌");
         signDto.setCountryCode("2017-440300-83-01-102870");
-        signDto.setProjectname("深圳市口腔医院");
-        signDto.setProjectcode("Z-2012-Q83-100280-03-01");
-        signDto.setBuiltCompUserName("张志聪");
-        signDto.setAssistdeptName("社会发展处");
+        signDto.setProjectname("深圳大学卡尔森国际肿瘤中心用房改造装修工程");
+        signDto.setProjectcode("Z-2017-Q83-102870-02-01");
+        signDto.setBuiltCompUserName("刘泽慧");
+        signDto.setAssistdeptName("投资处");
         signDto.setDesigncompanyName(null);
         signDto.setYearplantype("C类");
-        signDto.setReviewstage("STAGEBUDGET");
-        signDto.setSendusersign("李斌");
-        signDto.setAcceptDate(DateUtils.converToDate("2019-01-04 09:27:36","yyyy-MM-dd HH:mm:ss"));
+        signDto.setReviewstage("STAGESTUDY");
+        signDto.setSendusersign("张路");
+        signDto.setAcceptDate(DateUtils.converToDate("2018-12-26 09:48:54.0","yyyy-MM-dd HH:mm:ss"));
         signDto.setSecrectlevel("公开");
         signDto.setMainDeptContactPhone("13723444083");
-        signDto.setMainDeptUserName("李斌");
-        signDto.setBuiltcompanyName("深圳市建筑工务署");
+        signDto.setMainDeptUserName("张路");
+        signDto.setBuiltcompanyName("深圳大学");
         signDto.setMaindeptOpinion("请张路主办。[社会处处长]2018-12-26;经核，该项目申报材料已完备，建议送审。妥否，请领导审定。[张路]2018-12-26;请评审中心评审。[社会处处长]2018-12-27");
 
         //附件列表
         List<SysFileDto> fileDtoList = new ArrayList<>();
         SysFileDto sysFileDto = new SysFileDto();
         //显示名称，后缀名也要
-        sysFileDto.setShowName("第二册-概算文件 计价文件.rar");
+        sysFileDto.setShowName("卡尔森可研报告申报请示.pdf");
         //附件大小，Long类型
-        sysFileDto.setFileSize(9504385L);
+        sysFileDto.setFileSize(1002398L);
         //附件下载地址
-        sysFileDto.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/1/4/20190104093013274.rar");
+        sysFileDto.setFileUrl("http://192.168.1.31:80/FGWPM/LEAP/Download/default/2018/12/26/20181226095006791.pdf");
         fileDtoList.add(sysFileDto);
 
         SysFileDto sysFileDto1 = new SysFileDto();
         //显示名称，后缀名也要
-        sysFileDto1.setShowName("第二册-概算文件 询价资料.zip");
+        sysFileDto1.setShowName("附件2深圳市发展和改革委员会关于深圳大学卡尔森国际肿瘤中心用房改造装修工程的项目建议书的批复.pdf");
         //附件大小，Long类型
-        sysFileDto1.setFileSize(22638671L);
+        sysFileDto1.setFileSize(1423571L);
         //附件下载地址
-        sysFileDto1.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/1/4/20190104093013596.zip");
+        sysFileDto1.setFileUrl("http://192.168.1.31:80/FGWPM/LEAP/Download/default/2018/12/26/20181226095006096.pdf");
         fileDtoList.add(sysFileDto1);
         SysFileDto sysFileDto2 = new SysFileDto();
         //显示名称，后缀名也要
-        sysFileDto2.setShowName("口腔医院概算函.pdf");
+        sysFileDto2.setShowName("卡尔森可研申报表.pdf");
         //附件大小，Long类型
-        sysFileDto2.setFileSize(780404L);
+        sysFileDto2.setFileSize(608288L);
         //附件下载地址
-        sysFileDto2.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/1/4/20190104093013149.pdf");
+        sysFileDto2.setFileUrl("http://192.168.1.31:80/FGWPM/LEAP/Download/default/2018/12/26/20181226095006914.pdf");
         fileDtoList.add(sysFileDto2);
 
         SysFileDto sysFileDto3 = new SysFileDto();
         //显示名称，后缀名也要
-        sysFileDto3.setShowName("第二册-概算文件 计算式.rar");
+        sysFileDto3.setShowName("附件3深圳大学卡尔森国际肿瘤中心用房改造装修工程可行性研究报告.rar");
         //附件大小，Long类型
-        sysFileDto3.setFileSize(30470686L);
+        sysFileDto3.setFileSize(13270274L);
         //附件下载地址
-        sysFileDto3.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/1/4/20190104093006013.rar");
+        sysFileDto3.setFileUrl("http://192.168.1.31:80/FGWPM/LEAP/Download/default/2018/12/26/20181226095006246.rar");
         fileDtoList.add(sysFileDto3);
         //项目添加附件列表
         signDto.setSysFileDtoList(fileDtoList);
