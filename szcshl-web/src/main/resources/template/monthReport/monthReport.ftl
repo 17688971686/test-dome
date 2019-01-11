@@ -704,7 +704,7 @@
                                 <w:sz w:val="32"/>
                                 <w:szCs w:val="32"/>
                             </w:rPr>
-                            <w:t>月，完成项目评审${proAllTotal!}项。项目申报总投资${declareAllTotal!}亿元，审核后总投资${authorizeAllTotal!}亿元，累计净核减投资${ljhjAllTotal!}亿元，核减率${hjlAllTotal!}。具体评审情况如下：</w:t>
+                            <w:t>月，完成项目评审${proAllTotal!}项，与去年同比<#if last1 ?? && 0 < last1 >增加${proAllTotalLast!}<#else>减少${-proAllTotalLast!}</#if>%；项目申报总投资${declareAllTotal!}亿元，与去年同比<#if last2 ?? && 0 < last2 >增加${declareAllTotalLast!}<#else>减少${-declareAllTotalLast!}</#if>%；审核后总投资${authorizeAllTotal!}亿元，累计净核减投资${ljhjAllTotal!}亿元，核减率${hjlAllTotal!}。具体评审情况如下：</w:t>
                         </w:r>
                     </w:p>
                 <#if djfmTotal?? >
@@ -1081,35 +1081,11 @@
                         </w:r>
                         <w:r>
                             <w:rPr>
-                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
-                                <w:sz w:val="32"/>
-                                <w:szCs w:val="32"/>
-                            </w:rPr>
-                            <w:t>${beginMonth!}</w:t>
-                        </w:r>
-                        <w:r>
-                            <w:rPr>
                                 <w:rFonts w:hint="eastAsia" w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
                                 <w:sz w:val="32"/>
                                 <w:szCs w:val="32"/>
                             </w:rPr>
-                            <w:t>至</w:t>
-                        </w:r>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
-                                <w:sz w:val="32"/>
-                                <w:szCs w:val="32"/>
-                            </w:rPr>
-                            <w:t>${theMonths!}</w:t>
-                        </w:r>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:hint="eastAsia" w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
-                                <w:sz w:val="32"/>
-                                <w:szCs w:val="32"/>
-                            </w:rPr>
-                            <w:t>月评审的项目中，申报投资金额5000万以下项目${proCount1!}项，占项目总数的${proCountCent1!}；5000万～1亿元项目${proCount2!}项，占项目总数的${proCountCent2!}；1亿～10亿元项目${proCount3!}项，占项目总数的${proCountCent3!}；10亿～50亿元项目${proCount3!}项，占项目总数的${proCountCent3!}；50亿元以上项目${proCount4!}项，占项目总数的${proCountCent4!}。（见图3）
+                            <w:t>，申报投资金额5000万以下项目${proCount1!}项，占项目总数的${proCountCent1!}；5000万～1亿元项目${proCount2!}项，占项目总数的${proCountCent2!}；1亿～10亿元项目${proCount3!}项，占项目总数的${proCountCent3!}；10亿～50亿元项目${proCount3!}项，占项目总数的${proCountCent3!}；50亿元以上项目${proCount4!}项，占项目总数的${proCountCent4!}。（见图3）
                             </w:t>
                         </w:r>
                     </w:p>

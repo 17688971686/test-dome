@@ -1291,7 +1291,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         //sqlBuilder.append("and s.signstate = '9' ");
         sqlBuilder.append("and s.signstate != '7' ");//过滤删除
         sqlBuilder.append("and s.processstate >= 6  ");//已发文
-        sqlBuilder.append("and D.DISPATCHTYPE != '项目退文' ");//过滤退文项目
+//        sqlBuilder.append("and D.DISPATCHTYPE != '项目退文' ");//过滤退文项目
         sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  "); //排除预签收
         List<ProReviewConditionDto> projectReviewConDtoList = new ArrayList<ProReviewConditionDto>();
         //todo:添加查询条件

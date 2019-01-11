@@ -1121,6 +1121,9 @@ public class CreateTemplateUtils {
         Integer totalNum = (Integer) paramsMap.get("totalNum");
         ProReviewConditionDto proReviewConditionCur = (ProReviewConditionDto) paramsMap.get("proReviewConditionCur");
         ProReviewConditionDto proReviewConditionSum = (ProReviewConditionDto) paramsMap.get("proReviewConditionSum");
+
+        ProReviewConditionDto proReviewConditionSumLast = (ProReviewConditionDto) paramsMap.get("proReviewConditionSumLast");
+
         Map<String, List<ProReviewConditionDto>> proReviewCondDetailMap = (Map<String, List<ProReviewConditionDto>>) paramsMap.get("proReviewCondDetailMap");
         Integer[] proCountArr = (Integer[]) paramsMap.get("proCountArr");
         ProReviewConditionDto acvanceCurDto = (ProReviewConditionDto) paramsMap.get("acvanceCurDto");
@@ -1186,6 +1189,19 @@ public class CreateTemplateUtils {
         dataMap.put("curMonth", curMonth);
         dataMap.put("beginMonth", monthlyNewsletterDto.getStaerTheMonths());
         dataMap.put("curYear", curYear);
+
+        double thisTotal = proReviewConditionSum.getProCount() != null ? new Double( proReviewConditionSum.getProCount().toString()) : 0;
+        double lastTotal = proReviewConditionSumLast.getProCount() != null ? new Double( proReviewConditionSumLast.getProCount().toString()) : 0;
+        double thisDeclare = new Double( dealNumber(proReviewConditionSum.getDeclareValue()).toString());
+        double lastDeclare = new Double( dealNumber(proReviewConditionSumLast.getDeclareValue()).toString());
+
+        double t = (thisTotal - lastTotal)/lastTotal;
+        dataMap.put("proAllTotalLast", lastTotal == 0 ? 100 : dealNumber(t));
+        dataMap.put("declareAllTotalLast", lastDeclare == 0 ? 100 : new Double( dealNumber((thisDeclare - lastDeclare)/lastDeclare).toString()) * 100 );
+
+        dataMap.put("last1", (thisTotal - lastTotal));
+        dataMap.put("last2", (thisDeclare - lastDeclare ));
+
         String[] reviewStage = {"xmjys-项目建议书", "kxxyj-可行性研究报告", "xmgs-项目概算", "zjsq-资金申请报告", "qt-其它", "jksb-进口设备", "sbqdgc-设备清单（国产）", "sbqdjk-设备清单（进口）" , "djfm-登记赋码"};
         String[] reviewStageTotal = { "djfmTotal-登记赋码","xmjysTotal-项目建议书", "kxxyjTotal-可行性研究报告", "xmgsTotal-项目概算", "zjsqTotal-资金申请报告", "qtTotal-其它", "jksbTotal-进口设备", "sbqdgcTotal-设备清单（国产）", "sbqdjkTotal-设备清单（进口）" , "tqjrTotal-提前介入" };
         String[] projectType = {"projectTypeA-市政工程", "projectTypeHouse-房建工程", "projectTypeInfo-信息工程", "projectTypeBuy-设备采购", "projectTypeOther-其它"};
@@ -1330,24 +1346,41 @@ public class CreateTemplateUtils {
         //项目阶段
         String projectStage = "";
         if(null != proReviewConditionDtoAllList && proReviewConditionDtoAllList.size() > 0 ){
+            int count = 0 ;
+            double precent = 0;
+            boolean f = false;
             for (int j = 0; j < reviewStageTotal.length; j++) {
                 String[] tempArr = reviewStageTotal[j].split("-");
                 for (int i = 0; i < proReviewConditionDtoAllList.size(); i++) {
                     if (tempArr[1].equals(proReviewConditionDtoAllList.get(i).getReviewStage())) {
                         if (totalNum != 0) {
-                            proCent = String.format("%.2f", (proReviewConditionDtoAllList.get(i).getProCount().floatValue() / totalNum.floatValue() * 100)) + "%";
+                            proCent = String.format("%.2f", (proReviewConditionDtoAllList.get(i).getProCount().floatValue() / totalNum.floatValue() * 100)) ;
                         } else {
-                            proCent = "0%";
+                            proCent = "0";
                         }
 
-                        if (i != (proReviewConditionDtoAllList.size() - 1)) {
-                            projectStage += tempArr[1] + "类项目" + proReviewConditionDtoAllList.get(i).getProCount() + "项，占项目总数的" + proCent + ";";
-                        } else {
-                            projectStage += tempArr[1] + "类项目" + proReviewConditionDtoAllList.get(i).getProCount() + "项，占项目总数的" + proCent + "。";
+                        //进口设备和其它归为一类
+                        if("qtTotal".equals(tempArr[0]) || "jksbTotal".equals(tempArr[0])){
+                            count += new Integer(proReviewConditionDtoAllList.get(i).getProCount().toString());
+                            precent += new Double(proCent);
+                            f = true;
+                        }else{
+                            projectStage += tempArr[1] + "类项目" + proReviewConditionDtoAllList.get(i).getProCount() + "项，占项目总数的" + proCent + "%;";
                         }
+//
+//                        if (i != (proReviewConditionDtoAllList.size() - 1)) {
+//
+//                        } else {
+//                            projectStage += tempArr[1] + "类项目" + proReviewConditionDtoAllList.get(i).getProCount() + "项，占项目总数的" + proCent + "。";
+//                        }
                         break;
                     }
                 }
+            }
+            if(f){
+                projectStage += "其它类项目" + count + "项，占项目总数的" + dealNumber(proCent) + "%。";
+            }else{
+                projectStage = projectStage.substring( 0 , projectStage.length() - 1) + "。";
             }
         }
         dataMap.put("projectStage" , projectStage);
