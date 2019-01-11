@@ -278,7 +278,7 @@ public class MsgServiceImpl implements MsgService{
             boolean isTokenEnable = true;
             if (SMSUtils.isTokenTimeout()) {
                 SMSUtils.resetTokenInfo("", 0L, 0L);
-                resultMsg = getMsgToken();
+                resultMsg = getMsgTokenNew();
                 isTokenEnable = resultMsg.isFlag();
             }
             if (isTokenEnable) {
@@ -324,7 +324,7 @@ public class MsgServiceImpl implements MsgService{
                             } else {
                                 //发送失败，重新获取一次token
                                 SMSUtils.resetTokenInfo("", 0L, 0L);
-                                ResultMsg newResultMsg = getMsgToken();
+                                ResultMsg newResultMsg = getMsgTokenNew();
                                 if (newResultMsg.isFlag()) {
                                     //重新发一次
                                     smsResultJson = httpClientOperate.sendMsgByPost(smsUrl, msgJsonInfo, SM_APPSECRET_NEW, SMSUtils.getTOKEN());
