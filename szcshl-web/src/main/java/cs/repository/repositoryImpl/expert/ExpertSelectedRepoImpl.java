@@ -566,8 +566,8 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("where 1 = 1 ");
 //        sqlBuilder.append("and s.signstate = '9'  ");
         sqlBuilder.append("and s.signstate != '7' ");//过滤删除
-        sqlBuilder.append("and D.DISPATCHTYPE != '项目退文函' ");//过滤退文项目
-        sqlBuilder.append("and s.processstate >= 6  ");//已发文
+//        sqlBuilder.append("and D.DISPATCHTYPE != '项目退文' ");//过滤退文项目
+//        sqlBuilder.append("and s.processstate >= 6  ");//已发文
         sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  "); //排除预签收
         //添加查询条件
         if (Validate.isObject(projectReviewConditionDto)) {
@@ -772,7 +772,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("where 1 = 1 ");
         //sqlBuilder.append("and s.signstate = '1'  ");
         sqlBuilder.append("and s.signstate != '7' ");//过滤删除
-        sqlBuilder.append("and s.processstate >= 6  ");//已发文
+//        sqlBuilder.append("and s.processstate >= 6  ");//已发文
         sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  "); //排除预签收
         if (null != projectReviewConditionDto) {
             if (StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime())) {
@@ -1284,14 +1284,14 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
     @Override
     public List<ProReviewConditionDto> proReviewConditionDetail(ProReviewConditionDto projectReviewConditionDto) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append("select s.signid, s.reviewstage, s.projectname ,s.isadvanced ,d.remark   from cs_sign s   ");
+        sqlBuilder.append("select s.signid,case when s.isadvanced= '9' then  '提前介入'   when s.reviewstage='进口设备' then  '其它' else s.reviewstage end reviewstage, s.projectname ,s.isadvanced ,d.remark   from cs_sign s   ");
         sqlBuilder.append("left join cs_dispatch_doc d  ");
         sqlBuilder.append("on s.signid = d.signid  ");
         sqlBuilder.append("where 1 = 1 ");
         //sqlBuilder.append("and s.signstate = '9' ");
         sqlBuilder.append("and s.signstate != '7' ");//过滤删除
         sqlBuilder.append("and s.processstate >= 6  ");//已发文
-        sqlBuilder.append("and D.DISPATCHTYPE != '项目退文函' ");//过滤退文项目
+        sqlBuilder.append("and D.DISPATCHTYPE != '项目退文' ");//过滤退文项目
         sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  "); //排除预签收
         List<ProReviewConditionDto> projectReviewConDtoList = new ArrayList<ProReviewConditionDto>();
         //todo:添加查询条件
@@ -1370,14 +1370,14 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
     @Override
     public List<ProReviewConditionDto> getBackDispatchInfo(ProReviewConditionDto projectReviewConditionDto) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append("select s.signid, s.reviewstage, s.projectname ,s.isadvanced ,d.remark  from cs_sign s   ");
+        sqlBuilder.append("select s.signid, s.reviewstage, s.projectname ,s.isadvanced ,d.remark ,s.appalyInvestment from cs_sign s   ");
         sqlBuilder.append("left join cs_dispatch_doc d  ");
         sqlBuilder.append("on s.signid = d.signid  ");
         sqlBuilder.append("where 1 = 1 ");
         //sqlBuilder.append("and s.signstate = '9' ");
         sqlBuilder.append("and s.signstate != '7' ");//过滤删除
         sqlBuilder.append("and s.processstate >= 6  ");//已发文
-        sqlBuilder.append("and D.DISPATCHTYPE ='项目退文函' ");
+        sqlBuilder.append("and D.DISPATCHTYPE ='项目退文' ");
         sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  "); //排除预签收
         List<ProReviewConditionDto> projectReviewConDtoList = new ArrayList<ProReviewConditionDto>();
         //todo:添加查询条件
@@ -1422,11 +1422,14 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                 }
 
                 if (null != projectReviewCon[2]) {
-                    if (null != projectReviewCon[4]) {
-                        proReviewConditionDto.setProjectName(((String) projectReviewCon[2]) + "(" + ((String) projectReviewCon[4]) + ")");
-                    } else {
-                        proReviewConditionDto.setProjectName((String) projectReviewCon[2]);
+//                    if (null != projectReviewCon[4]) {
+//                        proReviewConditionDto.setProjectName(((String) projectReviewCon[2]) + "(" + ((String) projectReviewCon[4]) + ")");
+//                    } else {
+                    if(((String) projectReviewCon[2]).indexOf("（提前介入）") > -1){
+                        proReviewConditionDto.setProjectName(((String) projectReviewCon[2]).replaceAll("（提前介入）" , ""));
                     }
+                        proReviewConditionDto.setProjectName((String) projectReviewCon[2]);
+//                    }
                 } else {
                     proReviewConditionDto.setProjectName(null);
                 }
@@ -1437,6 +1440,11 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                     }
                 } else {
                     proReviewConditionDto.setIsadvanced(null);
+                }
+                if(null != projectReviewCon[5]){
+                    proReviewConditionDto.setDeclareValue(new BigDecimal(projectReviewCon[5].toString()));
+                }else{
+                    proReviewConditionDto.setDeclareValue(new BigDecimal(0));
                 }
 
                 projectReviewConDtoList.add(proReviewConditionDto);
@@ -1463,7 +1471,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("where 1 = 1 ");
         sqlBuilder.append("and s.signstate != '7' ");//过滤删除
         // sqlBuilder.append("and s.signstate = '9'  ");
-        sqlBuilder.append("and s.processstate >= 6  ");//已发文
+//        sqlBuilder.append("and s.processstate >= 6  ");//已发文
         sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  "); //排除预签收
         //todo:添加查询条件
 //        if(null != projectReviewConditionDto){
@@ -1472,8 +1480,8 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
 //                String[] timeArr = projectReviewConditionDto.getEndTime().split("-");
 //                String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]),(Integer.parseInt(timeArr[1])-1))+"";
 //                endTime = projectReviewConditionDto.getEndTime()+"-"+day+" 23:59:59";
-            sqlBuilder.append("and D.DISPATCHDATE >= to_date('" + beginTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
-            sqlBuilder.append("and D.DISPATCHDATE <= to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
+            sqlBuilder.append("and s.signdate >= to_date('" + beginTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
+            sqlBuilder.append("and s.signdate <= to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
 
         }
 //        }
@@ -1485,10 +1493,10 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("where 1 = 1 ");
 //        sqlBuilder.append("and s.signstate = '9'  ");
         sqlBuilder.append("and s.signstate != '7' ");//过滤删除
-        sqlBuilder.append("and s.processstate >= 6  ");//已发文
+//        sqlBuilder.append("and s.processstate >= 6  ");//已发文
         sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  "); //排除预签收
-        sqlBuilder.append("and D.DISPATCHDATE >= to_date('" + beginTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
-        sqlBuilder.append("and D.DISPATCHDATE <= to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
+        sqlBuilder.append("and s.signdate >= to_date('" + beginTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
+        sqlBuilder.append("and s.signdate <= to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
         sqlBuilder.append("and d.declarevalue >= 5000  and d.declarevalue < 10000   ");
         sqlBuilder.append("union all  ");
         sqlBuilder.append("select count(s.projectcode) procount  from cs_sign s  ");
@@ -1497,10 +1505,10 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("where 1 = 1 ");
 //        sqlBuilder.append("and s.signstate = '9'  ");
         sqlBuilder.append("and s.signstate != '7' ");//过滤删除
-        sqlBuilder.append("and s.processstate >= 6  ");//已发文
+//        sqlBuilder.append("and s.processstate >= 6  ");//已发文
         sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  "); //排除预签收
-        sqlBuilder.append("and D.DISPATCHDATE >= to_date('" + beginTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
-        sqlBuilder.append("and D.DISPATCHDATE <= to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
+        sqlBuilder.append("and s.signdate >= to_date('" + beginTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
+        sqlBuilder.append("and s.signdate <= to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
         sqlBuilder.append("and d.declarevalue >= 10000  and d.declarevalue < 100000   ");
         sqlBuilder.append("union all  ");
         sqlBuilder.append("select count(s.projectcode) procount  from cs_sign s  ");
@@ -1508,10 +1516,10 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("on s.signid = d.signid  ");
         sqlBuilder.append("where 1 = 1 ");
         sqlBuilder.append("and s.signstate != '7' ");//过滤删除
-        sqlBuilder.append("and s.processstate >= 6  ");//已发文
+//        sqlBuilder.append("and s.processstate >= 6  ");//已发文
         sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  "); //排除预签收
-        sqlBuilder.append("and D.DISPATCHDATE >= to_date('" + beginTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
-        sqlBuilder.append("and D.DISPATCHDATE <= to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
+        sqlBuilder.append("and s.signdate >= to_date('" + beginTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
+        sqlBuilder.append("and s.signdate <= to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
         sqlBuilder.append("and d.declarevalue >= 100000  and d.declarevalue < 500000   ");
         sqlBuilder.append("union all  ");
         sqlBuilder.append("select count(s.projectcode) procount  from cs_sign s  ");
@@ -1520,10 +1528,10 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("where 1 = 1 ");
 //        sqlBuilder.append("and s.signstate = '9'  ");
         sqlBuilder.append("and s.signstate != '7' ");//过滤删除
-        sqlBuilder.append("and s.processstate >= 6  ");//已发文
+//        sqlBuilder.append("and s.processstate >= 6  ");//已发文
         sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  "); //排除预签收
-        sqlBuilder.append("and D.DISPATCHDATE >= to_date('" + beginTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
-        sqlBuilder.append("and D.DISPATCHDATE <= to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
+        sqlBuilder.append("and s.signdate >= to_date('" + beginTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
+        sqlBuilder.append("and s.signdate <= to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
         sqlBuilder.append("and d.declarevalue >= 500000   ");
 
         List projectReviewConList = expertSelectedRepo.getObjectArray(sqlBuilder);
@@ -1911,13 +1919,13 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
     @Override
     public String[] expertReviewMeeting(ProReviewConditionDto projectReviewConditionDto) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append("select s.reviewstage, count(s.projectcode) projectcount from cs_sign s  ");
-        sqlBuilder.append("left join cs_dispatch_doc d   ");
-        sqlBuilder.append("on s.signid = d.signid   ");
+        sqlBuilder.append("select w.workreviveStage , count(w.reviewType) from cs_work_program w  ");
+        sqlBuilder.append(" left join cs_sign s  on w.signid =s.signid  ");
+        sqlBuilder.append(" left join cs_dispatch_doc d  on w.signid = d.signid ");
         sqlBuilder.append("where 1 = 1 ");
         sqlBuilder.append("and s.signstate != '7' ");//过滤删除
-        sqlBuilder.append("and D.DISPATCHTYPE != '项目退文函' ");//过滤退文项目
-        sqlBuilder.append("and s.processstate >= 6  ");//已发文
+//        sqlBuilder.append("and D.DISPATCHTYPE != '项目退文' ");//过滤退文项目
+//        sqlBuilder.append("and s.processstate >= 6  ");//已发文
         sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  "); //排除预签收
         //添加查询条件
         if (Validate.isObject(projectReviewConditionDto)) {
@@ -1948,27 +1956,29 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                 sqlBuilder.append("and D.DISPATCHDATE <= to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
             }
         }
-        sqlBuilder.append("group by s.reviewstage  ");
+        sqlBuilder.append(" and w.reviewType = '专家评审会' group by w.workreviveStage ");
         List<Object[]> projectReviewConList = expertSelectedRepo.getObjectArray(sqlBuilder);
         String reviewName = "";
         int count = 0;
         if (projectReviewConList.size() > 0) {
-            Object[] projectReviewCon = projectReviewConList.get(0);
+            for(int i = 0 ; i < projectReviewConList.size() ; i ++ ){
+                Object[] projectReviewCon = projectReviewConList.get(i);
 
-            if (null != projectReviewCon[0]) {
-               if(Validate.isString(reviewName)){
-                   reviewName += "、";
-               }
-               if(Constant.STAGE_BUDGET.equals(projectReviewCon[0])){
-                   reviewName += "初步涉及概算审核";
-               }else{
-                   reviewName += projectReviewCon[0];
-               }
+                if (null != projectReviewCon[0]) {
+                    if(Validate.isString(reviewName)){
+                        reviewName += "、";
+                    }
+                    if(Constant.STAGE_BUDGET.equals(projectReviewCon[0])){
+                        reviewName += "初步涉及概算审核";
+                    }else{
+                        reviewName += projectReviewCon[0];
+                    }
+                }
+                if (null != projectReviewCon[1]) {
+                    count += Integer.parseInt(projectReviewCon[1].toString());
+                }
+            }
 
-            }
-            if (null != projectReviewCon[1]) {
-                count += Integer.parseInt(projectReviewCon[1].toString());
-            }
         }
 
         String[] result = new String[]{reviewName , String.valueOf(count)};

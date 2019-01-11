@@ -58,6 +58,11 @@ public class ProReviewConditionDto {
     //核减率
     private String hjlStr;
 
+    /**
+     * 记录集合大小
+     */
+    private int listSize;
+
     public BigDecimal getProCount() {
         return proCount;
     }
@@ -200,5 +205,13 @@ public class ProReviewConditionDto {
 
     public void setIndexName(String indexName) {
         this.indexName = indexName;
+    }
+
+    public int getListSize() {
+        return listSize;
+    }
+
+    public void setListSize(int listSize) {
+        this.listSize = listSize;
     }
 }

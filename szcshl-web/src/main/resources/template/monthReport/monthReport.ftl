@@ -261,7 +261,7 @@
                                 <w:rFonts w:hint="eastAsia"/>
                                 <w:szCs w:val="32"/>
                             </w:rPr>
-                            <w:t>项。其中，项目申报总投资</w:t>
+                            <w:t>项，项目申报总投资</w:t>
                         </w:r>
                         <w:r>
                             <w:rPr>
@@ -287,28 +287,27 @@
                                 <w:rFonts w:hint="eastAsia"/>
                                 <w:szCs w:val="32"/>
                             </w:rPr>
-                            <w:t>亿元，累计净核减投资</w:t>
+                            <w:t>亿元，累计净核<#if ljhjTotal?? && 0 < ljhjTotal  >减<#else>增</#if>投资</w:t>
                         </w:r>
                         <w:r>
                             <w:rPr>
                                 <w:szCs w:val="32"/>
                             </w:rPr>
-                            <w:t>${ljhjTotal!}</w:t>
+                            <w:t><#if ljhjTotal?? && 0 < ljhjTotal >${ljhjTotal!}<#else>${-ljhjTotal!}</#if></w:t>
                         </w:r>
                         <w:r>
                             <w:rPr>
                                 <w:rFonts w:hint="eastAsia"/>
                                 <w:szCs w:val="32"/>
                             </w:rPr>
-                            <w:t>亿元，核减率</w:t>
+                            <w:t>亿元，核<#if hjlTotal?? && 0 < hjlTotal >减<#else>增</#if>率</w:t>
                         </w:r>
                         <w:r>
                             <w:rPr>
                                 <w:szCs w:val="32"/>
                             </w:rPr>
-                            <w:t>${hjlTotal!}</w:t>
+                            <w:t><#if hjlTotal?? && 0 < hjlTotal >${hjlTotal!}<#else>${-hjlTotal!}</#if>%。</w:t>
                         </w:r>
-                    <#if twProjectList?? && 0 < twProjectList?size  >
                         <w:r>
                             <w:rPr>
                                 <w:rFonts w:hint="eastAsia"/>
@@ -317,7 +316,7 @@
                             </w:rPr>
                             <w:t>其中，</w:t>
                         </w:r>
-
+                    <#if twProjectList??  >
                         <w:r>
                             <w:rPr>
                                 <w:rFonts w:hint="eastAsia"/>
@@ -332,7 +331,7 @@
                                 <w:rFonts w:hint="eastAsia"/>
                                 <w:szCs w:val="32"/>
                             </w:rPr>
-                            <w:t>。具体评审情况如下：</w:t>
+                            <w:t>建议重新编制，涉及投资金额${twTotal!}亿元,未列入申报投资总额和核减额。具体评审情况如下：</w:t>
                         </w:r>
                     </w:p>
                 <#if djfm?? >
@@ -902,6 +901,223 @@
                             <w:spacing w:line="540" w:lineRule="exact"/>
                             <w:ind w:firstLine="640" w:firstLineChars="200"/>
                             <w:rPr>
+                                <w:rFonts w:ascii="等线 Light" w:hAnsi="等线 Light" w:eastAsia="等线 Light"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                        </w:pPr>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:hAnsi="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>${tqjrTotal!}</w:t>
+                        </w:r>
+                    </w:p>
+                    <w:p>
+                        <w:pPr>
+                            <w:spacing w:before="100" w:beforeAutospacing="1" w:after="100" w:afterAutospacing="1"
+                                       w:line="540" w:lineRule="exact"/>
+                            <w:outlineLvl w:val="0"/>
+                            <w:rPr>
+                                <w:rFonts w:ascii="黑体" w:eastAsia="黑体"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                        </w:pPr>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia" w:ascii="黑体" w:eastAsia="黑体"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>三、</w:t>
+                        </w:r>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:ascii="黑体" w:eastAsia="黑体"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>${reportMultiyear!}</w:t>
+                        </w:r>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia" w:ascii="黑体" w:eastAsia="黑体"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>年</w:t>
+                        </w:r>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:ascii="黑体" w:eastAsia="黑体"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>${beginMonth!}</w:t>
+                        </w:r>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia" w:ascii="黑体" w:eastAsia="黑体"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>月至</w:t>
+                        </w:r>
+                        <w:bookmarkStart w:id="9" w:name="OLE_LINK38"/>
+                        <w:bookmarkStart w:id="10" w:name="OLE_LINK39"/>
+                        <w:bookmarkStart w:id="11" w:name="OLE_LINK41"/>
+                        <w:bookmarkStart w:id="12" w:name="OLE_LINK40"/>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:ascii="黑体" w:eastAsia="黑体"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>${theMonths!}</w:t>
+                        </w:r>
+                        <w:bookmarkEnd w:id="9"/>
+                        <w:bookmarkEnd w:id="10"/>
+                        <w:bookmarkEnd w:id="11"/>
+                        <w:bookmarkEnd w:id="12"/>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia" w:ascii="黑体" w:eastAsia="黑体"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>月项目评审特点</w:t>
+                        </w:r>
+                    </w:p>
+                    <w:p>
+                        <w:pPr>
+                            <w:spacing w:line="540" w:lineRule="exact"/>
+                            <w:ind w:firstLine="640" w:firstLineChars="200"/>
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                        </w:pPr>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia" w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>从项目阶段分类看，</w:t>
+                        </w:r>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>${projectStage!}</w:t>
+                        </w:r>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia" w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>（见图1）</w:t>
+                        </w:r>
+                    </w:p>
+                    <w:p>
+                        <w:pPr>
+                            <w:spacing w:line="540" w:lineRule="exact"/>
+                            <w:ind w:firstLine="640" w:firstLineChars="200"/>
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                        </w:pPr>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia" w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>从项目行业分类看，</w:t>
+                        </w:r>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>${projectTypeItem!}</w:t>
+                        </w:r>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia" w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>（见图2）</w:t>
+                        </w:r>
+                    </w:p>
+                    <w:p>
+                        <w:pPr>
+                            <w:spacing w:line="540" w:lineRule="exact"/>
+                            <w:ind w:firstLine="640" w:firstLineChars="200"/>
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia" w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                        </w:pPr>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia" w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>从投资金额看，</w:t>
+                        </w:r>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>${beginMonth!}</w:t>
+                        </w:r>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia" w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>至</w:t>
+                        </w:r>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>${theMonths!}</w:t>
+                        </w:r>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia" w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>月评审的项目中，申报投资金额5000万以下项目${proCount1!}项，占项目总数的${proCountCent1!}；5000万～1亿元项目${proCount2!}项，占项目总数的${proCountCent2!}；1亿～10亿元项目${proCount3!}项，占项目总数的${proCountCent3!}；10亿～50亿元项目${proCount3!}项，占项目总数的${proCountCent3!}；50亿元以上项目${proCount4!}项，占项目总数的${proCountCent4!}。（见图3）
+                            </w:t>
+                        </w:r>
+                    </w:p>
+                    <w:p>
+                        <w:pPr>
+                            <w:spacing w:line="540" w:lineRule="exact"/>
+                            <w:ind w:firstLine="640" w:firstLineChars="200"/>
+                            <w:rPr>
                                 <w:rFonts w:ascii="仿宋_GB2312" w:hAnsi="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
                                 <w:sz w:val="32"/>
                                 <w:szCs w:val="32"/>
@@ -1163,188 +1379,6 @@
                         </w:r>
                     </w:p>
                     <w:p/>
-                    <w:p>
-                        <w:pPr>
-                            <w:spacing w:line="540" w:lineRule="exact"/>
-                            <w:ind w:firstLine="640" w:firstLineChars="200"/>
-                            <w:rPr>
-                                <w:rFonts w:ascii="等线 Light" w:hAnsi="等线 Light" w:eastAsia="等线 Light"/>
-                                <w:sz w:val="32"/>
-                                <w:szCs w:val="32"/>
-                            </w:rPr>
-                        </w:pPr>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:ascii="仿宋_GB2312" w:hAnsi="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
-                                <w:sz w:val="32"/>
-                                <w:szCs w:val="32"/>
-                            </w:rPr>
-                            <w:t>${tqjrTotal!}</w:t>
-                        </w:r>
-                    </w:p>
-                    <w:p>
-                        <w:pPr>
-                            <w:spacing w:before="100" w:beforeAutospacing="1" w:after="100" w:afterAutospacing="1"
-                                       w:line="540" w:lineRule="exact"/>
-                            <w:outlineLvl w:val="0"/>
-                            <w:rPr>
-                                <w:rFonts w:ascii="黑体" w:eastAsia="黑体"/>
-                                <w:sz w:val="32"/>
-                                <w:szCs w:val="32"/>
-                            </w:rPr>
-                        </w:pPr>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:hint="eastAsia" w:ascii="黑体" w:eastAsia="黑体"/>
-                                <w:sz w:val="32"/>
-                                <w:szCs w:val="32"/>
-                            </w:rPr>
-                            <w:t>三、</w:t>
-                        </w:r>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:ascii="黑体" w:eastAsia="黑体"/>
-                                <w:sz w:val="32"/>
-                                <w:szCs w:val="32"/>
-                            </w:rPr>
-                            <w:t>${reportMultiyear!}</w:t>
-                        </w:r>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:hint="eastAsia" w:ascii="黑体" w:eastAsia="黑体"/>
-                                <w:sz w:val="32"/>
-                                <w:szCs w:val="32"/>
-                            </w:rPr>
-                            <w:t>年</w:t>
-                        </w:r>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:ascii="黑体" w:eastAsia="黑体"/>
-                                <w:sz w:val="32"/>
-                                <w:szCs w:val="32"/>
-                            </w:rPr>
-                            <w:t>${beginMonth!}</w:t>
-                        </w:r>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:hint="eastAsia" w:ascii="黑体" w:eastAsia="黑体"/>
-                                <w:sz w:val="32"/>
-                                <w:szCs w:val="32"/>
-                            </w:rPr>
-                            <w:t>月至</w:t>
-                        </w:r>
-                        <w:bookmarkStart w:id="9" w:name="OLE_LINK38"/>
-                        <w:bookmarkStart w:id="10" w:name="OLE_LINK39"/>
-                        <w:bookmarkStart w:id="11" w:name="OLE_LINK41"/>
-                        <w:bookmarkStart w:id="12" w:name="OLE_LINK40"/>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:ascii="黑体" w:eastAsia="黑体"/>
-                                <w:sz w:val="32"/>
-                                <w:szCs w:val="32"/>
-                            </w:rPr>
-                            <w:t>${theMonths!}</w:t>
-                        </w:r>
-                        <w:bookmarkEnd w:id="9"/>
-                        <w:bookmarkEnd w:id="10"/>
-                        <w:bookmarkEnd w:id="11"/>
-                        <w:bookmarkEnd w:id="12"/>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:hint="eastAsia" w:ascii="黑体" w:eastAsia="黑体"/>
-                                <w:sz w:val="32"/>
-                                <w:szCs w:val="32"/>
-                            </w:rPr>
-                            <w:t>月项目评审特点</w:t>
-                        </w:r>
-                    </w:p>
-                    <w:p>
-                        <w:pPr>
-                            <w:spacing w:line="540" w:lineRule="exact"/>
-                            <w:ind w:firstLine="640" w:firstLineChars="200"/>
-                            <w:rPr>
-                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
-                                <w:sz w:val="32"/>
-                                <w:szCs w:val="32"/>
-                            </w:rPr>
-                        </w:pPr>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:hint="eastAsia" w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
-                                <w:sz w:val="32"/>
-                                <w:szCs w:val="32"/>
-                            </w:rPr>
-                            <w:t>从项目行业分类看，</w:t>
-                        </w:r>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
-                                <w:sz w:val="32"/>
-                                <w:szCs w:val="32"/>
-                            </w:rPr>
-                            <w:t>${projectTypeItem!}</w:t>
-                        </w:r>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:hint="eastAsia" w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
-                                <w:sz w:val="32"/>
-                                <w:szCs w:val="32"/>
-                            </w:rPr>
-                            <w:t>（见图2）</w:t>
-                        </w:r>
-                    </w:p>
-                    <w:p>
-                        <w:pPr>
-                            <w:spacing w:line="540" w:lineRule="exact"/>
-                            <w:ind w:firstLine="640" w:firstLineChars="200"/>
-                            <w:rPr>
-                                <w:rFonts w:hint="eastAsia" w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
-                                <w:sz w:val="32"/>
-                                <w:szCs w:val="32"/>
-                            </w:rPr>
-                        </w:pPr>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:hint="eastAsia" w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
-                                <w:sz w:val="32"/>
-                                <w:szCs w:val="32"/>
-                            </w:rPr>
-                            <w:t>从投资金额看，</w:t>
-                        </w:r>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
-                                <w:sz w:val="32"/>
-                                <w:szCs w:val="32"/>
-                            </w:rPr>
-                            <w:t>${beginMonth!}</w:t>
-                        </w:r>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:hint="eastAsia" w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
-                                <w:sz w:val="32"/>
-                                <w:szCs w:val="32"/>
-                            </w:rPr>
-                            <w:t>至</w:t>
-                        </w:r>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
-                                <w:sz w:val="32"/>
-                                <w:szCs w:val="32"/>
-                            </w:rPr>
-                            <w:t>${theMonths!}</w:t>
-                        </w:r>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:hint="eastAsia" w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
-                                <w:sz w:val="32"/>
-                                <w:szCs w:val="32"/>
-                            </w:rPr>
-                            <w:t>月评审的项目中，申报投资金额5000万以下项目${proCount1!}项，占项目总数的${proCountCent1!}；5000万～1亿元项目${proCount2!}项，占项目总数的${proCountCent2!}；1亿～10亿元项目${proCount3!}项，占项目总数的${proCountCent3!}；10亿～50亿元项目${proCount3!}项，占项目总数的${proCountCent3!}；50亿元以上项目${proCount4!}项，占项目总数的${proCountCent4!}。（见图3）
-                            </w:t>
-                        </w:r>
-                    </w:p>
                     <w:p>
                         <w:pPr>
                             <w:spacing w:line="540" w:lineRule="exact"/>
@@ -2240,7 +2274,7 @@
                                 <w:tcPr>
                                     <w:tcW w:w="4249" w:type="dxa"/>
                                     <w:gridSpan w:val="3"/>
-                                    <w:vMerge w:val="restart"/>
+                                <#--<w:vMerge w:val="restart"/>-->
                                     <w:tcBorders>
                                         <w:top w:val="single" w:color="auto" w:sz="4" w:space="0"/>
                                         <w:left w:val="single" w:color="auto" w:sz="4" w:space="0"/>
@@ -2544,7 +2578,7 @@
                             </w:tc>
                         </w:tr>
                     <#list attachmentContentMap?keys as key>
-                        <#list attachmentContentMap[key] as attachmentContent>
+                        <#list attachmentContentMap[key]?sort_by("indexName")?reverse as attachmentContent>
                             <w:tr>
                                 <w:tblPrEx>
                                     <w:tblLayout w:type="fixed"/>
@@ -2563,11 +2597,12 @@
                                     <w:tcPr>
                                         <w:tcW w:w="2079" w:type="dxa"/>
                                         <w:gridSpan w:val="2"/>
-                                        <#if attachmentContent?? && attachmentContent_index < attachmentContent?size>
+                                        <#if attachmentContent_index == 0>
                                             <w:vMerge w:val="restart"/>
-                                        <#else >
+                                        <#else>
                                             <w:vMerge w:val="continue"/>
                                         </#if>
+
                                         <w:tcBorders>
                                             <w:top w:val="single" w:color="auto" w:sz="4" w:space="0"/>
                                             <w:left w:val="single" w:color="auto" w:sz="4" w:space="0"/>
@@ -3078,7 +3113,7 @@
                                     <w:tcBorders>
                                         <w:top w:val="nil"/>
                                         <w:left w:val="nil"/>
-                                        <w:bottom w:val="nil" />
+                                        <w:bottom w:val="nil"/>
                                         <w:right w:val="nil"/>
                                     </w:tcBorders>
                                     <w:shd w:val="clear" w:color="auto" w:fill="auto"/>
@@ -3112,64 +3147,77 @@
                                         </w:rPr>
                                     </w:pPr>
                                 </w:p>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:spacing w:line="560" w:lineRule="exact"/>
-                                        <w:rPr>
-                                            <w:rFonts w:ascii="等线 Light" w:hAnsi="等线 Light" w:eastAsia="等线 Light"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:ascii="等线 Light" w:hAnsi="等线 Light" w:eastAsia="等线 Light"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                        <w:t xml:space="preserve">    </w:t>
-                                    </w:r>
-                                </w:p>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:widowControl/>
-                                        <w:spacing w:line="560" w:lineRule="exact"/>
-                                        <w:jc w:val="left"/>
-                                        <w:rPr>
-                                            <w:rFonts w:ascii="等线 Light" w:hAnsi="等线 Light" w:eastAsia="等线 Light"
-                                                      w:cs="宋体"/>
-                                            <w:kern w:val="0"/>
-                                            <w:sz w:val="32"/>
-                                            <w:szCs w:val="32"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                </w:p>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:widowControl/>
-                                        <w:spacing w:line="560" w:lineRule="exact"/>
-                                        <w:jc w:val="left"/>
-                                        <w:rPr>
-                                            <w:rFonts w:ascii="等线 Light" w:hAnsi="等线 Light" w:eastAsia="等线 Light"
-                                                      w:cs="宋体"/>
-                                            <w:kern w:val="0"/>
-                                            <w:sz w:val="32"/>
-                                            <w:szCs w:val="32"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                </w:p>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:widowControl/>
-                                        <w:spacing w:line="560" w:lineRule="exact"/>
-                                        <w:jc w:val="left"/>
-                                        <w:rPr>
-                                            <w:rFonts w:ascii="等线 Light" w:hAnsi="等线 Light" w:eastAsia="等线 Light"
-                                                      w:cs="宋体"/>
-                                            <w:kern w:val="0"/>
-                                            <w:sz w:val="32"/>
-                                            <w:szCs w:val="32"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                </w:p>
+                            </w:tc>
+                        </w:tr>
+                    </w:tbl>
+                    <w:p>
+                        <w:pPr>
+                            <w:spacing w:line="400" w:lineRule="exact"/>
+                            <w:rPr>
+                                <w:rFonts w:ascii="等线 Light" w:hAnsi="等线 Light" w:eastAsia="等线 Light"/>
+                                <w:sz w:val="28"/>
+                                <w:szCs w:val="28"/>
+                            </w:rPr>
+                            <w:sectPr>
+                                <w:pgSz w:w="16838" w:h="11906" w:orient="landscape"/>
+                                <w:pgMar w:top="1134" w:right="1588" w:bottom="1134" w:left="1588" w:header="992"
+                                         w:footer="992" w:gutter="0"/>
+                                <w:cols w:space="425" w:num="1"/>
+                                <w:docGrid w:type="lines" w:linePitch="312" w:charSpace="0"/>
+                            </w:sectPr>
+                        </w:pPr>
+                    </w:p>
+
+                    <w:tbl>
+                        <w:tblPr>
+                            <w:tblStyle w:val="7"/>
+                            <w:tblW w:w="13878" w:type="dxa"/>
+                            <w:tblInd w:w="0" w:type="dxa"/>
+                            <w:tblLayout w:type="fixed"/>
+                            <w:tblCellMar>
+                                <w:top w:w="0" w:type="dxa"/>
+                                <w:left w:w="108" w:type="dxa"/>
+                                <w:bottom w:w="0" w:type="dxa"/>
+                                <w:right w:w="108" w:type="dxa"/>
+                            </w:tblCellMar>
+                        </w:tblPr>
+                        <w:tblGrid>
+                            <w:gridCol w:w="1630"/>
+                            <w:gridCol w:w="1030"/>
+                            <w:gridCol w:w="1630"/>
+                            <w:gridCol w:w="1310"/>
+                            <w:gridCol w:w="1860"/>
+                            <w:gridCol w:w="2230"/>
+                            <w:gridCol w:w="2530"/>
+                            <w:gridCol w:w="1699"/>
+                        </w:tblGrid>
+                        <w:tr>
+                            <w:tblPrEx>
+                                <w:tblLayout w:type="fixed"/>
+                                <w:tblCellMar>
+                                    <w:top w:w="0" w:type="dxa"/>
+                                    <w:left w:w="108" w:type="dxa"/>
+                                    <w:bottom w:w="0" w:type="dxa"/>
+                                    <w:right w:w="108" w:type="dxa"/>
+                                </w:tblCellMar>
+                            </w:tblPrEx>
+                            <w:trPr>
+                                <w:trHeight w:val="2835" w:hRule="atLeast"/>
+                            </w:trPr>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="13878" w:type="dxa"/>
+                                    <w:gridSpan w:val="8"/>
+                                    <w:tcBorders>
+                                        <w:top w:val="nil"/>
+                                        <w:left w:val="nil"/>
+                                        <w:bottom w:val="single" w:color="auto" w:sz="4" w:space="0"/>
+                                        <w:right w:val="nil"/>
+                                    </w:tcBorders>
+                                    <w:shd w:val="clear" w:color="auto" w:fill="auto"/>
+                                    <w:noWrap/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
                                 <w:p>
                                     <w:pPr>
                                         <w:widowControl/>
@@ -3298,13 +3346,13 @@
                                 </w:tblCellMar>
                             </w:tblPrEx>
                             <w:trPr>
+                                <w:cantSplit/>
                                 <w:trHeight w:val="1134" w:hRule="atLeast"/>
                             </w:trPr>
                             <w:tc>
                                 <w:tcPr>
                                     <w:tcW w:w="4249" w:type="dxa"/>
                                     <w:gridSpan w:val="3"/>
-                                    <w:vMerge w:val="restart"/>
                                     <w:tcBorders>
                                         <w:top w:val="single" w:color="auto" w:sz="4" w:space="0"/>
                                         <w:left w:val="single" w:color="auto" w:sz="4" w:space="0"/>
@@ -3608,7 +3656,7 @@
                             </w:tc>
                         </w:tr>
                     <#list attachmentContentAllMap?keys as key>
-                        <#list attachmentContentAllMap[key] as attachmentContentAll>
+                        <#list attachmentContentAllMap[key]?sort_by("indexName")?reverse as attachmentContentAll>
                             <w:tr>
                                 <w:tblPrEx>
                                     <w:tblLayout w:type="fixed"/>
@@ -3625,9 +3673,9 @@
                                 <w:tc>
                                     <w:tcPr>
                                         <w:tcW w:w="2079" w:type="dxa"/>
-                                        <#if attachmentContentAll?? && attachmentContentAll_index < attachmentContentAll?size>
+                                        <#if attachmentContentAll_index == 0>
                                             <w:vMerge w:val="restart"/>
-                                        <#else >
+                                        <#else>
                                             <w:vMerge w:val="continue"/>
                                         </#if>
                                         <w:tcBorders>

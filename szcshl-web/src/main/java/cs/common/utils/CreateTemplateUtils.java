@@ -13,6 +13,7 @@ import cs.model.expert.ProReviewConditionDto;
 import cs.model.monthly.MonthlyNewsletterDto;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.*;
 
 import static cs.common.constants.Constant.COMPANY_NAME;
@@ -1074,23 +1075,27 @@ public class CreateTemplateUtils {
         Object result = null ;
         if(Validate.isObject(obj)) {
             double dValue = Double.valueOf(obj.toString());
-//            double d2 = Double.parseDouble(String.format("%.2f" , dValue  )) ;
-            if (dValue > 0) {
-                int i = 0, j = 0;
-                int cs = 10;
-                double d = dValue;
-                while (i < 2) {
-                    if ((int) (d) == 0) {
-                        cs *= 10;
-                        d *= 10;
+            double d1 = Double.parseDouble(String.format("%.2f", dValue));
+            if (d1 > 0) {
+                result = d1;
+            } else {
+                if (dValue > 0) {
+                    int i = 0, j = 0;
+                    int cs = 10;
+                    double d = dValue;
+                    while (i < 2) {
                         j++;
-                    } else {
-                        i++;
+                        if ((int) (d) == 0) {
+                            cs *= 10;
+                            d *= 10;
+                        } else {
+                            i++;
+                        }
                     }
+                    result = Double.parseDouble(String.format("%." + j + "f", dValue));
+                } else {
+                    result = 0;
                 }
-                result = Double.parseDouble(String.format("%." + j + "f", dValue));
-            }else{
-                result = 0;
             }
         }else{
             result = 0 ;
@@ -1143,13 +1148,23 @@ public class CreateTemplateUtils {
             temp = temp.substring(1, temp.length());
             dataMap.put("theNthMonths", temp);
         }
+
+        //统计退文金额
+        if(null != backDispatchList && backDispatchList.size() > 0 ){
+            BigDecimal twTotal = new BigDecimal(0);
+            for(ProReviewConditionDto p : backDispatchList){
+                twTotal =  twTotal.add(p.getDeclareValue());
+            }
+            dataMap.put("twTotal" , twTotal);
+        }
+
         //todo:初始化参数
         dataMap.put("signTotal", signCount != null ? signCount : 0);
         dataMap.put("proTotal", reviewCount != null ? reviewCount : 0);
         dataMap.put("declareTotal", dealNumber(proReviewConditionCur.getDeclareValue()));
         dataMap.put("authorizeTotal", dealNumber(proReviewConditionCur.getAuthorizeValue()));
         dataMap.put("ljhjTotal", dealNumber(proReviewConditionCur.getLjhj()));
-        dataMap.put("hjlTotal",dealNumber(proReviewConditionCur.getHjl()) + "%");
+        dataMap.put("hjlTotal",dealNumber(proReviewConditionCur.getHjl()));
         dataMap.put("backTotal", dealNumber(backDispatchTotalCur.getDeclareValue()));
         dataMap.put("backDispatchList", backDispatchList);
         dataMap.put("excludeBackPro", proReviewConditionCur.getProCount() != null ? proReviewConditionCur.getProCount() + "" : 0);
@@ -1172,7 +1187,7 @@ public class CreateTemplateUtils {
         dataMap.put("beginMonth", monthlyNewsletterDto.getStaerTheMonths());
         dataMap.put("curYear", curYear);
         String[] reviewStage = {"xmjys-项目建议书", "kxxyj-可行性研究报告", "xmgs-项目概算", "zjsq-资金申请报告", "qt-其它", "jksb-进口设备", "sbqdgc-设备清单（国产）", "sbqdjk-设备清单（进口）" , "djfm-登记赋码"};
-        String[] reviewStageTotal = {"xmjysTotal-项目建议书", "kxxyjTotal-可行性研究报告", "xmgsTotal-项目概算", "zjsqTotal-资金申请报告", "qtTotal-其它", "jksbTotal-进口设备", "sbqdgcTotal-设备清单（国产）", "sbqdjkTotal-设备清单（进口）" , "djfmTotal-登记赋码"};
+        String[] reviewStageTotal = { "djfmTotal-登记赋码","xmjysTotal-项目建议书", "kxxyjTotal-可行性研究报告", "xmgsTotal-项目概算", "zjsqTotal-资金申请报告", "qtTotal-其它", "jksbTotal-进口设备", "sbqdgcTotal-设备清单（国产）", "sbqdjkTotal-设备清单（进口）" , "tqjrTotal-提前介入" };
         String[] projectType = {"projectTypeA-市政工程", "projectTypeHouse-房建工程", "projectTypeInfo-信息工程", "projectTypeBuy-设备采购", "projectTypeOther-其它"};
         boolean flag = true;
 
@@ -1198,11 +1213,13 @@ public class CreateTemplateUtils {
                             }else{
                                 temp = "完成" + temp + "评审";
                             }
+                            double ljhj = new Double(dealNumber(proReviewConditionDtoList.get(j).getLjhj()).toString());
+                            double hjl = new Double(dealNumber(proReviewConditionDtoList.get(j).getHjl()).toString());
                             dataMap.put(tempArr[0], temp + (proReviewConditionDtoList.get(j).getProCount() != null ? proReviewConditionDtoList.get(j).getProCount() : 0) + "项，" +
                                     "申报总投资" + ( dealNumber(proReviewConditionDtoList.get(j).getDeclareValue()))
                                     + "亿元，审核后总投资 " + ( dealNumber(proReviewConditionDtoList.get(j).getAuthorizeValue())) + "亿元，" +
-                                    "累计净核减投资 " + (dealNumber(proReviewConditionDtoList.get(j).getLjhj()))
-                                    + "亿元，核减率" + (dealNumber(proReviewConditionDtoList.get(j).getHjl())) + " % ");
+                                    "累计净核" + (ljhj > 0 ? "减" : "增") + "投资 " + (ljhj)
+                                    + "亿元，核" + (hjl > 0 ? "减" : "增") + "率" + (hjl) + " %。");
                             break;
                         }
                     }
@@ -1211,11 +1228,13 @@ public class CreateTemplateUtils {
             }
         }
         if (null != acvanceCurDto && acvanceCurDto.getProCount().intValue() > 0) {
+            double ljhj = new Double(dealNumber(acvanceCurDto.getLjhj()).toString());
+            double hjl = new Double(dealNumber(acvanceCurDto.getHjl()).toString());
             dataMap.put("tqjr", "完成提前介入项目评审" + (acvanceCurDto.getProCount() != null ? acvanceCurDto.getProCount() : 0) + "项," +
                     "申报总投资" + ( dealNumber(acvanceCurDto.getDeclareValue())) +
                     "亿元,审核后总投资" + ( dealNumber(acvanceCurDto.getAuthorizeValue()))
-                    + "，累计净核减投资" + ( dealNumber(acvanceCurDto.getLjhj())) + "" +
-                    ",核减率" + ( dealNumber(acvanceCurDto.getHjl())) + "%");
+                    + "累计净核" + (ljhj > 0 ? "减" : "增") + "投资 " + (ljhj)
+                    + "亿元，核" + (hjl > 0 ? "减" : "增") + "率" + (hjl) + " %。");
         }
         //截止至当前月月报
         int reviewTotal = 0;
@@ -1226,7 +1245,7 @@ public class CreateTemplateUtils {
         BigDecimal advanceljhjTotalVal = BigDecimal.ZERO;//提前介入累计净核减投资*/
         boolean isAdvanced = false; //是否提前介入
         if (proReviewConditionDtoAllList.size() > 0) {
-            for (int k = 0; k < proReviewConditionDtoAllList.size(); k++) {
+            /*for (int k = 0; k < proReviewConditionDtoAllList.size(); k++) {
                 if ("9".equals(proReviewConditionDtoAllList.get(k).getIsadvanced())) {  //提前介入
                     isAdvanced = true;
                     if (reviewTotal == 0) {
@@ -1241,8 +1260,11 @@ public class CreateTemplateUtils {
                         reviewTotal = proReviewConditionSum.getProCount().intValue();
                     }
                 }
-            }
-
+            }*/
+            int xmzs = 0;
+            double sbztz = 0;
+            double shztz = 0;
+            double tz = 0 , tzhjl = 0;
             for (int j = 0; j < proReviewConditionDtoAllList.size(); j++) {
                 for (int i = 0; i < reviewStageTotal.length; i++) {
                     String[] tempArr = reviewStageTotal[i].split("-");
@@ -1258,11 +1280,35 @@ public class CreateTemplateUtils {
                             }else{
                                 temp = "完成" + temp + "评审";
                             }
-                            dataMap.put(tempArr[0], temp + (proReviewConditionDtoAllList.get(j).getProCount() != null ? proReviewConditionDtoAllList.get(j).getProCount() : 0) + "项，" +
-                                    "申报总投资" + ( dealNumber(proReviewConditionDtoAllList.get(j).getDeclareValue()))
-                                    + "亿元，审核后总投资 " + ( dealNumber(proReviewConditionDtoAllList.get(j).getAuthorizeValue())) + "亿元，" +
-                                    "累计净核减投资" + ( dealNumber(proReviewConditionDtoAllList.get(j).getLjhj())) + "亿元，" +
-                                    "核减率" + ( dealNumber(proReviewConditionDtoAllList.get(j).getHjl())) + " %");
+                            double ljhj = new Double(dealNumber(proReviewConditionDtoAllList.get(j).getLjhj()).toString());
+                            double hjl = new Double(dealNumber(proReviewConditionDtoAllList.get(j).getHjl()).toString());
+                          // "qtTotal-其它", "jksbTotal-进口设备",
+                          boolean flag2 = false;
+                           if("qtTotal".equals(tempArr[0]) || "jksbTotal".equals(tempArr[0])){
+                               flag2 = true;
+                               xmzs +=  (proReviewConditionDtoAllList.get(j).getProCount() != null ? new Integer( (proReviewConditionDtoAllList.get(j).getProCount()).toString() ): 0);
+                              sbztz += new Double( dealNumber(proReviewConditionDtoAllList.get(j).getDeclareValue()).toString());
+                               shztz += new Double( dealNumber(proReviewConditionDtoAllList.get(j).getAuthorizeValue()).toString());
+                               tz += ljhj;
+                               tzhjl += hjl;
+
+
+                           }else{
+                               dataMap.put(tempArr[0], temp + (proReviewConditionDtoAllList.get(j).getProCount() != null ? proReviewConditionDtoAllList.get(j).getProCount() : 0) + "项，" +
+                                       "申报总投资" + ( dealNumber(proReviewConditionDtoAllList.get(j).getDeclareValue()))
+                                       + "亿元，审核后总投资 " + ( dealNumber(proReviewConditionDtoAllList.get(j).getAuthorizeValue())) + "亿元，" +
+                                       "累计净核" + (ljhj > 0 ? "减" : "增") + "投资 " + (ljhj)
+                                       + "亿元，核" + (hjl > 0 ? "减" : "增") + "率" + (hjl) + " %。");
+                           }
+                           if(flag2){
+                               dataMap.put("qtTotal",  "完成其它项目审核" + xmzs  + "项（含进口设备），" +
+                                       "申报总投资" + sbztz
+                                       + "亿元，审核后总投资 " + shztz + "亿元，" +
+                                       "累计净核" + (tz > 0 ? "减" : "增") + "投资 " + (tz)
+                                       + "亿元，核" + (tzhjl > 0 ? "减" : "增") + "率" + (tzhjl) + " %。");
+                           }
+
+
                             break;
                         }
                     }
@@ -1270,31 +1316,50 @@ public class CreateTemplateUtils {
             }
             if (isAdvanced) {//提前介入
                 if (null != acvanceTotalDto && acvanceTotalDto.getProCount().intValue() > 0) {
+                    double ljhj = new Double(dealNumber(acvanceCurDto.getLjhj()).toString());
+                    double hjl = new Double(dealNumber(acvanceCurDto.getHjl()).toString());
                     dataMap.put("tqjrTotal", "另，完成提前介入项目评审 " + (acvanceTotalDto.getProCount() != null ? acvanceTotalDto.getProCount() : 0) + "项，" +
                             "申报总投资" + ( dealNumber(acvanceTotalDto.getDeclareValue()))
-                            + "亿元，审核后总投资" + ( dealNumber(acvanceTotalDto.getAuthorizeValue())) + "亿元，" +
-                            "累计净核减投资" + ( dealNumber(acvanceTotalDto.getLjhj())) + "亿元，" +
-                            "核减率" + ( dealNumber(acvanceTotalDto.getHjl())) + "%");
+                            + "亿元，审核后总投资" + ( dealNumber(acvanceTotalDto.getAuthorizeValue())) + "亿元，"
+                            + "累计净核" + (ljhj > 0 ? "减" : "增") + "投资 " + (ljhj)
+                            + "亿元，核" + (hjl > 0 ? "减" : "增") + "率" + (hjl) + " %。");
                 }
             }
         }
+
+        //项目阶段
+        String projectStage = "";
+        if(null != proReviewConditionDtoAllList && proReviewConditionDtoAllList.size() > 0 ){
+            for (int j = 0; j < reviewStageTotal.length; j++) {
+                String[] tempArr = reviewStageTotal[j].split("-");
+                for (int i = 0; i < proReviewConditionDtoAllList.size(); i++) {
+                    if (tempArr[1].equals(proReviewConditionDtoAllList.get(i).getReviewStage())) {
+                        if (totalNum != 0) {
+                            proCent = String.format("%.2f", (proReviewConditionDtoAllList.get(i).getProCount().floatValue() / totalNum.floatValue() * 100)) + "%";
+                        } else {
+                            proCent = "0%";
+                        }
+
+                        if (i != (proReviewConditionDtoAllList.size() - 1)) {
+                            projectStage += tempArr[1] + "类项目" + proReviewConditionDtoAllList.get(i).getProCount() + "项，占项目总数的" + proCent + ";";
+                        } else {
+                            projectStage += tempArr[1] + "类项目" + proReviewConditionDtoAllList.get(i).getProCount() + "项，占项目总数的" + proCent + "。";
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        dataMap.put("projectStage" , projectStage);
         //项目类别
         String projectTypeItem = "";
-        // Float proCentf = 100f;
-        // Float temp1 = 0f;
         if (proReviewConditionByTypeList.size() > 0) {
             for (int i = 0; i < proReviewConditionByTypeList.size(); i++) {
                 for (int j = 0; j < projectType.length; j++) {
                     String[] tempArr = projectType[j].split("-");
-                    // String [] tempArrTemp = projectTypeTemp[j].split("-");
                     if (tempArr[1].equals(proReviewConditionByTypeList.get(i).getProjectType())) {
                         if (totalNum != 0) {
                             proCent = String.format("%.2f", (proReviewConditionByTypeList.get(i).getProjectTypeCount().floatValue() / totalNum.floatValue() * 100)) + "%";
-              /*              temp1 += Float.valueOf(proCent.substring(0,proCent.length()-1));
-                            if(i == proReviewConditionByTypeList.size()-1 ){
-                                Float f = proCentf - temp1;
-                                proCent = f + "%";
-                            }*/
                         } else {
                             proCent = "0%";
                         }
@@ -1337,7 +1402,7 @@ public class CreateTemplateUtils {
                 twProjects += p.getProjectName();
             }
 
-            dataMap.put("twProjectList" , twProjects);
+            dataMap.put("twProjectList" , twProjects == null ? "" : twProjects);
         }
 
         //记录专家评审场次

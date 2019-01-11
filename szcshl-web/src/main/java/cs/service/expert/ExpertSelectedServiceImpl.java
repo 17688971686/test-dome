@@ -765,8 +765,8 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
         sqlBuilder.append("where 1 = 1 ");
         sqlBuilder.append("and s.signstate != '7' ");//过滤删除
         sqlBuilder.append("and (s.ispresign != '0' or s.ispresign is null) ");//过滤预签收的
-        sqlBuilder.append("and s.processstate >= 6  ");//已发文
-        sqlBuilder.append("and D.DISPATCHTYPE != '项目退文函' ");//过滤退文项目
+//        sqlBuilder.append("and s.processstate >= 6  ");//已发文
+//        sqlBuilder.append("and D.DISPATCHTYPE != '项目退文' ");//过滤退文项目
 
         //todo:添加查询条件
         if (null != projectReviewConditionDto) {
@@ -800,9 +800,9 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
         sqlBuilder1.append(" select t. reviewstage,sum(t.projectcode),sum(t.declarevalue) / 10000 declarevalue, " +
                 " sum(t.authorizevalue) / 10000 authorizevalue,  (sum(t.declarevalue) - sum(t.authorizevalue)) / 10000 ljhj," +
                 " decode(sum(t.declarevalue), 0, 0,round((sum(t.declarevalue) - sum(t.authorizevalue)) / 10000 / " +
-                " (sum(t.declarevalue) / 1000),  5) * 1000) hjl, t.isadvanced   from  ( ")
+                " (sum(t.declarevalue) / 1000),  5) * 1000) hjl   from  ( ")
                 .append(sqlBuilder.getHqlString())
-                .append(" )t   group by t.reviewstage,t.isadvanced ");
+                .append(" )t   group by t.reviewstage ");
         List<Object[]> projectReviewConList = expertCostCountRepo.getObjectArray(sqlBuilder1);
         List<ProReviewConditionDto> projectReviewConDtoList = new ArrayList<ProReviewConditionDto>();
 
@@ -847,14 +847,14 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
                     proReviewConditionDto.setLjhj(null);
                     proReviewConditionDto.setHjlStr("0");
                 }
-                if (null != projectReviewCon[6]) {
+               /* if (null != projectReviewCon[6]) {
                     proReviewConditionDto.setIsadvanced((String) projectReviewCon[6]);
-               /*     if (proReviewConditionDto.getIsadvanced().equals("9")) {
+               *//*     if (proReviewConditionDto.getIsadvanced().equals("9")) {
                         proReviewConditionDto.setReviewStage(proReviewConditionDto.getReviewStage() + "（提前介入）");
-                    }*/
+                    }*//*
                 } else {
                     proReviewConditionDto.setIsadvanced(null);
-                }
+                }*/
                 projectReviewConDtoList.add(proReviewConditionDto);
             }
         }
