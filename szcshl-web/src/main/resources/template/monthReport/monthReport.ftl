@@ -704,7 +704,7 @@
                                 <w:sz w:val="32"/>
                                 <w:szCs w:val="32"/>
                             </w:rPr>
-                            <w:t>月，完成项目评审${proAllTotal!}项，与去年同比<#if last1 ?? && 0 < last1 >增加${proAllTotalLast!}<#else>减少${-proAllTotalLast!}</#if>%；项目申报总投资${declareAllTotal!}亿元，与去年同比<#if last2 ?? && 0 < last2 >增加${declareAllTotalLast!}<#else>减少${-declareAllTotalLast!}</#if>%；审核后总投资${authorizeAllTotal!}亿元，累计净核减投资${ljhjAllTotal!}亿元，核减率${hjlAllTotal!}。具体评审情况如下：</w:t>
+                            <w:t>月，完成项目评审${proAllTotal!}项，与去年同比<#if last1 ?? && 0 < last1 >增加${proAllTotalLast!}<#else>减少${-proAllTotalLast!}</#if>%；项目申报总投资${declareAllTotal!}亿元，与去年同比<#if last2 ?? && 0 < last2 >增加${declareAllTotalLast!}<#else>减少${-declareAllTotalLast!}</#if>%；审核后总投资${authorizeAllTotal!}亿元，累计净核减投资${ljhjAllTotal!}亿元，核减率${hjlAllTotal!}。其中，建议重新编制${twProjectAllCount!}项，涉及投资金额${twzjAll!}亿元,未列入申报投资总额和核减额。具体评审情况如下：</w:t>
                         </w:r>
                     </w:p>
                 <#if djfmTotal?? >

@@ -476,6 +476,7 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
             List<ProReviewConditionDto> proReviewConditionByTypeAllList = new ArrayList<ProReviewConditionDto>();
             Map<String , List<ProReviewConditionDto>> attachementContentAllList = new HashMap<>();
             ProReviewConditionDto proReviewConditionSumLast = new ProReviewConditionDto();
+            List<ProReviewConditionDto>backDispatchListAll = new ArrayList<>();
             Integer[] proCountArr = null; //按投资金额的项目数
             Integer totalNum = 0; //项目数
             ProReviewConditionDto acvanceTotalDto = new ProReviewConditionDto();
@@ -488,7 +489,7 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
                 acvanceTotalDto = expertSelectedService.getAdvancedCon(proReviewConditionDto);
                 proReviewConditionDtoAllList = (List<ProReviewConditionDto>) resultMap.get("protReviewConditionList");
                 proReviewConditionSum = expertSelectedService.proReviewConditionSum(proReviewConditionDto);
-
+                backDispatchListAll = expertSelectedService.getBackDispatchInfo(proReviewConditionDto);
                 //获取去年统计信息
                 ProReviewConditionDto lastP = new ProReviewConditionDto();
                 int lastYear = new Integer(monthlyNewsletterDto.getStartMoultiyear()) - 1;
@@ -534,6 +535,7 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
             paramsMap.put("expertReviewMeeting" , expertReviewMeeting);
             paramsMap.put("attachmentContentList" , attachementContentList );
             paramsMap.put("attachmentContentAllList" , attachementContentAllList);
+            paramsMap.put("backDispatchListAll" , backDispatchListAll);
 
             docFile = CreateTemplateUtils.createMonthTemplate(paramsMap);
         }
