@@ -300,40 +300,45 @@ public class ProjUtil {
     }
 
     private static void countAchievementDetail(Map<String, List<Achievement>> cacheMap, Achievement achievement) {
-        String orgId = achievement.getOrgId();
-        //从缓存中取出对应的用户办理详情信息
-        List<Achievement> achievementList = cacheMap.get(orgId);
-        //如果已经初始化，则判断人员
-        boolean isHaveUser = false;
-        if(Validate.isList(achievementList)){
-            for(Achievement ach : achievementList){
-                if(ach.getUserId().equals(achievement.getUserId())){
-                    //判断新的评审项目信息是否是主办人
-                    if(Constant.EnumState.YES.getValue().equals(achievement.getIsMainUser())){
-                        ach.setMainDisSum(ach.getMainDisSum()+1);
-                    }else{
-                        ach.setAssistDisSum(ach.getAssistDisSum()+1);
+        //项目评审部门ID，用户所在部门ID，用户所在部门ID
+        String orgId = achievement.getOrgId(),userOrgId = achievement.getUserOrgId(),deptId =achievement.getDeptIds();
+
+        //部门只统计该部门下的人员（原因：有些项目的信息是迁移过来的，人员和部门的信息是对不上的）
+        if(orgId.equals(userOrgId) || (Validate.isString(deptId) && deptId.contains(orgId))){
+            //从缓存中取出对应的用户办理详情信息
+            List<Achievement> achievementList = cacheMap.get(orgId);
+            //如果已经初始化，则判断人员
+            boolean isHaveUser = false;
+            if(Validate.isList(achievementList)){
+                for(Achievement ach : achievementList){
+                    if(ach.getUserId().equals(achievement.getUserId())){
+                        //判断新的评审项目信息是否是主办人
+                        if(Constant.EnumState.YES.getValue().equals(achievement.getIsMainUser())){
+                            ach.setMainDisSum(ach.getMainDisSum()+1);
+                        }else{
+                            ach.setAssistDisSum(ach.getAssistDisSum()+1);
+                        }
+                        isHaveUser = true;
                     }
-                    isHaveUser = true;
                 }
-            }
-        }else{
-            //如果没有初始化，则创建一个新的
-            achievementList = new ArrayList<>();
-        }
-        if(!isHaveUser){
-            Achievement newAchievement = new Achievement();
-            if(Constant.EnumState.YES.getValue().equals(achievement.getIsMainUser())){
-                newAchievement.setMainDisSum(1);
             }else{
-                newAchievement.setAssistDisSum(1);
+                //如果没有初始化，则创建一个新的
+                achievementList = new ArrayList<>();
             }
-            newAchievement.setUserId(achievement.getUserId());
-            newAchievement.setOrgId(achievement.getOrgId());
-            newAchievement.setUserName(achievement.getUserName());
-            achievementList.add(newAchievement);
+            if(!isHaveUser){
+                Achievement newAchievement = new Achievement();
+                if(Constant.EnumState.YES.getValue().equals(achievement.getIsMainUser())){
+                    newAchievement.setMainDisSum(1);
+                }else{
+                    newAchievement.setAssistDisSum(1);
+                }
+                newAchievement.setUserId(achievement.getUserId());
+                newAchievement.setOrgId(achievement.getOrgId());
+                newAchievement.setUserName(achievement.getUserName());
+                achievementList.add(newAchievement);
+            }
+            cacheMap.put(orgId,achievementList);
         }
-        cacheMap.put(orgId,achievementList);
     }
 
     /**
@@ -415,7 +420,9 @@ public class ProjUtil {
         achievementSumDto.init();
         if(Validate.isList(orgDeptList)){
             OrgDept orgDept = orgDeptList.get(0);
-            achievementSumDto.setDeptIds(orgDept.getId());
+            //项目评审部门ID
+            String orgId = orgDept.getId();
+            achievementSumDto.setDeptIds(orgId);
             achievementSumDto.setDeptNames(orgDept.getName());
             //是否存在统计结果
             if(Validate.isList(countList)){
@@ -424,25 +431,29 @@ public class ProjUtil {
                 int lastIndex = 0;
                 for(int i=0,l=countList.size();i<l;i++){
                     Achievement achievement = countList.get(i);
-                    //如果项目名称不同，进行统计
-                    if(!lastSignId.equals(achievement.getSignId())){
-                        sumAchievementInfo(achievementSumDto,countList.get(lastIndex),true);
-                        lastSignId = achievement.getSignId();
-                        lastIndex = i;
-                    }
-                    //如果是最后一位，也要进行统计
-                    if(i == (l-1)){
-                        sumAchievementInfo(achievementSumDto,achievement,true);
-                    }
-                    //统计子集信息
-                    if(Constant.EnumState.YES.getValue().equals(achievement.getIsMainUser())){
-                        List<Achievement> mainChileLit = achievementSumDto.getMainChildList();
-                        mainChileLit.add(achievement);
-                        achievementSumDto.setMainChildList(mainChileLit);
-                    }else{
-                        List<Achievement> assistChileLit = achievementSumDto.getAssistChildList();
-                        assistChileLit.add(achievement);
-                        achievementSumDto.setAssistChildList(assistChileLit);
+                    //用户所在部门ID，用户所在组别ID
+                    String userOrgId = achievement.getUserOrgId(),deptIds = achievement.getDeptIds();
+                    if(orgId.equals(userOrgId) || (Validate.isString(deptIds) && deptIds.contains(orgId))){
+                        //如果项目名称不同，进行统计
+                        if(!lastSignId.equals(achievement.getSignId())){
+                            sumAchievementInfo(achievementSumDto,countList.get(lastIndex),true);
+                            lastSignId = achievement.getSignId();
+                            lastIndex = i;
+                        }
+                        //如果是最后一位，也要进行统计
+                        if(i == (l-1)){
+                            sumAchievementInfo(achievementSumDto,achievement,true);
+                        }
+                        //统计子集信息
+                        if(Constant.EnumState.YES.getValue().equals(achievement.getIsMainUser())){
+                            List<Achievement> mainChileLit = achievementSumDto.getMainChildList();
+                            mainChileLit.add(achievement);
+                            achievementSumDto.setMainChildList(mainChileLit);
+                        }else{
+                            List<Achievement> assistChileLit = achievementSumDto.getAssistChildList();
+                            assistChileLit.add(achievement);
+                            achievementSumDto.setAssistChildList(assistChileLit);
+                        }
                     }
                 }
             }

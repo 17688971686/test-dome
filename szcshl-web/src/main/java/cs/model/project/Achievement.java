@@ -79,6 +79,15 @@ public class Achievement {
     private int assistDisSum;
 
     /**
+     * 用户所在部门
+     */
+    private String userOrgId;
+
+    /**
+     * 用户所在组别
+     */
+    private String deptIds;
+    /**
      * 主任、副主任子集（如一级是部门，子集则为用户）
      */
     List<Achievement> childList;
@@ -217,5 +226,21 @@ public class Achievement {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getUserOrgId() {
+        return userOrgId;
+    }
+
+    public void setUserOrgId(String userOrgId) {
+        this.userOrgId = userOrgId;
+    }
+
+    public String getDeptIds() {
+        return deptIds;
+    }
+
+    public void setDeptIds(String deptIds) {
+        this.deptIds = deptIds;
     }
 }

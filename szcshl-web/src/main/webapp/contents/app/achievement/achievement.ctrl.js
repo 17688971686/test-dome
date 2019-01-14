@@ -259,7 +259,8 @@
                 }else if(level == 0){
                     vm.achievementDetail = data.userSum;
                     //个人业绩统计信息还包括课题信息
-                    achievementSvc.findTopicDetail(id,function(data){
+                    vm.userId = id;
+                    achievementSvc.findTopicDetail(vm,function(data){
                         if(data != undefined){
                             vm.conditions = data;
                             for(var i=0;i<vm.conditions.length;i++){
