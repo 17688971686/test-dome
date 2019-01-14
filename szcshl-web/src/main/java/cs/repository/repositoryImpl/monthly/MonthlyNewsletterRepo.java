@@ -37,4 +37,5 @@ public interface MonthlyNewsletterRepo extends IRepository<MonthlyNewsletter, St
      * @return
      */
     Map<String , List<ProReviewConditionDto>> proReviewConditionCount(ProReviewConditionDto projectReviewConditionDto);
+
 }

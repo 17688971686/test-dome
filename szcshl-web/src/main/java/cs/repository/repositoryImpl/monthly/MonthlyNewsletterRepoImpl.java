@@ -72,16 +72,15 @@ public class MonthlyNewsletterRepoImpl extends AbstractRepository<MonthlyNewslet
         Map<String, List<ProReviewConditionDto>> resultMap2 = new HashMap<>();
         HqlBuilder sqlBuilder = HqlBuilder.create();
         HqlBuilder sqlBuilder1 = HqlBuilder.create();
-        sqlBuilder.append(" select   reviewstage, " +
+        sqlBuilder.append(" select  case when s.isadvanced= '9' then  '提前介入'   when s.reviewstage='进口设备' then  '其它' else s.reviewstage end reviewstage, " +
                 " count(s.projectcode) projectcode,sum(d.declarevalue) declarevalue,sum(d.authorizevalue) authorizevalue," +
-                "  d.dispatchType  from cs_sign s   ");
+                " s.isadvanced ,d.dispatchType  from cs_sign s   ");
         sqlBuilder.append("left join cs_dispatch_doc d  ");
         sqlBuilder.append("on s.signid = d.signid  ");
         sqlBuilder.append("where 1 = 1 ");
         sqlBuilder.append("and s.signstate != '7' ");//过滤删除
-        sqlBuilder.append("and (s.ispresign != '0' or s.ispresign is null) ");//过滤预签收的
         sqlBuilder.append("and s.processstate >= 6  ");//已发文
-        sqlBuilder.append("and D.DISPATCHTYPE != '项目退文函' ");//过滤退文项目
+
 
         //todo:添加查询条件
         if (null != projectReviewConditionDto) {
@@ -111,8 +110,8 @@ public class MonthlyNewsletterRepoImpl extends AbstractRepository<MonthlyNewslet
                 sqlBuilder.append("and D.DISPATCHDATE <= to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
             }
         }
-        sqlBuilder.append(" group by s.reviewstage,d.dispatchType");
-        sqlBuilder1.append(" select t. reviewstage , sum(t.projectcode) , sum(t.declarevalue) / 10000 declarevalue , " +
+        sqlBuilder.append(" group by s.reviewstage, s.isadvanced,d.dispatchType");
+        sqlBuilder1.append(" select  reviewstage , sum(t.projectcode) , sum(t.declarevalue) / 10000 declarevalue , " +
                 " sum(t.authorizevalue) / 10000 authorizevalue ,  (sum(t.declarevalue) - sum(t.authorizevalue)) / 10000 ljhj ," +
                 " decode(sum(t.declarevalue) , 0 , 0 ,round((sum(t.declarevalue) - sum(t.authorizevalue)) / 10000 / " +
                 " (sum(t.declarevalue) / 1000),  5) * 1000) hjl ,  t.dispatchType  from  ( ")
@@ -160,7 +159,7 @@ public class MonthlyNewsletterRepoImpl extends AbstractRepository<MonthlyNewslet
                                 proReviewConditionDto.setIndexName("审核投资项目");
                             }
                             break;
-                        case "发文退文函":
+                        case "项目退文":
                             proReviewConditionDto.setIndexName("建议重编项目");
                             break;
                         case "暂不实施":
@@ -174,11 +173,12 @@ public class MonthlyNewsletterRepoImpl extends AbstractRepository<MonthlyNewslet
 
                 String reviewStageName = null ;
                 if (null != projectReviewCon[0]) {
-                    proReviewConditionDto.setReviewStage((String) projectReviewCon[0]);
+
                    reviewStageName = (String) projectReviewCon[0];
                     if(Constant.STAGE_BUDGET.equals(projectReviewCon[0])){
                         reviewStageName = "初步设计概算审核";
                     }
+                    proReviewConditionDto.setReviewStage(reviewStageName);
                 } else {
                     proReviewConditionDto.setReviewStage(null);
                 }
@@ -209,7 +209,7 @@ public class MonthlyNewsletterRepoImpl extends AbstractRepository<MonthlyNewslet
         if(null != resultMap2.get(Constant.APPLY_REPORT)){
             resultMap.put(Constant.APPLY_REPORT , resultMap2.get(Constant.APPLY_REPORT));
         }
-        if(null != resultMap2.get(Constant.OTHERS)){
+        if(null != resultMap2.get(Constant.OTHERS) ){
             resultMap.put(Constant.OTHERS , resultMap2.get(Constant.OTHERS));
         }
         if(null != resultMap2.get(Constant.IMPORT_DEVICE)){
@@ -220,6 +220,9 @@ public class MonthlyNewsletterRepoImpl extends AbstractRepository<MonthlyNewslet
         }
         if(null != resultMap2.get(Constant.DEVICE_BILL_IMPORT)){
             resultMap.put(Constant.DEVICE_BILL_IMPORT , resultMap2.get(Constant.DEVICE_BILL_IMPORT));
+        }
+        if(null != resultMap2.get("提前介入")){
+            resultMap.put("提前介入" , resultMap2.get("提前介入"));
         }
         return resultMap;
     }
