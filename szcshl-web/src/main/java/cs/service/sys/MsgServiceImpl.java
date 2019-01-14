@@ -221,15 +221,15 @@ public class MsgServiceImpl implements MsgService{
                 JSONObject json = new JSONObject(jsonInfo);
                 //得到 JSON 属性对象列表
                 if (Validate.isObject(json)) {
-                    String resultCode = json.getString(SMSUtils.MSG_PARAMS.resultCode.toString());
-                    if (SMSUtils.RESULT_CODE.SUCCESS.ordinal() == Integer.parseInt(resultCode)) {
+                    int resultCode = json.getInt(SMSUtils.MSG_PARAMS.resultCode.toString());
+                    if (SMSUtils.RESULT_CODE.SUCCESS.ordinal() == resultCode) {
                         JSONObject jo = json.getJSONObject(SMSUtils.MSG_PARAMS.resultData.toString());
                         //token5分钟有效
                         SMSUtils.resetTokenInfo(jo.getString(SMSUtils.MSG_PARAMS.accessToken.toString()), System.currentTimeMillis(), 300L);
+                        resultMsg.setReMsg(jo.getString(SMSUtils.MSG_PARAMS.tokenMsg.toString()));
                         resultMsg.setFlag(true);
                     }
-                    resultMsg.setReCode(resultCode);
-                    resultMsg.setReMsg(SMSUtils.getMsgInfoByCode(resultCode));
+                    resultMsg.setReCode(String.valueOf(resultCode));
                 }
             }
         } catch (Exception e) {
@@ -314,11 +314,11 @@ public class MsgServiceImpl implements MsgService{
                         JSONObject json = new JSONObject(smsResultJson);
                         //得到 JSON 属性对象列表
                         if (Validate.isObject(json)) {
-                            String resultCode = json.getString(SMSUtils.MSG_PARAMS.resultCode.toString());
+                            int resultCode = json.getInt(SMSUtils.MSG_PARAMS.resultCode.toString());
                             resultMsg.setReMsg(json.getString(SMSUtils.MSG_PARAMS.resultMsg.toString()));
-                            resultMsg.setReCode(resultCode);
+                            resultMsg.setReCode(String.valueOf(resultCode));
 
-                            if (SMSUtils.RESULT_CODE.SUCCESS.ordinal() == Integer.parseInt(resultCode)) {
+                            if (SMSUtils.RESULT_CODE.SUCCESS.ordinal() == resultCode) {
                                 //发送成功
                                 resultMsg.setFlag(true);
                             } else {
@@ -334,10 +334,10 @@ public class MsgServiceImpl implements MsgService{
                                         JSONObject json2 = new JSONObject(smsResultJson);
                                         //得到 JSON 属性对象列表
                                         if (Validate.isObject(json2)) {
-                                            String resultCode2 = json2.getString(SMSUtils.MSG_PARAMS.resultCode.toString());
+                                            int resultCode2 = json2.getInt(SMSUtils.MSG_PARAMS.resultCode.toString());
                                             resultMsg.setReMsg(json2.getString(SMSUtils.MSG_PARAMS.resultMsg.toString()));
-                                            resultMsg.setReCode(resultCode2);
-                                            if (SMSUtils.RESULT_CODE.SUCCESS.ordinal() == Integer.parseInt(resultCode2)) {
+                                            resultMsg.setReCode(String.valueOf(resultCode2));
+                                            if (SMSUtils.RESULT_CODE.SUCCESS.ordinal() == resultCode2) {
                                                 //发送成功
                                                 resultMsg.setFlag(true);
                                             }

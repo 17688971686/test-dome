@@ -122,11 +122,7 @@ public class AnnountmentController {
     @RequestMapping(name = "更改发布状态", path = "updateIssueState", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg updateIssueState(@RequestParam String ids, @RequestParam String issueState) {
-        ResultMsg resultMsg = annService.updateIssueState(ids, issueState);
-        if(!Validate.isObject(resultMsg)){
-            resultMsg = ResultMsg.error(ERROR_MSG);
-        }
-        return resultMsg;
+        return annService.updateIssueState(ids, issueState);
     }
 
     //@RequiresPermissions("annountment#getHomePageAnnountment#get")
@@ -170,11 +166,7 @@ public class AnnountmentController {
     @RequestMapping(name = "删除通知公告", path = "", method = RequestMethod.DELETE)
     @ResponseBody
     public ResultMsg delete(@RequestParam String anId) {
-        ResultMsg resultMsg = annService.deleteAnnountment(anId);
-        if(!Validate.isObject(resultMsg)){
-            resultMsg = ResultMsg.error(ERROR_MSG);
-        }
-        return resultMsg;
+        return annService.deleteAnnountment(anId);
     }
 
     //begin  html

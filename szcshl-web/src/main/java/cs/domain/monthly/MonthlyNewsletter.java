@@ -107,6 +107,8 @@ public class MonthlyNewsletter extends DomainBase {
 	@Column(columnDefinition="int ")
 	private Integer bgId;
 
+
+
 	public String getId() {
 		return id;
 	}

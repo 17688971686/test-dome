@@ -30,12 +30,11 @@ public class MsgThread implements Runnable{
     @Override
     public void run() {
         //调用新的短信发送接口
-        msgService.sendMsgNew(recvUserList,msgContent,smsLog);
-        /*boolean newType = msgService.checkMsgType();
+        boolean newType = msgService.checkMsgType();
         if(newType){
             msgService.sendMsgNew(recvUserList,msgContent,smsLog);
         }else{
             msgService.sendMsg(recvUserList,msgContent,smsLog);
-        }*/
+        }
     }
 }

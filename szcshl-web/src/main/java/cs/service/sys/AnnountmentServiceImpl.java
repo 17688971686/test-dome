@@ -355,15 +355,17 @@ public class AnnountmentServiceImpl implements AnnountmentService {
     @Transactional
     public ResultMsg updateIssueState(String ids, String issueState) {
         //是否发布,如果是发布，还要更新发布日期
-        boolean isaPublish = (Constant.EnumState.YES.getValue().equals(issueState)) ? true : false;
+        boolean isaPublish = Constant.EnumState.YES.getValue().equals(issueState);
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" update " + Annountment.class.getSimpleName() + " set " + Annountment_.issue.getName() + " =:issue ");
         hqlBuilder.setParam("issue", issueState);
         if (isaPublish) {
-            hqlBuilder.append("," + Annountment_.issueDate.getName() + " = sysdate ");
+            hqlBuilder.append("," + Annountment_.issueDate.getName() + " = :newDate ");
+            hqlBuilder.setParam("newDate",new Date());
             hqlBuilder.append("," + Annountment_.issueUser.getName() + " = :displayName ");
             hqlBuilder.setParam("displayName",SessionUtil.getDisplayName());
         }
+        hqlBuilder.bulidPropotyString("where",Annountment_.anId.getName(),ids);
         annountmentRepo.executeHql(hqlBuilder);
 
         return ResultMsg.ok("更新成功！");

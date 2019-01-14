@@ -1,14 +1,10 @@
 package cs.model.monthly;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import cs.model.BaseDto;
+
 import java.math.BigDecimal;
 import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Id;
-
-import com.alibaba.fastjson.annotation.JSONField;
-
-import cs.model.BaseDto;
 
 public class MonthlyNewsletterDto extends BaseDto{
 

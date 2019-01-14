@@ -113,11 +113,8 @@ public class FlowAppController {
     @Autowired
     @Qualifier("monthFlowImpl")
     private IFlow monthFlowImpl;
-
     @Autowired
     private TopicInfoService topicInfoService;
-    @Autowired
-    private BookBuyBusinessService bookBuyBusinessService;
     @Autowired
     private AssertStorageBusinessService assertStorageBusinessService;
     @Autowired

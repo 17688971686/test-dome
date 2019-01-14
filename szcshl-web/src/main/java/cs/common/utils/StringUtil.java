@@ -1,6 +1,7 @@
 package cs.common.utils;
 
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONObject;
 import org.owasp.esapi.ESAPI;
 import org.owasp.esapi.codecs.Codec;
 import org.owasp.esapi.codecs.WindowsCodec;
@@ -290,10 +291,18 @@ public class StringUtil extends StringUtils {
     }
 
     public static void main(String[] args) {
-        String checkString = "select u.* from user u";
+        /*String checkString = "select u.* from user u";
         //生成一个Oracle编码器实例
         Codec windowsCodec = new WindowsCodec();
-        System.out.println(ESAPI.validator().isValidInput("",checkString,"SafeString",64,true));
+        System.out.println(ESAPI.validator().isValidInput("",checkString,"SafeString",64,true));*/
+        String smsResultJson = "{\"resultMsg\":\"获取token成功\",\"resultData\":{\"accessToken\":\"33A72BE687395D9670518AF616A754BB\",\"tokenMsg\":\"accessToken将在2019-01-14 16:26:40后过期！\"},\"resultCode\":1}";
+        JSONObject json = new JSONObject(smsResultJson);
+        int resultCode = json.getInt(SMSUtils.MSG_PARAMS.resultCode.toString());
+        if (SMSUtils.RESULT_CODE.SUCCESS.ordinal() == resultCode) {
+            JSONObject jo = json.getJSONObject(SMSUtils.MSG_PARAMS.resultData.toString());
+            System.out.println(jo.getString(SMSUtils.MSG_PARAMS.accessToken.toString()));
+            System.out.println(jo.getString(SMSUtils.MSG_PARAMS.tokenMsg.toString()));
+        }
     }
 
 
