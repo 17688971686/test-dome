@@ -1,5 +1,6 @@
 package cs.service.project;
 
+import cs.common.RandomGUID;
 import cs.common.constants.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.*;
@@ -45,7 +46,7 @@ public class FileRecordServiceImpl implements FileRecordService {
 //                fileRecordDto.setFileDate(fileRecordDto.getFileDate() == null ? now : fileRecordDto.getFileDate());
                 fileRecordDto.setPrintDate(fileRecordDto.getPrintDate() == null ? now : fileRecordDto.getPrintDate());
                 BeanCopierUtils.copyProperties(fileRecordDto, fileRecord);
-                fileRecord.setFileRecordId(UUID.randomUUID().toString());
+                fileRecord.setFileRecordId((new RandomGUID()).valueAfterMD5);
                 fileRecord.setCreatedBy(SessionUtil.getLoginName());
                 fileRecord.setCreatedDate(now);
 //                fileRecord.setFileDate(now);

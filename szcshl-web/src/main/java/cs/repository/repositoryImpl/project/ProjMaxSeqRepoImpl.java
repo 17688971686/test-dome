@@ -1,5 +1,6 @@
 package cs.repository.repositoryImpl.project;
 
+import cs.common.RandomGUID;
 import cs.common.utils.Validate;
 import cs.domain.project.ProjMaxSeq;
 import cs.domain.project.ProjMaxSeq_;
@@ -26,7 +27,7 @@ public class ProjMaxSeqRepoImpl extends AbstractRepository<ProjMaxSeq, String> i
         //如果没有值，则返回默认值
         if(!Validate.isObject(projMaxSeq) || !Validate.isString(projMaxSeq.getId())){
             projMaxSeq = new ProjMaxSeq();
-            projMaxSeq.setId(UUID.randomUUID().toString());
+            projMaxSeq.setId((new RandomGUID()).valueAfterMD5);
             projMaxSeq.setSeq(0);
             projMaxSeq.setYear(intYear);
             projMaxSeq.setType(type);

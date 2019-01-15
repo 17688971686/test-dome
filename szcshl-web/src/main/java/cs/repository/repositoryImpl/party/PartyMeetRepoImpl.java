@@ -1,6 +1,7 @@
 package cs.repository.repositoryImpl.party;
 
 
+import cs.common.RandomGUID;
 import cs.common.ResultMsg;
 import cs.common.constants.Constant;
 import cs.common.utils.BeanCopierUtils;
@@ -53,7 +54,7 @@ public class PartyMeetRepoImpl extends AbstractRepository<PartyMeet, String> imp
     public ResultMsg createPartyMeet(PartyMeetDto partyMeetDto) {
         PartyMeet partyMeet = new PartyMeet();
         BeanCopierUtils.copyPropertiesIgnoreNull(partyMeetDto , partyMeet);
-        partyMeet.setmId(UUID.randomUUID().toString());
+        partyMeet.setmId((new RandomGUID()).valueAfterMD5);
         Date now = new Date();
         partyMeet.setCreatedBy(SessionUtil.getDisplayName());
         partyMeet.setCreatedDate(now);

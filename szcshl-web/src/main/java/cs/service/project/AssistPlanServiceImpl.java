@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import cs.common.RandomGUID;
 import cs.common.ResultMsg;
 import cs.common.utils.*;
 import cs.domain.project.*;
@@ -77,7 +78,7 @@ public class AssistPlanServiceImpl implements AssistPlanService {
             Date now = new Date();
             if (!Validate.isString(record.getId())) {
                 BeanCopierUtils.copyProperties(record, assistPlan);
-                assistPlan.setId(UUID.randomUUID().toString());
+                assistPlan.setId((new RandomGUID()).valueAfterMD5);
                 int maxPlanName = findMaxPlanName(now);
                 String panName = DateUtils.converToString(now, "yyyyMMdd") + String.format("%02d", (maxPlanName+1));
                 assistPlan.setPlanName(panName);

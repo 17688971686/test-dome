@@ -126,7 +126,6 @@
                          callBack(response.data);
                      }
                 };
-
                 common.http({
                     $http: $http,
                     httpOptions: httpOptions,
@@ -183,7 +182,6 @@
 
         // begin#getMonthlyNewsletterById
         function getMonthlyNewsletterById(vm) {
-      
         	var httpOptions = {
                 method: 'get',
                 url: rootPath + "/monthlyNewsletter/html/findById",
@@ -192,7 +190,6 @@
             var httpSuccess = function success(response) {
                 vm.monthly = response.data;
             };
-
             common.http({
                 vm: vm,
                 $http: $http,

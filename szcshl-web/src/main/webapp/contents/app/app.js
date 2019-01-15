@@ -880,6 +880,7 @@
                 .state('monthlyMultiyearEdit', {
                     url: '/monthlyMultiyearEdit/:year/:id',
                     templateUrl: rootPath + '/monthlyNewsletter/html/monthlyMultiyearAdd.html',
+                    params: {'year': (new Date()).getFullYear() + ''},
                     controller: 'monthlyMultiyearEditCtrl',
                     controllerAs: 'vm'
                 })

@@ -257,32 +257,30 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
     }
 
     /**
+     * 修改ldm (2019-01-15)
      * 保存月报简报
-     *
      * @return
      */
     @Override
     public ResultMsg saveTheMonthly(MonthlyNewsletterDto record) {
-        MonthlyNewsletter domain = new MonthlyNewsletter();
+        boolean isUpdate = false;
+        MonthlyNewsletter domain = null;
         if (Validate.isString(record.getId())) {
             domain = monthlyNewsletterRepo.findById(record.getId());
-            BeanCopierUtils.copyPropertiesIgnoreNull(record, domain);
-        } else {
-            BeanCopierUtils.copyProperties(record, domain);
-            Date now = new Date();
-            domain.setId(UUID.randomUUID().toString());
-            domain.setCreatedBy(SessionUtil.getDisplayName());
-            domain.setModifiedBy(SessionUtil.getDisplayName());
-            domain.setAddTime(now);
-            domain.setAuthorizedUser(SessionUtil.getDisplayName());
-            domain.setAuthorizedTime(now);
-            domain.setMonthlyNewsletterName(record.getReportMultiyear() + "年度月报简报数据");
-            domain.setMonthlyType(EnumState.PROCESS.getValue());
-            domain.setCreatedDate(now);
-            domain.setModifiedDate(now);
+            if(Validate.isObject(domain) && Validate.isString(domain.getId())){
+                isUpdate = true;
+            }
         }
+        if(!isUpdate){
+            domain = new MonthlyNewsletter(new Date(),Constant.EnumState.PROCESS.getValue(),SessionUtil.getDisplayName());
+        }
+        //拷贝信息
+        BeanCopierUtils.copyPropertiesIgnoreNull(record, domain);
+        //如果是新增，则要初始化信息
         monthlyNewsletterRepo.save(domain);
-        BeanCopierUtils.copyProperties(domain, record);
+        if(!isUpdate) {
+            BeanCopierUtils.copyProperties(domain, record);
+        }
         return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！", record);
     }
 

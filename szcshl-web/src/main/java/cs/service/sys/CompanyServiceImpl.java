@@ -1,19 +1,21 @@
 package cs.service.sys;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
-
-import cs.common.constants.Constant;
+import cs.common.RandomGUID;
 import cs.common.ResultMsg;
+import cs.common.constants.Constant;
+import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.project.UnitScore;
 import cs.domain.project.UnitScore_;
+import cs.domain.sys.Company;
 import cs.domain.sys.Company_;
+import cs.model.PageModelDto;
 import cs.model.project.UnitScoreDto;
+import cs.model.sys.CompanyDto;
+import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.project.UnitScoreRepo;
+import cs.repository.repositoryImpl.sys.CompanyRepo;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
@@ -21,12 +23,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cs.common.utils.BeanCopierUtils;
-import cs.domain.sys.Company;
-import cs.model.PageModelDto;
-import cs.model.sys.CompanyDto;
-import cs.repository.odata.ODataObj;
-import cs.repository.repositoryImpl.sys.CompanyRepo;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
@@ -76,7 +75,7 @@ public class CompanyServiceImpl implements CompanyService {
         List<Company> com = criteria.list();
         if (!Validate.isList(com)) {
             Company c = new Company();
-            c.setId(UUID.randomUUID().toString());
+            c.setId((new RandomGUID()).valueAfterMD5);
             c.setCoAddress(companyDto.getCoAddress());
             c.setCoDept(companyDto.getCoDept());
             c.setCoDeptName(companyDto.getCoDeptName());
@@ -105,7 +104,7 @@ public class CompanyServiceImpl implements CompanyService {
         List<Company> com = criteria.list();
         if (com.isEmpty()) {
             Company c = new Company();
-            c.setId(UUID.randomUUID().toString());
+            c.setId((new RandomGUID()).valueAfterMD5);
             c.setCoName(name);
             c.setCoType(comType);
             c.setCreatedBy(isSignUser?SessionUtil.getUserId():SUPER_ACCOUNT);

@@ -1,5 +1,8 @@
 package cs.domain.monthly;
 
+import cs.common.RandomGUID;
+import cs.common.constants.Constant;
+import cs.common.utils.SessionUtil;
 import cs.domain.DomainBase;
 
 import javax.persistence.Column;
@@ -8,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * 
@@ -107,9 +111,24 @@ public class MonthlyNewsletter extends DomainBase {
 	@Column(columnDefinition="int ")
 	private Integer bgId;
 
+	public MonthlyNewsletter() {
+	}
+
+	public MonthlyNewsletter(Date date,String monthlyType, String displayName) {
+        super();
+		this.setId((new RandomGUID()).valueAfterMD5);
+		this.setCreatedBy(displayName);
+		this.setModifiedBy(displayName);
+		this.setAddTime(date);
+		this.setAuthorizedUser(displayName);
+		this.setAuthorizedTime(date);
+		this.setMonthlyType(monthlyType);
+		this.setCreatedDate(date);
+		this.setModifiedDate(date);
+    }
 
 
-	public String getId() {
+    public String getId() {
 		return id;
 	}
 

@@ -1,5 +1,6 @@
 package cs.service.project;
 
+import cs.common.RandomGUID;
 import cs.common.constants.Constant;
 import cs.common.constants.FlowConstant;
 import cs.common.HqlBuilder;
@@ -149,7 +150,7 @@ public class ProjectStopServiceImpl implements ProjectStopService {
                 projectStop.setCreatedDate(now);
                 projectStop.setModifiedBy(SessionUtil.getDisplayName());
                 projectStop.setModifiedDate(now);
-                projectStop.setStopid(UUID.randomUUID().toString());
+                projectStop.setStopid((new RandomGUID()).valueAfterMD5);
                 //设置默认值
                 projectStop.setIsactive(Constant.EnumState.NO.getValue());
                 projectStop.setApproveStatus(Constant.EnumState.NO.getValue());//默认处于：未处理环节
@@ -215,7 +216,7 @@ public class ProjectStopServiceImpl implements ProjectStopService {
             projectStop.setCreatedDate(now);
             projectStop.setModifiedBy(SessionUtil.getDisplayName());
             projectStop.setModifiedDate(now);
-            projectStop.setStopid(UUID.randomUUID().toString());
+            projectStop.setStopid((new RandomGUID()).valueAfterMD5);
             //设置默认值
             projectStop.setIsactive(Constant.EnumState.NO.getValue());
             projectStop.setApproveStatus(Constant.EnumState.NO.getValue());//默认处于：未处理环节

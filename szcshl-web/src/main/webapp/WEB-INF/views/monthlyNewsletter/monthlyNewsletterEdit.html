@@ -25,8 +25,16 @@
     <form id="form" name="form">
         <table class="table table-bordered">
             <tr>
-                <td width="20%" align="center">年度报告<span class="required">*</span></td>
-                <td width="20%">
+                <td width="15%" class="text-right active">报告名称<span class="required">*</span></td>
+                <td colspan="3">
+                    <input type="text" maxlength="20" style="width:40%" readOnly="true"
+                           ng-model="vm.monthly.monthlyNewsletterName"
+                           id="monthlyNewsletterName" name="monthlyNewsletterName" data-val="true" data-val-required="必填"/>
+                </td>
+            </tr>
+            <tr>
+                <td width="15%" class="text-right active">报告年度<span class="required">*</span></td>
+                <td width="35%">
                     <select style="width:40%" ng-model="vm.monthly.reportMultiyear" ng-change="vm.reportYear()"
                             id="reportMultiyear" name="reportMultiyear" data-val="true" data-val-required="必填">
                         <option value=" ">请选择</option>
@@ -36,8 +44,8 @@
                     </select>
                     <span data-valmsg-for="reportMultiyear" data-valmsg-replace="true" class="errors"></span>
                 </td>
-                <td width="20%" align="center"> 报告月份<span class="required">*</span></td>
-                <td width="20%">
+                <td width="15%" class="text-right active"> 报告月份<span class="required">*</span></td>
+                <td width="35%">
                     <select style="width:40%" ng-model="vm.monthly.theMonths" name="theMonths" id="theMonths"
                             ng-change="vm.selectMonthly()" data-val="true" data-val-required="必填">
                         <option value=" ">请选择</option>
@@ -49,12 +57,12 @@
                 </td>
             </tr>
             <tr>
-                <td width="20%" align="center"><h5>指定多个月累计统计</h5></td>
-                <td width="20%" align="center" colspan="3">(此处设为月报告中含有多个月份统计的统计条件)</td>
+                <td class="text-right active">指定多个月累计统计</td>
+                <td colspan="3">(此处设为月报告中含有多个月份统计的统计条件)</td>
             </tr>
             <tr>
-                <td width="20%" align="center">开始年度<span class="required">*</span></td>
-                <td width="20%">
+                <td class="text-right active">开始年度<span class="required">*</span></td>
+                <td >
                     <!--<select style="width:40%" ng-model="vm.monthly.startMoultiyear" id="startMoultiyear" name="startMoultiyear" data-val="true" data-val-required="必填">
                                  <option value=" ">请选择</option>
                                  <option ng-repeat="x in DICT.NDBG.dicts" ng-selected="vm.monthly.startMoultiyear == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
@@ -64,8 +72,8 @@
                            id="startMoultiyear" name="startMoultiyear" data-val="true" data-val-required="必填"/>
                     <span data-valmsg-for="startMoultiyear" data-valmsg-replace="true" class="errors"></span>
                 </td>
-                <td width="20%" align="center">开始月份<span class="required">*</span></td>
-                <td width="20%">
+                <td class="text-right active">开始月份<span class="required">*</span></td>
+                <td >
                     <select style="width:40%" ng-model="vm.monthly.staerTheMonths" ng-change="vm.startMonthly()"
                             id="staerTheMonths" name="staerTheMonths" data-val="true" data-val-required="必填">
                         <option value=" ">请选择</option>
@@ -77,8 +85,8 @@
                 </td>
             </tr>
             <tr>
-                <td width="20%" align="center">结束年度<span class="required">*</span></td>
-                <td width="20%">
+                <td class="text-right active">结束年度<span class="required">*</span></td>
+                <td >
                     <!-- <select style="width:40%" ng-model="vm.monthly.endMoultiyear" id="endMoultiyear" name="endMoultiyear" data-val="true" data-val-required="必填">
                           <option value=" ">请选择</option>
                             <option ng-repeat="x in DICT.NDBG.dicts" ng-selected="vm.monthly.endMoultiyear == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
@@ -88,8 +96,8 @@
                            id="endMoultiyear" name="endMoultiyear" data-val="true" data-val-required="必填"/>
                     <span data-valmsg-for="endMoultiyear" data-valmsg-replace="true" class="errors"></span>
                 </td>
-                <td width="20%" align="center">结束月份<span class="required">*</span></td>
-                <td width="20%">
+                <td class="text-right active">结束月份<span class="required">*</span></td>
+                <td >
                     <!--<select style="width:40%" ng-model="vm.monthly.endTheMonths" id="endTheMonths" name="endTheMonths" data-val="true" data-val-required="必填" >
                                 <option value=" ">请选择</option>
                                  <option ng-repeat="x in DICT.BGYF.dicts" ng-selected="vm.monthly.endTheMonths == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
@@ -101,9 +109,9 @@
                 </td>
             </tr>
             <tr>
-                <td width="20%" align="center">备注</td>
+                <td class="text-right active" style="vertical-align: middle;">备注信息</td>
                 <td colspan="3">
-                    <textarea class="form-control input-sm " ng-model="vm.monthly.remark" rows="" cols="" id="remark"
+                    <textarea class="form-control input-sm " ng-model="vm.monthly.remark" rows="5" cols="" id="remark"
                               name="remark"></textarea>
                 </td>
             </tr>
@@ -111,8 +119,8 @@
     </form>
     <h4>2、月报简报正文</h4>
     <div class="toolbar">
-        <button class="btn btn-sm btn-success" ng-click="vm.createMonthReport()"><span
-                class="glyphicon glyphicon-ok"></span>生成月报简报正文
+        <button class="btn btn-sm btn-success" ng-click="vm.createMonthReport()">
+            <span class="glyphicon glyphicon-duplicate"></span>生成月报简报正文
         </button>
     </div>
 

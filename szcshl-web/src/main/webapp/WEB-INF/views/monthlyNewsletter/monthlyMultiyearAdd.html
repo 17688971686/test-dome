@@ -62,23 +62,32 @@
          </select>-->
         <div class="text-center h3"><strong>深圳市政府投资项目评审中心文件（稿纸）</strong></div>
 
-        <div style="width: 100%;margin-bottom: 20px;">
-            <div style="float: left;margin-left: 3%">
-                <span>分 类:</span>
-                <select ng-model="vm.suppletter.monthlyType" name="monthlyType" id="monthlyType" style="width: 280px;"
-                        class="select-sm">
-                    <option ng-repeat="x in DICT.MONTHLY.dicts" ng-selected="x.dictName == vm.suppletter.monthlyType"
-                            value="{{x.dictName}}">{{x.dictName}}
-                    </option>
-                </select>
-
-            </div>
-            <div style="margin-left: 53%;">
-                <td style="width:150px;" class="text-center">存档编号:</td>
-                <td>
-
-                </td>
-            </div>
+        <div style="width: 100%;margin-bottom: 15px;">
+            <table style="width: 100%;">
+                <tr>
+                    <td style="width:40%">
+                        <span>分 类:</span>
+                        <select ng-model="vm.suppletter.monthlyType" name="monthlyType" id="monthlyType" style="width: 280px;"
+                                class="select-sm">
+                            <option ng-repeat="x in DICT.MONTHLY.dicts" ng-selected="x.dictName == vm.suppletter.monthlyType"
+                                    value="{{x.dictName}}">{{x.dictName}}
+                            </option>
+                        </select>
+                    </td>
+                    <td style="width:40%">
+                        <span>所属年度:</span>
+                        <select style="width: 160px;" ng-model="vm.suppletter.fileYear"
+                                id="fileYear" name="fileYear" data-val="true" data-val-required="必填">
+                            <option value=" ">请选择</option>
+                            <option ng-repeat="x in DICT.NDBG.dicts" ng-selected="vm.suppletter.fileYear == x.dictName"
+                                    value="{{x.dictName}}">{{x.dictName}}
+                            </option>
+                        </select>
+                        <span data-valmsg-for="fileYear" data-valmsg-replace="true" class="errors"></span>
+                    </td>
+                    <td>存档编号:</td>
+                </tr>
+            </table>
         </div>
         <!-- s table -->
         <table class="table table-bordered">

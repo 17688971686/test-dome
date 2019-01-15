@@ -58,7 +58,7 @@ public class MonthlyNewsletterController {
     public PageModelDto<MonthlyNewsletterDto> get(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<MonthlyNewsletterDto> monthlyNewsletterDtos = monthlyNewsletterService.get(odataObj);
-        if(!Validate.isObject(monthlyNewsletterDtos)){
+        if (!Validate.isObject(monthlyNewsletterDtos)) {
             monthlyNewsletterDtos = new PageModelDto();
         }
         return monthlyNewsletterDtos;
@@ -69,11 +69,7 @@ public class MonthlyNewsletterController {
     @RequestMapping(name = "保存月报简报", path = "saveMonthlyMultiyear", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg monthlyMultiyearAdd(@RequestBody AddSuppLetterDto record) {
-        ResultMsg resultMsg = addSuppLetterService.saveMonthlyMultiyear(record);
-        if (!Validate.isObject(resultMsg)) {
-            resultMsg = ResultMsg.error(ERROR_MSG);
-        }
-        return resultMsg;
+        return addSuppLetterService.saveMonthlyMultiyear(record);
     }
 
     @RequiresAuthentication
@@ -82,7 +78,7 @@ public class MonthlyNewsletterController {
     @ResponseBody
     public AddSuppLetterDto initMutilyear() {
         AddSuppLetterDto addSuppLetterDto = addSuppLetterService.initMonthlyMutilyear();
-        if(!Validate.isObject(addSuppLetterDto)){
+        if (!Validate.isObject(addSuppLetterDto)) {
             addSuppLetterDto = new AddSuppLetterDto();
         }
         return addSuppLetterDto;
@@ -109,7 +105,7 @@ public class MonthlyNewsletterController {
     public PageModelDto<MonthlyNewsletterDto> getMonthlyList(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<MonthlyNewsletterDto> monthlyNewsletterDtos = monthlyNewsletterService.getMonthlyList(odataObj);
-        if(!Validate.isObject(monthlyNewsletterDtos)){
+        if (!Validate.isObject(monthlyNewsletterDtos)) {
             monthlyNewsletterDtos = new PageModelDto();
         }
         return monthlyNewsletterDtos;
@@ -129,12 +125,8 @@ public class MonthlyNewsletterController {
     //@RequiresPermissions("monthlyNewsletter#savaMonthlyNewsletter#post")
     @RequestMapping(name = "保存月报简报", path = "savaMonthlyNewsletter", method = RequestMethod.POST)
     @ResponseBody
-    public  ResultMsg post(@RequestBody MonthlyNewsletterDto record) {
-        ResultMsg resultMsg = monthlyNewsletterService.saveTheMonthly(record);
-        if (!Validate.isObject(resultMsg)) {
-            resultMsg = ResultMsg.error(ERROR_MSG);
-        }
-        return resultMsg;
+    public ResultMsg post(@RequestBody MonthlyNewsletterDto record) {
+        return monthlyNewsletterService.saveTheMonthly(record);
     }
 
     @RequiresAuthentication
@@ -171,9 +163,9 @@ public class MonthlyNewsletterController {
     @RequiresAuthentication
     @RequestMapping(name = "主键查询", path = "html/findById", method = RequestMethod.GET)
     @ResponseBody
-    public MonthlyNewsletterDto findById(@RequestParam  String id) {
+    public MonthlyNewsletterDto findById(@RequestParam String id) {
         MonthlyNewsletterDto monthlyNewsletterDto = monthlyNewsletterService.findById(id);
-        if(!Validate.isObject(monthlyNewsletterDto)){
+        if (!Validate.isObject(monthlyNewsletterDto)) {
             monthlyNewsletterDto = new MonthlyNewsletterDto();
         }
         return monthlyNewsletterDto;
@@ -198,7 +190,7 @@ public class MonthlyNewsletterController {
     public PageModelDto<MonthlyNewsletterDto> deleteHistoryList(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<MonthlyNewsletterDto> monthlyNewsletterDtos = monthlyNewsletterService.deleteHistoryList(odataObj);
-        if(!Validate.isObject(monthlyNewsletterDtos)){
+        if (!Validate.isObject(monthlyNewsletterDtos)) {
             monthlyNewsletterDtos = new PageModelDto();
         }
         return monthlyNewsletterDtos;
@@ -211,7 +203,7 @@ public class MonthlyNewsletterController {
     public PageModelDto<MonthlyNewsletterDto> mothlyHistoryList(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<MonthlyNewsletterDto> monthlyNewsletterDtos = monthlyNewsletterService.mothlyHistoryList(odataObj);
-        if(!Validate.isObject(monthlyNewsletterDtos)){
+        if (!Validate.isObject(monthlyNewsletterDtos)) {
             monthlyNewsletterDtos = new PageModelDto();
         }
         return monthlyNewsletterDtos;
@@ -238,7 +230,7 @@ public class MonthlyNewsletterController {
         if (Validate.isObject(resultMsg)) {
             if (resultMsg.isFlag()) {
                 String procInstName = Validate.isObject(resultMsg.getReObj()) ? resultMsg.getReObj().toString() : "";
-                rtxService.dealPoolRTXMsg(null,resultMsg.getIdCode(), resultMsg, procInstName, Constant.MsgType.task_type.name());
+                rtxService.dealPoolRTXMsg(null, resultMsg.getIdCode(), resultMsg, procInstName, Constant.MsgType.task_type.name());
                 resultMsg.setIdCode(null);
                 resultMsg.setReObj(null);
             }

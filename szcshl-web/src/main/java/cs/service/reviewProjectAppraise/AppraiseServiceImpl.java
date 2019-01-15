@@ -1,5 +1,6 @@
 package cs.service.reviewProjectAppraise;
 
+import cs.common.RandomGUID;
 import cs.common.constants.Constant;
 import cs.common.constants.FlowConstant;
 import cs.common.HqlBuilder;
@@ -148,7 +149,7 @@ public class AppraiseServiceImpl implements AppraiseService {
                 return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "该项目已经申报过优秀评审报告评优，不能重复申请！");
             }
             BeanCopierUtils.copyProperties(appraiseReportDto, appraiseReport);
-            appraiseReport.setId(UUID.randomUUID().toString());
+            appraiseReport.setId((new RandomGUID()).valueAfterMD5);
             appraiseReport.setCreatedBy(SessionUtil.getUserId());
             appraiseReport.setCreatedDate(now);
             if (!Validate.isString(appraiseReport.getProposerName())) {

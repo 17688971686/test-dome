@@ -1,5 +1,6 @@
 package cs.service.postdoctor;
 
+import cs.common.RandomGUID;
 import cs.common.ResultMsg;
 import cs.common.constants.Constant;
 import cs.common.utils.*;
@@ -48,7 +49,7 @@ public class PostdoctoralBaseServiceImpl implements PostdoctoralBaseService {
     @Override
     public ResultMsg save(PostdoctoralBaseDto record) {
         if (!Validate.isString(record.getId())) {
-            record.setId(UUID.randomUUID().toString());
+            record.setId((new RandomGUID()).valueAfterMD5);
         }
         PostdoctoralBase domain = new PostdoctoralBase();
         BeanCopierUtils.copyProperties(record, domain);

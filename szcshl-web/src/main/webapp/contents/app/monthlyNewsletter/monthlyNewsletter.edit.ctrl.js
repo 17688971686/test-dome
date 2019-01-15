@@ -28,6 +28,7 @@
             var reportMultiyear = vm.monthly.reportMultiyear;
             vm.monthly.startMoultiyear = reportMultiyear;
             vm.monthly.endMoultiyear = reportMultiyear;
+            vm.monthly.monthlyNewsletterName = vm.monthly.reportMultiyear+"年度月报简报数据"
         }
         //开始月份
         vm.startMonthly = function () {
@@ -39,13 +40,15 @@
             }
         }
 
-        //添加月报简报
+        /**
+         * 新增月报简报
+         */
         vm.createMothlyNewsletter = function () {
             common.initJqValidation();
             var isValid = $('#form').valid();
             if (isValid) {
                 monthlyNewsletterSvc.createMonthlyNewsletter(vm.monthly, function (data) {
-                    if (data.flag || data.reCode == "ok") {
+                    if (data.flag) {
                         vm.monthly = data.reObj;
                         bsWin.alert("操作成功！");
                     } else {
@@ -56,7 +59,10 @@
                 bsWin.alert("缺少部分没有填写，请仔细检查");
             }
         };
-        //编辑月报简报
+
+        /**
+         * 编辑月报简报
+         */
         vm.updateMonthly = function () {
             monthlyNewsletterSvc.updateMonthlyNewsletter(vm);
         };
