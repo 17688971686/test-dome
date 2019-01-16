@@ -45,6 +45,12 @@ public class SysDept {
      */
     @Column(columnDefinition = "varchar(512)")
     private String remark;
+
+    /**
+     * 所属部门ID
+     */
+    @Column(columnDefinition = "varchar(64)")
+    private String orgId;
     /**
      * 用户列表
      */
@@ -98,5 +104,13 @@ public class SysDept {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public String getOrgId() {
+        return orgId;
+    }
+
+    public void setOrgId(String orgId) {
+        this.orgId = orgId;
     }
 }

@@ -8,6 +8,7 @@ import cs.common.utils.Validate;
 import cs.domain.project.Sign;
 import cs.domain.project.WorkProgram;
 import cs.domain.sys.OrgDept;
+import cs.domain.sys.SysDept;
 import cs.model.project.Achievement;
 import cs.model.project.AchievementSumDto;
 import cs.model.project.SignDto;
@@ -252,17 +253,24 @@ public class ProjUtil {
 
     /**
      * 部门用户业绩详情信息统计
+     * 规则：排除部长人员的统计信息
      * @param countList
      * @param orgDeptList
      * @return
      */
-    public static List<Achievement> orgDeptDetail(List<Achievement> countList, List<OrgDept> orgDeptList,Map<String,AchievementSumDto> orgDeptCount) {
+    public static List<Achievement> orgDeptDetail(List<Achievement> countList, List<OrgDept> orgDeptList, Map<String, AchievementSumDto> orgDeptCount, List<SysDept> deptList) {
         List<Achievement> resultList = new ArrayList<>();
         //初始化已经统计好的
         for(OrgDept orgDept : orgDeptList){
             Achievement achievementDeptDetailDto = new Achievement();
             achievementDeptDetailDto.setOrgId(orgDept.getId());
             achievementDeptDetailDto.setOrgName(orgDept.getName());
+            //区分部长和组长
+            if(Validate.isString(orgDept.getType()) && "org".equals(orgDept.getType().toLowerCase())){
+                achievementDeptDetailDto.setLevel(Constant.SYS_USER_LEVEL.BZ.getValue());
+            }else{
+                achievementDeptDetailDto.setLevel(Constant.SYS_USER_LEVEL.ZZ.getValue());
+            }
             boolean isHave = false;
             Iterator entries = orgDeptCount.entrySet().iterator();
             while (entries.hasNext()) {
@@ -286,7 +294,10 @@ public class ProjUtil {
             Map<String,List<Achievement>> cacheMap = new HashMap<>();
             for(int i=0,l=countList.size();i<l;i++){
                 Achievement achievement = countList.get(i);
-                countAchievementDetail(cacheMap,achievement);
+                //如果是部长、副主任、主任，则不计入统计
+                if(!deptDirector(achievement.getUserId(),orgDeptList)){
+                    countAchievementDetail(cacheMap,achievement,deptList);
+                }
             }
             //合并List
             for(Achievement achievement :resultList){
@@ -299,12 +310,33 @@ public class ProjUtil {
         return resultList;
     }
 
-    private static void countAchievementDetail(Map<String, List<Achievement>> cacheMap, Achievement achievement) {
-        //项目评审部门ID，用户所在部门ID，用户所在部门ID
+    /**
+     * 判断用户是否组长、部长、副主任、主任
+     * @param userId
+     * @param orgDeptList
+     * @return
+     */
+    private static boolean deptDirector(String userId, List<OrgDept> orgDeptList) {
+        for(OrgDept orgDept : orgDeptList){
+            if(userId.equals(orgDept.getDirectorID())
+                    || userId.equals(orgDept.getsLeaderID())
+                    || userId.equals(orgDept.getmLeaderID())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static void countAchievementDetail(Map<String, List<Achievement>> cacheMap, Achievement achievement, List<SysDept> deptList) {
+        //项目评审部门ID，用户所在部门ID，用户所在组别ID
         String orgId = achievement.getOrgId(),userOrgId = achievement.getUserOrgId(),deptId =achievement.getDeptIds();
 
         //部门只统计该部门下的人员（原因：有些项目的信息是迁移过来的，人员和部门的信息是对不上的）
         if(orgId.equals(userOrgId) || (Validate.isString(deptId) && deptId.contains(orgId))){
+            //如果当前用户是属于组别,则替换组别信息
+            if(Validate.isString(deptId)){
+                orgId = changeDeptId(achievement.getOrgId(),deptList);
+            }
             //从缓存中取出对应的用户办理详情信息
             List<Achievement> achievementList = cacheMap.get(orgId);
             //如果已经初始化，则判断人员
@@ -333,7 +365,7 @@ public class ProjUtil {
                     newAchievement.setAssistDisSum(1);
                 }
                 newAchievement.setUserId(achievement.getUserId());
-                newAchievement.setOrgId(achievement.getOrgId());
+                newAchievement.setOrgId(orgId);
                 newAchievement.setUserName(achievement.getUserName());
                 achievementList.add(newAchievement);
             }
@@ -360,14 +392,15 @@ public class ProjUtil {
                 String orgId = achievement.getOrgId();
                 //两者有一个不等，则是新的;
                 if(!lastSignId.equals(signId) || !lastOrgId.equals(orgId)){
-                    countAchievementSum(countOrgDept,lastOrgId,(countList.get(lastIndex)).getBranchId());
+                    Achievement mainData = countList.get(lastIndex);
+                    countAchievementSum(countOrgDept,lastOrgId,mainData);
                     lastSignId = signId;
                     lastOrgId = orgId;
                     lastIndex = i;
                 }
                 //最后一个也要进行统计
                 if(i == (l-1)){
-                    countAchievementSum(countOrgDept,orgId,achievement.getBranchId());
+                    countAchievementSum(countOrgDept,orgId,achievement);
                 }
             }
             //替换map的key值
@@ -391,12 +424,14 @@ public class ProjUtil {
     }
 
     /**
-     * 统计数量
+     * 统计部门数量
+     * 规则：旧数据，如果第一负责人是信息化组的人，则项目归为信息化组；新数据则按分办部门统计；排除部长等人的统计
      * @param countOrgDept
      * @param orgId
-     * @param branchId
+     * @param achievement
      */
-    private static void countAchievementSum(Map<String, AchievementSumDto> countOrgDept, String orgId, String branchId) {
+    private static void countAchievementSum(Map<String, AchievementSumDto> countOrgDept, String orgId,Achievement achievement) {
+        String branchId = achievement.getBranchId();
         AchievementSumDto achievementSumDto = countOrgDept.get(orgId);
         if(!Validate.isObject(achievementSumDto)){
             achievementSumDto = new AchievementSumDto();
@@ -407,6 +442,74 @@ public class ProjUtil {
             achievementSumDto.setAssistDisSum(achievementSumDto.getAssistDisSum()+1);
         }
         countOrgDept.put(orgId,achievementSumDto);
+    }
+
+    /**
+     * 替换组别信息
+     * 规则，把迁移数据，第一负责人是组别人员的项目，项目归为对应的组
+     * @param countList
+     * @param deptList
+     * @return
+     */
+    public static List<Achievement> changeOrgId(List<Achievement> countList, List<SysDept> deptList,boolean useOrgData,boolean useDeptData) {
+        if(Validate.isList(countList)){
+            String newOrdId = "",udateSignId = "";
+            int totalCount = countList.size();
+            for(int i=0;i<totalCount;i++){
+                Achievement achievement = countList.get(i);
+                String singId = achievement.getSignId();
+                //只要项目名称相同，则把项目所属部门ID替换
+                if(udateSignId.equals(singId)){
+                    achievement.setOrgId(newOrdId);
+                }else{
+                    //1、确定是否是旧数据和是否是组别的人
+                    boolean isOldData = Validate.isString(achievement.getOldId());
+                    boolean isDeptUser = Validate.isString(achievement.getDeptIds());
+                    boolean isMainUser = Constant.EnumState.YES.getValue().equals(achievement.getIsMainUser());
+                    if(isOldData && isDeptUser && isMainUser){
+                        udateSignId = singId;
+                        //如果第一负责人是组别人员，则把该项目归为对应的组别
+                        newOrdId = changeDeptId(achievement.getOrgId(),deptList);
+                        achievement.setOrgId(newOrdId);
+                    }
+                }
+            }
+            //如果使用部门数据，则要排除归属组别的数据
+            if(useOrgData){
+                List<Achievement> orgData = new ArrayList<>();
+                String filterSignId = "";
+                for(int i=0;i<totalCount;i++){
+                    Achievement item = countList.get(i);
+                    if(filterSignId.equals(item.getSignId())){
+                        continue;
+                    }
+                    //如果第一负责人是组别人员，要排除这个项目
+                    if(Validate.isString(item.getOldId()) && Validate.isString(item.getDeptIds()) && item.getDeptIds().contains(item.getOrgId())){
+                        filterSignId = item.getSignId();
+                    }else{
+                        orgData.add(item);
+                        filterSignId = "";
+                    }
+                }
+                return orgData;
+            }
+            //如果使用组别的数据，则要包含部门的数据
+            if(useDeptData){
+                return countList.stream().filter(item->(!Validate.isString(item.getOldId())
+                        || (Validate.isString(item.getOldId()) && Validate.isString(item.getDeptIds())&& item.getDeptIds().contains(item.getOrgId())))).collect(Collectors.toList());
+            }
+        }
+        return countList;
+    }
+
+    private static String changeDeptId(String orgId, List<SysDept> deptList) {
+        //确认第一负责人是哪个组别的人,替换部门组别信息
+        for(SysDept sysDept1:deptList){
+            if(orgId.equals(sysDept1.getOrgId())){
+                return sysDept1.getId();
+            }
+        }
+        return orgId;
     }
 
     /**
@@ -428,7 +531,7 @@ public class ProjUtil {
             if(Validate.isList(countList)){
                 String lastSignId  = countList.get(0).getSignId();
                 //上一个数据的下标
-                int lastIndex = 0;
+                int lastIndex = 0,sunCount = 0;
                 for(int i=0,l=countList.size();i<l;i++){
                     Achievement achievement = countList.get(i);
                     //用户所在部门ID，用户所在组别ID
@@ -606,4 +709,6 @@ public class ProjUtil {
         }
         return new String[]{beginTime,endTime};
     }
+
+
 }

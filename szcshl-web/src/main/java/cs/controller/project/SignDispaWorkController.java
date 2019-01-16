@@ -11,6 +11,7 @@ import cs.domain.project.SignDispaWork_;
 import cs.domain.sys.Header;
 import cs.domain.sys.OrgDept;
 import cs.domain.sys.OrgDept_;
+import cs.domain.sys.SysDept;
 import cs.model.PageModelDto;
 import cs.model.project.Achievement;
 import cs.model.project.AchievementSumDto;
@@ -20,6 +21,7 @@ import cs.model.topic.TopicMaintainDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.project.SignDispaWorkRepo;
 import cs.repository.repositoryImpl.sys.OrgDeptRepo;
+import cs.repository.repositoryImpl.sys.SysDeptRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.service.expert.ExpertSelectedService;
 import cs.service.project.SignDispaWorkService;
@@ -61,22 +63,18 @@ public class SignDispaWorkController {
 
     @Autowired
     private SignDispaWorkService signDispaWorkService;
-
     @Autowired
     private HeaderService headerService;
-
     @Autowired
     private ExpertSelectedService expertSelectedService;
-
     @Autowired
     private SignDispaWorkRepo signDispaWorkRepo;
-
     @Autowired
     private TopicMaintainService topicMaintainService;
     @Autowired
     private OrgDeptRepo orgDeptRepo;
     @Autowired
-    private UserRepo userRepo;
+    private SysDeptRepo sysDeptRepo;
 
     //@RequiresPermissions("signView#getSignList#post")
     @RequiresAuthentication
@@ -400,9 +398,10 @@ public class SignDispaWorkController {
                     orgId = orgDeptList.get(0).getId();
                 }
             }
+            List<SysDept> deptList = sysDeptRepo.findAll();
             //二、查询业绩统计信息
-            List<Achievement> countList = signDispaWorkRepo.countAchievement(yearName, quarter, orgId, userId, level);
-            signDispaWorkService.countAchievementDetail(resultMap, level, countList, orgDeptList);
+            List<Achievement> countList = signDispaWorkRepo.countAchievement(yearName, quarter, orgId, userId, level,deptList);
+            signDispaWorkService.countAchievementDetail(resultMap, level, countList, orgDeptList,deptList);
             AchievementSumDto achSumDto = null;
             if(level > 0){
                 achSumDto = (AchievementSumDto) resultMap.get("orgDeptSum");
@@ -474,8 +473,8 @@ public class SignDispaWorkController {
         String userId = SessionUtil.getUserId(),userName = SessionUtil.getUserInfo().getDisplayName();
         try{
             Map<String,Object> resultMap = new HashMap<>();
-            List<Achievement> countList = signDispaWorkRepo.countAchievement(yearName, quarter, null, userId, 0);
-            signDispaWorkService.countAchievementDetail(resultMap, 0, countList, null);
+            List<Achievement> countList = signDispaWorkRepo.countAchievement(yearName, quarter, null, userId, 0,null);
+            signDispaWorkService.countAchievementDetail(resultMap, 0, countList, null,null);
             Map<String , Object> dataMap = new HashMap<>();
             //员工业绩统计信息
             dataMap.put("achievement",resultMap.get("userSum"));
@@ -598,14 +597,16 @@ public class SignDispaWorkController {
     public Map<String, Object> findAchievementDetail(@RequestParam String yearName, @RequestParam String quarter, @RequestParam String id, @RequestParam int level) {
         Map<String, Object> resultMap = new HashMap<>();
         List<OrgDept> orgDeptList = new ArrayList<>();
+        List<SysDept> deptList = null;
         if (level > 0) {
             OrgDept orgDept = orgDeptRepo.findOrgDeptById(id);
             orgDeptList.add(orgDept);
             resultMap.put("showObj", orgDept);
+            deptList = sysDeptRepo.findAll();
         }
         //二、查询业绩统计信息
-        List<Achievement> countList = signDispaWorkRepo.countAchievement(yearName, quarter, id, id, level);
-        signDispaWorkService.countAchievementDetail(resultMap, level, countList, orgDeptList);
+        List<Achievement> countList = signDispaWorkRepo.countAchievement(yearName, quarter, id, id, level,deptList);
+        signDispaWorkService.countAchievementDetail(resultMap, level, countList, orgDeptList,deptList);
 
         return resultMap;
     }

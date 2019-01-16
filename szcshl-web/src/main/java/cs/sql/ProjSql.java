@@ -1,6 +1,11 @@
 package cs.sql;
 
 import cs.common.HqlBuilder;
+import cs.common.constants.Constant;
+import cs.common.constants.SysConstants;
+import cs.domain.sys.SysDept;
+
+import java.util.List;
 
 /**
  * Created by Administrator on 2018/7/20 0020.
@@ -43,13 +48,13 @@ public class ProjSql {
         return stringBuffer.toString();
     }
 
-    public static HqlBuilder countAchievement(String deptIds, String userId, int level, String beginTime, String endTime) {
+    public static HqlBuilder countAchievement(String deptIds, String userId, int level, String beginTime, String endTime,List<SysDept> deptList) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append(" SELECT sd.signid as signId,sd.projectname as projName,sd.dispatchdate as dispatchDate,sd.filenum as fileNum, ");
+        sqlBuilder.append(" SELECT sd.signid as signId,sd.oldprojectid as oldId,sd.projectname as projName,sd.dispatchdate as dispatchDate,sd.filenum as fileNum, ");
         sqlBuilder.append(" sd.declarevalue as declareValue,sd.authorizevalue as authorizeValue,sd.extravalue as extraValue, ");
         sqlBuilder.append(" sd.extrarate as extraRate,pu.orgid as orgId,pu.userid as userId,pu.ismainuser as isMainUser,pu.branchid as branchId, ");
         sqlBuilder.append(" pu.displayname as userName,pu.userOrgId,pu.deptIds ");
-        sqlBuilder.append(" FROM (SELECT s.signid,s.projectname,d.dispatchdate,d.filenum,d.declarevalue,d.authorizevalue,d.extravalue,d.extrarate ");
+        sqlBuilder.append(" FROM (SELECT s.signid,s.oldprojectid,s.projectname,d.dispatchdate,d.filenum,d.declarevalue,d.authorizevalue,d.extravalue,d.extrarate ");
         sqlBuilder.append(" FROM cs_sign s, cs_dispatch_doc d WHERE s.signid = d.signid ");
         sqlBuilder.append(" AND s.processstate >= 6 AND s.signstate != 7 ");
         sqlBuilder.append(" AND D.dispatchdate >= TO_DATE (?,'yyyy-mm-dd hh24:mi:ss')");
@@ -65,11 +70,20 @@ public class ProjSql {
             //如果是普通用户，则按用户ID查询
             sqlBuilder.append(" and PPU.USERID = ? ").setParam("userId",userId);
         }else{
+            //如果是组长，则还要查询对应的部门信息的数据
+            if(Constant.SYS_USER_LEVEL.ZZ.getValue() == level){
+                for(SysDept sysDept : deptList){
+                    if(deptIds.equals(sysDept.getId())){
+                        deptIds = deptIds + SysConstants.SEPARATE_COMMA +sysDept.getOrgId();
+                        break;
+                    }
+                }
+            }
             //如果是部长或者分管主任，则按部门查询
             sqlBuilder.bulidJdbcPropotyString("and","pbo.orgid",deptIds);
         }
 
-        sqlBuilder.append(" ) pu where sd.signid = pu.signid ORDER BY sd.signid, sd.dispatchdate,pu.branchid");
+        sqlBuilder.append(" ) pu where sd.signid = pu.signid ORDER BY sd.signid, sd.dispatchdate,pu.branchid, pu.ismainuser desc");
         return sqlBuilder;
     }
 }

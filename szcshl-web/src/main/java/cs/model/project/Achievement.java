@@ -14,6 +14,11 @@ public class Achievement {
      * 项目ID
      */
     private String signId;
+
+    /**
+     * 旧项目ID
+     */
+    private String oldId;
     /**
      * 项目名称
      */
@@ -87,6 +92,11 @@ public class Achievement {
      * 用户所在组别
      */
     private String deptIds;
+
+    /**
+     * 级别
+     */
+    private int level;
     /**
      * 主任、副主任子集（如一级是部门，子集则为用户）
      */
@@ -242,5 +252,21 @@ public class Achievement {
 
     public void setDeptIds(String deptIds) {
         this.deptIds = deptIds;
+    }
+
+    public String getOldId() {
+        return oldId;
+    }
+
+    public void setOldId(String oldId) {
+        this.oldId = oldId;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 }

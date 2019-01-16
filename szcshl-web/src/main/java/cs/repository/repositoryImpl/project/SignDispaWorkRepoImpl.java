@@ -12,6 +12,7 @@ import cs.domain.project.Sign;
 import cs.domain.project.SignDispaWork;
 import cs.domain.project.SignDispaWork_;
 import cs.domain.project.Sign_;
+import cs.domain.sys.SysDept;
 import cs.model.project.Achievement;
 import cs.repository.AbstractRepository;
 import cs.service.flow.FlowService;
@@ -626,10 +627,10 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
      * @return
      */
     @Override
-    public List<Achievement> countAchievement(String year, String quarter, String deptIds, String userId, int level) {
+    public List<Achievement> countAchievement(String year, String quarter, String deptIds, String userId, int level,List<SysDept> deptList) {
         String[] queryTimes = ProjUtil.getQueryTime(year,quarter);
         String beginTime = queryTimes[0],endTime = queryTimes[1];
-        HqlBuilder hqlBuilder = ProjSql.countAchievement(deptIds,userId,level,beginTime,endTime);
+        HqlBuilder hqlBuilder = ProjSql.countAchievement(deptIds,userId,level,beginTime,endTime,deptList);
         List<Achievement> achievementList = jdbcTemplate.query(hqlBuilder.getHqlString(),hqlBuilder.getJdbcValue(), new BeanPropertyRowMapper<Achievement>(Achievement.class) );
         return achievementList;
     }

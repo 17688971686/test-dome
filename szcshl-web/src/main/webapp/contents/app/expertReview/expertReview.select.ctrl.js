@@ -756,7 +756,7 @@
             if(vm.expertReview && vm.expertReview.expertSelectedDtoList){
                 vm.confirmEPList = vm.expertReview.expertSelectedDtoList;
                 $("#confirmJoinExpert").kendoWindow({
-                    width: "960px",
+                    width: "75%",
                     height: "600px",
                     title: "参加评审会专家确认",
                     visible: false,

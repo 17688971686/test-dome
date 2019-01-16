@@ -902,4 +902,39 @@ public class Constant {
         incoming_type,      //项目签收
         sendfgw_type        //发送发改委类型
     }
+
+    /**
+     * 系统人员级别
+     */
+    public static enum SYS_USER_LEVEL {
+        /**
+         * 主任
+         */
+        ZR(1),
+        /**
+         * 副主任
+         */
+        FZR(2),
+        /**
+         * 部长
+         */
+        BZ(3),
+        /**
+         * 组长
+         */
+        ZZ(4),
+        /**
+         * 普通用户
+         */
+        PT(0);
+        private int value;
+
+        SYS_USER_LEVEL(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+    }
 }

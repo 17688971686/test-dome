@@ -1946,7 +1946,7 @@
                 vm.showDetailType = level;
                 vm.showOrgName = orgName;
                 vm.showUserName = userName;
-                if(level==3){
+                if(3==level || 4==level){
                     vm.achievementDetail = data.orgDeptSum;
                     $("#achievementDetail").kendoWindow({
                         width: "75%",
@@ -1958,7 +1958,7 @@
                         actions: ["Pin", "Minimize", "Maximize", "Close"]
                     }).data("kendoWindow").center().open();
 
-                }else if(level == 0){
+                }else if(0==level){
                     vm.achievementDetail = data.userSum;
                     //个人业绩统计信息还包括课题信息
                     vm.userId = id;
@@ -18042,7 +18042,7 @@
             if(vm.expertReview && vm.expertReview.expertSelectedDtoList){
                 vm.confirmEPList = vm.expertReview.expertSelectedDtoList;
                 $("#confirmJoinExpert").kendoWindow({
-                    width: "960px",
+                    width: "75%",
                     height: "600px",
                     title: "参加评审会专家确认",
                     visible: false,

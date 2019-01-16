@@ -2,6 +2,7 @@ package cs.repository.repositoryImpl.project;
 
 import cs.common.ResultMsg;
 import cs.domain.project.SignDispaWork;
+import cs.domain.sys.SysDept;
 import cs.model.project.Achievement;
 import cs.repository.IRepository;
 
@@ -82,5 +83,5 @@ public interface SignDispaWorkRepo extends IRepository<SignDispaWork, String> {
      * @param level
      * @return
      */
-    List<Achievement> countAchievement(String year, String quarter, String deptIds, String userId, int level);
+    List<Achievement> countAchievement(String year, String quarter, String deptIds, String userId, int level,List<SysDept> deptList);
 }

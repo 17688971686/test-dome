@@ -13,6 +13,7 @@ import cs.domain.meeting.RoomBooking_;
 import cs.domain.project.*;
 import cs.domain.sys.OrgDept;
 import cs.domain.sys.OrgDept_;
+import cs.domain.sys.SysDept;
 import cs.domain.sys.Workday;
 import cs.model.PageModelDto;
 import cs.model.project.Achievement;
@@ -26,6 +27,7 @@ import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.project.*;
 import cs.repository.repositoryImpl.sys.OrgDeptRepo;
+import cs.repository.repositoryImpl.sys.SysDeptRepo;
 import cs.service.sys.UserService;
 import cs.service.sys.WorkdayService;
 import org.apache.log4j.Logger;
@@ -71,6 +73,8 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
     private UserService userService;
     @Autowired
     private OrgDeptRepo orgDeptRepo;
+    @Autowired
+    private SysDeptRepo sysDeptRepo;
 
     /**
      * 查询个人经办项目
@@ -170,8 +174,8 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
                         case 9:
                             criteria.add(Restrictions.eq(SignDispaWork_.processState.getName(), Constant.SignProcessState.FINISH.getValue()));
                             break;
-                            default:
-                                ;
+                        default:
+                            ;
                     }
                     continue;
                 }
@@ -646,6 +650,8 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         String userId = SessionUtil.getUserId();
         //分管组织部门列表
         List<OrgDept> orgDeptList = new ArrayList<>();
+        //系统组别表
+        List<SysDept> deptList = null;
         //一、查询用户等级
         Map<String, Object> levelMap = userService.getUserLevel();
         if (Validate.isMap(levelMap) && null != levelMap.get("leaderFlag")) {
@@ -670,20 +676,20 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
                 criteria.addOrder(Order.asc(OrgDept_.sort.getName()));
 
                 orgDeptList = criteria.list();
-                if(Validate.isList(orgDeptList)){
-                    if(Validate.isString(achievementSumDto.getDeptIds())){
+                if (Validate.isList(orgDeptList)) {
+                    if (Validate.isString(achievementSumDto.getDeptIds())) {
                         //如果参数有部门ID，则只查询对应部门列表
                         List<OrgDept> newOrgDeptList = new ArrayList<>();
-                        List<String> ids = StringUtil.getSplit(achievementSumDto.getDeptIds(),SysConstants.SEPARATE_COMMA);
-                        for(OrgDept orgDept : orgDeptList){
-                            for(String id : ids){
-                                if(id.equals(orgDept.getId())){
+                        List<String> ids = StringUtil.getSplit(achievementSumDto.getDeptIds(), SysConstants.SEPARATE_COMMA);
+                        for (OrgDept orgDept : orgDeptList) {
+                            for (String id : ids) {
+                                if (id.equals(orgDept.getId())) {
                                     newOrgDeptList.add(orgDept);
                                 }
                             }
                         }
                         orgDeptList = newOrgDeptList;
-                    }else{
+                    } else {
                         //参数没有部门ID，则初始化ID
                         StringBuffer orgIdString = new StringBuffer();
                         for (int i = 0, l = orgDeptList.size(); i < l; i++) {
@@ -698,38 +704,51 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
                 }
                 resultMap.put("orgDeptList", orgDeptList);
 
+                //如果是部长或者主任，则要查询对应的组别信息
+                deptList = sysDeptRepo.findAll();
             }
         }
         //二、查询业绩统计信息
-        List<Achievement> countList = signDispaWorkRepo.countAchievement(achievementSumDto.getYear(), achievementSumDto.getQuarter(), achievementSumDto.getDeptIds(), userId, level);
+        List<Achievement> countList = signDispaWorkRepo.countAchievement(achievementSumDto.getYear(), achievementSumDto.getQuarter(), achievementSumDto.getDeptIds(), userId, level, deptList);
         //三、统计，
-        countAchievementDetail(resultMap,level,countList,orgDeptList);
+        countAchievementDetail(resultMap, level, countList, orgDeptList, deptList);
         return resultMap;
     }
 
     /**
      * 对查询出来的业绩信息进行统计
+     *
      * @param resultMap
      * @param level
      * @param countList
      * @param orgDeptList
      */
     @Override
-    public void countAchievementDetail(Map<String, Object> resultMap,int level,List<Achievement> countList,List<OrgDept> orgDeptList) {
+    public void countAchievementDetail(Map<String, Object> resultMap, int level, List<Achievement> countList, List<OrgDept> orgDeptList, List<SysDept> deptList) {
         //分3个档次统计
         switch (level) {
             //1、主任和分管主任统计，按分管部门统计
             case 1:
             case 2:
-                Map<String,AchievementSumDto> orgDeptCount = ProjUtil.countOrgDept(countList,orgDeptList);
-                List<Achievement> deptDetailList = ProjUtil.orgDeptDetail(countList,orgDeptList,orgDeptCount);
-                resultMap.put("orgDeptCount",orgDeptCount);
-                resultMap.put("orgDeptDetailList",deptDetailList);
+                //第一，变过滤数据，规则，把迁移数据，第一负责人是组别人员的项目，项目归为对应的组
+                countList = ProjUtil.changeOrgId(countList, deptList, false, false);
+                //第二，统计部门数据
+                Map<String, AchievementSumDto> orgDeptCount = ProjUtil.countOrgDept(countList, orgDeptList);
+                //第二，统计部门详情数据
+                List<Achievement> deptDetailList = ProjUtil.orgDeptDetail(countList, orgDeptList, orgDeptCount,deptList);
+                resultMap.put("orgDeptCount", orgDeptCount);
+                resultMap.put("orgDeptDetailList", deptDetailList);
                 break;
             //、部长和组长统计，统计一个部门
             case 3:
+                //第一，变过滤数据，规则，把迁移数据，第一负责人是组别人员的项目，项目归为对应的组
+                countList = ProjUtil.changeOrgId(countList, deptList, true, false);
+                resultMap.put("orgDeptSum", ProjUtil.sumOrgDeptAchievement(countList, orgDeptList));
+                break;
             case 4:
-                resultMap.put("orgDeptSum",ProjUtil.sumOrgDeptAchievement(countList,orgDeptList));
+                //第一，变过滤数据，规则，把迁移数据，第一负责人是组别人员的项目，项目归为对应的组
+                countList = ProjUtil.changeOrgId(countList, deptList, false, true);
+                resultMap.put("orgDeptSum", ProjUtil.sumOrgDeptAchievement(countList, orgDeptList));
                 break;
             //普通用户统计
             case 0:

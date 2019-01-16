@@ -220,7 +220,7 @@
             <td class="text-center" style="width:5%;">{{$index+1}}</td>
             <td class="text-center" style="vertical-align: middle;width:15%;border-top: none;"
                 ng-if="$index == 0" rowspan={{x.childList.length}}>
-                <a href="javascript:void(0)" ng-dblclick="vm.showAchievementDetail(x.orgId,3,x.orgName,x.orgName)">{{x.orgName}}</a>
+                <a href="javascript:void(0)" ng-dblclick="vm.showAchievementDetail(x.orgId,x.level,x.orgName,x.orgName)">{{x.orgName}}</a>
             </td>
             <td class="text-center" style="width:15%;">
                 <a href="javascript:void(0)" ng-dblclick="vm.showAchievementDetail(u.userId,0,x.orgName,u.userName)">{{u.userName}}</a>

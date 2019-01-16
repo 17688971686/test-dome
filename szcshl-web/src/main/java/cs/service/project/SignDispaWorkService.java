@@ -3,6 +3,7 @@ package cs.service.project;
 import cs.common.ResultMsg;
 import cs.domain.project.SignDispaWork;
 import cs.domain.sys.OrgDept;
+import cs.domain.sys.SysDept;
 import cs.model.PageModelDto;
 import cs.model.project.Achievement;
 import cs.model.project.AchievementSumDto;
@@ -137,5 +138,5 @@ public interface SignDispaWorkService {
      * @param countList
      * @param orgDeptList
      */
-    void countAchievementDetail(Map<String, Object> resultMap, int level, List<Achievement> countList, List<OrgDept> orgDeptList);
+    void countAchievementDetail(Map<String, Object> resultMap, int level, List<Achievement> countList, List<OrgDept> orgDeptList, List<SysDept> deptList);
 }

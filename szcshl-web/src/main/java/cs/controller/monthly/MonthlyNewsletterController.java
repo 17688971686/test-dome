@@ -45,7 +45,6 @@ public class MonthlyNewsletterController {
     String ctrlName = "monthlyNewsletter";
     @Autowired
     private MonthlyNewsletterService monthlyNewsletterService;
-
     @Autowired
     private AddSuppLetterService addSuppLetterService;
     @Autowired
@@ -142,33 +141,21 @@ public class MonthlyNewsletterController {
     @RequestMapping(name = "删除月报简报记录", path = "deleteMonthlyData", method = RequestMethod.DELETE)
     @ResponseBody
     public ResultMsg deleteMonthlyData(@RequestParam String id) {
-        ResultMsg resultMsg = monthlyNewsletterService.deleteMonthlyData(id);
-        if (!Validate.isObject(resultMsg)) {
-            resultMsg = ResultMsg.error(ERROR_MSG);
-        }
-        return resultMsg;
+        return monthlyNewsletterService.deleteMonthlyData(id);
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "恢复月报简报记录", path = "restoreMonthlyData", method = RequestMethod.GET)
     @ResponseBody
     public ResultMsg restoreMonthlyData(@RequestParam String id) {
-        ResultMsg resultMsg = monthlyNewsletterService.restoreMonthlyData(id);
-        if (!Validate.isObject(resultMsg)) {
-            resultMsg = ResultMsg.error(ERROR_MSG);
-        }
-        return resultMsg;
+        return monthlyNewsletterService.restoreMonthlyData(id);
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "主键查询", path = "html/findById", method = RequestMethod.GET)
     @ResponseBody
     public MonthlyNewsletterDto findById(@RequestParam String id) {
-        MonthlyNewsletterDto monthlyNewsletterDto = monthlyNewsletterService.findById(id);
-        if (!Validate.isObject(monthlyNewsletterDto)) {
-            monthlyNewsletterDto = new MonthlyNewsletterDto();
-        }
-        return monthlyNewsletterDto;
+        return  monthlyNewsletterService.findById(id);
     }
 
     @RequiresAuthentication
@@ -176,11 +163,7 @@ public class MonthlyNewsletterController {
     @RequestMapping(name = "保存月报简报历史数据", path = "savaHistory", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg savaHistory(@RequestBody MonthlyNewsletterDto record) {
-        ResultMsg resultMsg = monthlyNewsletterService.save(record);
-        if (!Validate.isObject(resultMsg)) {
-            resultMsg = ResultMsg.error(ERROR_MSG);
-        }
-        return resultMsg;
+        return monthlyNewsletterService.save(record);
     }
 
     @RequiresAuthentication
@@ -189,11 +172,7 @@ public class MonthlyNewsletterController {
     @ResponseBody
     public PageModelDto<MonthlyNewsletterDto> deleteHistoryList(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        PageModelDto<MonthlyNewsletterDto> monthlyNewsletterDtos = monthlyNewsletterService.deleteHistoryList(odataObj);
-        if (!Validate.isObject(monthlyNewsletterDtos)) {
-            monthlyNewsletterDtos = new PageModelDto();
-        }
-        return monthlyNewsletterDtos;
+        return monthlyNewsletterService.deleteHistoryList(odataObj);
     }
 
     @RequiresAuthentication
@@ -202,11 +181,7 @@ public class MonthlyNewsletterController {
     @ResponseBody
     public PageModelDto<MonthlyNewsletterDto> mothlyHistoryList(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        PageModelDto<MonthlyNewsletterDto> monthlyNewsletterDtos = monthlyNewsletterService.mothlyHistoryList(odataObj);
-        if (!Validate.isObject(monthlyNewsletterDtos)) {
-            monthlyNewsletterDtos = new PageModelDto();
-        }
-        return monthlyNewsletterDtos;
+        return  monthlyNewsletterService.mothlyHistoryList(odataObj);
     }
 
     @RequiresAuthentication
