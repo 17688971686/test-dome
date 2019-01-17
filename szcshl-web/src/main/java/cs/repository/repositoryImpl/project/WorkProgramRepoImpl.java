@@ -80,6 +80,8 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram, String>
         if (isBaseInfo) {
             hqlBuilder.append(" and " + WorkProgram_.baseInfo.getName() + " =:wpstate ").setParam("wpstate", Constant.EnumState.YES.getValue());
         }
+        //默认查询有效的工作方案
+        hqlBuilder.append(" and " + WorkProgram_.state.getName() + "=:state ").setParam("state" , Constant.EnumState.YES.getValue());
         List<WorkProgram> wpList = findByHql(hqlBuilder);
         if (Validate.isList(wpList)) {
             return wpList.get(0);
