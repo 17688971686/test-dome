@@ -54,10 +54,16 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.setParam("reviewId", reviewId);
         sqlBuilder.append(" and " + ExpertSelected_.isConfrim.getName() + " =:isConfrim ");
         sqlBuilder.setParam("isConfrim", Constant.EnumState.YES.getValue());
-        sqlBuilder.append(" and " + ExpertSelected_.maJorBig.getName() + " =:maJorBig ");
-        sqlBuilder.setParam("maJorBig", maJorBig);
-        sqlBuilder.append(" and " + ExpertSelected_.maJorSmall.getName() + " =:maJorSmall ");
-        sqlBuilder.setParam("maJorSmall", maJorSmall);
+        if( null != maJorBig){
+            sqlBuilder.append(" and " + ExpertSelected_.maJorBig.getName() + " =:maJorBig ");
+            sqlBuilder.setParam("maJorBig", maJorBig);
+        }
+
+        if(null != maJorSmall){
+            sqlBuilder.append(" and " + ExpertSelected_.maJorSmall.getName() + " =:maJorSmall ");
+            sqlBuilder.setParam("maJorSmall", maJorSmall);
+        }
+
         sqlBuilder.append(" and " + ExpertSelected_.expeRttype.getName() + " =:expeRttype ");
         sqlBuilder.setParam("expeRttype", expeRttype);
         if (compositeScore != null && compositeScore > 0) {
