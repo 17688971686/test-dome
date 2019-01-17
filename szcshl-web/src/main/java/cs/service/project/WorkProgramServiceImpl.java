@@ -138,11 +138,17 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 BeanUtils.copyProperties(workProgramDto, workProgram,BASE_IGNORE_PROPS);
 
             } else {
-                workProgram = new WorkProgram();
-                BeanCopierUtils.copyProperties(workProgramDto, workProgram);
-                workProgram.setId(UUID.randomUUID().toString());
-                workProgram.setCreatedBy(SessionUtil.getUserId());
-                workProgram.setCreatedDate(now);
+                //同一个分支只能同一个工作方案
+                if(workProgramRepo.findBySignIdAndBranchId(workProgramDto.getSignId() , workProgramDto.getBranchId() , false) != null ){
+                    workProgram = workProgramRepo.findBySignIdAndBranchId(workProgramDto.getSignId() , workProgramDto.getBranchId() , false);
+                }else{
+                    workProgram = new WorkProgram();
+                    workProgram.setId(UUID.randomUUID().toString());
+                    workProgram.setCreatedBy(SessionUtil.getUserId());
+                    workProgram.setCreatedDate(now);
+                }
+                BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto, workProgram);
+
                 workProgram.setState(EnumState.YES.getValue()); //设置工作方案为有效的
                 workProgram.setStudyQuantum(workProgramDto.getStudyQuantum());//调研时间段
             }
