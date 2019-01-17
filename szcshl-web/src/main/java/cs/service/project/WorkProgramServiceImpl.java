@@ -139,9 +139,8 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 
             } else {
                 //同一个分支只能同一个工作方案
-                if(workProgramRepo.findBySignIdAndBranchId(workProgramDto.getSignId() , workProgramDto.getBranchId() , false) != null ){
-                    workProgram = workProgramRepo.findBySignIdAndBranchId(workProgramDto.getSignId() , workProgramDto.getBranchId() , false);
-                }else{
+                workProgram = workProgramRepo.findBySignIdAndBranchId(workProgramDto.getSignId() , workProgramDto.getBranchId() , false);
+                if(null == workProgram ){
                     workProgram = new WorkProgram();
                     workProgram.setId(UUID.randomUUID().toString());
                     workProgram.setCreatedBy(SessionUtil.getUserId());
