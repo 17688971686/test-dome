@@ -62,7 +62,9 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.*;
+
 import static cs.common.constants.Constant.*;
 import static cs.common.constants.FlowConstant.*;
 import static cs.common.constants.IgnoreProps.PUSH_SIGN_IGNORE_PROPS;
@@ -337,7 +339,7 @@ public class SignServiceImpl implements SignService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ResultMsg updateSign(SignDto signDto) {
         if (!ProjUtil.checkProjDataValidate(signDto)) {
             return ResultMsg.error("项目代码、评审阶段、项目名称和收文编号为空或者有特殊字符，保存失败！");
@@ -349,7 +351,8 @@ public class SignServiceImpl implements SignService {
             updateProjectNameCascade(sign, signDto.getProjectname());
         }
         BeanCopierUtils.copyPropertiesIgnoreNull(signDto, sign);
-        if (Validate.isString(sign.getDesigncompanyName())) {//添加单位评分
+        //添加单位评分
+        if (Validate.isString(sign.getDesigncompanyName())) {
             Company company = companyRepo.findCompany(sign.getDesigncompanyName());
             UnitScore unitScore = unitScoreRepo.findUnitScore(sign.getSignid());
             if (unitScore != null) {
@@ -2362,7 +2365,7 @@ public class SignServiceImpl implements SignService {
                     break;
 
                 case Constant.REGISTER_CODE:
-                    configKey = RevireStageKey.KEY_REGISTERCODE.getValue();
+                    configKey = Constant.RevireStageKey.KEY_REGISTERCODE.getValue();
                     break;
                 default:
                     configKey = "";

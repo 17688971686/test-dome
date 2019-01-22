@@ -60,14 +60,10 @@ public class SignController {
     //@RequiresPermissions("sign#fingByOData#post")
     @RequiresAuthentication
     @RequestMapping(name = "获取收文数据", path = "fingByOData", method = RequestMethod.POST)
-    public @ResponseBody
-    PageModelDto<SignDto> get(HttpServletRequest request) throws ParseException {
+    @ResponseBody
+    public PageModelDto<SignDto> get(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        PageModelDto<SignDto> signDtos = signService.get(odataObj);
-        if(!Validate.isObject(signDtos)){
-            signDtos = new PageModelDto<>();
-        }
-        return signDtos;
+        return signService.get(odataObj);
     }
 
     @RequiresAuthentication
@@ -86,11 +82,7 @@ public class SignController {
             return signDispaWork;
         }
         ODataObj odataObj = new ODataObj(request);
-        signDispaWork = signService.getBackList(odataObj, isOrgLeader);
-        if(!Validate.isObject(signDispaWork)){
-            signDispaWork = new PageModelDto<>();
-        }
-        return signDispaWork;
+        return signService.getBackList(odataObj, isOrgLeader);
     }
 
     @RequiresAuthentication
@@ -153,11 +145,8 @@ public class SignController {
     @RequestMapping(name = "获取评分单位信息", path = "findSignUnitScore", method = RequestMethod.POST)
     @ResponseBody
     public UnitScoreDto findSignUnitScore(@RequestParam String signId){
-        UnitScoreDto unitScoreDto = signService.findSignUnitScore(signId);
-        if(!Validate.isObject(unitScoreDto)){
-            unitScoreDto = new UnitScoreDto();
-        }
-        return  unitScoreDto;
+
+        return signService.findSignUnitScore(signId);
     }
 
     //@RequiresPermissions("sign#findBySignUser#post")
@@ -166,11 +155,7 @@ public class SignController {
     @ResponseBody
     public PageModelDto<SignDto> findBySignUser(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        PageModelDto<SignDto> signDtos = signService.findBySignUser(odataObj);
-        if(!Validate.isObject(signDtos)){
-            signDtos = new PageModelDto<>();
-        }
-        return signDtos;
+        return signService.findBySignUser(odataObj);
     }
 
     @RequiresAuthentication
@@ -178,11 +163,7 @@ public class SignController {
     @RequestMapping(name = "获取待关联的项目", path = "findAssociateSign", method = RequestMethod.POST)
     @ResponseBody
     public List<SignDispaWork> findAssociateSign(@RequestBody SignDispaWork signDispaWork) {
-        List<SignDispaWork> signDispaWorkList = signService.findAssociateSign(signDispaWork);
-        if(!Validate.isList(signDispaWorkList)){
-            signDispaWorkList = new ArrayList<>();
-        }
-        return signDispaWorkList;
+        return signService.findAssociateSign(signDispaWork);
     }
 
 
@@ -190,11 +171,7 @@ public class SignController {
     @RequestMapping(name = "获取待关联的项目列表", path = "findAssociateSignList", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<SignDispaWork> findAssociateSignList( String signid, String reviewstage, String projectname,String mUserName, String skip, String size) {
-        PageModelDto<SignDispaWork> SignDispaWorkPage = signService.findAssociateSignList(signid, reviewstage, projectname, mUserName,skip, size);
-        if(!Validate.isObject(SignDispaWorkPage)){
-            SignDispaWorkPage = new PageModelDto<>();
-        }
-        return SignDispaWorkPage;
+        return signService.findAssociateSignList(signid, reviewstage, projectname, mUserName,skip, size);
     }
 
     //编辑收文
@@ -203,11 +180,7 @@ public class SignController {
     @RequestMapping(name = "更新收文", path = "", method = RequestMethod.PUT)
     @ResponseBody
     public ResultMsg update(@RequestBody SignDto signDto) {
-        ResultMsg resultMsg = signService.updateSign(signDto);
-        if(!Validate.isObject(resultMsg)){
-            resultMsg = ResultMsg.error(ERROR_MSG);
-        }
-        return resultMsg;
+        return signService.updateSign(signDto);
     }
 
     //@RequiresPermissions("sign##post")
@@ -216,22 +189,14 @@ public class SignController {
     @RequestMapping(name = "创建收文", path = "", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg post(@RequestBody SignDto signDto) {
-        ResultMsg resultMsg = signService.createSign(signDto);
-        if(!Validate.isObject(resultMsg)){
-            resultMsg = ResultMsg.error(ERROR_MSG);
-        }
-        return resultMsg;
+        return signService.createSign(signDto);
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "项目预签收", path = "html/reserveAddPost", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg reserveAddPost(@RequestBody SignDto signDto) {
-        ResultMsg resultMsg = signService.reserveAddSign(signDto);
-        if(!Validate.isObject(resultMsg)){
-            resultMsg = ResultMsg.error(ERROR_MSG);
-        }
-        return resultMsg;
+        return signService.reserveAddSign(signDto);
     }
 
     @RequiresAuthentication
