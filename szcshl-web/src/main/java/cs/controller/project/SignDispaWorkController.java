@@ -22,13 +22,11 @@ import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.project.SignDispaWorkRepo;
 import cs.repository.repositoryImpl.sys.OrgDeptRepo;
 import cs.repository.repositoryImpl.sys.SysDeptRepo;
-import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.service.expert.ExpertSelectedService;
 import cs.service.project.SignDispaWorkService;
 import cs.service.sys.HeaderService;
 import cs.service.topic.TopicMaintainService;
 import cs.sql.ProjSql;
-import cs.xss.XssShieldUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -50,7 +48,6 @@ import java.text.ParseException;
 import java.util.*;
 
 import static com.sn.framework.common.StringUtil.*;
-import static cs.common.constants.Constant.ERROR_MSG;
 
 /**
  * 项目详情信息视图控制器
@@ -82,8 +79,7 @@ public class SignDispaWorkController {
     @ResponseBody
     public PageModelDto<SignDispaWorkDto> getSignList(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        PageModelDto<SignDispaWorkDto> pageModelDto = signDispaWorkService.getCommQurySign(odataObj);
-        return pageModelDto;
+        return signDispaWorkService.getCommQurySign(odataObj);
     }
 
     @RequiresAuthentication
@@ -91,11 +87,7 @@ public class SignDispaWorkController {
     @RequestMapping(name = "待选合并评审项目", path = "unMergeWPSign", method = RequestMethod.POST)
     @ResponseBody
     public List<SignDispaWork> unMergeWPSign(@RequestParam String signId) {
-        List<SignDispaWork> signDispaWorkList = signDispaWorkService.unMergeWPSign(signId);
-        if (!Validate.isList(signDispaWorkList)) {
-            signDispaWorkList = new ArrayList<>();
-        }
-        return signDispaWorkList;
+        return signDispaWorkService.unMergeWPSign(signId);
     }
 
     @RequiresAuthentication
@@ -103,11 +95,8 @@ public class SignDispaWorkController {
     @RequestMapping(name = "获取已选合并评审项目", path = "getMergeSignBySignId", method = RequestMethod.POST)
     @ResponseBody
     public List<SignDispaWork> getMergeSignBySignId(@RequestParam String signId) {
-        List<SignDispaWork> signDispaWorkList = signDispaWorkService.getMergeWPSignBySignId(signId);
-        if (!Validate.isList(signDispaWorkList)) {
-            signDispaWorkList = new ArrayList<>();
-        }
-        return signDispaWorkList;
+
+        return signDispaWorkService.getMergeWPSignBySignId(signId);
     }
 
     @RequiresAuthentication
@@ -115,11 +104,8 @@ public class SignDispaWorkController {
     @RequestMapping(name = "待选合并发文项目", path = "unMergeDISSign", method = RequestMethod.POST)
     @ResponseBody
     public List<SignDispaWork> unMergeDISSign(@RequestParam String signId) {
-        List<SignDispaWork> signDispaWorkList = signDispaWorkService.unMergeDISSign(signId);
-        if (!Validate.isList(signDispaWorkList)) {
-            signDispaWorkList = new ArrayList<>();
-        }
-        return signDispaWorkList;
+
+        return signDispaWorkService.unMergeDISSign(signId);
     }
 
     @RequiresAuthentication
@@ -127,22 +113,15 @@ public class SignDispaWorkController {
     @RequestMapping(name = "获取已选合并发文项目", path = "getMergeDISSign", method = RequestMethod.POST)
     @ResponseBody
     public List<SignDispaWork> getMergeDISSign(@RequestParam String signId) {
-        List<SignDispaWork> signDispaWorkList = signDispaWorkService.getMergeDISSignBySignId(signId);
-        if (!Validate.isList(signDispaWorkList)) {
-            signDispaWorkList = new ArrayList<>();
-        }
-        return signDispaWorkList;
+        return signDispaWorkService.getMergeDISSignBySignId(signId);
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "保存合并项目", path = "mergeSign", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg mergeSign(@RequestParam String signId, @RequestParam String mergeIds, @RequestParam String mergeType) {
-        ResultMsg resultMsg = signDispaWorkService.mergeSign(signId, mergeIds, mergeType);
-        if (!Validate.isObject(resultMsg)) {
-            resultMsg = ResultMsg.error(ERROR_MSG);
-        }
-        return resultMsg;
+
+        return signDispaWorkService.mergeSign(signId, mergeIds, mergeType);
     }
 
     @RequiresAuthentication
@@ -150,11 +129,7 @@ public class SignDispaWorkController {
     @RequestMapping(name = "解除合并评审发文", path = "cancelMergeSign", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg cancelMergeSign(@RequestParam String signId, String cancelIds, @RequestParam String mergeType) {
-        ResultMsg resultMsg = signDispaWorkService.cancelMergeSign(signId, cancelIds, mergeType);
-        if (!Validate.isObject(resultMsg)) {
-            resultMsg = ResultMsg.error(ERROR_MSG);
-        }
-        return resultMsg;
+        return signDispaWorkService.cancelMergeSign(signId, cancelIds, mergeType);
     }
 
     @RequiresAuthentication
@@ -162,22 +137,14 @@ public class SignDispaWorkController {
     @RequestMapping(name = "删除所有合并项目", path = "deleteAllMerge", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg deleteAllMerge(@RequestParam String signId, @RequestParam String mergeType, @RequestParam String businessId) {
-        ResultMsg resultMsg = signDispaWorkService.deleteAllMerge(signId, mergeType, businessId);
-        if (!Validate.isObject(resultMsg)) {
-            resultMsg = ResultMsg.error(ERROR_MSG);
-        }
-        return resultMsg;
+        return signDispaWorkService.deleteAllMerge(signId, mergeType, businessId);
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "通过条件查询进行统计分析", path = "QueryStatistics", method = RequestMethod.POST)
     @ResponseBody
     public List<SignDispaWork> queryStatistics(@RequestParam String queryData, @RequestParam int page) {
-        List<SignDispaWork> signDispaWorkList = signDispaWorkService.queryStatistics(queryData, page);
-        if (!Validate.isList(signDispaWorkList)) {
-            signDispaWorkList = new ArrayList<>();
-        }
-        return signDispaWorkList;
+        return signDispaWorkService.queryStatistics(queryData, page);
     }
 
     @RequiresAuthentication
@@ -266,11 +233,7 @@ public class SignDispaWorkController {
     @ResponseBody
     public PageModelDto<SignDispaWork> personMainTasks(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        PageModelDto<SignDispaWork> pageModelDto = signDispaWorkService.findMyDoProject(odataObj, true);
-        if (!Validate.isObject(pageModelDto)) {
-            pageModelDto = new PageModelDto();
-        }
-        return pageModelDto;
+        return signDispaWorkService.findMyDoProject(odataObj, true);
     }
 
     @RequiresAuthentication
@@ -278,33 +241,21 @@ public class SignDispaWorkController {
     @ResponseBody
     public PageModelDto<SignDispaWork> personAssistTasks(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        PageModelDto<SignDispaWork> pageModelDto = signDispaWorkService.findMyDoProject(odataObj, false);
-        if (!Validate.isObject(pageModelDto)) {
-            pageModelDto = new PageModelDto();
-        }
-        return pageModelDto;
+        return  signDispaWorkService.findMyDoProject(odataObj, false);
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "通过时间段获取项目信息(按评审阶段)", path = "findByTime", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg findByTime(@RequestParam String startTime, @RequestParam String endTime) {
-        ResultMsg resultMsg = signDispaWorkService.findByTime(startTime, endTime);
-        if (!Validate.isObject(resultMsg)) {
-            resultMsg = ResultMsg.error(ERROR_MSG);
-        }
-        return resultMsg;
+        return signDispaWorkService.findByTime(startTime, endTime);
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "通过时间段获取项目信息(按评审阶段、项目类别)", path = "findByTypeAndReview", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg findByTypeAndReview(@RequestParam String startTime, @RequestParam String endTime) {
-        ResultMsg resultMsg = signDispaWorkService.findByTypeAndReview(startTime, endTime);
-        if (!Validate.isObject(resultMsg)) {
-            resultMsg = ResultMsg.error(ERROR_MSG);
-        }
-        return resultMsg;
+        return signDispaWorkService.findByTypeAndReview(startTime, endTime);
     }
 
     @RequiresAuthentication
@@ -641,11 +592,11 @@ public class SignDispaWorkController {
             if (b) {
                 return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", result);
             } else {
-                return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据失败", null);
+                return ResultMsg.error( "查询数据失败");
             }
 
         } else {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "结束日期必须大于开始日期！", null);
+            return ResultMsg.error( "结束日期必须大于开始日期！");
         }
     }
 
@@ -664,22 +615,14 @@ public class SignDispaWorkController {
     @RequestMapping(name = "对秘密项目进行权限限制", path = "findSecretProPermission", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg findSecretProPermission(@RequestParam String signId) {
-        ResultMsg resultMsg = signDispaWorkService.findSecretProPermission(signId);
-        if (!Validate.isObject(resultMsg)) {
-            resultMsg = ResultMsg.error(ERROR_MSG);
-        }
-        return resultMsg;
+        return signDispaWorkService.findSecretProPermission(signId);
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "计算剩余工作日", path = "admin/countWeekDays", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg countWeekDays(@RequestParam String oldSignDate, @RequestParam String signDate) {
-        ResultMsg resultMsg = signDispaWorkService.countWeekDays(DateUtils.converToDate1(oldSignDate, DateUtils.DATE_PATTERN), DateUtils.converToDate1(signDate, DateUtils.DATE_PATTERN));
-        if (!Validate.isObject(resultMsg)) {
-            resultMsg = ResultMsg.error(ERROR_MSG);
-        }
-        return resultMsg;
+        return signDispaWorkService.countWeekDays(DateUtils.converToDate1(oldSignDate, DateUtils.DATE_PATTERN), DateUtils.converToDate1(signDate, DateUtils.DATE_PATTERN));
     }
 
     @RequiresPermissions("signView#html/signChart#get")

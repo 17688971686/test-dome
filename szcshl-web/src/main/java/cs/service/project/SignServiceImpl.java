@@ -484,7 +484,7 @@ public class SignServiceImpl implements SignService {
      * @return
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ResultMsg deleteSign(String signid) {
 /*        Sign sign = signRepo.findById(Sign_.signid.getName(), signid);
         if (Validate.isString(sign.getProcessInstanceId())) {
@@ -495,9 +495,9 @@ public class SignServiceImpl implements SignService {
         }
         signRepo.deleteById(Sign_.signid.getName(), signid);*/
         if (signRepo.updateSignState(signid, Sign_.signState.getName(), EnumState.DELETE.getValue())) {
-            return new ResultMsg(true, MsgCode.OK.getValue(), "删除成功！");
+            return ResultMsg.ok("删除成功！");
         } else {
-            return new ResultMsg(false, MsgCode.ERROR.getValue(), "删除失败！");
+            return ResultMsg.error("删除失败！");
         }
     }
 
