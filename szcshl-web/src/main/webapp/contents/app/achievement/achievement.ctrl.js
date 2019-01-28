@@ -15,11 +15,13 @@
         vm.model.quarter = $state.params.quarter;
         vm.conMaxIndex = 0;        //条件号
         vm.conditions = [];        //条件列表
+        vm.deptId = "";
         activate(true);
         function activate(firstLoad) {
             achievementSvc.achievementSum(vm,function (data) {
                 if(data){
                     var level = data.level;
+                    vm.level = level;
                     if(level == 0 ){
                         //加载前，先初始化值
                         vm.conditions = [];
@@ -46,6 +48,7 @@
                         //部门员工业绩统计明细
                         vm.achievementDeptDetailList = data.orgDeptDetailList;
                     }else if(level == 3 || level == 4){
+                        vm.conditions = [];
                         //部长或者组长
                         vm.userId = data.orgDeptList[0].directorID;
                         vm.orgAchievement =  data.orgDeptSum;
