@@ -495,9 +495,7 @@
                                 </w:tcPr>
                                 <w:p w:rsidR="005C3454" w:rsidRDefault="005C3454">
                                     <w:pPr>
-                                        <w:pStyle w:val="a4"/>
-                                        <w:spacing w:line="400" w:lineRule="exact"/>
-                                        <w:ind w:left="1050" w:hanging="1050"/>
+                                        <w:spacing  w:lineRule="exact"/>
                                         <w:jc w:val="center"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
@@ -508,7 +506,7 @@
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                         </w:rPr>
-                                        <w:t>${list.projName!}</w:t>
+                                        <w:t>${list.projName!}323</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>

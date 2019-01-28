@@ -20,7 +20,7 @@
             achievementSvc.achievementSum(vm,function (data) {
                 if(data){
                     var level = data.level;
-                    if(level == 0){
+                    if(level == 0 ){
                         //加载前，先初始化值
                         vm.conditions = [];
                         //普通用户
@@ -47,7 +47,16 @@
                         vm.achievementDeptDetailList = data.orgDeptDetailList;
                     }else if(level == 3 || level == 4){
                         //部长或者组长
+                        vm.userId = data.orgDeptList[0].directorID;
                         vm.orgAchievement =  data.orgDeptSum;
+                        achievementSvc.findTopicDetail(vm,function(data){
+                            if(data && data.length > 0){
+                                vm.conditions = data;
+                                for(var i=0;i<vm.conditions.length;i++){
+                                    vm.conditions[i]["sort"]= (i+1);
+                                }
+                            }
+                        });
                     }
 
                     vm.level = data.level;

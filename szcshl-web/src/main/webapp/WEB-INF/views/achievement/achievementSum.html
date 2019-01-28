@@ -44,11 +44,11 @@
                     class="btn btn-sm btn-primary">
                 协办人评审项目一览表
             </button>
-            <button ng-if="vm.level=='0'" ng-click="vm.showTopicDetail()" class="btn btn-sm btn-primary">
+            <button ng-if="vm.level !=1 && vm.level !=2" ng-click="vm.showTopicDetail()" class="btn btn-sm btn-primary">
                 课题研究及其他业务工作一览表
             </button>
             <!--普通员工的业绩统计导出-->
-            <button ng-if="vm.level=='0'" class="btn btn-sm btn-primary" ng-click="vm.exportAchievementDetail()">
+            <button ng-if="vm.level !=1 && vm.level !=2" class="btn btn-sm btn-primary" ng-click="vm.exportAchievementDetail()">
                 <span class="glyphicon glyphicon-file"></span>导出
             </button>
         </div>
@@ -334,8 +334,8 @@
     </table>
     <!-- 部长和员工的表格信息 end -->
 
-    <!-- 普通员工课题信息 begin -->
-    <table ng-if="vm.level == 0 " class="table table-bordered table-custom">
+    <!-- 部长和普通员工课题信息 begin -->
+    <table ng-if="vm.level != 1 && vm.level != 2" class="table table-bordered table-custom">
         <!-- 普通用户的其它信息 begin -->
         <tr>
             <td colspan="4" style="vertical-align: middle;" class="text-left">二、课题研究及其他业务工作（如完成领导交办的其他业务工作等）</td>
