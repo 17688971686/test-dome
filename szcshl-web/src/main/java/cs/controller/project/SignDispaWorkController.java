@@ -212,7 +212,6 @@ public class SignDispaWorkController {
                 filename = new String(filename.getBytes(UTF_8), ISO_8859_1);
             }
             resp.setHeader("Content-disposition", "attachment;filename=" + filename);
-            resp.setHeader("Content-disposition", "attachment;filename=" + filename);
             JxlsUtils.exportExcel("classpath:jxls/proInfoCount.xls", resp.getOutputStream(), resultMap, funcs);
 
         } catch (Exception e) {
@@ -332,55 +331,54 @@ public class SignDispaWorkController {
     @RequiresAuthentication
     @RequestMapping(name = "主/协办人项目导出", path = "exportProReview", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
-    public void exportProReview(HttpServletResponse resp, @RequestParam String yearName, @RequestParam String quarter, @RequestParam int level, String isMainUser) {
-        ServletOutputStream sos = null;
-        InputStream is = null;
+    public void exportProReview(HttpServletResponse resp,HttpServletRequest request, @RequestParam String yearName, @RequestParam String quarter, @RequestParam int level, String isMainUser) {
+        Map<String, Object> resultMap = new HashMap<>();
+        List<OrgDept> orgDeptList = new ArrayList<>();
+        //用户ID和用户所在部门ID
+        String userId = SessionUtil.getUserId(),orgId = SessionUtil.getUserInfo().getOrg().getId();
+        if (level > 0) {
+            Criteria criteria = orgDeptRepo.getExecutableCriteria();
+            criteria.add(Restrictions.eq(OrgDept_.directorID.getName(), SessionUtil.getUserId()));
+            orgDeptList = criteria.list();
+            //当前查询的部门ID或者组别ID，并不是用户做在部门ID
+            if(Validate.isList(orgDeptList)){
+                orgId = orgDeptList.get(0).getId();
+            }
+        }
+        List<SysDept> deptList = sysDeptRepo.findAll();
+        //二、查询业绩统计信息
+        List<Achievement> countList = signDispaWorkRepo.countAchievement(yearName, quarter, orgId, userId, level,deptList);
+        signDispaWorkService.countAchievementDetail(resultMap, level, countList, orgDeptList,deptList);
+        AchievementSumDto achSumDto = null;
+        if(level > 0){
+            achSumDto = (AchievementSumDto) resultMap.get("orgDeptSum");
+        }else {
+            achSumDto = (AchievementSumDto) resultMap.get("userSum");
+        }
+        Map<String, Object> dataMap = new HashMap<>();
+        //是否主办
+        String fileName = "";
+        boolean isMain = Constant.EnumState.YES.getValue().equals(isMainUser);
+        if (isMain) {
+            dataMap.put("titleName", "主办人评审项目一览表");
+            dataMap.put("achievementList", achSumDto.getMainChildList());
+            fileName = "主办人评审项目一览表.xls";
+        } else {
+            dataMap.put("achievementList", achSumDto.getAssistChildList());
+            dataMap.put("titleName", "协办人评审项目一览表");
+            fileName = "协办人评审项目一览表.xls";
+        }
+        String[] monthArr = ProjUtil.getQuarterMonth(quarter);
+        String smonth = monthArr[0], emonth = monthArr[1];
+        dataMap.put("year", yearName);
+        dataMap.put("smonth", smonth);
+        dataMap.put("emonth", emonth);
+        String[] date = DateUtils.converToString(new Date(), "").split("-");
+        dataMap.put("cyear", date[0]);
+        dataMap.put("cmonth", date[1].charAt(0) == '0' ? date[1].charAt(1) : date[1]);
+        dataMap.put("cday", date[2].charAt(0) == '0' ? date[2].charAt(1) : date[2]);
         try {
-            Map<String, Object> resultMap = new HashMap<>();
-            List<OrgDept> orgDeptList = new ArrayList<>();
-            //用户ID和用户所在部门ID
-            String userId = SessionUtil.getUserId(),orgId = SessionUtil.getUserInfo().getOrg().getId();
-            if (level > 0) {
-                Criteria criteria = orgDeptRepo.getExecutableCriteria();
-                criteria.add(Restrictions.eq(OrgDept_.directorID.getName(), SessionUtil.getUserId()));
-                orgDeptList = criteria.list();
-                //当前查询的部门ID或者组别ID，并不是用户做在部门ID
-                if(Validate.isList(orgDeptList)){
-                    orgId = orgDeptList.get(0).getId();
-                }
-            }
-            List<SysDept> deptList = sysDeptRepo.findAll();
-            //二、查询业绩统计信息
-            List<Achievement> countList = signDispaWorkRepo.countAchievement(yearName, quarter, orgId, userId, level,deptList);
-            signDispaWorkService.countAchievementDetail(resultMap, level, countList, orgDeptList,deptList);
-            AchievementSumDto achSumDto = null;
-            if(level > 0){
-                achSumDto = (AchievementSumDto) resultMap.get("orgDeptSum");
-            }else {
-                achSumDto = (AchievementSumDto) resultMap.get("userSum");
-            }
-            Map<String, Object> dataMap = new HashMap<>();
-            //是否主办
-            String fileName = "";
-            boolean isMain = Constant.EnumState.YES.getValue().equals(isMainUser);
-            if (isMain) {
-                dataMap.put("titleName", "主办人评审项目一览表");
-                dataMap.put("achievementList", achSumDto.getMainChildList());
-                fileName = "主办人评审项目一览表.doc";
-            } else {
-                dataMap.put("achievementList", achSumDto.getAssistChildList());
-                dataMap.put("titleName", "协办人评审项目一览表");
-                fileName = "协办人评审项目一览表.doc";
-            }
-            String[] monthArr = ProjUtil.getQuarterMonth(quarter);
-            String smonth = monthArr[0], emonth = monthArr[1];
-            dataMap.put("year", yearName);
-            dataMap.put("smonth", smonth);
-            dataMap.put("emonth", emonth);
-            String[] date = DateUtils.converToString(new Date(), "").split("-");
-            dataMap.put("cyear", date[0]);
-            dataMap.put("cmonth", date[1].charAt(0) == '0' ? date[1].charAt(1) : date[1]);
-            dataMap.put("cday", date[2].charAt(0) == '0' ? date[2].charAt(1) : date[2]);
+           /* 旧方法，用word导出
             File file;
             String path = SysFileUtil.getUploadPath() + File.separator + Tools.generateRandomFilename() + Constant.Template.WORD_SUFFIX.getKey();
             file = TemplateUtil.createDoc(dataMap, Constant.Template.ACHIEVEMENT_DETAIL.getKey(), path);
@@ -394,24 +392,23 @@ public class SignDispaWorkController {
             byte[] buffer = new byte[1024];
             while ((byteread = is.read(buffer)) != -1) {
                 sos.write(buffer, 0, byteread);
+            }*/
+
+            /* 新方法，用excel导出(修改2019-01-28) */
+            resp.setCharacterEncoding(UTF_8.name());
+            resp.setContentType("application/vnd.ms-excel");
+            String userAgent = request.getHeader("user-agent");
+            // 判断是否 ie 浏览器
+            if (userAgent.indexOf("MSIE") != -1 || userAgent.indexOf("Trident") != -1 || userAgent.indexOf("Edge") != -1) {
+                fileName = new String(fileName.getBytes(GBK), ISO_8859_1);
+            } else {
+                fileName = new String(fileName.getBytes(UTF_8), ISO_8859_1);
             }
+            resp.setHeader("Content-disposition", "attachment;filename=" + fileName);
+            JxlsUtils.exportExcel("classpath:jxls/userReviewProjects.xls", resp.getOutputStream(), dataMap);
+
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            if (sos != null) {
-                try {
-                    sos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 

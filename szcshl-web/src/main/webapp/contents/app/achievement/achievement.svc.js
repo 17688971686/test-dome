@@ -219,7 +219,19 @@
 
         //主/协办项目一览表
         function exportProReview(vm,isMain) {
-            var fileName1 = "";
+            var downForm = $("#userReviewForm");
+            downForm.attr("target", "");
+            downForm.attr("method", "post");
+            downForm.attr("action", rootPath + "/signView/exportProReview");
+            downForm.find("input[name='yearName']").val(vm.model.year);
+            downForm.find("input[name='quarter']").val(vm.model.quarter);
+            downForm.find("input[name='level']").val(vm.level);
+            downForm.find("input[name='isMainUser']").val(isMain);
+            //表单提交
+            downForm.submit();
+            //提交之后重置表单
+            //downForm.reset();
+            /*var fileName1 = "";
             if (isMain == '9') {
                 fileName1 = "主办项目一览表.doc";
             } else {
@@ -236,15 +248,15 @@
                 }
             }
             var httpSuccess = function success(response) {
-                var fileName = fileName1;
+                *var fileName = fileName1;
                 var fileType = "msword";
-                common.downloadReport(response.data, fileName, fileType);
+                common.downloadReport(response.data, fileName, fileType);*
             }
             common.http({
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess
-            });
+            });*/
         }
 
     }
