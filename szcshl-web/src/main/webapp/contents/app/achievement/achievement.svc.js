@@ -145,7 +145,8 @@
                 url: rootPath + "/signView/exportUserAchievement",
                 params: {
                     yearName:vm.model.year,
-                    quarter:vm.model.quarter
+                    quarter:vm.model.quarter,
+                    level : vm.level,
                 }
             }
             var httpSuccess = function success(response) {

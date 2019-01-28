@@ -8,10 +8,7 @@ import cs.common.constants.Constant;
 import cs.common.utils.*;
 import cs.domain.project.SignDispaWork;
 import cs.domain.project.SignDispaWork_;
-import cs.domain.sys.Header;
-import cs.domain.sys.OrgDept;
-import cs.domain.sys.OrgDept_;
-import cs.domain.sys.SysDept;
+import cs.domain.sys.*;
 import cs.model.PageModelDto;
 import cs.model.project.Achievement;
 import cs.model.project.AchievementSumDto;
@@ -72,6 +69,8 @@ public class SignDispaWorkController {
     private OrgDeptRepo orgDeptRepo;
     @Autowired
     private SysDeptRepo sysDeptRepo;
+    @Autowired
+    private UserRepo userRepo;
 
     //@RequiresPermissions("signView#getSignList#post")
     @RequiresAuthentication
@@ -415,17 +414,44 @@ public class SignDispaWorkController {
     @RequiresAuthentication
     @RequestMapping(name = "员工业绩统计表导出", path = "exportUserAchievement", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
-    public void exportUserAchievement(HttpServletResponse resp, @RequestParam String yearName, @RequestParam String quarter) {
+    public void exportUserAchievement(HttpServletResponse resp, @RequestParam String yearName, @RequestParam String quarter ,@RequestParam String level ) {
         ServletOutputStream sos = null;
         InputStream is = null ;
         String userId = SessionUtil.getUserId(),userName = SessionUtil.getUserInfo().getDisplayName();
+        int le = Integer.parseInt(level);
+        String deptIds = null ;
+        List<SysDept> sysDeptList = new ArrayList<>();
+        List<OrgDept> orgDeptList = new ArrayList<>();
+        List<Achievement> countList = new ArrayList<>();
+        Map<String , Object> dataMap = new HashMap<>();
+        Map<String,Object> resultMap = new HashMap<>();
+
         try{
-            Map<String,Object> resultMap = new HashMap<>();
-            List<Achievement> countList = signDispaWorkRepo.countAchievement(yearName, quarter, null, userId, 0,null);
-            signDispaWorkService.countAchievementDetail(resultMap, 0, countList, null,null);
-            Map<String , Object> dataMap = new HashMap<>();
+            //组长或部长
+            if(Constant.SYS_USER_LEVEL.BZ.getValue() == le || Constant.SYS_USER_LEVEL.ZZ.getValue() == le){
+                User user = SessionUtil.getUserInfo();
+                sysDeptList = sysDeptRepo.findByIds(SysDept_.orgId.getName() , user.getOrg().getId() , null);
+                Criteria criteria = orgDeptRepo.getExecutableCriteria();
+                criteria.add(Restrictions.eq(OrgDept_.directorID.getName(), SessionUtil.getUserId()));
+                orgDeptList = criteria.list();
+                //当前查询的部门ID或者组别ID，并不是用户做在部门ID
+                if(Validate.isList(orgDeptList)){
+                    deptIds = orgDeptList.get(0).getId();
+                }
+                countList = signDispaWorkRepo.countAchievement(yearName, quarter, deptIds, null, le,sysDeptList);
+                signDispaWorkService.countAchievementDetail(resultMap, le, countList, orgDeptList,sysDeptList);
+                dataMap.put("achievement",resultMap.get("orgDeptSum"));
+            }else{
+
+                countList = signDispaWorkRepo.countAchievement(yearName, quarter, null, userId, le,null);
+                signDispaWorkService.countAchievementDetail(resultMap, le, countList, null,null);
+                dataMap.put("achievement",resultMap.get("userSum"));
+            }
+
+
+
             //员工业绩统计信息
-            dataMap.put("achievement",resultMap.get("userSum"));
+
             //员工课题信息
             List<TopicMaintainDto> allTopic = topicMaintainService.findTopicAll(userId,yearName,quarter);
             //遍历主课题和其它课题
