@@ -48,7 +48,9 @@
     <tr>
         <td width="15%" class="text-center">项目单位</td>
         <td style="width: 45%;max-width: 500px;">
-            {{vm.fileRecord.projectCompany}}
+            <input type="text" class="form-control input-sm " ng-model="vm.fileRecord.projectCompany" name="projectCompany"
+                   id="projectCompany" data-val="true"  data-val-required="必填">
+            <span data-valmsg-for="fileTitle" data-valmsg-replace="true" class="errors"></span>
         </td>
         <td width="15%" class="text-center">项目代码</td>
         <td width="25%">
@@ -145,9 +147,8 @@
                         <input type="text" style="width:50px;" class="form-control input-sm "
                                data-val="true" data-val-digits="只能输入数字"
                                ng-model="vm.fileRecord.supplyFileLetterCount" name="supplyFileLetterCount"
-                               id="supplyFileLetterCount">
-                        <span data-valmsg-for="supplyFileLetterCount"
-                              data-valmsg-replace="true" class="errors">
+                               id="supplyFileLetterCount" />
+                        <span data-valmsg-for="supplyFileLetterCount" data-valmsg-replace="true" class="errors" />
                     </td>
                     <td style="border-top:none;"><input type="checkbox" class="newcheckbox" name="supplyFileLetterOriginal"
                                                         ng-click="vm.fileRecord.supplyFileLetterCount = vm.initInputValue($event,vm.fileRecord.supplyFileLetterCount,'supplyFileLetterOriginal')"

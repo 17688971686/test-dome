@@ -51,7 +51,7 @@ public class FileRecord extends DomainBase{
 	@Column(columnDefinition="VARCHAR(32)")
 	private String fileNo;
 	
-	//项目单位
+	//项目单位(建设单位名称)
 	@Column(columnDefinition="VARCHAR(100)")
 	private String projectCompany;
 	

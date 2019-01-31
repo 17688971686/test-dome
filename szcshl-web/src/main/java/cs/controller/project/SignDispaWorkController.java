@@ -69,8 +69,6 @@ public class SignDispaWorkController {
     private OrgDeptRepo orgDeptRepo;
     @Autowired
     private SysDeptRepo sysDeptRepo;
-    @Autowired
-    private UserRepo userRepo;
 
     //@RequiresPermissions("signView#getSignList#post")
     @RequiresAuthentication

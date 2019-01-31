@@ -350,7 +350,9 @@ public class SignServiceImpl implements SignService {
         if (!signDto.getProjectname().equals(sign.getProjectname())) {
             updateProjectNameCascade(sign, signDto.getProjectname());
         }
-        BeanCopierUtils.copyPropertiesIgnoreNull(signDto, sign);
+        BeanCopierUtils.copyProperties(signDto, sign);
+        String curUserName = SessionUtil.getDisplayName();
+        Date nowDate = new Date();
         //添加单位评分
         if (Validate.isString(sign.getDesigncompanyName())) {
             Company company = companyRepo.findCompany(sign.getDesigncompanyName());
@@ -362,28 +364,31 @@ public class SignServiceImpl implements SignService {
                 UnitScore unitScores = new UnitScore();
                 unitScores.setSignid(sign.getSignid());
                 unitScores.setCompany(company);
-                unitScores.setId(UUID.randomUUID().toString());
-                unitScores.setCreatedBy(SessionUtil.getDisplayName());
-                unitScores.setCreatedDate(new Date());
-                unitScores.setModifiedBy(SessionUtil.getDisplayName());
-                unitScores.setCreatedDate(new Date());
+                unitScores.setId((new RandomGUID()).valueAfterMD5);
+                unitScores.setCreatedBy(curUserName);
+                unitScores.setModifiedBy(curUserName);
+                unitScores.setCreatedDate(nowDate);
+                unitScores.setModifiedDate(nowDate);
                 unitScoreRepo.save(unitScores);
             }
         }
 
         //如果单位是手动添加时就添加到数据库
-        if (Validate.isString(signDto.getBuiltcompanyName())) {//建设单位
+        //建设单位
+        if (Validate.isString(signDto.getBuiltcompanyName())) {
             companyService.createSignCompany(signDto.getBuiltcompanyName(), DEFAULT_BUILD_COMPNAME, isSignUser);
         }
-        if (Validate.isString(signDto.getDesigncompanyName())) {//编制单位
+        /*//编制单位
+        if (Validate.isString(signDto.getDesigncompanyName())) {
             companyService.createSignCompany(signDto.getDesigncompanyName(), DEFAULT_DESIGN_COMPNAME, isSignUser);
             companyService.createSignCompany(signDto.getBuiltcompanyName(), DEFAULT_BUILD_COMPNAME, isSignUser);
-        }
-        if (Validate.isString(signDto.getDesigncompanyName())) {//编制单位
+        }*/
+        //编制单位
+        if (Validate.isString(signDto.getDesigncompanyName())) {
             companyService.createSignCompany(signDto.getDesigncompanyName(), DEFAULT_DESIGN_COMPNAME, isSignUser);
         }
         sign.setModifiedBy(SessionUtil.getUserId());
-        sign.setModifiedDate(new Date());
+        sign.setModifiedDate(nowDate);
         signRepo.save(sign);
 
         return ResultMsg.ok("操作成功!");
@@ -403,15 +408,15 @@ public class SignServiceImpl implements SignService {
         map.put("sign", signDto);
 
         //获取办事处所有信息
-        List<DeptDto> deptDtolist = new ArrayList<DeptDto>();
-        List<Dept> deptlist = deptRepo.findAll();
-        if (deptlist != null) {
-            deptlist.forEach(o -> {
+        List<DeptDto> deptDtoList = new ArrayList<DeptDto>();
+        List<Dept> deptList = deptRepo.findAll();
+        if (Validate.isList(deptList)) {
+            deptList.forEach(o -> {
                 DeptDto deptDto = new DeptDto();
                 BeanCopierUtils.copyProperties(o, deptDto);
-                deptDtolist.add(deptDto);
+                deptDtoList.add(deptDto);
             });
-            map.put("deptlist", deptDtolist);
+            map.put("deptlist", deptDtoList);
         }
         //主办事处
         if (Validate.isString(sign.getMaindepetid())) {
@@ -431,7 +436,7 @@ public class SignServiceImpl implements SignService {
         Criteria file = sysFileRepo.getExecutableCriteria();
         file.add(Restrictions.eq(SysFile_.businessId.getName(), sign.getSignid()));
         List<SysFile> sysFiles = file.list();
-        if (sysFiles != null) {
+        if (Validate.isList(sysFiles)) {
             map.put("sysFiles", sysFiles);
         }
         List<UserDto> leaderList = new ArrayList<>();
@@ -461,20 +466,17 @@ public class SignServiceImpl implements SignService {
     }
 
     @Override
-    @Transactional
     public List<OrgDto> selectSign(ODataObj odataObj) {
-        List<Org> org = orgRepo.findByOdata(odataObj);
-        List<OrgDto> orgDto = new ArrayList<OrgDto>();
-        if (org != null && org.size() > 0) {
-            org.forEach(x -> {
-                OrgDto orgDtos = new OrgDto();
-                BeanCopierUtils.copyProperties(x, orgDtos);
-                orgDtos.setCreatedDate(x.getCreatedDate());
-                orgDtos.setModifiedDate(x.getModifiedDate());
-                orgDto.add(orgDtos);
+        List<Org> orgList = orgRepo.findByOdata(odataObj);
+        List<OrgDto> orgDtoList = new ArrayList<OrgDto>();
+        if (Validate.isList(orgList)) {
+            orgList.forEach(x -> {
+                OrgDto orgDto = new OrgDto();
+                BeanCopierUtils.copyProperties(x, orgDto);
+                orgDtoList.add(orgDto);
             });
         }
-        return orgDto;
+        return orgDtoList;
     }
 
     /**
@@ -693,14 +695,15 @@ public class SignServiceImpl implements SignService {
             //项目关联信息
             if (null != sign.getIsAssociate() && sign.getIsAssociate() == 1) {
                 List<SignDto> signDtoList = new ArrayList<>();
-                getPreAssociateDto(sign.getAssociateSign(), signDtoList);   //自身还没加上去，在页面处理
+                //自身还没加上去，在页面处理
+                getPreAssociateDto(sign.getAssociateSign(), signDtoList);
                 signDto.setAssociateSignDtoList(signDtoList);
             }
 
             //项目暂停信息
             List<ProjectStop> projectStopList = projectStopRepo.findByIds(ProjectStop_.sign.getName() + "." + Sign_.signid.getName(), signid, null);
-            List<ProjectStopDto> projectStopDtoList = new ArrayList<>();
             if (Validate.isList(projectStopList)) {
+                List<ProjectStopDto> projectStopDtoList = new ArrayList<>(projectStopList.size());
                 for (ProjectStop p : projectStopList) {
                     ProjectStopDto projectStopDto = new ProjectStopDto();
                     BeanCopierUtils.copyProperties(p, projectStopDto);

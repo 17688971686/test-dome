@@ -37,11 +37,7 @@ private  String ctrlName = "fileRecord";
 	@RequestMapping(name = "归档提交", path = "",method=RequestMethod.POST)
 	@ResponseBody
 	public ResultMsg post(@RequestBody FileRecordDto fileRecordDto){
-		ResultMsg resultMsg = fileRecordService.save(fileRecordDto);
-		if(!Validate.isObject(resultMsg)){
-			resultMsg = ResultMsg.error(ERROR_MSG);
-		}
-		return resultMsg;
+		return fileRecordService.save(fileRecordDto);
 	}
 
     @RequiresAuthentication

@@ -56,9 +56,6 @@
             <div id="fileFeasibilityEdit_kxxyj" ng-include
                  src="'${path}/contents/app/fileRecord/fileRecordEdit/fileFeasibilityEdit.html'"></div>
         </form> <!--  end form -->
-        <#--<div id="fileFeasibilityEdit_kxxyj_templ" style="display: none;">
-            <#include "/templatePrint/filerecord/fileProjectDetailKxxyjbg.html"/>
-        </div>-->
     </div>
 
     <div ng-if="vm.fileRecord.fileReviewstage=='项目建议书' || vm.fileRecord.fileReviewstage=='登记赋码'">
@@ -66,9 +63,6 @@
             <div id="fileProjcetIdeaEdit_xmjys" ng-include
                  src="'${path}/contents/app/fileRecord/fileRecordEdit/fileProjcetIdeaEdit.html'"></div>
         </form> <!--  end form -->
-        <#--<div id="fileProjcetIdeaEdit_xmjys_templ" style="display: none;">
-            <#include "/templatePrint/filerecord/fileProjectDetailXmjysl.html"/>
-        </div>-->
     </div>
 
     <div ng-if="vm.fileRecord.fileReviewstage=='资金申请报告'">
@@ -76,9 +70,6 @@
             <div id="filecapitalAppReportEdit_zjsq" ng-include
                  src="'${path}/contents/app/fileRecord/fileRecordEdit/filecapitalAppReportEdit.html'"></div>
         </form> <!--  end form -->
-        <#--<div id="filecapitalAppReportEdit_zjsq_templ" style="display: none;">
-            <#include "/templatePrint/filerecord/capitalAppReportZjsq.html"/>
-        </div>-->
     </div>
 
     <div ng-if="!vm.isassistproc && vm.fileRecord.fileReviewstage=='项目概算'">
@@ -86,9 +77,6 @@
             <div id="fileProjcetEdit_xmgs" ng-include
                  src="'${path}/contents/app/fileRecord/fileRecordEdit/fileProjcetEdit.html'"></div>
         </form> <!--  end form -->
-       <#-- <div id="fileProjcetEdit_xmgs_templ" style="display: none;">
-            <#include "/templatePrint/filerecord/fileProjectDetailXmgs.html"/>
-        </div>-->
     </div>
 
     <div ng-if="vm.isassistproc && vm.fileRecord.fileReviewstage=='项目概算'">
@@ -96,35 +84,23 @@
             <div id="fileProjcetEdit_xmgs_xs" ng-include
                  src="'${path}/contents/app/fileRecord/fileRecordEdit/fileProjcetEditXS.html'"></div>
         </form> <!--  end form -->
-        <#--<div id="fileProjcetEdit_xmgs_xs_templ" style="display: none;">
-            <#include "/templatePrint/filerecord/fileProjectDetailXmgsXS.html"/>
-        </div>-->
     </div>
     <div ng-if="vm.fileRecord.fileReviewstage=='进口设备'">
         <form id="fileRecord_form" name="fileRecord_form">
             <div id="fileForeignEdit_jksb" ng-include
                  src="'${path}/contents/app/fileRecord/fileRecordEdit/fileForeignEdit.html'"></div>
         </form> <!--  end form -->
-        <#--<div id="fileForeignEdit_jksb_templ" style="display: none;">
-            <#include "/templatePrint/filerecord/fileRecordForeignJksb.html"/>
-        </div>-->
     </div>
     <div ng-if="vm.fileRecord.fileReviewstage=='设备清单（国产）' ||vm.fileRecord.fileReviewstage=='设备清单（进口）'">
         <form id="fileRecord_form" name="fileRecord_form">
             <div id="fileRecordEdit_sbqd" ng-include
                  src="'${path}/contents/app/fileRecord/fileRecordEdit/fileDomesticEdit.html'"></div>
         </form> <!--  end form -->
-        <#--<div id="fileRecordEdit_sbqd_templ" style="display: none;">
-            <#include "/templatePrint/filerecord/fileProjectDetailSbqd.html"/>
-        </div>-->
     </div>
     <div ng-if="vm.fileRecord.fileReviewstage == '其它' ">
         <form id="fileRecord_form" name="fileRecord_form">
             <div id="fileRecordEdit_qt" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/fileOtherEdit.html?version=${.now}'"></div>
         </form> <!--  end form -->
-    <#--<div id="fileRecordEdit_sbqd_templ" style="display: none;">
-        <#include "/templatePrint/filerecord/fileProjectDetailSbqd.html"/>
-    </div>-->
     </div>
     <!--  <div ng-show="vm.fileRecord.fileReviewstage=='项目建议书'" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/fileDomesticEdit.html'"></div>  -->
 

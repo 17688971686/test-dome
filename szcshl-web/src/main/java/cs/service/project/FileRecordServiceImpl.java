@@ -39,11 +39,9 @@ public class FileRecordServiceImpl implements FileRecordService {
     public ResultMsg save(FileRecordDto fileRecordDto) {
         if (Validate.isString(fileRecordDto.getSignId())) {
             FileRecord fileRecord = null;
-
             Date now = new Date();
             if (!Validate.isString(fileRecordDto.getFileRecordId())) {
                 fileRecord = new FileRecord();
-//                fileRecordDto.setFileDate(fileRecordDto.getFileDate() == null ? now : fileRecordDto.getFileDate());
                 fileRecordDto.setPrintDate(fileRecordDto.getPrintDate() == null ? now : fileRecordDto.getPrintDate());
                 BeanCopierUtils.copyProperties(fileRecordDto, fileRecord);
                 fileRecord.setFileRecordId((new RandomGUID()).valueAfterMD5);
@@ -93,7 +91,7 @@ public class FileRecordServiceImpl implements FileRecordService {
             fileRecordRepo.save(fileRecord);
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！",fileRecord.getFileRecordId());
         } else {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，无法获取项目信息！");
+            return ResultMsg.error("操作失败，无法获取项目信息！");
         }
 
     }
@@ -130,9 +128,12 @@ public class FileRecordServiceImpl implements FileRecordService {
             fileRecordDto.setSignId(signid);
             fileRecordDto.setProjectName(sign.getProjectname());
             fileRecordDto.setProjectCode(sign.getProjectcode());
-            fileRecordDto.setFileReviewstage(sign.getReviewstage());//评审阶段
-            fileRecordDto.setProjectCompany(sign.getDesigncompanyName());//编制单位名称
-            fileRecordDto.setFileNumber(sign.getDocnum());//文号
+            //评审阶段
+            fileRecordDto.setFileReviewstage(sign.getReviewstage());
+            //项目的建设单位名称
+            fileRecordDto.setProjectCompany(sign.getBuiltcompanyName());
+            //文号
+            fileRecordDto.setFileNumber(sign.getDocnum());
             //项目是否曾经暂停
             fileRecordDto.setIsStachProject(sign.getIsProjectState()==null? Constant.EnumState.NO.getValue():sign.getIsProjectState());
            //是否有登记补充资料

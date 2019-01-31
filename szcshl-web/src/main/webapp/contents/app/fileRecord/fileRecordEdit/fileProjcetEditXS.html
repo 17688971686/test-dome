@@ -49,7 +49,9 @@
     <tr>
         <td width="15%" class="text-center">项目单位</td>
         <td colspan="3">
-            {{vm.fileRecord.projectCompany}}
+            <input type="text" class="form-control input-sm " ng-model="vm.fileRecord.projectCompany" name="projectCompany"
+                   id="projectCompany" data-val="true"  data-val-required="必填">
+            <span data-valmsg-for="fileTitle" data-valmsg-replace="true" class="errors"></span>
         </td>
         <td width="15%" class="text-center" colspan="2">项目代码</td>
         <td colspan="3">
