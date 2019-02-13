@@ -332,7 +332,7 @@ public class SignDispaWorkController {
         Map<String, Object> resultMap = new HashMap<>();
         List<OrgDept> orgDeptList = new ArrayList<>();
         //用户ID和用户所在部门ID
-        String userId = SessionUtil.getUserId(),orgId = SessionUtil.getUserInfo().getOrg().getId();
+        String userId = SessionUtil.getUserId(),orgId = SessionUtil.getUserInfo().getOrg().getId(),fileName = "";
         if (level > 0) {
             Criteria criteria = orgDeptRepo.getExecutableCriteria();
             criteria.add(Restrictions.eq(OrgDept_.directorID.getName(), SessionUtil.getUserId()));
@@ -340,7 +340,10 @@ public class SignDispaWorkController {
             //当前查询的部门ID或者组别ID，并不是用户做在部门ID
             if(Validate.isList(orgDeptList)){
                 orgId = orgDeptList.get(0).getId();
+                fileName = "【"+orgDeptList.get(0).getName()+"】";
             }
+        }else{
+            fileName = "【"+SessionUtil.getDisplayName()+"】";
         }
         List<SysDept> deptList = sysDeptRepo.findAll();
         //二、查询业绩统计信息
@@ -353,17 +356,16 @@ public class SignDispaWorkController {
             achSumDto = (AchievementSumDto) resultMap.get("userSum");
         }
         Map<String, Object> dataMap = new HashMap<>();
-        //是否主办
-        String fileName = "";
+
         boolean isMain = Constant.EnumState.YES.getValue().equals(isMainUser);
         if (isMain) {
             dataMap.put("titleName", "主办人评审项目一览表");
             dataMap.put("achievementList", achSumDto.getMainChildList());
-            fileName = "主办人评审项目一览表.xls";
+            fileName += "主办人评审项目一览表.xls";
         } else {
             dataMap.put("achievementList", achSumDto.getAssistChildList());
             dataMap.put("titleName", "协办人评审项目一览表");
-            fileName = "协办人评审项目一览表.xls";
+            fileName += "协办人评审项目一览表.xls";
         }
         String[] monthArr = ProjUtil.getQuarterMonth(quarter);
         String smonth = monthArr[0], emonth = monthArr[1];

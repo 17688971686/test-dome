@@ -739,6 +739,7 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
                 resultMap.put("orgDeptCount", orgDeptCount);
                 resultMap.put("orgDeptDetailList", deptDetailList);
                 break;
+            /**  新修改：部长和组长的主办、协办评审项目一览表要与主表的数据对应（即以部门为单位，而不是以人为单位） **/
             //、部长和组长统计，统计一个部门
             case 3:
                 //第一，变过滤数据，规则，把迁移数据，第一负责人是组别人员的项目，项目归为对应的组

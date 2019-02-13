@@ -57,11 +57,11 @@ public class Achievement {
      */
     private String orgName;
     /**
-     * 用户ID
+     * 用户ID（停用）
      */
     private String userId;
     /**
-     * 用户名称
+     * 用户名称（停用）
      */
     private String userName;
     /**

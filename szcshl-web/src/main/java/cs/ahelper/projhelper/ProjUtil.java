@@ -1,5 +1,6 @@
 package cs.ahelper.projhelper;
 
+import com.google.common.collect.Lists;
 import cs.common.constants.Constant;
 import cs.common.constants.FlowConstant;
 import cs.common.constants.SysConstants;
@@ -571,16 +572,6 @@ public class ProjUtil {
                         if (i == (l - 1)) {
                             sumAchievementInfo(achievementSumDto, achievement, true);
                         }
-                        //统计子集信息
-                        if (Constant.EnumState.YES.getValue().equals(achievement.getIsMainUser())) {
-                            List<Achievement> mainChileLit = achievementSumDto.getMainChildList();
-                            mainChileLit.add(achievement);
-                            achievementSumDto.setMainChildList(mainChileLit);
-                        } else {
-                            List<Achievement> assistChileLit = achievementSumDto.getAssistChildList();
-                            assistChileLit.add(achievement);
-                            achievementSumDto.setAssistChildList(assistChileLit);
-                        }
                     }
                 }
             }
@@ -643,6 +634,43 @@ public class ProjUtil {
             achievementSumDto.setAssistAuthorizevalueSum(Arith.safeAdd(achievementSumDto.getAssistAuthorizevalueSum(), achievement.getAuthorizeValue()));
             achievementSumDto.setAssistDeclarevalueSum(Arith.safeAdd(achievementSumDto.getAssistDeclarevalueSum(), achievement.getDeclareValue()));
             //achievementSumDto.setAssistExtravalueSum(Arith.safeAdd(achievementSumDto.getAssistExtravalueSum(),achievement.getExtraValue()));
+        }
+        //如果是部门，还要统计主办协办项目数据
+        if(isDept){
+            //如果是部门主办
+            boolean isMainDept = isMainBranch(achievement.getBranchId());
+            List<Achievement> chileLit = null;
+            if (isMainDept) {
+                chileLit = achievementSumDto.getMainChildList();
+            } else {
+                chileLit = achievementSumDto.getAssistChildList();
+            }
+            //判断是否已经有该项目
+           checkDeptAchievement(chileLit,achievement);
+            if (isMainDept) {
+                achievementSumDto.setMainChildList(chileLit);
+            }else {
+                achievementSumDto.setAssistChildList(chileLit);
+            }
+        }
+    }
+
+    private static void checkDeptAchievement(List<Achievement> chileLit, Achievement achievement) {
+        if(null == chileLit){
+            chileLit = Lists.newArrayList();
+            chileLit.add(achievement);
+        }else{
+            boolean isHave = false;
+            for(Achievement chile : chileLit){
+                if(chile.getSignId().equals(achievement.getSignId())){
+                    isHave = true;
+                    break;
+                }
+            }
+            //如果之前项目没有，则添加到列表中
+            if(!isHave){
+                chileLit.add(achievement);
+            }
         }
     }
 
