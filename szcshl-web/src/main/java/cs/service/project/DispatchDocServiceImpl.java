@@ -101,7 +101,10 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         }
         String yearName = DateUtils.converToString(dispatchDoc.getDispatchDate(), DateUtils.DATE_YEAR);
         int maxSeq = dispatchDocRepo.getMaxSeq(yearName, seqType) + 1;
-
+        //如果是0，则改为1
+        if(0 == maxSeq){
+            maxSeq = 1;
+        }
         fileNum = fileNum + "[" + yearName + "]" + maxSeq;
         dispatchDoc.setFileNum(fileNum);
         dispatchDoc.setFileSeq(maxSeq);

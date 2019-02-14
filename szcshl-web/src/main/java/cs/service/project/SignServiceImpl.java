@@ -1881,6 +1881,10 @@ public class SignServiceImpl implements SignService {
                     String seqType = ProjectUtils.getFileRecordTypeByStage(sign.getReviewstage());
                     String yearName = DateUtils.converToString(fileRecord.getFileDate(), DateUtils.DATE_YEAR);
                     int maxSeq = fileRecordRepo.getMaxSeq(yearName, seqType) + 1;
+                    //如果是0，则改为1
+                    if(0 == maxSeq){
+                        maxSeq = 1;
+                    }
                     //归档编号=发文年份+档案类型+存档年份+存档顺序号
                     String fileNum = DateUtils.converToString(sign.getDispatchdate(), DateUtils.DATE_YEAR) + seqType
                             + DateUtils.converToString(fileRecord.getFileDate(), "yy") + maxSeq;
@@ -2808,6 +2812,9 @@ public class SignServiceImpl implements SignService {
         String orgType = sign.getDealOrgType();
         String yearName = DateUtils.converToString(sign.getSigndate(), DateUtils.DATE_YEAR);
         int maxSeq = signRepo.getMaxSignSeq(yearName, orgType) + 1;
+        if(0 == maxSeq){
+            maxSeq = 1;
+        }
         //String fileNum = maxSeq > 999 ? maxSeq + "" : String.format("%03d", maxSeq);
         sign.setSignNum(yearName + orgType + maxSeq);
         sign.setSignSeq(maxSeq);
