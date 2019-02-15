@@ -415,7 +415,7 @@
                                                     <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                                     <w:szCs w:val="24"/>
                                                 </w:rPr>
-                                                <w:t>${clist.mainDisSum!}</w:t>
+                                                <w:t>${clist.mainDisSum?c!}</w:t>
                                             </w:r>
                                         </w:p>
                                     </w:tc>
@@ -440,7 +440,7 @@
                                                     <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                                     <w:szCs w:val="24"/>
                                                 </w:rPr>
-                                                <w:t>${clist.assistDisSum!}</w:t>
+                                                <w:t>${clist.assistDisSum?c!}</w:t>
                                             </w:r>
                                         </w:p>
                                     </w:tc>
@@ -465,7 +465,7 @@
                                                     <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                                     <w:szCs w:val="24"/>
                                                 </w:rPr>
-                                                <w:t>${clist.mainDisSum!0+clist.assistDisSum!0}</w:t>
+                                                <w:t>${clist.mainDisSum?c!0+clist.assistDisSum?c!0}</w:t>
                                             </w:r>
                                         </w:p>
                                     </w:tc>

@@ -493,7 +493,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${achievement.mainDisSum!0}</w:t>
+                                        <w:t>${achievement.mainDisSum?c!0}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -521,7 +521,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${achievement.assistDisSum!0}</w:t>
+                                        <w:t>${achievement.assistDisSum?c!0}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -549,7 +549,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${achievement.mainDisSum!0+achievement.assistDisSum!0}</w:t>
+                                        <w:t>${achievement.mainDisSum?c!0+achievement.assistDisSum?c!0}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -614,7 +614,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${achievement.mainDeclarevalueSum!0}</w:t>
+                                        <w:t>${achievement.mainDeclarevalueSum?c!0}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -642,7 +642,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${achievement.assistDeclarevalueSum!0}</w:t>
+                                        <w:t>${achievement.assistDeclarevalueSum?c!0}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -670,7 +670,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${achievement.mainDeclarevalueSum!0+achievement.assistDeclarevalueSum!0}</w:t>
+                                        <w:t>${achievement.mainDeclarevalueSum?c!0+achievement.assistDeclarevalueSum?c!0}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -735,7 +735,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${achievement.mainAuthorizevalueSum!0}</w:t>
+                                        <w:t>${achievement.mainAuthorizevalueSum?c!0}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -763,7 +763,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${achievement.assistAuthorizevalueSum!0}</w:t>
+                                        <w:t>${achievement.assistAuthorizevalueSum?c!0}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -791,7 +791,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${achievement.mainAuthorizevalueSum!0+achievement.assistAuthorizevalueSum!0}</w:t>
+                                        <w:t>${achievement.mainAuthorizevalueSum?c!0+achievement.assistAuthorizevalueSum?c!0}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -856,7 +856,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${achievement.mainExtravalueSum!0}</w:t>
+                                        <w:t>${achievement.mainExtravalueSum?c!0}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -884,7 +884,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${achievement.assistExtravalueSum!0}</w:t>
+                                        <w:t>${achievement.assistExtravalueSum?c!0}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -912,7 +912,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${achievement.mainExtravalueSum!0+achievement.assistExtravalueSum!0}</w:t>
+                                        <w:t>${achievement.mainExtravalueSum?c!0+achievement.assistExtravalueSum?c!0}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
