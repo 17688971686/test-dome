@@ -48,7 +48,7 @@ public class AnnountMentFlowImpl implements IFlow {
                 }
                 break;
             case FlowConstant.ANNOUNT_ZR:
-                businessMap.put("AGREE", Constant.EnumState.YES.getValue());
+                businessMap.put(FlowConstant.SignFlowParams.AGREE.getValue(), Constant.EnumState.YES.getValue());
                 break;
             default:
         }

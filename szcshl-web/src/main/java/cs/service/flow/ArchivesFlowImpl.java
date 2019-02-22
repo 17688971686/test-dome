@@ -51,7 +51,7 @@ public class ArchivesFlowImpl implements IFlow {
 
             //审批环节，默认都是通过
             case FlowConstant.FLOW_ARC_BZ_SP:
-                businessMap.put("AGREE", Constant.EnumState.YES.getValue());
+                businessMap.put(FlowConstant.SignFlowParams.AGREE.getValue(), Constant.EnumState.YES.getValue());
                 break;
             case FlowConstant.FLOW_ARC_FGLD_SP:
                 ArchivesLibrary archivesLibrary2 = archivesLibraryRepo.findById(ArchivesLibrary_.id.getName(), businessKey);
@@ -60,10 +60,10 @@ public class ArchivesFlowImpl implements IFlow {
                 }else if( Constant.EnumState.NO.getValue().equals(archivesLibrary2.getArchivesType())){
                     businessMap.put(FlowConstant.FlowParams.USER_GDY.getValue(), Constant.EnumState.YES.getValue());
                 }
-                businessMap.put("AGREE", Constant.EnumState.YES.getValue());
+                businessMap.put(FlowConstant.SignFlowParams.AGREE.getValue(), Constant.EnumState.YES.getValue());
                 break;
             case FlowConstant.FLOW_ARC_ZR_SP:
-                businessMap.put("AGREE", Constant.EnumState.YES.getValue());
+                businessMap.put(FlowConstant.SignFlowParams.AGREE.getValue(), Constant.EnumState.YES.getValue());
                 break;
             case FlowConstant.FLOW_ARC_GDY:
                 businessMap.put("RETURNDATE", DateUtils.converToString(new Date(),null));

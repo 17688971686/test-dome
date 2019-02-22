@@ -25,7 +25,7 @@ public class ProjectStopFlowImpl implements IFlow {
         switch (taskDefinitionKey) {
             //分管领导审批，默认同意
             case FlowConstant.FLOW_STOP_FGLD_SP:
-                businessMap.put("AGREE", Constant.EnumState.YES.getValue());
+                businessMap.put(FlowConstant.SignFlowParams.AGREE.getValue(), Constant.EnumState.YES.getValue());
                 break;
 
             default:

@@ -358,7 +358,7 @@ public class AppraiseServiceImpl implements AppraiseService {
                 break;
             //部长审批
             case FlowConstant.FLOW_ARP_BZ_SP:
-                if (flowDto.getBusinessMap().get("AGREE") == null || !Validate.isString(flowDto.getBusinessMap().get("AGREE").toString())) {
+                if (flowDto.getBusinessMap().get(FlowConstant.SignFlowParams.AGREE.getValue()) == null || !Validate.isString(flowDto.getBusinessMap().get(FlowConstant.SignFlowParams.AGREE.getValue()).toString())) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请选择同意或者不同意！");
                 }
                 appraiseReport = appraiseRepo.findById(AppraiseReport_.id.getName(), businessId);
@@ -398,7 +398,7 @@ public class AppraiseServiceImpl implements AppraiseService {
                 break;
             //综合部负责人审批
             case FlowConstant.FLOW_ARP_ZHB_SP:
-                if (flowDto.getBusinessMap().get("AGREE") == null || !Validate.isString(flowDto.getBusinessMap().get("AGREE").toString())) {
+                if (flowDto.getBusinessMap().get(FlowConstant.SignFlowParams.AGREE.getValue()) == null || !Validate.isString(flowDto.getBusinessMap().get(FlowConstant.SignFlowParams.AGREE.getValue()).toString())) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请选择同意或者不同意！");
                 }
                 appraiseReport = appraiseRepo.findById(AppraiseReport_.id.getName(), businessId);

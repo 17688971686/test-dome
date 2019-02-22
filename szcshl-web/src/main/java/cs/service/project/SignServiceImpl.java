@@ -868,14 +868,14 @@ public class SignServiceImpl implements SignService {
 
             //分管副主任审批
             case FlowConstant.FLOW_SIGN_FGLD_FB:
-                if (flowDto.getBusinessMap().get("MAIN_ORG") == null) {
+                if (flowDto.getBusinessMap().get(SignFlowParams.MAIN_ORG.getValue()) == null) {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先选择主办部门！");
                 }
                 sign = signRepo.findById(Sign_.signid.getName(), signid);
                 //流程分支
                 List<SignBranch> saveBranchList = new ArrayList<>();
                 //主办部门ID
-                businessId = flowDto.getBusinessMap().get("MAIN_ORG").toString();
+                businessId = flowDto.getBusinessMap().get(SignFlowParams.MAIN_ORG.getValue()).toString();
                 SignBranch signBranch1 = new SignBranch(signid, FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue(), EnumState.YES.getValue(), EnumState.NO.getValue(), EnumState.YES.getValue(), businessId, EnumState.NO.getValue());
                 saveBranchList.add(signBranch1);
                 //设置流程参数
@@ -897,8 +897,8 @@ public class SignServiceImpl implements SignService {
                 variables.put(FlowConstant.SignFlowParams.BRANCH4.getValue(), false);
                 List<String> assistOrgIdList = null;
                 //协办流程分支
-                if (flowDto.getBusinessMap().get("ASSIST_ORG") != null) {
-                    businessId = flowDto.getBusinessMap().get("ASSIST_ORG").toString();
+                if (flowDto.getBusinessMap().get(SignFlowParams.ASSIST_ORG.getValue()) != null) {
+                    businessId = flowDto.getBusinessMap().get(SignFlowParams.ASSIST_ORG.getValue()).toString();
                     assistOrgIdList = StringUtil.getSplit(businessId, SysConstants.SEPARATE_COMMA);
                 }
 
@@ -985,10 +985,10 @@ public class SignServiceImpl implements SignService {
                 sign = signRepo.findById(Sign_.signid.getName(), signid);
                 //1、如果是协审项目
                 if (EnumState.YES.getValue().equals(sign.getIsassistflow())) {
-                    if (flowDto.getBusinessMap().get("PRINCIPAL") == null) {
+                    if (flowDto.getBusinessMap().get(SignFlowParams.PRINCIPAL.getValue()) == null) {
                         return new ResultMsg(false, MsgCode.ERROR.getValue(), "请选择项目负责人！");
                     }
-                    signPriList = JSON.parseArray(flowDto.getBusinessMap().get("PRINCIPAL").toString(), SignPrincipal.class);
+                    signPriList = JSON.parseArray(flowDto.getBusinessMap().get(SignFlowParams.PRINCIPAL.getValue()).toString(), SignPrincipal.class);
                     if (!Validate.isList(signPriList)) {
                         return new ResultMsg(false, MsgCode.ERROR.getValue(), "请选择项目负责人！");
                     }
@@ -1021,10 +1021,10 @@ public class SignServiceImpl implements SignService {
                 } else {
                     //主流程处理，一定要有第一负责人
                     if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)) {
-                        if (flowDto.getBusinessMap().get("M_USER_ID") == null) {
+                        if (flowDto.getBusinessMap().get(SignFlowParams.M_USER_ID.getValue()) == null) {
                             return new ResultMsg(false, MsgCode.ERROR.getValue(), "请选择第一负责人！");
                         }
-                        businessValue = flowDto.getBusinessMap().get("M_USER_ID").toString();
+                        businessValue = flowDto.getBusinessMap().get(SignFlowParams.M_USER_ID.getValue()).toString();
                         //查询是否有代办
                         dealUser = userRepo.getCacheUserById(businessValue);
                         assigneeValue = userService.getTaskDealId(dealUser, agentTaskList, nextNodeKey);
@@ -1038,8 +1038,8 @@ public class SignServiceImpl implements SignService {
                         signPriList.add(mainPri);
                     }
                     //项目负责人
-                    if (flowDto.getBusinessMap().get("A_USER_ID") != null) {
-                        businessValue = flowDto.getBusinessMap().get("A_USER_ID").toString();
+                    if (flowDto.getBusinessMap().get(SignFlowParams.A_USER_ID.getValue()) != null) {
+                        businessValue = flowDto.getBusinessMap().get(SignFlowParams.A_USER_ID.getValue()).toString();
                         userList = userRepo.getCacheUserListById(businessValue);
                         if (signPriList == null) {
                             signPriList = new ArrayList<>();
@@ -1129,7 +1129,7 @@ public class SignServiceImpl implements SignService {
                     }
                 }
                 //是否需要做工作方案
-                businessValue = flowDto.getBusinessMap().get("IS_NEED_WP").toString();
+                businessValue = flowDto.getBusinessMap().get(SignFlowParams.IS_NEED_WP.getValue()).toString();
                 if (EnumState.YES.getValue().equals(businessValue)) {
                     //查找该分支做的工作方案
                     wk = workProgramRepo.findBySignIdAndBranchId(signid, branchIndex, false);
@@ -1381,7 +1381,7 @@ public class SignServiceImpl implements SignService {
                 if (!expertReviewRepo.isFinishEPGrade(signid)) {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还未对专家进行评分,不能提交到下一步操作！");
                 }
-                businessId = flowDto.getBusinessMap().get("DIS_ID").toString();
+                businessId = flowDto.getBusinessMap().get(SignFlowParams.DIS_ID.getValue()).toString();
                 dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
                 disUtil = DisUtil.create(dp);
                 //是否是合并发文项目
@@ -1430,10 +1430,10 @@ public class SignServiceImpl implements SignService {
                 break;
             //项目负责人确认发文（所有人确认通过才通过）
             case FLOW_SIGN_QRFW:
-                if (flowDto.getBusinessMap().get("AGREE") == null || !Validate.isString(flowDto.getBusinessMap().get("AGREE").toString())) {
+                if (flowDto.getBusinessMap().get(SignFlowParams.AGREE.getValue()) == null || !Validate.isString(flowDto.getBusinessMap().get(SignFlowParams.AGREE.getValue()).toString())) {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先勾选对应的审批结果！");
                 }
-                businessId = flowDto.getBusinessMap().get("DIS_ID").toString();
+                businessId = flowDto.getBusinessMap().get(SignFlowParams.DIS_ID.getValue()).toString();
                 dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
                 disUtil = DisUtil.create(dp);
                 //是否是合并发文项目
@@ -1453,7 +1453,7 @@ public class SignServiceImpl implements SignService {
                     dp.setSecondChargeSuggest(optionString + flowDto.getDealOption() + " 签名：" + ActivitiUtil.getSignName(SessionUtil.getDisplayName(), isAgentTask) + " 日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
                     dispatchDocRepo.save(dp);
                     //如果同意
-                    if (EnumState.YES.getValue().equals(flowDto.getBusinessMap().get("AGREE").toString())) {
+                    if (EnumState.YES.getValue().equals(flowDto.getBusinessMap().get(SignFlowParams.AGREE.getValue()).toString())) {
                         variables.put(FlowConstant.SignFlowParams.XMFZR_SP.getValue(), true);
                         //判断是否有协办部门
                         if (signBranchRepo.allAssistCount(signid) > 0) {
@@ -1486,7 +1486,7 @@ public class SignServiceImpl implements SignService {
                 }
                 //协办部长审批发文
             case FlowConstant.FLOW_SIGN_BMLD_QRFW_XB:
-                if (flowDto.getBusinessMap().get("AGREE") == null || !Validate.isString(flowDto.getBusinessMap().get("AGREE").toString())) {
+                if (flowDto.getBusinessMap().get(SignFlowParams.AGREE.getValue()) == null || !Validate.isString(flowDto.getBusinessMap().get(SignFlowParams.AGREE.getValue()).toString())) {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先勾选对应的审批结果！");
                 }
                 String dirDealOption = flowDto.getDealOption();
@@ -1516,7 +1516,7 @@ public class SignServiceImpl implements SignService {
                 break;
             //部长审批发文
             case FLOW_SIGN_BMLD_QRFW:
-                businessId = flowDto.getBusinessMap().get("DIS_ID").toString();
+                businessId = flowDto.getBusinessMap().get(SignFlowParams.DIS_ID.getValue()).toString();
                 dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
                 disUtil = DisUtil.create(dp);
                 //是否是合并发文项目
@@ -1614,12 +1614,12 @@ public class SignServiceImpl implements SignService {
                 Boolean isDirector = (Boolean) flowDto.getBusinessMap().get("isDirector");
                 if (null != isDirector && isDirector) {
                 } else {
-                    if (flowDto.getBusinessMap().get("AGREE") == null || !Validate.isString(flowDto.getBusinessMap().get("AGREE").toString())) {
+                    if (flowDto.getBusinessMap().get(SignFlowParams.AGREE.getValue()) == null || !Validate.isString(flowDto.getBusinessMap().get(SignFlowParams.AGREE.getValue()).toString())) {
                         return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先勾选对应的审批结果！");
                     }
                 }
                 //如果同意
-                String agreeString = flowDto.getBusinessMap().get("AGREE").toString();
+                String agreeString = flowDto.getBusinessMap().get(SignFlowParams.AGREE.getValue()).toString();
                 if (EnumState.YES.getValue().equals(agreeString) || EMPTY_STRING.equals(agreeString)) {
                     variables.put(FlowConstant.SignFlowParams.XBFZR_SP.getValue(), true);
                     //获取主办分管领导
@@ -1651,7 +1651,7 @@ public class SignServiceImpl implements SignService {
                 if (!Validate.isList(userList)) {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先设置【" + EnumFlowNodeGroupName.DIRECTOR.getValue() + "】角色用户！");
                 }
-                businessId = flowDto.getBusinessMap().get("DIS_ID").toString();
+                businessId = flowDto.getBusinessMap().get(SignFlowParams.DIS_ID.getValue()).toString();
                 dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
                 disUtil = DisUtil.create(dp);
                 //是否是合并发文项目

@@ -159,7 +159,15 @@ public class FlowConstant {
         USER_M("user_m"),                //项目第一负责人
         USER_A("user_a"),                //项目第二负责人
         USER_CW("users_cw"),             //财务
-        USER_QRGD("user_qrgd");          //确认归档人员
+        USER_QRGD("user_qrgd"),          //确认归档人员
+        MAIN_ORG("MAIN_ORG"),            //主办部门（页面传的参数）
+        ASSIST_ORG("ASSIST_ORG"),        //协办部门（页面传的参数）
+        M_USER_ID("M_USER_ID"),          //主负责人ID（页面传的参数）
+        A_USER_ID("A_USER_ID"),          //其它负责人ID（页面传的参数）
+        IS_NEED_WP("IS_NEED_WP"),        //是否做工作方案（页面传的参数）
+        DIS_ID("DIS_ID"),                //发文ID（页面传的参数）
+        AGREE("AGREE"),                  //同意（页面传的参数）
+        PRINCIPAL("PRINCIPAL");          //负责人（页面传的参数）
 
         private String value;
 

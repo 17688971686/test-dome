@@ -45,7 +45,6 @@ import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 @Service
 public class AnnountmentServiceImpl implements AnnountmentService {
     private static Logger logger = Logger.getLogger(AnnountmentServiceImpl.class);
-    private static String AGREE = "AGREE";
 
     @Autowired
     private AnnountmentRepo annountmentRepo;
@@ -530,13 +529,13 @@ public class AnnountmentServiceImpl implements AnnountmentService {
                 if (assigneeValue.equals(SessionUtil.getUserId())) {
                     isNextUser = true;
                     nextNodeKey = FlowConstant.ANNOUNT_ZR;
-                    flowDto.getBusinessMap().put(AGREE, Constant.EnumState.YES.getValue());
+                    flowDto.getBusinessMap().put(FlowConstant.SignFlowParams.AGREE.getValue(), Constant.EnumState.YES.getValue());
                 }
                 break;
 
             //主任审批
             case FlowConstant.ANNOUNT_ZR:
-                boolean isPass = Validate.isObject(flowDto.getBusinessMap().get(AGREE)) && Constant.EnumState.YES.getValue().equals(flowDto.getBusinessMap().get(AGREE).toString());
+                boolean isPass = Validate.isObject(flowDto.getBusinessMap().get(FlowConstant.SignFlowParams.AGREE.getValue())) && Constant.EnumState.YES.getValue().equals(flowDto.getBusinessMap().get(FlowConstant.SignFlowParams.AGREE.getValue()).toString());
                 if (isPass) {
                     annountment.setIssue(Constant.EnumState.YES.getValue());
                     annountment.setIssueDate(new Date());

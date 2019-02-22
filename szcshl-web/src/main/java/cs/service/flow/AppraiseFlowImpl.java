@@ -25,7 +25,7 @@ public class AppraiseFlowImpl implements IFlow {
         switch (taskDefinitionKey) {
             case FlowConstant.FLOW_ARP_BZ_SP:
             case FlowConstant.FLOW_ARP_ZHB_SP:
-                businessMap.put("AGREE", Constant.EnumState.YES.getValue());
+                businessMap.put(FlowConstant.SignFlowParams.AGREE.getValue(), Constant.EnumState.YES.getValue());
                 break;
             default:
         }

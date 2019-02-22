@@ -1546,7 +1546,7 @@ public class FlowServiceImpl implements FlowService {
                 break;
             //项目负责人办理
             case FLOW_SIGN_QRFW:
-                boolean isAgree = Constant.EnumState.YES.getValue().equals(flowDto.getBusinessMap().get("AGREE").toString());
+                boolean isAgree = Constant.EnumState.YES.getValue().equals(flowDto.getBusinessMap().get(SignFlowParams.AGREE.getValue()).toString());
                 if (isAgree) {
                     variables.put(FlowConstant.SignFlowParams.XMFZR_SP.getValue(), true);
                     variables.put(FlowConstant.SignFlowParams.HAVE_XB.getValue(), false);

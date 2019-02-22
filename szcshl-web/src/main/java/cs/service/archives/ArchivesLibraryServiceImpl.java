@@ -285,7 +285,7 @@ public class ArchivesLibraryServiceImpl implements ArchivesLibraryService {
                 break;
             //部长审批
             case FlowConstant.FLOW_ARC_BZ_SP:
-                if (flowDto.getBusinessMap().get("AGREE") == null || !Validate.isString(flowDto.getBusinessMap().get("AGREE").toString())) {
+                if (flowDto.getBusinessMap().get(FlowConstant.SignFlowParams.AGREE.getValue()) == null || !Validate.isString(flowDto.getBusinessMap().get(FlowConstant.SignFlowParams.AGREE.getValue()).toString())) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请选择同意或者不同意！");
                 }
                 archivesLibrary = archivesLibraryRepo.findById(ArchivesLibrary_.id.getName(), businessId);
@@ -319,12 +319,12 @@ public class ArchivesLibraryServiceImpl implements ArchivesLibraryService {
                 break;
             //分管领导审批
             case FlowConstant.FLOW_ARC_FGLD_SP:
-                if (flowDto.getBusinessMap().get("AGREE") == null || !Validate.isString(flowDto.getBusinessMap().get("AGREE").toString())) {
+                if (flowDto.getBusinessMap().get(FlowConstant.SignFlowParams.AGREE.getValue()) == null || !Validate.isString(flowDto.getBusinessMap().get(FlowConstant.SignFlowParams.AGREE.getValue()).toString())) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请选择同意或者不同意！");
                 }
                 archivesLibrary = archivesLibraryRepo.findById(ArchivesLibrary_.id.getName(), businessId);
                 //同意
-                if (EnumState.YES.getValue().equals(flowDto.getBusinessMap().get("AGREE").toString()) || flowDto.getBusinessMap().get("AGREE") == null) {
+                if (EnumState.YES.getValue().equals(flowDto.getBusinessMap().get(FlowConstant.SignFlowParams.AGREE.getValue()).toString()) || flowDto.getBusinessMap().get(FlowConstant.SignFlowParams.AGREE.getValue()) == null) {
                     archivesLibrary.setIsAgree(EnumState.YES.getValue());
                     if(isAgentTask){
                         archivesLibrary.setDeptSLeaderId(agentTaskService.getUserId(task.getId(),curUserId));
@@ -377,7 +377,7 @@ public class ArchivesLibraryServiceImpl implements ArchivesLibraryService {
                 break;
             //主任审批
             case FlowConstant.FLOW_ARC_ZR_SP:
-                if (flowDto.getBusinessMap().get("AGREE") == null || !Validate.isString(flowDto.getBusinessMap().get("AGREE").toString())) {
+                if (flowDto.getBusinessMap().get(FlowConstant.SignFlowParams.AGREE.getValue()) == null || !Validate.isString(flowDto.getBusinessMap().get(FlowConstant.SignFlowParams.AGREE.getValue()).toString())) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请选择同意或者不同意！");
                 }
                 archivesLibrary = archivesLibraryRepo.findById(ArchivesLibrary_.id.getName(), businessId);
