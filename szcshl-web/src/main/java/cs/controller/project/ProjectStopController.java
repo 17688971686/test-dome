@@ -39,11 +39,7 @@ public class ProjectStopController {
     @ResponseBody
     public PageModelDto<ProjectStopDto> getProjectStop(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        PageModelDto<ProjectStopDto> pageModelDto = projectStopService.findProjectStopByStopId(odataObj);
-        if(!Validate.isObject(pageModelDto)){
-            pageModelDto = new PageModelDto();
-        }
-        return pageModelDto;
+        return projectStopService.findProjectStopByStopId(odataObj);
     }
 
     @RequiresAuthentication
@@ -51,11 +47,7 @@ public class ProjectStopController {
     @RequestMapping(name = "通过收文id获取收文信息", path = "initProjectBySignId", method = RequestMethod.POST)
     @ResponseBody
     public SignDispaWork initProjectBySignId(@RequestParam String signId) {
-        SignDispaWork signDispaWork = projectStopService.findSignBySignId(signId);
-        if (!Validate.isObject(signDispaWork)) {
-            signDispaWork = new SignDispaWork();
-        }
-        return signDispaWork;
+        return projectStopService.findSignBySignId(signId);
     }
 
     @RequiresAuthentication
@@ -63,11 +55,7 @@ public class ProjectStopController {
     @RequestMapping(name = "通过项目id获取暂停项目信息", path = "getProjectStopBySignId", method = RequestMethod.POST)
     @ResponseBody
     public List<ProjectStopDto> getProjectStopBySignId(@RequestParam String signId) {
-        List<ProjectStopDto> projectStopDtoList = projectStopService.findProjectStopBySign(signId);
-        if(!Validate.isList(projectStopDtoList)){
-            projectStopDtoList = new ArrayList<>();
-        }
-        return projectStopDtoList;
+        return projectStopService.findProjectStopBySign(signId);
     }
 
    /* @RequiresAuthentication
@@ -101,11 +89,7 @@ public class ProjectStopController {
     @RequestMapping(name = "保存信息", path = "saveProjectStop", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg saveProjectStop(@RequestBody ProjectStopDto projectStopDto) {
-        ResultMsg resultMsg = projectStopService.saveProjectStop(projectStopDto);
-        if (!Validate.isObject(resultMsg)) {
-            resultMsg = ResultMsg.error(ERROR_MSG);
-        }
-        return resultMsg;
+        return projectStopService.saveProjectStop(projectStopDto);
     }
 
 
@@ -114,11 +98,7 @@ public class ProjectStopController {
     @RequestMapping(name = "通过Id获取暂停项目信息", path = "getProjectStopByStopId", method = RequestMethod.POST)
     @ResponseBody
     public ProjectStopDto getProjectStopByStopId(@RequestParam String stopId) {
-        ProjectStopDto projectStopDto = projectStopService.getProjectStopByStopId(stopId);
-        if(!Validate.isObject(projectStopDto)){
-            projectStopDto = new ProjectStopDto();
-        }
-        return projectStopDto;
+        return projectStopService.getProjectStopByStopId(stopId);
     }
 
     /*@RequiresAuthentication
@@ -153,11 +133,7 @@ public class ProjectStopController {
     @RequestMapping(name = "通过收文ID获取审批通过的项目信息", path = "getListInfo", method = RequestMethod.POST)
     @ResponseBody
     public List<ProjectStopDto> getListInfo(@RequestParam String signId) {
-        List<ProjectStopDto> projectStopDtoList = projectStopService.getStopList(signId);
-        if(!Validate.isList(projectStopDtoList)){
-            projectStopDtoList = new ArrayList<>();
-        }
-        return projectStopDtoList;
+        return projectStopService.getStopList(signId);
     }
 
 

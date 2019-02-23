@@ -47,8 +47,11 @@ public class OrgDeptRepoImpl extends AbstractRepository<OrgDept, String> impleme
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append(" select u.* from cs_user u where u."+User_.jobState.getName()+" =:jobState ").setParam("jobState","t");
         sqlBuilder.append(" and u.orgId = :orgId ").setParam("orgId",id);
-        sqlBuilder.append(" or u.id IN (SELECT USERLIST_ID FROM CS_DEPT_CS_USER WHERE SYSDEPTLIST_ID =:orgId2) ");
-        sqlBuilder.setParam("orgId2",id);
+        /**
+         * 已经没有组别了（修改：2019-02-22 但龙已经确认，并且强烈要求要改）
+         */
+        /*sqlBuilder.append(" or u.id IN (SELECT USERLIST_ID FROM CS_DEPT_CS_USER WHERE SYSDEPTLIST_ID =:orgId2) ");
+        sqlBuilder.setParam("orgId2",id);*/
         return userRepo.findBySql(sqlBuilder);
     }
 
@@ -64,9 +67,12 @@ public class OrgDeptRepoImpl extends AbstractRepository<OrgDept, String> impleme
         sqlBuilder.append(" select u.* from cs_user u where u."+User_.jobState.getName()+" =:jobState ").setParam("jobState","t");
         sqlBuilder.append(" and u.orgId = (SELECT orgid FROM CS_SIGN_BRANCH WHERE signid =:signid AND branchid =:branchid) ");
         sqlBuilder.setParam("signid",signId).setParam("branchid",branchId);
-        sqlBuilder.append(" OR (u.id IN (SELECT USERLIST_ID FROM CS_DEPT_CS_USER WHERE SYSDEPTLIST_ID = (SELECT orgid FROM CS_SIGN_BRANCH WHERE signid =:signid2 AND branchid =:branchid2))) ");
+        /**
+         * 已经没有组别了（修改：2019-02-22 但龙已经确认，并且强烈要求要改）
+         */
+        /*sqlBuilder.append(" OR (u.id IN (SELECT USERLIST_ID FROM CS_DEPT_CS_USER WHERE SYSDEPTLIST_ID = (SELECT orgid FROM CS_SIGN_BRANCH WHERE signid =:signid2 AND branchid =:branchid2))) ");
         sqlBuilder.setParam("signid2",signId).setParam("branchid2",branchId);
-        sqlBuilder.append(" order by "+User_.userSort.getName()+" nulls last");
+        sqlBuilder.append(" order by "+User_.userSort.getName()+" nulls last");*/
         return userRepo.findBySql(sqlBuilder);
     }
 

@@ -23,6 +23,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import static cs.common.constants.SysConstants.DEFAULT_PASSWORD;
+
 /**
  * Description: 博士后 业务操作接口
  * author: zsl
@@ -72,8 +74,8 @@ public class PostdoctoralStaffServiceImpl implements PostdoctoralStaffService {
             u.setId(UUID.randomUUID().toString());
             u.setDisplayName(record.getName());
             u.setLoginName(record.getName());
-            u.setPassword("1");
-            u.setJobState("f");
+            u.setPassword(DEFAULT_PASSWORD);
+            u.setJobState(User.JOB_STATE.f.toString());
             u.setCreatedDate(now);
             u.setModifiedDate(now);
             u.setCreatedBy(SessionUtil.getDisplayName());

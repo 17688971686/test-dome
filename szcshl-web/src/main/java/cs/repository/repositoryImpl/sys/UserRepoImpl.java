@@ -8,6 +8,7 @@ import cs.common.cache.ICache;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
+import cs.domain.project.SignDispaWork_;
 import cs.domain.sys.*;
 import cs.model.sys.OrgDto;
 import cs.model.sys.UserDto;
@@ -15,6 +16,8 @@ import cs.repository.AbstractRepository;
 import cs.repository.odata.ODataObj;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.type.StringType;
+import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -39,10 +42,17 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
     @Override
     public List<User> getUsersNotIn(List<String> userIds, ODataObj oDataObj) {
         Criteria crit = getExecutableCriteria();
+        //首先是在职的
+        crit.add(Restrictions.eq(User_.jobState.getName(), User.JOB_STATE.t.toString()));
+        //没有分配部门
+        crit.add(Restrictions.isNull(User_.org.getName() + "." + Org_.id.getName()));
+        //不是主任和副主任的用户
+        crit.add(Restrictions.sqlRestriction("{alias}.ID not in (select CUCR.USERS_ID from CS_USER_CS_ROLE cucr where CUCR.ROLES_ID in (select cr.ID from CS_ROLE cr where cr.ROLENAME = ? or cr.ROLENAME = ?))",
+                new Object[]{Constant.EnumFlowNodeGroupName.DIRECTOR.getValue(), Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue()},
+                new Type[]{StringType.INSTANCE,StringType.INSTANCE}));
         userIds.forEach(x -> {
             crit.add(Restrictions.ne(User_.id.getName(), x));
         });
-
         List<User> list = oDataObj.buildQuery(crit).list();
         return list;
     }
@@ -117,7 +127,7 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
     @SuppressWarnings("unchecked")
     public List<User> findUserByOrgId(String orgId) {
         Criteria criteria = getExecutableCriteria();
-        criteria.add(Restrictions.eq(User_.jobState.getName(), "t"));
+        criteria.add(Restrictions.eq(User_.jobState.getName(), User.JOB_STATE.t.toString()));
         List<User> list = criteria.createAlias(User_.org.getName(), User_.org.getName())
                 .add(Restrictions.eq(User_.org.getName() + "." + Org_.id.getName(), orgId)).list();
         return list;
@@ -214,7 +224,8 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
     @Override
     public List<UserDto> findUserAndOrg() {
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("select * from cs_user where " + User_.jobState.getName() + " = 't'  and (orgid is not null or orgid <> '') order by orgid desc");
+        hqlBuilder.append("select * from cs_user where " + User_.jobState.getName() + " = :jobState  and (orgid is not null or orgid <> '') order by orgid desc");
+        hqlBuilder.setParam("jobState",User.JOB_STATE.t.toString());
         List<User> userList = this.findBySql(hqlBuilder);
         List<UserDto> userDtoList = new ArrayList<>();
         if(userList != null && userList.size() >0 ){
@@ -317,7 +328,7 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
         if (!Validate.isList(resultList)) {
             HqlBuilder hqlBuilder = HqlBuilder.create();
             hqlBuilder.append(" from " + User.class.getSimpleName() + " where " + User_.jobState.getName() + " = :jobState ");
-            hqlBuilder.setParam("jobState", "t");
+            hqlBuilder.setParam("jobState", User.JOB_STATE.t.toString());
             resultList = findByHql(hqlBuilder);
             cache.put(CacheConstant.USER_CACHE, resultList);
         }
@@ -333,7 +344,7 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
         ICache cache = CacheManager.getCache();
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" from " + User.class.getSimpleName() + " where " + User_.jobState.getName() + " = :jobState ");
-        hqlBuilder.setParam("jobState", "t");
+        hqlBuilder.setParam("jobState", User.JOB_STATE.t.toString());
         List<User> resultList = findByHql(hqlBuilder);
         cache.put(CacheConstant.USER_CACHE, resultList);
     }

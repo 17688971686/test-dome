@@ -9,7 +9,7 @@
 
         var service = {
             orgUserGrid: orgUserGrid,
-            allUserGrid: allUserGrid,
+            allUserGrid: allUserGrid,   //未分配部门用户查询
             add: add,
             remove: remove
         };

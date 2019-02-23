@@ -92,7 +92,6 @@ public class SignDispaWorkController {
     @RequestMapping(name = "获取已选合并评审项目", path = "getMergeSignBySignId", method = RequestMethod.POST)
     @ResponseBody
     public List<SignDispaWork> getMergeSignBySignId(@RequestParam String signId) {
-
         return signDispaWorkService.getMergeWPSignBySignId(signId);
     }
 
@@ -101,7 +100,6 @@ public class SignDispaWorkController {
     @RequestMapping(name = "待选合并发文项目", path = "unMergeDISSign", method = RequestMethod.POST)
     @ResponseBody
     public List<SignDispaWork> unMergeDISSign(@RequestParam String signId) {
-
         return signDispaWorkService.unMergeDISSign(signId);
     }
 
@@ -117,7 +115,6 @@ public class SignDispaWorkController {
     @RequestMapping(name = "保存合并项目", path = "mergeSign", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg mergeSign(@RequestParam String signId, @RequestParam String mergeIds, @RequestParam String mergeType) {
-
         return signDispaWorkService.mergeSign(signId, mergeIds, mergeType);
     }
 
@@ -182,7 +179,6 @@ public class SignDispaWorkController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
 

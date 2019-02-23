@@ -40,8 +40,7 @@ public class DispatchDocController {
     //@RequiresPermissions("dispatch#createFileNum#post")
     @RequestMapping(name = "生成文件字号", path = "createFileNum", method = RequestMethod.POST)
     public @ResponseBody ResultMsg createFileNum(@RequestParam String signId, @RequestParam String dispatchId) throws Exception {
-        ResultMsg returnMsg = dispatchDocService.fileNum(signId,dispatchId);
-        return returnMsg;
+        return dispatchDocService.fileNum(signId,dispatchId);
     }
 
     @RequiresAuthentication
@@ -49,11 +48,7 @@ public class DispatchDocController {
     @RequestMapping(name = "初始化发文页面", path = "initData", method = RequestMethod.GET)
     @ResponseBody
     public Map<String, Object> initDispatch(@RequestParam String signid){
-        Map<String, Object> map = dispatchDocService.initDispatchData(signid);
-        if(!Validate.isMap(map)){
-            map = new HashMap<>();
-        }
-        return map;
+        return dispatchDocService.initDispatchData(signid);
     }
 
     @RequiresAuthentication
@@ -84,7 +79,6 @@ public class DispatchDocController {
     @RequestMapping(name="生成评审报告模板" , path="createDispatchTemplate" , method = RequestMethod.POST )
     @ResponseBody
     public ResultMsg createDispatchTemplate(@RequestParam  String signId){
-
       return   dispatchDocService.createDisPatchTemplate(signId );
     }
 

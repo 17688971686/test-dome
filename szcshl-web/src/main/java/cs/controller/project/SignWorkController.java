@@ -40,8 +40,7 @@ public class SignWorkController {
     @RequestMapping(name = "根据ID获取项目信息", path = "fingSignWorkById", method = RequestMethod.POST)
     @ResponseBody
     public SignWorkDto fingSignWorkById(@RequestParam(required = true) String signId) {
-        SignWorkDto result = signWorkService.fingSignWorkById(signId);
-        return result;
+        return signWorkService.fingSignWorkById(signId);
     }
 
     @RequiresAuthentication

@@ -204,6 +204,17 @@ public class User extends DomainBase {
     @ManyToMany(mappedBy="userList",fetch = FetchType.LAZY)
     private List<SysDept> sysDeptList;
 
+    //在职状态类型
+    public enum JOB_STATE{
+        /**
+         * 在职
+         */
+        t,
+        /**
+         * 离职
+         */
+        f
+    }
     public Org getOrg() {
         return org;
     }

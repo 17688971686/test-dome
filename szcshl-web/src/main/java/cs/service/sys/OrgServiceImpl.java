@@ -187,33 +187,34 @@ public class OrgServiceImpl implements OrgService {
         return pageModelDto;
     }
 
+    /**
+     * 查询在职、没有分配部门的非主任员工
+     * @param id
+     * @param oDataObj
+     * @return
+     */
     @Override
-    @Transactional
     public PageModelDto<UserDto> getUsersNotInOrg(String id, ODataObj oDataObj) {
         PageModelDto<UserDto> pageModelDto = new PageModelDto<>();
-        List<UserDto> userDtos = new ArrayList<>();
         Org org = orgRepo.findById(id);
         List<String> userIds = new ArrayList<>();
         if (org != null) {
-//			org.getUsers().forEach(x -> {
-//				userIds.add(x.getId());
-//			});
-            List<User> users = userRepo.getUsersNotIn(userIds, oDataObj);
-            users.forEach(x -> {
-                UserDto userDto = new UserDto();
-                userDto.setId(x.getId());
-                userDto.setRemark(x.getRemark());
-                userDto.setLoginName(x.getLoginName());
-                userDto.setDisplayName(x.getDisplayName());
-                userDtos.add(userDto);
-
-            });
+            List<UserDto> userDtos = new ArrayList<>();
+            List<User> userList = userRepo.getUsersNotIn(userIds, oDataObj);
+            if(Validate.isList(userList)){
+                userList.forEach(x -> {
+                    UserDto userDto = new UserDto();
+                    userDto.setId(x.getId());
+                    userDto.setRemark(x.getRemark());
+                    userDto.setLoginName(x.getLoginName());
+                    userDto.setDisplayName(x.getDisplayName());
+                    userDtos.add(userDto);
+                });
+            }
             pageModelDto.setValue(userDtos);
-            pageModelDto.setCount(userDtos.size());
-
-            logger.info(String.format("查找非部门用户,部门%s", org.getOrgIdentity()));
+            pageModelDto.setCount(oDataObj.getCount());
+            logger.info(String.format("查找非部门用户,部门%s", org.getName()));
         }
-
         return pageModelDto;
     }
 

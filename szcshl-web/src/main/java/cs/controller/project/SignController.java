@@ -145,7 +145,6 @@ public class SignController {
     @RequestMapping(name = "获取评分单位信息", path = "findSignUnitScore", method = RequestMethod.POST)
     @ResponseBody
     public UnitScoreDto findSignUnitScore(@RequestParam String signId){
-
         return signService.findSignUnitScore(signId);
     }
 

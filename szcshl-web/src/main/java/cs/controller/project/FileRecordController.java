@@ -65,10 +65,6 @@ private  String ctrlName = "fileRecord";
 	@RequestMapping(name = "归档详情信息", path = "html/initBySignId",method=RequestMethod.GET)
 	@ResponseBody
 	public FileRecordDto initBySignId(@RequestParam String signId){
-		FileRecordDto fileRecordDto = fileRecordService.initBySignId(signId);
-		if(!Validate.isObject(fileRecordDto)){
-			fileRecordDto = new FileRecordDto();
-		}
-		return fileRecordDto;
+		return fileRecordService.initBySignId(signId);
 	}
 }

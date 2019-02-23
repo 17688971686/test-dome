@@ -539,7 +539,7 @@ public class UserServiceImpl implements UserService {
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append("select " + User_.id.getName() + "," + User_.displayName.getName() + "," + User_.jobState.getName() + " from cs_user ");
         hqlBuilder.append(" where " + User_.id.getName() + "!= :userId ").setParam("userId", SessionUtil.getUserId());
-        hqlBuilder.append(" and " + User_.jobState.getName() + " = :jobState ").setParam("jobState", "t");
+        hqlBuilder.append(" and " + User_.jobState.getName() + " = :jobState ").setParam("jobState", User.JOB_STATE.t.toString());
 
         List<UserDto> userDtoList = new ArrayList<>();
         if (SessionUtil.hashRole(EnumFlowNodeGroupName.DIRECTOR.getValue()) ||

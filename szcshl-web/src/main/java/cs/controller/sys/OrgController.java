@@ -106,9 +106,8 @@ public class OrgController {
     //@RequiresPermissions("org#userNotIn#post")
     @RequiresAuthentication
     @RequestMapping(name = "非部门用户", path = "userNotIn", method = RequestMethod.POST)
-    public @ResponseBody
-    PageModelDto<UserDto> userNotIn(@RequestParam String orgId, HttpServletRequest request) throws ParseException {
-
+    @ResponseBody
+    public PageModelDto<UserDto> userNotIn(@RequestParam String orgId, HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         return orgService.getUsersNotInOrg(orgId, odataObj);
     }

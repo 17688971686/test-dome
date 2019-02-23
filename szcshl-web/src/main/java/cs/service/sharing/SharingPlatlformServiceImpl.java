@@ -141,7 +141,10 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
         linkSql.append(" ( select sharid from cs_sharing_privilege where (businesstype = ? and  businessId =?) ");
         if(isOrgUser){
             linkSql.append(" or (businesstype =? and  businessId =?)" );
-            linkSql.append(" or (businesstype =? and  businessId in (select SYSDEPTLIST_ID from CS_DEPT_CS_USER where USERLIST_ID = ?))" );
+            /**
+             * 已经没有组别了（修改：2019-02-22 但龙已经确认，并且强烈要求要改）
+             */
+            //linkSql.append(" or (businesstype =? and  businessId in (select SYSDEPTLIST_ID from CS_DEPT_CS_USER where USERLIST_ID = ?))" );
         }
         linkSql.append(" ) )");
         if(isOrgUser){

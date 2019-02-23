@@ -49,11 +49,7 @@ public class AddSuppLetterController {
             //1表示拟补充资料函
             addSuppLetterDto.setFileType(Constant.EnumState.PROCESS.getValue());
         }
-        ResultMsg resultMsg =  addSuppLetterService.saveSupp(addSuppLetterDto);
-        if (!Validate.isObject(resultMsg)) {
-            resultMsg = ResultMsg.error(ERROR_MSG);
-        }
-        return resultMsg;
+        return addSuppLetterService.saveSupp(addSuppLetterDto);
     }
 
     @RequiresAuthentication
@@ -94,11 +90,7 @@ public class AddSuppLetterController {
     @RequestMapping(name = "检查是否还有正在审批的拟补充资料函", path = "checkIsApprove", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg checkIsApprove(@RequestParam String signId, @RequestParam String fileType) {
-        ResultMsg resultMsg = addSuppLetterService.checkIsApprove(signId, fileType);
-        if (!Validate.isObject(resultMsg)) {
-            resultMsg = ResultMsg.error(ERROR_MSG);
-        }
-        return resultMsg;
+        return addSuppLetterService.checkIsApprove(signId, fileType);
     }
 
     @RequiresAuthentication
@@ -106,11 +98,7 @@ public class AddSuppLetterController {
     @RequestMapping(name = "初始化拟补充资料函列表", path = "initSuppListDate", method = RequestMethod.POST)
     @ResponseBody
     public  List<AddSuppLetterDto> initSuppListDate(@RequestParam String businessId) {
-        List<AddSuppLetterDto> addSuppLetterDtos = addSuppLetterService.initSuppList(businessId);
-        if(!Validate.isList(addSuppLetterDtos)){
-            addSuppLetterDtos = new ArrayList<>();
-        }
-        return addSuppLetterDtos;
+        return addSuppLetterService.initSuppList(businessId);
     }
 
     @RequiresAuthentication
@@ -119,11 +107,7 @@ public class AddSuppLetterController {
     @ResponseBody
     public PageModelDto<AddSuppLetterDto> getProject(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        PageModelDto<AddSuppLetterDto> addSuppLetterDtos = addSuppLetterService.addsuppListData(odataObj);
-        if(!Validate.isObject(addSuppLetterDtos)){
-            addSuppLetterDtos = new PageModelDto();
-        }
-        return addSuppLetterDtos;
+        return addSuppLetterService.addsuppListData(odataObj);
     }
 
     @RequiresAuthentication
@@ -132,11 +116,7 @@ public class AddSuppLetterController {
     @ResponseBody
     public PageModelDto<AddSuppLetterDto> getAddSuppApprove(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        PageModelDto<AddSuppLetterDto> addSuppLetterDtos = addSuppLetterService.addSuppApproveList(odataObj);
-        if(!Validate.isObject(addSuppLetterDtos)){
-            addSuppLetterDtos = new PageModelDto();
-        }
-        return addSuppLetterDtos;
+        return addSuppLetterService.addSuppApproveList(odataObj);
     }
 
     @RequiresAuthentication
@@ -152,11 +132,7 @@ public class AddSuppLetterController {
     @RequestMapping(name = "根据id获取拟补充资料函", path = "findById", method = RequestMethod.POST)
     @ResponseBody
     public AddSuppLetterDto findById(@RequestParam String id) {
-        AddSuppLetterDto addSuppLetterDto = addSuppLetterService.findById(id);
-        if (!Validate.isObject(addSuppLetterDto)) {
-            addSuppLetterDto = new AddSuppLetterDto();
-        }
-        return addSuppLetterDto;
+        return addSuppLetterService.findById(id);
     }
 
     /*@RequiresAuthentication
@@ -220,10 +196,6 @@ public class AddSuppLetterController {
     @ResponseBody
     public PageModelDto<AddSuppLetterDto> monthlyMultiyearList(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        PageModelDto<AddSuppLetterDto> addSuppLetterDtos = addSuppLetterService.monthlyMultiyearListData(odataObj);
-        if(!Validate.isObject(addSuppLetterDtos)){
-            addSuppLetterDtos = new PageModelDto();
-        }
-        return addSuppLetterDtos;
+        return  addSuppLetterService.monthlyMultiyearListData(odataObj);
     }
 }

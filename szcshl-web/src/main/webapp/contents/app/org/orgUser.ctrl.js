@@ -61,7 +61,13 @@
 
         activate();
         function activate() {
+            /**
+             * 部门用户查询
+             */
         	orgUserSvc.orgUserGrid(vm);
+            /**
+             * 未分配部门用户查询
+             */
         	orgUserSvc.allUserGrid(vm);
         }
     }

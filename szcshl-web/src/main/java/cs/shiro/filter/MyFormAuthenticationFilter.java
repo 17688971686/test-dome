@@ -59,7 +59,7 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter {
         User user = userService.findByName(username);
         if(user != null){
             //用户停用，未激活等判断
-            if(UNUSER.equals(user.getUseState()) || "f".equals(user.getJobState())){
+            if(UNUSER.equals(user.getUseState()) || User.JOB_STATE.f.toString().equals(user.getJobState())){
                /* throw new DisabledAccountException();*/
                 return onLoginFailure(token,new DisabledAccountException(),request, response);
             }

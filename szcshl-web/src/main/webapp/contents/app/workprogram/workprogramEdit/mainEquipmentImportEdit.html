@@ -80,7 +80,7 @@
         <td style="width:15%;" class="text-center" >项目类别<span class="required">*</span></td>
         <td style="width:15%;" colspan="2">
             <select ng-model="vm.work.projectType"  ng-change="vm.work.projectTypeDicts = topSelectChange(vm.work.projectType,DICT.PROJECTTYPE.dicts)"
-                    name="projectType" id="projectType" data-val-required="必选项" data-val="true">
+                    name="projectType" id="projectType" data-val-required="必选项" data-val="true" style="width:120px;height:26px;">
                 <option ng-repeat="x in DICT.PROJECTTYPE.dicts" value="{{x.dictName}}"
                         ng-selected="vm.work.projectType == x.dictName">{{x.dictName}}
                 </option>
@@ -90,7 +90,7 @@
         <td style="width:10%;" class="text-center">小类<span class="required">*</span></td>
         <td style="width:15%;">
             <select ng-model="vm.work.projectSubType" name="projectSubType" data-val="true" id="projectSubType"
-                    ng-init="vm.work.projectTypeDicts = topSelectChange(vm.work.projectType,DICT.PROJECTTYPE.dicts)">
+                    ng-init="vm.work.projectTypeDicts = topSelectChange(vm.work.projectType,DICT.PROJECTTYPE.dicts)" style="width:120px;height:26px;">
                 <option ng-repeat="x in vm.work.projectTypeDicts" value="{{x.dictName}}"
                         ng-selected="vm.work.projectSubType == x.dictName">{{x.dictName}}
                 </option>
@@ -99,7 +99,7 @@
         </td>
         <td class="text-center">行业类别<span class="required">*</span></td>
         <td colspan="3">
-            <select ng-model="vm.work.industryType" name="industryType" id="industryType" data-val="true" data-val-required="必填">
+            <select ng-model="vm.work.industryType" name="industryType" id="industryType" data-val="true" data-val-required="必填" style="width:200px;height:26px;">
                 <option ng-repeat="x in DICT.INDUSTRYTYPE.dicts" value="{{x.dictKey}}"
                         ng-selected="vm.work.industryType == x.dictKey">{{x.dictName}}
                 </option>
@@ -143,7 +143,7 @@
         <td rowspan="4" style="width:5%;" class="text-center" style="vertical-align:middle;">项目概况</td>
         <td class="text-center" style="width:10%;" >申报投资<span class="required">*</span></td>
         <td colspan="8" >
-            <input type="text" ng-model="vm.work.appalyInvestment" name="appalyInvestment"
+            <input type="text" ng-model="vm.work.appalyInvestment" name="appalyInvestment" class="form-control input-sm " style="max-width: 200px;display: inline-block;"
                    id="appalyInvestment" data-val="true" data-val-required="必填" data-val-number="只能为数字">
             万元
             <span data-valmsg-for="appalyInvestment" data-valmsg-replace="true" class="errors"></span>

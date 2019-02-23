@@ -48,11 +48,7 @@ public class AddRegisterFileController {
     @ResponseBody
     public PageModelDto<AddRegisterFileDto> get(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        PageModelDto<AddRegisterFileDto> addRegisterFileDtos = addRegisterFileService.get(odataObj);
-        if (!Validate.isObject(addRegisterFileDtos)) {
-            addRegisterFileDtos = new PageModelDto<>();
-        }
-        return addRegisterFileDtos;
+        return addRegisterFileService.get(odataObj);
     }
 
     @RequiresAuthentication
@@ -61,11 +57,7 @@ public class AddRegisterFileController {
     @ResponseBody
     public List<AddRegisterFileDto> initFindByOData(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        List<AddRegisterFileDto> addRegisterFileList = addRegisterFileService.initRegisterFileData(odataObj);
-        if (!Validate.isList(addRegisterFileList)) {
-            addRegisterFileList = new ArrayList<>();
-        }
-        return addRegisterFileList;
+        return addRegisterFileService.initRegisterFileData(odataObj);
     }
 
     @RequiresAuthentication
@@ -73,23 +65,15 @@ public class AddRegisterFileController {
     @RequestMapping(name = "创建记录", path = "save", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg create(@RequestBody AddRegisterFileDto[] addRegisterFileDtos) {
-        ResultMsg resultMsg = addRegisterFileService.bathSave(addRegisterFileDtos);
-        if (!Validate.isObject(resultMsg)) {
-            resultMsg = ResultMsg.error(ERROR_MSG);
-        }
-        return resultMsg;
+        return addRegisterFileService.bathSave(addRegisterFileDtos);
     }
 
     @RequiresAuthentication
     //@RequiresPermissions("addRegisterFile#initprintdata#post")
     @RequestMapping(name = "初始化打印資料頁面", path = "initprintdata", method = RequestMethod.POST)
-    public @ResponseBody
-    Map<String, Object> initpint(@RequestParam String signid) {
-        Map<String, Object> map = addRegisterFileService.initprint(signid);
-        if (!Validate.isMap(map)) {
-            map = new HashMap<>();
-        }
-        return map;
+    @ResponseBody
+    public Map<String, Object> initpint(@RequestParam String signid) {
+        return addRegisterFileService.initprint(signid);
     }
 
     @RequiresAuthentication
@@ -97,22 +81,14 @@ public class AddRegisterFileController {
     @RequestMapping(name = "根据业务ID查询补充资料信息", path = "findByBusinessId", method = RequestMethod.POST)
     @ResponseBody
     public List<AddRegisterFileDto> findByBusinessId(@RequestParam String businessId) {
-        List<AddRegisterFileDto> registerFileDtoList = addRegisterFileService.findByBusinessId(businessId);
-        if (!Validate.isList(registerFileDtoList)) {
-            registerFileDtoList = new ArrayList<>();
-        }
-        return registerFileDtoList;
+        return addRegisterFileService.findByBusinessId(businessId);
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "主键查询", path = "html/findById", method = RequestMethod.GET)
     @ResponseBody
     public AddRegisterFileDto findById(@RequestParam String id) {
-        AddRegisterFileDto addRegisterFileDto = addRegisterFileService.findById(id);
-        if (!Validate.isObject(addRegisterFileDto)) {
-            addRegisterFileDto = new AddRegisterFileDto();
-        }
-        return addRegisterFileDto;
+        return addRegisterFileService.findById(id);
     }
 
     @RequiresAuthentication
@@ -128,11 +104,7 @@ public class AddRegisterFileController {
     @RequestMapping(name = "根据日期查找资料", path = "findbySuppdate", method = RequestMethod.POST)
     @ResponseBody
     public List<AddRegisterFileDto> findbySuppdate(@RequestParam String suppDate) {
-        List<AddRegisterFileDto> list = addRegisterFileService.findbySuppdate(suppDate);
-        if (!Validate.isList(list)) {
-            list = new ArrayList<>();
-        }
-        return list;
+        return addRegisterFileService.findbySuppdate(suppDate);
     }
 
     @RequiresAuthentication

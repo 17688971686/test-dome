@@ -13,6 +13,8 @@ import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.log4j.Logger;
 
+import static cs.common.constants.Constant.UNUSER;
+
 public class SystemRealm extends AuthorizingRealm {
     private static Logger logger = Logger.getLogger(SystemRealm.class);
     private static final String ALGORITHM = "MD5";
@@ -46,7 +48,7 @@ public class SystemRealm extends AuthorizingRealm {
             throw new UnknownAccountException();
         }
         //停用或者离职的，不能登录系统
-       if("停用".equals(user.getUseState()) || "f".equals(user.getJobState())){
+       if(UNUSER.equals(user.getUseState()) || User.JOB_STATE.f.toString().equals(user.getJobState())){
             throw new DisabledAccountException();
         }
        /* 加密的情况下使用

@@ -74,7 +74,7 @@
         <td class="text-center">秘密等级</td>
         <td>
             <select ng-model="vm.dispatchDoc.secretLevel" name="secretLevel" id="secretLevel"
-                    class="form-control input-xm ">
+                    class="form-control select-sm ">
                 <option ng-repeat="x in DICT.SECRECTLEVEL.dicts" ng-selected="vm.model.secrectlevel == x.dictName"
                         value="{{x.dictName}}">{{x.dictName}}
                 </option>
@@ -83,7 +83,7 @@
         <td class="text-center">紧急程度</td>
         <td>
             <select ng-model="vm.dispatchDoc.urgentLevel" name="urgentLevel" id="urgentLevel"
-                    class="form-control input-xm ">
+                    class="form-control select-sm ">
                 <option ng-repeat="x in DICT.BAOMI.dicts" ng-selected="vm.model.urgencydegree == x.dictName"
                         value="{{x.dictName}}">{{x.dictName}}
                 </option>
@@ -227,28 +227,28 @@
                     </td>
                 </tr>
 
-                <tr style="height: 80px;">
+                <tr style="height: 80px; vertical-align: middle;">
                     <td>项目建设必要性</td>
                     <td colspan="6" class="text-left">
                         {{dispatchDoc.projectBuildNecess}}
                     </td>
                 </tr>
 
-                <tr style="height: 80px;">
+                <tr style="height: 80px;vertical-align: middle;">
                     <td>审定建设规模及内容</td>
                     <td colspan="6" class="text-left">
                         {{dispatchDoc.buildSizeContent}}
                     </td>
                 </tr>
 
-                <tr style="height: 80px;">
+                <tr style="height: 80px;vertical-align: middle;">
                     <td>投资匡算及资金来源</td>
                     <td colspan="6" class="text-left">
                         {{dispatchDoc.fundTotalOrigin}}
                     </td>
                 </tr>
 
-                <tr style="height: 80px;">
+                <tr style="height: 80px;vertical-align: middle;">
                     <td>下一阶段工作要求</td>
                     <td colspan="6" class="text-left">
                         {{dispatchDoc.nextWorkPlan}}
