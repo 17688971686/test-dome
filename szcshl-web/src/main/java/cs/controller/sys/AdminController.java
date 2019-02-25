@@ -189,16 +189,13 @@ public class AdminController {
                             || (ProjUtil.isMergeDis(rt.getMergeDis()) && ProjUtil.isMain(rt.getMergeDisMain()))
                             || (ProjUtil.isMergeDis(rt.getMergeDis()) && !ProjUtil.isMain(rt.getMergeDisMain()) && !mergeDisNode.contains(rt.getNodeDefineKey())))
                             ) {
-                        if (curUserId.equals(rt.getAssignee())
-                                || (rt.getAssigneeList() != null && rt.getAssigneeList().indexOf(curUserId) > -1)) {
-
+                        if (curUserId.equals(rt.getAssignee()) || (rt.getAssigneeList() != null && rt.getAssigneeList().indexOf(curUserId) > -1)) {
                             RuProcessTask newrt = new RuProcessTask();
                             BeanCopierUtils.copyProperties(rt, newrt);
                             userProcessList.add(newrt);
                             filterCount++;
                         }
                     }
-
                     if (filterCount == 6) {
                         break;
                     }
@@ -449,7 +446,7 @@ public class AdminController {
                         runTaskInfoMap.put("HISTOGRAM_NAME", Constant.OrgType.ORGPGEB.getKey());
                         histogramMap.put(Constant.OrgType.ORGPGEB.getKey(), runTaskInfoMap);
                     }
-                    //评估一部信息化
+                    //信息技术组
                     if (Constant.OrgType.ORXXHZ.getKey().equals(orgDept.getName())) {
                         Map<String, Object> runTaskInfoMap = dataMap.get(orgDept.getId());
                         runTaskInfoMap.put("HISTOGRAM_NAME", Constant.OrgType.ORXXHZ.getKey());

@@ -646,7 +646,7 @@ public class Constant {
         ORGPGEB("评估二部", "PX"),
         ORGGSYB("概算一部", "GX"),
         ORGGSEB("概算二部", "GX"),
-        ORXXHZ("评估一部信息化组", "XX");
+        ORXXHZ("信息技术组", "XX");
 
         private String key;
         private String value;

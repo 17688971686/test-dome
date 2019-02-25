@@ -43,7 +43,7 @@
                         vm.evaluateTwo = data.orgDeptCount["评估二部"];
                         vm.budgetaryOne = data.orgDeptCount["概算一部"];
                         vm.budgetaryTwo = data.orgDeptCount["概算二部"];
-                        vm.evaluateOneGroup = data.orgDeptCount["评估一部信息化组"];
+                        vm.evaluateOneGroup = data.orgDeptCount["信息技术组"];
 
                         //部门员工业绩统计明细
                         vm.achievementDeptDetailList = data.orgDeptDetailList;

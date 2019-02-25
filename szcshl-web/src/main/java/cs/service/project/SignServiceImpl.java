@@ -2619,7 +2619,7 @@ public class SignServiceImpl implements SignService {
                 sign.setLeaderhandlesug("请（概算一部 概算二部）组织评审。");
             } else {
                 sign.setDealOrgType(Constant.BusinessType.PX.getValue());
-                sign.setLeaderhandlesug("请（评估一部 评估二部 评估一部信息化组）组织评审。");
+                sign.setLeaderhandlesug("请（评估一部 评估二部 信息技术组）组织评审。");
             }
         }
 

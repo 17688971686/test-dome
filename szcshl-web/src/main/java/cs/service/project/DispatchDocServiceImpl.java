@@ -247,9 +247,11 @@ public class DispatchDocServiceImpl implements DispatchDocService {
             //(1)、判断项目是否为关联项目
             boolean isMerge = signMergeRepo.checkIsMerege(signId, MergeType.DISPATCH.getValue());
             if (isMerge) {
-                dispatch.setDispatchWay(MergeType.DIS_MERGE.getValue());   //合并发文
+                //合并发文
+                dispatch.setDispatchWay(MergeType.DIS_MERGE.getValue());
             } else {
-                dispatch.setDispatchWay(MergeType.DIS_SINGLE.getValue());    //单个发文
+                //单个发文
+                dispatch.setDispatchWay(MergeType.DIS_SINGLE.getValue());
             }
             dispatch.setIsMainProject(EnumState.NO.getValue());
             //是否已经有阶段关联

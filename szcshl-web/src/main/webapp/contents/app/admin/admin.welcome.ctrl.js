@@ -259,7 +259,7 @@
 
                         //柱状图
                         //固定x轴的值，通过x轴的值作为map的key去获取value，如果value不为undefined，则说明该map存在这个key，保存key与value
-                        var x = ["综合部" , "评估一部" , "评估二部"  , "评估一部信息化组" , "概算一部"  , "概算二部" , "未分办"];
+                        var x = ["综合部" , "评估一部" , "评估二部"  , "信息技术组" , "概算一部"  , "概算二部" , "未分办"];
                         var histogram_x = [];
                         var histogram_y = [];
                         vm.histogram = data.histogram;
