@@ -2,6 +2,7 @@ package cs.common.sysprop;
 
 /**
  * 系统配置属性文件
+ * 类名不要修改，避免spring 获取bean的时候获取出错
  * Created by ldm on 2018/12/5 0005.
  */
 public class BusinessProperties {

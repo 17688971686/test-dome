@@ -7,6 +7,8 @@ import cs.common.FGWResponse;
 import cs.common.IFResultCode;
 import cs.common.ResultMsg;
 import cs.common.constants.Constant;
+import cs.common.constants.ProjectConstant;
+import cs.common.constants.SysConstants;
 import cs.common.sysprop.BusinessProperties;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.StringUtil;
@@ -38,9 +40,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static cs.common.constants.Constant.RevireStageKey.*;
 import static cs.common.constants.FlowConstant.*;
 import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
+import static cs.common.constants.SysConstants.SYS_BUSI_PROP_BEAN;
 
 /**
  * 项目接口实现类
@@ -63,13 +65,13 @@ public class SignRestServiceImpl implements SignRestService {
     @Autowired
     private DispatchDocRepo dispatchDocRepo;
     /**
-     * 项目推送
+     * 委里推送项目
      *
      * @param signDto
      * @return
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ResultMsg pushProject(SignDto signDto, boolean isGetFiles) {
         if (signDto == null) {
             return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_01.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_01.getValue());
@@ -77,33 +79,29 @@ public class SignRestServiceImpl implements SignRestService {
         if (!Validate.isString(signDto.getFilecode())) {
             return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_02.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_02.getValue());
         }
+        //1、项目评审阶段判断
+        if (!Validate.isString(signDto.getReviewstage())) {
+            return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_03.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_03.getValue());
+        }
+        String stageCode = signDto.getReviewstage();
+        ProjectConstant.REVIEW_STATE_ENUM reviewStateEnum = ProjectConstant.REVIEW_STATE_ENUM.getByEnCode(stageCode);
+        if (!Validate.isObject(reviewStateEnum)) {
+            return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_04.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_04.getValue());
+        }
+        //对应系统的阶段名称
+        signDto.setReviewstage(reviewStateEnum.getZhCode());
+        //是否是项目概算流程
+        if (ProjectConstant.REVIEW_STATE_ENUM.STAGEBUDGET.getEnCode().equals(stageCode) || Validate.isString(signDto.getIschangeEstimate())) {
+            signDto.setIsassistflow(Constant.EnumState.YES.getValue());
+        } else {
+            signDto.setIsassistflow(Constant.EnumState.NO.getValue());
+        }
+        //申报金额调整(由于委里定义的接口，Declaration这个字段为申报金额字段，所以这里要调整下)；
+        signDto.setAppalyInvestment(signDto.getDeclaration());
+        //定义返回对象
         ResultMsg resultMsg = null;
         try {
-            String stageCode = "";
-            //1、判断项目阶段是否正确
-            if (Validate.isString(signDto.getReviewstage())) {
-                stageCode = signDto.getReviewstage();
-                String stageCHName = Constant.RevireStageKey.getZHCNName(stageCode);
-                if (!Validate.isString(stageCHName)) {
-                    return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_04.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_04.getValue() + getStageString());
-                }
-                //对应系统的阶段名称
-                signDto.setReviewstage(stageCHName);
-                //是否是项目概算流程
-                if (Constant.RevireStageKey.KEY_BUDGET.getValue().equals(stageCode)
-                        || Validate.isString(signDto.getIschangeEstimate())) {
-                    signDto.setIsassistflow(Constant.EnumState.YES.getValue());
-                } else {
-                    signDto.setIsassistflow(Constant.EnumState.NO.getValue());
-                }
-            } else {
-                return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_03.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_03.getValue());
-            }
-            //申报金额调整(由于委里定义的接口，Declaration这个字段为申报金额字段，所以这里要调整下)；
-            signDto.setAppalyInvestment(signDto.getDeclaration());
-
             resultMsg = signService.createSign(signDto);
-
             if (resultMsg.isFlag()) {
                 boolean isLoginUser = Validate.isString(SessionUtil.getUserId());
                 Sign sign = (Sign) resultMsg.getReObj();
@@ -115,20 +113,6 @@ public class SignRestServiceImpl implements SignRestService {
 
         }
         return resultMsg;
-    }
-
-    private String getStageString() {
-        StringBuffer msgBuffer = new StringBuffer("各阶段对应的标识如下：");
-        msgBuffer.append("(" + Constant.RevireStageKey.KEY_SUG.getValue() + ":" + Constant.STAGE_SUG);
-        msgBuffer.append("|" + Constant.RevireStageKey.KEY_REGISTERCODE.getValue() + ":" + Constant.REGISTER_CODE);
-        msgBuffer.append("|" + Constant.RevireStageKey.KEY_STUDY.getValue() + ":" + Constant.STAGE_STUDY);
-        msgBuffer.append("|" + Constant.RevireStageKey.KEY_BUDGET.getValue() + ":" + Constant.STAGE_BUDGET);
-        msgBuffer.append("|" + Constant.RevireStageKey.KEY_REPORT.getValue() + ":" + Constant.APPLY_REPORT);
-        msgBuffer.append("|" + Constant.RevireStageKey.KEY_HOMELAND.getValue() + ":" + Constant.DEVICE_BILL_HOMELAND);
-        msgBuffer.append("|" + Constant.RevireStageKey.KEY_IMPORT.getValue() + ":" + Constant.DEVICE_BILL_IMPORT);
-        msgBuffer.append("|" + Constant.RevireStageKey.KEY_DEVICE.getValue() + ":" + Constant.IMPORT_DEVICE);
-        msgBuffer.append("|" + Constant.RevireStageKey.KEY_OTHER.getValue() + ":" + Constant.OTHERS + ")");
-        return msgBuffer.toString();
     }
 
     public void checkDownLoadFile(ResultMsg resultMsg, boolean isGetFiles, String businessId, List<SysFileDto> sysFileDtoList, String userId, String mainType, String busiType){
@@ -160,7 +144,7 @@ public class SignRestServiceImpl implements SignRestService {
      * @return
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ResultMsg pushPreProject(SignDto signDto, boolean isGetFiles) {
         if (signDto == null) {
             return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_01.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_01.getValue());
@@ -168,30 +152,24 @@ public class SignRestServiceImpl implements SignRestService {
         if (!Validate.isString(signDto.getFilecode())) {
             return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_02.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_02.getValue());
         }
-        ResultMsg resultMsg = new ResultMsg();
+        String stageCode = signDto.getReviewstage();
+        ProjectConstant.REVIEW_STATE_ENUM reviewStateEnum = ProjectConstant.REVIEW_STATE_ENUM.getByEnCode(stageCode);
+        if (!Validate.isObject(reviewStateEnum)) {
+            return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_04.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_04.getValue());
+        }
+        //对应系统的阶段名称
+        signDto.setReviewstage(reviewStateEnum.getZhCode());
+        //是否是项目概算流程
+        if (ProjectConstant.REVIEW_STATE_ENUM.STAGEBUDGET.getEnCode().equals(stageCode) || Validate.isString(signDto.getIschangeEstimate())) {
+            signDto.setIsassistflow(Constant.EnumState.YES.getValue());
+        } else {
+            signDto.setIsassistflow(Constant.EnumState.NO.getValue());
+        }
+        //申报金额调整(由于委里定义的接口，Declaration这个字段为申报金额字段，所以这里要调整下)；
+        signDto.setAppalyInvestment(signDto.getDeclaration());
+
+        ResultMsg resultMsg = null;
         try {
-            String stageCode = "";
-            //1、判断项目阶段是否正确
-            if (Validate.isString(signDto.getReviewstage())) {
-                stageCode = signDto.getReviewstage();
-                String stageCHName = Constant.RevireStageKey.getZHCNName(stageCode);
-                if (!Validate.isString(stageCHName)) {
-                    return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_04.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_04.getValue() + getStageString());
-                }
-                //对应系统的阶段名称
-                signDto.setReviewstage(stageCHName);
-                //是否是项目概算流程
-                boolean isGS = Constant.RevireStageKey.KEY_BUDGET.getValue().equals(stageCode) || Validate.isString(signDto.getIschangeEstimate());
-                if (isGS) {
-                    signDto.setIsassistflow(Constant.EnumState.YES.getValue());
-                } else {
-                    signDto.setIsassistflow(Constant.EnumState.NO.getValue());
-                }
-            } else {
-                return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_03.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_03.getValue());
-            }
-            //申报金额调整(由于委里定义的接口，Declaration这个字段为申报金额字段，所以这里要调整下)；
-            signDto.setAppalyInvestment(signDto.getDeclaration());
             resultMsg = signService.reserveAddSign(signDto);
             if (resultMsg.isFlag()) {
                 boolean isLoginUser = Validate.isString(SessionUtil.getUserId());
@@ -375,21 +353,20 @@ public class SignRestServiceImpl implements SignRestService {
      */
     @Override
     public String getReturnUrl() {
-        String returnUrl = "";
-        SysConfigDto sysConfigDto = sysConfigService.findByKey(RETURN_FGW_URL.getValue());
-        if (sysConfigDto != null) {
-            returnUrl = sysConfigDto.getConfigValue();
+       /* SysConfigDto sysConfigDto = sysConfigService.findByKey(RETURN_FGW_URL.getValue());*/
+        SysConfigDto sysConfigDto = sysConfigService.findByKey(SysConstants.SYS_CONFIG_ENUM.RETURN_FGW_URL.toString());
+        if (Validate.isObject(sysConfigDto)) {
+           return sysConfigDto.getConfigValue();
         } else {
-            BusinessProperties businessProperties = SpringContextUtil.getBean("businessProperties");
-            returnUrl = businessProperties.getFgwProjIfs();
+            BusinessProperties businessProperties = SpringContextUtil.getBean(SYS_BUSI_PROP_BEAN);
+            return businessProperties.getFgwProjIfs();
         }
-        return returnUrl;
     }
 
     @Override
     public String getLocalUrl() {
         String localUrl = "";
-        SysConfigDto sysConfigDto = sysConfigService.findByKey(LOCAL_URL.getValue());
+        SysConfigDto sysConfigDto = sysConfigService.findByKey(SysConstants.SYS_CONFIG_ENUM.LOCAL_URL.toString());
         if(sysConfigDto != null) {
             localUrl = sysConfigDto.getConfigValue();
         }
@@ -406,15 +383,14 @@ public class SignRestServiceImpl implements SignRestService {
      */
     @Override
     public String getPreReturnUrl() {
-        String returnUrl = "";
-        SysConfigDto sysConfigDto = sysConfigService.findByKey(FGW_PRE_PROJECT_IFS.getValue());
+        /*SysConfigDto sysConfigDto = sysConfigService.findByKey(FGW_PRE_PROJECT_IFS.getValue());*/
+        SysConfigDto sysConfigDto = sysConfigService.findByKey(SysConstants.SYS_CONFIG_ENUM.FGW_PRE_PROJECT_IFS.toString());
         if (sysConfigDto != null) {
-            returnUrl = sysConfigDto.getConfigValue();
+            return sysConfigDto.getConfigValue();
         } else {
-            BusinessProperties businessProperties = SpringContextUtil.getBean("businessProperties");
-            returnUrl = businessProperties.getFgwPreProjIfs();
+            BusinessProperties businessProperties = SpringContextUtil.getBean(SYS_BUSI_PROP_BEAN);
+            return businessProperties.getFgwPreProjIfs();
         }
-        return returnUrl;
     }
 
     private ArrayList<HashMap<String, Object>> checkFile(List<SysFile> fileList, List<String> checkNameArr, String loaclUrl) {

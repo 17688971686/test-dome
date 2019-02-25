@@ -25,6 +25,11 @@ import java.util.stream.Collectors;
  */
 public class ProjUtil {
 
+    /**
+     * 验证项目名称，评审阶段、项目编码，委里收文编号等字段信息
+     * @param signDto
+     * @return
+     */
     public static boolean checkProjDataValidate(SignDto signDto) {
         if (!Validate.isString(signDto.getProjectname()) || !Validate.isString(signDto.getReviewstage())
                 || !Validate.isString(signDto.getProjectcode()) || !Validate.isString(signDto.getFilecode())) {
@@ -349,12 +354,12 @@ public class ProjUtil {
      */
     private static void countAchievementDetail(Map<String, List<Achievement>> cacheMap, Achievement achievement, List<SysDept> deptList) {
         //项目评审部门ID，用户所在部门ID，用户所在组别ID,最终所属的部门或者组别ID
-        String orgId = achievement.getOrgId(), userOrgId = achievement.getUserOrgId(), deptId = achievement.getDeptIds(),orgDeptId;
+        String orgId = achievement.getOrgId(), userOrgId = achievement.getUserOrgId(), deptId = achievement.getDeptIds(), orgDeptId;
         //如果当前用户是属于组别,则替换组别信息
         if (Validate.isString(deptId)) {
             orgDeptId = changeDeptId(orgId, deptList);
             //如果找不到对应的组别,则默认第一个（特殊情况，但是也要考虑）
-            if(orgDeptId.equals(orgId)){
+            if (orgDeptId.equals(orgId)) {
                 orgDeptId = deptId.split(SysConstants.SEPARATE_COMMA)[0];
             }
         } else {
@@ -637,7 +642,7 @@ public class ProjUtil {
             //achievementSumDto.setAssistExtravalueSum(Arith.safeAdd(achievementSumDto.getAssistExtravalueSum(),achievement.getExtraValue()));
         }
         //如果是部门，还要统计主办协办项目数据
-        if(isDept){
+        if (isDept) {
             //如果是部门主办
             boolean isMainDept = isMainBranch(achievement.getBranchId());
             List<Achievement> chileLit = null;
@@ -647,29 +652,29 @@ public class ProjUtil {
                 chileLit = achievementSumDto.getAssistChildList();
             }
             //判断是否已经有该项目
-           checkDeptAchievement(chileLit,achievement);
+            checkDeptAchievement(chileLit, achievement);
             if (isMainDept) {
                 achievementSumDto.setMainChildList(chileLit);
-            }else {
+            } else {
                 achievementSumDto.setAssistChildList(chileLit);
             }
         }
     }
 
     private static void checkDeptAchievement(List<Achievement> chileLit, Achievement achievement) {
-        if(null == chileLit){
+        if (null == chileLit) {
             chileLit = Lists.newArrayList();
             chileLit.add(achievement);
-        }else{
+        } else {
             boolean isHave = false;
-            for(Achievement chile : chileLit){
-                if(chile.getSignId().equals(achievement.getSignId())){
+            for (Achievement chile : chileLit) {
+                if (chile.getSignId().equals(achievement.getSignId())) {
                     isHave = true;
                     break;
                 }
             }
             //如果之前项目没有，则添加到列表中
-            if(!isHave){
+            if (!isHave) {
                 chileLit.add(achievement);
             }
         }
@@ -768,16 +773,26 @@ public class ProjUtil {
 
     /**
      * 校验用户是否是任务用户
+     *
      * @param user
      * @param userId
      * @return
      */
-    public static boolean userIsTaskUser(User user, String userId){
-        if(null == user){
+    public static boolean userIsTaskUser(User user, String userId) {
+        if (null == user) {
             return false;
         }
         return userId.equals(user.getId()) || userId.equals(user.getTakeUserId());
 
     }
 
+    /**
+     * 如果收文编号以0000结束，说明委里没有收文编号，这个编号可以有多个
+     * 之前委里收文编号年份后面+4位数，现在是5位数
+     * @param filecode 项目收文编码，不能为空
+     * @return
+     */
+    public static boolean isSelfProj(String filecode) {
+        return filecode.endsWith("00000") || filecode.endsWith("0000");
+    }
 }

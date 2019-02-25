@@ -319,13 +319,6 @@ public interface SignService {
     ResultMsg updateSendFGWState(String signId, String state);
 
     /**
-     * 校验是否发送评审费
-     * @param signId
-     * @return
-     */
-    boolean checkReviewCost(String signId);
-
-    /**
      * 验证是否已经上传附件
      * @param signId
      * @return
@@ -341,11 +334,6 @@ public interface SignService {
      */
     String getMainDirecotr(String signid, List<AgentTask> agentTaskList, String flowSignBmldQrfw);
 
-    /**
-     * 重置发文的审批意见
-     * @param dp
-     */
-    void resetDisReviewOption(DispatchDoc dp);
 
     /**
      * 获取第一负责人

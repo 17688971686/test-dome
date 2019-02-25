@@ -68,6 +68,9 @@ public class SignDto extends BaseDto {
      */
     private BigDecimal declaration;
 
+    /**
+     * 评审阶段
+     */
     private String reviewstage;
 
     private String ispresign;

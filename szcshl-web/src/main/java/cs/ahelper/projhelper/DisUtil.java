@@ -95,6 +95,24 @@ public class DisUtil {
         return false;
     }
 
+    /**
+     * 重置发文的审批意见
+     * 清空部长或者分管领导意见，避免回退的时候，意见重叠
+     * @param dp
+     */
+    public void resetDisReviewOption(DispatchDoc dp) {
+        dp.setSecondChargeSuggest("");
+        dp.setMinisterSuggesttion("");
+        dp.setMinisterDate(null);
+        dp.setMinisterName("");
+        dp.setViceDirectorSuggesttion("");
+        dp.setViceDirectorDate(null);
+        dp.setViceDirectorName("");
+        dp.setDirectorSuggesttion("");
+        dp.setDirectorDate(null);
+        dp.setDirectorName("");
+    }
+
     public DispatchDoc getDispatchDoc() {
         return dispatchDoc;
     }

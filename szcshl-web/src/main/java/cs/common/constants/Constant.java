@@ -83,29 +83,6 @@ public class Constant {
      * 拟补充资料函文件字号
      */
     public static String ADDSUPPER_PREFIX = "深投审函";
-    /**
-     * 默认收文工作日
-     */
-    public static Float WORK_DAY_15 = 15f;
-
-    /**
-     * 默认工作日
-     */
-    public static Float WORK_DAY_12 = 12f;
-
-    /**
-     * 25
-     */
-    public static Float WORK_DAY_25 = 25f;
-
-    /**
-     * 归档工作日
-     */
-    public static Float WORK_DAY_30 = 30f;
-    /**
-     * 3
-     */
-    public static Float WORK_DAY_3 = 3f;
 
     /**
      * 插件默认地址
@@ -707,7 +684,7 @@ public class Constant {
     /**
      * 菜单类型
      */
-    public static enum menu {
+    /*public static enum menu {
         EXPERT("expert", "专家库");
         private String key;
         private String value;
@@ -742,122 +719,7 @@ public class Constant {
         public void setValue(String value) {
             this.value = value;
         }
-    }
-
-    /**
-     * 项目阶段
-     */
-    public static final String STAGE_SUG = "项目建议书";
-    public static final String STAGE_STUDY = "可行性研究报告";
-    public static final String STAGE_BUDGET = "项目概算";
-    public static final String APPLY_REPORT = "资金申请报告";
-    public static final String OTHERS = "其它";
-    public static final String DEVICE_BILL_HOMELAND = "设备清单（国产）";
-    public static final String DEVICE_BILL_IMPORT = "设备清单（进口）";
-    public static final String IMPORT_DEVICE = "进口设备";
-    public static final String REGISTER_CODE = "登记赋码";
-
-    /**
-     * 评审阶段key值
-     */
-    public static enum RevireStageKey {
-        KEY_REGISTERCODE("REGISTERCODE"), //登记赋码
-        KEY_SUG("STAGESUG"),           //项目建议书
-        KEY_STUDY("STAGESTUDY"),       //可行性研究报告
-        KEY_BUDGET("STAGEBUDGET"),     //项目概算
-        KEY_REPORT("STAGEREPORT"),     //资金申请报告
-        KEY_HOMELAND("STAGEHOMELAND"), //设备清单（国产）
-        KEY_IMPORT("STAGEIMPORT"),     //设备清单（进口）
-        KEY_DEVICE("STAGEDEVICE"),     //进口设备
-        KEY_OTHER("STAGEOTHER"),       //其他
-        LAST_UNIT_MAXSORT("LAST_UNIT_MAXSORT"),    //上一个抽签单位的最大序号
-        KEY_CHECKFILE("CHECKFILE"),    //要检测的文件名名称
-        KEY_FTPIP("FTPIP"),            //文件服务器IP地址,
-        KEY_FTPROOT("FTPROOT"),         //文件服务器根目录
-        RTX_ENABLED("RTX_ENABLED"),     //是否使用腾讯通账号
-        RETURN_FGW_URL("RETURN_FGW_URL"),//回传给委里的接口配置
-        FGW_PRE_PROJECT_IFS("FGW_PRE_PROJECT_IFS"),//预签收接口配置
-        SMS_SYS_TYPE("SMS_SYS_TYPE"),               //系统参数: 短息开关0:打开，1:关闭
-        SMS_SING_NOTICE_USER("SMS_SING_NOTICE_USER"),     //委里项目推送短信通知人配置
-        SMS_SENDFGW_FAIL_USER("SMS_SENDFGW_FAIL_USER"),    //回传委里失败推送的短信通知人配置
-        FILE_UPLOAD_PATH("FILE_UPLOAD_PATH"),              //缓存地址
-        MSG_TYPE("MSG_TYPE"),           //系统发送短信方式（1：旧方式，2：新方式）
-        LOCAL_URL("LOCAL_URL");         //系统访问地址
-        private String value;
-
-        RevireStageKey(String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
-        }
-
-        /**
-         * 根据阶段标识获取中文字符(主要用于接口)
-         *
-         * @param value
-         * @return
-         */
-        public static String getZHCNName(String value) {
-            String resultZHName = "";
-            switch (value) {
-                case "REGISTERCODE":
-                    resultZHName = REGISTER_CODE;
-                break;
-                case "STAGESUG":
-                    resultZHName = STAGE_SUG;
-                    break;
-                case "STAGESTUDY":
-                    resultZHName = STAGE_STUDY;
-                    break;
-                case "STAGEBUDGET":
-                    resultZHName = STAGE_BUDGET;
-                    break;
-                case "STAGEREPORT":
-                    resultZHName = APPLY_REPORT;
-                    break;
-                case "STAGEHOMELAND":
-                    resultZHName = DEVICE_BILL_HOMELAND;
-                    break;
-                case "STAGEIMPORT":
-                    resultZHName = DEVICE_BILL_IMPORT;
-                    break;
-                case "STAGEDEVICE":
-                    resultZHName = IMPORT_DEVICE;
-                    break;
-                case "STAGEOTHER":
-                    resultZHName = OTHERS;
-                    break;
-                default:
-                    ;
-            }
-            return resultZHName;
-        }
-
-    }
-
-    /**
-     * 存档编号KEY值
-     * 评估类、资金申请报告、其他类：PD，概算类：GD，设备类：SD
-     */
-    public static enum FILE_RECORD_KEY {
-        KT("KT"),                //课题编号
-        KD("KD"),                //课题归档编号
-        YD("YD"),                //月报简报
-        PD("PD"),                //评估类，资金申请报告，其它类
-        GD("GD"),                //概算类
-        SD("SD");                //设备类
-        private String value;
-
-        FILE_RECORD_KEY(String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
-        }
-    }
+    }*/
 
     /**
      * 日记模块

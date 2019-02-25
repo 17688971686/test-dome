@@ -11,7 +11,8 @@ public interface UnitScoreService {
     /**
      * 判断是否有单位评分表的数据，没有就添加，
      * @param designcompanyName 编制单位名称
-     * @param singid 业务id
+     * @param singid    业务id
+     * @param isSignUser    是否签收人员
      */
     void decide(String designcompanyName,String singid,boolean isSignUser);
 

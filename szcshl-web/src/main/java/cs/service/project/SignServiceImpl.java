@@ -9,6 +9,7 @@ import cs.common.RandomGUID;
 import cs.common.ResultMsg;
 import cs.common.constants.Constant;
 import cs.common.constants.FlowConstant;
+import cs.common.constants.ProjectConstant;
 import cs.common.constants.SysConstants;
 import cs.common.utils.*;
 import cs.domain.expert.*;
@@ -40,6 +41,7 @@ import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.project.*;
 import cs.repository.repositoryImpl.sys.*;
+import cs.service.expert.ExpertReviewService;
 import cs.service.external.OfficeUserService;
 import cs.service.flow.FlowService;
 import cs.service.rtx.RTXSendMsgPool;
@@ -70,6 +72,9 @@ import static cs.common.constants.FlowConstant.*;
 import static cs.common.constants.IgnoreProps.PUSH_SIGN_IGNORE_PROPS;
 import static cs.common.constants.SysConstants.SEPARATE_COMMA;
 
+/**
+ * @author ldm
+ */
 @Service
 public class SignServiceImpl implements SignService {
     private static Logger log = Logger.getLogger(SignServiceImpl.class);
@@ -122,6 +127,8 @@ public class SignServiceImpl implements SignService {
     @Autowired
     private ExpertReviewRepo expertReviewRepo;
     @Autowired
+    private ExpertReviewService expertReviewService;
+    @Autowired
     private AddRegisterFileRepo addRegisterFileRepo;
     @Autowired
     private AddSuppLetterRepo addSuppLetterRepo;
@@ -164,31 +171,28 @@ public class SignServiceImpl implements SignService {
      * @param signDto
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ResultMsg createSign(SignDto signDto) {
         if (!ProjUtil.checkProjDataValidate(signDto)) {
-            return new ResultMsg(false, MsgCode.ERROR.getValue(), "项目代码、评审阶段、项目名称和收文编号为空或者有特殊字符，保存失败！");
+            return ResultMsg.error("项目代码、评审阶段、项目名称和收文编号为空或者有特殊字符，保存失败！");
         }
         Date now = new Date();
         Sign sign = null;
-        //是否是签收员操作
+        //是否是签收员操作，部分是由委里传过来的
         boolean isSignUser = Validate.isString(SessionUtil.getUserId());
-        /**
-         * 如果收文编号以0000结束，说明委里没有收文编号，这个编号可以有多个
-         * 之前委里收文编号年份后面+4位数，现在是5位数
-         */
-        boolean isSelfProj = signDto.getFilecode().endsWith("0000") || signDto.getFilecode().endsWith("00000");
+        //如果不是评审中心自己的项目，还根据收文编号获取项目信息，以判断项目是否已存在
+        boolean isSelfProj = ProjUtil.isSelfProj(signDto.getFilecode());
         if (!isSelfProj) {
             sign = signRepo.findByFilecode(signDto.getFilecode(), Constant.EnumState.DELETE.getValue());
         }
-        //1、根据收文编号获取项目信息
-        if (sign == null) {
+        //如果是新项目，则初始化收文信息
+        if (!Validate.isObject(sign)) {
             sign = initNewSignInfo(signDto, false, now, isSignUser);
         } else {
             if (!signDto.getProjectname().equals(sign.getProjectname())) {
                 updateProjectNameCascade(sign, signDto.getProjectname());
             }
-            //【如果之前已经有送件人签名，则不能覆盖（因为委里过来的值不是评审中心要的值）】
+            //如果之前已经有送件人签名，则不能覆盖（因为委里过来的值不是评审中心要的值）
             BeanCopierUtils.copyPropertiesIgnoreProps(signDto, sign, PUSH_SIGN_IGNORE_PROPS);
         }
         sign.setModifiedDate(now);
@@ -204,29 +208,7 @@ public class SignServiceImpl implements SignService {
         }
         //7、正式签收
         if (!Validate.isString(sign.getIssign()) || !EnumState.YES.getValue().equals(sign.getIssign())) {
-            sign.setSigndate(now);
-            //预签收状态也要改
-            sign.setIspresign(Constant.EnumState.YES.getValue());
-            //正式签收
-            sign.setIssign(EnumState.YES.getValue());
-            if (!Validate.isString(sign.getSignNum())) {
-                initSignNum(sign);
-            }
-            Float reviewsDays = getReviewDays(sign.getReviewstage());
-            if (reviewsDays > 0) {
-                sign.setSurplusdays(reviewsDays);
-                sign.setTotalReviewdays(reviewsDays);
-                sign.setReviewdays(0f);
-                //计算预发文日期
-                //1、先获取从签收日期后的30天之间的工作日情况
-                List<Workday> workdayList = workdayService.getBetweenTimeDay(sign.getSigndate(), DateUtils.addDay(sign.getSigndate(), 30));
-                //预发文时间，是剩余最后一个工作日的时间
-                int totalDays = (new Float(reviewsDays)).intValue();
-                Date expectdispatchdate = DispathUnit.dispathDate(workdayList, sign.getSigndate(), totalDays);
-                sign.setExpectdispatchdate(expectdispatchdate);
-            }
-        } else {
-
+            formalProject(sign);
         }
         //如果是自己的项目,则不用回传给委里(2表示不用回传给委里)
         if (isSelfProj) {
@@ -237,13 +219,43 @@ public class SignServiceImpl implements SignService {
     }
 
     /**
+     * 正式签收项目的一些数据信息
+     * @param sign
+     */
+    private void formalProject(Sign sign) {
+        sign.setSigndate(new Date());
+        //预签收状态也要改
+        sign.setIspresign(Constant.EnumState.YES.getValue());
+        //正式签收
+        sign.setIssign(EnumState.YES.getValue());
+        if (!Validate.isString(sign.getSignNum())) {
+            //签收序号
+            initSignNum(sign);
+        }
+        //评审天数
+        Float reviewsDays = getReviewDays(sign.getReviewstage());
+        if (reviewsDays > 0f) {
+            sign.setSurplusdays(reviewsDays);
+            sign.setTotalReviewdays(reviewsDays);
+            sign.setReviewdays(0f);
+            //计算预发文日期
+            //1、先获取从签收日期后的30天之间的工作日情况
+            List<Workday> workdayList = workdayService.getBetweenTimeDay(sign.getSigndate(), DateUtils.addDay(sign.getSigndate(), 30));
+            //预发文时间，是剩余最后一个工作日的时间
+            int totalDays = (new Float(reviewsDays)).intValue();
+            Date expectDispatchDate = DispathUnit.dispathDate(workdayList, sign.getSigndate(), totalDays);
+            sign.setExpectdispatchdate(expectDispatchDate);
+        }
+    }
+
+    /**
      * 项目预签收
      *
      * @param signDto
      * @return
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ResultMsg reserveAddSign(SignDto signDto) {
         if (!ProjUtil.checkProjDataValidate(signDto)) {
             return new ResultMsg(false, MsgCode.ERROR.getValue(), "项目代码、评审阶段、项目名称和收文编号为空或者有特殊字符，保存失败！");
@@ -256,12 +268,12 @@ public class SignServiceImpl implements SignService {
          * 如果收文编号以0000结束，说明委里没有收文编号，这个编号可以有多个
          * 之前委里收文编号年份后面+4位数，现在是5位数
          */
-        boolean isSelfProj = signDto.getFilecode().endsWith("0000") || signDto.getFilecode().endsWith("00000");
+        boolean isSelfProj = ProjUtil.isSelfProj(signDto.getFilecode());
         if (!isSelfProj) {
             sign = signRepo.findByFilecode(signDto.getFilecode(), signDto.getSignState());
         }
+        //如果之前已经有送件人签名，则不能覆盖（因为委里过来的值不是评审中心要的值）
         if (Validate.isObject(sign) && Validate.isString(sign.getSignid())) {
-            //【如果之前已经有送件人签名，则不能覆盖（因为委里过来的值不是评审中心要的值）】
             String signName = sign.getSendusersign();
             BeanCopierUtils.copyPropertiesIgnoreNull(signDto, sign);
             sign.setSendusersign(signName);
@@ -292,7 +304,8 @@ public class SignServiceImpl implements SignService {
         sign.setSignid((new RandomGUID()).valueAfterMD5);
         sign.setSignState(EnumState.NORMAL.getValue());
         //2、是否是项目概算流程
-        if (Constant.STAGE_BUDGET.equals(sign.getReviewstage()) || Validate.isString(sign.getIschangeEstimate())) {
+        if (ProjectConstant.REVIEW_STATE_ENUM.STAGEBUDGET.getZhCode().equals(sign.getReviewstage())
+                || Validate.isString(sign.getIschangeEstimate())) {
             sign.setIsassistflow(EnumState.YES.getValue());
         } else {
             sign.setIsassistflow(EnumState.NO.getValue());
@@ -429,7 +442,7 @@ public class SignServiceImpl implements SignService {
         }
         //单位
         List<Company> companyList = companyRepo.findAll();
-        map.put("companyList", Validate.isList(companyList)?companyList:new ArrayList<>());
+        map.put("companyList", Validate.isList(companyList) ? companyList : new ArrayList<>());
 
         //查询系统上传文件
         Criteria file = sysFileRepo.getExecutableCriteria();
@@ -737,7 +750,7 @@ public class SignServiceImpl implements SignService {
      * @return
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ResultMsg startNewFlow(String signid) {
         Sign sign = signRepo.findById(Sign_.signid.getName(), signid);
         if (sign == null) {
@@ -749,10 +762,10 @@ public class SignServiceImpl implements SignService {
         if (!Validate.isString(sign.getLeaderId())) {
             return new ResultMsg(false, MsgCode.ERROR.getValue(), "操作失败，请先设置默认办理部门！");
         }
-        //项目建议书、可研、概算要验证必填字段
-        if (STAGE_SUG.equals(sign.getReviewstage()) || STAGE_STUDY.equals(sign.getReviewstage()) || STAGE_BUDGET.equals(sign.getReviewstage())) {
-            //建设单位(builtcompanyName)、编制单位(designcompanyName)、
-            // 主办处室(maindeptName)、缓急程度(urgencydegree)、秘密等级(secrectlevel)
+        //项目建议书、可研、概算要验证必填字段(建设单位(builtcompanyName)、编制单位(designcompanyName)、主办处室(maindeptName)、缓急程度(urgencydegree)、秘密等级(secrectlevel))
+        if (ProjectConstant.REVIEW_STATE_ENUM.STAGESUG.getZhCode().equals(sign.getReviewstage())
+                ||  ProjectConstant.REVIEW_STATE_ENUM.STAGESTUDY.getZhCode().equals(sign.getReviewstage())
+                || ProjectConstant.REVIEW_STATE_ENUM.STAGEBUDGET.getZhCode().equals(sign.getReviewstage())) {
             if (!Validate.isString(sign.getBuiltcompanyName()) || !Validate.isString(sign.getDesigncompanyName())
                     || !Validate.isString(sign.getMaindeptName()) || !Validate.isString(sign.getUrgencydegree())
                     || !Validate.isString(sign.getSecrectlevel())) {
@@ -763,7 +776,7 @@ public class SignServiceImpl implements SignService {
                 stringBuilder.append(sign.getUrgencydegree() == null ? "缓急程度," : "");
                 stringBuilder.append(sign.getSecrectlevel() == null ? "秘密等级," : "");
                 String resultStr = stringBuilder.toString();
-                return ResultMsg.error( resultStr.substring(0, resultStr.length() - 1) + "不能为空");
+                return ResultMsg.error(resultStr.substring(0, resultStr.length() - 1) + "不能为空");
             }
         }
 
@@ -1206,7 +1219,8 @@ public class SignServiceImpl implements SignService {
                             return new ResultMsg(false, MsgCode.ERROR.getValue(), "协办分支还没处理完，不能直接进行发文操作！");
                         }
                         sign = signRepo.findById(Sign_.signid.getName(), signid);
-                        boolean needCheck = Constant.STAGE_SUG.equals(sign.getReviewstage()) || Constant.STAGE_STUDY.equals(sign.getReviewstage());
+                        boolean needCheck = (ProjectConstant.REVIEW_STATE_ENUM.STAGESUG.getZhCode()).equals(sign.getReviewstage())
+                                || (ProjectConstant.REVIEW_STATE_ENUM.STAGESTUDY.getZhCode()).equals(sign.getReviewstage());
                         if (needCheck && !signBranchRepo.isHaveWP(signid)) {
                             return new ResultMsg(false, MsgCode.ERROR.getValue(), "【项目建议书】和【可行性研究报告】阶段必须要做工作方案！");
                         }
@@ -1221,7 +1235,7 @@ public class SignServiceImpl implements SignService {
                 }
                 break;
 
-               //部长审批工作方案1
+            //部长审批工作方案1
             case FlowConstant.FLOW_SIGN_BMLD_SPW1:
                 branchIndex = FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue();
                 nextNodeKey = FlowConstant.FLOW_SIGN_FGLD_SPW1;
@@ -1396,7 +1410,7 @@ public class SignServiceImpl implements SignService {
                     returnResult = flowService.dealMerDisFlow(processInstance, task, dp, FLOW_SIGN_FW, flowDto, isAgentTask);
                 } else {
                     //不是合并发文的项目，还是按原计划处理
-                    if (!checkReviewCost(signid)) {
+                    if (!expertReviewService.checkReviewCost(signid)) {
                         return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还没完成专家评审费发放，不能进行下一步操作！");
                     }
                     if (!checkFileUpload(signid)) {
@@ -1420,7 +1434,7 @@ public class SignServiceImpl implements SignService {
 
                     //修改第一负责人意见
                     dp.setMianChargeSuggest(flowDto.getDealOption() + "  签名：" + ActivitiUtil.getSignName(SessionUtil.getDisplayName(), isAgentTask) + "  日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
-                    resetDisReviewOption(dp);
+                    DisUtil.create(dp).resetDisReviewOption(dp);
                     dispatchDocRepo.save(dp);
                     //完成发文
                     signRepo.updateSignProcessState(signid, Constant.SignProcessState.END_DIS.getValue());
@@ -1881,7 +1895,7 @@ public class SignServiceImpl implements SignService {
                     String yearName = DateUtils.converToString(fileRecord.getFileDate(), DateUtils.DATE_YEAR);
                     int maxSeq = fileRecordRepo.getMaxSeq(yearName, seqType) + 1;
                     //如果是0，则改为1
-                    if(0 == maxSeq){
+                    if (maxSeq < 1) {
                         maxSeq = 1;
                     }
                     //归档编号=发文年份+档案类型+存档年份+存档顺序号
@@ -1936,42 +1950,6 @@ public class SignServiceImpl implements SignService {
             //当下一个处理人还是自己的时候，任务ID是已经改变了的，所以这里要返回任务ID
             return new ResultMsg(true, MsgCode.OK.getValue(), task.getId(), "操作成功！", null);
         }
-    }
-
-    /**
-     * 清空部长或者分管领导意见，避免回退的时候，意见重叠
-     *
-     * @param dp
-     */
-    @Override
-    public void resetDisReviewOption(DispatchDoc dp) {
-        dp.setSecondChargeSuggest("");
-        dp.setMinisterSuggesttion("");
-        dp.setMinisterDate(null);
-        dp.setMinisterName("");
-        dp.setViceDirectorSuggesttion("");
-        dp.setViceDirectorDate(null);
-        dp.setViceDirectorName("");
-        dp.setDirectorSuggesttion("");
-        dp.setDirectorDate(null);
-        dp.setDirectorName("");
-    }
-
-    /**
-     * 验证是否有专家评审费发放
-     *
-     * @param signid
-     */
-    @Override
-    public boolean checkReviewCost(String signid) {
-        //如果有专家评审费，则要先办理专家评审费
-        if (expertReviewRepo.isHaveEPReviewCost(signid)) {
-            ExpertReview expertReview2 = expertReviewRepo.findById(ExpertReview_.businessId.getName(), signid);
-            if (expertReview2.getPayDate() == null || expertReview2.getTotalCost() == null) {
-                return false;
-            }
-        }
-        return true;
     }
 
     /**
@@ -2319,22 +2297,8 @@ public class SignServiceImpl implements SignService {
         if (EnumState.YES.getValue().equals(sign.getIssign())) {
             return new ResultMsg(false, MsgCode.ERROR.getValue(), "操作失败，该项目已经签收完毕！");
         }
-        //6、收文编号
-        if (!Validate.isString(sign.getSignNum())) {
-            initSignNum(sign);
-        }
-        //7、正式签收
-        if (Validate.isString(sign.getIssign()) || !EnumState.YES.getValue().equals(sign.getIssign())) {
-            sign.setSigndate(new Date());
-            sign.setIssign(EnumState.YES.getValue());       //正式签收
-            sign.setIspresign(EnumState.YES.getValue());    //正式签收
-            Float reviewsDays = getReviewDays(sign.getReviewstage());
-            if (reviewsDays > 0) {
-                sign.setSurplusdays(reviewsDays);
-                sign.setTotalReviewdays(reviewsDays);
-                sign.setReviewdays(0f);
-            }
-        }
+        formalProject(sign);
+
         return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！");
     }
 
@@ -2342,52 +2306,18 @@ public class SignServiceImpl implements SignService {
     public Float getReviewDays(String reviewstage) {
         Float resultFloat = 0f;
         if (Validate.isString(reviewstage)) {
-            //先查找系统配置对否有评审阶段的评审天数，如有则用系统的，如果没有则用默认值
-            String configKey = "";
-            switch (reviewstage) {
-                case Constant.STAGE_SUG:
-                    configKey = Constant.RevireStageKey.KEY_SUG.getValue();
-                    break;
-                case Constant.STAGE_STUDY:
-                    configKey = Constant.RevireStageKey.KEY_STUDY.getValue();
-                    break;
-                case Constant.STAGE_BUDGET:
-                    configKey = Constant.RevireStageKey.KEY_BUDGET.getValue();
-                    break;
-                case Constant.APPLY_REPORT:
-                    configKey = Constant.RevireStageKey.KEY_REPORT.getValue();
-                    break;
-                case Constant.OTHERS:
-                    configKey = Constant.RevireStageKey.KEY_OTHER.getValue();
-                    break;
-                case Constant.DEVICE_BILL_HOMELAND:
-                    configKey = Constant.RevireStageKey.KEY_HOMELAND.getValue();
-                    break;
-                case Constant.DEVICE_BILL_IMPORT:
-                    configKey = Constant.RevireStageKey.KEY_IMPORT.getValue();
-                    break;
-                case Constant.IMPORT_DEVICE:
-                    configKey = Constant.RevireStageKey.KEY_DEVICE.getValue();
-                    break;
-
-                case Constant.REGISTER_CODE:
-                    configKey = Constant.RevireStageKey.KEY_REGISTERCODE.getValue();
-                    break;
-                default:
-                    configKey = "";
-            }
-
-            if (Validate.isString(configKey)) {
-                SysConfigDto sysConfigDto = sysConfigService.findByKey(configKey);
-                if (sysConfigDto != null && sysConfigDto.getConfigValue() != null) {
+            ProjectConstant.REVIEW_STATE_ENUM reviewStateEnum = ProjectConstant.REVIEW_STATE_ENUM.getByZhCode(reviewstage);
+            if (Validate.isObject(reviewStateEnum)) {
+                SysConfigDto sysConfigDto = sysConfigService.findByKey(reviewStateEnum.getEnCode());
+                if (null != sysConfigDto && null != sysConfigDto.getConfigValue()) {
                     return Float.parseFloat(sysConfigDto.getConfigValue());
                 } else {
                     //设定默认值，项目建议书和资金申请报告是12天，其他是15天
-                    if ((Constant.STAGE_SUG).equals(reviewstage)
-                            || (Constant.APPLY_REPORT).equals(reviewstage)) {
-                        return Constant.WORK_DAY_12;
+                    if ((ProjectConstant.REVIEW_STATE_ENUM.STAGESUG.getZhCode()).equals(reviewstage)
+                            || (ProjectConstant.REVIEW_STATE_ENUM.STAGEREPORT.getZhCode()).equals(reviewstage)) {
+                        return ProjectConstant.WORK_DAY_12;
                     } else {
-                        return Constant.WORK_DAY_15;
+                        return ProjectConstant.WORK_DAY_15;
                     }
                 }
             }
@@ -2485,26 +2415,40 @@ public class SignServiceImpl implements SignService {
         sqlBuilder.setParam("processState", Constant.SignProcessState.END_DIS_NUM.getValue());
         //排除已经进行了关联的项目
         sqlBuilder.append(" and s.signid not in( select ASSOCIATE_SIGNID from CS_ASSOCIATE_SIGN) ");
-        //项目建议书 或资金申请
-        if (Constant.STAGE_SUG.equals(signDispaWork.getReviewstage())
-                || Constant.APPLY_REPORT.equals(signDispaWork.getReviewstage())) {
-            sqlBuilder.append(" and s." + SignDispaWork_.reviewstage.getName() + "=:reviewStage ");
-            sqlBuilder.setParam("reviewStage", signDispaWork.getReviewstage());
+        //根据阶段查询对应关联阶段项目
+        ProjectConstant.REVIEW_STATE_ENUM reviewStateEnum = ProjectConstant.REVIEW_STATE_ENUM.getByZhCode(signDispaWork.getReviewstage());
+        if(Validate.isObject(reviewStateEnum)){
+            switch (reviewStateEnum){
+                /**
+                 * 项目建议书 或资金申请
+                 */
+                case STAGESUG:
+                case STAGEREPORT:
+                    sqlBuilder.append(" and s." + SignDispaWork_.reviewstage.getName() + "=:reviewStage ");
+                    sqlBuilder.setParam("reviewStage", signDispaWork.getReviewstage());
+                    break;
+                /**
+                 * 可研
+                 */
+                case STAGESTUDY:
+                    sqlBuilder.append(" and s." + SignDispaWork_.reviewstage.getName() + " in('" + ProjectConstant.REVIEW_STATE_ENUM.STAGESTUDY.getZhCode() + "','" + ProjectConstant.REVIEW_STATE_ENUM.STAGESUG.getZhCode() + "') ");
+                    break;
+                /**
+                 * 概算
+                 */
+                case STAGEBUDGET:
+                    sqlBuilder.append(" and s." + SignDispaWork_.reviewstage.getName() + " in('" + ProjectConstant.REVIEW_STATE_ENUM.STAGESTUDY.getZhCode() + "','" + ProjectConstant.REVIEW_STATE_ENUM.STAGESUG.getZhCode() + "','" + ProjectConstant.REVIEW_STATE_ENUM.STAGEBUDGET.getZhCode() + "') ");
+                    break;
+                default:
+                    ;
+            }
         }
-        //可研
-        else if (Constant.STAGE_STUDY.equals(signDispaWork.getReviewstage())) {
-            sqlBuilder.append(" and s." + SignDispaWork_.reviewstage.getName() + " in('" + Constant.STAGE_STUDY + "','" + Constant.STAGE_SUG + "') ");
-        }
-        //概算
-        else if (Constant.STAGE_BUDGET.equals(signDispaWork.getReviewstage())) {
-            sqlBuilder.append(" and s." + SignDispaWork_.reviewstage.getName() + " in('" + Constant.STAGE_STUDY + "','" + Constant.STAGE_SUG + "','" + Constant.STAGE_BUDGET + "') ");
-        }
+
         if (Validate.isString(signDispaWork.getProjectname())) {
             sqlBuilder.append(" and s." + SignDispaWork_.projectname.getName() + " like :projectName");
             sqlBuilder.setParam("projectName", "%" + signDispaWork.getProjectname() + "%");
         }
-        List<SignDispaWork> signList = signDispaWorkRepo.findBySql(sqlBuilder);
-        return signList;
+        return  signDispaWorkRepo.findBySql(sqlBuilder);
     }
 
     /**
@@ -2535,7 +2479,6 @@ public class SignServiceImpl implements SignService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         PageModelDto<SignDispaWork> pageModelDto = new PageModelDto<SignDispaWork>();
         HqlBuilder sqlBuilder = HqlBuilder.create();   //基础语句
         HqlBuilder sqlBuilders = HqlBuilder.create(); //返回list的语句
@@ -2548,21 +2491,36 @@ public class SignServiceImpl implements SignService {
         sqlBuilder.append(" and s." + SignDispaWork_.processState.getName() + " >= " + Constant.SignProcessState.END_DIS_NUM.getValue() + " ");
         //排除已经进行了关联的项目
         /*sqlBuilder.append(" and s.signid not in( select ASSOCIATE_SIGNID from CS_ASSOCIATE_SIGN) ");*/
-        //项目建议书 或 资金申请 或 登记赋码
-        if (Constant.STAGE_SUG.equals(reviewstage) || Constant.APPLY_REPORT.equals(reviewstage)
-                || Constant.REGISTER_CODE.equals(reviewstage)) {
-            sqlBuilder.append(" and s." + SignDispaWork_.reviewstage.getName() + "=:reviewStage ");
-            sqlBuilders.setParam("reviewStage", reviewstage);
-            sqlBuilder1.setParam("reviewStage", reviewstage);
+        ProjectConstant.REVIEW_STATE_ENUM reviewStateEnum = ProjectConstant.REVIEW_STATE_ENUM.getByZhCode(reviewstage);
+        if(Validate.isObject(reviewStateEnum)){
+            switch (reviewStateEnum) {
+                /**
+                 * 项目建议书 或 资金申请 或 登记赋码
+                 */
+                case STAGESUG:
+                case REGISTERCODE:
+                case STAGEREPORT:
+                    sqlBuilder.append(" and s." + SignDispaWork_.reviewstage.getName() + "=:reviewStage ");
+                    sqlBuilders.setParam("reviewStage", reviewstage);
+                    sqlBuilder1.setParam("reviewStage", reviewstage);
+                    break;
+                /**
+                 * 可研
+                 */
+                case STAGESTUDY:
+                    sqlBuilder.append(" and s." + SignDispaWork_.reviewstage.getName() + " in('" + ProjectConstant.REVIEW_STATE_ENUM.STAGESTUDY.getZhCode() + "','" + ProjectConstant.REVIEW_STATE_ENUM.STAGESUG.getZhCode() + "') ");
+                    break;
+                /**
+                 * 概算
+                 */
+                case STAGEBUDGET:
+                    sqlBuilder.append(" and s." + SignDispaWork_.reviewstage.getName() + " in('" + ProjectConstant.REVIEW_STATE_ENUM.STAGESTUDY.getZhCode() + "','" + ProjectConstant.REVIEW_STATE_ENUM.STAGESUG.getZhCode() + "','" + ProjectConstant.REVIEW_STATE_ENUM.STAGEBUDGET.getZhCode() +"') ");
+                    break;
+                default:
+                    ;
+            }
         }
-        //可研
-        else if (Constant.STAGE_STUDY.equals(reviewstage)) {
-            sqlBuilder.append(" and s." + SignDispaWork_.reviewstage.getName() + " in('" + Constant.STAGE_STUDY + "','" + Constant.STAGE_SUG + "') ");
-        }
-        //概算
-        else if (Constant.STAGE_BUDGET.equals(reviewstage)) {
-            sqlBuilder.append(" and s." + SignDispaWork_.reviewstage.getName() + " in('" + Constant.STAGE_STUDY + "','" + Constant.STAGE_SUG + "','" + Constant.STAGE_BUDGET + "') ");
-        }
+
         if (Validate.isString(projectname)) {
             sqlBuilder.append(" and s." + SignDispaWork_.projectname.getName() + " like :projectname ");
             sqlBuilder1.setParam("projectname", "%" + projectname + "%");
@@ -2584,7 +2542,7 @@ public class SignServiceImpl implements SignService {
         sqlBuilders.append(" ) where num between :skip and :size ");
         sqlBuilders.setParam("skip", skip).setParam("size", size);
         List<SignDispaWork> signList = signDispaWorkRepo.findBySql(sqlBuilders);
-        if(!Validate.isList(signList)){
+        if (!Validate.isList(signList)) {
             signList = new ArrayList<>();
         }
         pageModelDto.setCount(total);
@@ -2613,7 +2571,7 @@ public class SignServiceImpl implements SignService {
     public void initSignDeptInfo(Sign sign) {
         //4、默认办理部门（项目建议书、可研为PX，概算为GX，其他为评估）
         if (!Validate.isString(sign.getDealOrgType())) {
-            if (Constant.STAGE_BUDGET.equals(sign.getReviewstage())) {
+            if (ProjectConstant.REVIEW_STATE_ENUM.STAGEBUDGET.getZhCode().equals(sign.getReviewstage())) {
                 sign.setDealOrgType(Constant.BusinessType.GX.getValue());
                 sign.setLeaderhandlesug("请（概算一部 概算二部）组织评审。");
             } else {
@@ -2811,7 +2769,7 @@ public class SignServiceImpl implements SignService {
         String orgType = sign.getDealOrgType();
         String yearName = DateUtils.converToString(sign.getSigndate(), DateUtils.DATE_YEAR);
         int maxSeq = signRepo.getMaxSignSeq(yearName, orgType) + 1;
-        if(0 == maxSeq){
+        if (maxSeq < 1) {
             maxSeq = 1;
         }
         //String fileNum = maxSeq > 999 ? maxSeq + "" : String.format("%03d", maxSeq);
@@ -2977,7 +2935,7 @@ public class SignServiceImpl implements SignService {
         });*/
 
         pageModelDto.setCount(totalResult);
-        pageModelDto.setValue(Validate.isList(runProcessList)?runProcessList:new ArrayList<>());
+        pageModelDto.setValue(Validate.isList(runProcessList) ? runProcessList : new ArrayList<>());
         return pageModelDto;
     }
 
@@ -3001,7 +2959,7 @@ public class SignServiceImpl implements SignService {
             //如果是分管领导分办，则删除分支；
             signBranchRepo.resetBranchState(signId, branchId);
             //重新初始化负责人信息
-            signRepo.initAOrgAndUser(sign,branchId);
+            signRepo.initAOrgAndUser(sign, branchId);
         } else {
             HqlBuilder sqlBuilder1 = HqlBuilder.create();
             sqlBuilder1.append("delete from CS_SIGN_BRANCH where " + SignBranch_.signId.getName() + " =:signId ");
@@ -3300,7 +3258,7 @@ public class SignServiceImpl implements SignService {
     @Override
     public SignDto findReviewDayBySignId(String signId) {
         SignDto signDto = signRepo.findReviewDayBySignId(signId);
-        if(!Validate.isObject(signDto)){
+        if (!Validate.isObject(signDto)) {
             signDto = new SignDto();
         }
         return signDto;

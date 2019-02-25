@@ -30,7 +30,9 @@ import static cs.common.constants.Constant.EXPERT_REVIEW_COST;
 import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
 /**
- * Description: 专家评审 业务操作实现类 author: ldm Date: 2017-5-17 14:02:25
+ * @author ldm
+ * Date: 2017-5-17 14:02:25
+ * Description: 专家评审 业务操作实现类
  */
 @Service
 public class ExpertReviewServiceImpl implements ExpertReviewService {
@@ -168,6 +170,23 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
 
         }
         return expertReviewDto;
+    }
+
+    /**
+     * 验证是否有专家评审费发放
+     *
+     * @param signid
+     */
+    @Override
+    public boolean checkReviewCost(String signid) {
+        //如果有专家评审费，则要先办理专家评审费
+        if (expertReviewRepo.isHaveEPReviewCost(signid)) {
+            ExpertReview expertReview = expertReviewRepo.findById(ExpertReview_.businessId.getName(), signid);
+            if (expertReview.getPayDate() == null || expertReview.getTotalCost() == null) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private ExpertSelectedDto initSelExpert(ExpertSelected epSelted) {

@@ -27,6 +27,12 @@ public interface ExpertReviewService {
 	void delete(String id);
 
 	ExpertReviewDto initBybusinessId(String businessId,String minBusinessId);
+	/**
+	 * 校验是否发送评审费
+	 * @param signId
+	 * @return
+	 */
+	boolean checkReviewCost(String signId);
 
 	ResultMsg save(String businessId,String minBusinessId,String businessType,String reviewId, String expertIds, String selectType);
 

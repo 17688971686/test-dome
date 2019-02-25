@@ -660,7 +660,6 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                         result += result.length() > 0 ? ",邀请函" : "邀请函";
                     }
 
-
                     //2.5 会议通知
                     try {
                         SysFile notice = CreateTemplateUtils.createTemplateNotice(f, sign, workProgram, user, roomBookings, secondUserList);
