@@ -650,13 +650,14 @@ public class Validate {
      * @author HZH
      */
     public static void main(String[] args) {
-        String smsResultJson = "{\"resultMsg\":\"获取token成功\",\"resultData\":{\"accessToken\":\"33A72BE687395D9670518AF616A754BB\",\"tokenMsg\":\"accessToken将在2019-01-14 16:26:40后过期！\"},\"resultCode\":1}";
+        /*String smsResultJson = "{\"resultMsg\":\"获取token成功\",\"resultData\":{\"accessToken\":\"33A72BE687395D9670518AF616A754BB\",\"tokenMsg\":\"accessToken将在2019-01-14 16:26:40后过期！\"},\"resultCode\":1}";
         JSONObject json = new JSONObject(smsResultJson);
         Integer resultCode = json.getInt(SMSUtils.MSG_PARAMS.resultCode.toString());
         if (SMSUtils.RESULT_CODE.SUCCESS.ordinal() == resultCode) {
             JSONObject jo = json.getJSONObject(SMSUtils.MSG_PARAMS.resultData.toString());
             System.out.println(jo.getString(SMSUtils.MSG_PARAMS.accessToken.toString()));
-        }
+        }*/
+        System.out.println("1234".substring(0,2));
     }
 
 

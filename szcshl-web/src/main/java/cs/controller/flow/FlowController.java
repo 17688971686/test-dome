@@ -329,7 +329,6 @@ public class FlowController {
         ProcessDefinitionEntity processDefinitionEntity = (ProcessDefinitionEntity) repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());
         InputStream inputStream = cs.activiti.ProcessDiagramGenerator.generateDiagram(processDefinitionEntity, "PNG", activeActivityIds);
         return inputStream;
-
     }
 
     /*

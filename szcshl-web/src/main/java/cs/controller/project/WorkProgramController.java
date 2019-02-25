@@ -76,7 +76,7 @@ public class WorkProgramController {
     //@RequiresPermissions("workprogram#initWorkProgram#post")
     @RequestMapping(name = "初始化工作方案", path = "initFlowWP", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String,Object> initFlowWP(@RequestParam(required = true) String signId, String taskId,String branchId) {
+    public Map<String,Object> initFlowWP(@RequestParam String signId, String taskId,String branchId) {
         return workProgramService.initWorkProgram(signId,taskId,branchId);
     }
 
@@ -84,7 +84,7 @@ public class WorkProgramController {
     //@RequiresPermissions("workprogram#initWorkProgram#post")
     @RequestMapping(name = "初始化项目基本信息", path = "initBaseInfo", method = RequestMethod.POST)
     @ResponseBody
-    public WorkProgramDto initBaseInfo(@RequestParam(required = true) String signId) {
+    public WorkProgramDto initBaseInfo(@RequestParam String signId) {
         return workProgramService.initBaseInfo(signId);
     }
 

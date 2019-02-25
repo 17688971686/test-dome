@@ -316,7 +316,6 @@ public class SignServiceImpl implements SignService {
             sign.setReceivedate(now);
         }
         return sign;
-
     }
 
     @Override
@@ -725,9 +724,9 @@ public class SignServiceImpl implements SignService {
     @Override
     public ResultMsg endFlow(String signid) {
         if (signRepo.updateSignState(signid, Sign_.signState.getName(), EnumState.FORCE.getValue())) {
-            return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！");
+            return ResultMsg.ok("操作成功！");
         }
-        return new ResultMsg(false, MsgCode.ERROR.getValue(), "操作失败！");
+        return ResultMsg.error("操作失败！");
     }
 
     /************************************** S  新流程项目处理   *********************************************/
@@ -757,16 +756,16 @@ public class SignServiceImpl implements SignService {
             if (!Validate.isString(sign.getBuiltcompanyName()) || !Validate.isString(sign.getDesigncompanyName())
                     || !Validate.isString(sign.getMaindeptName()) || !Validate.isString(sign.getUrgencydegree())
                     || !Validate.isString(sign.getSecrectlevel())) {
-                String resultStr = sign.getBuiltcompanyName() == null ? DEFAULT_BUILD_COMPNAME + "," : "";
-                resultStr += sign.getDesigncompanyName() == null ? DEFAULT_DESIGN_COMPNAME + "," : "";
-                resultStr += sign.getMaindeptName() == null ? "主办处室," : "";
-                resultStr += sign.getUrgencydegree() == null ? "缓急程度," : "";
-                resultStr += sign.getSecrectlevel() == null ? "秘密等级," : "";
-
-                return new ResultMsg(false, MsgCode.ERROR.getValue(), resultStr.substring(0, resultStr.length() - 1) + "不能为空");
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append(sign.getBuiltcompanyName() == null ? DEFAULT_BUILD_COMPNAME + "," : "");
+                stringBuilder.append(sign.getDesigncompanyName() == null ? DEFAULT_DESIGN_COMPNAME + "," : "");
+                stringBuilder.append(sign.getMaindeptName() == null ? "主办处室," : "");
+                stringBuilder.append(sign.getUrgencydegree() == null ? "缓急程度," : "");
+                stringBuilder.append(sign.getSecrectlevel() == null ? "秘密等级," : "");
+                String resultStr = stringBuilder.toString();
+                return ResultMsg.error( resultStr.substring(0, resultStr.length() - 1) + "不能为空");
             }
         }
-
 
         try {
             //1、启动流程

@@ -11,6 +11,7 @@ import cs.domain.project.Sign;
 import cs.domain.project.WorkProgram;
 import cs.domain.sys.OrgDept;
 import cs.domain.sys.SysDept;
+import cs.domain.sys.User;
 import cs.model.project.Achievement;
 import cs.model.project.AchievementSumDto;
 import cs.model.project.SignDto;
@@ -765,5 +766,18 @@ public class ProjUtil {
         return new String[]{beginTime, endTime};
     }
 
+    /**
+     * 校验用户是否是任务用户
+     * @param user
+     * @param userId
+     * @return
+     */
+    public static boolean userIsTaskUser(User user, String userId){
+        if(null == user){
+            return false;
+        }
+        return userId.equals(user.getId()) || userId.equals(user.getTakeUserId());
+
+    }
 
 }

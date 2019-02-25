@@ -147,9 +147,10 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                     workProgram.setCreatedDate(now);
                 }
                 BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto, workProgram);
-
-                workProgram.setState(EnumState.YES.getValue()); //设置工作方案为有效的
-                workProgram.setStudyQuantum(workProgramDto.getStudyQuantum());//调研时间段
+                //设置工作方案为有效的
+                workProgram.setState(EnumState.YES.getValue());
+                //调研时间段
+                workProgram.setStudyQuantum(workProgramDto.getStudyQuantum());
             }
 
             workProgram.setModifiedBy(SessionUtil.getDisplayName());
@@ -202,13 +203,14 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         WorkProgramDto workProgramDto = new WorkProgramDto();
         String curUserId = SessionUtil.getUserId();
         List<User> priUserList = null;
-        //分支
+        //分支信息，如果分支信息不是从页面获取，则从任务定义中获取
         String branchIndex = brandId;
         String mainBranchId = FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue();
         if(Validate.isString(taskId)){
             Task task = taskService.createTaskQuery().taskId(taskId).active().singleResult();
             branchIndex = task.getTaskDefinitionKey().substring(task.getTaskDefinitionKey().length() - 1);
         }
+        //是否主分支
         boolean isMainBrand = ProjUtil.isMainBranch(branchIndex);
         //1、根据收文ID查询出所有的工作方案ID
         Criteria criteria = workProgramRepo.getExecutableCriteria();
@@ -238,10 +240,19 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                     WorkProgram wp = wpList.get(i);
                     boolean isBrandUser = false;
                     if(Validate.isString(branchIndex) && branchIndex.equals(wp.getBranchId())){
-                        if(branchIndex.equals(wp.getId().substring(0,2))){
+                        priUserList = signPrincipalService.getSignPriUser(signId, branchIndex);
+                        for (User user : priUserList) {
+                            //当前处理人是代人人的时候也要考虑进去
+                            if (ProjUtil.userIsTaskUser(user,curUserId)) {
+                                isBrandUser = true;
+                                break;
+                            }
+                        }
+                        /*if(branchIndex.equals(wp.getId().substring(0,2))){
                             User user = userService.getCacheUserById(wp.getCreatedBy());
                             //如果是新增的工作方案，流程还没走完
-                            if((user.getId().equals(curUserId) || curUserId.equals(user.getTakeUserId())) && Validate.isString(wp.getProcessInstanceId())){
+                            boolean isNewWP = (ProjUtil.userIsTaskUser(user,curUserId)) && Validate.isString(wp.getProcessInstanceId());
+                            if(isNewWP){
                                 isBrandUser = true;
                             }
                         }
@@ -250,18 +261,18 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                             priUserList = signPrincipalService.getSignPriUser(signId, branchIndex);
                             for (User user : priUserList) {
                                 //当前处理人是代人人的时候也要考虑进去
-                                if (user.getId().equals(curUserId) || curUserId.equals(user.getTakeUserId())) {
+                                if (ProjUtil.userIsTaskUser(user,curUserId)) {
                                     isBrandUser = true;
                                     break;
                                 }
                             }
-                        }
+                        }*/
                     }
 
-                    //如果是当前分支用户或者代办用户
+                    //如果是当前分支用户或者代办用户,则能编辑对应的工作方案信息，否则只能查看
                     if (isBrandUser) {
                         BeanCopierUtils.copyProperties(wp, workProgramDto);
-                        if (Validate.isString(mainW.getId()) && !ProjUtil.isMainBranch(wp.getBranchId())) {
+                        if (Validate.isObject(mainW) && Validate.isString(mainW.getId()) && !ProjUtil.isMainBranch(wp.getBranchId())) {
                             WorkProgramDto mainWPDto = new WorkProgramDto();
                             BeanCopierUtils.copyProperties(mainW, mainWPDto);
                             workProgramDto.setMainWorkProgramDto(mainWPDto);
@@ -271,7 +282,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                     } else {
                         WorkProgramDto wpDto = new WorkProgramDto();
                         BeanCopierUtils.copyProperties(wp, wpDto);
-                        if (Validate.isString(mainW.getId()) && !ProjUtil.isMainBranch(wp.getBranchId())) {
+                        if (Validate.isObject(mainW) && Validate.isString(mainW.getId()) && !ProjUtil.isMainBranch(wp.getBranchId())) {
                             WorkProgramDto mainWPDto = new WorkProgramDto();
                             BeanCopierUtils.copyProperties(mainW, mainWPDto);
                             wpDto.setMainWorkProgramDto(mainWPDto);
@@ -295,7 +306,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             }
             for (User user : priUserList) {
                 //当前处理人是代办人的时候也要考虑进去
-                if (user.getId().equals(curUserId) || curUserId.equals(user.getTakeUserId())) {
+                if (ProjUtil.userIsTaskUser(user,curUserId)) {
                     isMainFlowPri = true;
                     break;
                 }
@@ -328,7 +339,8 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 if (isMerge) {
                     WorkProgram mainWP = workProgramRepo.findMainReviewWP(signId);
                     if (mainWP != null) {
-                        workProgramDto.setReviewType(mainWP.getReviewType());           //评审方式要跟主项目一致
+                        //评审方式要跟主项目一致
+                        workProgramDto.setReviewType(mainWP.getReviewType());
                     }
                     workProgramDto.setIsSigle(Constant.MergeType.REVIEW_MERGE.getValue());
                     workProgramDto.setIsMainProject(EnumState.NO.getValue());
@@ -343,7 +355,6 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             }
             workProgramDto.setMainWorkProgramDto(mainWPDto);
         }
-
         resultMap.put("eidtWP", workProgramDto);
         return resultMap;
     }

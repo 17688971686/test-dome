@@ -81,8 +81,11 @@ public class Org extends DomainBase {
     @Column(columnDefinition = "varchar(255)")
     private String orgIdentity;
 
+    /**
+     * 排序
+     */
     @Column(columnDefinition = "integer")
-    private Integer sort;        //排序
+    private Integer sort;
 
     @OneToMany(mappedBy = "org", fetch = FetchType.LAZY)
     private List<User> users;
