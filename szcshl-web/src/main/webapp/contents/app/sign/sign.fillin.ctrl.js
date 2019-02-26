@@ -19,7 +19,9 @@
         function active() {
             signSvc.initFillData(vm.model.signid, function (data) {
                 vm.model = data.reObj.sign;
-                vm.deptlist = data.reObj.deptlist
+                vm.deptlist = data.reObj.deptlist;
+                //不同的类型的评审项目名称
+                vm.orgNameGroupMap = data.reObj.orgNameGroupMap || {};
 
                 if (data.reObj.mainOfficeList) {
                     vm.mainOfficeList = data.reObj.mainOfficeList;
@@ -91,9 +93,11 @@
                     }
                 })
                 if (checkboxValue == signcommon.getBusinessType().GX) {
-                    vm.model.leaderhandlesug = "请（概算一部         概算二部）组织评审。";
+                    var orgName = vm.orgNameGroupMap[signcommon.getBusinessType().GX];
+                    vm.model.leaderhandlesug = "请（"+orgName+"）组织评审。";
                 } else {
-                    vm.model.leaderhandlesug = "请（评估一部         评估二部        信息技术组）组织评审。";
+                    var orgName = vm.orgNameGroupMap[signcommon.getBusinessType().PX];
+                    vm.model.leaderhandlesug = "请（"+orgName+"）组织评审。";
                 }
                 if (!vm.model.leaderId) {
                     bsWin.alert("选择的默认办理部门没有合适的分管领导，请先设置分管领导角色用户！");

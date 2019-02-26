@@ -45,10 +45,7 @@ import cs.service.expert.ExpertReviewService;
 import cs.service.external.OfficeUserService;
 import cs.service.flow.FlowService;
 import cs.service.rtx.RTXSendMsgPool;
-import cs.service.sys.CompanyService;
-import cs.service.sys.SysConfigService;
-import cs.service.sys.UserService;
-import cs.service.sys.WorkdayService;
+import cs.service.sys.*;
 import cs.sql.*;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
@@ -165,7 +162,8 @@ public class SignServiceImpl implements SignService {
     private AssistUnitRepo assistUnitRepo;
     @Autowired
     private ProjectStopRepo projectStopRepo;
-
+    @Autowired
+    private OrgDeptService orgDeptService;
     /**
      * 项目签收保存操作（这里的方法是正式签收）
      *
@@ -474,6 +472,8 @@ public class SignServiceImpl implements SignService {
             });
             map.put("registerFileDtoDtoList", registerFileDtoList);
         }
+        //部门分组问题
+        map.put("orgNameGroupMap",orgDeptService.groubOrgNameByType("   "));
 
         return new ResultMsg(true, MsgCode.OK.getValue(), "查询数据成功", map);
     }
@@ -2572,13 +2572,13 @@ public class SignServiceImpl implements SignService {
     public void initSignDeptInfo(Sign sign) {
         //4、默认办理部门（项目建议书、可研为PX，概算为GX，其他为评估）
         if (!Validate.isString(sign.getDealOrgType())) {
+            Map<String,String> orgNameGroupMap = orgDeptService.groubOrgNameByType(" ");
+            String orgType = ProjectConstant.BUSINESS_TYPE.PX.toString();
             if (ProjectConstant.REVIEW_STATE_ENUM.STAGEBUDGET.getZhCode().equals(sign.getReviewstage())) {
-                sign.setDealOrgType(ProjectConstant.BUSINESS_TYPE.GX.toString());
-                sign.setLeaderhandlesug("请（概算一部 概算二部）组织评审。");
-            } else {
-                sign.setDealOrgType(ProjectConstant.BUSINESS_TYPE.PX.toString());
-                sign.setLeaderhandlesug("请（评估一部 评估二部 信息技术组）组织评审。");
+                orgType = ProjectConstant.BUSINESS_TYPE.GX.toString();
             }
+            sign.setDealOrgType(orgType);
+            sign.setLeaderhandlesug("请（"+ orgNameGroupMap.get(orgType)+"）组织评审。");
         }
 
         if (!Validate.isString(sign.getLeaderId())) {

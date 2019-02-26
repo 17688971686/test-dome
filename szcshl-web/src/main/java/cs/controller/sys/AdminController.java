@@ -428,8 +428,11 @@ public class AdminController {
             List<OrgDept> allOrgDept = authMap.get("allOrgDeptList") == null ? orgDeptService.queryAll() : (List<OrgDept>) authMap.get("allOrgDeptList");
             for (OrgDept orgDept : allOrgDept) {
                 if (dataMap.get(orgDept.getId()) != null) {
+                    Map<String, Object> runTaskInfoMap = dataMap.get(orgDept.getId());
+                    runTaskInfoMap.put("HISTOGRAM_NAME", orgDept.getName());
+                    histogramMap.put(orgDept.getName(), runTaskInfoMap);
                     //综合部
-                    if (Constant.OrgType.ORGZHB.getKey().equals(orgDept.getName())) {
+                   /* if (Constant.OrgType.ORGZHB.getKey().equals(orgDept.getName())) {
                         Map<String, Object> runTaskInfoMap = dataMap.get(orgDept.getId());
                         runTaskInfoMap.put("HISTOGRAM_NAME", Constant.OrgType.ORGZHB.getKey());
                         histogramMap.put(Constant.OrgType.ORGZHB.getKey(), runTaskInfoMap);
@@ -463,7 +466,7 @@ public class AdminController {
                         Map<String, Object> runTaskInfoMap = dataMap.get(orgDept.getId());
                         runTaskInfoMap.put("HISTOGRAM_NAME", Constant.OrgType.ORGGSEB.getKey());
                         histogramMap.put(Constant.OrgType.ORGGSEB.getKey(), runTaskInfoMap);
-                    }
+                    }*/
                 }
             }
             if (dataMap.get(unWorkId) != null) {

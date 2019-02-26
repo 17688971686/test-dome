@@ -45,6 +45,13 @@ public class OrgDept {
      */
     @Column
     private String type;
+
+    /**
+     * 部门或者组别类型（PX代表评估，GX代表概算）
+     */
+    @Column
+    private String orgType;
+
     @Column(columnDefinition = "INTEGER")
     private Integer sort;
 
@@ -126,5 +133,13 @@ public class OrgDept {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getOrgType() {
+        return orgType;
+    }
+
+    public void setOrgType(String orgType) {
+        this.orgType = orgType;
     }
 }

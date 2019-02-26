@@ -591,52 +591,6 @@ public class Constant {
     }
 
     /**
-     * 部门对应的类型
-     */
-    public static enum OrgType {
-        ORGZHB("综合部", ""),
-        ORGPGYB("评估一部", "PX"),
-        ORGPGEB("评估二部", "PX"),
-        ORGGSYB("概算一部", "GX"),
-        ORGGSEB("概算二部", "GX"),
-        ORXXHZ("信息技术组", "PX");
-
-        private String key;
-        private String value;
-
-        OrgType(String key, String value) {
-            this.key = key;
-            this.value = value;
-        }
-
-        public static String getValue(String key) {
-            OrgType[] enums = OrgType.values();
-            for (int i = 0; i < enums.length; i++) {
-                if (enums[i].getKey().equals(key)) {
-                    return enums[i].getValue();
-                }
-            }
-            return "";
-        }
-
-        public String getKey() {
-            return key;
-        }
-
-        public void setKey(String key) {
-            this.key = key;
-        }
-
-        public String getValue() {
-            return value;
-        }
-
-        public void setValue(String value) {
-            this.value = value;
-        }
-    }
-
-    /**
      * 文件库-文件类型
      */
     public static enum libraryType {

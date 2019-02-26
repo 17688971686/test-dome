@@ -50,9 +50,6 @@ public class Org extends DomainBase {
     @Column(columnDefinition = "varchar(255)")
     private String orgCompany; //所属单位
 
-    @Column(columnDefinition = "varchar(255)")
-    private String orgOrder; //单位序号
-
     //编号对应的字段
     @Column(columnDefinition = "varchar(255)")
     private String orgFirstName; //上级部门名称
@@ -80,7 +77,11 @@ public class Org extends DomainBase {
 
     @Column(columnDefinition = "varchar(255)")
     private String orgIdentity;
-
+    /**
+     * 部门类型（主要用于区分填写项目的默认分办部门意见）
+     */
+    @Column(columnDefinition = "varchar(16)")
+    private String orgType;
     /**
      * 排序
      */
@@ -186,12 +187,12 @@ public class Org extends DomainBase {
         this.orgCompany = orgCompany;
     }
 
-    public String getOrgOrder() {
-        return orgOrder;
+    public String getOrgType() {
+        return orgType;
     }
 
-    public void setOrgOrder(String orgOrder) {
-        this.orgOrder = orgOrder;
+    public void setOrgType(String orgType) {
+        this.orgType = orgType;
     }
 
     public String getOrgFirstName() {

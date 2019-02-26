@@ -137,4 +137,18 @@ public final class SysConstants {
          */
         LOCAL_URL;
     }
+
+    /**
+     * V_ORG_DEPT 视图中， type字段标识说明
+     */
+    public enum ORGDEPT_TYPE_ENUM{
+        /**
+         * org表示部门
+         */
+        org,
+        /**
+         * dept表示组别
+         */
+        dept
+    }
 }

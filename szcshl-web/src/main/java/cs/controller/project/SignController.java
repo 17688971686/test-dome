@@ -327,11 +327,7 @@ public class SignController {
     @RequestMapping(name = "初始收文编辑页面", path = "html/initFillPageData", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg initFillPageData(@RequestParam String signid) {
-        ResultMsg resultMsg = signService.initFillPageData(signid);
-        if(!Validate.isObject(resultMsg)){
-            resultMsg = ResultMsg.error(ERROR_MSG);
-        }
-        return resultMsg;
+        return signService.initFillPageData(signid);
     }
 
     @RequiresAuthentication

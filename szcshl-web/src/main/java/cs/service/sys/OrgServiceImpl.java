@@ -1,16 +1,20 @@
 package cs.service.sys;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
-
-import cs.common.constants.Constant;
+import cs.common.RandomGUID;
 import cs.common.ResultMsg;
+import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.sys.*;
+import cs.model.PageModelDto;
+import cs.model.sys.CompanyDto;
+import cs.model.sys.OrgDto;
+import cs.model.sys.UserDto;
+import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.sys.CompanyRepo;
 import cs.repository.repositoryImpl.sys.OrgDeptRepo;
+import cs.repository.repositoryImpl.sys.OrgRepo;
+import cs.repository.repositoryImpl.sys.UserRepo;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
@@ -20,16 +24,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cs.common.utils.BeanCopierUtils;
-import cs.model.PageModelDto;
-import cs.model.sys.CompanyDto;
-import cs.model.sys.OrgDto;
-import cs.model.sys.UserDto;
-import cs.repository.odata.ODataObj;
-import cs.repository.repositoryImpl.sys.CompanyRepo;
-import cs.repository.repositoryImpl.sys.OrgRepo;
-import cs.repository.repositoryImpl.sys.UserRepo;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
+/**
+ * @author ldm
+ */
 @Service
 public class OrgServiceImpl implements OrgService {
     private static Logger logger = Logger.getLogger(UserServiceImpl.class);
@@ -56,7 +57,6 @@ public class OrgServiceImpl implements OrgService {
             BeanCopierUtils.copyProperties(o, orgDto);
             orgDtoList.add(orgDto);
         });
-
         PageModelDto<OrgDto> pageModelDto = new PageModelDto<>();
         pageModelDto.setCount(odataObj.getCount());
         pageModelDto.setValue(orgDtoList);
@@ -78,17 +78,17 @@ public class OrgServiceImpl implements OrgService {
             BeanCopierUtils.copyProperties(orgDto, org);
             if (Validate.isString(org.getOrgSLeader())) {
                 User user = userRepo.findById(User_.id.getName(), org.getOrgSLeader());
-                String newMngOrgType = Constant.OrgType.getValue(org.getName());
+                String orgType = org.getOrgType();
                 //查看其是否还有分管部门
-                if (orgRepo.checkMngOrg(user.getId()) > 0 && !user.getMngOrgType().equals(newMngOrgType)) {
+                if (orgRepo.checkMngOrg(user.getId()) > 0 && !orgType.equals(user.getMngOrgType())) {
                     return ResultMsg.error("操作失败，分管领导不能同时分管概算部又分管评估部！");
                 }
-                user.setMngOrgType(newMngOrgType);
+                user.setMngOrgType(orgType);
                 userRepo.save(user);
             }
 
             Date now = new Date();
-            org.setId(UUID.randomUUID().toString());
+            org.setId((new RandomGUID()).valueAfterMD5);
             org.setCreatedBy(SessionUtil.getLoginName());
             org.setCreatedDate(now);
             org.setModifiedBy(SessionUtil.getLoginName());
@@ -96,31 +96,29 @@ public class OrgServiceImpl implements OrgService {
 
             orgRepo.save(org);
             orgDeptRepo.fleshOrgDeptCache();
-            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), org.getId(), "操作成功！", null);
-            //logger.info(String.format("创建部门,部门名:%s", orgDto.getOrgIdentity()));
+            return ResultMsg.ok("操作成功！");
         } else {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), String.format("部门标识：%s 已经存在,请重新输入！", orgDto.getOrgIdentity()));
-            //throw new IllegalArgumentException(String.format("部门标识：%s 已经存在,请重新输入！", orgDto.getOrgIdentity()));
+            return ResultMsg.error(String.format("部门标识：%s 已经存在,请重新输入！", orgDto.getOrgIdentity()));
         }
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ResultMsg updateOrg(OrgDto orgDto) {
         Org org = orgRepo.findById(Org_.id.getName(), orgDto.getId());
         String oldOrgSLeader = org.getOrgSLeader();
         if (Validate.isString(orgDto.getOrgSLeader()) && !oldOrgSLeader.equals(orgDto.getOrgSLeader())) {
             User user = userRepo.findById(User_.id.getName(), orgDto.getOrgSLeader());
-            String newMngOrgType = Constant.OrgType.getValue(orgDto.getName());
+            String orgType = org.getOrgType();
             //查看其是否还有分管部门
-            if (orgRepo.checkMngOrg(user.getId()) > 0 && !newMngOrgType.equals(user.getMngOrgType())) {
+            if (orgRepo.checkMngOrg(user.getId()) > 0 && !orgType.equals(user.getMngOrgType())) {
                 return ResultMsg.error( "操作失败，分管领导不能同时分管概算部又分管评估部！");
             } else {
-                user.setMngOrgType(newMngOrgType);
+                user.setMngOrgType(orgType);
                 userRepo.save(user);
             }
         }
-        BeanCopierUtils.copyPropertiesIgnoreNull(orgDto, org);
+        BeanCopierUtils.copyProperties(orgDto, org);
         if (Validate.isString(oldOrgSLeader)) {
             //查看其是否还有分管部门
             if (orgRepo.checkMngOrg(oldOrgSLeader) == 0) {
@@ -212,7 +210,7 @@ public class OrgServiceImpl implements OrgService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void addUserToOrg(String userId, String orgId) {
         Org org = orgRepo.findById(orgId);
         if (org != null) {

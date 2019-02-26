@@ -4,6 +4,7 @@ import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.constants.Constant;
 import cs.common.constants.Constant.EnumFlowNodeGroupName;
+import cs.common.constants.SysConstants;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.StringUtil;
@@ -163,11 +164,11 @@ public class UserServiceImpl implements UserService {
                 }
                 //添加部门
                 if (Validate.isString(userDto.getOrgId())) {
-                    Org o = orgRepo.findById(Org_.id.getName(), userDto.getOrgId());
-                    user.setOrg(o);
+                    Org org = orgRepo.findById(Org_.id.getName(), userDto.getOrgId());
+                    user.setOrg(org);
                     //如果是分管领导，则设置默认分管部门类型
                     if (isSLeader) {
-                        user.setMngOrgType(Constant.OrgType.getValue(o.getName()));
+                        user.setMngOrgType(org.getOrgType());
                     }
                 }
                 userRepo.save(user);
@@ -229,11 +230,11 @@ public class UserServiceImpl implements UserService {
         }
         //添加部门
         if (Validate.isString(userDto.getOrgId())) {
-            Org o = orgRepo.findById(userDto.getOrgId());
-            user.setOrg(o);
+            Org org = orgRepo.findById(userDto.getOrgId());
+            user.setOrg(org);
             //如果是分管领导，则设置默认分管部门类型
             if (isSLeader) {
-                user.setMngOrgType(Constant.OrgType.getValue(o.getName()));
+                user.setMngOrgType(org.getOrgType());
             }
         }
         userRepo.save(user);
@@ -928,7 +929,7 @@ public class UserServiceImpl implements UserService {
             for (OrgDept od : allOrgDeptList) {
                 if (leaderFlag == 0) {
                     if (curUserId.equals(od.getDirectorID())) {
-                        if (od.getName().equals(Constant.OrgType.ORXXHZ.getKey())) {
+                        if ((SysConstants.ORGDEPT_TYPE_ENUM.dept.toString()).equals(od.getType())) {
                             //评估一部信息化组
                             leaderFlag = 4;
                         } else {
