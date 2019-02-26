@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import cs.common.constants.Constant;
 import cs.common.HqlBuilder;
+import cs.common.constants.SysConstants;
 import cs.common.utils.SessionUtil;
 import cs.domain.project.AssistPlan;
 import cs.model.sys.SysConfigDto;
@@ -64,14 +65,15 @@ public class AssistUnitServiceImpl implements AssistUnitService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void save(AssistUnitDto record) {
         boolean isUnitExist = assistUnitRepo.isUnitExist(record.getUnitName());
-        if (!isUnitExist) {//单位不存在
+        //单位不存在
+        if (!isUnitExist) {
             AssistUnit domain = new AssistUnit();
             BeanCopierUtils.copyProperties(record, domain);
             domain.setId(UUID.randomUUID().toString());
-            domain.setIsUse("1");//默认是在用
+            domain.setIsUse("1");
             int unitSort = assistUnitRepo.getUnitSortMax();
             domain.setUnitSort(++unitSort);
             Date now = new Date();
@@ -86,7 +88,7 @@ public class AssistUnitServiceImpl implements AssistUnitService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void update(AssistUnitDto record) {
         AssistUnit domain = assistUnitRepo.findById(record.getId());
         BeanCopierUtils.copyPropertiesIgnoreNull(record, domain);
@@ -107,27 +109,11 @@ public class AssistUnitServiceImpl implements AssistUnitService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void delete(String ids) {
-        String[] idArr = ids.split(",");
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append("update " + AssistUnit.class.getSimpleName() + " set " + AssistUnit_.isUse.getName() + "='0' ");
-
-        if (idArr.length > 1) {
-            hqlBuilder.append(" where " + AssistUnit_.id.getName() + " in ( ");
-            int totalL = idArr.length;
-            for (int i = 0; i < totalL; i++) {
-                if (i == totalL - 1) {
-                    hqlBuilder.append(" :id" + i).setParam("id" + i, idArr[i]);
-                } else {
-                    hqlBuilder.append(" :id" + i + ",").setParam("id" + i, idArr[i]);
-                }
-            }
-            hqlBuilder.append(" )");
-        } else {
-            hqlBuilder.append(" where " + AssistUnit_.id.getName() + " = :id ");
-            hqlBuilder.setParam("id", idArr[0]);
-        }
+        hqlBuilder.bulidPropotyString("where",AssistUnit_.id.getName(),ids);
         assistUnitRepo.executeHql(hqlBuilder);
     }
 
@@ -139,7 +125,7 @@ public class AssistUnitServiceImpl implements AssistUnitService {
      * @return
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public List<AssistUnitDto> findDrawUnit(String planId, Integer number,String drawType) {
         List<AssistUnitDto> resultList = new ArrayList<>();
         List<AssistUnit> saveList = new ArrayList<>();
@@ -165,11 +151,12 @@ public class AssistUnitServiceImpl implements AssistUnitService {
          */
         if (number > 0) {
             //2、取出前一次抽签的最大序号
-            sysConfig = sysConfigService.findByDataKey(Constant.RevireStageKey.LAST_UNIT_MAXSORT.getValue());
+            String configKey = SysConstants.SYS_CONFIG_ENUM.LAST_UNIT_MAXSORT.toString();
+            sysConfig = sysConfigService.findByDataKey(configKey);
             if (sysConfig == null || !Validate.isString(sysConfig.getId())) {
                 sysConfig = new SysConfigDto();
                 sysConfig.setConfigName(Constant.DRAW_ASSIST_UNITNAME);
-                sysConfig.setConfigKey(Constant.RevireStageKey.LAST_UNIT_MAXSORT.getValue());
+                sysConfig.setConfigKey(configKey);
                 sysConfig.setConfigValue(String.valueOf(number));
                 sysConfig.setIsShow(Constant.EnumState.NO.getValue());
             } else {
@@ -179,16 +166,18 @@ public class AssistUnitServiceImpl implements AssistUnitService {
             //3、按照序号轮流抽签
             HqlBuilder sqlBuilder = HqlBuilder.create();
             sqlBuilder.append(" SELECT nUnit.* FROM ( ");
-            sqlBuilder.append(" SELECT cu.*,CASE WHEN  unitsort < :maxSort then (10000+unitsort) else unitsort end newSort FROM CS_AS_UNIT cu");
+            sqlBuilder.append(" SELECT cu.*,CASE WHEN  unitsort < :maxSort then (10000+unitsort) else unitsort end newSort ");
             sqlBuilder.setParam("maxSort", (maxSort + 1));
+            sqlBuilder.append(" FROM CS_AS_UNIT cu ");
             if (Validate.isString(assistUnitDto.getId())) {
-                sqlBuilder.append("   WHERE id != :id").setParam("id", assistUnitDto.getId()).append(" ORDER BY newSort ");
+                sqlBuilder.append(" WHERE id != :id ORDER BY newSort ");
+                sqlBuilder.setParam("id", assistUnitDto.getId());
             }
-            sqlBuilder.append(" ) nUnit WHERE ROWNUM < :number ").setParam("number", number + 1);
-            hqlBuilder.append(" " + AssistUnit_.isUse.getName() + "='1'");
+            sqlBuilder.append(" ) nUnit WHERE ROWNUM < :number ");
+            sqlBuilder.setParam("number", number + 1);
+            hqlBuilder.append(" " + AssistUnit_.isUse.getName() + "= '1' ");
             list = assistUnitRepo.findBySql(sqlBuilder);
             saveList.addAll(list);
-
             if (Validate.isList(list)) {
                 list.forEach(l -> {
                     AssistUnitDto unitDto = new AssistUnitDto();
@@ -212,23 +201,19 @@ public class AssistUnitServiceImpl implements AssistUnitService {
             sysConfigService.save(sysConfig);
             //刷新缓存
         }
-
         return resultList;
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public List<AssistUnitDto> getAssistUnitByPlanId(String planId) {
         List<AssistUnit> assistUnitList = assistUnitRepo.getAssistUnitByPlanId(planId);
-
         List<AssistUnitDto> assistUnitDtoList = new ArrayList<>();
-
         for (AssistUnit assistUnit : assistUnitList) {
             AssistUnitDto assistUnitDto = new AssistUnitDto();
             BeanCopierUtils.copyProperties(assistUnit, assistUnitDto);
             assistUnitDtoList.add(assistUnitDto);
         }
-
         return assistUnitDtoList;
     }
 

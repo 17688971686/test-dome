@@ -9,6 +9,7 @@ import cs.common.FGWResponse;
 import cs.common.IFResultCode;
 import cs.common.ResultMsg;
 import cs.common.constants.Constant;
+import cs.common.constants.SysConstants;
 import cs.common.utils.DateUtils;
 import cs.common.utils.SMSUtils;
 import cs.common.utils.Validate;
@@ -24,8 +25,6 @@ import cs.service.rtx.RTXService;
 import cs.service.sys.LogService;
 import cs.service.sys.MsgService;
 import cs.service.sys.WorkdayService;
-import cs.threadtask.MsgThread;
-import cs.xss.XssShieldUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -33,11 +32,8 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import static cs.common.constants.Constant.MsgType.incoming_type;
-import static cs.common.constants.Constant.RevireStageKey.SMS_SING_NOTICE_USER;
 
 /**
  * 系统接口controller
@@ -95,7 +91,7 @@ public class SysRestController {
         }
         //如果已经启用短信提醒,并且在早上8点-晚上8点时间段内
         if (rtxService.rtxSMSEnabled() && SMSUtils.isSendTime()) {
-            List<User> recvUserList = msgService.getNoticeUserByConfigKey(SMS_SING_NOTICE_USER.getValue());
+            List<User> recvUserList = msgService.getNoticeUserByConfigKey(SysConstants.SYS_CONFIG_ENUM.SMS_SING_NOTICE_USER.toString());
             if(Validate.isList(recvUserList)){
                 String msgContent = SMSUtils.buildSendMsgContent(null,incoming_type.name(),projName+"["+fileCode+"]",resultMsg.isFlag());
                 SMSLog smsLog = new SMSLog();

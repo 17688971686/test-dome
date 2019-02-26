@@ -1,7 +1,6 @@
 package cs.repository.repositoryImpl.expert;
 
 
-import cs.common.ResultMsg;
 import cs.domain.expert.ExpertReview;
 import cs.model.expert.ExpertReviewDto;
 import cs.model.expert.ExpertSelectedDto;
@@ -9,7 +8,6 @@ import cs.repository.IRepository;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Description: 专家评审 数据操作实现接口
@@ -79,7 +77,7 @@ public interface ExpertReviewRepo extends IRepository<ExpertReview, String> {
      * 查询未处理的评审方案
      * @return
      */
-    List<ExpertReview> queryUndealReview();
+    List queryUndealReview();
 
     /**
      * 保存专家评审费发放打印方案

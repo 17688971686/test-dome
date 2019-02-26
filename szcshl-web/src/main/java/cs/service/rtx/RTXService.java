@@ -2,6 +2,7 @@ package cs.service.rtx;
 
 import cs.common.ResultMsg;
 import cs.common.constants.Constant;
+import cs.common.constants.SysConstants;
 import cs.common.sysprop.BusinessProperties;
 import cs.common.utils.RTXUtils;
 import cs.common.utils.SMSUtils;
@@ -26,12 +27,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-import static cs.common.constants.Constant.RevireStageKey.RTX_ENABLED;
-import static cs.common.constants.Constant.RevireStageKey.SMS_SYS_TYPE;
-
+import static cs.common.constants.SysConstants.GBK;
+import static cs.common.constants.SysConstants.SYS_BUSI_PROP_BEAN;
 
 @Service
 public class RTXService {
@@ -41,13 +39,10 @@ public class RTXService {
 
     @Autowired
     private UserRepo userRepo;
-
     @Autowired
     private SysConfigService sysConfigService;
-
     @Autowired
     private LogService logService;
-
     @Autowired
     private MsgService msgService;
     /**
@@ -61,18 +56,18 @@ public class RTXService {
         String strSessionKey = "";
         BufferedReader reader = null;
         if (!Validate.isString(url)) {
-            BusinessProperties businessProperties = SpringContextUtil.getBean("businessProperties");
+            BusinessProperties businessProperties = SpringContextUtil.getBean(SYS_BUSI_PROP_BEAN);
             url = businessProperties.getRtxUrl();
         }
         url += RTX_GETSESSION;
         try {
-            url += "receiver=" + URLEncoder.encode(loginUser, "GBK");
+            url += "receiver=" + URLEncoder.encode(loginUser, GBK);
             java.net.URL loginUrl = new URL(url);
             HttpURLConnection httpConnection = (HttpURLConnection) loginUrl.openConnection();
             reader = new BufferedReader(new InputStreamReader(httpConnection.getInputStream()));
             strSessionKey = reader.readLine();
         } catch (Exception e) {
-            System.out.println("获取腾讯通sessionKey异常：" + e);
+            logger.error("获取腾讯通sessionKey异常：" + e);
         }finally {
             if(Validate.isObject(reader)){
                 try {
@@ -97,18 +92,18 @@ public class RTXService {
         String userState = "0";
         BufferedReader reader = null;
         if (!Validate.isString(url)) {
-            BusinessProperties businessProperties = SpringContextUtil.getBean("businessProperties");
+            BusinessProperties businessProperties = SpringContextUtil.getBean(SYS_BUSI_PROP_BEAN);
             url = businessProperties.getRtxUrl();
         }
         url += RTX_GETSTATUS;
         try {
-            url += "username=" + URLEncoder.encode(loginUser, "GBK");
+            url += "username=" + URLEncoder.encode(loginUser, GBK);
             java.net.URL loginUrl = new URL(url);
             HttpURLConnection httpConnection = (HttpURLConnection) loginUrl.openConnection();
             reader = new BufferedReader(new InputStreamReader(httpConnection.getInputStream()));
             userState = reader.readLine();
         } catch (Exception e) {
-            System.out.println("获取用户在线状态异常：" + e);
+            logger.error("获取用户在线状态异常：" + e);
             userState = "3";
         }finally {
             if(Validate.isObject(reader)){
@@ -164,7 +159,7 @@ public class RTXService {
      * @return
      */
     public boolean rtxEnabled() {
-        SysConfigDto sysConfigDto = sysConfigService.findByKey(RTX_ENABLED.getValue());
+        SysConfigDto sysConfigDto = sysConfigService.findByKey(SysConstants.SYS_CONFIG_ENUM.RTX_ENABLED.toString());
         if (sysConfigDto != null && Constant.EnumState.YES.getValue().equals(sysConfigDto.getConfigValue())) {
             return true;
         } else {
@@ -178,24 +173,12 @@ public class RTXService {
      * @return
      */
     public boolean rtxSMSEnabled() {
-        SysConfigDto sysConfigDto = sysConfigService.findByKey(SMS_SYS_TYPE.getValue());
+        SysConfigDto sysConfigDto = sysConfigService.findByKey(SysConstants.SYS_CONFIG_ENUM.SMS_SYS_TYPE.toString());
         if (sysConfigDto != null && Constant.EnumState.NO.getValue().equals(sysConfigDto.getConfigValue())) {
             return true;
         } else {
             return false;
         }
-    }
-
-    public static void main(String[] args) {
-       /* List<User> receiverList = new ArrayList<>();
-        User user = new User();
-        user.setUserMPhone("18038078167");
-        user.setDisplayName("2131");
-        receiverList.add(user);
-        for (int i = 0; i < 10; i++) {
-
-            SMSUtils.seekSMSThreadToDo(null, receiverList, "测试项目", "", "task_type", "待办", "ceshi", null);
-        }*/
     }
 
 }

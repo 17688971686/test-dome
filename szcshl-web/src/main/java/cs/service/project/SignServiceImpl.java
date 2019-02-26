@@ -70,6 +70,7 @@ import java.util.*;
 import static cs.common.constants.Constant.*;
 import static cs.common.constants.FlowConstant.*;
 import static cs.common.constants.IgnoreProps.PUSH_SIGN_IGNORE_PROPS;
+import static cs.common.constants.ProjectConstant.CAUTION_LIGHT_ENUM.NO_LIGHT;
 import static cs.common.constants.SysConstants.SEPARATE_COMMA;
 
 /**
@@ -258,7 +259,7 @@ public class SignServiceImpl implements SignService {
     @Transactional(rollbackFor = Exception.class)
     public ResultMsg reserveAddSign(SignDto signDto) {
         if (!ProjUtil.checkProjDataValidate(signDto)) {
-            return new ResultMsg(false, MsgCode.ERROR.getValue(), "项目代码、评审阶段、项目名称和收文编号为空或者有特殊字符，保存失败！");
+            return ResultMsg.error( "项目代码、评审阶段、项目名称和收文编号为空或者有特殊字符，保存失败！");
         }
         Sign sign = null;
         Date now = new Date();
@@ -317,7 +318,7 @@ public class SignServiceImpl implements SignService {
         sign.setCreatedDate(now);
         sign.setCreatedBy(isSignUser ? SessionUtil.getLoginName() : SysConstants.SUPER_ACCOUNT);
         //默认为不亮灯
-        sign.setIsLightUp(Constant.signEnumState.NOLIGHT.getValue());
+        sign.setIsLightUp(NO_LIGHT.getCodeValue());
         //0 用于区别签收和预签收页面实现送来资料存放位置
         if (isPreSign) {
             //预签收日期
@@ -333,7 +334,7 @@ public class SignServiceImpl implements SignService {
 
     @Override
     public PageModelDto<SignDto> get(ODataObj odataObj) {
-        PageModelDto<SignDto> pageModelDto = new PageModelDto<SignDto>();
+        PageModelDto<SignDto> pageModelDto = new PageModelDto<>();
         List<Sign> signList = signRepo.findByOdata(odataObj);
         if (Validate.isList(signList)) {
             List<SignDto> signDtoList = new ArrayList<>(signList.size());
@@ -824,7 +825,7 @@ public class SignServiceImpl implements SignService {
             return new ResultMsg(true, MsgCode.OK.getValue(), task.getId(), "操作成功！", sign.getProjectname());
         } catch (Exception e) {
             log.error("发起项目签收流程异常：" + e.getMessage());
-            return new ResultMsg(false, MsgCode.ERROR.getValue(), "操作异常，错误信息已记录，请刷新重试或联系管理员处理！");
+            return ResultMsg.error( "操作异常，错误信息已记录，请刷新重试或联系管理员处理！");
         }
     }
 
@@ -869,7 +870,7 @@ public class SignServiceImpl implements SignService {
 
                 sign = signRepo.findById(Sign_.signid.getName(), signid);
                 if (!Validate.isString(sign.getLeaderName())) {
-                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "操作失败，请先设置默认办理部门！");
+                    return ResultMsg.error( "操作失败，请先设置默认办理部门！");
                 }
                 task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
              /*   taskService.addComment(task.getId(), processInstance.getId(), sign.getComprehensivehandlesug());    //综合部拟办意见*/
@@ -881,7 +882,7 @@ public class SignServiceImpl implements SignService {
             //分管副主任审批
             case FlowConstant.FLOW_SIGN_FGLD_FB:
                 if (flowDto.getBusinessMap().get(SignFlowParams.MAIN_ORG.getValue()) == null) {
-                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先选择主办部门！");
+                    return ResultMsg.error("请先选择主办部门！");
                 }
                 sign = signRepo.findById(Sign_.signid.getName(), signid);
                 //流程分支
@@ -894,7 +895,7 @@ public class SignServiceImpl implements SignService {
                 variables.put(FlowConstant.SignFlowParams.BRANCH1.getValue(), true);
                 orgDept = orgDeptRepo.findOrgDeptById(businessId);
                 if (orgDept == null || !Validate.isString(orgDept.getDirectorID())) {
-                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "请设置" + orgDept.getName() + "的部门负责人！");
+                    return ResultMsg.error( "请设置" + orgDept.getName() + "的部门负责人！");
                 }
                 int branchCount = 1;
                 //主办部门信息
@@ -916,7 +917,7 @@ public class SignServiceImpl implements SignService {
 
                 if (Validate.isList(assistOrgIdList)) {
                     if (assistOrgIdList.size() > 3) {
-                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "协办部门最多只能选择3个！");
+                        return ResultMsg.error( "协办部门最多只能选择3个！");
                     }
                     String aOrgId = "", aOrgName = "";
                     for (int i = 2, l = (assistOrgIdList.size() + 2); i < l; i++) {
@@ -926,7 +927,7 @@ public class SignServiceImpl implements SignService {
                         //判断是否有部门负责人
                         orgDept = orgDeptRepo.findOrgDeptById(businessId);
                         if (orgDept == null || !Validate.isString(orgDept.getDirectorID())) {
-                            return new ResultMsg(false, MsgCode.ERROR.getValue(), "请设置" + orgDept.getName() + "的部门负责人！");
+                            return ResultMsg.error( "请设置" + orgDept.getName() + "的部门负责人！");
                         }
                         aOrgId = StringUtil.joinString(aOrgId, SysConstants.SEPARATE_COMMA, businessId);
                         aOrgName = StringUtil.joinString(aOrgName, SysConstants.SEPARATE_COMMA, orgDept.getName());
@@ -998,11 +999,11 @@ public class SignServiceImpl implements SignService {
                 //1、如果是协审项目
                 if (EnumState.YES.getValue().equals(sign.getIsassistflow())) {
                     if (flowDto.getBusinessMap().get(SignFlowParams.PRINCIPAL.getValue()) == null) {
-                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "请选择项目负责人！");
+                        return ResultMsg.error( "请选择项目负责人！");
                     }
                     signPriList = JSON.parseArray(flowDto.getBusinessMap().get(SignFlowParams.PRINCIPAL.getValue()).toString(), SignPrincipal.class);
                     if (!Validate.isList(signPriList)) {
-                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "请选择项目负责人！");
+                        return ResultMsg.error( "请选择项目负责人！");
                     }
                     String mUserId = sign.getmUserId() == null ? "" : sign.getmUserId(),
                             mUserName = sign.getmUserName() == null ? "" : sign.getmUserName(),
@@ -1034,7 +1035,7 @@ public class SignServiceImpl implements SignService {
                     //主流程处理，一定要有第一负责人
                     if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)) {
                         if (flowDto.getBusinessMap().get(SignFlowParams.M_USER_ID.getValue()) == null) {
-                            return new ResultMsg(false, MsgCode.ERROR.getValue(), "请选择第一负责人！");
+                            return ResultMsg.error("请选择第一负责人！");
                         }
                         businessValue = flowDto.getBusinessMap().get(SignFlowParams.M_USER_ID.getValue()).toString();
                         //查询是否有代办
@@ -1072,7 +1073,7 @@ public class SignServiceImpl implements SignService {
                     } else {
                         //分支流程必须要选择第二负责人
                         if (!FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)) {
-                            return new ResultMsg(false, MsgCode.ERROR.getValue(), "请选择项目负责人！");
+                            return ResultMsg.error( "请选择项目负责人！");
                         }
                     }
                 }
@@ -1137,7 +1138,7 @@ public class SignServiceImpl implements SignService {
                 if (isMainBranch) {
                     User mainUser = userRepo.getCacheUserById(sign.getmUserId());
                     if (!curUserId.equals(mainUser.getId()) && !curUserId.equals(mainUser.getTakeUserId())) {
-                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "您不是第一负责人，不能进行下一步操作！");
+                        return ResultMsg.error("您不是第一负责人，不能进行下一步操作！");
                     }
                 }
                 //是否需要做工作方案
@@ -1147,7 +1148,7 @@ public class SignServiceImpl implements SignService {
                     wk = workProgramRepo.findBySignIdAndBranchId(signid, branchIndex, false);
                     //如果做工作方案，则要判断该分支工作方案是否完成
                     if (!Validate.isObject(wk) || !Validate.isString(wk.getId())) {
-                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还没有完成工作方案，不能进行下一步操作！");
+                        return ResultMsg.error( "您还没有完成工作方案，不能进行下一步操作！");
                     }
                     //判断是否预定了会议室和选择了专家（只对主分支判断，因为协办分支以主分支为准，当然也可以自己选，但是不是强制要求）
                     if (isMainBranch) {
@@ -1161,31 +1162,31 @@ public class SignServiceImpl implements SignService {
                         boolean needCheck = isExpertReview && (isSigle || isMergeMain);
                         if (needCheck) {
                             if (expertRepo.countByBusinessId(wk.getId()) == 0) {
-                                return new ResultMsg(false, MsgCode.ERROR.getValue(), "您选择的评审方式是【" + wk.getReviewType() + "】，但是还没有选择专家，请先选择专家！");
+                                return ResultMsg.error( "您选择的评审方式是【" + wk.getReviewType() + "】，但是还没有选择专家，请先选择专家！");
                             }
                             if (Constant.MergeType.REVIEW_MEETING.getValue().equals(wk.getReviewType()) && !roomBookingRepo.isHaveBookMeeting(wk.getId())) {
-                                return new ResultMsg(false, MsgCode.ERROR.getValue(), "您选择的评审方式是【" + wk.getReviewType() + "】，但是还没有选择会议室，请先预定会议室！");
+                                return ResultMsg.error("您选择的评审方式是【" + wk.getReviewType() + "】，但是还没有选择会议室，请先预定会议室！");
                             }
                         }
                         //如果没有合并其他项目，则不准提交
                         if (isMergeMain && !signMergeRepo.isHaveMerge(signid, Constant.MergeType.WORK_PROGRAM.getValue())) {
-                            return new ResultMsg(false, MsgCode.ERROR.getValue(), "工作方案您选择的是合并评审主项目，您还没有设置关联项目，不能提交到下一步！");
+                            return ResultMsg.error( "工作方案您选择的是合并评审主项目，您还没有设置关联项目，不能提交到下一步！");
                         }
                         //如果合并评审次项目没提交，不能进行下一步操作
                         if (!signRepo.isMergeSignEndWP(signid)) {
-                            return new ResultMsg(false, MsgCode.ERROR.getValue(), "合并评审次项目还未提交审批，主项目不能提交审批！");
+                            return ResultMsg.error("合并评审次项目还未提交审批，主项目不能提交审批！");
                         }
                     } else {
                         WorkProgram mainwk = workProgramRepo.findBySignIdAndBranchId(signid, mianBranch, false);
                         if (!Validate.isObject(mainwk)) {
-                            return new ResultMsg(false, MsgCode.ERROR.getValue(), "主流程还没进行工作方案信息填写，不能提交下一步操作！");
+                            return ResultMsg.error( "主流程还没进行工作方案信息填写，不能提交下一步操作！");
                         }
                     }
 
                     //查询部门领导
                     orgDept = orgDeptRepo.queryBySignBranchId(signid, branchIndex);
                     if (orgDept == null || !Validate.isString(orgDept.getDirectorID())) {
-                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "请设置该分支的部门负责人！");
+                        return ResultMsg.error("请设置该分支的部门负责人！");
                     }
                     assigneeValue = userService.getTaskDealId(orgDept.getDirectorID(), agentTaskList, nextNodeKey);
                     //设定是否做工作方案桉树
@@ -1201,12 +1202,12 @@ public class SignServiceImpl implements SignService {
                     if (isMainBranch) {
                         wk = workProgramRepo.findBySignIdAndBranchId(signid, branchIndex, true);
                         if (!Validate.isObject(wk)) {
-                            return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先填写项目基本信息！");
+                            return ResultMsg.error("请先填写项目基本信息！");
                         }
                     }
                     dealUser = signPrincipalService.getMainPriUser(signid);
                     if (dealUser == null) {
-                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "项目还没分配主负责人，不能进行下一步操作！请联系主办部门进行负责人分配！");
+                        return ResultMsg.error( "项目还没分配主负责人，不能进行下一步操作！请联系主办部门进行负责人分配！");
                     }
                     assigneeValue = userService.getTaskDealId(dealUser, agentTaskList, FLOW_SIGN_FW);
                     variables.put(FlowConstant.SignFlowParams.USER_FZR1.getValue(), assigneeValue);
@@ -1216,13 +1217,13 @@ public class SignServiceImpl implements SignService {
                     // 2、主分支跳转，则必须要所有协办分支都完成才能跳转。
                     if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)) {
                         if ((signBranchRepo.countBranch(signid) > 1) && signBranchRepo.assistFlowFinish(signid)) {
-                            return new ResultMsg(false, MsgCode.ERROR.getValue(), "协办分支还没处理完，不能直接进行发文操作！");
+                            return ResultMsg.error("协办分支还没处理完，不能直接进行发文操作！");
                         }
                         sign = signRepo.findById(Sign_.signid.getName(), signid);
                         boolean needCheck = (ProjectConstant.REVIEW_STATE_ENUM.STAGESUG.getZhCode()).equals(sign.getReviewstage())
                                 || (ProjectConstant.REVIEW_STATE_ENUM.STAGESTUDY.getZhCode()).equals(sign.getReviewstage());
                         if (needCheck && !signBranchRepo.isHaveWP(signid)) {
-                            return new ResultMsg(false, MsgCode.ERROR.getValue(), "【项目建议书】和【可行性研究报告】阶段必须要做工作方案！");
+                            return ResultMsg.error("【项目建议书】和【可行性研究报告】阶段必须要做工作方案！");
                         }
                     }
                     signBranchRepo.updateFinishState(signid, branchIndex, EnumState.YES.getValue());
@@ -1258,10 +1259,10 @@ public class SignServiceImpl implements SignService {
                     nextNodeKey = FlowConstant.FLOW_SIGN_FGLD_SPW4;
                 }
                 if (SessionUtil.getUserInfo().getOrg() == null) {
-                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "你还没设置所属部门！");
+                    return ResultMsg.error( "你还没设置所属部门！");
                 }
                 if (!Validate.isString(SessionUtil.getUserInfo().getOrg().getOrgSLeader())) {
-                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先设置该部门的分管副主任！");
+                    return ResultMsg.error("请先设置该部门的分管副主任！");
                 }
                 //更改工作方案信息
                 wk = workProgramRepo.findBySignIdAndBranchId(signid, branchIndex, false);
@@ -1392,7 +1393,7 @@ public class SignServiceImpl implements SignService {
             //发文申请
             case FLOW_SIGN_FW:
                 if (!expertReviewRepo.isFinishEPGrade(signid)) {
-                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还未对专家进行评分,不能提交到下一步操作！");
+                    return ResultMsg.error( "您还未对专家进行评分,不能提交到下一步操作！");
                 }
                 businessId = flowDto.getBusinessMap().get(SignFlowParams.DIS_ID.getValue()).toString();
                 dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
@@ -1402,7 +1403,7 @@ public class SignServiceImpl implements SignService {
                     if (disUtil.isMainProj()) {
                         isMergeDisTask = true;
                     } else {
-                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "合并发文的项目，只能由主项目进行操作！");
+                        return ResultMsg.error( "合并发文的项目，只能由主项目进行操作！");
                     }
                 }
                 if (isMergeDisTask) {
@@ -1411,10 +1412,10 @@ public class SignServiceImpl implements SignService {
                 } else {
                     //不是合并发文的项目，还是按原计划处理
                     if (!expertReviewService.checkReviewCost(signid)) {
-                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还没完成专家评审费发放，不能进行下一步操作！");
+                        return ResultMsg.error("您还没完成专家评审费发放，不能进行下一步操作！");
                     }
                     if (!checkFileUpload(signid)) {
-                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还没上传[评审意见]或者[审核意见]附件信息！");
+                        return ResultMsg.error( "您还没上传[评审意见]或者[审核意见]附件信息！");
                     }
                     //有项目负责人，则项目负责人审核
                     userList = signPrincipalService.getAllSecondPriUser(signid);
@@ -1444,7 +1445,7 @@ public class SignServiceImpl implements SignService {
             //项目负责人确认发文（所有人确认通过才通过）
             case FLOW_SIGN_QRFW:
                 if (flowDto.getBusinessMap().get(SignFlowParams.AGREE.getValue()) == null || !Validate.isString(flowDto.getBusinessMap().get(SignFlowParams.AGREE.getValue()).toString())) {
-                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先勾选对应的审批结果！");
+                    return ResultMsg.error( "请先勾选对应的审批结果！");
                 }
                 businessId = flowDto.getBusinessMap().get(SignFlowParams.DIS_ID.getValue()).toString();
                 dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
@@ -1454,7 +1455,7 @@ public class SignServiceImpl implements SignService {
                     if (disUtil.isMainProj()) {
                         isMergeDisTask = true;
                     } else {
-                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "合并发文的项目，只能由主项目进行操作！");
+                        return ResultMsg.error( "合并发文的项目，只能由主项目进行操作！");
                     }
                 }
                 if (isMergeDisTask) {
@@ -1500,7 +1501,7 @@ public class SignServiceImpl implements SignService {
                 //协办部长审批发文
             case FlowConstant.FLOW_SIGN_BMLD_QRFW_XB:
                 if (flowDto.getBusinessMap().get(SignFlowParams.AGREE.getValue()) == null || !Validate.isString(flowDto.getBusinessMap().get(SignFlowParams.AGREE.getValue()).toString())) {
-                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先勾选对应的审批结果！");
+                    return ResultMsg.error( "请先勾选对应的审批结果！");
                 }
                 String dirDealOption = flowDto.getDealOption();
                 //如果同意，则到主办部长审批
@@ -1537,7 +1538,7 @@ public class SignServiceImpl implements SignService {
                     if (disUtil.isMainProj()) {
                         isMergeDisTask = true;
                     } else {
-                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "合并发文的项目，只能由主项目进行操作！");
+                        return ResultMsg.error( "合并发文的项目，只能由主项目进行操作！");
                     }
                 }
                 if (isMergeDisTask) {
@@ -1628,7 +1629,7 @@ public class SignServiceImpl implements SignService {
                 if (null != isDirector && isDirector) {
                 } else {
                     if (flowDto.getBusinessMap().get(SignFlowParams.AGREE.getValue()) == null || !Validate.isString(flowDto.getBusinessMap().get(SignFlowParams.AGREE.getValue()).toString())) {
-                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先勾选对应的审批结果！");
+                        return ResultMsg.error( "请先勾选对应的审批结果！");
                     }
                 }
                 //如果同意
@@ -1662,7 +1663,7 @@ public class SignServiceImpl implements SignService {
             case FlowConstant.FLOW_SIGN_FGLD_QRFW:
                 userList = userRepo.findUserByRoleName(EnumFlowNodeGroupName.DIRECTOR.getValue());
                 if (!Validate.isList(userList)) {
-                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先设置【" + EnumFlowNodeGroupName.DIRECTOR.getValue() + "】角色用户！");
+                    return ResultMsg.error("请先设置【" + EnumFlowNodeGroupName.DIRECTOR.getValue() + "】角色用户！");
                 }
                 businessId = flowDto.getBusinessMap().get(SignFlowParams.DIS_ID.getValue()).toString();
                 dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
@@ -1672,7 +1673,7 @@ public class SignServiceImpl implements SignService {
                     if (disUtil.isMainProj()) {
                         isMergeDisTask = true;
                     } else {
-                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "合并发文的项目，只能由主项目进行操作！");
+                        return ResultMsg.error("合并发文的项目，只能由主项目进行操作！");
                     }
                 }
                 if (isMergeDisTask) {
@@ -1711,7 +1712,7 @@ public class SignServiceImpl implements SignService {
                     if (disUtil.isMainProj()) {
                         isMergeDisTask = true;
                     } else {
-                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "合并发文的项目，只能由主项目进行操作！");
+                        return ResultMsg.error( "合并发文的项目，只能由主项目进行操作！");
                     }
                 }
                 if (isMergeDisTask) {
@@ -1734,7 +1735,7 @@ public class SignServiceImpl implements SignService {
                 businessId = flowDto.getBusinessMap().get("DIS_ID").toString();
                 dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
                 if (!Validate.isString(dp.getFileNum())) {
-                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "操作失败，该项目还没有发文编号，不能进行下一步操作！");
+                    return ResultMsg.error( "操作失败，该项目还没有发文编号，不能进行下一步操作！");
                 }
                 //专家评审方案,判断专家的一些信息是否完整
                 expertReview = expertReviewRepo.findByBusinessId(signid);
@@ -1759,7 +1760,7 @@ public class SignServiceImpl implements SignService {
                     }
                     if (isDisplay) {
                         prompt += "专家的身份证号和银行卡号不完整,不能进行下一步操作,请去完善专家信息！";
-                        return new ResultMsg(false, MsgCode.ERROR.getValue(), prompt);
+                        return ResultMsg.error( prompt);
                     }
                 }
                 //如果有评审费或者是协审流程(有协审单位才算)，则给财务部办理，没有，则直接到归档环节
@@ -1768,7 +1769,7 @@ public class SignServiceImpl implements SignService {
                 if (isGotoCW) {
                     userList = userRepo.findUserByRoleName(EnumFlowNodeGroupName.FINANCIAL.getValue());
                     if (!Validate.isList(userList)) {
-                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先设置【" + EnumFlowNodeGroupName.FINANCIAL.getValue() + "】角色用户！");
+                        return ResultMsg.error("请先设置【" + EnumFlowNodeGroupName.FINANCIAL.getValue() + "】角色用户！");
                     }
                     for (int i = 0, l = userList.size(); i < l; i++) {
                         String userId = userService.getTaskDealId(userList.get(i).getId(), agentTaskList, FlowConstant.FLOW_SIGN_CWBL);
@@ -1805,17 +1806,17 @@ public class SignServiceImpl implements SignService {
             case FlowConstant.FLOW_SIGN_GD:
                 //如果没有完成专家评分，则不可以提交到下一步（移到发文申请环节，没有评分不能进行下一步操作2018-12-28）
                 if (!expertReviewRepo.isFinishEPGrade(signid)) {
-                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还未对专家进行评分,不能提交到下一步操作！");
+                    return ResultMsg.error( "您还未对专家进行评分,不能提交到下一步操作！");
                 }
                 //如果没有完成单位评分，则不可以提交下一步
                 UnitScore unitScore = unitScoreRepo.findUnitScore(signid);
                 if (unitScore == null || unitScore.getScore() == null) {
-                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还未对单位进行评分,不能提交到下一步操作！");
+                    return ResultMsg.error( "您还未对单位进行评分,不能提交到下一步操作！");
                 }
 
                 //如果没有完成归档信息，则不可以提交下一步
                 if (fileRecordRepo.isFileRecord(signid)) {
-                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还没完成归档操作，不能进行下一步操作！");
+                    return ResultMsg.error("您还没完成归档操作，不能进行下一步操作！");
                 }
 
                 //如果有第二负责人审核
@@ -1835,7 +1836,7 @@ public class SignServiceImpl implements SignService {
                     } else {
                         userList = userRepo.findUserByRoleName(EnumFlowNodeGroupName.FILER.getValue());
                         if (!Validate.isList(userList)) {
-                            return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先设置【" + EnumFlowNodeGroupName.FILER.getValue() + "】角色用户！");
+                            return ResultMsg.error( "请先设置【" + EnumFlowNodeGroupName.FILER.getValue() + "】角色用户！");
                         }
                         dealUser = userList.get(0);
                     }
@@ -1851,7 +1852,7 @@ public class SignServiceImpl implements SignService {
             case FlowConstant.FLOW_SIGN_DSFZR_QRGD:
                 userList = userRepo.findUserByRoleName(EnumFlowNodeGroupName.FILER.getValue());
                 if (!Validate.isList(userList)) {
-                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先设置【" + EnumFlowNodeGroupName.FILER.getValue() + "】角色用户！");
+                    return ResultMsg.error("请先设置【" + EnumFlowNodeGroupName.FILER.getValue() + "】角色用户！");
                 }
                 dealUser = userList.get(0);
                 assigneeValue = userService.getTaskDealId(dealUser, agentTaskList, FlowConstant.FLOW_SIGN_QRGD);
@@ -1891,7 +1892,7 @@ public class SignServiceImpl implements SignService {
                 //纸质文件接受日期 ：为归档员陈春燕确认的归档日期
                 //设置归档编号
                 if (!Validate.isString(fileRecord.getFileNo())) {
-                    String seqType = ProjectUtils.getFileRecordTypeByStage(sign.getReviewstage());
+                    String seqType = ProjUtil.getFileRecordTypeByStage(sign.getReviewstage());
                     String yearName = DateUtils.converToString(fileRecord.getFileDate(), DateUtils.DATE_YEAR);
                     int maxSeq = fileRecordRepo.getMaxSeq(yearName, seqType) + 1;
                     //如果是0，则改为1
@@ -2572,10 +2573,10 @@ public class SignServiceImpl implements SignService {
         //4、默认办理部门（项目建议书、可研为PX，概算为GX，其他为评估）
         if (!Validate.isString(sign.getDealOrgType())) {
             if (ProjectConstant.REVIEW_STATE_ENUM.STAGEBUDGET.getZhCode().equals(sign.getReviewstage())) {
-                sign.setDealOrgType(Constant.BusinessType.GX.getValue());
+                sign.setDealOrgType(ProjectConstant.BUSINESS_TYPE.GX.toString());
                 sign.setLeaderhandlesug("请（概算一部 概算二部）组织评审。");
             } else {
-                sign.setDealOrgType(Constant.BusinessType.PX.getValue());
+                sign.setDealOrgType(ProjectConstant.BUSINESS_TYPE.PX.toString());
                 sign.setLeaderhandlesug("请（评估一部 评估二部 信息技术组）组织评审。");
             }
         }
@@ -2699,7 +2700,7 @@ public class SignServiceImpl implements SignService {
      * @param signid
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void deleteReserveSign(String signid) {
         Sign sign = signRepo.findById(Sign_.signid.getName(), signid);
         if (sign != null) {
@@ -2724,7 +2725,6 @@ public class SignServiceImpl implements SignService {
                 BeanCopierUtils.copyProperties(sl, signDto);
                 resultList.add(signDto);
             });
-
             return resultList;
         }
         return null;
@@ -3089,7 +3089,7 @@ public class SignServiceImpl implements SignService {
         }
         //更改项目状态
         sign.setSignState(Constant.EnumState.PROCESS.getValue());
-        sign.setIsLightUp(Constant.signEnumState.NOLIGHT.getValue());
+        sign.setIsLightUp(NO_LIGHT.getCodeValue());
         signRepo.save(sign);
 
         return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！");
@@ -3283,7 +3283,6 @@ public class SignServiceImpl implements SignService {
 
     @Override
     public ResultMsg updateSendFGWState(String signId, String state) {
-        ResultMsg resultMsg = null;
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" update " + Sign.class.getSimpleName() + " set " + Sign_.isSendFGW.getName() + " =:state ");
         hqlBuilder.setParam("state", Validate.isString(state) ? state : EnumState.STOP.getValue());
@@ -3291,10 +3290,9 @@ public class SignServiceImpl implements SignService {
         hqlBuilder.setParam("signid", signId);
         int updateCount = signRepo.executeHql(hqlBuilder);
         if (updateCount > 0) {
-            resultMsg = new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！");
+            return ResultMsg.ok("操作成功！");
         } else {
-            resultMsg = new ResultMsg(false, MsgCode.ERROR.getValue(), "操作失败！");
+            return ResultMsg.error( "操作失败！");
         }
-        return resultMsg;
     }
 }

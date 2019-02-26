@@ -1,37 +1,26 @@
 package cs.quartz.execute;
 
 import cs.common.constants.Constant;
-import cs.common.HqlBuilder;
+import cs.common.constants.ProjectConstant;
 import cs.common.utils.Validate;
 import cs.domain.project.ProjectStop;
-import cs.domain.project.ProjectStop_;
 import cs.domain.project.Sign;
-import cs.domain.project.Sign_;
 import cs.domain.sys.Log;
 import cs.domain.sys.Workday;
 import cs.quartz.unit.QuartzUnit;
-import cs.repository.repositoryImpl.project.ProjectStopRepo;
-import cs.service.flow.FlowService;
-import cs.service.project.ProjectStopService;
 import cs.service.project.SignService;
-import cs.service.restService.SignRestService;
 import cs.service.sys.LogService;
 import cs.service.sys.WorkdayService;
 import org.apache.log4j.Logger;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import java.util.Date;
 import java.util.List;
 
-import static cs.common.constants.Constant.WORK_DAY_25;
-import static cs.common.constants.Constant.WORK_DAY_30;
 import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
 /**
@@ -43,18 +32,8 @@ import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 @Component
 public class SignWorkdayExecute implements Job {
     private static Logger logger = Logger.getLogger(SignWorkdayExecute.class);
-   /* @Autowired
-    private SignService signService;
-    @Autowired
-    private ProjectStopService projectStopService;
-    @Autowired
-    private WorkdayService workdayService;
-    @Autowired
-    private LogService logService;
-    @Autowired
-    private ProjectStopRepo projectStopRepo;*/
-
-    /*警示灯状态如下：
+    /**
+     * 警示灯状态如下：
      * PROCESS("1"),	//在办
      * DISPA("2"),		//已发文
      * ARCHIVE("3"),	//已发送存档
@@ -63,6 +42,8 @@ public class SignWorkdayExecute implements Job {
      * DISPAOVER("6"),			//发文超期
      * OVER25WORKDAYARCHIVE("7"),	//超过25个工作日未存档
      * ARCHIVEOVER("8");		//存档超期
+     * @param context
+     * @throws JobExecutionException
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -114,8 +95,8 @@ public class SignWorkdayExecute implements Job {
                 //2、如果没有亮灯的，则设置为默认亮灯状态,如果目前是暂停状态，则改为进行中状态
                 if (!Validate.isString(sign.getIsLightUp())
                         || Constant.EnumState.STOP.getValue().equals(sign.getSignState())
-                        || Constant.signEnumState.PAUSE.getValue().equals(sign.getIsLightUp())) {
-                    sign.setIsLightUp(Constant.signEnumState.PROCESS.getValue());
+                        ||(ProjectConstant.CAUTION_LIGHT_ENUM.PAUSE.getCodeValue()).equals(sign.getIsLightUp())) {
+                    sign.setIsLightUp(ProjectConstant.CAUTION_LIGHT_ENUM.PROCESS.getCodeValue());
                 }
 
                 boolean isCountWorkDay = (null == sign.getProcessState() || sign.getProcessState() < Constant.SignProcessState.END_DIS_NUM.getValue());
@@ -147,12 +128,12 @@ public class SignWorkdayExecute implements Job {
                 }else{
                     Date disPatchDate = Validate.isObject(sign.getDispatchdate())?sign.getDispatchdate():new Date();
                     usedWorkDay = QuartzUnit.countWorkday(workdayList,disPatchDate);
-                    totalDays = WORK_DAY_30;
+                    totalDays = ProjectConstant.WORK_DAY_30;
                 }
                 //计算更新亮灯状态
                 updateLightUpState(sign, usedWorkDay, totalDays,isCountWorkDay);
 
-                sign.setSignState(Constant.signEnumState.PROCESS.getValue());
+                sign.setSignState(ProjectConstant.CAUTION_LIGHT_ENUM.PROCESS.getCodeValue());
             }
             signService.bathUpdate(signList);
             log.setMessage("完成项目工作日计算！");
@@ -189,19 +170,21 @@ public class SignWorkdayExecute implements Job {
         //计算剩余工作日
         if(isCountWorkDay){
             //少于3个工作日
-            if ((totalWorkDay - usedWorkDay) <=  Constant.WORK_DAY_3) {
-                sign.setIsLightUp(Constant.signEnumState.UNDER3WORKDAY.getValue());
+            if ((totalWorkDay - usedWorkDay) <=  ProjectConstant.WORK_DAY_3) {
+                sign.setIsLightUp(ProjectConstant.CAUTION_LIGHT_ENUM.UNDER3_WORKDAY.getCodeValue());
             }
-            if (usedWorkDay >= totalWorkDay && sign.getProcessState() < Constant.SignProcessState.END_DIS.getValue()){
-                sign.setIsLightUp(Constant.signEnumState.DISPAOVER.getValue());
+            if (usedWorkDay >= totalWorkDay && (sign.getProcessState() < Constant.SignProcessState.END_DIS.getValue())){
+                sign.setIsLightUp(ProjectConstant.CAUTION_LIGHT_ENUM.DISPATCH_OVER.getCodeValue());
             }
         //计算存档(发文到存档，有30天日期)
         }else{
             sign.setDaysafterdispatch(usedWorkDay);
-            if(usedWorkDay > WORK_DAY_30){
-                sign.setIsLightUp(Constant.signEnumState.ARCHIVEOVER.getValue());
-            }else if(usedWorkDay > WORK_DAY_25){
-                sign.setIsLightUp(Constant.signEnumState.OVER25WORKDAYARCHIVE.getValue());
+            if(usedWorkDay > ProjectConstant.WORK_DAY_30){
+                //超过30天未存档，就是存档超期
+                sign.setIsLightUp(ProjectConstant.CAUTION_LIGHT_ENUM.ARCHIVE_OVER.getCodeValue());
+            }else if(usedWorkDay > ProjectConstant.WORK_DAY_25){
+                //超过25天未存档
+                sign.setIsLightUp(ProjectConstant.CAUTION_LIGHT_ENUM.OVER25_WORKDAY_ARCHIVE.getCodeValue());
             }
         }
     }

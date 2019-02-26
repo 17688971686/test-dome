@@ -3,6 +3,7 @@ package cs.service.topic;
 import cs.common.*;
 import cs.common.constants.Constant;
 import cs.common.constants.FlowConstant;
+import cs.common.constants.ProjectConstant;
 import cs.common.utils.*;
 import cs.domain.expert.ExpertReview;
 import cs.domain.flow.FlowPrincipal;
@@ -128,14 +129,17 @@ public class TopicInfoServiceImpl implements TopicInfoService {
         domain.setModifiedDate(now);
         //课题代码(课题代码2017KT001，归档编号2016KD17001)
         if (!Validate.isString(domain.getTopicCode())) {
-            String yearString = DateUtils.converToString(domain.getCreatedDate(), "yyyy");
+            String yearString = DateUtils.converToString(domain.getCreatedDate(), DateUtils.DATE_YEAR);
             int maxSeq = topicInfoRepo.findCurMaxSeq(yearString) + 1;
             /*if (maxSeq < 1000) {
                 fileNumValue = String.format("%03d", Integer.valueOf(maxSeq));
             } else {
                 fileNumValue = (maxSeq) + "";
             }*/
-            domain.setTopicCode(yearString + Constant.FILE_RECORD_KEY.KT.getValue() + maxSeq);
+            if(maxSeq < 1){
+                maxSeq = 1;
+            }
+            domain.setTopicCode(yearString + ProjectConstant.FILE_RECORD_KEY.KT.toString() + maxSeq);
         }
         topicInfoRepo.save(domain);
         //修改流程负责人
@@ -190,11 +194,11 @@ public class TopicInfoServiceImpl implements TopicInfoService {
         Task task = null;
         //1、判断有没有选择项目负责人
         if (!Validate.isString(record.getMainPrinUserId())) {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，请先选择项目负责人！");
+            return ResultMsg.error( "操作失败，请先选择项目负责人！");
         }
         //2、没有默认部门，则不能发起流程
         if (!Validate.isString(record.getOrgId())) {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "您不是相关部门人员，不能发起流程！");
+            return ResultMsg.error( "您不是相关部门人员，不能发起流程！");
         }
         //3、判断是否已经发起流程，如果未发起，则发起流程
         if (!Validate.isString(record.getProcessInstanceId())) {
@@ -223,7 +227,7 @@ public class TopicInfoServiceImpl implements TopicInfoService {
         if(resultMsg.isFlag()){
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(),task.getId(),"操作成功！",processDefinitionEntity.getName());
         }else{
-              return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败！");
+              return ResultMsg.error("操作失败！");
         }
 
     }
@@ -308,12 +312,12 @@ public class TopicInfoServiceImpl implements TopicInfoService {
     public ResultMsg delete(String id) {
         TopicInfo topicInfo = topicInfoRepo.findById(TopicInfo_.id.getName(), id);
         if (Validate.isString(topicInfo.getProcessInstanceId())) {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "您已经发起了流程，不能对数据进行删除！");
+            return ResultMsg.error( "您已经发起了流程，不能对数据进行删除！");
         }
         topicInfoRepo.deleteById(TopicInfo_.id.getName(), id);
         flowPrincipalRepo.deletePriUserByBusiId(id);
 
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "删除成功！");
+        return ResultMsg.ok("删除成功！");
     }
 
     /**
@@ -390,7 +394,7 @@ public class TopicInfoServiceImpl implements TopicInfoService {
             case FlowConstant.TOPIC_FGLD_JH:
                 dealUserList = userRepo.findUserByRoleName(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue());
                 if (!Validate.isList(dealUserList)) {
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先设置【" + Constant.EnumFlowNodeGroupName.DIRECTOR.getValue() + "】角色用户！");
+                    return ResultMsg.error( "请先设置【" + Constant.EnumFlowNodeGroupName.DIRECTOR.getValue() + "】角色用户！");
                 }
                 dealUser = dealUserList.get(0);
                 assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
@@ -441,10 +445,10 @@ public class TopicInfoServiceImpl implements TopicInfoService {
             case FlowConstant.TOPIC_KTFZR:
                 topicInfo = topicInfoRepo.findById(TopicInfo_.id.getName(), businessId);
                 if(!Validate.isString(topicInfo.getEndTopicFlag())){
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请设置结题方式！");
+                    return ResultMsg.error("请设置结题方式！");
                 }
                 if(!Validate.isString(topicInfo.getSendFgw())){
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请设置是否报委务会审定！");
+                    return ResultMsg.error( "请设置是否报委务会审定！");
                 }
                 variables = findOrgLeader(businessId, false, assigneeValue);
                 break;
@@ -456,7 +460,7 @@ public class TopicInfoServiceImpl implements TopicInfoService {
             case FlowConstant.TOPIC_FGLD_FA:
                 dealUserList = userRepo.findUserByRoleName(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue());
                 if (!Validate.isList(dealUserList)) {
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先设置【" + Constant.EnumFlowNodeGroupName.DIRECTOR.getValue() + "】角色用户！");
+                    return ResultMsg.error( "请先设置【" + Constant.EnumFlowNodeGroupName.DIRECTOR.getValue() + "】角色用户！");
                 }
                 dealUser = dealUserList.get(0);
                 assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
@@ -478,11 +482,11 @@ public class TopicInfoServiceImpl implements TopicInfoService {
             case FlowConstant.TOPIC_KTFZR_QR:
                 dealUserList = userRepo.findUserByRoleName(Constant.EnumFlowNodeGroupName.FILER.getValue());
                 if (!Validate.isList(dealUserList)) {
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先设置【" + Constant.EnumFlowNodeGroupName.FILER.getValue() + "】角色用户！");
+                    return ResultMsg.error( "请先设置【" + Constant.EnumFlowNodeGroupName.FILER.getValue() + "】角色用户！");
                 }
                 filing = filingRepo.findById("topId", businessId);
                 if (filing == null || !Validate.isString(filing.getId())) {
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "您还没完成课题归档，不能进行下一步操作！");
+                    return ResultMsg.error( "您还没完成课题归档，不能进行下一步操作！");
                 }
                 topicInfo = topicInfoRepo.findById(TopicInfo_.id.getName(), businessId);
                 topicInfoRepo.save(topicInfo);

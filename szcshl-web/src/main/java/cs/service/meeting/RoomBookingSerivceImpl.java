@@ -3,6 +3,7 @@ package cs.service.meeting;
 import cs.common.constants.Constant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
+import cs.common.constants.ProjectConstant;
 import cs.common.utils.*;
 import cs.domain.meeting.MeetingRoom;
 import cs.domain.meeting.MeetingRoom_;
@@ -305,40 +306,40 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce {
     public ResultMsg deleteRoom(String id, String dueToPeople) {
         RoomBooking roomBooking = roomBookingRepo.findById(RoomBooking_.id.getName(), id);
         if (roomBooking == null) {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "该会议室预定信息已被删除！");
+            return ResultMsg.error("该会议室预定信息已被删除！");
         } else {
             boolean isSuper = SessionUtil.getLoginName().equals(SUPER_ACCOUNT);
             if(isSuper){
                 roomBookingRepo.delete(roomBooking);
-                return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+                return ResultMsg.ok( "操作成功！");
             }else{
                 //业务预定的会议室
                 if (Validate.isString(roomBooking.getBusinessId())) {
                     if (Constant.EnumState.YES.getValue().equals(roomBooking.getRbStatus()) || Constant.EnumState.PROCESS.getValue().equals(roomBooking.getRbStatus())) {
-                        return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "会议室已经提交审核，不能进行删除操作！");
+                        return ResultMsg.error( "会议室已经提交审核，不能进行删除操作！");
                     }
                     if (Constant.EnumState.NO.getValue().equals(roomBooking.getRbStatus())) {
                         if (SessionUtil.getUserId().equals(roomBooking.getCreatedBy())) {
                             roomBookingRepo.delete(roomBooking);
-                            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+                            return ResultMsg.ok( "操作成功！");
                         } else {
-                            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，您没有删除权限！");
+                            return ResultMsg.error("操作失败，您没有删除权限！");
                         }
                     }
                     //旧数据默认不可删除
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "预定的会议室不可删除！");
+                    return ResultMsg.error( "预定的会议室不可删除！");
                     //普通预定的会议室
                 } else {
                     if ((new Date()).after(roomBooking.getBeginTime()) || Constant.EnumState.YES.getValue().equals(roomBooking.getRbStatus())) {
                         roomBooking.setRbStatus(Constant.EnumState.YES.getValue());
                         roomBookingRepo.save(roomBooking);
-                        return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，只能在预定会议的时间段之前进行删除操作！");
+                        return ResultMsg.error( "操作失败，只能在预定会议的时间段之前进行删除操作！");
                     }
                     if (SessionUtil.getUserId().equals(roomBooking.getCreatedBy())) {
                         roomBookingRepo.delete(roomBooking);
-                        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+                        return ResultMsg.ok("操作成功！");
                     } else {
-                        return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "您没有该权限，删除失败！", null);
+                        return ResultMsg.error("您没有该权限，删除失败！");
                     }
                 }
             }
@@ -542,18 +543,19 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce {
      */
     @Override
     public List<Object[]> findWeekRoom(String date, String rbType, String mrId) {
-        Date beginDate = DateUtils.converToDate(date, "yyyy-MM-dd");
+        Date beginDate = DateUtils.converToDate(date, DateUtils.DATE_PATTERN);
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("select rb.rbName,rb.rbDay,rb.beginTime,rb.endTime , mr.mrname ");
         sqlBuilder.append(" from CS_ROOM_BOOKING  rb ");
-        sqlBuilder.append(" left join (select " + MeetingRoom_.id.getName() + ", " + MeetingRoom_.mrName.getName() + " mrname from cs_meeting_room )mr");
+        sqlBuilder.append(" left join (select " + MeetingRoom_.id.getName() + ", " + MeetingRoom_.mrName.getName() + " mrname from cs_meeting_room ) mr ");
         sqlBuilder.append(" on mr." + RoomBooking_.id.getName() + "=rb." + RoomBooking_.mrID.getName());
         sqlBuilder.append(" where " + RoomBooking_.rbDay.getName() + " > (trunc(to_date(:rbDay,'yyyy-mm-dd'),'iw')-1)  ");
         sqlBuilder.append(" and " + RoomBooking_.rbDay.getName() + " < (trunc (to_date(:rbDay,'yyyy-mm-dd'),'iw')+7)");
 
         //判断是全部的会议，还是评审会，0：表示评审会
-        if ("0".equals(rbType)) {
-            sqlBuilder.append(" and " + RoomBooking_.businessType.getName() + "=:businessType").setParam("businessType", Constant.BusinessType.SIGN_WP.getValue());
+        if (Constant.MEET_BOOK_ENUM.REVIEW.getBookCode().equals(rbType)) {
+            sqlBuilder.append(" and " + RoomBooking_.businessType.getName() + "=:businessType ");
+            sqlBuilder.setParam("businessType", ProjectConstant.BUSINESS_TYPE.SIGN_WP.toString());
         }
 
         sqlBuilder.append(" order by rb." + RoomBooking_.rbDay.getName() + " asc");
@@ -640,13 +642,25 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce {
     @Override
     public RoomBookingDto initDefaultValue(String businessId, String businessType) {
         RoomBookingDto roomBookingDto = new RoomBookingDto();
-        if (Constant.BusinessType.SIGN_WP.getValue().equals(businessType)) {
-            WorkProgram wp = workProgramRepo.findById(WorkProgram_.id.getName(), businessId);
-            roomBookingDto.setStageOrgName(wp.getReviewOrgName());
-            roomBookingDto.setRbName(wp.getProjectName());
-        } else if (Constant.BusinessType.TOPIC_WP.getValue().equals(businessType)) {
-            WorkPlan wp = workPlanRepo.findById(WorkPlan_.id.getName(), businessId);
-            roomBookingDto.setRbName(wp.getTopicName());
+        ProjectConstant.BUSINESS_TYPE businessTypeEnum = ProjectConstant.BUSINESS_TYPE.valueOf(businessType);
+        switch (businessTypeEnum){
+            /**
+             * 项目工作方案
+             */
+            case SIGN_WP:
+                WorkProgram workProgram = workProgramRepo.findById(WorkProgram_.id.getName(), businessId);
+                roomBookingDto.setStageOrgName(workProgram.getReviewOrgName());
+                roomBookingDto.setRbName(workProgram.getProjectName());
+                break;
+            /**
+             * 课题工作方案（目前该方案以停用）
+             */
+            case TOPIC_WP:
+                WorkPlan workPlan = workPlanRepo.findById(WorkPlan_.id.getName(), businessId);
+                roomBookingDto.setRbName(workPlan.getTopicName());
+                break;
+            default:
+                    ;
         }
         roomBookingDto.setHost(SessionUtil.getDisplayName());
         roomBookingDto.setDueToPeople(SessionUtil.getDisplayName());

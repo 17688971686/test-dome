@@ -1,15 +1,17 @@
 package cs.service.project;
 
+import cs.common.HqlBuilder;
 import cs.common.RandomGUID;
+import cs.common.ResultMsg;
 import cs.common.constants.Constant;
 import cs.common.constants.FlowConstant;
-import cs.common.HqlBuilder;
-import cs.common.ResultMsg;
-import cs.common.utils.*;
+import cs.common.constants.ProjectConstant;
+import cs.common.utils.ActivitiUtil;
+import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.SessionUtil;
+import cs.common.utils.Validate;
 import cs.domain.project.*;
 import cs.domain.sys.User;
-import cs.domain.topic.TopicInfo;
-import cs.domain.topic.TopicInfo_;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.project.ProjectStopDto;
@@ -37,7 +39,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
@@ -133,12 +138,12 @@ public class ProjectStopServiceImpl implements ProjectStopService {
                 }
             }
             if (isHaveApproveing) {
-                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，该项目已有暂停记录在处理！");
+                return ResultMsg.error("操作失败，该项目已有暂停记录在处理！");
             }
 
             BeanCopierUtils.copyProperties(projectStopDto, projectStop);
             if (!Validate.isObject(projectStop.getExpectpausedays())) {
-                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，没填写预计暂停天数！");
+                return ResultMsg.error( "操作失败，没填写预计暂停天数！");
             }
             if (Validate.isString(projectStopDto.getStopid())) {
                 projectStop = projectStopRepo.findById(projectStopDto.getStopid());
@@ -185,7 +190,7 @@ public class ProjectStopServiceImpl implements ProjectStopService {
             ProcessDefinitionEntity processDefinitionEntity = (ProcessDefinitionEntity) repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(),task.getId(), "操作成功！",processDefinitionEntity.getName());
         } catch (Exception e) {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "保存失败，错误信息已记录，请联系管理员处理！");
+            return ResultMsg.error("保存失败，错误信息已记录，请联系管理员处理！");
         }
 
     }
@@ -383,7 +388,7 @@ public class ProjectStopServiceImpl implements ProjectStopService {
             //分管领导审批
             case FlowConstant.FLOW_STOP_FGLD_SP:
                 if (flowDto.getBusinessMap().get("AGREE") == null || !Validate.isString(flowDto.getBusinessMap().get("AGREE").toString())) {
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请选择同意或者不同意！");
+                    return ResultMsg.error( "请选择同意或者不同意！");
                 }
                 String isactive = flowDto.getBusinessMap().get("AGREE").toString();
                 boolean isPass = Constant.EnumState.YES.getValue().equals(isactive);
@@ -396,14 +401,9 @@ public class ProjectStopServiceImpl implements ProjectStopService {
                         projectStop.setPausetime(new Date());
                         projectStop.setIsOverTime(Constant.EnumState.PROCESS.getValue());
                         Sign sign = projectStop.getSign();
-                        //流程不暂停，还是可以继续往下走
-                        /*ResultMsg stopResult = flowService.stopFlow(sign.getSignid());
-                        if (!stopResult.isFlag()) {
-                            return stopResult;
-                        }*/
                         //更改项目状态
                         sign.setSignState(Constant.EnumState.STOP.getValue());
-                        sign.setIsLightUp(Constant.signEnumState.PAUSE.getValue());
+                        sign.setIsLightUp(ProjectConstant.CAUTION_LIGHT_ENUM.PAUSE.getCodeValue());
                         sign.setIsProjectState(Constant.EnumState.YES.getValue());
                         signRepo.save(sign);
                     }else{
@@ -426,7 +426,8 @@ public class ProjectStopServiceImpl implements ProjectStopService {
             default:
                 break;
         }
-        taskService.addComment(task.getId(), processInstance.getId(), (flowDto == null) ? "" : flowDto.getDealOption());    //添加处理信息
+        //添加处理信息
+        taskService.addComment(task.getId(), processInstance.getId(), (flowDto == null) ? "" : flowDto.getDealOption());
         if (flowDto.isEnd()) {
             taskService.complete(task.getId());
         } else {

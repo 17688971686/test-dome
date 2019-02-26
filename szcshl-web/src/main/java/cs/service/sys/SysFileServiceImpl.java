@@ -4,6 +4,7 @@ import cs.common.HqlBuilder;
 import cs.common.IFResultCode;
 import cs.common.ResultMsg;
 import cs.common.constants.Constant;
+import cs.common.constants.SysConstants;
 import cs.common.ftp.ConfigProvider;
 import cs.common.ftp.FtpClientConfig;
 import cs.common.ftp.FtpUtils;
@@ -23,23 +24,19 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.lang.reflect.Type;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import static cs.common.constants.Constant.RevireStageKey.KEY_FTPIP;
-import static cs.common.constants.Constant.RevireStageKey.KEY_FTPROOT;
-
+/**
+ * @author ldm
+ */
 @Service
 public class SysFileServiceImpl implements SysFileService {
     private static Logger logger = Logger.getLogger(UserServiceImpl.class);
@@ -52,7 +49,7 @@ public class SysFileServiceImpl implements SysFileService {
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ResultMsg save(MultipartFile multipartFile, String fileName, String businessId, String fileType,
                           String mainId, String mainType, String sysfileType, String sysBusiType) {
         try {
@@ -88,20 +85,21 @@ public class SysFileServiceImpl implements SysFileService {
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "文件上传成功！", sysFileDto);
 
         } catch (Exception e) {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "文件上传错误，请联系系统管理员确认！");
+            return ResultMsg.error("文件上传错误，请联系系统管理员确认！");
         }
     }
 
-    @Transactional
+
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void update(SysFile sysFile) {
         sysFileRepo.save(sysFile);
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ResultMsg saveToFtp(long size, String fileName, String businessId, String fileType, String relativeFileUrl,
-                               String mainId, String mainType, String sysfileType, String sysBusiType, Ftp ftp) {
+                               String mainId, String mainType, String sysFileType, String sysBusinessType, Ftp ftp) {
         try {
             SysFile sysFile = new SysFile();
             sysFile.setSysFileId(UUID.randomUUID().toString());
@@ -110,10 +108,10 @@ public class SysFileServiceImpl implements SysFileService {
             sysFile.setShowName(fileName);
             sysFile.setFileType(fileType);
             sysFile.setFileUrl(relativeFileUrl);
-            sysFile.setSysfileType(sysfileType);
+            sysFile.setSysfileType(sysFileType);
             sysFile.setMainId(mainId);
             sysFile.setMainType(mainType);
-            sysFile.setSysBusiType(sysBusiType);
+            sysFile.setSysBusiType(sysBusinessType);
 
             Date now = new Date();
             sysFile.setCreatedBy(SessionUtil.getLoginName());
@@ -160,7 +158,7 @@ public class SysFileServiceImpl implements SysFileService {
      * @param sysFileId
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ResultMsg deleteById(String sysFileId) {
         return sysFileRepo.deleteByFileId(sysFileId);
     }
@@ -168,13 +166,12 @@ public class SysFileServiceImpl implements SysFileService {
     /**
      * 根据ID获取附件信息
      *
-     * @param sysfileId
+     * @param sysFileId
      * @return
      */
     @Override
-    public SysFile findFileById(String sysfileId) {
-        SysFile sysFile = sysFileRepo.findById(sysfileId);
-        return sysFile;
+    public SysFile findFileById(String sysFileId) {
+        return sysFileRepo.findById(sysFileId);
     }
 
 
@@ -238,7 +235,7 @@ public class SysFileServiceImpl implements SysFileService {
      */
     @Override
     public String findFtpId() {
-        SysConfigDto sysConfigDto = sysConfigService.findByKey(KEY_FTPIP.getValue());
+        SysConfigDto sysConfigDto = sysConfigService.findByKey(SysConstants.SYS_CONFIG_ENUM.FTPIP.toString());
         if (sysConfigDto == null || !Validate.isString(sysConfigDto.getConfigValue())) {
             return "";
         } else {
@@ -254,7 +251,7 @@ public class SysFileServiceImpl implements SysFileService {
      */
     @Override
     public String getFtpRoot(String relativeFileUrl) {
-        SysConfigDto sysConfigDto = sysConfigService.findByKey(KEY_FTPROOT.getValue());
+        SysConfigDto sysConfigDto = sysConfigService.findByKey(SysConstants.SYS_CONFIG_ENUM.FTPROOT.toString());
         if (!Validate.isObject(sysConfigDto) || !Validate.isString(sysConfigDto.getConfigValue())) {
             return null;
         } else {

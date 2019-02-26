@@ -5,8 +5,9 @@ import com.aspose.slides.Presentation;
 import com.aspose.words.Document;
 import cs.ahelper.MudoleAnnotation;
 import cs.ahelper.RealPathResolver;
-import cs.common.constants.Constant;
 import cs.common.ResultMsg;
+import cs.common.constants.Constant;
+import cs.common.constants.ProjectConstant;
 import cs.common.ftp.ConfigProvider;
 import cs.common.ftp.FtpClientConfig;
 import cs.common.ftp.FtpUtils;
@@ -64,6 +65,7 @@ import java.math.BigDecimal;
 import java.util.*;
 
 import static cs.common.constants.Constant.*;
+import static cs.common.constants.ProjectConstant.REVIEW_STATE_ENUM.STAGEBUDGET;
 
 
 /**
@@ -218,16 +220,14 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     public ResultMsg upload(HttpServletRequest request, @RequestParam(name = "file") MultipartFile[] multipartFileList,
                             @RequestParam(required = true) String businessId, String mainId, String mainType,
                             String sysfileType, String sysBusiType) {
-        ResultMsg resultMsg = new ResultMsg(false, MsgCode.ERROR.getValue(), "");
         if (multipartFileList == null || multipartFileList.length == 0) {
-            resultMsg = new ResultMsg(false, MsgCode.ERROR.getValue(), "请选择要上传的附件");
-            return resultMsg;
+            return ResultMsg.error( "请选择要上传的附件");
         }
         //项目附件才需要类型
         if (SysFileType.SIGN.getValue().equals(mainType) && !Validate.isString(sysBusiType)) {
-            resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "附件上传失败，请选择文件类型！");
-            return resultMsg;
+            return ResultMsg.error("附件上传失败，请选择文件类型！");
         }
+        ResultMsg resultMsg = ResultMsg.error("");
         StringBuffer errorMsg = new StringBuffer();
         try {
             String fileUploadPath = SysFileUtil.getUploadPath();
@@ -273,7 +273,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                         sysFile.setModifiedBy(SessionUtil.getDisplayName());
                         sysFile.setModifiedDate(new Date());
                         sysFileService.update(sysFile);
-                        resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(), "文件上传成功！");
+                        resultMsg = ResultMsg.ok( "文件上传成功！");
                     } else {
                         resultMsg = sysFileService.saveToFtp(multipartFile.getSize(), fileName, businessId, fileType,
                                 relativeFileUrl + File.separator + uploadFileName, mainId, mainType, sysfileType, sysBusiType, f);
@@ -295,7 +295,6 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     /**
      * 文件上传保留本地（预留）
      *
-     * @param request
      * @param multipartFile
      * @param businessId    业务ID
      * @param mainId        主ID
@@ -307,19 +306,18 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     @RequiresAuthentication
     @RequestMapping(name = "文件上传", path = "fileUploadLocal", method = RequestMethod.POST)
     @ResponseBody
-    public ResultMsg uploadLocal(HttpServletRequest request, @RequestParam("file") MultipartFile multipartFile,
-                                 @RequestParam(required = true) String businessId, String mainId, String mainType,
-                                 String sysfileType, String sysBusiType) {
+    public ResultMsg uploadLocal(@RequestParam("file") MultipartFile multipartFile, @RequestParam String businessId,
+                                 String mainId, String mainType, String sysfileType, String sysBusiType) {
         ResultMsg resultMsg = null;
         try {
             String fileName = multipartFile.getOriginalFilename();
             String fileType = fileName.substring(fileName.lastIndexOf("."), fileName.length());
-            fileType = fileType.toLowerCase();      //统一转成小写
-
+            //统一转成小写
+            fileType = fileType.toLowerCase();
             if (!multipartFile.isEmpty()) {
                 resultMsg = sysFileService.save(multipartFile, fileName, businessId, fileType, mainId, mainType, sysfileType, sysBusiType);
             } else {
-                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "文件上传失败，无法获取文件信息！");
+                resultMsg = ResultMsg.error("文件上传失败，无法获取文件信息！");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -330,8 +328,8 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     @RequiresAuthentication
     @RequestMapping(name = "ftp文件校验", path = "fileSysCheck", method = RequestMethod.POST)
     @ResponseBody
-    public ResultMsg checkFtpFile(@RequestParam(required = true) String sysFileId) {
-        ResultMsg resultMsg;
+    public ResultMsg checkFtpFile(@RequestParam String sysFileId) {
+        ResultMsg resultMsg=null;
         try {
             SysFile sysFile = sysFileService.findFileById(sysFileId);
             String fileUrl = sysFile.getFileUrl();
@@ -343,14 +341,13 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             FtpClientConfig k = ConfigProvider.getDownloadConfig(f);
             boolean checkResult = ftpUtils.checkFileExist(removeRelativeUrl, checkFileName, k);
             if (checkResult) {
-                resultMsg = new ResultMsg(true, MsgCode.OK.getValue(), "附件存在，可以进行下载操作！");
+                resultMsg = ResultMsg.ok("附件存在，可以进行下载操作！");
             } else {
-                resultMsg = new ResultMsg(false, MsgCode.ERROR.getValue(), "没有该附件！");
+                resultMsg = ResultMsg.error( "没有该附件！");
             }
         } catch (Exception e) {
-            resultMsg = new ResultMsg(false, MsgCode.ERROR.getValue(), "附件确认异常，请联系管理员查看！");
+            resultMsg = ResultMsg.error("附件确认异常，请联系管理员查看！");
         }
-
         return resultMsg;
     }
 
@@ -649,28 +646,47 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 String ministerhandlesug = sign.getMinisterhandlesug();
                 dataMap.put("ministerhandlesug", ministerhandlesug == null ? "" : ministerhandlesug.replaceAll("<br>", "<w:br />")
                         .replaceAll("<p style='text-align:right;'>", "").replaceAll("</p>", ""));
-                if (stageType.equals(RevireStageKey.KEY_SUG.getValue())
-                        || stageType.equals(Constant.RevireStageKey.KEY_STUDY.getValue())
-                        || stageType.equals(Constant.RevireStageKey.KEY_OTHER.getValue())
-                        || stageType.equals(RevireStageKey.KEY_REGISTERCODE.getValue())) {
-                    //建议书、可研、其他 、登记赋码
-                    file = TemplateUtil.createDoc(dataMap, Constant.Template.STAGE_SUG_SIGN.getKey(), path);
-                } else if (stageType.equals(RevireStageKey.KEY_BUDGET.getValue())) {
-                    //概算
-                    file = TemplateUtil.createDoc(dataMap, Constant.Template.STAGE_BUDGET_SIGN.getKey(), path);
-                } else if (stageType.equals(Constant.RevireStageKey.KEY_REPORT.getValue())) {
-                    //资金
-                    file = TemplateUtil.createDoc(dataMap, Constant.Template.APPLY_REPORT_SIGN.getKey(), path);
+                ProjectConstant.REVIEW_STATE_ENUM reviewStateEnum = ProjectConstant.REVIEW_STATE_ENUM.getByEnCode(stageType);
+                if(Validate.isObject(reviewStateEnum)){
+                    switch (reviewStateEnum){
+                        /**
+                         * 建议书、可研、其他 、登记赋码
+                         */
+                        case STAGESUG:
+                        case STAGESTUDY:
+                        case STAGEOTHER:
+                        case REGISTERCODE:
+                            file = TemplateUtil.createDoc(dataMap, Constant.Template.STAGE_SUG_SIGN.getKey(), path);
+                            break;
+                        /**
+                         * 项目概算
+                         */
+                        case STAGEBUDGET:
+                            file = TemplateUtil.createDoc(dataMap, Constant.Template.STAGE_BUDGET_SIGN.getKey(), path);
+                            break;
+                        /**
+                         * 资金申请报告
+                         */
+                        case STAGEREPORT:
+                            file = TemplateUtil.createDoc(dataMap, Constant.Template.APPLY_REPORT_SIGN.getKey(), path);
+                            break;
+                        /**
+                         * 进口设备
+                         */
+                        case STAGEDEVICE:
+                            file = TemplateUtil.createDoc(dataMap, Constant.Template.IMPORT_DEVICE_SIGN.getKey(), path);
+                            break;
+                        /**
+                         * 设备清单（国产和进口）
+                         */
+                        case STAGEHOMELAND:
+                        case STAGEIMPORT:
+                            file = TemplateUtil.createDoc(dataMap, Constant.Template.DEVICE_BILL_SIGN.getKey(), path);
+                            break;
+                        default:
+                                ;
 
-                } else if (stageType.equals(Constant.RevireStageKey.KEY_DEVICE.getValue())) {
-                    //进口
-                    file = TemplateUtil.createDoc(dataMap, Constant.Template.IMPORT_DEVICE_SIGN.getKey(), path);
-
-                } else if (stageType.equals(Constant.RevireStageKey.KEY_HOMELAND.getValue())
-                        || stageType.equals(Constant.RevireStageKey.KEY_IMPORT.getValue())) {
-                    //设备清单（国产、进口）
-                    file = TemplateUtil.createDoc(dataMap, Constant.Template.DEVICE_BILL_SIGN.getKey(), path);
-
+                    }
                 }
                 break;
 
@@ -768,55 +784,82 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
                     file = TemplateUtil.createDoc(workData, Constant.Template.INFORMATION.getKey(), path);
                 }
-//                    file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_SUG_WORKPROGRAM.getKey(), path);
                 break;
             case "FILERECORD":
                 FileRecordDto fileRecordDto = fileRecordService.initBySignId(businessId);
                 Map<String, Object> fileData = TemplateUtil.entryAddMap(fileRecordDto);
-                if (stageType.equals(RevireStageKey.KEY_SUG.getValue())) {
-                    //建议书
-                    file = TemplateUtil.createDoc(fileData, Template.STAGE_SUG_FILERECORD.getKey(), path);
-                } else if (stageType.equals(RevireStageKey.KEY_STUDY.getValue())) {
-                    //可研
-                    file = TemplateUtil.createDoc(fileData, Template.STAGE_STUDY_FILERECORD.getKey(), path);
+                ProjectConstant.REVIEW_STATE_ENUM recordReviewStateEnum = ProjectConstant.REVIEW_STATE_ENUM.getByEnCode(stageType);
+                if(Validate.isObject(recordReviewStateEnum)){
+                    switch (recordReviewStateEnum){
+                        /**
+                         * 建议书
+                         */
+                        case STAGESUG:
+                            file = TemplateUtil.createDoc(fileData, Template.STAGE_SUG_FILERECORD.getKey(), path);
+                            break;
+                        /**
+                         * 可研
+                         */
+                        case STAGESTUDY:
+                            file = TemplateUtil.createDoc(fileData, Template.STAGE_STUDY_FILERECORD.getKey(), path);
+                            break;
+                        /**
+                         * 其他
+                         */
+                        case STAGEOTHER:
+                            Sign s = signRepo.getById(businessId);
+                            fileData.put("secrectlevel", s.getSecrectlevel());
+                            file = TemplateUtil.createDoc(fileData, Template.OTHERS_FILERECORD.getKey(), path);
+                            break;
+                        /**
+                         * 登记赋码
+                         */
+                        case REGISTERCODE:
+                            file = TemplateUtil.createDoc(fileData, Template.DJFM_FILERECORD.getKey(), path);
+                            break;
+                        /**
+                         * 项目概算
+                         */
+                        case STAGEBUDGET:
+                            file = TemplateUtil.createDoc(fileData, Template.STAGE_BUDGET_FILERECORD.getKey(), path);
+                            break;
+                        /**
+                         * 概算协审
+                         */
+                        case STAGEBUDGET_XS:
+                            file = TemplateUtil.createDoc(fileData, Template.STAGE_BUDGET_XS_FILERECORD.getKey(), path);
+                            break;
+                        /**
+                         * 资金申请报告
+                         */
+                        case STAGEREPORT:
+                            file = TemplateUtil.createDoc(fileData, Template.APPLY_REPORT_FILERECORD.getKey(), path);
+                            break;
+                        /**
+                         * 进口设备
+                         */
+                        case STAGEDEVICE:
+                            file = TemplateUtil.createDoc(fileData, Template.IMPORT_DEVICE_FILERECORD.getKey(), path);
+                            break;
+                        /**
+                         * 设备清单（国产和进口）
+                         */
+                        case STAGEHOMELAND:
+                        case STAGEIMPORT:
+                            //设备清单（国产、进口）
+                            AddRegisterFileDto[] registerFileDto = new AddRegisterFileDto[5];
+                            if (fileRecordDto != null && fileRecordDto.getRegisterFileDto() != null && fileRecordDto.getRegisterFileDto().size() > 0) {
+                                for (int i = 0; i < fileRecordDto.getRegisterFileDto().size() && i < 5; i++) {
+                                    registerFileDto[i] = fileRecordDto.getRegisterFileDto().get(i);
+                                }
+                            }
+                            fileData.put("registerFileList", registerFileDto);
+                            file = TemplateUtil.createDoc(fileData, Template.DEVICE_BILL_FILERECORD.getKey(), path);
+                            break;
+                        default:
+                            ;
 
-                } else if (stageType.equals(RevireStageKey.KEY_BUDGET.getValue())) {
-                    //概算
-                    file = TemplateUtil.createDoc(fileData, Template.STAGE_BUDGET_FILERECORD.getKey(), path);
-
-                } else if ("STAGEBUDGET_XS".equals(stageType)) {
-                    //概算协审
-                    file = TemplateUtil.createDoc(fileData, Template.STAGE_BUDGET_XS_FILERECORD.getKey(), path);
-
-                } else if (stageType.equals(Constant.RevireStageKey.KEY_REPORT.getValue())) {
-                    //资金
-                    file = TemplateUtil.createDoc(fileData, Template.APPLY_REPORT_FILERECORD.getKey(), path);
-
-                } else if (stageType.equals(Constant.RevireStageKey.KEY_DEVICE.getValue())) {
-                    //进口
-                    file = TemplateUtil.createDoc(fileData, Template.IMPORT_DEVICE_FILERECORD.getKey(), path);
-
-                } else if (stageType.equals(RevireStageKey.KEY_REGISTERCODE.getValue())) {
-                    //登记赋码
-                    file = TemplateUtil.createDoc(fileData, Template.DJFM_FILERECORD.getKey(), path);
-
-                } else if (stageType.equals(Constant.RevireStageKey.KEY_HOMELAND.getValue())
-                        || stageType.equals(Constant.RevireStageKey.KEY_IMPORT.getValue())) {
-                    //设备清单（国产、进口）
-                    AddRegisterFileDto[] registerFileDto = new AddRegisterFileDto[5];
-                    if (fileRecordDto != null && fileRecordDto.getRegisterFileDto() != null && fileRecordDto.getRegisterFileDto().size() > 0) {
-                        for (int i = 0; i < fileRecordDto.getRegisterFileDto().size() && i < 5; i++) {
-                            registerFileDto[i] = fileRecordDto.getRegisterFileDto().get(i);
-                        }
                     }
-                    fileData.put("registerFileList", registerFileDto);
-                    file = TemplateUtil.createDoc(fileData, Template.DEVICE_BILL_FILERECORD.getKey(), path);
-
-                } else if (stageType.equals(RevireStageKey.KEY_OTHER.getValue())) {
-                    //其他阶段
-                    Sign s = signRepo.getById(businessId);
-                    fileData.put("secrectlevel", s.getSecrectlevel());
-                    file = TemplateUtil.createDoc(fileData, Template.OTHERS_FILERECORD.getKey(), path);
                 }
                 break;
 
@@ -904,94 +947,119 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 //是否调概
                 dispatchData.put("ischangeEstimate", signDto == null ? "" : signDto.getIschangeEstimate());
 
-                if (stageType.equals(RevireStageKey.KEY_SUG.getValue())) {
-                    //建议书
-                    dispatchData.put("wpTile", "项目建议书发文审批表");
-                    file = TemplateUtil.createDoc(dispatchData, Template.STAGE_SUG_DISPATCHDOC.getKey(), path);
-                } else if (stageType.equals(RevireStageKey.KEY_REGISTERCODE.getValue())) {
-                    //登记赋码
-                    dispatchData.put("wpTile", "登记赋码发文审批表");
-                    file = TemplateUtil.createDoc(dispatchData, Template.DJFM_DISPATCHDOC.getKey(), path);
-
-                } else if (stageType.equals(RevireStageKey.KEY_STUDY.getValue())) {
-                    //可研
-                    List<SignDto> signDtoList = null;
-                    if (signDto != null) {
-                        signDtoList = signDto.getAssociateSignDtoList();
-                    }
-
-                    List<DispatchDocDto> dispatchList = new ArrayList<DispatchDocDto>();
-                    List<DispatchDocDto> dispatchViewList = new ArrayList<DispatchDocDto>();
-                    if (null != signDtoList) {
-                        for (int i = 0; i < signDtoList.size(); i++) {
-                            if (null != signDtoList.get(i).getDispatchDocDto()) {
-                                dispatchList.add(signDtoList.get(i).getDispatchDocDto());
+                ProjectConstant.REVIEW_STATE_ENUM disReviewStateEnum = ProjectConstant.REVIEW_STATE_ENUM.getByEnCode(stageType);
+                if(Validate.isObject(disReviewStateEnum)){
+                    switch (disReviewStateEnum){
+                        /**
+                         * 建议书
+                         */
+                        case STAGESUG:
+                            dispatchData.put("wpTile", "项目建议书发文审批表");
+                            file = TemplateUtil.createDoc(dispatchData, Template.STAGE_SUG_DISPATCHDOC.getKey(), path);
+                            break;
+                        /**
+                         * 可研
+                         */
+                        case STAGESTUDY:
+                            List<SignDto> signDtoList = null;
+                            if (signDto != null) {
+                                signDtoList = signDto.getAssociateSignDtoList();
                             }
-                        }
-                    }
-                    dispatchViewList.add(getDispatchStage("项目建议书", dispatchList));
-                    dispatchData.put("dispatchList", dispatchViewList);
-                    file = TemplateUtil.createDoc(dispatchData, Template.STAGE_STUDY_DISPATCHDOC.getKey(), path);
-
-                } else if (stageType.equals(RevireStageKey.KEY_BUDGET.getValue())) {
-                    //概算
-                    List<SignDto> signDtoList = null;
-                    if (signDto != null) {
-                        signDtoList = signDto.getAssociateSignDtoList();
-                    }
-                    List<DispatchDocDto> dispatchList = new ArrayList<DispatchDocDto>();
-                    List<DispatchDocDto> dispatchViewList = new ArrayList<DispatchDocDto>();
-                    if (null != signDtoList) {
-                        for (int i = 0; i < signDtoList.size(); i++) {
-                            if (null != signDtoList.get(i).getDispatchDocDto()) {
-                                dispatchList.add(signDtoList.get(i).getDispatchDocDto());
+                            List<DispatchDocDto> dispatchList = new ArrayList<DispatchDocDto>();
+                            List<DispatchDocDto> dispatchViewList = new ArrayList<DispatchDocDto>();
+                            if (null != signDtoList) {
+                                for (int i = 0; i < signDtoList.size(); i++) {
+                                    if (null != signDtoList.get(i).getDispatchDocDto()) {
+                                        dispatchList.add(signDtoList.get(i).getDispatchDocDto());
+                                    }
+                                }
                             }
-                        }
-                    }
-                    dispatchViewList.add(getDispatchStage("项目建议书", dispatchList));
-                    dispatchViewList.add(getDispatchStage("可行性研究报告", dispatchList));
-                    if (signDto != null && signDto.getIschangeEstimate() != null
-                            && "9".equals(signDto.getIschangeEstimate())) {
-                        dispatchViewList.add(getDispatchStage("项目概算", dispatchList));
-                    }
-                    dispatchData.put("dispatchList", dispatchViewList);
-                    file = TemplateUtil.createDoc(dispatchData, Template.STAGE_BUDGET_DISPATCHDOC.getKey(), path);
+                            dispatchViewList.add(getDispatchStage("项目建议书", dispatchList));
+                            dispatchData.put("dispatchList", dispatchViewList);
+                            file = TemplateUtil.createDoc(dispatchData, Template.STAGE_STUDY_DISPATCHDOC.getKey(), path);
+                            break;
+                        /**
+                         * 其他
+                         */
+                        case STAGEOTHER:
+                            file = TemplateUtil.createDoc(dispatchData, Template.OTHERS_DISPATCHDOC.getKey(), path);
+                            break;
+                        /**
+                         * 登记赋码
+                         */
+                        case REGISTERCODE:
+                            dispatchData.put("wpTile", "登记赋码发文审批表");
+                            file = TemplateUtil.createDoc(dispatchData, Template.DJFM_DISPATCHDOC.getKey(), path);
 
-                } else if (stageType.equals(Constant.RevireStageKey.KEY_REPORT.getValue())) {
-                    //资金
-                    List<SignDto> signDtoList = null;
-                    if (signDto != null) {
-                        signDtoList = signDto.getAssociateSignDtoList();
-                    }
-                    List<DispatchDocDto> dispatchList = new ArrayList<DispatchDocDto>();
-                    List<DispatchDocDto> dispatchViewList = new ArrayList<DispatchDocDto>();
-                    if (null != signDtoList) {
-                        for (int i = 0; i < signDtoList.size(); i++) {
-                            if (null != signDtoList.get(i).getDispatchDocDto()) {
-                                dispatchList.add(signDtoList.get(i).getDispatchDocDto());
+                            break;
+                        /**
+                         * 项目概算
+                         */
+                        case STAGEBUDGET:
+                            List<SignDto> signBugDtoList = null;
+                            if (signDto != null) {
+                                signBugDtoList = signDto.getAssociateSignDtoList();
                             }
-                        }
+                            List<DispatchDocDto> dispatchBugList = new ArrayList<DispatchDocDto>();
+                            List<DispatchDocDto> dispatchBugViewList = new ArrayList<DispatchDocDto>();
+                            if (null != signBugDtoList) {
+                                for (int i = 0,l=signBugDtoList.size(); i < l; i++) {
+                                    if (null != signBugDtoList.get(i).getDispatchDocDto()) {
+                                        dispatchBugList.add(signBugDtoList.get(i).getDispatchDocDto());
+                                    }
+                                }
+                            }
+                            dispatchBugViewList.add(getDispatchStage("项目建议书", dispatchBugList));
+                            dispatchBugViewList.add(getDispatchStage("可行性研究报告", dispatchBugList));
+                            if (signDto != null && signDto.getIschangeEstimate() != null
+                                    && "9".equals(signDto.getIschangeEstimate())) {
+                                dispatchBugViewList.add(getDispatchStage("项目概算", dispatchBugList));
+                            }
+                            dispatchData.put("dispatchList", dispatchBugList);
+                            file = TemplateUtil.createDoc(dispatchData, Template.STAGE_BUDGET_DISPATCHDOC.getKey(), path);
+                            break;
+                        /**
+                         * 资金申请报告
+                         */
+                        case STAGEREPORT:
+                            List<SignDto> signPortDtoList = null;
+                            if (signDto != null) {
+                                signPortDtoList = signDto.getAssociateSignDtoList();
+                            }
+                            List<DispatchDocDto> dispatchPortList = new ArrayList<DispatchDocDto>();
+                            List<DispatchDocDto> dispatchPortViewList = new ArrayList<DispatchDocDto>();
+                            if (null != signPortDtoList) {
+                                for (int i = 0,l=signPortDtoList.size(); i < l; i++) {
+                                    if (null != signPortDtoList.get(i).getDispatchDocDto()) {
+                                        dispatchPortList.add(signPortDtoList.get(i).getDispatchDocDto());
+                                    }
+                                }
+                            }
+                            dispatchData.put("wpTile", "资金申请报告发文审批表");
+                            dispatchPortViewList.add(getDispatchStage("资金申请报告", dispatchPortList));
+                            dispatchData.put("dispatchList", dispatchPortViewList);
+
+                            file = TemplateUtil.createDoc(dispatchData, Template.APPLY_REPORT_DISPATCHDOC.getKey(), path);
+                            break;
+                        /**
+                         * 进口设备
+                         */
+                        case STAGEDEVICE:
+                            dispatchData.put("wpTile", "进口设备发文审批表");
+                            file = TemplateUtil.createDoc(dispatchData, Template.IMPORT_DEVICE_DISPATCHDOC.getKey(), path);
+                            break;
+                        /**
+                         * 设备清单（国产和进口）
+                         */
+                        case STAGEHOMELAND:
+                        case STAGEIMPORT:
+                            dispatchData.put("wpTile", "设备清单发文审批表");
+                            file = TemplateUtil.createDoc(dispatchData, Template.DEVICE_BILL_DISPATCHDOC.getKey(), path);
+                            break;
+                        default:
+                            ;
+
                     }
-                    dispatchData.put("wpTile", "资金申请报告发文审批表");
-
-                    dispatchViewList.add(getDispatchStage("资金申请报告", dispatchList));
-                    dispatchData.put("dispatchList", dispatchViewList);
-
-                    file = TemplateUtil.createDoc(dispatchData, Template.APPLY_REPORT_DISPATCHDOC.getKey(), path);
-
-                } else if (stageType.equals(Constant.RevireStageKey.KEY_DEVICE.getValue())) {
-                    //进口
-                    dispatchData.put("wpTile", "进口设备发文审批表");
-                    file = TemplateUtil.createDoc(dispatchData, Template.IMPORT_DEVICE_DISPATCHDOC.getKey(), path);
-
-                } else if (stageType.equals(Constant.RevireStageKey.KEY_HOMELAND.getValue())
-                        || stageType.equals(Constant.RevireStageKey.KEY_IMPORT.getValue())) {
-                    //设备清单（国产、进口）
-                    dispatchData.put("wpTile", "设备清单发文审批表");
-                    file = TemplateUtil.createDoc(dispatchData, Template.DEVICE_BILL_DISPATCHDOC.getKey(), path);
-                } else if (stageType.equals(RevireStageKey.KEY_OTHER.getValue())) {
-                    //其他阶段
-                    file = TemplateUtil.createDoc(dispatchData, Template.OTHERS_DISPATCHDOC.getKey(), path);
                 }
                 break;
 
@@ -1260,7 +1328,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 List<AddRegisterFile> addRegisterFileList2 = addRegisterFileService.findByBusIdAndBusType(businessId, 3);
 
                 String stage = "评估论证";
-                if(Constant.STAGE_BUDGET.equals(signss.getReviewstage())){
+                if((STAGEBUDGET.getZhCode()).equals(signss.getReviewstage())){
                     stage = "项目概算";
                 }
                 Map<String, Object> addFileData = new HashMap<>();
@@ -1272,11 +1340,8 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 addFileData.put("strDate", DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
                 addFileData.put("stage" , stage);
                 file = TemplateUtil.createDoc(addFileData, Template.ADD_REGISTER_FILE.getKey(), path);
-
                 break;
-
             case "PROJECTSTOP":
-
                 ProjectStop projectStop = projectStopRepo.findById(ProjectStop_.stopid.getName(), businessId);
                 Sign sign1 = signRepo.findById(projectStop.getSign().getSignid());
                 Map<String, Object> psData = TemplateUtil.entryAddMap(projectStop);
@@ -1287,7 +1352,6 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 psData.put("receivedate", DateUtils.converToString(sign1.getReceivedate(), "yyyy-MM-dd"));
                 file = TemplateUtil.createDoc(psData, Template.PROJECT_STOP.getKey(), path);
                 break;
-
             case "VPROJECT":
                 //委项目处理表
                 Sign vSign = signRepo.findById(Sign_.signid.getName() , businessId);
@@ -1295,7 +1359,8 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 file = TemplateUtil.createDoc(vData, Template.PROJECT_VPROJECT.getKey(), path);
                 break;
 
-            default: break;
+            default:
+                break;
         }
         return file;
     }

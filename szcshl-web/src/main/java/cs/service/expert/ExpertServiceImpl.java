@@ -4,6 +4,7 @@ import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.constants.Constant;
 import cs.common.constants.Constant.EnumExpertState;
+import cs.common.constants.ProjectConstant;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.DateUtils;
 import cs.common.utils.SessionUtil;
@@ -227,7 +228,7 @@ public class ExpertServiceImpl implements ExpertService {
             BeanCopierUtils.copyProperties(expert, expertDto);
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", expertDto);
         } else {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), String.format("身份证号为%s 的专家已存在,请重新输入", expertDto.getIdCard()));
+            return ResultMsg.error(String.format("身份证号为%s 的专家已存在,请重新输入", expertDto.getIdCard()));
         }
     }
 
@@ -246,10 +247,10 @@ public class ExpertServiceImpl implements ExpertService {
             hqlBuilder.bulidPropotyString("where", Expert_.expertID.getName(), id);
             expertRepo.executeHql(hqlBuilder);
 
-            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+            return ResultMsg.ok( "操作成功！");
         } catch (Exception e) {
             logger.info("逻辑删除专家异常：" + e.getMessage());
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "删除失败！");
+            return ResultMsg.error( "删除失败！");
         }
     }
 
@@ -264,10 +265,10 @@ public class ExpertServiceImpl implements ExpertService {
     public ResultMsg deleteExpertData(String id) {
         try {
             expertRepo.deleteById(Expert_.expertID.getName(), id);
-            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+            return ResultMsg.ok( "操作成功！");
         } catch (Exception e) {
             logger.info("物理删除专家异常：" + e.getMessage());
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "删除失败！");
+            return ResultMsg.error( "删除失败！");
         }
     }
 
@@ -278,7 +279,7 @@ public class ExpertServiceImpl implements ExpertService {
      * @param state
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void updateAudit(String ids, String state) {
         if (Validate.isString(ids)) {
             HqlBuilder hqlBuilder = HqlBuilder.create();
@@ -508,7 +509,7 @@ public class ExpertServiceImpl implements ExpertService {
         List<ExpertDto> officialEPList = new ArrayList<>(), alternativeEPList = new ArrayList<>(), allEPList = new ArrayList<>();
         ExpertReview expertReview = expertReviewRepo.findById(reviewId);
         if( null != expertReview.getPayDate() && null != expertReview.getReviewDate() && (new Date()).after(expertReview.getReviewDate())){
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"已发送专家评审费，不能对方案再修改！");
+            return ResultMsg.error("已发送专家评审费，不能对方案再修改！");
         }
 
         if(isAllExtract){
@@ -517,13 +518,13 @@ public class ExpertServiceImpl implements ExpertService {
             for(ExpertSelected expertSelected : selectedList){
                 if(Constant.EnumExpertSelectType.AUTO.getValue().equals(expertSelected.getSelectType())
                         && minBusinessId.equals(expertSelected.getBusinessId())){
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"该项目已进行整体专家方案抽取，不能再次执行此操作！");
+                    return ResultMsg.error("该项目已进行整体专家方案抽取，不能再次执行此操作！");
                 }
             }
         }
 
         //如果是项目，则判断是否是专家函评
-        if (Constant.BusinessType.SIGN.getValue().equals(expertReview.getBusinessType())) {
+        if ((ProjectConstant.BUSINESS_TYPE.SIGN.toString()).equals(expertReview.getBusinessType())) {
             isLetterRw = workProgramRepo.checkReviewType(Constant.MergeType.REVIEW_LEETER.getValue(), minBusinessId);
         }
 
@@ -532,7 +533,7 @@ public class ExpertServiceImpl implements ExpertService {
             ExpertSelCondition expertSelCondition = expertSelConditionRepo.findById(ExpertSelCondition_.id.getName(), paramArrary[0].getId());
             if (expertSelCondition != null && expertSelCondition.getSelectIndex() > 0) {
                 if (!SUPER_ACCOUNT.equals(SessionUtil.getLoginName()) && (expertSelCondition.getSelectIndex() > 2)) {
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "该条件已经进行3次专家抽取，不能再进行专家抽取！");
+                    return ResultMsg.error("该条件已经进行3次专家抽取，不能再进行专家抽取！");
                 }
             }
         }
@@ -544,7 +545,7 @@ public class ExpertServiceImpl implements ExpertService {
         for (int k = 0, l = paramArrary.length; k < l; k++) {
             ExpertSelConditionDto epConditon = paramArrary[k];
             if (!Validate.isString(epConditon.getId())) {
-                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先保存专家抽取条件再进行专家抽取！");
+                resultMsg = ResultMsg.error( "请先保存专家抽取条件再进行专家抽取！");
                 break;
             }
             if(Validate.isString(conditionIds)){
@@ -560,7 +561,7 @@ public class ExpertServiceImpl implements ExpertService {
                 selectedEPCount = expertSelectedRepo.findConfirmSeletedEP(reviewId, epConditon.getMaJorBig(), epConditon.getMaJorSmall(), epConditon.getExpeRttype(), epConditon.getCompositeScore(), epConditon.getCompositeScoreEnd());
                 chooseCount = (selectedEPCount > 1) ? (chooseCount - selectedEPCount) : chooseCount;
                 if (chooseCount < 1) {
-                    resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "该条件抽取的专家已经达到设定人数，不能再次抽取！");
+                    resultMsg = ResultMsg.error("该条件抽取的专家已经达到设定人数，不能再次抽取！");
                     return resultMsg;
                 }
                 expertReview.setExtractInfo(epConditon.getId());
@@ -570,34 +571,34 @@ public class ExpertServiceImpl implements ExpertService {
             //2、获取所有符合条件的专家
             List<ExpertDto> matchEPList = countExpert(minBusinessId, reviewId, epConditon);
             if (!Validate.isList(matchEPList)) {
-                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "条件号【" + (k + 1) + "】抽取的专家人数不满足抽取条件，抽取无效！请重新设置抽取条件！");
+                resultMsg = ResultMsg.error( "条件号【" + (k + 1) + "】抽取的专家人数不满足抽取条件，抽取无效！请重新设置抽取条件！");
                 break;
             }
             allEPList.addAll(matchEPList);
             int totalCount = matchEPList.size();
 
             if (epConditon.getOfficialNum() > totalCount) {
-                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "条件号【" + (k + 1) + "】抽取的正选专家人数不够，抽取无效！请重新设置抽取条件！");
+                resultMsg = ResultMsg.error( "条件号【" + (k + 1) + "】抽取的正选专家人数不够，抽取无效！请重新设置抽取条件！");
                 break;
             }
             if (epConditon.getAlternativeNum() > (totalCount * 2)) {
-                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "条件号【" + (k + 1) + "】抽取的备选专家人数不够，抽取无效！请重新设置抽取条件！");
+                resultMsg = ResultMsg.error("条件号【" + (k + 1) + "】抽取的备选专家人数不够，抽取无效！请重新设置抽取条件！");
             }
 
             //3、开始抽取
             for (int i = 0; i < chooseCount; i++) {
                 if (!addAutoExpert(officialEPList, matchEPList, saveList, epConditon, expertReview, minBusinessId, isLetterRw,true)) {
-                    resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "条件号【" + (k + 1) + "】抽取的正选专家人数不够，抽取无效！请重新设置抽取条件！");
+                    resultMsg = ResultMsg.error("条件号【" + (k + 1) + "】抽取的正选专家人数不够，抽取无效！请重新设置抽取条件！");
                     break;
                 }
                 if (!addAutoExpert(alternativeEPList, matchEPList, saveList, epConditon, expertReview, minBusinessId, isLetterRw,false)) {
-                    resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "条件号【" + (k + 1) + "】抽取的备选专家人数不够，抽取无效！请重新设置抽取条件！");
+                    resultMsg = ResultMsg.error("条件号【" + (k + 1) + "】抽取的备选专家人数不够，抽取无效！请重新设置抽取条件！");
                     break;
                 }
             }
         }
         if (resultMsg == null) {
-            resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+            resultMsg = ResultMsg.ok( "操作成功！");
         }
         //4、抽取成功，添加相应的抽取记录
         if (resultMsg.isFlag()) {

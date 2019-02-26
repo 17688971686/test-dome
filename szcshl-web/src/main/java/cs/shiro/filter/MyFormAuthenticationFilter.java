@@ -1,6 +1,7 @@
 package cs.shiro.filter;
 
 import cs.common.constants.Constant;
+import cs.common.constants.ProjectConstant;
 import cs.common.utils.Validate;
 import cs.domain.flow.RuProcessTask;
 import cs.domain.sys.User;
@@ -49,7 +50,7 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter {
     private String successUrl;
 
     @Override
-    protected boolean executeLogin(ServletRequest request,ServletResponse response) throws Exception {
+    protected boolean executeLogin(ServletRequest request, ServletResponse response) throws Exception {
         AuthenticationToken token = createToken(request, response);
         if (token == null) {
             String msg = "create AuthenticationToken error";
@@ -57,11 +58,11 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter {
         }
         String username = (String) token.getPrincipal();
         User user = userService.findByName(username);
-        if(user != null){
+        if (user != null) {
             //用户停用，未激活等判断
-            if(UNUSER.equals(user.getUseState()) || User.JOB_STATE.f.toString().equals(user.getJobState())){
+            if (UNUSER.equals(user.getUseState()) || User.JOB_STATE.f.toString().equals(user.getJobState())) {
                /* throw new DisabledAccountException();*/
-                return onLoginFailure(token,new DisabledAccountException(),request, response);
+                return onLoginFailure(token, new DisabledAccountException(), request, response);
             }
             /* if(!isActive(user)){
                 return onLoginFailure(token,failureUrl,adminLogin,new InactiveException(),request, response);
@@ -70,7 +71,7 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter {
         try {
             Subject subject = getSubject(request, response);
             subject.login(token);
-            return onLoginSuccess(token,subject, request, response);
+            return onLoginSuccess(token, subject, request, response);
         } catch (AuthenticationException e) {
             return onLoginFailure(token, e, request, response);
         }
@@ -84,8 +85,9 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter {
         WebUtils.issueRedirect(request, response, getSuccessUrl(), null, true);
     }
 
-    @Transactional
+
     @Override
+    @Transactional(rollbackFor = Exception.class)
     protected boolean onLoginSuccess(AuthenticationToken token, Subject subject, ServletRequest request, ServletResponse response) throws Exception {
         String username = (String) subject.getPrincipal();
         User user = userService.findByName(username);
@@ -100,34 +102,42 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter {
         //保存session
         user.setPassword(null);
         user.setUserSalt(null);
-        subject.getSession().setAttribute(Constant.USER_SESSION_KEY, user); // 在session中设置用户信息
+        // 在session中设置用户信息
+        subject.getSession().setAttribute(Constant.USER_SESSION_KEY, user);
         logger.info("用户【" + username + "】登录成功！");
-
 
         //查询所有的待办项目
         List<RuProcessTask> processTaskList = flowService.queryMyRunProcessTasks(0);
-        if(Validate.isList(processTaskList)){
+        if (Validate.isList(processTaskList)) {
             List<String> noticeList = new ArrayList<>();
-            processTaskList.forEach( sl ->{
-                if(Constant.EnumState.PROCESS.getValue().equals(sl.getProcessState())){
-                    String commonString = "项目【<a href='#/signFlowDeal/"+sl.getBusinessKey()+"/"+sl.getTaskId()+"/"+sl.getProcessInstanceId()+"'>"+sl.getProjectName()+"</a>】";
-                    if(Constant.signEnumState.UNDER3WORKDAY.getValue().equals(sl.getLightState())){
-                        noticeList.add(commonString+"少于3个工作日，请尽快处理！");
-                    }else if(Constant.signEnumState.DISPAOVER.getValue().equals(sl.getLightState())){
-                        noticeList.add(commonString+"发文超期，请尽快处理！");
-                    }else if(Constant.signEnumState.OVER25WORKDAYARCHIVE.getValue().equals(sl.getLightState())){
-                        noticeList.add(commonString +"超过25个工作日未存档，请尽快处理！");
-                    }else if(Constant.signEnumState.ARCHIVEOVER.getValue().equals(sl.getLightState())){
-                        noticeList.add(commonString +"超过25个工作日未存档，请尽快处理！");
+            processTaskList.forEach(sl -> {
+                if (Constant.EnumState.PROCESS.getValue().equals(sl.getProcessState())) {
+                    String commonString = "项目【<a href='#/signFlowDeal/" + sl.getBusinessKey() + "/" + sl.getTaskId() + "/" + sl.getProcessInstanceId() + "'>" + sl.getProjectName() + "</a>】";
+                    ProjectConstant.CAUTION_LIGHT_ENUM cautionLightEnum = ProjectConstant.CAUTION_LIGHT_ENUM.getByCode(sl.getLightState());
+                    if (Validate.isObject(cautionLightEnum)) {
+                        switch (cautionLightEnum) {
+                            case UNDER3_WORKDAY:
+                                noticeList.add(commonString + "少于3个工作日，请尽快处理！");
+                                break;
+                            case DISPATCH_OVER:
+                                noticeList.add(commonString + "发文超期，请尽快处理！");
+                                break;
+                            case OVER25_WORKDAY_ARCHIVE:
+                                noticeList.add(commonString + "超过25个工作日未存档，请尽快处理！");
+                                break;
+                            case ARCHIVE_OVER:
+                                noticeList.add(commonString + "超过25个工作日未存档，请尽快处理！");
+                                break;
+                            default:
+                                ;
+                        }
                     }
                 }
-
             });
-            if(Validate.isList(noticeList)){
+            if (Validate.isList(noticeList)) {
                 subject.getSession().setAttribute(Constant.NOTICE_KEY, noticeList);
             }
         }
-
         return super.onLoginSuccess(token, subject, request, response);
     }
 
@@ -147,15 +157,15 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter {
 
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
-        if (isLoginRequest(request, response)){
-            if (isLoginSubmission(request, response)){
+        if (isLoginRequest(request, response)) {
+            if (isLoginSubmission(request, response)) {
                 //本次用户登陆账号
                 String account = this.getUsername(request);
                 Subject subject = this.getSubject(request, response);
                 //之前登陆的用户
-                String username  = (String) subject.getPrincipal();
+                String username = (String) subject.getPrincipal();
                 //如果两次登陆的用户不一样，则先退出之前登陆的用户(之前有登录用户，则退出)
-                if (Validate.isString(username)){
+                if (Validate.isString(username)) {
                     subject.logout();
                 }
             }
@@ -166,7 +176,8 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter {
     @Override
     protected boolean onAccessDenied(ServletRequest servletRequest, ServletResponse servletResponse) throws Exception {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
-        if (!"XMLHttpRequest".equalsIgnoreCase(request.getHeader("X-Requested-With"))) {// 不是ajax请求
+        // 不是ajax请求
+        if (!"XMLHttpRequest".equalsIgnoreCase(request.getHeader("X-Requested-With"))) {
             //如果被踢出了，直接退出，重定向到踢出后的地址
             return super.onAccessDenied(servletRequest, servletResponse);
         }

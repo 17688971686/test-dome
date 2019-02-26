@@ -3,6 +3,7 @@ package cs.ahelper.projhelper;
 import com.google.common.collect.Lists;
 import cs.common.constants.Constant;
 import cs.common.constants.FlowConstant;
+import cs.common.constants.ProjectConstant;
 import cs.common.constants.SysConstants;
 import cs.common.utils.Arith;
 import cs.common.utils.SessionUtil;
@@ -794,5 +795,53 @@ public class ProjUtil {
      */
     public static boolean isSelfProj(String filecode) {
         return filecode.endsWith("00000") || filecode.endsWith("0000");
+    }
+
+    /**
+     * 根据项目阶段，获取归档编号的类型（评估类、资金申请报告、其他类：PD，概算类：GD，设备类：SD）
+     * @param signStage
+     * @return
+     */
+    public static String getFileRecordTypeByStage(String signStage){
+        if(Validate.isString(signStage)){
+            if(signStage.indexOf("概算") > -1){
+                return ProjectConstant.FILE_RECORD_KEY.GD.toString();
+            }
+            if(signStage.indexOf("设备") > -1){
+                return ProjectConstant.FILE_RECORD_KEY.SD.toString();
+            }
+            return ProjectConstant.FILE_RECORD_KEY.PD.toString();
+        }else{
+            return "";
+        }
+    }
+
+    /**
+     * 按小类统计
+     * @param objArr
+     * @param projectType
+     * @param projectCount
+     */
+    public static void countStageNum(Object[] objArr, String projectType, String projectCount) {
+        ProjectConstant.PROJECT_TYPE_ENUM projectTypeEnum = ProjectConstant.PROJECT_TYPE_ENUM.valueOf(projectType);
+        switch (projectTypeEnum) {
+            case 市政工程:
+                objArr[0] = Integer.parseInt(projectCount);
+                break;
+            case 房建工程:
+                objArr[1] = Integer.parseInt(projectCount);
+                break;
+            case 信息工程:
+                objArr[2] = Integer.parseInt(projectCount);
+                break;
+            case 设备采购:
+                objArr[3] = Integer.parseInt(projectCount);
+                break;
+            case 其他:
+                objArr[4] = Integer.parseInt(projectCount);
+                break;
+            default:
+                break;
+        }
     }
 }

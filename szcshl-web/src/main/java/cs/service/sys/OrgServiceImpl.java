@@ -42,6 +42,11 @@ public class OrgServiceImpl implements OrgService {
     @Autowired
     private OrgDeptRepo orgDeptRepo;
 
+    /**
+     * 查询部门数据
+     * @param odataObj
+     * @return
+     */
     @Override
     public PageModelDto<OrgDto> get(ODataObj odataObj) {
         List<Org> orgList = orgRepo.findByOdata(odataObj);
@@ -49,29 +54,17 @@ public class OrgServiceImpl implements OrgService {
         orgList.forEach(o -> {
             OrgDto orgDto = new OrgDto();
             BeanCopierUtils.copyProperties(o, orgDto);
-            /*List<User> userList = o.getUsers();
-            if(userList != null && userList.size() > 0){
-				List<UserDto> userDtoList = new ArrayList<UserDto>(userList.size());
-				userList.forEach(u ->{
-					UserDto userDto = new UserDto();
-					BeanCopierUtils.copyProperties(u, userDto);
-					userDtoList.add(userDto);
-				});
-				orgDto.setUserDtos(userDtoList);
-			}*/
             orgDtoList.add(orgDto);
         });
 
         PageModelDto<OrgDto> pageModelDto = new PageModelDto<>();
         pageModelDto.setCount(odataObj.getCount());
         pageModelDto.setValue(orgDtoList);
-
-        logger.info("查询部门数据");
         return pageModelDto;
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ResultMsg createOrg(OrgDto orgDto) {
         // 判断部门是否已经存在
         Criteria criteria = orgRepo.getExecutableCriteria();
@@ -88,7 +81,7 @@ public class OrgServiceImpl implements OrgService {
                 String newMngOrgType = Constant.OrgType.getValue(org.getName());
                 //查看其是否还有分管部门
                 if (orgRepo.checkMngOrg(user.getId()) > 0 && !user.getMngOrgType().equals(newMngOrgType)) {
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，分管领导不能同时分管概算部又分管评估部！");
+                    return ResultMsg.error("操作失败，分管领导不能同时分管概算部又分管评估部！");
                 }
                 user.setMngOrgType(newMngOrgType);
                 userRepo.save(user);
@@ -121,7 +114,7 @@ public class OrgServiceImpl implements OrgService {
             String newMngOrgType = Constant.OrgType.getValue(orgDto.getName());
             //查看其是否还有分管部门
             if (orgRepo.checkMngOrg(user.getId()) > 0 && !newMngOrgType.equals(user.getMngOrgType())) {
-                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，分管领导不能同时分管概算部又分管评估部！");
+                return ResultMsg.error( "操作失败，分管领导不能同时分管概算部又分管评估部！");
             } else {
                 user.setMngOrgType(newMngOrgType);
                 userRepo.save(user);
@@ -142,12 +135,12 @@ public class OrgServiceImpl implements OrgService {
         org.setModifiedDate(new Date());
         orgRepo.save(org);
         orgDeptRepo.fleshOrgDeptCache();
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+        return ResultMsg.ok( "操作成功！");
     }
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void deleteOrg(String id) {
         orgRepo.deleteById(Org_.id.getName(), id);
         orgDeptRepo.fleshOrgDeptCache();
@@ -155,7 +148,7 @@ public class OrgServiceImpl implements OrgService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public PageModelDto<UserDto> getOrgUsers(String id, ODataObj odataObj) {
         PageModelDto<UserDto> pageModelDto = new PageModelDto<>();
         List<UserDto> userDtos = new ArrayList<>();

@@ -7,6 +7,7 @@ import cs.ahelper.projhelper.WorkPGUtil;
 import cs.common.ResultMsg;
 import cs.common.constants.Constant;
 import cs.common.constants.FlowConstant;
+import cs.common.constants.ProjectConstant;
 import cs.common.constants.SysConstants;
 import cs.common.utils.*;
 import cs.domain.book.BookBuy;
@@ -161,7 +162,7 @@ public class FlowAppServiceImpl implements FlowAppService {
             //分管副主任审批
             case FlowConstant.FLOW_SIGN_FGLD_FB:
                 if (flowDto.getBusinessMap().get(SignFlowParams.MAIN_ORG.getValue()) == null) {
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先选择主办部门！");
+                    return ResultMsg.error( "请先选择主办部门！");
                 }
                 sign = signRepo.findById(Sign_.signid.getName(), signid);
                 //流程分支
@@ -174,7 +175,7 @@ public class FlowAppServiceImpl implements FlowAppService {
                 variables.put(FlowConstant.SignFlowParams.BRANCH1.getValue(), true);
                 orgDept = orgDeptRepo.findOrgDeptById(businessId);
                 if (orgDept == null || !Validate.isString(orgDept.getDirectorID())) {
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请设置" + orgDept.getName() + "的部门负责人！");
+                    return ResultMsg.error("请设置" + orgDept.getName() + "的部门负责人！");
                 }
                 int branchCount = 1;
                 //主办部门信息
@@ -196,7 +197,7 @@ public class FlowAppServiceImpl implements FlowAppService {
 
                 if (Validate.isList(assistOrgIdList)) {
                     if (assistOrgIdList.size() > 3) {
-                        return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "协办部门最多只能选择3个！");
+                        return ResultMsg.error( "协办部门最多只能选择3个！");
                     }
                     String aOrgId = "", aOrgName = "";
                     for (int i = 2, l = (assistOrgIdList.size() + 2); i < l; i++) {
@@ -206,7 +207,7 @@ public class FlowAppServiceImpl implements FlowAppService {
                         //判断是否有部门负责人
                         orgDept = orgDeptRepo.findOrgDeptById(businessId);
                         if (orgDept == null || !Validate.isString(orgDept.getDirectorID())) {
-                            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请设置" + orgDept.getName() + "的部门负责人！");
+                            return ResultMsg.error(  "请设置" + orgDept.getName() + "的部门负责人！");
                         }
                         aOrgId = StringUtil.joinString(aOrgId, SysConstants.SEPARATE_COMMA, businessId);
                         aOrgName = StringUtil.joinString(aOrgName, SysConstants.SEPARATE_COMMA, orgDept.getName());
@@ -278,12 +279,12 @@ public class FlowAppServiceImpl implements FlowAppService {
                 //1、如果是协审项目
                 if (Constant.EnumState.YES.getValue().equals(sign.getIsassistflow())) {
                     if (flowDto.getBusinessMap().get("PRINCIPAL") == null) {
-                        return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请选择项目负责人！");
+                        return ResultMsg.error(  "请选择项目负责人！");
                     }
                     signPriList = JSON.parseArray(flowDto.getBusinessMap().get("PRINCIPAL").toString(), SignPrincipal.class);
                     signPriListNew = new ArrayList<SignPrincipal>() ;
                     if (!Validate.isList(signPriList)) {
-                        return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请选择项目负责人！");
+                        return ResultMsg.error( "请选择项目负责人！");
                     }
                     String mUserId = sign.getmUserId() == null ? "" : sign.getmUserId(),
                             mUserName = sign.getmUserName() == null ? "" : sign.getmUserName(),
@@ -319,7 +320,7 @@ public class FlowAppServiceImpl implements FlowAppService {
                     //主流程处理，一定要有第一负责人
                     if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)) {
                         if (flowDto.getBusinessMap().get(SignFlowParams.M_USER_ID.getValue()) == null) {
-                            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请选择第一负责人！");
+                            return ResultMsg.error( "请选择第一负责人！");
                         }
                         businessValue = flowDto.getBusinessMap().get(SignFlowParams.M_USER_ID.getValue()).toString();
                         //查询是否有代办
@@ -357,7 +358,7 @@ public class FlowAppServiceImpl implements FlowAppService {
                     } else {
                         //分支流程必须要选择第二负责人
                         if (!FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)) {
-                            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请选择项目负责人！");
+                            return ResultMsg.error(  "请选择项目负责人！");
                         }
                     }
                 }
@@ -551,7 +552,7 @@ public class FlowAppServiceImpl implements FlowAppService {
             //协办部长审批发文
             case FlowConstant.FLOW_SIGN_BMLD_QRFW_XB:
                 if (flowDto.getBusinessMap().get(SignFlowParams.AGREE.getValue()) == null || !Validate.isString(flowDto.getBusinessMap().get(SignFlowParams.AGREE.getValue()).toString())) {
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先勾选对应的审批结果！");
+                    return ResultMsg.error( "请先勾选对应的审批结果！");
                 }
                 String dirDealOption = flowDto.getDealOption();
                 //如果同意，则到主办部长审批
@@ -588,7 +589,7 @@ public class FlowAppServiceImpl implements FlowAppService {
                     if(disUtil.isMainProj()){
                         isMergeDisTask = true;
                     }else{
-                        return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"合并发文的项目，只能由主项目进行操作！");
+                        return ResultMsg.error( "合并发文的项目，只能由主项目进行操作！");
                     }
                 }
                 if(isMergeDisTask){
@@ -669,7 +670,7 @@ public class FlowAppServiceImpl implements FlowAppService {
                 if (null != isDirector && isDirector) {
                 } else {
                     if (flowDto.getBusinessMap().get(SignFlowParams.AGREE.getValue()) == null || !Validate.isString(flowDto.getBusinessMap().get(SignFlowParams.AGREE.getValue()).toString())) {
-                        return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先勾选对应的审批结果！");
+                        return ResultMsg.error( "请先勾选对应的审批结果！");
                     }
                 }
                 //如果同意
@@ -703,7 +704,7 @@ public class FlowAppServiceImpl implements FlowAppService {
             case FlowConstant.FLOW_SIGN_FGLD_QRFW:
                 userList = userRepo.findUserByRoleName(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue());
                 if (!Validate.isList(userList)) {
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先设置【" + Constant.EnumFlowNodeGroupName.DIRECTOR.getValue() + "】角色用户！");
+                    return ResultMsg.error(  "请先设置【" + Constant.EnumFlowNodeGroupName.DIRECTOR.getValue() + "】角色用户！");
                 }
                 businessId = flowDto.getBusinessMap().get("DIS_ID").toString();
                 dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
@@ -713,7 +714,7 @@ public class FlowAppServiceImpl implements FlowAppService {
                     if(disUtil.isMainProj()){
                         isMergeDisTask = true;
                     }else{
-                        return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"合并发文的项目，只能由主项目进行操作！");
+                        return ResultMsg.error( "合并发文的项目，只能由主项目进行操作！");
                     }
                 }
                 if(isMergeDisTask){
@@ -803,7 +804,7 @@ public class FlowAppServiceImpl implements FlowAppService {
                 agentTaskService.updateAgentInfo(agentTaskList,processInstance.getId(),processInstance.getName());
             }
 
-            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+            return ResultMsg.ok(  "操作成功！");
         }
     }
 
@@ -967,7 +968,7 @@ public class FlowAppServiceImpl implements FlowAppService {
         }
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+        return ResultMsg.ok( "操作成功！");
     }
 
     /**
@@ -1050,7 +1051,7 @@ public class FlowAppServiceImpl implements FlowAppService {
                 //查询部门领导
                 dealUserList = userRepo.findUserByRoleName(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue());
                 if (!Validate.isList(dealUserList)) {
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先设置【" + Constant.EnumFlowNodeGroupName.DIRECTOR.getValue() + "】角色用户！");
+                    return ResultMsg.error(  "请先设置【" + Constant.EnumFlowNodeGroupName.DIRECTOR.getValue() + "】角色用户！");
                 }
                 assigneeValue=dealUserList.get(0).getId();
                 variables = ActivitiUtil.setAssigneeValue(FlowConstant.MonthlyNewsletterFlowParams.USER_ZR.getValue(), assigneeValue);
@@ -1075,19 +1076,23 @@ public class FlowAppServiceImpl implements FlowAppService {
                 }else{
                     seq = (curYearMaxSeq+1)+"";
                 }*/
+                if(curYearMaxSeq < 1){
+                    curYearMaxSeq = 1;
+                }
                 addSuppLetter.setMonthlySeq(curYearMaxSeq);
 
                 //查询年份
-                String year = DateUtils.converToString(addSuppLetter.getSuppLetterTime(),"yyyy");
+                String year = DateUtils.converToString(addSuppLetter.getSuppLetterTime(),DateUtils.DATE_YEAR);
                 //生成存档编号,年份+类型+存档年份+存档序号
-                String fileNumber = year + Constant.FILE_RECORD_KEY.YD.getValue() + DateUtils.converToString(addSuppLetter.getSuppLetterTime(), "yy") + curYearMaxSeq;
+                String fileNumber = year + ProjectConstant.FILE_RECORD_KEY.YD.toString() + DateUtils.converToString(addSuppLetter.getSuppLetterTime(), "yy") + curYearMaxSeq;
                 addSuppLetter.setFileCode(fileNumber);
                 addSuppLetterRepo.save(addSuppLetter);
                 break;
             default:
                 break;
         }
-        taskService.addComment(task.getId(), processInstance.getId(), (flowDto == null) ? "" : flowDto.getDealOption());    //添加处理信息
+        //添加处理信息
+        taskService.addComment(task.getId(), processInstance.getId(), (flowDto == null) ? "" : flowDto.getDealOption());
         if (flowDto.isEnd()) {
             taskService.complete(task.getId());
         } else {
@@ -1104,7 +1109,7 @@ public class FlowAppServiceImpl implements FlowAppService {
         }
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+        return ResultMsg.ok( "操作成功！");
     }
 
 
@@ -1156,7 +1161,8 @@ public class FlowAppServiceImpl implements FlowAppService {
                 annountment.setDeptMinisterIdeaContent(flowDto.getDealOption());
                 annountment.setAppoveStatus(Constant.EnumState.PROCESS.getValue());
                 annountmentRepo.save(annountment);
-                assigneeValue = userDto.getOrgDto().getOrgSLeader();//下一环节的处理人
+                //下一环节的处理人
+                assigneeValue = userDto.getOrgDto().getOrgSLeader();
                 variables = ActivitiUtil.setAssigneeValue(FlowConstant.AnnountMentFLOWParams.USER_FZ.getValue(), assigneeValue);
                 //下一环节还是自己处理
                 if (assigneeValue.equals(userDto.getId())) {
@@ -1176,7 +1182,7 @@ public class FlowAppServiceImpl implements FlowAppService {
 
                 userList = userRepo.findUserByRoleName(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue());
                 if (!Validate.isList(userList)) {
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先设置【" + Constant.EnumFlowNodeGroupName.DIRECTOR.getValue() + "】角色用户！");
+                    return ResultMsg.error(  "请先设置【" + Constant.EnumFlowNodeGroupName.DIRECTOR.getValue() + "】角色用户！");
                 }
                 assigneeValue = userList.get(0).getId();//下一环节处理人
                 variables = ActivitiUtil.setAssigneeValue(FlowConstant.AnnountMentFLOWParams.USER_ZR.getValue(), assigneeValue);
@@ -1224,7 +1230,7 @@ public class FlowAppServiceImpl implements FlowAppService {
         }
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+        return ResultMsg.ok(  "操作成功！");
     }
 
     /**
@@ -1245,7 +1251,7 @@ public class FlowAppServiceImpl implements FlowAppService {
             for (int i = 0, l = updateList.size(); i < l; i++) {
                 Annountment annountment = updateList.get(i);
                 if (Validate.isString(annountment.getProcessInstanceId())) {
-                    resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，审批的通知公告，不能对其进行修改和删除操作！");
+                    resultMsg =ResultMsg.error( "操作失败，审批的通知公告，不能对其进行修改和删除操作！");
                     break;
                 }
                 //如果是发布
@@ -1296,10 +1302,10 @@ public class FlowAppServiceImpl implements FlowAppService {
             case FlowConstant.FLOW_SPL_FZR:
                 OrgDept orgDept = orgDeptRepo.queryBySignBranchId(addSuppLetter.getBusinessId(), FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue());
                 if (orgDept == null) {
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "主办部门已被删除，请联系管理员进行处理！");
+                    return ResultMsg.error(  "主办部门已被删除，请联系管理员进行处理！");
                 }
                 if (!Validate.isString(orgDept.getDirectorID())) {
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "【" + orgDept.getName() + "】的部长未设置，请先设置！");
+                    return ResultMsg.error( "【" + orgDept.getName() + "】的部长未设置，请先设置！");
                 }
                 dealUser = userRepo.getCacheUserById(orgDept.getDirectorID());
                 assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
@@ -1380,7 +1386,7 @@ public class FlowAppServiceImpl implements FlowAppService {
                 //更新项目和工作方案是否有拟补充资料函字段信息
                 //updateSuppLetterState(addSuppLetter.getBusinessId(),addSuppLetter.getBusinessType(),addSuppLetter.getDisapDate());
                 //如果是项目，则更新项目补充资料函状态
-                if(Validate.isString(addSuppLetter.getBusinessType()) && Constant.BusinessType.SIGN.getValue().equals(addSuppLetter.getBusinessType())){
+                if(Validate.isString(addSuppLetter.getBusinessType()) && (ProjectConstant.BUSINESS_TYPE.SIGN.toString()).equals(addSuppLetter.getBusinessType())){
                     signRepo.updateSuppLetterState(addSuppLetter.getBusinessId(), Constant.EnumState.YES.getValue(),addSuppLetter.getDisapDate());
                     workProgramRepo.updateSuppLetterState(addSuppLetter.getBusinessId(), Constant.EnumState.YES.getValue(),addSuppLetter.getDisapDate());
                 }
@@ -1388,7 +1394,8 @@ public class FlowAppServiceImpl implements FlowAppService {
             default:
                 break;
         }
-        taskService.addComment(task.getId(), processInstance.getId(), (flowDto == null) ? "" : flowDto.getDealOption());    //添加处理信息
+        //添加处理信息
+        taskService.addComment(task.getId(), processInstance.getId(), (flowDto == null) ? "" : flowDto.getDealOption());
         if (flowDto.isEnd()) {
             taskService.complete(task.getId());
         } else {
@@ -1405,7 +1412,7 @@ public class FlowAppServiceImpl implements FlowAppService {
         }
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+        return ResultMsg.ok(  "操作成功！");
     }
 
     @Override
@@ -1429,7 +1436,8 @@ public class FlowAppServiceImpl implements FlowAppService {
             throw new Exception("目标节点ID为空！");
         }
         ProcessInstance ProcessInstance = findProcessInstanceByTaskId(taskId);
-        taskService.addComment(taskId, ProcessInstance.getId(), "【" + userDto.getDisplayName() + "】重新分办");    //添加处理信息
+        //添加处理信息
+        taskService.addComment(taskId, ProcessInstance.getId(), "【" + userDto.getDisplayName() + "】重新分办");
         if (allBranch) {
             // 如果是删除所有分支，查找所有并行任务节点，同时取回
             List<Task> taskList = findTaskListByKey(ProcessInstance.getId());
@@ -1448,10 +1456,10 @@ public class FlowAppServiceImpl implements FlowAppService {
             if (task != null) {
                 commitProcess(task.getId(), null, activityId);
             } else {
-                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，该任务已提交！请重新刷新再试!");
+                return ResultMsg.error(  "操作失败，该任务已提交！请重新刷新再试!");
             }
         }
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+        return ResultMsg.ok(  "操作成功！");
     }
 
 

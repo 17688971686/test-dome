@@ -413,9 +413,13 @@ public class MsgServiceImpl implements MsgService{
         return null;
     }
 
+    /**
+     * 获取系统发送短信方式
+     * @return
+     */
     @Override
     public boolean checkMsgType() {
-        SysConfigDto msgTypeDto = sysConfigService.findByKey(Constant.RevireStageKey.MSG_TYPE.getValue());
+        SysConfigDto msgTypeDto = sysConfigService.findByKey(SysConstants.SYS_CONFIG_ENUM.MSG_TYPE.toString());
         return SMSUtils.checkMsgType(msgTypeDto);
     }
 

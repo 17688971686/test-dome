@@ -2,6 +2,7 @@ package cs.common.utils;
 
 import com.ibm.icu.text.DecimalFormat;
 import cs.common.constants.Constant;
+import cs.common.constants.ProjectConstant;
 import cs.domain.expert.Expert;
 import cs.domain.expert.ExpertSelected;
 import cs.domain.meeting.RoomBooking;
@@ -72,9 +73,12 @@ public class CreateTemplateUtils {
 
         SysFile sysFile = TemplateUtil.createTemplate(
                 f, sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
-                sign.getSignid(), Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_STUDY,
-                Constant.Template.STUDY_OPINION.getKey(), Constant.Template.STUDY_OPINION.getValue().split("_")[1],
-                Constant.Template.WORD_SUFFIX.getKey(), dataMap);
+                sign.getSignid(), Constant.SysFileType.TEMOLATE.getValue(),
+                ProjectConstant.REVIEW_STATE_ENUM.STAGESUG.getZhCode(),
+                Constant.Template.STUDY_OPINION.getKey(),
+                Constant.Template.STUDY_OPINION.getValue().split("_")[1],
+                Constant.Template.WORD_SUFFIX.getKey(),
+                dataMap);
 
         return sysFile;
     }
@@ -125,9 +129,12 @@ public class CreateTemplateUtils {
 
         SysFile sysFile = TemplateUtil.createTemplate(
                 f, sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
-                sign.getSignid(), Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_STUDY,
-                Constant.Template.STUDY_ROSTER.getKey(), Constant.Template.STUDY_ROSTER.getValue().split("_")[1],
-                Constant.Template.WORD_SUFFIX.getKey(), dataMap);
+                sign.getSignid(), Constant.SysFileType.TEMOLATE.getValue(),
+                ProjectConstant.REVIEW_STATE_ENUM.STAGESTUDY.getZhCode(),
+                Constant.Template.STUDY_ROSTER.getKey(),
+                Constant.Template.STUDY_ROSTER.getValue().split("_")[1],
+                Constant.Template.WORD_SUFFIX.getKey(),
+                dataMap);
 
         return sysFile;
     }
@@ -146,9 +153,12 @@ public class CreateTemplateUtils {
 
         SysFile sysFile = TemplateUtil.createTemplate(
                 f, sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
-                sign.getSignid(), Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_STUDY,
-                Constant.Template.STUDY_ESTIMATE.getKey(), Constant.Template.STUDY_ESTIMATE.getValue().split("_")[1],
-                Constant.Template.EXCEL_SUFFIX.getKey(), dataMap);
+                sign.getSignid(), Constant.SysFileType.TEMOLATE.getValue(),
+                ProjectConstant.REVIEW_STATE_ENUM.STAGESTUDY.getZhCode(),
+                Constant.Template.STUDY_ESTIMATE.getKey(),
+                Constant.Template.STUDY_ESTIMATE.getValue().split("_")[1],
+                Constant.Template.EXCEL_SUFFIX.getKey(),
+                dataMap);
         return sysFile;
     }
 
@@ -177,9 +187,12 @@ public class CreateTemplateUtils {
 
         SysFile sysFile = TemplateUtil.createTemplate(
                 f, sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
-                sign.getSignid(), Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_BUDGET,
-                Constant.Template.BUDGET_OPINION.getKey(), Constant.Template.BUDGET_OPINION.getValue().split("_")[1],
-                Constant.Template.WORD_SUFFIX.getKey(), dataMap);
+                sign.getSignid(), Constant.SysFileType.TEMOLATE.getValue(),
+                ProjectConstant.REVIEW_STATE_ENUM.STAGEBUDGET.getZhCode(),
+                Constant.Template.BUDGET_OPINION.getKey(),
+                Constant.Template.BUDGET_OPINION.getValue().split("_")[1],
+                Constant.Template.WORD_SUFFIX.getKey(),
+                dataMap);
         return sysFile;
     }
 
@@ -197,8 +210,10 @@ public class CreateTemplateUtils {
 
         SysFile sysFile = TemplateUtil.createTemplate(
                 f, sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
-                sign.getSignid(), Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_BUDGET,
-                Constant.Template.BUDGET_PROJECTCOST.getKey(), Constant.Template.BUDGET_PROJECTCOST.getValue().split("_")[1],
+                sign.getSignid(), Constant.SysFileType.TEMOLATE.getValue(),
+                ProjectConstant.REVIEW_STATE_ENUM.STAGEBUDGET.getZhCode(),
+                Constant.Template.BUDGET_PROJECTCOST.getKey(),
+                Constant.Template.BUDGET_PROJECTCOST.getValue().split("_")[1],
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         return sysFile;
     }
@@ -217,9 +232,12 @@ public class CreateTemplateUtils {
 
         SysFile sysFile = TemplateUtil.createTemplate(
                 f, sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
-                sign.getSignid(), Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_BUDGET,
-                Constant.Template.BUDGET_ESTIMATE.getKey(), Constant.Template.BUDGET_ESTIMATE.getValue().split("_")[1],
-                Constant.Template.EXCEL_SUFFIX.getKey(), dataMap);
+                sign.getSignid(), Constant.SysFileType.TEMOLATE.getValue(),
+                ProjectConstant.REVIEW_STATE_ENUM.STAGEBUDGET.getZhCode(),
+                Constant.Template.BUDGET_ESTIMATE.getKey(),
+                Constant.Template.BUDGET_ESTIMATE.getValue().split("_")[1],
+                Constant.Template.EXCEL_SUFFIX.getKey(),
+                dataMap);
         return sysFile;
     }
 
@@ -263,9 +281,12 @@ public class CreateTemplateUtils {
 
         SysFile sysFile = TemplateUtil.createTemplate(
                 f, sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
-                sign.getSignid(), Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_BUDGET,
-                Constant.Template.BUDGET_ROSTER.getKey(), Constant.Template.BUDGET_ROSTER.getValue().split("_")[1],
-                Constant.Template.WORD_SUFFIX.getKey(), dataMap);
+                sign.getSignid(), Constant.SysFileType.TEMOLATE.getValue(),
+                ProjectConstant.REVIEW_STATE_ENUM.STAGEBUDGET.getZhCode(),
+                Constant.Template.BUDGET_ROSTER.getKey(),
+                Constant.Template.BUDGET_ROSTER.getValue().split("_")[1],
+                Constant.Template.WORD_SUFFIX.getKey(),
+                dataMap);
         return sysFile;
     }
 /**************end*********dubget项目概算模板区*******************/
@@ -292,9 +313,12 @@ public class CreateTemplateUtils {
 
         SysFile sysFile = TemplateUtil.createTemplate(
                 f, sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
-                sign.getSignid(), Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_SUG,
-                Constant.Template.SUG_OPINION.getKey(), Constant.Template.SUG_OPINION.getValue().split("_")[1],
-                Constant.Template.WORD_SUFFIX.getKey(), dataMap);
+                sign.getSignid(), Constant.SysFileType.TEMOLATE.getValue(),
+                ProjectConstant.REVIEW_STATE_ENUM.STAGESUG.getZhCode(),
+                Constant.Template.SUG_OPINION.getKey(),
+                Constant.Template.SUG_OPINION.getValue().split("_")[1],
+                Constant.Template.WORD_SUFFIX.getKey(),
+                dataMap);
         return sysFile;
     }
 
@@ -311,9 +335,12 @@ public class CreateTemplateUtils {
         dataMap.put("projectName", sign.getProjectname());
         SysFile sysFile = TemplateUtil.createTemplate(
                 f, sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
-                sign.getSignid(), Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_SUG,
-                Constant.Template.SUG_ESTIMATE.getKey(), Constant.Template.SUG_ESTIMATE.getValue().split("_")[1],
-                Constant.Template.EXCEL_SUFFIX.getKey(), dataMap);
+                sign.getSignid(), Constant.SysFileType.TEMOLATE.getValue(),
+                ProjectConstant.REVIEW_STATE_ENUM.STAGESUG.getZhCode(),
+                Constant.Template.SUG_ESTIMATE.getKey(),
+                Constant.Template.SUG_ESTIMATE.getValue().split("_")[1],
+                Constant.Template.EXCEL_SUFFIX.getKey(),
+                dataMap);
         return sysFile;
     }
 
@@ -357,9 +384,12 @@ public class CreateTemplateUtils {
 
         SysFile sysFile = TemplateUtil.createTemplate(
                 f, sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
-                sign.getSignid(), Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_SUG,
-                Constant.Template.SUG_ROSTER.getKey(), Constant.Template.SUG_ROSTER.getValue().split("_")[1],
-                Constant.Template.WORD_SUFFIX.getKey(), dataMap);
+                sign.getSignid(), Constant.SysFileType.TEMOLATE.getValue(),
+                ProjectConstant.REVIEW_STATE_ENUM.STAGESUG.getZhCode(),
+                Constant.Template.SUG_ROSTER.getKey(),
+                Constant.Template.SUG_ROSTER.getValue().split("_")[1],
+                Constant.Template.WORD_SUFFIX.getKey(),
+                dataMap);
         return sysFile;
     }
     /**************end*************sug项目建议书****************************/
@@ -384,9 +414,12 @@ public class CreateTemplateUtils {
 
         SysFile sysFile = TemplateUtil.createTemplate(
                 f, sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
-                sign.getSignid(), Constant.SysFileType.TEMOLATE.getValue(), Constant.APPLY_REPORT,
-                Constant.Template.REPORT_OPINION.getKey(), Constant.Template.REPORT_OPINION.getValue().split("_")[1],
-                Constant.Template.WORD_SUFFIX.getKey(), dataMap);
+                sign.getSignid(), Constant.SysFileType.TEMOLATE.getValue(),
+                ProjectConstant.REVIEW_STATE_ENUM.STAGEREPORT.getZhCode(),
+                Constant.Template.REPORT_OPINION.getKey(),
+                Constant.Template.REPORT_OPINION.getValue().split("_")[1],
+                Constant.Template.WORD_SUFFIX.getKey(),
+                dataMap);
         return sysFile;
     }
 
@@ -402,9 +435,12 @@ public class CreateTemplateUtils {
         dataMap.put("projectName", sign.getProjectname());
         SysFile sysFile = TemplateUtil.createTemplate(
                 f, sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
-                sign.getSignid(), Constant.SysFileType.TEMOLATE.getValue(), Constant.APPLY_REPORT,
-                Constant.Template.REPORT_ESTIMATE.getKey(), Constant.Template.REPORT_ESTIMATE.getValue().split("_")[1],
-                Constant.Template.EXCEL_SUFFIX.getKey(), dataMap);
+                sign.getSignid(), Constant.SysFileType.TEMOLATE.getValue(),
+                ProjectConstant.REVIEW_STATE_ENUM.STAGEREPORT.getZhCode(),
+                Constant.Template.REPORT_ESTIMATE.getKey(),
+                Constant.Template.REPORT_ESTIMATE.getValue().split("_")[1],
+                Constant.Template.EXCEL_SUFFIX.getKey(),
+                dataMap);
         return sysFile;
     }
 
@@ -448,8 +484,10 @@ public class CreateTemplateUtils {
 
         SysFile sysFile = TemplateUtil.createTemplate(
                 f, sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
-                sign.getSignid(), Constant.SysFileType.TEMOLATE.getValue(), Constant.APPLY_REPORT,
-                Constant.Template.REPORT_ROSTER.getKey(), Constant.Template.REPORT_ROSTER.getValue().split("_")[1],
+                sign.getSignid(), Constant.SysFileType.TEMOLATE.getValue(),
+                ProjectConstant.REVIEW_STATE_ENUM.STAGEREPORT.getZhCode(),
+                Constant.Template.REPORT_ROSTER.getKey(),
+                Constant.Template.REPORT_ROSTER.getValue().split("_")[1],
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         return sysFile;
     }
@@ -1240,7 +1278,7 @@ public class CreateTemplateUtils {
                     if (tempArr[1].equals(proReviewConditionDtoList.get(j).getReviewStage())) {
                         if (null == proReviewConditionDtoList.get(j).getIsadvanced() || "0".equals(proReviewConditionDtoList.get(j).getIsadvanced())) {
                             String temp = tempArr[1];
-                            if(tempArr[1] != null && Constant.STAGE_BUDGET.equals(tempArr[1])){
+                            if(tempArr[1] != null && (ProjectConstant.REVIEW_STATE_ENUM.STAGEBUDGET.getZhCode()).equals(tempArr[1])){
                                 temp = "完成初步涉及概算审核";
                             }else{
                                 temp = "完成" + temp + "评审";
@@ -1308,7 +1346,7 @@ public class CreateTemplateUtils {
                                 proCent = String.format("%.2f", (proReviewConditionDtoAllList.get(j).getProCount().floatValue() / (float) reviewTotal) * 100) + "%";
                             }
                             String temp = tempArr[1];
-                            if(tempArr[1] != null && Constant.STAGE_BUDGET.equals(tempArr[1])){
+                            if(tempArr[1] != null && (ProjectConstant.REVIEW_STATE_ENUM.STAGEBUDGET.getZhCode()).equals(tempArr[1])){
                                 temp = "完成初步涉及概算审核";
                             }else{
                                 temp = "完成" + temp + "评审";
@@ -1371,7 +1409,7 @@ public class CreateTemplateUtils {
             for (int j = 0; j < reviewStageTotal.length; j++) {
                 String[] tempArr = reviewStageTotal[j].split("-");
                 String temp = tempArr[1];
-                if(tempArr[1] != null && Constant.STAGE_BUDGET.equals(tempArr[1])){
+                if(tempArr[1] != null && (ProjectConstant.REVIEW_STATE_ENUM.STAGEBUDGET.getZhCode()).equals(tempArr[1])){
                     temp = "完成初步涉及概算审核";
                 }else{
                     temp = "完成" + temp + "评审";

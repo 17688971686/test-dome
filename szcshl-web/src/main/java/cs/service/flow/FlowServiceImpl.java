@@ -29,6 +29,7 @@ import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.project.*;
 import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.repository.repositoryImpl.topic.WorkPlanRepo;
+import cs.service.expert.ExpertReviewService;
 import cs.service.project.AgentTaskService;
 import cs.service.project.SignPrincipalService;
 import cs.service.project.SignService;
@@ -164,7 +165,8 @@ public class FlowServiceImpl implements FlowService {
     private AgentTaskService agentTaskService;
     @Autowired
     private UserRepo userRepo;
-
+    @Autowired
+    private ExpertReviewService expertReviewService;
     /**
      * 回退到上一环节或者指定环节
      *
@@ -172,31 +174,31 @@ public class FlowServiceImpl implements FlowService {
      * @return
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ResultMsg rollBackLastNode(FlowDto flowDto) {
-        ResultMsg resultMsg = null;
         String errorMsg = "", module = "", businessKey = "", userParam = "", assigneeValue = "";
         DisUtil disUtil = null;
         WorkPGUtil workPGUtil = null;
         Map<String, Object> resultMap = null;
         boolean isProj = false;
         Task task = null;
+        ResultMsg resultMsg = null;
         try {
             // 取得当前任务
             HistoricTaskInstance currTask = historyService.createHistoricTaskInstanceQuery().taskId(flowDto.getTaskId()).singleResult();
             if (currTask == null) {
-                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，无法获取任务信息！");
+                return ResultMsg.error( "操作失败，无法获取任务信息！");
             }
             // 取得流程实例
             ProcessInstance instance = runtimeService.createProcessInstanceQuery().processInstanceId(currTask.getProcessInstanceId()).singleResult();
             //流程结束
             if (instance == null) {
-                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，流程已结束！");
+                return ResultMsg.error( "操作失败，流程已结束！");
             }
             // 取得流程定义
             ProcessDefinitionEntity definition = (ProcessDefinitionEntity) (processEngine.getRepositoryService().getProcessDefinition(currTask.getProcessDefinitionId()));
             if (definition == null) {
-                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，流程定义数据为空！");
+                return ResultMsg.error( "操作失败，流程定义数据为空！");
             }
             // 取得上一步活动
             ActivityImpl currActivity = ((ProcessDefinitionImpl) definition).findActivity(currTask.getTaskDefinitionKey());
@@ -371,7 +373,7 @@ public class FlowServiceImpl implements FlowService {
             for (PvmTransition pvmTransition : oriPvmTransitionList) {
                 pvmTransitionList.add(pvmTransition);
             }
-            resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+            resultMsg = ResultMsg.ok("操作成功！");
             //发送腾讯通消息
             if (Validate.isString(assigneeValue)) {
                 RTXSendMsgPool.getInstance().sendReceiverIdPool(flowDto.getTaskId(), assigneeValue);
@@ -381,7 +383,7 @@ public class FlowServiceImpl implements FlowService {
         } catch (Exception e) {
             errorMsg = e.getMessage();
             log.error("流程回退异常：" + errorMsg);
-            resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，错误问题已记录，请联系管理员检查确认！");
+            resultMsg = ResultMsg.error( "操作失败，错误问题已记录，请联系管理员检查确认！");
         }
         //添加日记记录
         Log log = new Log();
@@ -1060,11 +1062,11 @@ public class FlowServiceImpl implements FlowService {
             ProcessInstance processInstance = findProcessInstanceByBusinessKey(businessKey);
             runtimeService.suspendProcessInstanceById(processInstance.getId());
             module = processInstance.getProcessDefinitionKey();
-            resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+            resultMsg = ResultMsg.ok( "操作成功！");
         } catch (Exception e) {
             errorMsg = e.getMessage();
             log.error("流程回退异常：" + errorMsg);
-            resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，错误问题已记录，请联系管理员检查确认！");
+            resultMsg = ResultMsg.error( "操作失败，错误问题已记录，请联系管理员检查确认！");
         }
 
         //添加日记记录
@@ -1112,15 +1114,15 @@ public class FlowServiceImpl implements FlowService {
                 if (processInstance.isSuspended()) {
                     runtimeService.activateProcessInstanceById(processInstance.getId());
                 }
-                resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+                resultMsg = ResultMsg.ok( "操作成功！");
             } else {
-                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "流程实例已被删除！");
+                resultMsg = ResultMsg.error("流程实例已被删除！");
             }
 
         } catch (Exception e) {
             errorMsg = e.getMessage();
             log.info("流程重新激活异常：" + errorMsg);
-            resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作异常：" + e.getMessage());
+            resultMsg = ResultMsg.error( "操作异常：" + e.getMessage());
         }
         //添加日记记录
         Log log = new Log();
@@ -1488,7 +1490,7 @@ public class FlowServiceImpl implements FlowService {
         User dealUser = null;                                   //处理人
         Sign sign = null;                                       //项目信息
         List<SignMerge> mergeList = signMergeRepo.findByType(signid, MergeType.DISPATCH.getValue());
-        ResultMsg returnMsg = new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！");
+        ResultMsg returnMsg = ResultMsg.ok( "操作成功！");
 
         switch (nodeName) {
             //发文申请
@@ -1496,20 +1498,20 @@ public class FlowServiceImpl implements FlowService {
                 if (Validate.isList(mergeList)) {
                     //1、先检验是否发放评审费和通过校验
                     for (SignMerge s : mergeList) {
-                        if (!signService.checkReviewCost(s.getMergeId())) {
-                            return new ResultMsg(false, MsgCode.ERROR.getValue(), "合并发文次项目,还没完成专家评审费发放，不能进行下一步操作！");
+                        if (!expertReviewService.checkReviewCost(s.getMergeId())) {
+                            return ResultMsg.error("合并发文次项目,还没完成专家评审费发放，不能进行下一步操作！");
                         }
                         if (!signService.checkFileUpload(s.getMergeId())) {
-                            return new ResultMsg(false, MsgCode.ERROR.getValue(), "合并发文次项目,还没上传[评审意见]或者[审核意见]附件信息！");
+                            return ResultMsg.error("合并发文次项目,还没上传[评审意见]或者[审核意见]附件信息！");
                         }
                     }
                 }
                 //校验本身是否已经发送评审费和上传附件
-                if (!signService.checkReviewCost(signid)) {
-                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还没完成专家评审费发放，不能进行下一步操作！");
+                if (!expertReviewService.checkReviewCost(signid)) {
+                    return ResultMsg.error("您还没完成专家评审费发放，不能进行下一步操作！");
                 }
                 if (!signService.checkFileUpload(signid)) {
-                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还没上传[评审意见]或者[审核意见]附件信息！");
+                    return ResultMsg.error("您还没上传[评审意见]或者[审核意见]附件信息！");
                 }
                 //取环节处理人
                 userList = signPrincipalService.getAllSecondPriUser(signid);
@@ -1742,7 +1744,7 @@ public class FlowServiceImpl implements FlowService {
         taskService.complete(taskId, variables);
         //修改第一负责人信息
         dp.setMianChargeSuggest(dealOption + "  签名：" + ActivitiUtil.getSignName(SessionUtil.getDisplayName(), isAgentTask) + "  日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
-        signService.resetDisReviewOption(dp);
+        DisUtil.create().resetDisReviewOption(dp);
         dispatchDocRepo.save(dp);
         signRepo.updateSignProcessState(signId, Constant.SignProcessState.END_DIS.getValue());
     }
@@ -1831,7 +1833,7 @@ public class FlowServiceImpl implements FlowService {
     }
 
     private ResultMsg checkMerDisNode(Sign sign, String nodeName) {
-        ResultMsg resultMsg = new ResultMsg(false, MsgCode.ERROR.getValue(), "");
+        ResultMsg resultMsg = ResultMsg.error( "");
         if (!Validate.isObject(sign.getDispatchDoc())) {
             resultMsg.setReMsg("项目【" + sign.getProjectname() + "】还没填报发文！");
             return resultMsg;

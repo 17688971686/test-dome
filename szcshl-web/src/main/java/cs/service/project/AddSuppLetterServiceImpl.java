@@ -1,10 +1,11 @@
 package cs.service.project;
 
+import cs.common.HqlBuilder;
+import cs.common.ResultMsg;
 import cs.common.constants.Constant;
 import cs.common.constants.Constant.EnumState;
 import cs.common.constants.FlowConstant;
-import cs.common.HqlBuilder;
-import cs.common.ResultMsg;
+import cs.common.constants.ProjectConstant;
 import cs.common.utils.*;
 import cs.domain.project.*;
 import cs.domain.sys.OrgDept;
@@ -13,9 +14,11 @@ import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.project.AddSuppLetterDto;
 import cs.repository.odata.ODataObj;
-import cs.repository.repositoryImpl.project.*;
+import cs.repository.repositoryImpl.project.AddSuppLetterRepo;
+import cs.repository.repositoryImpl.project.SignBranchRepo;
+import cs.repository.repositoryImpl.project.SignRepo;
+import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import cs.repository.repositoryImpl.sys.OrgDeptRepo;
-import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.service.rtx.RTXSendMsgPool;
 import cs.service.sys.UserService;
 import org.activiti.engine.ProcessEngine;
@@ -42,7 +45,7 @@ import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
 /**
  * Description: 项目资料补充函 业务操作实现类
- * author: ldm
+ * @author: ldm
  * Date: 2017-8-1 18:05:57
  */
 @Service
@@ -64,8 +67,6 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
     @Autowired
     private OrgDeptRepo orgDeptRepo;
     @Autowired
-    private UserRepo userRepo;
-    @Autowired
     private SignBranchRepo signBranchRepo;
     @Autowired
     private WorkProgramRepo workProgramRepo;
@@ -77,7 +78,7 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
      * 保存补充资料函
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ResultMsg saveSupp(AddSuppLetterDto addSuppLetterDto) {
         if (Validate.isString(addSuppLetterDto.getBusinessId())) {
             AddSuppLetter addSuppLetter = new AddSuppLetter();
@@ -97,7 +98,7 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
             BeanCopierUtils.copyProperties(addSuppLetter, addSuppLetterDto);
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", addSuppLetterDto);
         } else {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，获取项目信息失败，请联系相关人员处理！");
+            return ResultMsg.error("操作失败，获取项目信息失败，请联系相关人员处理！");
         }
     }
 
@@ -127,7 +128,7 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
     public AddSuppLetterDto initSuppLetter(String businessId, String businessType) {
         AddSuppLetterDto suppletterDto = new AddSuppLetterDto();
         //新增
-        if (Constant.BusinessType.SIGN.getValue().equals(businessType)) {
+        if ((ProjectConstant.BUSINESS_TYPE.SIGN.toString()).equals(businessType)) {
             Sign sign = signRepo.findById(Sign_.signid.getName(), businessId);
             OrgDept orgDept = orgDeptRepo.queryBySignBranchId(businessId, FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue());
             if (orgDept != null) {
@@ -216,9 +217,9 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
      */
     @Override
     public PageModelDto<AddSuppLetterDto> monthlyMultiyearListData(ODataObj odataObj) {
-        PageModelDto<AddSuppLetterDto> pageModelDto = new PageModelDto<AddSuppLetterDto>();
+        PageModelDto<AddSuppLetterDto> pageModelDto = new PageModelDto<>();
         List<AddSuppLetter> resultList = addSuppLetterRepo.findByOdata(odataObj);
-        List<AddSuppLetterDto> resultDtoList = new ArrayList<AddSuppLetterDto>(resultList==null?0:resultList.size());
+        List<AddSuppLetterDto> resultDtoList = new ArrayList<>(resultList==null?0:resultList.size());
         if (Validate.isList(resultList)) {
             resultList.forEach(x -> {
                 AddSuppLetterDto modelDto = new AddSuppLetterDto();
@@ -269,9 +270,9 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
      */
     @Override
     public PageModelDto<AddSuppLetterDto> addsuppListData(ODataObj odataObj) {
-        PageModelDto<AddSuppLetterDto> pageModelDto = new PageModelDto<AddSuppLetterDto>();
+        PageModelDto<AddSuppLetterDto> pageModelDto = new PageModelDto<>();
         List<AddSuppLetter> allist = addSuppLetterRepo.findByOdata(odataObj);
-        List<AddSuppLetterDto> alDtos = new ArrayList<AddSuppLetterDto>(allist == null ? 0 : allist.size());
+        List<AddSuppLetterDto> alDtos = new ArrayList<>(allist == null ? 0 : allist.size());
         if (Validate.isList(allist)) {
             allist.forEach(x -> {
                 AddSuppLetterDto alDto = new AddSuppLetterDto();
@@ -353,18 +354,18 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
     public ResultMsg startSignSupperFlow(String id) {
         AddSuppLetter addSuppLetter = addSuppLetterRepo.findById(id);
         if (addSuppLetter == null) {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "发起流程失败，该记录已不存在！");
+            return ResultMsg.error( "发起流程失败，该记录已不存在！");
         }
         if (Validate.isString(addSuppLetter.getProcessInstanceId())) {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "该记录已发起流程了，不能重复发起流程！");
+            return ResultMsg.error("该记录已发起流程了，不能重复发起流程！");
         }
         //判断项目的主办部门
         OrgDept orgDept = orgDeptRepo.queryBySignBranchId(addSuppLetter.getBusinessId(), FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue());
         if (orgDept == null) {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "主办部门已被删除，请联系管理员进行处理！");
+            return ResultMsg.error("主办部门已被删除，请联系管理员进行处理！");
         }
         if (!Validate.isString(orgDept.getDirectorID())) {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "【" + orgDept.getName() + "】的部长未设置，请先设置！");
+            return ResultMsg.error("【" + orgDept.getName() + "】的部长未设置，请先设置！");
         }
         //1、启动流程
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(FlowConstant.FLOW_SUPP_LETTER, id,
@@ -513,7 +514,7 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
                 addSuppLetterRepo.save(addSuppLetter);
 
                 //如果是项目，则更新项目补充资料函状态
-                if(Validate.isString(addSuppLetter.getBusinessType()) && Constant.BusinessType.SIGN.getValue().equals(addSuppLetter.getBusinessType())){
+                if(Validate.isString(addSuppLetter.getBusinessType()) && (ProjectConstant.BUSINESS_TYPE.SIGN.toString()).equals(addSuppLetter.getBusinessType())){
                     signRepo.updateSuppLetterState(addSuppLetter.getBusinessId(),EnumState.YES.getValue(),addSuppLetter.getDisapDate());
                     workProgramRepo.updateSuppLetterState(addSuppLetter.getBusinessId(),EnumState.YES.getValue(),addSuppLetter.getDisapDate());
                 }
@@ -591,7 +592,7 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
     @Override
     public void updateSuppLetterState(String businessId, String businessType, Date disapDate) {
         //如果是项目，则更新项目补充资料函状态
-        if(Validate.isString(businessType) && Constant.BusinessType.SIGN.getValue().equals(businessType)){
+        if(Validate.isString(businessType) && (ProjectConstant.BUSINESS_TYPE.SIGN.toString()).equals(businessType)){
             signRepo.updateSuppLetterState(businessId,EnumState.YES.getValue(),disapDate);
             workProgramRepo.updateSuppLetterState(businessId,EnumState.YES.getValue(),disapDate);
         }

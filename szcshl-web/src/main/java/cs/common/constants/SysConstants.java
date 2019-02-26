@@ -35,6 +35,10 @@ public final class SysConstants {
      */
     public static final String UTF8 = "UTF-8";
     /**
+     * GBK编码
+     */
+    public static final String GBK = "GBK";
+    /**
      * ISO88591编码
      */
     public static final String  ISO88591 = "ISO-8859-1";
@@ -79,7 +83,7 @@ public final class SysConstants {
     /**
      * 系统参数配置key值
      */
-    public static enum SYS_CONFIG_ENUM {
+    public enum SYS_CONFIG_ENUM {
         /**
          * 上一个抽签单位的最大序号
          */

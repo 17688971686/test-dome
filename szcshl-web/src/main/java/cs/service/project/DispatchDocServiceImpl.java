@@ -137,15 +137,19 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         sign.setDispatchdate(new Date());
         sign.setDocnum(fileNum);
         //3、把亮灯状态去掉
-        sign.setIsLightUp(signEnumState.NOLIGHT.getValue());
+        sign.setIsLightUp(ProjectConstant.CAUTION_LIGHT_ENUM.NO_LIGHT.getCodeValue());
         //4、发文后剩余工作日
         sign.setDaysafterdispatch(sign.getSurplusdays());
         signRepo.save(sign);
     }
 
-    // 保存发文拟稿
+    /**
+     * 保存发文
+     * @param dispatchDocDto
+     * @return
+     */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ResultMsg save(DispatchDocDto dispatchDocDto) {
         boolean isHaveSign = Validate.isString(dispatchDocDto.getSignId());
         boolean isUpdate = Validate.isString(dispatchDocDto.getId());

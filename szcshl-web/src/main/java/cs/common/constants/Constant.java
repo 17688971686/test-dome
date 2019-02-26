@@ -102,18 +102,45 @@ public class Constant {
      * session中用户的key
      */
     public final static String NOTICE_KEY = "NOTICE_KEY";
-    /**
-     * 文件存到ftp的
-     * Ip地址、服务端口、用户名、密码、基础路径、文件存放路径
-     */
-    //public static final String FTP_IP = "FTP_IP1";
 
+    /**
+     * 会议预定类型
+     */
+    public enum MEET_BOOK_ENUM{
+        /**
+         * 评审会
+         */
+        REVIEW("0","评审会");
+        private String bookCode;
+        private String bookCodeName;
+
+        public String getBookCode() {
+            return bookCode;
+        }
+
+        public void setBookCode(String bookCode) {
+            this.bookCode = bookCode;
+        }
+
+        public String getBookCodeName() {
+            return bookCodeName;
+        }
+
+        public void setBookCodeName(String bookCodeName) {
+            this.bookCodeName = bookCodeName;
+        }
+
+        MEET_BOOK_ENUM(String bookCode, String bookCodeName) {
+            this.bookCode = bookCode;
+            this.bookCodeName = bookCodeName;
+        }
+    }
 
     /**
      * 项目流程信息状态
      * (1:已发起，2:正在做工作方案，3:已完成工作方案，4:正在做发文 5:已完成发文填报 6:已完成发文编号 7:已发送报销，8:已发送存档，9:已确认归档)
      */
-    public static enum SignProcessState {
+    public enum SignProcessState {
         IS_START(1),
         DO_WP(2),
         END_WP(3),
@@ -335,30 +362,6 @@ public class Constant {
     }
 
     /**
-     * 项目业务类型
-     *
-     * @author ldm
-     */
-    public static enum BusinessType {
-        GX("GX"),                   //表示项目概算
-        PX("PX"),                   //表示项目评估
-        SIGN("SIGN"),               //表示项目签收
-        TOPIC("TOPIC"),             //表示课题研究
-        SIGN_WP("SIGN_WP"),         //项目签收工作方案
-        TOPIC_WP("TOPIC_WP");       //课题研究工作方案
-
-        private String value;
-
-        BusinessType(String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
-        }
-    }
-
-    /**
      * 模板枚举
      */
     public enum Template {
@@ -559,34 +562,7 @@ public class Constant {
         }
     }
 
-    /**
-     * 警示灯状态
-     *
-     * @author MCL
-     * @date 2017年6月29日 下午12:03:19
-     */
-    public static enum signEnumState {
-        NOLIGHT("0"),                   //不显示
-        PROCESS("1"),                   //在办
-        DISPA("2"),                     //已发文
-        ARCHIVE("3"),                   //已发送存档
-        PAUSE("4"),                     //暂停
-        UNDER3WORKDAY("5"),             //少于三个工作日
-        DISPAOVER("6"),                 //发文超期
-        OVER25WORKDAYARCHIVE("7"),      //超过25个工作日未存档
-        ARCHIVEOVER("8");               //存档超期
 
-        private String value;
-
-        signEnumState(String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
-        }
-
-    }
 
     /**
      * 合并类型

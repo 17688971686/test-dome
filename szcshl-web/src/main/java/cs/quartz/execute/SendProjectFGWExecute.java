@@ -20,7 +20,6 @@ import cs.service.rtx.RTXService;
 import cs.service.sys.LogService;
 import cs.service.sys.MsgService;
 import cs.service.sys.WorkdayService;
-import cs.threadtask.MsgThread;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.quartz.Job;
@@ -33,29 +32,19 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import static cs.common.constants.Constant.MsgType.sendfgw_type;
-import static cs.common.constants.Constant.RevireStageKey.SMS_SENDFGW_FAIL_USER;
 import static cs.common.constants.FlowConstant.*;
 import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
+import static cs.common.constants.SysConstants.SYS_CONFIG_ENUM;
 
 /**
+ * @author ldm on 2017/12/18.
  * 发送信息项目信息给委里
- * Created by ldm on 2017/12/18.
  */
 @Component
 public class SendProjectFGWExecute implements Job {
     private static Logger logger = Logger.getLogger(SendProjectFGWExecute.class);
-    /*@Autowired
-    private SignService signService;
-    @Autowired
-    private LogService logService;
-    @Autowired
-    private SignRestService signRestService;
-    @Autowired
-    private FlowService flowService;*/
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -145,7 +134,7 @@ public class SendProjectFGWExecute implements Job {
                     }
                     //发送短信
                     if (rtxService.rtxSMSEnabled()  && SMSUtils.isSendTime() && workdayService.isWorkDay(new Date())) {
-                        List<User> recvUserList = msgService.getNoticeUserByConfigKey(SMS_SENDFGW_FAIL_USER.getValue());
+                        List<User> recvUserList = msgService.getNoticeUserByConfigKey(SYS_CONFIG_ENUM.SMS_SENDFGW_FAIL_USER.toString());
                         if(Validate.isList(recvUserList)){
                             String msgContent = SMSUtils.buildSendMsgContent(null,sendfgw_type.name(),msgBuffer.toString(),resultMsg.isFlag());
                             SMSLog smsLog = new SMSLog();
@@ -153,9 +142,6 @@ public class SendProjectFGWExecute implements Job {
                             smsLog.setBuninessId(StringUtils.join(sucessIdList, SysConstants.SEPARATE_COMMA));
                             //发送短信
                             SMSUtils.sendMsg(msgService,recvUserList,msgContent,smsLog);
-                            /*ExecutorService threadPool = Executors.newSingleThreadExecutor();
-                            threadPool.execute(new MsgThread(msgService,recvUserList,msgContent,smsLog));
-                            threadPool.shutdown();*/
                         }
                     }
                     log.setLogCode(resultMsg.getReCode());

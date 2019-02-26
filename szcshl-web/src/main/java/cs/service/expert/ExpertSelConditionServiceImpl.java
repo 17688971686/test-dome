@@ -2,6 +2,7 @@ package cs.service.expert;
 
 import cs.common.constants.Constant;
 import cs.common.ResultMsg;
+import cs.common.constants.ProjectConstant;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.StringUtil;
@@ -26,7 +27,7 @@ import java.util.List;
 
 /**
  * Description: 专家抽取条件 业务操作实现类
- * author: ldm
+ * @author: ldm
  * Date: 2017-5-23 19:49:58
  */
 @Service
@@ -61,7 +62,7 @@ public class ExpertSelConditionServiceImpl implements ExpertSelConditionService 
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void save(ExpertSelConditionDto record) {
         ExpertSelCondition domain = new ExpertSelCondition();
         BeanCopierUtils.copyProperties(record, domain);
@@ -69,7 +70,7 @@ public class ExpertSelConditionServiceImpl implements ExpertSelConditionService 
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void update(ExpertSelConditionDto record) {
         ExpertSelCondition domain = expertSelConditionRepo.findById(record.getId());
         BeanCopierUtils.copyPropertiesIgnoreNull(record, domain);
@@ -94,7 +95,7 @@ public class ExpertSelConditionServiceImpl implements ExpertSelConditionService 
      * @param ids
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ResultMsg delete(String reviewId,String ids) {
         try{
             ExpertReview expertReview = expertReviewRepo.findById(reviewId);
@@ -127,7 +128,7 @@ public class ExpertSelConditionServiceImpl implements ExpertSelConditionService 
      * @throws Exception
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ResultMsg saveConditionList(String businessId, String minBusinessId,String businessType, String reviewId, ExpertSelConditionDto[] recordList) {
         if (recordList != null && recordList.length > 0) {
             ExpertReview reviewObj = new ExpertReview();
@@ -147,7 +148,7 @@ public class ExpertSelConditionServiceImpl implements ExpertSelConditionService 
                 //评审会标题
                 expertReviewRepo.initReviewTitle(reviewObj,businessId,businessType);
                 //获取评审会日期
-                if (Constant.BusinessType.SIGN.getValue().equals(businessType)) {
+                if ((ProjectConstant.BUSINESS_TYPE.SIGN.toString()).equals(businessType)) {
                     WorkProgram wp = workProgramRepo.findById(WorkProgram_.id.getName(),minBusinessId);
                     //专家函评
                     if(Constant.MergeType.REVIEW_LEETER.getValue().equals(wp.getReviewType())){
@@ -184,7 +185,7 @@ public class ExpertSelConditionServiceImpl implements ExpertSelConditionService 
             }
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "保存成功！", resultList);
         } else {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "保存失败，获取不到抽取条件信息！");
+            return ResultMsg.error("保存失败，获取不到抽取条件信息！");
         }
 
     }

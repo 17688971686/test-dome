@@ -5,17 +5,23 @@ import cs.common.utils.Validate;
 import cs.domain.project.DispatchDoc;
 
 /**
+ * @author ldm on 2018/5/6 0006.
  * 发文工具类
- * Created by ldm on 2018/5/6 0006.
  */
 public class DisUtil {
 
     private DispatchDoc dispatchDoc;
 
+    protected DisUtil() {
+
+    }
     protected DisUtil(DispatchDoc dispatchDoc) {
         this.dispatchDoc = dispatchDoc;
     }
 
+    public static DisUtil create() {
+        return new DisUtil();
+    }
     public static DisUtil create(DispatchDoc dispatchDoc) {
         return new DisUtil(dispatchDoc);
     }

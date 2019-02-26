@@ -4,6 +4,7 @@ import cs.ahelper.projhelper.ProjUtil;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.constants.Constant;
+import cs.common.constants.ProjectConstant;
 import cs.common.constants.SysConstants;
 import cs.common.utils.DateUtils;
 import cs.common.utils.SessionUtil;
@@ -55,80 +56,65 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
      */
     @Override
     public ResultMsg findByTime(String startTime, String endTime) {
-        Date start = DateUtils.converToDate(startTime, "yyyy-MM-dd");
-        Date end = DateUtils.converToDate(endTime, "yyyy-MM-dd");
+        Date start = DateUtils.converToDate(startTime, DateUtils.DATE_PATTERN);
+        Date end = DateUtils.converToDate(endTime, DateUtils.DATE_PATTERN);
         List<Map<String, Object[]>> resultList = new ArrayList<>();
         if (DateUtils.daysBetween(start, end) > 0) {
             HqlBuilder hqlBuilder = HqlBuilder.create();
-            hqlBuilder.append(" select reviewstage , sum(appalyinvestment) appalyinvestment , sum(authorizeValue) authorizeValue , count(projectcode) projectCount from sign_disp_work");
-            hqlBuilder.append(" where " + SignDispaWork_.signdate.getName() + " >=:start and " + SignDispaWork_.signdate.getName() + "<=:end");
-            hqlBuilder.append(" and " + SignDispaWork_.processState.getName() + ">=:processState");
+            hqlBuilder.append(" select reviewstage , sum(appalyinvestment) appalyinvestment , sum(authorizeValue) authorizeValue , ");
+            hqlBuilder.append(" count(projectcode) projectCount from sign_disp_work ");
+            hqlBuilder.append(" where " + SignDispaWork_.signdate.getName() + " >=:start and " + SignDispaWork_.signdate.getName() + " <=:end ");
+            hqlBuilder.setParam("start", start).setParam("end", end);
+            //已发文
+            hqlBuilder.append(" and " + SignDispaWork_.processState.getName() + " >=:processState ");
+            hqlBuilder.setParam("processState", Constant.SignProcessState.END_DIS_NUM.getValue());
             //排除预签收项目
-            hqlBuilder.append(" and (ispresign <>:ispresign or ispresign is null)");
+            hqlBuilder.append(" and (ispresign <>:ispresign or ispresign is null) ");
+            hqlBuilder.setParam("ispresign", Constant.EnumState.YES.getValue());
             hqlBuilder.append(" group by " + SignDispaWork_.reviewstage.getName());
             hqlBuilder.append(" order by " + SignDispaWork_.reviewstage.getName() + " desc");
-            hqlBuilder.setParam("start", start);
-            hqlBuilder.setParam("end", end);
-            hqlBuilder.setParam("processState", Constant.SignProcessState.END_DIS_NUM.getValue());//已发文
-            hqlBuilder.setParam("ispresign", Constant.EnumState.YES.getValue());
+
             List<Object[]> objctList = this.getObjectArray(hqlBuilder);
             Map<String, Object[]> map = new HashMap<>();
             Object[] initData = new Object[]{0, 0};
-            map.put(Constant.STAGE_SUG, initData);
-            map.put(Constant.STAGE_STUDY, initData);
-            map.put(Constant.STAGE_BUDGET, initData);
-            map.put(Constant.APPLY_REPORT, initData);
-            map.put(Constant.DEVICE_BILL_HOMELAND, initData);
-            map.put(Constant.DEVICE_BILL_IMPORT, initData);
-            map.put(Constant.IMPORT_DEVICE, initData);
-            map.put(Constant.OTHERS, initData);
+            map.put(ProjectConstant.REVIEW_STATE_ENUM.STAGESUG.getZhCode(), initData);
+            map.put(ProjectConstant.REVIEW_STATE_ENUM.STAGESTUDY.getZhCode(), initData);
+            map.put(ProjectConstant.REVIEW_STATE_ENUM.STAGEBUDGET.getZhCode(), initData);
+            map.put(ProjectConstant.REVIEW_STATE_ENUM.STAGEREPORT.getZhCode(), initData);
+            map.put(ProjectConstant.REVIEW_STATE_ENUM.STAGEHOMELAND.getZhCode(), initData);
+            map.put(ProjectConstant.REVIEW_STATE_ENUM.STAGEIMPORT.getZhCode(), initData);
+            map.put(ProjectConstant.REVIEW_STATE_ENUM.STAGEDEVICE.getZhCode(), initData);
+            map.put(ProjectConstant.REVIEW_STATE_ENUM.REGISTERCODE.getZhCode(), initData);
+            map.put(ProjectConstant.REVIEW_STATE_ENUM.STAGEOTHER.getZhCode(), initData);
             if (objctList != null && objctList.size() > 0) {
-                for (int i = 0; i < objctList.size(); i++) {
+                for (int i = 0, l = objctList.size(); i < l; i++) {
                     Object[] obj = objctList.get(i);
-
                     double appalyinvestment = ((BigDecimal) obj[1]) == null ? 0 : ((BigDecimal) obj[1]).divide(new BigDecimal(10000)).doubleValue();
-
                     double authorizeValue = ((BigDecimal) obj[2]) == null ? 0 : ((BigDecimal) obj[2]).divide(new BigDecimal(10000)).doubleValue();
-
                     int num = obj[3] == null ? 0 : new BigDecimal(obj[3].toString()).intValue();
-
                     double ratio = 0; //审定/申报比例
-
                     double extraRate = 0;//核减（增）率
-
                     if (appalyinvestment != 0) {
                         ratio = Integer.parseInt(String.format("%.00f", authorizeValue / appalyinvestment * 100));
-
                     }
 
                     if (authorizeValue != 0) {
                         extraRate = Integer.parseInt(String.format("%.00f", (appalyinvestment - authorizeValue) / appalyinvestment * 100));
                     }
 
-                    Object[] value = {appalyinvestment, authorizeValue, num, ratio, extraRate}; //[申报金额，审定金额，数目 , 审定/申报 ， 核减（增率）]
-                    if ((Constant.STAGE_SUG).equals((String) obj[0])) {
-                        map.put(Constant.STAGE_SUG, value);
-                    } else if ((Constant.STAGE_STUDY).equals((String) obj[0])) {
-                        map.put(Constant.STAGE_STUDY, value);
-                    } else if ((Constant.STAGE_BUDGET).equals((String) obj[0])) {
-                        map.put(Constant.STAGE_BUDGET, value);
-                    } else if ((Constant.APPLY_REPORT).equals((String) obj[0])) {
-                        map.put(Constant.APPLY_REPORT, value);
-                    } else if ((Constant.DEVICE_BILL_HOMELAND).equals((String) obj[0])) {
-                        map.put(Constant.DEVICE_BILL_HOMELAND, value);
-                    } else if ((Constant.DEVICE_BILL_IMPORT).equals((String) obj[0])) {
-                        map.put(Constant.DEVICE_BILL_IMPORT, value);
-                    } else if ((Constant.IMPORT_DEVICE).equals((String) obj[0])) {
-                        map.put(Constant.IMPORT_DEVICE, value);
-                    } else if ((Constant.OTHERS).equals((String) obj[0])) {
-                        map.put(Constant.OTHERS, value);
+                    //[申报金额，审定金额，数目 , 审定/申报 ， 核减（增率）]
+                    Object[] value = {appalyinvestment, authorizeValue, num, ratio, extraRate};
+                    String reviewStateName = obj[0].toString();
+                    ProjectConstant.REVIEW_STATE_ENUM reviewStateEnum = ProjectConstant.REVIEW_STATE_ENUM.getByZhCode(reviewStateName);
+                    if (Validate.isObject(reviewStateEnum)) {
+                        map.put(reviewStateName, value);
                     }
                 }
                 resultList.add(map);
             }
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", resultList);
         } else {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "结束日期必须大于开始日期！", null);
+            return ResultMsg.error("结束日期必须大于开始日期！");
         }
     }
 
@@ -143,17 +129,27 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
     public ResultMsg findByTypeAndReview(String startTime, String endTime) {
         List<Map<String, Object[]>> resultList = new ArrayList<>();
         //map("评审阶段" , [市政工程，房建工程，信息工程，设备采购，其他])
-        Object[] sugs = new Object[]{0, 0, 0, 0, 0};//建议书
-        Object[] studys = new Object[]{0, 0, 0, 0, 0};//可行性研究报告
-        Object[] budgets = new Object[]{0, 0, 0, 0, 0};//项目概算
-        Object[] reports = new Object[]{0, 0, 0, 0, 0};//资金申请报告
-        Object[] homelands = new Object[]{0, 0, 0, 0, 0};//设备清单（国产）
-        Object[] imports = new Object[]{0, 0, 0, 0, 0};//设备清单（进口）
-        Object[] devices = new Object[]{0, 0, 0, 0, 0};//进口设备
-        Object[] others = new Object[]{0, 0, 0, 0, 0};//其它
+        //建议书
+        Object[] sugs = new Object[]{0, 0, 0, 0, 0};
+        //登记赋码
+        Object[] regcode = new Object[]{0, 0, 0, 0, 0};
+        //可行性研究报告
+        Object[] studys = new Object[]{0, 0, 0, 0, 0};
+        //项目概算
+        Object[] budgets = new Object[]{0, 0, 0, 0, 0};
+        //资金申请报告
+        Object[] reports = new Object[]{0, 0, 0, 0, 0};
+        //设备清单（国产）
+        Object[] homelands = new Object[]{0, 0, 0, 0, 0};
+        //设备清单（进口）
+        Object[] imports = new Object[]{0, 0, 0, 0, 0};
+        //进口设备
+        Object[] devices = new Object[]{0, 0, 0, 0, 0};
+        //其它
+        Object[] others = new Object[]{0, 0, 0, 0, 0};
 
-        Date start = DateUtils.converToDate(startTime, "yyyy-MM-dd");
-        Date end = DateUtils.converToDate(endTime, "yyyy-MM-dd");
+        Date start = DateUtils.converToDate(startTime, DateUtils.DATE_PATTERN);
+        Date end = DateUtils.converToDate(endTime, DateUtils.DATE_PATTERN);
         if (DateUtils.daysBetween(start, end) > 0) {
             HqlBuilder hqlBuilder = HqlBuilder.create();
             hqlBuilder.append("select " + SignDispaWork_.reviewstage.getName() + "," + SignDispaWork_.projectType.getName() + ",count(" + SignDispaWork_.projectcode.getName() + ") projectNum from sign_disp_work ");
@@ -167,192 +163,97 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
             hqlBuilder.append(" order by " + SignDispaWork_.reviewstage.getName() + " desc , " + SignDispaWork_.projectType.getName());
             hqlBuilder.setParam("start", start);
             hqlBuilder.setParam("end", end);
-            hqlBuilder.setParam("processState", Constant.SignProcessState.END_DIS_NUM.getValue()); //已发文
+            //已发文
+            hqlBuilder.setParam("processState", Constant.SignProcessState.END_DIS_NUM.getValue());
             hqlBuilder.setParam("ispresign", Constant.EnumState.YES.getValue());
 
             List<Object[]> objctList = this.getObjectArray(hqlBuilder);
             if (objctList != null && objctList.size() > 0) {
-                for (int i = 0; i < objctList.size(); i++) {
+                for (int i = 0, l = objctList.size(); i < l; i++) {
                     Object[] objects = objctList.get(i);
-                    if ((Constant.STAGE_SUG).equals((String) objects[0])) {
-                        switch ((String) objects[1]) {
-                            case "市政工程":
-                                sugs[0] = Integer.parseInt((objects[2]).toString());
+                    String reviewStageName =  objects[0].toString(),projectType = (objects[1]).toString(),projectCount = (objects[2]).toString();
+                    ProjectConstant.REVIEW_STATE_ENUM reviewStateEnum = ProjectConstant.REVIEW_STATE_ENUM.getByZhCode(reviewStageName);
+                    if(Validate.isObject(reviewStateEnum)){
+                        switch (reviewStateEnum){
+                            /**
+                             * 项目建议书
+                             */
+                            case STAGESUG:
+                                ProjUtil.countStageNum(sugs, projectType,projectCount);
                                 break;
-                            case "房建工程":
-                                sugs[1] = Integer.parseInt((objects[2]).toString());
+                            /**
+                             * 可行性研究报告
+                             */
+                            case STAGESTUDY:
+                                ProjUtil.countStageNum(studys, projectType,projectCount);
                                 break;
-                            case "信息":
-                                sugs[2] = Integer.parseInt((objects[2]).toString());
+                            /**
+                             * 项目概算
+                             */
+                            case STAGEBUDGET:
+                                ProjUtil.countStageNum(budgets, projectType,projectCount);
                                 break;
-                            case "设备采购":
-                                sugs[3] = Integer.parseInt((objects[2]).toString());
+                            /**
+                             * 登记赋码
+                             */
+                            case REGISTERCODE:
+                                ProjUtil.countStageNum(regcode, projectType,projectCount);
                                 break;
-                            case "其他":
-                                sugs[4] = Integer.parseInt((objects[2]).toString());
+                            /**
+                             * 资金申请报告
+                             */
+                            case STAGEREPORT:
+                                ProjUtil.countStageNum(reports, projectType,projectCount);
                                 break;
-                            default:
+                            /**
+                             * 进口设备
+                             */
+                            case STAGEDEVICE:
+                                ProjUtil.countStageNum(devices, projectType,projectCount);
                                 break;
-                        }
-                    } else if ((Constant.STAGE_STUDY).equals((String) objects[0])) {
-                        switch ((String) objects[1]) {
-                            case "市政工程":
-                                studys[0] = Integer.parseInt((objects[2]).toString());
+                            /**
+                             * 设备清单国产
+                             */
+                            case STAGEHOMELAND:
+                                ProjUtil.countStageNum(homelands, projectType,projectCount);
                                 break;
-                            case "房建工程":
-                                studys[1] = Integer.parseInt((objects[2]).toString());
+                            /**
+                             * 设备清单进口
+                             */
+                            case STAGEIMPORT:
+                                ProjUtil.countStageNum(imports, projectType,projectCount);
                                 break;
-                            case "信息工程":
-                                studys[2] = Integer.parseInt((objects[2]).toString());
-                                break;
-                            case "设备采购":
-                                studys[3] = Integer.parseInt((objects[2]).toString());
-                                break;
-                            case "其他":
-                                studys[4] = Integer.parseInt((objects[2]).toString());
-                                break;
-                            default:
-                                break;
-                        }
-                    } else if ((Constant.STAGE_BUDGET).equals((String) objects[0])) {
-                        switch ((String) objects[1]) {
-                            case "市政工程":
-                                budgets[0] = Integer.parseInt((objects[2]).toString());
-                                break;
-                            case "房建工程":
-                                budgets[1] = Integer.parseInt(objects[2].toString());
-                                break;
-                            case "信息工程":
-                                budgets[2] = Integer.parseInt(objects[2].toString());
-                                break;
-                            case "设备采购":
-                                budgets[3] = Integer.parseInt(objects[2].toString());
-                                break;
-                            case "其他":
-                                budgets[4] = Integer.parseInt((String) objects[2]);
-                                break;
-                            default:
-                                break;
-                        }
-                    } else if ((Constant.APPLY_REPORT).equals((String) objects[0])) {
-                        switch ((String) objects[1]) {
-                            case "市政工程":
-                                reports[0] = Integer.parseInt(objects[2].toString());
-                                break;
-                            case "房建工程":
-                                reports[1] = Integer.parseInt(objects[2].toString());
-                                break;
-                            case "信息工程":
-                                reports[2] = Integer.parseInt(objects[2].toString());
-                                break;
-                            case "设备采购":
-                                reports[3] = Integer.parseInt(objects[2].toString());
-                                break;
-                            case "其他":
-                                reports[4] = Integer.parseInt(objects[2].toString());
+                            /**
+                             * 其它
+                             */
+                            case STAGEOTHER:
+                                ProjUtil.countStageNum(others, projectType,projectCount);
                                 break;
                             default:
-                                break;
-                        }
-                    } else if ((Constant.DEVICE_BILL_HOMELAND).equals((String) objects[0])) {
-                        switch ((String) objects[1]) {
-                            case "市政工程":
-                                homelands[0] = Integer.parseInt(objects[2].toString());
-                                break;
-                            case "房建工程":
-                                homelands[1] = Integer.parseInt(objects[2].toString());
-                                break;
-                            case "信息工程":
-                                homelands[2] = Integer.parseInt(objects[2].toString());
-                                break;
-                            case "设备采购":
-                                homelands[3] = Integer.parseInt(objects[2].toString());
-                                break;
-                            case "其他":
-                                homelands[4] = Integer.parseInt(objects[2].toString());
-                                break;
-                            default:
-                                break;
-                        }
-                    } else if ((Constant.DEVICE_BILL_IMPORT).equals((String) objects[0])) {
-                        switch ((String) objects[1]) {
-                            case "市政工程":
-                                imports[0] = Integer.parseInt(objects[2].toString());
-                                break;
-                            case "房建工程":
-                                imports[1] = Integer.parseInt(objects[2].toString());
-                                break;
-                            case "信息工程":
-                                imports[2] = Integer.parseInt(objects[2].toString());
-                                break;
-                            case "设备采购":
-                                imports[3] = Integer.parseInt(objects[2].toString());
-                                break;
-                            case "其他":
-                                imports[4] = Integer.parseInt(objects[2].toString());
-                                break;
-                            default:
-                                break;
-                        }
-                    } else if ((Constant.IMPORT_DEVICE).equals((String) objects[0])) {
-                        switch ((String) objects[1]) {
-                            case "市政工程":
-                                devices[0] = Integer.parseInt(objects[2].toString());
-                                break;
-                            case "房建工程":
-                                devices[1] = Integer.parseInt(objects[2].toString());
-                                break;
-                            case "信息工程":
-                                devices[2] = Integer.parseInt(objects[2].toString());
-                                break;
-                            case "设备采购":
-                                devices[3] = Integer.parseInt(objects[2].toString());
-                                break;
-                            case "其他":
-                                devices[4] = Integer.parseInt(objects[2].toString());
-                                break;
-                            default:
-                                break;
-                        }
-                    } else if ((Constant.OTHERS).equals((String) objects[0])) {
-                        switch ((String) objects[1]) {
-                            case "市政工程":
-                                others[0] = Integer.parseInt(objects[2].toString());
-                                break;
-                            case "房建工程":
-                                others[1] = Integer.parseInt(objects[2].toString());
-                                break;
-                            case "信息工程":
-                                others[2] = Integer.parseInt(objects[2].toString());
-                                break;
-                            case "设备采购":
-                                others[3] = Integer.parseInt(objects[2].toString());
-                                break;
-                            case "其他":
-                                others[4] = Integer.parseInt(objects[2].toString());
-                                break;
-                            default:
-                                break;
+                                    ;
                         }
                     }
                 }
             }
             Map<String, Object[]> sugMap = new HashMap<>();
-            sugMap.put(Constant.STAGE_SUG, sugs);
+            sugMap.put(ProjectConstant.REVIEW_STATE_ENUM.STAGESUG.getZhCode(), sugs);
             Map<String, Object[]> studyMap = new HashMap<>();
-            studyMap.put(Constant.STAGE_STUDY, studys);
+            studyMap.put(ProjectConstant.REVIEW_STATE_ENUM.STAGESTUDY.getZhCode(), studys);
             Map<String, Object[]> budgetMap = new HashMap<>();
-            budgetMap.put(Constant.STAGE_BUDGET, budgets);
+            budgetMap.put(ProjectConstant.REVIEW_STATE_ENUM.STAGEBUDGET.getZhCode(), budgets);
             Map<String, Object[]> reportMap = new HashMap<>();
-            reportMap.put(Constant.APPLY_REPORT, reports);
+            reportMap.put(ProjectConstant.REVIEW_STATE_ENUM.STAGEREPORT.getZhCode(), reports);
             Map<String, Object[]> homeLandMap = new HashMap<>();
-            homeLandMap.put(Constant.DEVICE_BILL_HOMELAND, homelands);
+            homeLandMap.put(ProjectConstant.REVIEW_STATE_ENUM.STAGEHOMELAND.getZhCode(), homelands);
             Map<String, Object[]> importMap = new HashMap<>();
-            importMap.put(Constant.DEVICE_BILL_IMPORT, imports);
+            importMap.put(ProjectConstant.REVIEW_STATE_ENUM.STAGEIMPORT.getZhCode(), imports);
             Map<String, Object[]> deviceMap = new HashMap<>();
-            deviceMap.put(Constant.IMPORT_DEVICE, devices);
+            deviceMap.put(ProjectConstant.REVIEW_STATE_ENUM.STAGEDEVICE.getZhCode(), devices);
             Map<String, Object[]> otherMap = new HashMap<>();
-            otherMap.put(Constant.OTHERS, others);
+            otherMap.put(ProjectConstant.REVIEW_STATE_ENUM.STAGEOTHER.getZhCode(), others);
+            //登记赋码，新增的阶段
+            Map<String, Object[]> regCodeMap = new HashMap<>();
+            regCodeMap.put(ProjectConstant.REVIEW_STATE_ENUM.REGISTERCODE.getZhCode(), regcode);
             resultList.add(budgetMap);
             resultList.add(sugMap);
             resultList.add(deviceMap);
@@ -361,14 +262,13 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
             resultList.add(homeLandMap);
             resultList.add(studyMap);
             resultList.add(otherMap);
+            resultList.add(regCodeMap);
 
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", resultList);
         } else {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "结束日期必须大于开始日期", null);
+            return ResultMsg.error("结束日期必须大于开始日期");
         }
-
     }
-
 
     /**
      * 通过收文id获取项目信息
@@ -522,8 +422,8 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
                             case 9:
                                 hqlBuilder.append(" processState =:processState10 ").setParam("processState10", Constant.SignProcessState.FINISH.getValue());
                                 break;
-                                default:
-                                    ;
+                            default:
+                                ;
                         }
                         break;
                     case "dispatchType":
@@ -533,7 +433,7 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
                         } else if ("非退文项目".equals(value)) {
                             //非退文项目=暂不实施+项目发文
                             hqlBuilder.append(" (dispatchType ='项目发文' or dispatchType ='暂不实施') ");
-                        }else{
+                        } else {
                             hqlBuilder.append(" dispatchType ='" + value + "' ");
                         }
                         break;
@@ -589,9 +489,9 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
             }
         }
         if (isHavePermission) {
-            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), null);
+            return ResultMsg.ok(null);
         } else {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "您无权限查看此项目信息！");
+            return ResultMsg.error("您无权限查看此项目信息！");
         }
     }
 
@@ -619,6 +519,7 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
 
     /**
      * 业绩统计查询
+     *
      * @param year
      * @param quarter
      * @param deptIds
@@ -627,13 +528,12 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
      * @return
      */
     @Override
-    public List<Achievement> countAchievement(String year, String quarter, String deptIds, String userId, int level,List<SysDept> deptList) {
-        String[] queryTimes = ProjUtil.getQueryTime(year,quarter);
-        String beginTime = queryTimes[0],endTime = queryTimes[1];
-        HqlBuilder hqlBuilder = ProjSql.countAchievement(deptIds,userId,level,beginTime,endTime,deptList);
-        List<Achievement> achievementList = jdbcTemplate.query(hqlBuilder.getHqlString(),hqlBuilder.getJdbcValue(), new BeanPropertyRowMapper<Achievement>(Achievement.class) );
+    public List<Achievement> countAchievement(String year, String quarter, String deptIds, String userId, int level, List<SysDept> deptList) {
+        String[] queryTimes = ProjUtil.getQueryTime(year, quarter);
+        String beginTime = queryTimes[0], endTime = queryTimes[1];
+        HqlBuilder hqlBuilder = ProjSql.countAchievement(deptIds, userId, level, beginTime, endTime, deptList);
+        List<Achievement> achievementList = jdbcTemplate.query(hqlBuilder.getHqlString(), hqlBuilder.getJdbcValue(), new BeanPropertyRowMapper<Achievement>(Achievement.class));
         return achievementList;
     }
-
 
 }

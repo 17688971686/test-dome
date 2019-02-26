@@ -1,14 +1,12 @@
 package cs.quartz.execute;
 
-import cs.common.ResultMsg;
 import cs.common.constants.Constant;
-import cs.common.utils.DateUtils;
+import cs.common.constants.ProjectConstant;
 import cs.common.utils.Validate;
 import cs.domain.project.ProjectStop;
 import cs.domain.project.Sign;
 import cs.domain.sys.Log;
 import cs.domain.sys.Workday;
-import cs.model.project.ProjectStopDto;
 import cs.quartz.unit.QuartzUnit;
 import cs.service.flow.FlowService;
 import cs.service.project.ProjectStopService;
@@ -21,10 +19,8 @@ import org.apache.log4j.Logger;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -100,16 +96,9 @@ public class ProjectStopExecute implements Job{
                         updateList.add(projectStop);
                         Sign sign = projectStopService.findSignByStopId(projectStop.getStopid());
                         if(sign != null){
-                            /*ResultMsg stopResult = flowService.stopFlow(sign.getSignid());
-                            if(stopResult.isFlag()){
-                                //更改项目状态
-                                sign.setSignState(Constant.EnumState.STOP.getValue());
-                                sign.setIsLightUp(Constant.signEnumState.PAUSE.getValue());
-                                signService.save(sign);
-                            }*/
                             //只更改项目状态，不暂停流程
                             sign.setSignState(Constant.EnumState.STOP.getValue());
-                            sign.setIsLightUp(Constant.signEnumState.PAUSE.getValue());
+                            sign.setIsLightUp(ProjectConstant.CAUTION_LIGHT_ENUM.PAUSE.getCodeValue());
                             signService.save(sign);
                         }
                     }
@@ -133,7 +122,7 @@ public class ProjectStopExecute implements Job{
                             if (processInstance.isSuspended()) {
                                 runtimeService.activateProcessInstanceById(processInstance.getId());
                             }
-                            sign.setIsLightUp(Constant.signEnumState.PROCESS.getValue());
+                            sign.setIsLightUp(ProjectConstant.CAUTION_LIGHT_ENUM.PROCESS.getCodeValue());
                             sign.setSignState(Constant.EnumState.PROCESS.getValue());
                             signService.save(sign);
                         }
