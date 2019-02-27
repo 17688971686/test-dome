@@ -16,9 +16,11 @@
 <body style="filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${path}/contents/images/loginpage-bg.jpg', sizingMethod=scale);">
     <div class="login-container">
         <div class="logotitle" style="text-align: center;">
-            <img src="${path}/contents/images/loginpage-title.png" alt="">
+            <!--<img src="${path}/contents/images/loginpage-title.png" alt="">-->
+            <img src="${path}/contents/images/${logoTitle}" alt="">
         </div>
-        <img class="logo" src="${path}/contents/images/logo.png" alt="LOGO">
+        <!--<img class="logo" src="${path}/contents/images/logo.png" alt="LOGO">-->
+        <img class="logo" src="${path}/contents/images/${logoName}" alt="LOGO">
         <div class="loginform" ng-app="loginApp" ng-controller="LoginCtrl as vm">
             <form method="post" id="form" name="form" ng-keypress="vm.keyEnter($event)" >
                 <h3>用户登录</h3>
@@ -46,7 +48,7 @@
             <span ng-show="vm.message" class="errors" style="color:#f00" ng-bind="vm.message">${msg!''}</span>
         </div>
     </div>
-    <div class="footer"> 深圳市政府投资项目评审中心版权所有</div>
+    <div class="footer"> {{getSysAccreditUnit()}}版权所有</div>
 
 <script src="${path}/contents/libs/jquery/jquery.min.js"></script>
 <script src="${path}/contents/libs/bootstrap/customize/js/bootstrap.min.js"></script>

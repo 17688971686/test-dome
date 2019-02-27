@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.*;
 
+import static cs.common.constants.SysConstants.SYS_BUSI_PROP_BEAN;
+
 /**
  * 腾讯通
  * Created by ldm on 2018/5/30.
@@ -87,7 +89,7 @@ public class RTXUtils {
      */
     public static String sendRTXMsg(String url, String sendMsg, String receiver) {
         if (!Validate.isString(url)) {
-            BusinessProperties businessProperties = SpringContextUtil.getBean("businessProperties");
+            BusinessProperties businessProperties = SpringContextUtil.getBean(SYS_BUSI_PROP_BEAN);
             url = businessProperties.getRtxUrl();
         }
         url += RTX_MSG_NOTICE;

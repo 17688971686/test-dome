@@ -755,13 +755,13 @@ public class SignServiceImpl implements SignService {
     public ResultMsg startNewFlow(String signid) {
         Sign sign = signRepo.findById(Sign_.signid.getName(), signid);
         if (sign == null) {
-            return new ResultMsg(false, MsgCode.ERROR.getValue(), "发起流程失败，该项目已不存在！");
+            return ResultMsg.error("发起流程失败，该项目已不存在！");
         }
         if (Validate.isString(sign.getProcessInstanceId())) {
-            return new ResultMsg(false, MsgCode.ERROR.getValue(), "该项目已发起流程！");
+            return ResultMsg.error( "该项目已发起流程！");
         }
         if (!Validate.isString(sign.getLeaderId())) {
-            return new ResultMsg(false, MsgCode.ERROR.getValue(), "操作失败，请先设置默认办理部门！");
+            return ResultMsg.error("操作失败，请先设置默认办理部门！");
         }
         //项目建议书、可研、概算要验证必填字段(建设单位(builtcompanyName)、编制单位(designcompanyName)、主办处室(maindeptName)、缓急程度(urgencydegree)、秘密等级(secrectlevel))
         if (ProjectConstant.REVIEW_STATE_ENUM.STAGESUG.getZhCode().equals(sign.getReviewstage())
@@ -800,17 +800,20 @@ public class SignServiceImpl implements SignService {
 
             //4、跳过第一环节（主任审核）
             Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
-            taskService.addComment(task.getId(), processInstance.getId(), "");    //添加处理信息
+            //添加处理信息
+            taskService.addComment(task.getId(), processInstance.getId(), "");
             taskService.complete(task.getId(), ActivitiUtil.setAssigneeValue(FlowConstant.SignFlowParams.USER_QS.getValue(), SessionUtil.getUserId()));
 
             //5、跳过第二环节（签收）
             task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
-            taskService.addComment(task.getId(), processInstance.getId(), "");    //添加处理信息
+            //添加处理信息
+            taskService.addComment(task.getId(), processInstance.getId(), "");
             taskService.complete(task.getId(), ActivitiUtil.setAssigneeValue(FlowConstant.SignFlowParams.USER_ZHB.getValue(), SessionUtil.getUserId()));
 
             //6、跳过第三个环节（综合部拟办意见）
             task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
-            taskService.addComment(task.getId(), processInstance.getId(), sign.getComprehensivehandlesug());    //综合部拟办意见
+            //综合部拟办意见
+            taskService.addComment(task.getId(), processInstance.getId(), sign.getComprehensivehandlesug());
             //查询是否有待办人员
             List<AgentTask> agentTaskList = new ArrayList<>();
             String assigneeValue = userService.getTaskDealId(sign.getLeaderId(), agentTaskList, FlowConstant.FLOW_SIGN_FGLD_FB);

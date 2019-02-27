@@ -13,7 +13,7 @@
             http://www.springframework.org/schema/cache
             http://www.springframework.org/schema/cache/spring-cache.xsd">
 	<!-- 加载配置文件 -->
-	<context:property-placeholder location="classpath:config.properties,classpath:httpclient.properties,classpath:business.properties"/>
+	<context:property-placeholder location="classpath:config.properties,classpath:httpclient.properties,classpath:business.properties" file-encoding="UTF-8"/>
 
 	<!-- 扫描service自动注入为bean -->
 	<!-- <context:component-scan base-package="cs.service,cs.repository.repositoryImpl" /> -->
@@ -40,5 +40,10 @@
 		<property name="rtxUrl" value="${RTX_URL}"></property>
 		<property name="rtxIp" value="${RTX_IP}"></property>
 		<property name="fileUploadPath" value="${FILE_UPLOAD_PATH}"></property>
+		<property name="projectTitle" value="${PROJECT_TITLE}"></property>
+		<property name="accreditUnit" value="${ACCREDIT_UNIT}"></property>
+        <property name="logoName" value="${LOGO_NAME}"></property>
+        <property name="logoTitle" value="${LOGO_TITLE}"></property>
+        <property name="homeLogo" value="${HOME_LOGO}"></property>
 	</bean>
 </beans>

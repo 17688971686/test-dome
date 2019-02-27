@@ -98,6 +98,12 @@ public class Constant {
      * session中用户的key
      */
     public final static String USER_SESSION_KEY = "CURRENT_USER";
+
+    /**
+     * 系统属性配置对象KEY值
+     */
+    public final static String SYS_BUSINESS_KEY = "SYS_BUSINESS_KEY";
+
     /**
      * session中用户的key
      */

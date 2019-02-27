@@ -2,12 +2,14 @@ package cs.listener;
 
 import cs.common.cache.CacheManager;
 import cs.common.cache.ICache;
+import cs.common.sysprop.BusinessProperties;
 import cs.common.utils.Validate;
 import cs.domain.sys.Quartz;
 import cs.service.meeting.MeetingRoomService;
 import cs.service.sys.OrgDeptService;
 import cs.service.sys.QuartzService;
 import cs.service.sys.UserService;
+import cs.spring.SpringContextUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEvent;
@@ -19,6 +21,7 @@ import java.net.InetAddress;
 import java.util.List;
 
 import static cs.common.cache.CacheConstant.IP_CACHE;
+import static cs.common.constants.SysConstants.SYS_BUSI_PROP_BEAN;
 
 /**
  * 系统启动完成监听
@@ -67,7 +70,7 @@ public class SysStartUpListener implements ApplicationListener {
                 }
                 logger.info("\n" +
                         "=====================================================" +
-                        "\n==                 深圳评审中心管理系统             ==" +
+                        "\n==                 系统启动成功             ==" +
                         "\n=====================================================");
             }
 

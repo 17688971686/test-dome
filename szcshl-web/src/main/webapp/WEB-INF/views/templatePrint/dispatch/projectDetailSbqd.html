@@ -3,7 +3,7 @@
     <caption style="padding-top: 20px;">
         <span >QR-4.9-09-A0</span>
     </caption>
-    <caption class="title"><p>深圳市政府投资项目评审中心</p><p>项目发文审批表</p></caption>
+    <caption class="title"><p>{{getSysAccreditUnit()}}</p><p>项目发文审批表</p></caption>
     <caption>
         <span style="float:left;margin-left:10px;">发文方式：{{(vm.dispatchDoc.dispatchWay==1)?"单个发文":"合并发文"}}</span>
         <span ng-if="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject==9" style="margin-left:10px;float: left;">主项目</span>

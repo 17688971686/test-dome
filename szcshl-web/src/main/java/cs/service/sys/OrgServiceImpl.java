@@ -142,14 +142,14 @@ public class OrgServiceImpl implements OrgService {
     public void deleteOrg(String id) {
         orgRepo.deleteById(Org_.id.getName(), id);
         orgDeptRepo.fleshOrgDeptCache();
-        logger.info(String.format("删除部门,部门identity:%s", id));
+        //logger.info(String.format("删除部门,部门identity:%s", id));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public PageModelDto<UserDto> getOrgUsers(String id, ODataObj odataObj) {
         PageModelDto<UserDto> pageModelDto = new PageModelDto<>();
-        List<UserDto> userDtos = new ArrayList<>();
+        List<UserDto> userDtoList = new ArrayList<>();
         Org org = orgRepo.findById(id);
         if (org != null) {
             String ss = "";
@@ -163,17 +163,17 @@ public class OrgServiceImpl implements OrgService {
                     if (user.getLoginName().indexOf(ss) != -1 || user.getDisplayName().indexOf(ss) != -1) {
                         UserDto userDto = new UserDto();
                         BeanCopierUtils.copyProperties(user,userDto);
-                        userDtos.add(userDto);
+                        userDtoList.add(userDto);
                     }
                 } else {
                     UserDto userDto = new UserDto();
                     BeanCopierUtils.copyProperties(user,userDto);
-                    userDtos.add(userDto);
+                    userDtoList.add(userDto);
                 }
             }
-            pageModelDto.setValue(userDtos);
-            pageModelDto.setCount(userDtos.size());
-            logger.info(String.format("查找部门用户，部门%s", org.getOrgIdentity()));
+            pageModelDto.setValue(userDtoList);
+            pageModelDto.setCount(userDtoList.size());
+            //logger.info(String.format("查找部门用户，部门%s", org.getOrgIdentity()));
         }
         return pageModelDto;
     }
@@ -204,7 +204,7 @@ public class OrgServiceImpl implements OrgService {
             }
             pageModelDto.setValue(userDtos);
             pageModelDto.setCount(oDataObj.getCount());
-            logger.info(String.format("查找非部门用户,部门%s", org.getName()));
+            //logger.info(String.format("查找非部门用户,部门%s", org.getName()));
         }
         return pageModelDto;
     }
@@ -219,12 +219,12 @@ public class OrgServiceImpl implements OrgService {
                 user.setOrg(org);
             }
             userRepo.save(user);
-            logger.info(String.format("添加用户到部门,部门%s,用户:%s", org.getOrgIdentity(), user.getLoginName()));
+            //logger.info(String.format("添加用户到部门,部门%s,用户:%s", org.getOrgIdentity(), user.getLoginName()));
         }
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void removeOrgUser(String userId, String orgId) {
         Org org = orgRepo.findById(orgId);
         if (org != null) {
@@ -233,31 +233,29 @@ public class OrgServiceImpl implements OrgService {
                 user.setOrg(null);
             }
             userRepo.save(user);
-            logger.info(String.format("从部门移除用户,部门%s,用户:%s", org.getOrgIdentity(), user.getLoginName()));
+            //logger.info(String.format("从部门移除用户,部门%s,用户:%s", org.getOrgIdentity(), user.getLoginName()));
         }
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void removeOrgUsers(String[] userIds, String orgId) {
         Org org = orgRepo.findById(orgId);
         if (org != null) {
             for (String id : userIds) {
                 this.removeOrgUser(id, orgId);
             }
-            logger.info(String.format("批量删除部门用户,部门%s", org.getOrgIdentity()));
+            //logger.info(String.format("批量删除部门用户,部门%s", org.getOrgIdentity()));
         }
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public List<CompanyDto> getCompany(ODataObj odataObj) {
         List<Company> com = companyRepo.findByOdata(odataObj);
         List<CompanyDto> comDtoList = new ArrayList<>();
-
         for (Company item : com) {
             CompanyDto comDto = new CompanyDto();
-
             comDto.setId(item.getId());
             comDto.setCoAddress(item.getCoAddress());
             comDto.setCoDept(item.getCoDept());
@@ -268,9 +266,7 @@ public class OrgServiceImpl implements OrgService {
             comDto.setCoPhone(item.getCoPhone());
             comDto.setCoSite(item.getCoSite());
             comDto.setCoSynopsis(item.getCoSynopsis());
-
             comDtoList.add(comDto);
-
         }
         return comDtoList;
     }
@@ -280,31 +276,6 @@ public class OrgServiceImpl implements OrgService {
         Org org = orgRepo.findById(id);
         OrgDto orgDto = new OrgDto();
         BeanCopierUtils.copyProperties(org, orgDto);
-		/*List<User> userList = org.getUsers();
-		if(userList != null && userList.size() > 0){
-			List<UserDto> userDtoList = new ArrayList<UserDto>(userList.size());
-			userList.forEach(u ->{
-				UserDto userDto = new UserDto();
-				BeanCopierUtils.copyProperties(u, userDto);
-				userDtoList.add(userDto);
-			});
-			List<User> mainUser=userRepo.findUserByRoleName("主任");
-			if(mainUser != null && mainUser.size() > 0){
-				mainUser.forEach(mainu ->{
-					orgDto.setOrgMLeader(mainu.getId());;
-					orgDto.setOrgMLeaderName(mainu.getLoginName());
-				});
-			}
-			List<User> secondUser=userRepo.findUserByRoleName("副主任");
-			if(secondUser != null && secondUser.size() > 0){
-				secondUser.forEach(secondu ->{
-					UserDto userDto = new UserDto();
-					BeanCopierUtils.copyProperties(secondu, userDto);
-					userDtoList.add(userDto);
-				});
-			}
-			orgDto.setUserDtos(userDtoList);
-		}*/
         return orgDto;
     }
 

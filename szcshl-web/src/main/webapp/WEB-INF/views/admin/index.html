@@ -50,15 +50,17 @@
 
             window.rootPath = '${path}';
             //是否是超级管理员
-            window.isSuperUser = '${CURRENT_USER.loginName}' == 'admin';
+            window.isSuperUser = ('${CURRENT_USER.loginName}' == 'admin');
             window.curUserId = '${CURRENT_USER.id}';
             //数字字典对象
             window.DICTOBJ = {};
+            //表单单位
+            window.accreditUnit = ' ${accreditUnit}';
             buildDict(DICTOBJ, ${DICT_ITEMS});
         </script>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>深圳市政府投资项目评审中心项目管理信息系统</title>
+        <title>${projectTitle}</title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
@@ -115,7 +117,8 @@
             <header class="main-header">
                 <!-- Logo -->
                 <a href="#/admin" class="logo">
-                    <img src="${path}/contents/images/szlogo.png" alt="LOGO">
+                    <!--<img src="${path}/contents/images/szlogo.png" alt="LOGO">-->
+                    <img src="${path}/contents/images/${homeLogo}" alt="LOGO">
                 </a>
                 <!-- Header Navbar -->
                 <nav class="navbar navbar-static-top" role="navigation">

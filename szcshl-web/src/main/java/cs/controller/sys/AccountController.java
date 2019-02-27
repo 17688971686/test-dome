@@ -38,6 +38,7 @@ public class AccountController {
 
     /**
      * 用户登录
+     *
      * @param request
      * @param model
      * @return
@@ -71,10 +72,10 @@ public class AccountController {
             }
         }
         model.addAttribute("msg", msg);
-       String browerVerson =  Tools.getBrowserName(request.getHeader("User-Agent").toLowerCase());
-       if(Validate.isString(browerVerson) && ("ie8".equals(browerVerson) || ("ie7".equals(browerVerson)))){
-           return "home/loginLow";
-       }
+        String browerVerson = Tools.getBrowserName(request.getHeader("User-Agent").toLowerCase());
+        if (Validate.isString(browerVerson) && ("ie8".equals(browerVerson) || ("ie7".equals(browerVerson)))) {
+            return "home/loginLow";
+        }
         return "home/login";
     }
 
@@ -97,7 +98,7 @@ public class AccountController {
     @ResponseBody
     public ResultMsg password(@RequestParam String password) {
         userService.changePwd(password);
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
     }
 
 

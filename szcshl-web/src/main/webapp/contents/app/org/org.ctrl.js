@@ -6,10 +6,8 @@
     org.$inject = ['$location','orgSvc']; 
 
     function org($location, orgSvc) {
-        /* jshint validthis:true */
         var vm = this;
-        vm.title = '部门列表';
-        
+        vm.title = '部门管理';
         vm.del = function (id) {        	       	 
              common.confirm({
             	 vm:vm,

@@ -1,6 +1,7 @@
 package cs.service.sys;
 
 import cs.common.HqlBuilder;
+import cs.common.RandomGUID;
 import cs.common.ResultMsg;
 import cs.common.constants.Constant;
 import cs.common.constants.Constant.EnumFlowNodeGroupName;
@@ -70,7 +71,7 @@ public class UserServiceImpl implements UserService {
     private AgentTaskService agentTaskService;
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public PageModelDto<UserDto> get(ODataObj odataObj) {
         PageModelDto<UserDto> pageModelDto = new PageModelDto<>();
         Criteria criteria = userRepo.getExecutableCriteria();
@@ -101,11 +102,9 @@ public class UserServiceImpl implements UserService {
                     roleDto.setRoleName(role.getRoleName());
                     roleDto.setCreatedDate(role.getCreatedDate());
                     roleDto.setId(role.getId());
-
                     roleDtoList.add(roleDto);
                 }
                 userDto.setRoleDtoList(roleDtoList);
-
                 OrgDto orgDto = new OrgDto();
                 if (item.getOrg() != null) {
                     orgDto.setId(item.getOrg().getId());
@@ -115,73 +114,70 @@ public class UserServiceImpl implements UserService {
                 userDtoList.add(userDto);
             }
         }
-
         pageModelDto.setValue(userDtoList);
-
-        logger.info("查询用户数据");
         return pageModelDto;
     }
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ResultMsg createUser(UserDto userDto) {
-        boolean isUpdate = Validate.isString(userDto.getId());
-        if (isUpdate) {
-            return updateUser(userDto);
-        } else {
+        //是否新增用户和，是否是分管领导;
+        boolean isNew = false, isSLeader = false;
+        Date now = new Date();
+        User user = null;
+
+        //新增还是修改，从数据库中查询判断
+        if(Validate.isString(userDto.getId())){
+            user = userRepo.findById(userDto.getId());
+        }else{
             User findUser = userRepo.findUserByName(userDto.getLoginName());
-            // 用户不存在
-            if (findUser == null) {
-                boolean isSLeader = false;  //是否是分管领导
-                User user = new User();
-                BeanCopierUtils.copyProperties(userDto, user);
-
-                user.setId(UUID.randomUUID().toString());
-                if (!Validate.isString(user.getUserNo())) {
-                    user.setUserNo(String.format("%03d", Integer.valueOf(findMaxUserNo()) + 1));
+            if(Validate.isObject(findUser)){
+                return ResultMsg.error(String.format("用户：%s 已经存在,请重新输入！", userDto.getLoginName()));
+            }
+            user = new User();
+            isNew = true;
+        }
+        BeanCopierUtils.copyProperties(userDto, user);
+        if(isNew){
+            user.setId((new RandomGUID()).valueAfterMD5);
+            user.setCreatedBy(SessionUtil.getLoginName());
+            user.setCreatedDate(now);
+            //设置系统默认登录密码
+            user.setPassword(DEFAULT_PASSWORD);
+        }
+        if (!Validate.isString(user.getUserNo())) {
+            user.setUserNo(String.format("%03d", Integer.valueOf(findMaxUserNo()) + 1));
+        }
+        user.setModifiedDate(new Date());
+        user.setModifiedBy(SessionUtil.getLoginName());
+        // 加入角色
+        for (RoleDto roleDto : userDto.getRoleDtoList()) {
+            Role role = roleRepo.findById(Role_.id.getName(), roleDto.getId());
+            if (role != null) {
+                if (EnumFlowNodeGroupName.VICE_DIRECTOR.getValue().equals(role.getRoleName())) {
+                    isSLeader = true;
                 }
-                if (userDto != null && userDto.getLoginFailCount() == null) {
-                    user.setLoginFailCount(0);
-                }
-                user.setCreatedBy(SessionUtil.getLoginName());
-                user.setCreatedDate(new Date());
-                user.setModifiedDate(new Date());
-                user.setModifiedBy(SessionUtil.getLoginName());
-                user.setPassword(DEFAULT_PASSWORD);        //设置系统默认登录密码
-
-                //List<String> roleNames = new ArrayList<String>();
-                // 加入角色
-                for (RoleDto roleDto : userDto.getRoleDtoList()) {
-                    Role role = roleRepo.findById(Role_.id.getName(), roleDto.getId());
-                    if (role != null) {
-                        if (EnumFlowNodeGroupName.VICE_DIRECTOR.getValue().equals(role.getRoleName())) {
-                            isSLeader = true;
-                        }
-                        user.getRoles().add(role);
-                        //roleNames.add(role.getRoleName());
-                    }
-                }
-                //添加部门
-                if (Validate.isString(userDto.getOrgId())) {
-                    Org org = orgRepo.findById(Org_.id.getName(), userDto.getOrgId());
-                    user.setOrg(org);
-                    //如果是分管领导，则设置默认分管部门类型
-                    if (isSLeader) {
-                        user.setMngOrgType(org.getOrgType());
-                    }
-                }
-                userRepo.save(user);
-                fleshPostUserCache();
-                return new ResultMsg(true, Constant.MsgCode.OK.getValue(), user.getId(), "创建成功", null);
-            } else {
-                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), String.format("用户：%s 已经存在,请重新输入！", userDto.getLoginName()));
+                user.getRoles().add(role);
             }
         }
+        //添加部门
+        if (Validate.isString(userDto.getOrgId())) {
+            Org org = orgRepo.findById(Org_.id.getName(), userDto.getOrgId());
+            user.setOrg(org);
+            //如果是分管领导，则设置默认分管部门类型
+            if (isSLeader) {
+                user.setMngOrgType(org.getOrgType());
+            }
+        }
+        userRepo.save(user);
+        fleshPostUserCache();
+
+        return ResultMsg.ok("操作成功！");
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public List<OrgDto> getOrg(ODataObj odataObj) {
         List<Org> org = orgRepo.findByOdata(odataObj);
         List<OrgDto> orgDto = new ArrayList<>();
@@ -195,7 +191,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ResultMsg deleteUser(String id) {
         try {
             userRepo.deleteById(User_.id.getName(), id);
@@ -208,19 +204,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ResultMsg updateUser(UserDto userDto) {
-        boolean isSLeader = false;
         User user = userRepo.findById(userDto.getId());
-        BeanCopierUtils.copyPropertiesIgnoreNull(userDto, user);
-
-        // 清除已有role
+        if(!Validate.isObject(user)){
+            return ResultMsg.error("操作失败，该用户已被删除！");
+        }
+        boolean isSLeader = false;
+        BeanCopierUtils.copyProperties(userDto, user);
+        //重新添加角色信息，先清除，再重新添加
         user.getRoles().clear();
-        //List<String> roleNames = new ArrayList<String>();
-        // 加入角色
         for (RoleDto roleDto : userDto.getRoleDtoList()) {
             Role role = roleRepo.findById(roleDto.getId());
-            //roleNames.add(roleDto.getRoleName());
             if (role != null) {
                 user.getRoles().add(role);
                 if (EnumFlowNodeGroupName.VICE_DIRECTOR.getValue().equals(role.getRoleName())) {
@@ -239,8 +234,7 @@ public class UserServiceImpl implements UserService {
         }
         userRepo.save(user);
         fleshPostUserCache();
-        //this.updateActivitiUser(user.getId(), user.getLoginName(), user.getPassword(), roleNames);
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "修改成功！");
+        return ResultMsg.ok("修改成功！");
     }
 
     @Override

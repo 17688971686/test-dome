@@ -1411,6 +1411,11 @@
         common.getTaskCount({$http: $http});
 
         //获取表头名称
+        $rootScope.getSysAccreditUnit = function () {
+            return accreditUnit;
+        }
+
+        //获取表头名称
         $rootScope.getTBHeadName = function (stageName, isAdvanced, type) {
             //项目建议书、可行性  提前介入称为评估论证
             if (isAdvanced && isAdvanced == '9' && (stageName == '项目建议书' || stageName == '可行性研究报告')) {

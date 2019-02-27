@@ -7,6 +7,7 @@ import cs.domain.flow.RuProcessTask;
 import cs.domain.sys.User;
 import cs.service.flow.FlowService;
 import cs.service.sys.UserService;
+import cs.spring.SpringContextUtil;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -104,6 +105,8 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter {
         user.setUserSalt(null);
         // 在session中设置用户信息
         subject.getSession().setAttribute(Constant.USER_SESSION_KEY, user);
+        //添加系统配置
+        subject.getSession().setAttribute(Constant.SYS_BUSINESS_KEY, SpringContextUtil.getBean(cs.common.constants.SysConstants.SYS_BUSI_PROP_BEAN));
         logger.info("用户【" + username + "】登录成功！");
 
         //查询所有的待办项目

@@ -9,6 +9,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DecimalFormat;
 
+import static cs.common.constants.SysConstants.SYS_BUSI_PROP_BEAN;
+
 /**
  * 文件工具
  *
@@ -41,7 +43,7 @@ public class SysFileUtil {
      * @return
      */
     public static String getUploadPath() {
-        BusinessProperties businessProperties = SpringContextUtil.getBean("businessProperties");
+        BusinessProperties businessProperties = SpringContextUtil.getBean(SYS_BUSI_PROP_BEAN);
         String uploadPath = businessProperties.getFileUploadPath();
         return Validate.isString(uploadPath)?uploadPath:"C:\\szec_uploadfile";
     }

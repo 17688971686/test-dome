@@ -7,7 +7,7 @@
 <div ng-repeat="x in vm.model.suppLetterDtoList" style="color:red; margin-top: 20px;" ng-if="vm.showSupperIndex == $index">
     <table class="print-table">
         <caption class="title" style="padding-top: 12px; padding-bottom: 20px;" >
-            <strong>深圳市政府投资项目评审中心文件（稿纸）<br>拟补充资料函</strong>
+            <strong>{{getSysAccreditUnit()}}文件（稿纸）<br>拟补充资料函</strong>
         </caption>
         <tbody>
         <tr style="height: 50px">
