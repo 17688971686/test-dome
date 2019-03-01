@@ -1,5 +1,6 @@
 package cs.service.financial;
 
+import cs.common.RandomGUID;
 import cs.common.constants.Constant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
@@ -35,40 +36,41 @@ public class FinancialManagerServiceImpl implements FinancialManagerService {
     @Autowired
     private FinancialManagerRepo financialManagerRepo;
     @Autowired
-    private SignRepo signRepo;
-    @Autowired
     private AssistPlanRepo assistPlanRepo;
-    @Autowired
-    private SignPrincipalService signPrincipalService;
     @Autowired
     private ExpertReviewRepo expertReviewRepo;
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void save(FinancialManagerDto record) {
-        FinancialManager domain = new FinancialManager();
-        BeanCopierUtils.copyProperties(record, domain);
-        Date now = new Date();
-
-        if (!Validate.isString(record.getId())) {
-            domain.setId(UUID.randomUUID().toString());
+        if (Validate.isString(record.getId())) {
+            update(record);
+        }else{
+            FinancialManager domain = new FinancialManager();
+            BeanCopierUtils.copyProperties(record, domain);
+            Date now = new Date();
+            domain.setId((new RandomGUID()).valueAfterMD5);
             domain.setCreatedBy(SessionUtil.getDisplayName());
             domain.setCreatedDate(now);
+            domain.setModifiedBy(SessionUtil.getDisplayName());
+            domain.setModifiedDate(now);
+            financialManagerRepo.save(domain);
         }
-
-        domain.setModifiedBy(SessionUtil.getDisplayName());
-        domain.setModifiedDate(now);
-        financialManagerRepo.save(domain);
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void update(FinancialManagerDto record) {
         FinancialManager domain = financialManagerRepo.findById(FinancialManager_.id.getName(), record.getId());
-        BeanCopierUtils.copyPropertiesIgnoreNull(record, domain);
-        domain.setModifiedBy(SessionUtil.getDisplayName());
-        domain.setModifiedDate(new Date());
-        financialManagerRepo.save(domain);
+        if(Validate.isObject(domain) && Validate.isString(domain.getId())){
+            BeanCopierUtils.copyProperties(record, domain);
+            domain.setModifiedBy(SessionUtil.getDisplayName());
+            domain.setModifiedDate(new Date());
+            financialManagerRepo.save(domain);
+        }else{
+            record.setId(null);
+            save(record);
+        }
     }
 
     @Override
@@ -82,7 +84,7 @@ public class FinancialManagerServiceImpl implements FinancialManagerService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void delete(String id) {
         List<String> idFinancial = StringUtil.getSplit(id, ",");
         if (idFinancial != null && idFinancial.size() > 0) {

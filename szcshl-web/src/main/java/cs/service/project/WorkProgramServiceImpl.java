@@ -112,7 +112,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
      * @return
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ResultMsg save(WorkProgramDto workProgramDto, Boolean isNeedWorkProgram) {
         if (Validate.isString(workProgramDto.getSignId())) {
             WorkProgram workProgram = null;
@@ -139,14 +139,18 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 
             } else {
                 //同一个分支只能同一个工作方案
+                boolean isCreate = false;
                 workProgram = workProgramRepo.findBySignIdAndBranchId(workProgramDto.getSignId() , workProgramDto.getBranchId() , false);
                 if(null == workProgram ){
                     workProgram = new WorkProgram();
-                    workProgram.setId(UUID.randomUUID().toString());
+                    isCreate = true;
+                }
+                BeanCopierUtils.copyProperties(workProgramDto, workProgram);
+                if(isCreate){
+                    workProgram.setId((new RandomGUID()).valueAfterMD5);
                     workProgram.setCreatedBy(SessionUtil.getUserId());
                     workProgram.setCreatedDate(now);
                 }
-                BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto, workProgram);
                 //设置工作方案为有效的
                 workProgram.setState(EnumState.YES.getValue());
                 //调研时间段
@@ -189,7 +193,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             workProgramDto.setId(workProgram.getId());
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", workProgramDto);
         } else {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，获取项目信息失败，请联系相关人员处理！");
+            return ResultMsg.error("操作失败，获取项目信息失败，请联系相关人员处理！");
         }
     }
 
@@ -842,25 +846,27 @@ public class WorkProgramServiceImpl implements WorkProgramService {
     @Override
     public ResultMsg saveBaseInfo(WorkProgramDto workProgramDto) {
         String wpId = workProgramDto.getId();
-        boolean isNew = false;
+        boolean isNew = true;
+        Date now = new Date();
         try {
             Sign sign = null;
-            WorkProgram workProgram = null;
+            WorkProgram workProgram = new WorkProgram();
             if (Validate.isString(wpId)) {
                 workProgram = workProgramRepo.findById(wpId);
+                if(Validate.isObject(workProgram) && Validate.isString(workProgram.getId())){
+                    isNew = false;
+                }
                 sign = workProgram.getSign();
-                BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto, workProgram);
-                workProgram.setSign(sign);
-            } else {
-                isNew = true;
-                workProgram = new WorkProgram();
-                BeanCopierUtils.copyProperties(workProgramDto, workProgram);
+            }
+            BeanCopierUtils.copyProperties(workProgramDto, workProgram);
+
+            if(isNew){
                 wpId = (new RandomGUID()).valueAfterMD5;
                 workProgram.setId(wpId);
                 sign = signRepo.findById(Sign_.signid.getName(), workProgramDto.getSignId());
                 workProgram.setSign(sign);
                 workProgram.setCreatedBy(SessionUtil.getUserId());
-                workProgram.setCreatedDate(new Date());
+                workProgram.setCreatedDate(now);
             }
             //如果是新增，则为基本信息，因为默认是需要做工作方案的
             if(isNew){
@@ -874,7 +880,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 }
             }
             workProgram.setModifiedBy(SessionUtil.getDisplayName());
-            workProgram.setModifiedDate(new Date());
+            workProgram.setModifiedDate(now);
             workProgram.setState(EnumState.YES.getValue());
             workProgramRepo.save(workProgram);
 
@@ -885,13 +891,13 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         } catch (Exception e) {
             e.printStackTrace();
             log.error("保存项目基本信息异常：" + e.getMessage());
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "保存失败，异常信息已记录，请联系管理员处理！");
+            return ResultMsg.error("保存失败，异常信息已记录，请联系管理员处理！");
         }
     }
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ResultMsg startReWorkFlow(String signId, String reworkType,String brandIds,String userId) {
         Sign sign = signRepo.findById(signId);
         if (sign.getProcessState() > Constant.SignProcessState.END_DIS_NUM.getValue()) {

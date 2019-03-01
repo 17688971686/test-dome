@@ -1,6 +1,7 @@
 package cs.service.expert;
 
 import cs.common.HqlBuilder;
+import cs.common.RandomGUID;
 import cs.common.ResultMsg;
 import cs.common.constants.Constant;
 import cs.common.constants.Constant.EnumExpertState;
@@ -195,41 +196,49 @@ public class ExpertServiceImpl implements ExpertService {
      * @return
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ResultMsg saveExpert(ExpertDto expertDto) {
+        if(!Validate.isString(expertDto.getIdCard())){
+            return ResultMsg.error("身份证号还没填写！");
+        }
         //重复专家判断
-        boolean isFill = expertRepo.checkIsHaveIdCard(expertDto.getIdCard(), expertDto.getExpertID());
-        if (isFill == false) {
-            String updateNo = Validate.isString(SessionUtil.getUserInfo().getUserNo())?SessionUtil.getUserInfo().getUserNo():SUPER_ACCOUNT;
-            Expert expert = null;
-            if (Validate.isString(expertDto.getExpertID())) {
-                expert = expertRepo.findById(Expert_.expertID.getName(), expertDto.getExpertID());
-                BeanCopierUtils.copyPropertiesIgnoreNull(expertDto, expert);
-            } else {
-                expert = new Expert();
-                BeanCopierUtils.copyProperties(expertDto, expert);
-                //设置默认属性
-                expert.setState(EnumExpertState.AUDITTING.getValue());
-                //是否作废（1为作废，0 为正常）,默认不作废
-                expert.setUnable(Constant.EnumState.NO.getValue());
-                expert.setExpertID(UUID.randomUUID().toString());
-                //专家编码，系统自动生成
-                expert.setExpertNo(String.format("%06d", Integer.valueOf(findMaxNumber()) + 1));
-                expert.setInputPerson(SessionUtil.getDisplayName());
-                expert.setApplyDate(new Date());
-                expert.setCreatedDate(new Date());
-                //统一用用户编号，跟旧系统一致
-                expert.setCreatedBy(updateNo);
-            }
-            expert.setModifiedDate(new Date());
-            expert.setModifiedBy(updateNo);
-            expertRepo.save(expert);
-            //设置返回值
-            BeanCopierUtils.copyProperties(expert, expertDto);
-            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", expertDto);
-        } else {
+        boolean isHave = expertRepo.checkIsHaveIdCard(expertDto.getIdCard(), expertDto.getExpertID());
+        if(isHave){
             return ResultMsg.error(String.format("身份证号为%s 的专家已存在,请重新输入", expertDto.getIdCard()));
         }
+        String updateUserNo = Validate.isString(SessionUtil.getUserInfo().getUserNo())?SessionUtil.getUserInfo().getUserNo():SUPER_ACCOUNT;
+        Expert expert = null;
+        Date now = new Date();
+        boolean isCreate = true;
+        if (Validate.isString(expertDto.getExpertID())) {
+            expert = expertRepo.findById(Expert_.expertID.getName(), expertDto.getExpertID());
+            if(Validate.isObject(expert) && Validate.isString(expert.getExpertID())){
+                isCreate = false;
+            }
+        } else {
+            expert = new Expert();
+        }
+        BeanCopierUtils.copyProperties(expertDto, expert);
+        //如果是新增，设置默认属性
+        if(isCreate){
+            expert.setState(EnumExpertState.AUDITTING.getValue());
+            //是否作废（1为作废，0 为正常）,默认不作废
+            expert.setUnable(Constant.EnumState.NO.getValue());
+            expert.setExpertID((new RandomGUID()).valueAfterMD5);
+            //专家编码，系统自动生成
+            expert.setExpertNo(String.format("%06d", Integer.valueOf(findMaxNumber()) + 1));
+            expert.setInputPerson(SessionUtil.getDisplayName());
+            expert.setApplyDate(now);
+            expert.setCreatedDate(now);
+            //统一用用户编号，跟旧系统一致
+            expert.setCreatedBy(updateUserNo);
+        }
+        expert.setModifiedDate(now);
+        expert.setModifiedBy(updateUserNo);
+        expertRepo.save(expert);
+        //设置返回值
+        BeanCopierUtils.copyProperties(expert, expertDto);
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", expertDto);
     }
 
     /**
@@ -238,7 +247,7 @@ public class ExpertServiceImpl implements ExpertService {
      * @param id
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ResultMsg deleteExpert(String id) {
         try {
             HqlBuilder hqlBuilder = HqlBuilder.create();
@@ -261,7 +270,7 @@ public class ExpertServiceImpl implements ExpertService {
      * @return
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ResultMsg deleteExpertData(String id) {
         try {
             expertRepo.deleteById(Expert_.expertID.getName(), id);

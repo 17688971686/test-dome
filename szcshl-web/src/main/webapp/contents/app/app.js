@@ -353,13 +353,14 @@
             //end#meeting
 
             //begin#room
-                .state('room', {
-                    url: '/room',
-                    params: {'businessId': '', 'businessType': ''},
-                    templateUrl: rootPath + '/room/html/roomlist.html',
-                    controller: 'roomCtrl',
-                    controllerAs: 'vm'
-                }).state('roomCount', {
+            .state('room', {
+                url: '/room',
+                params: {'businessId': '', 'businessType': ''},
+                templateUrl: rootPath + '/room/html/roomlist.html',
+                controller: 'roomCtrl',
+                controllerAs: 'vm'
+            })
+            .state('roomCount', {
                 url: '/roomCount',
                 params: {'id': ''},
                 templateUrl: rootPath + '/room/html/countlist.html',

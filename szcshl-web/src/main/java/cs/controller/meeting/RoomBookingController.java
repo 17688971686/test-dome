@@ -43,8 +43,7 @@ public class RoomBookingController {
     @RequiresAuthentication
     @RequestMapping(name = "获取会议预定数据", path = "queryBookInfo", method = RequestMethod.POST)
     public @ResponseBody List<RoomBookingDto> queryBookInfo(@RequestBody RoomBookingDto bookInfo){
-        List<RoomBookingDto> roomDtoList = roomBookingSerivce.queryBookInfo(bookInfo);
-        return roomDtoList;
+        return roomBookingSerivce.queryBookInfo(bookInfo);
     }
 
     @RequiresAuthentication
@@ -62,8 +61,7 @@ public class RoomBookingController {
     @RequestMapping(name = "会议室查询", path = "meeting", method = RequestMethod.GET)
     @ResponseBody
     public List<MeetingRoomDto> meetingList(String mrID, HttpServletRequest request, ModelMap model) throws ParseException {
-        List<MeetingRoomDto> meeting = roomBookingSerivce.findMeetingAll();
-        return meeting;
+        return roomBookingSerivce.findMeetingAll();
     }
 
     @RequiresAuthentication
@@ -71,8 +69,7 @@ public class RoomBookingController {
     @RequestMapping(name = "会议室预定查询", path = "roomNamelist", method = RequestMethod.GET)
     @ResponseBody
     public List<RoomBookingDto> roomList(HttpServletRequest request) throws ParseException {
-        List<RoomBookingDto> roomlist = roomBookingSerivce.getRoomList();
-        return roomlist;
+        return roomBookingSerivce.getRoomList();
     }
 
     @RequiresAuthentication
@@ -87,8 +84,7 @@ public class RoomBookingController {
     @RequestMapping(name = "获取会议室预定人", path = "findUser", method = RequestMethod.GET)
     @ResponseBody
     public UserDto userObj() {
-        UserDto user = userService.findUserByName(SessionUtil.getLoginName());
-        return user;
+        return userService.findUserByName(SessionUtil.getLoginName());
     }
 
     @SuppressWarnings("unused")
@@ -104,7 +100,8 @@ public class RoomBookingController {
             fileName = COMPANY_NAME+"会议安排";
         }
         try {
-            String title = java.net.URLDecoder.decode(fileName, "UTF-8");//解码，需要抛异常
+            //解码，需要抛异常
+            String title = java.net.URLDecoder.decode(fileName, "UTF-8");
             File file = roomBookingSerivce.exportRoom(currentDate, rbType, mrId);
             is = new FileInputStream(file);
             resp.setCharacterEncoding("utf-8");

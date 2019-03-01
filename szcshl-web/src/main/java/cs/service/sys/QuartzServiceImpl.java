@@ -90,18 +90,22 @@ public class QuartzServiceImpl implements QuartzService {
      * @return
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ResultMsg save(QuartzDto record) {
         Quartz domain = new Quartz();
         Date now = new Date();
+        boolean isCreate = true;
         if (Validate.isString(record.getId())) {
             domain = quartzRepo.findById(record.getId());
-            if (Constant.EnumState.YES.getValue().equals(domain.getCurState())) {
-                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "该定时器正在运行，请先停用再执行更改操作！");
+            if(Validate.isObject(domain) && Validate.isString(domain.getId())){
+                isCreate = false;
+                if (Constant.EnumState.YES.getValue().equals(domain.getCurState())) {
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "该定时器正在运行，请先停用再执行更改操作！");
+                }
             }
-            BeanCopierUtils.copyPropertiesIgnoreNull(record, domain);
-        } else {
-            BeanCopierUtils.copyProperties(record, domain);
+        }
+        BeanCopierUtils.copyProperties(record, domain);
+        if(isCreate){
             domain.setCreatedBy(SessionUtil.getUserId());
             domain.setCreatedDate(now);
             //默认执行方式为手动执行
@@ -113,16 +117,13 @@ public class QuartzServiceImpl implements QuartzService {
             //是否在用，默认为在用
             domain.setIsEnable(Constant.EnumState.YES.getValue());
         }
-        domain.setModifiedBy(SessionUtil.getUserId());
+        domain.setModifiedBy(SessionUtil.getDisplayName());
         domain.setModifiedDate(now);
         quartzRepo.save(domain);
-        ResultMsg returnResult = null;
+        ResultMsg returnResult = ResultMsg.ok("操作成功！");
         //如果默认为自动执行，则马上启动
         if (Constant.EnumState.YES.getValue().equals(domain.getRunWay())) {
             returnResult = quartzExecute(domain.getId());
-        }
-        if (returnResult == null) {
-            returnResult = new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
         }
         return returnResult;
     }

@@ -1,6 +1,7 @@
 package cs.service.sys;
 
 
+import cs.common.RandomGUID;
 import cs.common.constants.Constant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
@@ -58,16 +59,19 @@ public class DictServiceImpl implements DictService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ResultMsg createDict(DictDto dictDto) {
+        if(!Validate.isString(dictDto.getDictCode())){
+            return ResultMsg.error("请先字典编码还没填写！");
+        }
         //检查DICT CODE是否重复
         Dict dictExists = dictRepo.findByCode(dictDto.getDictCode(), null);
         if (dictExists != null) {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),String.format("增加字典，字典编码：%s 已经存在,请重新输入！", dictDto.getDictCode()));
+            return ResultMsg.error(String.format("增加字典，字典编码：%s 已经存在,请重新输入！", dictDto.getDictCode()));
         }
         Dict dict = new Dict();
         BeanCopierUtils.copyProperties(dictDto, dict);
-        dict.setDictId(UUID.randomUUID().toString());
+        dict.setDictId((new RandomGUID()).valueAfterMD5);
         dict.setCreatedBy(SessionUtil.getDisplayName());
         dict.setModifiedBy(SessionUtil.getDisplayName());
         dict.setIsUsed("0");
@@ -79,12 +83,16 @@ public class DictServiceImpl implements DictService {
 
         //清除缓存
         clearCache(dict.getDictCode());
-
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"创建成功！");
     }
 
 
-    //检查数据字典是否已存在
+    /**
+     * 检查数据字典是否已存在
+     * @param dictDto
+     * @param checkDictId
+     * @return
+     */
     private ResultMsg checkDictExists(DictDto dictDto, String checkDictId) {
         //检查DICT CODE是否重复
         Dict dictExists = dictRepo.findByCode(dictDto.getDictCode(), checkDictId);
@@ -101,22 +109,25 @@ public class DictServiceImpl implements DictService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ResultMsg updateDict(DictDto dictDto) {
+        if(!Validate.isString(dictDto.getDictCode())){
+            return ResultMsg.error("请先字典编码还没填写！");
+        }
         //检查DICT CODE是否重复
         Dict dictExists = dictRepo.findByCode(dictDto.getDictCode(), dictDto.getDictId());
         if (dictExists != null) {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),String.format("增加字典，字典编码：%s 已经存在,请重新输入！", dictDto.getDictCode()));
+            return ResultMsg.error(String.format("增加字典，字典编码：%s 已经存在,请重新输入！", dictDto.getDictCode()));
         }
         //修改
         Dict dict = dictRepo.findById(Dict_.dictId.getName(),dictDto.getDictId());
-        BeanCopierUtils.copyPropertiesIgnoreNull(dictDto, dict);
+        BeanCopierUtils.copyProperties(dictDto, dict);
         dict.setModifiedBy(SessionUtil.getLoginName());
         dict.setModifiedDate(new Date());
         dictRepo.save(dict);
         //清除缓存
         clearCache(dict.getDictCode());
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
+        return ResultMsg.ok("操作成功！");
     }
 
     private void clearCache(String dictCode) {

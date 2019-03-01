@@ -81,7 +81,7 @@ public class FilingServiceImpl implements FilingService {
             domain.setCreatedDate(now);
         } else {
             domain = filingRepo.findById(record.getId());
-            BeanCopierUtils.copyPropertiesIgnoreNull(record, domain);
+            BeanCopierUtils.copyProperties(record, domain);
             //先删除拟补充资料函
             addRegisterFileRepo.deleteById(AddRegisterFile_.businessId.getName(), record.getId());
         }

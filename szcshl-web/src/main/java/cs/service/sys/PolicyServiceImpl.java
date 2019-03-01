@@ -48,7 +48,7 @@ public class PolicyServiceImpl implements PolicyService {
             domain.setCreatedBy(SessionUtil.getUserId());
             domain.setCreatedDate(now);
         }
-        BeanCopierUtils.copyPropertiesIgnoreNull(record, domain);
+        BeanCopierUtils.copyProperties(record, domain);
 
         domain.setModifiedBy(SessionUtil.getUserId());
         domain.setModifiedDate(now);

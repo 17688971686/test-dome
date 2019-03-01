@@ -233,14 +233,17 @@ public class TopicInfoServiceImpl implements TopicInfoService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void update(TopicInfoDto record) {
         TopicInfo domain = topicInfoRepo.findById(record.getId());
-        BeanCopierUtils.copyPropertiesIgnoreNull(record, domain);
-        domain.setModifiedBy(SessionUtil.getDisplayName());
-        domain.setModifiedDate(new Date());
-
-        topicInfoRepo.save(domain);
+        if(Validate.isObject(domain) && Validate.isString(domain.getId())){
+            BeanCopierUtils.copyProperties(record, domain);
+            domain.setModifiedBy(SessionUtil.getDisplayName());
+            domain.setModifiedDate(new Date());
+            topicInfoRepo.save(domain);
+        }else{
+            throw new IllegalArgumentException("操作失败，记录数据已被删除！");
+        }
     }
 
     /**

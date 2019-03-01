@@ -19,8 +19,6 @@ import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.project.ProjectStopRepo;
 import cs.repository.repositoryImpl.project.SignDispaWorkRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
-import cs.repository.repositoryImpl.sys.UserRepo;
-import cs.service.flow.FlowService;
 import cs.service.rtx.RTXSendMsgPool;
 import cs.service.sys.UserService;
 import org.activiti.engine.ProcessEngine;
@@ -55,43 +53,38 @@ public class ProjectStopServiceImpl implements ProjectStopService {
     @Autowired
     private ProjectStopRepo projectStopRepo;
     @Autowired
-    private UserRepo userRepo;
-    @Autowired
     private SignRepo signRepo;
     @Autowired
     private ProcessEngine processEngine;
     @Autowired
     private SignDispaWorkRepo signDispaWorkRepo;
-
     //flow service
     @Autowired
     private TaskService taskService;
     @Autowired
     private RuntimeService runtimeService;
     @Autowired
-    private FlowService flowService;
-    @Autowired
     private AgentTaskService agentTaskService;
     @Autowired
     private UserService userService;
-
     @Autowired
     private RepositoryService repositoryService;
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public List<ProjectStopDto> findProjectStopBySign(String signId) {
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("select ps from " + ProjectStop.class.getSimpleName() + " ps where ps." + ProjectStop_.sign.getName() + "." + Sign_.signid.getName() + "=:signId");
-       hqlBuilder.append(" and " + ProjectStop_.approveStatus.getName() +"=:approveStatus ");
-        hqlBuilder.append("  order by  createdDate desc");
+        hqlBuilder.append(" select ps from " + ProjectStop.class.getSimpleName() + " ps where ");
+        hqlBuilder.append(" ps." + ProjectStop_.sign.getName() + "." + Sign_.signid.getName() + "=:signId ");
+        hqlBuilder.append(" and " + ProjectStop_.approveStatus.getName() + "=:approveStatus ");
+        hqlBuilder.append(" order by  createdDate desc");
         hqlBuilder.setParam("signId", signId);
-        hqlBuilder.setParam("approveStatus" , Constant.EnumState.NO.getValue());
+        hqlBuilder.setParam("approveStatus", Constant.EnumState.NO.getValue());
         List<ProjectStop> psList = projectStopRepo.findByHql(hqlBuilder);
         List<ProjectStopDto> projectStopDtoList = new ArrayList<>();
         for (ProjectStop pt : psList) {
             ProjectStopDto projectStopDto = new ProjectStopDto();
-            BeanCopierUtils.copyPropertiesIgnoreNull(pt, projectStopDto);
+            BeanCopierUtils.copyProperties(pt, projectStopDto);
             projectStopDtoList.add(projectStopDto);
         }
         return projectStopDtoList;
@@ -115,14 +108,14 @@ public class ProjectStopServiceImpl implements ProjectStopService {
      * @return
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ResultMsg savePauseProject(ProjectStopDto projectStopDto) {
         try {
             ProjectStop projectStop = new ProjectStop();
             Sign sign = signRepo.findById(projectStopDto.getSignid());
             //1、判断项目当前的状态
             if (Constant.EnumState.STOP.getValue().equals(sign.getSignState())) {
-                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，项目目前已是暂停状态！");
+                return ResultMsg.error("操作失败，项目目前已是暂停状态！");
             }
             boolean isHaveApproveing = false;
             //2、判断项目目前是否有正在申请的暂停信息
@@ -140,55 +133,42 @@ public class ProjectStopServiceImpl implements ProjectStopService {
             if (isHaveApproveing) {
                 return ResultMsg.error("操作失败，该项目已有暂停记录在处理！");
             }
-
-            BeanCopierUtils.copyProperties(projectStopDto, projectStop);
             if (!Validate.isObject(projectStop.getExpectpausedays())) {
-                return ResultMsg.error( "操作失败，没填写预计暂停天数！");
+                return ResultMsg.error("操作失败，没填写预计暂停天数！");
             }
-            if (Validate.isString(projectStopDto.getStopid())) {
-                projectStop = projectStopRepo.findById(projectStopDto.getStopid());
-                BeanCopierUtils.copyPropertiesIgnoreNull(projectStopDto, projectStop);
+            ResultMsg saveResult = saveProjectStop(projectStopDto);
+            if(saveResult.isFlag()){
+                //1、启动流程
+                ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(FlowConstant.PROJECT_STOP_FLOW, projectStop.getStopid(),
+                        ActivitiUtil.setAssigneeValue(FlowConstant.SignFlowParams.USER.getValue(), SessionUtil.getUserId()));
+
+                //2、设置流程实例名称
+                processEngine.getRuntimeService().setProcessInstanceName(processInstance.getId(), projectStopDto.getProcessName());
+                //4、跳过第一环节
+                Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
+                //添加处理信息
+                taskService.addComment(task.getId(), processInstance.getId(), "");
+
+                String userId = SessionUtil.getUserInfo().getOrg().getOrgDirector() == null ? SessionUtil.getUserId() : SessionUtil.getUserInfo().getOrg().getOrgDirector();
+                List<AgentTask> agentTaskList = new ArrayList<>();
+                String assigneeValue = userService.getTaskDealId(userId, agentTaskList, FlowConstant.FLOW_STOP_BZ_SP);
+                taskService.complete(task.getId(), ActivitiUtil.setAssigneeValue(FlowConstant.SignFlowParams.USER_BZ1.getValue(), assigneeValue));
+                //保存代办
+                if (Validate.isList(agentTaskList)) {
+                    agentTaskService.updateAgentInfo(agentTaskList, processInstance.getId(), processInstance.getName());
+                }
+                //设置流程实例ID
+                projectStop.setProcessInstanceId(processInstance.getId());
+                projectStop.setSign(sign);
                 projectStopRepo.save(projectStop);
-            }else{
-                Date now = new Date();
-                projectStop.setCreatedBy(SessionUtil.getDisplayName());
-                projectStop.setCreatedDate(now);
-                projectStop.setModifiedBy(SessionUtil.getDisplayName());
-                projectStop.setModifiedDate(now);
-                projectStop.setStopid((new RandomGUID()).valueAfterMD5);
-                //设置默认值
-                projectStop.setIsactive(Constant.EnumState.NO.getValue());
-                projectStop.setApproveStatus(Constant.EnumState.NO.getValue());//默认处于：未处理环节
+
+                //放入腾讯通消息缓冲池
+                RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
+
+                ProcessDefinitionEntity processDefinitionEntity = (ProcessDefinitionEntity) repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());
+                return new ResultMsg(true, Constant.MsgCode.OK.getValue(), task.getId(), "操作成功！", processDefinitionEntity.getName());
             }
-
-            //1、启动流程
-            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(FlowConstant.PROJECT_STOP_FLOW, projectStop.getStopid(),
-                    ActivitiUtil.setAssigneeValue(FlowConstant.SignFlowParams.USER.getValue(), SessionUtil.getUserId()));
-
-            //2、设置流程实例名称
-            processEngine.getRuntimeService().setProcessInstanceName(processInstance.getId(), projectStopDto.getProcessName());
-            //4、跳过第一环节
-            Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
-            taskService.addComment(task.getId(), processInstance.getId(), "");    //添加处理信息
-
-            String userId = SessionUtil.getUserInfo().getOrg().getOrgDirector() == null ? SessionUtil.getUserId() : SessionUtil.getUserInfo().getOrg().getOrgDirector();
-            List<AgentTask> agentTaskList = new ArrayList<>();
-            String assigneeValue = userService.getTaskDealId(userId, agentTaskList, FlowConstant.FLOW_STOP_BZ_SP);
-            taskService.complete(task.getId(), ActivitiUtil.setAssigneeValue(FlowConstant.SignFlowParams.USER_BZ1.getValue(), assigneeValue));
-            //保存代办
-            if(Validate.isList(agentTaskList)){
-                agentTaskService.updateAgentInfo(agentTaskList, processInstance.getId(), processInstance.getName());
-            }
-            //设置流程实例ID
-            projectStop.setProcessInstanceId(processInstance.getId());
-            projectStop.setSign(sign);
-            projectStopRepo.save(projectStop);
-
-            //放入腾讯通消息缓冲池
-            RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
-
-            ProcessDefinitionEntity processDefinitionEntity = (ProcessDefinitionEntity) repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());
-            return new ResultMsg(true, Constant.MsgCode.OK.getValue(),task.getId(), "操作成功！",processDefinitionEntity.getName());
+            return saveResult;
         } catch (Exception e) {
             return ResultMsg.error("保存失败，错误信息已记录，请联系管理员处理！");
         }
@@ -202,34 +182,38 @@ public class ProjectStopServiceImpl implements ProjectStopService {
      * @return
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ResultMsg saveProjectStop(ProjectStopDto projectStopDto) {
+        if (!Validate.isObject(projectStopDto.getExpectpausedays())) {
+            return ResultMsg.error("操作失败，没填写预计暂停天数！");
+        }
         ProjectStop projectStop = new ProjectStop();
+        Date now = new Date();
+        boolean isCreate = true;
         //判断是否是更新(这步基本没用到)
         if (Validate.isString(projectStopDto.getStopid())) {
             projectStop = projectStopRepo.findById(projectStopDto.getStopid());
-            BeanCopierUtils.copyPropertiesIgnoreNull(projectStopDto, projectStop);
-            projectStopRepo.save(projectStop);
-        } else {
-            Sign sign = signRepo.findById(projectStopDto.getSignid());
-            BeanCopierUtils.copyProperties(projectStopDto, projectStop);
-            if (!Validate.isObject(projectStop.getExpectpausedays())) {
-                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，没填写预计暂停天数！");
+            if (Validate.isObject(projectStop) && Validate.isString(projectStop.getStopid())) {
+                isCreate = false;
             }
-            Date now = new Date();
+        }
+        BeanCopierUtils.copyProperties(projectStopDto, projectStop);
+        if (isCreate) {
+            Sign sign = signRepo.findById(projectStopDto.getSignid());
             projectStop.setCreatedBy(SessionUtil.getUserId());
             projectStop.setCreatedDate(now);
-            projectStop.setModifiedBy(SessionUtil.getDisplayName());
-            projectStop.setModifiedDate(now);
             projectStop.setStopid((new RandomGUID()).valueAfterMD5);
             //设置默认值
             projectStop.setIsactive(Constant.EnumState.NO.getValue());
-            projectStop.setApproveStatus(Constant.EnumState.NO.getValue());//默认处于：未处理环节
+            //默认处于：未处理环节
+            projectStop.setApproveStatus(Constant.EnumState.NO.getValue());
             projectStop.setSign(sign);
-            projectStopRepo.save(projectStop);
         }
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", projectStop);
+        projectStop.setModifiedBy(SessionUtil.getDisplayName());
+        projectStop.setModifiedDate(now);
+        projectStopRepo.save(projectStop);
 
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", projectStop);
     }
 
 
@@ -353,7 +337,7 @@ public class ProjectStopServiceImpl implements ProjectStopService {
         User dealUser = null;                                   //用户
         ProjectStop projectStop = null;                         //项目暂停对象
         boolean isNextUser = false,                             //是否是下一环节处理人（主要是处理领导审批，部长审批）
-                isAgentTask = agentTaskService.isAgentTask(task.getId(),curUserId); //是否代办
+                isAgentTask = agentTaskService.isAgentTask(task.getId(), curUserId); //是否代办
         List<AgentTask> agentTaskList = new ArrayList<>();
         //环节处理人设定
         switch (task.getTaskDefinitionKey()) {
@@ -366,12 +350,12 @@ public class ProjectStopServiceImpl implements ProjectStopService {
             //部长审批
             case FlowConstant.FLOW_STOP_BZ_SP:
                 projectStop = projectStopRepo.findById(ProjectStop_.stopid.getName(), businessId);
-                if(isAgentTask){
-                    projectStop.setDirectorId(agentTaskService.getUserId(task.getId(),curUserId));
-                }else{
+                if (isAgentTask) {
+                    projectStop.setDirectorId(agentTaskService.getUserId(task.getId(), curUserId));
+                } else {
                     projectStop.setDirectorId(curUserId);
                 }
-                projectStop.setDirectorName(ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask));
+                projectStop.setDirectorName(ActivitiUtil.getSignName(SessionUtil.getDisplayName(), isAgentTask));
                 projectStop.setDirectorIdeaContent(flowDto.getDealOption());
                 projectStop.setDirectorDate(new Date());
                 projectStop.setApproveStatus(Constant.EnumState.PROCESS.getValue());
@@ -388,14 +372,14 @@ public class ProjectStopServiceImpl implements ProjectStopService {
             //分管领导审批
             case FlowConstant.FLOW_STOP_FGLD_SP:
                 if (flowDto.getBusinessMap().get("AGREE") == null || !Validate.isString(flowDto.getBusinessMap().get("AGREE").toString())) {
-                    return ResultMsg.error( "请选择同意或者不同意！");
+                    return ResultMsg.error("请选择同意或者不同意！");
                 }
                 String isactive = flowDto.getBusinessMap().get("AGREE").toString();
                 boolean isPass = Constant.EnumState.YES.getValue().equals(isactive);
                 projectStop = projectStopRepo.findById(businessId);
 
                 //审批通过，暂停还未开始执行，由定时器去启动
-                if(isPass){
+                if (isPass) {
                     //暂停时间，如果没有，就按审批通过算起。有就按暂停日期算起
                     if (null == projectStop.getPausetime() || !(projectStop.getPausetime()).after(new Date())) {
                         projectStop.setPausetime(new Date());
@@ -406,16 +390,16 @@ public class ProjectStopServiceImpl implements ProjectStopService {
                         sign.setIsLightUp(ProjectConstant.CAUTION_LIGHT_ENUM.PAUSE.getCodeValue());
                         sign.setIsProjectState(Constant.EnumState.YES.getValue());
                         signRepo.save(sign);
-                    }else{
+                    } else {
                         projectStop.setIsOverTime(Constant.EnumState.NO.getValue());
                     }
                 }
-                if(isAgentTask){
-                    projectStop.setLeaderId(agentTaskService.getUserId(task.getId(),curUserId));
-                }else{
+                if (isAgentTask) {
+                    projectStop.setLeaderId(agentTaskService.getUserId(task.getId(), curUserId));
+                } else {
                     projectStop.setLeaderId(curUserId);
                 }
-                projectStop.setLeaderName(ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask));
+                projectStop.setLeaderName(ActivitiUtil.getSignName(SessionUtil.getDisplayName(), isAgentTask));
                 projectStop.setLeaderIdeaContent(flowDto.getDealOption());
                 projectStop.setLeaderDate(new Date());
                 projectStop.setApproveStatus(Constant.EnumState.YES.getValue());
@@ -449,7 +433,7 @@ public class ProjectStopServiceImpl implements ProjectStopService {
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
         //当下一个处理人还是自己的时候，任务ID是已经改变了的，所以这里要返回任务ID
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), task.getId(),"操作成功！",null);
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), task.getId(), "操作成功！", null);
     }
 
     /**
@@ -462,10 +446,10 @@ public class ProjectStopServiceImpl implements ProjectStopService {
     public List<ProjectStopDto> getStopList(String signId) {
         List<ProjectStop> projectStopList = projectStopRepo.getStopList(signId);
         List<ProjectStopDto> projectStopDtoList = new ArrayList<>();
-        if(Validate.isList(projectStopList)){
-            for(ProjectStop projectStop : projectStopList){
+        if (Validate.isList(projectStopList)) {
+            for (ProjectStop projectStop : projectStopList) {
                 ProjectStopDto projectStopDto = new ProjectStopDto();
-                BeanCopierUtils.copyProperties(projectStop , projectStopDto);
+                BeanCopierUtils.copyProperties(projectStop, projectStopDto);
                 projectStopDtoList.add(projectStopDto);
             }
         }
@@ -494,9 +478,9 @@ public class ProjectStopServiceImpl implements ProjectStopService {
 
     @Override
     public ResultMsg endFlow(String businessKey) {
-        ProjectStop projectStop = projectStopRepo.findById(ProjectStop_.stopid.getName(),businessKey);
-        if(Validate.isObject(projectStop)){
-            if(!SessionUtil.getUserId().equals(projectStop.getCreatedBy()) && !SUPER_ACCOUNT.equals(SessionUtil.getLoginName())){
+        ProjectStop projectStop = projectStopRepo.findById(ProjectStop_.stopid.getName(), businessKey);
+        if (Validate.isObject(projectStop)) {
+            if (!SessionUtil.getUserId().equals(projectStop.getCreatedBy()) && !SUPER_ACCOUNT.equals(SessionUtil.getLoginName())) {
                 return ResultMsg.error("您无权进行删除流程操作！");
             }
             projectStop.setApproveStatus(Constant.EnumState.FORCE.getValue());

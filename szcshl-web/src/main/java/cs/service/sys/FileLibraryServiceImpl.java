@@ -1,6 +1,7 @@
 package cs.service.sys;
 
 import cs.common.HqlBuilder;
+import cs.common.RandomGUID;
 import cs.common.ResultMsg;
 import cs.common.constants.Constant;
 import cs.common.utils.BeanCopierUtils;
@@ -74,7 +75,6 @@ public class FileLibraryServiceImpl implements FileLibraryService {
      */
     @Override
     public ResultMsg addFolder(FileLibraryDto fileLibraryDto) {
-        //FileLibrary findFile = new FileLibrary();
         //通过父id，文件名 ，文件性质，文件类型， 判断该文件是否存在
         Boolean exitFile = fileLibraryRepo.findByFileNameAndParentId(fileLibraryDto.getParentFileId(), fileLibraryDto.getFileName(),
                 Constant.libraryType.FOLDER_TYPE.getValue(), fileLibraryDto.getFileType());
@@ -96,11 +96,8 @@ public class FileLibraryServiceImpl implements FileLibraryService {
                     url = File.separator + Constant.SysFileType.FILELIBRARY.getValue() + File.separator + fileLibraryDto.getFileName();
                 }
             }
-
-            //String fileUrl = SysFileUtil.generatRelativeUrl(fileLibraryPath, url, null, null, fileLibraryDto.getFileName());
-
-            BeanCopierUtils.copyPropertiesIgnoreNull(fileLibraryDto, fileLibrary);
-            fileLibrary.setFileId(UUID.randomUUID().toString());
+            BeanCopierUtils.copyProperties(fileLibraryDto, fileLibrary);
+            fileLibrary.setFileId((new RandomGUID()).valueAfterMD5);
             fileLibrary.setCreatedBy(SessionUtil.getDisplayName());
             fileLibrary.setCreatedDate(new Date());
             fileLibrary.setModifiedBy(SessionUtil.getDisplayName());

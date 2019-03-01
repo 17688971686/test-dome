@@ -356,12 +356,12 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce {
      * @return
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ResultMsg saveRoom(RoomBookingDto roomDto) {
         if (checkRootBook(roomDto) > 0) {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "预定的会议室时间跟其他会议有冲突！");
+            return ResultMsg.error("预定的会议室时间跟其他会议有冲突！");
         } else if ((roomDto.getBeginTime()).after(roomDto.getEndTime())) {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "开始时间不能大于结束时间!");
+            return ResultMsg.error("开始时间不能大于结束时间!");
         } else {
             Date now = new Date();
             RoomBooking roomBooking = new RoomBooking();
@@ -381,7 +381,7 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce {
                     if (Constant.EnumState.NO.getValue().equals(roomBooking.getRbStatus())) {
                         if (!SessionUtil.getUserId().equals(roomBooking.getCreatedBy())
                                 && !SessionUtil.getLoginName().equals(SUPER_ACCOUNT)) {
-                            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "您没有修改权限！");
+                            return  ResultMsg.error("您没有修改权限！");
                         }
                     }
                     //普通预定的会议室
@@ -389,19 +389,19 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce {
                     if ((new Date()).after(roomBooking.getBeginTime()) || Constant.EnumState.YES.getValue().equals(roomBooking.getRbStatus())) {
                         roomBooking.setRbStatus(Constant.EnumState.YES.getValue());
                         roomBookingRepo.save(roomBooking);
-                        return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，只能在预定会议的时间段之前进行修改操作！");
+                        return ResultMsg.error("操作失败，只能在预定会议的时间段之前进行修改操作！");
                     }
                     if (Constant.EnumState.NO.getValue().equals(roomBooking.getRbStatus())) {
                         if (!SessionUtil.getUserId().equals(roomBooking.getCreatedBy())
                                 && !SessionUtil.getLoginName().equals(SUPER_ACCOUNT)) {
-                            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "您没有修改权限！");
+                            return  ResultMsg.error("您没有修改权限！");
                         }
                     }
                 }
-                BeanCopierUtils.copyPropertiesIgnoreNull(roomDto, roomBooking);
+                BeanCopierUtils.copyProperties(roomDto, roomBooking);
             } else {
                 if ((new Date()).after(roomDto.getBeginTime())) {
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，只能选择当前日期之后的时间进行预定！");
+                    return  ResultMsg.error("操作失败，只能选择当前日期之后的时间进行预定！");
                 }
                 BeanCopierUtils.copyProperties(roomDto, roomBooking);
                 roomBooking.setId(UUID.randomUUID().toString());
@@ -642,26 +642,6 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce {
     @Override
     public RoomBookingDto initDefaultValue(String businessId, String businessType) {
         RoomBookingDto roomBookingDto = new RoomBookingDto();
-        ProjectConstant.BUSINESS_TYPE businessTypeEnum = ProjectConstant.BUSINESS_TYPE.valueOf(businessType);
-        switch (businessTypeEnum){
-            /**
-             * 项目工作方案
-             */
-            case SIGN_WP:
-                WorkProgram workProgram = workProgramRepo.findById(WorkProgram_.id.getName(), businessId);
-                roomBookingDto.setStageOrgName(workProgram.getReviewOrgName());
-                roomBookingDto.setRbName(workProgram.getProjectName());
-                break;
-            /**
-             * 课题工作方案（目前该方案以停用）
-             */
-            case TOPIC_WP:
-                WorkPlan workPlan = workPlanRepo.findById(WorkPlan_.id.getName(), businessId);
-                roomBookingDto.setRbName(workPlan.getTopicName());
-                break;
-            default:
-                    ;
-        }
         roomBookingDto.setHost(SessionUtil.getDisplayName());
         roomBookingDto.setDueToPeople(SessionUtil.getDisplayName());
         if (Validate.isString(businessId)) {
@@ -669,6 +649,28 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce {
         }
         if (Validate.isString(businessType)) {
             roomBookingDto.setBusinessType(businessType);
+            ProjectConstant.BUSINESS_TYPE businessTypeEnum = ProjectConstant.BUSINESS_TYPE.valueOf(businessType);
+            if(Validate.isObject(businessTypeEnum)){
+                switch (businessTypeEnum){
+                    /**
+                     * 项目工作方案
+                     */
+                    case SIGN_WP:
+                        WorkProgram workProgram = workProgramRepo.findById(WorkProgram_.id.getName(), businessId);
+                        roomBookingDto.setStageOrgName(workProgram.getReviewOrgName());
+                        roomBookingDto.setRbName(workProgram.getProjectName());
+                        break;
+                    /**
+                     * 课题工作方案（目前该方案以停用）
+                     */
+                    case TOPIC_WP:
+                        WorkPlan workPlan = workPlanRepo.findById(WorkPlan_.id.getName(), businessId);
+                        roomBookingDto.setRbName(workPlan.getTopicName());
+                        break;
+                    default:
+                        ;
+                }
+            }
         }
         roomBookingDto.setBeginTime(null);
         roomBookingDto.setEndTime(null);

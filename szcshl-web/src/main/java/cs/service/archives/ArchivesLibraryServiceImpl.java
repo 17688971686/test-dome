@@ -2,13 +2,10 @@ package cs.service.archives;
 
 import java.util.*;
 
-import javax.transaction.Transactional;
-
+import cs.common.RandomGUID;
 import cs.common.constants.FlowConstant;
 import cs.common.utils.*;
 import cs.domain.project.AgentTask;
-import cs.domain.project.ProjectStop;
-import cs.domain.project.ProjectStop_;
 import cs.domain.sys.User;
 import cs.model.flow.FlowDto;
 import cs.repository.repositoryImpl.sys.UserRepo;
@@ -24,7 +21,6 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import cs.common.constants.Constant;
 import cs.common.constants.Constant.EnumState;
 import cs.common.constants.Constant.MsgCode;
@@ -35,6 +31,7 @@ import cs.model.PageModelDto;
 import cs.model.archives.ArchivesLibraryDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.archives.ArchivesLibraryRepo;
+import org.springframework.transaction.annotation.Transactional;
 
 import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
@@ -85,17 +82,20 @@ public class ArchivesLibraryServiceImpl implements ArchivesLibraryService {
      * 创建（中心）借阅保存
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ResultMsg save(ArchivesLibraryDto record) {
         ArchivesLibrary domain = new ArchivesLibrary();
         Date now = new Date();
-
+        boolean isCreate = true;
         if (Validate.isString(record.getId())) {
             domain = archivesLibraryRepo.findById(record.getId());
-            BeanCopierUtils.copyPropertiesIgnoreNull(record, domain);
-        } else {
-            BeanCopierUtils.copyProperties(record, domain);
-            domain.setId(UUID.randomUUID().toString());
+            if(Validate.isObject(domain) && Validate.isString(domain.getId())){
+                isCreate = false;
+            }
+        }
+        BeanCopierUtils.copyProperties(record, domain);
+        if(isCreate){
+            domain.setId((new RandomGUID()).valueAfterMD5);
             domain.setCreatedBy(SessionUtil.getUserId());
             domain.setCreatedDate(now);
         }
@@ -149,10 +149,10 @@ public class ArchivesLibraryServiceImpl implements ArchivesLibraryService {
     }
 */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void update(ArchivesLibraryDto record) {
         ArchivesLibrary domain = archivesLibraryRepo.findById(record.getId());
-        BeanCopierUtils.copyPropertiesIgnoreNull(record, domain);
+        BeanCopierUtils.copyProperties(record, domain);
         domain.setModifiedBy(SessionUtil.getDisplayName());
         domain.setModifiedDate(new Date());
 
