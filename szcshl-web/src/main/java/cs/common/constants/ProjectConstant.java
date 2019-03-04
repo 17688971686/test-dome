@@ -112,7 +112,7 @@ public class ProjectConstant {
          */
         public static REVIEW_STATE_ENUM getByEnCode(String enCode){
             for(REVIEW_STATE_ENUM reviewStateEnum : values()){
-                if (reviewStateEnum.getEnCode() == enCode) {
+                if (reviewStateEnum.getEnCode().equals(enCode)) {
                     return reviewStateEnum;
                 }
             }
@@ -126,7 +126,7 @@ public class ProjectConstant {
          */
         public static REVIEW_STATE_ENUM getByZhCode(String zhCode){
             for(REVIEW_STATE_ENUM reviewStateEnum : values()){
-                if (reviewStateEnum.getZhCode() == zhCode) {
+                if (reviewStateEnum.getZhCode().equals(zhCode)) {
                     return reviewStateEnum;
                 }
             }

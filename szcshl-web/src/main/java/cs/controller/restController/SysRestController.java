@@ -334,7 +334,7 @@ public class SysRestController {
         signDto.setAssistdeptName("投资处");
         signDto.setDesigncompanyName(null);
         signDto.setYearplantype("C类");
-        signDto.setReviewstage("STAGESTUDY");
+        signDto.setReviewstage("STAGEBUDGET");
         signDto.setSendusersign("张路");
         signDto.setAcceptDate(DateUtils.converToDate("2018-12-26 09:48:54.0","yyyy-MM-dd HH:mm:ss"));
         signDto.setSecrectlevel("公开");
