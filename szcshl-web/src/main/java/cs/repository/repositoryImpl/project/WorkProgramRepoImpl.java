@@ -419,4 +419,9 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram, String>
         executeSql(WorkSql.updateWPState(signId, brandIds, state));
     }
 
+    @Override
+    public void updateBrandWPState(String excludeId, String branchId, String state,String signid) {
+        executeSql(WorkSql.updateBrandWPState(excludeId, branchId, state,signid));
+    }
+
 }

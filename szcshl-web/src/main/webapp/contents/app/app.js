@@ -1413,6 +1413,7 @@
 
         //获取表头名称
         $rootScope.getSysAccreditUnit = function () {
+            //return accreditUnit;
             return '深圳市政府投资项目评审中心';
         }
 
@@ -1604,7 +1605,6 @@
                         //必须是确认参与的专家
                         if (expertSelectedDtoList.isConfrim == "9"
                             && expertSelectedDtoList.isJoin == "9") {
-
 
                             if (expertSelectedDtoList.expertDto.bankAccount == undefined
                                 || expertSelectedDtoList.expertDto.openingBank == undefined) {

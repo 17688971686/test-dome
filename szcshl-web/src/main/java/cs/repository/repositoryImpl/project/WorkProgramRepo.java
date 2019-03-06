@@ -100,4 +100,13 @@ public interface WorkProgramRepo extends IRepository<WorkProgram, String> {
      * @param brandIds
      */
     void updateWPState(String signId, String brandIds,String state);
+
+    /**
+     * 更新工作方案状态
+     * @param excludeId 排除的工作方案ID
+     * @param branchId 分支
+     * @param value 要修改的状态值
+     * @param signid 项目ID
+     */
+    void updateBrandWPState(String excludeId, String branchId, String value,String signid);
 }

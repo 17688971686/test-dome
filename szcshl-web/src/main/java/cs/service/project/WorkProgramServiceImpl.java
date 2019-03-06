@@ -237,6 +237,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             if (!isMainBrand) {
                 wpList = wpList.stream().filter(item -> (!Validate.isString(item.getBaseInfo()) || !EnumState.YES.getValue().equals(item.getBaseInfo()))).collect(Collectors.toList());
             }
+            //其它分支的工作方案
             if (Validate.isList(wpList)) {
                 totalL = wpList.size();
                 List<WorkProgramDto> wpDtoList = new ArrayList<>();
@@ -244,17 +245,9 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                     WorkProgram wp = wpList.get(i);
                     boolean isBrandUser = false;
                     if(Validate.isString(branchIndex) && branchIndex.equals(wp.getBranchId())){
-                        priUserList = signPrincipalService.getSignPriUser(signId, branchIndex);
-                        for (User user : priUserList) {
-                            //当前处理人是代人人的时候也要考虑进去
-                            if (ProjUtil.userIsTaskUser(user,curUserId)) {
-                                isBrandUser = true;
-                                break;
-                            }
-                        }
-                        /*if(branchIndex.equals(wp.getId().substring(0,2))){
+                        //如果是新增工作方案(新增工作方案的分支是要用两位数表示，主要是为了跟其它正常的工作方案区分开)
+                        if(branchIndex.equals(wp.getId().substring(0,2))){
                             User user = userService.getCacheUserById(wp.getCreatedBy());
-                            //如果是新增的工作方案，流程还没走完
                             boolean isNewWP = (ProjUtil.userIsTaskUser(user,curUserId)) && Validate.isString(wp.getProcessInstanceId());
                             if(isNewWP){
                                 isBrandUser = true;
@@ -270,7 +263,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                                     break;
                                 }
                             }
-                        }*/
+                        }
                     }
 
                     //如果是当前分支用户或者代办用户,则能编辑对应的工作方案信息，否则只能查看
@@ -972,6 +965,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 //如果还没做工作方案，则新增的就是主工作方案
                 newWP.setBranchId(FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue());
             }else{
+                //如果是其它工作方案，则分支用两位数表示，跟其它的工作方案区分
                 newWP.setBranchId(myGUID.toString().substring(0,2));
             }
             reWorkList.add(newWP);
@@ -1102,7 +1096,8 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 break;
             case WPHIS_BMLD_SPW:
                 //部长审批环节
-                boolean isAgentTask = agentTaskService.isAgentTask(task.getId(),curUserId); //是否为代办任务
+                //是否为代办任务
+                boolean isAgentTask = agentTaskService.isAgentTask(task.getId(),curUserId);
                 workPGUtil.setMinisterOption(flowDto.getDealOption(),new Date(),ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask));
                 workProgramRepo.save(wk);
                 //设定下一环节处理人【主分支哪个领导安排部门工作方案则由他审批，次分支则按按照部门所在领导审批】
@@ -1115,10 +1110,15 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 break;
             case WPHIS_FGLD_SPW:
                 //分管领导审批环节
-                boolean isAgentTask2 = agentTaskService.isAgentTask(task.getId(),curUserId); //是否为代办任务
+                //是否为代办任务
+                boolean isAgentTask2 = agentTaskService.isAgentTask(task.getId(),curUserId);
                 workPGUtil.setLeaderOption(flowDto.getDealOption(),new Date(),ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask2));
                 wk.setState(EnumState.YES.getValue());
                 workProgramRepo.save(wk);
+                //如果是主工作方案，还要把之前的项目信息记录改为无效
+                if(ProjUtil.isMainBranch(wk.getBranchId())){
+                    workProgramRepo.updateBrandWPState(wk.getId(),wk.getBranchId(),EnumState.NO.getValue(),sign.getSignid());
+                }
                 //完成分支的工作方案
                 signBranchRepo.updateFinishState(sign.getSignid(), wk.getBranchId(),EnumState.YES.getValue());
                 //更改预定会议室状态
@@ -1143,7 +1143,8 @@ public class WorkProgramServiceImpl implements WorkProgramService {
              default:
                     ;
         }
-        taskService.addComment(task.getId(), processInstance.getId(), flowDto.getDealOption());    //添加处理信息
+        //添加处理信息
+        taskService.addComment(task.getId(), processInstance.getId(), flowDto.getDealOption());
         if (flowDto.isEnd()) {
             taskService.complete(task.getId());
         } else {

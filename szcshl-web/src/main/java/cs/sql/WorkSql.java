@@ -171,4 +171,14 @@ public class WorkSql {
         sqlBuilder.append("  ) a order by innerSeq,rbday  ");
         return sqlBuilder;
     }
+
+    public static HqlBuilder updateBrandWPState(String excludeId, String branchId, String state,String signid) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" update cs_work_program set state = :state where id <>:excludeId and branchId =:branchId and signid =:signid ");
+        sqlBuilder.setParam("state", state);
+        sqlBuilder.setParam("excludeId", excludeId);
+        sqlBuilder.setParam("branchId", branchId);
+        sqlBuilder.setParam("signid", signid);
+        return sqlBuilder;
+    }
 }

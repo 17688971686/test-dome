@@ -146,8 +146,14 @@ public class ProjUtil {
         if (!Validate.isList(wpList)) {
             return null;
         }
-        WorkProgram workProgram = wpList.stream().filter(item -> FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(item.getBranchId())).findFirst().get();
-        return workProgram;
+        //主工作方案，分支等于1，并且不是项目基本信息
+        List<WorkProgram> workProgramList = wpList.stream().filter(item -> (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(item.getBranchId())
+        && !(Constant.EnumState.YES.getValue()).equals(item.getBaseInfo()))).collect(Collectors.toList());
+
+        if(Validate.isList(workProgramList)){
+            workProgramList.get(0);
+        }
+        return null;
     }
 
     /**

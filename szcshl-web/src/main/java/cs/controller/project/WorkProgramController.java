@@ -166,6 +166,14 @@ public class WorkProgramController {
         return resultMsg;
     }
 
+    /**
+     * 重做或者新增工作方案，
+     * @param signId
+     * @param reworkType 0是新增，1是重新发起流程
+     * @param brandIds
+     * @param userId
+     * @return
+     */
     @RequiresAuthentication
     @RequestMapping(name = "发起重新做工作方案流程", path = "startReWorkFlow", method = RequestMethod.POST)
     @ResponseBody
