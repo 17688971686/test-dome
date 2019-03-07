@@ -398,7 +398,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
     @RequiresAuthentication
     @RequestMapping(name = "文件下载", path = "fileDownload", method = RequestMethod.POST)
-    public void fileDownload(@RequestParam(required = true) String sysfileId, HttpServletResponse response) throws Exception {
+    public void fileDownload(@RequestParam String sysfileId, HttpServletResponse response) throws Exception {
         OutputStream out = response.getOutputStream();
         try {
             SysFile sysFile = sysFileService.findFileById(sysfileId);

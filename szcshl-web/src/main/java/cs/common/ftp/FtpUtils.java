@@ -10,7 +10,11 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 
+/**
+ * @author ldm
+ */
 public class FtpUtils {
+
     private static final Logger logger = LoggerFactory.getLogger(FtpUtils.class);
     private static final String GHK_CHARSET = "GBK";
     private static final String UTF_CHARSET = "UTF-8";
@@ -68,8 +72,9 @@ public class FtpUtils {
     }
     public boolean putFile(FtpClientConfig k,String remoteBaseDir,String filename, InputStream in) throws IOException {
         boolean result = false;
+        FTPClient ftp = null;
         try {
-            FTPClient ftp = getFtpClient(ftpClientPool,k);
+            ftp = getFtpClient(ftpClientPool,k);
             checkCharset(ftp,k);
             // 内网设置为被动模式
             ftp.enterLocalPassiveMode();
@@ -101,6 +106,9 @@ public class FtpUtils {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
+            if(ftp != null){
+                ftpClientPool.returnObject(k,ftp);
+            }
             try {
                 if(null != in){
                     in.close();
@@ -120,15 +128,21 @@ public class FtpUtils {
      *             on I/O errors
      */
     public boolean remove(String remoteFilePath, FtpClientConfig config){
+        FTPClient ftp = null;
+        boolean doResult = false;
         try{
-            FTPClient ftp = getFtpClient(ftpClientPool,config);
+            ftp = getFtpClient(ftpClientPool,config);
             checkCharset(ftp,config);
             remoteFilePath = new String(remoteFilePath.getBytes(config.getChartset()), FTP.DEFAULT_CONTROL_ENCODING);
-            return ftp.deleteFile(remoteFilePath);
+            doResult = ftp.deleteFile(remoteFilePath);
         }catch (Exception e){
             logger.info("删除附件异常："+e.getMessage());
-            return false;
+        }finally {
+            if(ftp != null){
+                ftpClientPool.returnObject(config,ftp);
+            }
         }
+        return doResult;
     }
 
     /**
@@ -140,8 +154,9 @@ public class FtpUtils {
      * @return
      */
     public boolean downLoadFile(String remoteFilePath,String fileName, FtpClientConfig config,OutputStream out){
+        FTPClient ftp = null;
         try{
-            FTPClient ftp = getFtpClient(ftpClientPool,config);
+            ftp = getFtpClient(ftpClientPool,config);
             ftp.enterLocalPassiveMode();
             checkCharset(ftp,config);
             remoteFilePath = new String(remoteFilePath.getBytes(config.getChartset()), FTP.DEFAULT_CONTROL_ENCODING);
@@ -160,13 +175,19 @@ public class FtpUtils {
         }catch (Exception e){
             logger.info("下载附件异常："+e.getMessage());
             return false;
+        }finally {
+            if(ftp != null){
+                ftpClientPool.returnObject(config,ftp);
+            }
         }
     }
 
     public boolean checkFileExist(String remoteFilePath, String filename,FtpClientConfig config) {
         boolean result = false;
+        FTPClient ftp = null;
+        InputStream is = null;
         try {
-            FTPClient ftp = getFtpClient(ftpClientPool,config);
+            ftp = getFtpClient(ftpClientPool,config);
             ftp.enterLocalPassiveMode();
             checkCharset(ftp,config);
             remoteFilePath = new String(remoteFilePath.getBytes(config.getChartset()), FTP.DEFAULT_CONTROL_ENCODING);
@@ -175,7 +196,7 @@ public class FtpUtils {
                 result = false;
                 filename = new String(filename.getBytes(config.getChartset()), FTP.DEFAULT_CONTROL_ENCODING);
                 // 检验文件是否存在
-                InputStream is = ftp.retrieveFileStream(filename);
+                is = ftp.retrieveFileStream(filename);
                 if(is == null || ftp.getReplyCode() == FTPReply.FILE_UNAVAILABLE){
                     return false;
                 }
@@ -186,7 +207,19 @@ public class FtpUtils {
                 return true;
             }
         } catch (Exception e) {
-
+            logger.info("校验附件是否存在异常："+e.getMessage());
+        }finally {
+            if(ftp != null){
+                ftpClientPool.returnObject(config,ftp);
+            }
+            if(is != null){
+                try {
+                    is.close();
+                    ftp.completePendingCommand();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return result;
     }

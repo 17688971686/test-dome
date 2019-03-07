@@ -4,6 +4,7 @@ import cs.common.ResultMsg;
 import cs.domain.project.DispatchDoc;
 import cs.domain.project.Sign;
 import cs.domain.project.WorkProgram;
+import cs.domain.sys.Log;
 import cs.domain.sys.User;
 import cs.model.project.CommentDto;
 import cs.model.project.DispatchDocDto;
@@ -27,7 +28,7 @@ public interface SignRestService {
      * @param isGetFiles 是否接受附件
      * @return
      */
-    ResultMsg pushProject(SignDto signDto,boolean isGetFiles);
+    ResultMsg pushProject(SignDto signDto,boolean isGetFiles,Log log);
 
     /**
      * 接收委里传输过来的预签收数据

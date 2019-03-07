@@ -5,6 +5,9 @@ import org.hibernate.annotations.GenericGenerator;
 import java.util.Date;
 import javax.persistence.*;
 
+/**
+ * @author ldm
+ */
 @Entity
 @Table(name="cs_log")
 public class Log {

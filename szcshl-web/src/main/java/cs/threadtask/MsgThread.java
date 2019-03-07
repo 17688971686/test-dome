@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * 发送短信线程
- * Created by ldm on 2018/7/3 0004.
+ * @author ldm on 2018/7/3 0004.
  */
 public class MsgThread implements Runnable{
 

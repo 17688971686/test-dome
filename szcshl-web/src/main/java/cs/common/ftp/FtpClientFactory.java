@@ -25,7 +25,8 @@ public class FtpClientFactory implements KeyedPooledObjectFactory<FtpClientConfi
         ftpClientConfig.setServerTimeZoneId(TimeZone.getDefault().getID());
         cli.configure(ftpClientConfig);
         long connectStart = System.currentTimeMillis();
-        cli.setConnectTimeout(3000); //timeout 3 seconds
+        //timeout 3 seconds
+        cli.setConnectTimeout(3000);
         cli.setDataTimeout(30 * 1000);
         cli.connect(key.getHost(), key.getPort());
         long connectUsed = System.currentTimeMillis() - connectStart;

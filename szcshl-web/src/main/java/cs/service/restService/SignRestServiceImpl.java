@@ -1,6 +1,7 @@
 package cs.service.restService;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import cs.ahelper.HttpClientOperate;
 import cs.ahelper.HttpResult;
 import cs.common.FGWResponse;
@@ -15,6 +16,7 @@ import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import cs.domain.project.DispatchDoc;
 import cs.domain.project.Sign;
+import cs.domain.sys.Log;
 import cs.domain.sys.SysFile;
 import cs.model.project.CommentDto;
 import cs.model.project.DispatchDocDto;
@@ -26,9 +28,12 @@ import cs.repository.repositoryImpl.project.DispatchDocRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.service.project.DispatchDocService;
 import cs.service.project.SignService;
+import cs.service.sys.LogService;
 import cs.service.sys.SysConfigService;
 import cs.service.sys.SysFileService;
 import cs.spring.SpringContextUtil;
+import cs.threadtask.FileDownLoadThread;
+import cs.threadtask.MsgThread;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +44,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.*;
 
 import static cs.common.constants.FlowConstant.*;
 import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
@@ -46,7 +52,7 @@ import static cs.common.constants.SysConstants.SYS_BUSI_PROP_BEAN;
 
 /**
  * 项目接口实现类
- * Created by ldm on 2017/12/20.
+ * @author ldm on 2017/12/20.
  */
 @Service
 public class SignRestServiceImpl implements SignRestService {
@@ -64,6 +70,8 @@ public class SignRestServiceImpl implements SignRestService {
     private DispatchDocService dispatchDocService;
     @Autowired
     private DispatchDocRepo dispatchDocRepo;
+    @Autowired
+    private LogService logService;
     /**
      * 委里推送项目
      *
@@ -72,20 +80,44 @@ public class SignRestServiceImpl implements SignRestService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ResultMsg pushProject(SignDto signDto, boolean isGetFiles) {
+    public ResultMsg pushProject(SignDto signDto, boolean isGetFiles,Log log) {
         if (signDto == null) {
+            if(log != null){
+                log.setResult(Constant.EnumState.NO.getValue());
+                log.setLogCode(IFResultCode.IFMsgCode.SZEC_SIGN_01.getCode());
+                log.setMessage(IFResultCode.IFMsgCode.SZEC_SIGN_01.getValue());
+                logService.save(log);
+            }
             return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_01.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_01.getValue());
         }
         if (!Validate.isString(signDto.getFilecode())) {
+            if(log != null){
+                log.setResult(Constant.EnumState.NO.getValue());
+                log.setLogCode(IFResultCode.IFMsgCode.SZEC_SIGN_02.getCode());
+                log.setMessage(IFResultCode.IFMsgCode.SZEC_SIGN_02.getValue());
+                logService.save(log);
+            }
             return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_02.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_02.getValue());
         }
         //1、项目评审阶段判断
         if (!Validate.isString(signDto.getReviewstage())) {
+            if(log != null){
+                log.setResult(Constant.EnumState.NO.getValue());
+                log.setLogCode(IFResultCode.IFMsgCode.SZEC_SIGN_03.getCode());
+                log.setMessage(IFResultCode.IFMsgCode.SZEC_SIGN_03.getValue());
+                logService.save(log);
+            }
             return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_03.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_03.getValue());
         }
         String stageCode = signDto.getReviewstage();
         ProjectConstant.REVIEW_STATE_ENUM reviewStateEnum = ProjectConstant.REVIEW_STATE_ENUM.getByEnCode(stageCode);
         if (!Validate.isObject(reviewStateEnum)) {
+            if(log != null){
+                log.setResult(Constant.EnumState.NO.getValue());
+                log.setLogCode(IFResultCode.IFMsgCode.SZEC_SIGN_04.getCode());
+                log.setMessage(IFResultCode.IFMsgCode.SZEC_SIGN_04.getValue());
+                logService.save(log);
+            }
             return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_04.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_04.getValue());
         }
         //对应系统的阶段名称
@@ -105,7 +137,8 @@ public class SignRestServiceImpl implements SignRestService {
             if (resultMsg.isFlag()) {
                 boolean isLoginUser = Validate.isString(SessionUtil.getUserId());
                 Sign sign = (Sign) resultMsg.getReObj();
-                checkDownLoadFile(resultMsg, isGetFiles, sign.getSignid(), signDto.getSysFileDtoList(), isLoginUser ? SessionUtil.getUserId() : SUPER_ACCOUNT, Constant.SysFileType.SIGN.getValue(), Constant.SysFileType.FGW_FILE.getValue());
+                checkDownLoadFile(resultMsg, isGetFiles, sign.getSignid(), signDto.getSysFileDtoList(), isLoginUser ? SessionUtil.getUserId() : SUPER_ACCOUNT,
+                        Constant.SysFileType.SIGN.getValue(), Constant.SysFileType.FGW_FILE.getValue(),log);
             }
         } catch (Exception e) {
             resultMsg = new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(), IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getValue() + e.getMessage());
@@ -115,26 +148,21 @@ public class SignRestServiceImpl implements SignRestService {
         return resultMsg;
     }
 
-    public void checkDownLoadFile(ResultMsg resultMsg, boolean isGetFiles, String businessId, List<SysFileDto> sysFileDtoList, String userId, String mainType, String busiType){
+    public void checkDownLoadFile(ResultMsg resultMsg, boolean isGetFiles, String businessId, List<SysFileDto> sysFileDtoList,
+                                  String userId, String mainType, String busiType,Log log){
         //如果获取附件
-        if (isGetFiles) {
+        if (isGetFiles && Validate.isList(sysFileDtoList)) {
             //获取传送过来的附件
-            ResultMsg fileResult = sysFileService.downRemoteFile(businessId, sysFileDtoList, userId, mainType, busiType);
-            if (fileResult.isFlag()) {
-                resultMsg.setFlag(true);
-                resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getCode());
-                resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getValue());
-            } else {
-                resultMsg.setFlag(false);
-                resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_SIGN_05.getCode());
-                resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SIGN_05.getValue());
-            }
-        //不接收附件
-        } else {
-            resultMsg.setFlag(true);
-            resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getCode());
-            resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getValue());
+            ConcurrentLinkedQueue<SysFileDto> fileQueue = new ConcurrentLinkedQueue(sysFileDtoList);
+            //手动创建线程池
+            ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("附件下载线程：thread-filedownload-runner-%d").build();
+            ExecutorService threadPool = new ThreadPoolExecutor(1,5,0L, TimeUnit.MILLISECONDS,new LinkedBlockingQueue<Runnable>(),namedThreadFactory);
+            threadPool.execute(new FileDownLoadThread(sysFileService,fileQueue,businessId,userId,mainType,busiType,log));
+            threadPool.shutdown();
         }
+        resultMsg.setFlag(true);
+        resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getCode());
+        resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getValue());
     }
 
 
@@ -150,11 +178,13 @@ public class SignRestServiceImpl implements SignRestService {
             return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_01.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_01.getValue());
         }
         if (!Validate.isString(signDto.getFilecode())) {
+
             return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_02.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_02.getValue());
         }
         String stageCode = signDto.getReviewstage();
         ProjectConstant.REVIEW_STATE_ENUM reviewStateEnum = ProjectConstant.REVIEW_STATE_ENUM.getByEnCode(stageCode);
         if (!Validate.isObject(reviewStateEnum)) {
+
             return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_04.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_04.getValue());
         }
         //对应系统的阶段名称
@@ -174,7 +204,8 @@ public class SignRestServiceImpl implements SignRestService {
             if (resultMsg.isFlag()) {
                 boolean isLoginUser = Validate.isString(SessionUtil.getUserId());
                 Sign sign = (Sign) resultMsg.getReObj();
-                checkDownLoadFile(resultMsg, isGetFiles, sign.getSignid(), signDto.getSysFileDtoList(), isLoginUser ? SessionUtil.getUserId() : SUPER_ACCOUNT, Constant.SysFileType.SIGN.getValue(), Constant.SysFileType.FGW_FILE.getValue());
+                checkDownLoadFile(resultMsg, isGetFiles, sign.getSignid(), signDto.getSysFileDtoList(), isLoginUser ? SessionUtil.getUserId() : SUPER_ACCOUNT,
+                        Constant.SysFileType.SIGN.getValue(), Constant.SysFileType.FGW_FILE.getValue(),null);
             }
         } catch (Exception e) {
             resultMsg = new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(), IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getValue() + e.getMessage());
@@ -323,7 +354,8 @@ public class SignRestServiceImpl implements SignRestService {
         dispatchDocService.updateDisApprValue(dispatchDoc.getId(), signDto.getDeclaration());
         boolean isLoginUser = Validate.isString(SessionUtil.getUserId());
         //开始下载pdf
-        checkDownLoadFile(resultMsg, isGetFiles, sign.getSignid(), signDto.getSysFileDtoList(), isLoginUser ? SessionUtil.getUserId() : SUPER_ACCOUNT, Constant.SysFileType.SIGN.getValue(), "委批复文件");
+        checkDownLoadFile(resultMsg, isGetFiles, sign.getSignid(), signDto.getSysFileDtoList(), isLoginUser ? SessionUtil.getUserId() : SUPER_ACCOUNT,
+                Constant.SysFileType.SIGN.getValue(), "委批复文件",null);
         return resultMsg;
     }
 

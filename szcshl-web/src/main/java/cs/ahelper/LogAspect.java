@@ -1,8 +1,6 @@
 package cs.ahelper;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import cs.common.RandomGUID;
 import cs.common.ResultMsg;
 import cs.common.constants.Constant;
 import cs.common.utils.RequestUtils;
@@ -15,24 +13,20 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.List;
-
-import static cs.common.IFResultCode.IFMsgCode.SZEC_SIGN_05;
 
 /**
- * Created by ldm on 2018/6/6 0006.
+ * @author  ldm on 2018/6/6 0006.
  */
 @Aspect
 @Component
@@ -129,8 +123,8 @@ public class LogAspect {
             log.setModule(logger.module());
             //日志级别
             log.setLogLevel(logger.logLevel());
-
-            String signature = joinPoint.getSignature().toString(); // 获取目标方法签名
+            // 获取目标方法签名
+            String signature = joinPoint.getSignature().toString();
             String methodName = signature.substring(signature.lastIndexOf(".") + 1, signature.indexOf("("));
 
             String classType = joinPoint.getTarget().getClass().getName();
@@ -183,7 +177,8 @@ public class LogAspect {
                 log.setMessage(JSON.toJSONString(resultObj));
             }
             log.setResult(resultState);
-            logService.save(log);    //保存日志对象
+            //保存日志对象
+            logService.save(log);
         } catch (Exception exp) {
             resultState = Constant.EnumState.NO.getValue();
             logger.error("异常信息:{}", exp);

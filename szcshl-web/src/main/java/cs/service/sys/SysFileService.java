@@ -2,9 +2,11 @@ package cs.service.sys;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import cs.common.ResultMsg;
 import cs.domain.sys.Ftp;
+import cs.domain.sys.Log;
 import cs.domain.sys.SysFile;
 import cs.model.PageModelDto;
 import cs.model.sys.SysFileDto;
@@ -70,9 +72,15 @@ public interface SysFileService {
     void deleteByBusinessIdAndBusinessType(String businessId , String businessType);
 
     /**
-     * 保存远程连接的文件
+     * 批量远程附件保存
      * @param businessId
-     * @param sysFileDtoList
+     * @param fileQueue 附件队列
+     * @param userId
+     * @param mainType
+     * @param busiType
+     * @return
      */
-    ResultMsg downRemoteFile(String businessId,List<SysFileDto> sysFileDtoList,String userId,String mainType,String busiType);
+    void downRemoteFileList(String businessId, ConcurrentLinkedQueue<SysFileDto> fileQueue, String userId,
+                            String mainType, String busiType,Log log);
+
 }

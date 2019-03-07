@@ -10,9 +10,7 @@ import cs.common.IFResultCode;
 import cs.common.ResultMsg;
 import cs.common.constants.Constant;
 import cs.common.constants.SysConstants;
-import cs.common.utils.DateUtils;
-import cs.common.utils.SMSUtils;
-import cs.common.utils.Validate;
+import cs.common.utils.*;
 import cs.domain.project.Sign;
 import cs.domain.sys.Log;
 import cs.domain.sys.SMSLog;
@@ -29,6 +27,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
@@ -70,21 +69,34 @@ public class SysRestController {
      * @return
      */
     @RequestMapping(name = "项目签收信息", value = "/pushProject", method = RequestMethod.POST)
-    @LogMsg(module = "系统接口【委里推送数据接口】", logLevel = "1")
     public ResultMsg pushProject(@RequestParam String signDtoJson) {
         ResultMsg resultMsg = null;
         String projName = "";
         String fileCode = "";
         try {
-            logger.info("接收到委里推送项目数据："+signDtoJson);
             //解析json串
             SignDto signDto = JSON.parseObject(signDtoJson, SignDto.class);
             if(Validate.isObject(signDto)){
                 projName = signDto.getProjectname();
                 fileCode = signDto.getFilecode();
             }
-
-            resultMsg = signRestService.pushProject(signDto, true);
+            //日记信息
+            Log log = new Log();
+            log.setModule("系统接口【委里推送数据接口】");
+            log.setParamsInfo(signDtoJson);
+            log.setLogLevel("1");
+            HttpServletRequest request = RequestUtils.getHttpServletRequest();
+            //IP地址
+            log.setIpAdd(RequestUtils.getIpAddr(request));
+            log.setUserName("委里");
+            //操作日期
+            log.setCreatedDate(new Date());
+            //类名
+            log.setLogger("cs.controller.restController.SysRestController");
+            //方法名
+            log.setLogMethod("pushProject");
+            //保存
+            resultMsg = signRestService.pushProject(signDto, true,log);
         } catch (Exception e) {
             logger.info("保存委里推送项目异常："+e.getMessage());
             resultMsg = new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(), e.getMessage());
@@ -137,7 +149,7 @@ public class SysRestController {
                     //获取项目预签收信息
                     resultMsg = signRestService.pushPreProject(signPreDto.getData(), false);
                 } else {
-                    resultMsg = signRestService.pushProject(signPreDto.getData(), false);
+                    resultMsg = signRestService.pushProject(signPreDto.getData(), false,null);
                 }
             } else {
                 msg = "该项目信息不存在请核查！";
@@ -346,39 +358,221 @@ public class SysRestController {
         //附件列表
         List<SysFileDto> fileDtoList = new ArrayList<>();
         SysFileDto sysFileDto = new SysFileDto();
-        //显示名称，后缀名也要
-        sysFileDto.setShowName("卡尔森可研报告申报请示.pdf");
-        //附件大小，Long类型
+        sysFileDto.setShowName("测试附件[1].pdf");
         sysFileDto.setFileSize(1002398L);
-        //附件下载地址
-        sysFileDto.setFileUrl("http://192.168.1.31:80/FGWPM/LEAP/Download/default/2018/12/26/20181226095006791.pdf");
+        sysFileDto.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/3/5/20190305160056527.pdf");
         fileDtoList.add(sysFileDto);
 
         SysFileDto sysFileDto1 = new SysFileDto();
-        //显示名称，后缀名也要
-        sysFileDto1.setShowName("附件2深圳市发展和改革委员会关于深圳大学卡尔森国际肿瘤中心用房改造装修工程的项目建议书的批复.pdf");
-        //附件大小，Long类型
+        sysFileDto1.setShowName("测试附件[2].pdf");
         sysFileDto1.setFileSize(1423571L);
-        //附件下载地址
-        sysFileDto1.setFileUrl("http://192.168.1.31:80/FGWPM/LEAP/Download/default/2018/12/26/20181226095006096.pdf");
+        sysFileDto1.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/3/5/20190305160059436.pdf");
         fileDtoList.add(sysFileDto1);
+
         SysFileDto sysFileDto2 = new SysFileDto();
-        //显示名称，后缀名也要
-        sysFileDto2.setShowName("卡尔森可研申报表.pdf");
-        //附件大小，Long类型
+        sysFileDto2.setShowName("测试附件[3].pdf");
         sysFileDto2.setFileSize(608288L);
-        //附件下载地址
-        sysFileDto2.setFileUrl("http://192.168.1.31:80/FGWPM/LEAP/Download/default/2018/12/26/20181226095006914.pdf");
+        sysFileDto2.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/3/5/20190305160059514.pdf");
         fileDtoList.add(sysFileDto2);
 
         SysFileDto sysFileDto3 = new SysFileDto();
-        //显示名称，后缀名也要
-        sysFileDto3.setShowName("附件3深圳大学卡尔森国际肿瘤中心用房改造装修工程可行性研究报告.rar");
-        //附件大小，Long类型
+        sysFileDto3.setShowName("测试附件[4].pdf");
         sysFileDto3.setFileSize(13270274L);
-        //附件下载地址
-        sysFileDto3.setFileUrl("http://192.168.1.31:80/FGWPM/LEAP/Download/default/2018/12/26/20181226095006246.rar");
+        sysFileDto3.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/3/5/20190305160059614.pdf");
         fileDtoList.add(sysFileDto3);
+
+        SysFileDto sysFileDto4 = new SysFileDto();
+        sysFileDto4.setShowName("测试附件[5].pdf");
+        sysFileDto4.setFileSize(13270274L);
+        sysFileDto4.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/3/5/20190305160057945.pdf");
+        fileDtoList.add(sysFileDto4);
+
+        SysFileDto sysFileDto5 = new SysFileDto();
+        sysFileDto5.setShowName("测试附件[6].pdf");
+        sysFileDto5.setFileSize(13270274L);
+        sysFileDto5.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/3/5/20190305160058007.pdf");
+        fileDtoList.add(sysFileDto5);
+
+        SysFileDto sysFileDto6 = new SysFileDto();
+        sysFileDto6.setShowName("测试附件[7].pdf");
+        sysFileDto6.setFileSize(1002398L);
+        sysFileDto6.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/3/5/20190305160056527.pdf");
+        fileDtoList.add(sysFileDto6);
+
+        SysFileDto sysFileDto7 = new SysFileDto();
+        sysFileDto7.setShowName("测试附件[8].pdf");
+        sysFileDto7.setFileSize(1423571L);
+        sysFileDto7.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/3/5/20190305160059436.pdf");
+        fileDtoList.add(sysFileDto7);
+
+        SysFileDto sysFileDto8 = new SysFileDto();
+        sysFileDto8.setShowName("测试附件[9].pdf");
+        sysFileDto8.setFileSize(608288L);
+        sysFileDto8.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/3/5/20190305160059514.pdf");
+        fileDtoList.add(sysFileDto8);
+
+        SysFileDto sysFileDto9 = new SysFileDto();
+        sysFileDto9.setShowName("测试附件[10].pdf");
+        sysFileDto9.setFileSize(13270274L);
+        sysFileDto9.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/3/5/20190305160059614.pdf");
+        fileDtoList.add(sysFileDto9);
+
+        SysFileDto sysFileDto10 = new SysFileDto();
+        sysFileDto10.setShowName("测试附件[11].pdf");
+        sysFileDto10.setFileSize(13270274L);
+        sysFileDto10.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/3/5/20190305160057945.pdf");
+        fileDtoList.add(sysFileDto10);
+
+        SysFileDto sysFileDto11 = new SysFileDto();
+        sysFileDto11.setShowName("测试附件[12].pdf");
+        sysFileDto11.setFileSize(13270274L);
+        sysFileDto11.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/3/5/20190305160058007.pdf");
+        fileDtoList.add(sysFileDto11);
+
+        SysFileDto sysFileDto12 = new SysFileDto();
+        sysFileDto12.setShowName("测试附件[13].pdf");
+        sysFileDto12.setFileSize(1002398L);
+        sysFileDto12.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/3/5/20190305160056527.pdf");
+        fileDtoList.add(sysFileDto12);
+
+        SysFileDto sysFileDto13 = new SysFileDto();
+        sysFileDto13.setShowName("测试附件[14].pdf");
+        sysFileDto13.setFileSize(1423571L);
+        sysFileDto13.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/3/5/20190305160059436.pdf");
+        fileDtoList.add(sysFileDto13);
+
+        SysFileDto sysFileDto14 = new SysFileDto();
+        sysFileDto14.setShowName("测试附件[15].pdf");
+        sysFileDto14.setFileSize(608288L);
+        sysFileDto14.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/3/5/20190305160059514.pdf");
+        fileDtoList.add(sysFileDto14);
+
+        SysFileDto sysFileDto15 = new SysFileDto();
+        sysFileDto15.setShowName("测试附件[16].pdf");
+        sysFileDto15.setFileSize(13270274L);
+        sysFileDto15.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/3/5/20190305160059614.pdf");
+        fileDtoList.add(sysFileDto15);
+
+        SysFileDto sysFileDto16 = new SysFileDto();
+        sysFileDto16.setShowName("测试附件[17].pdf");
+        sysFileDto16.setFileSize(13270274L);
+        sysFileDto16.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/3/5/20190305160057945.pdf");
+        fileDtoList.add(sysFileDto16);
+
+        SysFileDto sysFileDto17 = new SysFileDto();
+        sysFileDto17.setShowName("测试附件[18].pdf");
+        sysFileDto17.setFileSize(13270274L);
+        sysFileDto17.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/3/5/20190305160058007.pdf");
+        fileDtoList.add(sysFileDto17);
+
+        SysFileDto sysFileDto18 = new SysFileDto();
+        sysFileDto18.setShowName("测试附件[19].pdf");
+        sysFileDto18.setFileSize(1002398L);
+        sysFileDto18.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/3/5/20190305160056527.pdf");
+        fileDtoList.add(sysFileDto18);
+
+        SysFileDto sysFileDto19 = new SysFileDto();
+        sysFileDto19.setShowName("测试附件[20].pdf");
+        sysFileDto19.setFileSize(1423571L);
+        sysFileDto19.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/3/5/20190305160059436.pdf");
+        fileDtoList.add(sysFileDto19);
+
+        SysFileDto sysFileDto20 = new SysFileDto();
+        sysFileDto20.setShowName("测试附件[21].pdf");
+        sysFileDto20.setFileSize(608288L);
+        sysFileDto20.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/3/5/20190305160059514.pdf");
+        fileDtoList.add(sysFileDto20);
+
+        SysFileDto sysFileDto21 = new SysFileDto();
+        sysFileDto21.setShowName("测试附件[22].pdf");
+        sysFileDto21.setFileSize(13270274L);
+        sysFileDto21.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/3/5/20190305160059614.pdf");
+        fileDtoList.add(sysFileDto21);
+
+        SysFileDto sysFileDto22 = new SysFileDto();
+        sysFileDto22.setShowName("测试附件[23].pdf");
+        sysFileDto22.setFileSize(13270274L);
+        sysFileDto22.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/3/5/20190305160057945.pdf");
+        fileDtoList.add(sysFileDto22);
+
+        SysFileDto sysFileDto23 = new SysFileDto();
+        sysFileDto23.setShowName("测试附件[24].pdf");
+        sysFileDto23.setFileSize(13270274L);
+        sysFileDto23.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/3/5/20190305160058007.pdf");
+        fileDtoList.add(sysFileDto23);
+
+        SysFileDto sysFileDto24 = new SysFileDto();
+        sysFileDto24.setShowName("测试附件[25].pdf");
+        sysFileDto24.setFileSize(1002398L);
+        sysFileDto24.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/3/5/20190305160056527.pdf");
+        fileDtoList.add(sysFileDto24);
+
+        SysFileDto sysFileDto25 = new SysFileDto();
+        sysFileDto25.setShowName("测试附件[26].pdf");
+        sysFileDto25.setFileSize(1423571L);
+        sysFileDto25.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/3/5/20190305160059436.pdf");
+        fileDtoList.add(sysFileDto25);
+
+        SysFileDto sysFileDto26 = new SysFileDto();
+        sysFileDto26.setShowName("测试附件[27].pdf");
+        sysFileDto26.setFileSize(608288L);
+        sysFileDto26.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/3/5/20190305160059514.pdf");
+        fileDtoList.add(sysFileDto26);
+
+        SysFileDto sysFileDto27 = new SysFileDto();
+        sysFileDto27.setShowName("测试附件[28].pdf");
+        sysFileDto27.setFileSize(13270274L);
+        sysFileDto27.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/3/5/20190305160059614.pdf");
+        fileDtoList.add(sysFileDto27);
+
+        SysFileDto sysFileDto28 = new SysFileDto();
+        sysFileDto28.setShowName("测试附件[29].pdf");
+        sysFileDto28.setFileSize(13270274L);
+        sysFileDto28.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/3/5/20190305160057945.pdf");
+        fileDtoList.add(sysFileDto28);
+
+        SysFileDto sysFileDto29 = new SysFileDto();
+        sysFileDto29.setShowName("测试附件[30].pdf");
+        sysFileDto29.setFileSize(13270274L);
+        sysFileDto29.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/3/5/20190305160058007.pdf");
+        fileDtoList.add(sysFileDto29);
+
+        SysFileDto sysFileDto30 = new SysFileDto();
+        sysFileDto30.setShowName("测试附件[31].pdf");
+        sysFileDto30.setFileSize(1002398L);
+        sysFileDto30.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/3/5/20190305160056527.pdf");
+        fileDtoList.add(sysFileDto30);
+
+        SysFileDto sysFileDto31 = new SysFileDto();
+        sysFileDto31.setShowName("测试附件[32].pdf");
+        sysFileDto31.setFileSize(1423571L);
+        sysFileDto31.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/3/5/20190305160059436.pdf");
+        fileDtoList.add(sysFileDto31);
+
+        SysFileDto sysFileDto32 = new SysFileDto();
+        sysFileDto32.setShowName("测试附件[33].pdf");
+        sysFileDto32.setFileSize(608288L);
+        sysFileDto32.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/3/5/20190305160059514.pdf");
+        fileDtoList.add(sysFileDto32);
+
+        SysFileDto sysFileDto33 = new SysFileDto();
+        sysFileDto33.setShowName("测试附件[34].pdf");
+        sysFileDto33.setFileSize(13270274L);
+        sysFileDto33.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/3/5/20190305160059614.pdf");
+        fileDtoList.add(sysFileDto33);
+
+        SysFileDto sysFileDto34 = new SysFileDto();
+        sysFileDto34.setShowName("测试附件[35].pdf");
+        sysFileDto34.setFileSize(13270274L);
+        sysFileDto34.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/3/5/20190305160057945.pdf");
+        fileDtoList.add(sysFileDto34);
+
+        SysFileDto sysFileDto35 = new SysFileDto();
+        sysFileDto35.setShowName("测试附件[36].pdf");
+        sysFileDto35.setFileSize(13270274L);
+        sysFileDto35.setFileUrl("http://203.91.46.83:8031/FGWPM/LEAP/Download/default/2019/3/5/20190305160058007.pdf");
+        fileDtoList.add(sysFileDto35);
+
         //项目添加附件列表
         signDto.setSysFileDtoList(fileDtoList);
 

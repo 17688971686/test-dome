@@ -2,6 +2,7 @@ package cs.service.sys;
 
 import cs.common.HqlBuilder;
 import cs.common.IFResultCode;
+import cs.common.RandomGUID;
 import cs.common.ResultMsg;
 import cs.common.constants.Constant;
 import cs.common.constants.SysConstants;
@@ -10,6 +11,7 @@ import cs.common.ftp.FtpClientConfig;
 import cs.common.ftp.FtpUtils;
 import cs.common.utils.*;
 import cs.domain.sys.Ftp;
+import cs.domain.sys.Log;
 import cs.domain.sys.SysFile;
 import cs.domain.sys.SysFile_;
 import cs.model.PageModelDto;
@@ -33,20 +35,22 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * @author ldm
  */
 @Service
 public class SysFileServiceImpl implements SysFileService {
-    private static Logger logger = Logger.getLogger(UserServiceImpl.class);
+    private static Logger logger = Logger.getLogger(SysFileServiceImpl.class);
     @Autowired
     private SysFileRepo sysFileRepo;
     @Autowired
     private SysConfigService sysConfigService;
     @Autowired
     private FtpRepo ftpRepo;
-
+    @Autowired
+    private LogService logService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -282,124 +286,106 @@ public class SysFileServiceImpl implements SysFileService {
     }
 
     /**
-     * 获取远程连接文件
+     * 批量远程附件保存
      *
      * @param businessId
-     * @param sysFileDtoList
+     * @param fileQueue  附件队列
+     * @param userId
+     * @param mainType
+     * @param busiType
      * @return
      */
     @Override
-    public ResultMsg downRemoteFile(String businessId, List<SysFileDto> sysFileDtoList, String userId, String mainType, String busiType) {
-        ResultMsg resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "没有附件信息！");
-        if (Validate.isList(sysFileDtoList)) {
+    public void downRemoteFileList(String businessId, ConcurrentLinkedQueue<SysFileDto> fileQueue, String userId,
+                                   String mainType, String busiType, Log log) {
+        if (fileQueue != null && fileQueue.size() > 0) {
+            boolean saveLog = Validate.isObject(log);
             List<SysFile> saveFileList = new ArrayList<>();
-            int totalFileCount = sysFileDtoList.size(), errorCount = 0;
             //连接ftp
             Ftp f = ftpRepo.findById(cs.domain.sys.Ftp_.ipAddr.getName(), findFtpId());
-            FtpUtils ftpUtils = new FtpUtils();
             FtpClientConfig k = ConfigProvider.getUploadConfig(f);
             String relativeFileUrl = File.separator + mainType + File.separator + businessId + File.separator + busiType;
             //上传到ftp,如果有根目录，则加入根目录
             if (Validate.isString(k.getFtpRoot())) {
                 relativeFileUrl = File.separator + k.getFtpRoot() + relativeFileUrl;
             }
-            //读取附件
-            for (int i = 0, l = totalFileCount; i < l; i++) {
-                try {
-                    SysFileDto sysFileDto = sysFileDtoList.get(i);
+            Date now = new Date();
+            FtpUtils ftpUtils = new FtpUtils();
+            StringBuilder errorMsg = new StringBuilder();
+            try {
+                //读取附件
+                while (!fileQueue.isEmpty()) {
+                    SysFileDto sysFileDto = fileQueue.poll();
                     String showName = sysFileDto.getShowName();
-                    if (!Validate.isString(sysFileDto.getFileUrl())) {
-                        continue;
-                    }
-                    /******  旧的下载方式 begin *****/
-                   /* URL url = new URL(sysFileDto.getFileUrl());
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    //设置超时间为3秒
-                    conn.setConnectTimeout(600000);
-                    //防止屏蔽程序抓取而返回403错误
-                    conn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
-                    //得到输入流*/
-                    /******  旧的下载方式 end *****/
-
-                    boolean fileExist = false;
-                    String uploadFileName = "";
-                    //如果附件已存在，则覆盖，否则新增
-                    SysFile sysFile = sysFileRepo.isExistFile(relativeFileUrl, showName);
-                    if (null != sysFile) {
-                        String fileUrl = sysFile.getFileUrl();
-                        String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
-                        if (relativeFileUrl.equals(removeRelativeUrl)) {
-                            uploadFileName = fileUrl.substring(fileUrl.lastIndexOf(File.separator) + 1, fileUrl.length());
-                        }
-                        fileExist = true;
-                    } else {
-                        sysFile = new SysFile();
-                        sysFile.setMainId(businessId);
-                        sysFile.setBusinessId(businessId);
-                        sysFile.setMainType(mainType);
-                        sysFile.setSysBusiType(busiType);
-                        sysFile.setFileSize(sysFileDto.getFileSize());
-                        sysFile.setShowName(showName);
-                        sysFile.setFileType(showName.substring(showName.lastIndexOf("."), showName.length()));
-                        uploadFileName = Tools.generateRandomFilename().concat(sysFile.getFileType());
-                    }
-
-
-                    /******  旧的下载方式 begin *****/
-                    /*boolean uploadResult = ftpUtils.putFile(k, relativeFileUrl, uploadFileName, conn.getInputStream());
-                    conn.disconnect();*/
-                    /******  旧的下载方式 end *****/
-
-                    boolean uploadResult = ftpUtils.putFile(k, relativeFileUrl, uploadFileName, IOStreamUtil.getStreamDownloadOutFile(sysFileDto.getFileUrl()));
-
-                    if (uploadResult) {
-                        //保存数据库记录
-                        if (fileExist) {
-                            sysFile.setModifiedBy(userId);
-                            sysFile.setModifiedDate(new Date());
+                    if (Validate.isString(sysFileDto.getFileUrl())) {
+                        boolean fileExist = false;
+                        String uploadFileName = "";
+                        //如果附件已存在，则覆盖，否则新增
+                        SysFile sysFile = sysFileRepo.isExistFile(relativeFileUrl, showName);
+                        if (null != sysFile) {
+                            String fileUrl = sysFile.getFileUrl();
+                            String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
+                            if (relativeFileUrl.equals(removeRelativeUrl)) {
+                                uploadFileName = fileUrl.substring(fileUrl.lastIndexOf(File.separator) + 1, fileUrl.length());
+                            }
+                            fileExist = true;
                         } else {
-                            sysFile.setFileUrl(relativeFileUrl + File.separator + uploadFileName);
-                            sysFile.setCreatedBy(userId);
-                            sysFile.setModifiedBy(userId);
-                            sysFile.setCreatedDate(new Date());
-                            sysFile.setModifiedDate(new Date());
-                            sysFile.setFtp(f);
-                            sysFile.setSysFileId(UUID.randomUUID().toString());
+                            sysFile = new SysFile();
+                            sysFile.setMainId(businessId);
                             sysFile.setBusinessId(businessId);
+                            sysFile.setMainType(mainType);
+                            sysFile.setSysBusiType(busiType);
+                            sysFile.setFileSize(sysFileDto.getFileSize());
+                            sysFile.setShowName(showName);
+                            sysFile.setFileType(showName.substring(showName.lastIndexOf("."), showName.length()));
+                            uploadFileName = Tools.generateRandomFilename().concat(sysFile.getFileType());
                         }
-                        saveFileList.add(sysFile);
-                    } else {
-                        errorCount++;
+                        boolean uploadResult = ftpUtils.putFile(k, relativeFileUrl, uploadFileName, IOStreamUtil.getStreamDownloadOutFile(sysFileDto.getFileUrl()));
+                        if (uploadResult) {
+                            //保存数据库记录
+                            if (fileExist) {
+                                sysFile.setModifiedBy(userId);
+                                sysFile.setModifiedDate(now);
+                            } else {
+                                sysFile.setFileUrl(relativeFileUrl + File.separator + uploadFileName);
+                                sysFile.setCreatedBy(userId);
+                                sysFile.setModifiedBy(userId);
+                                sysFile.setCreatedDate(now);
+                                sysFile.setModifiedDate(now);
+                                sysFile.setFtp(f);
+                                sysFile.setSysFileId((new RandomGUID()).valueAfterMD5);
+                                sysFile.setBusinessId(businessId);
+                            }
+                            saveFileList.add(sysFile);
+                        } else {
+                            if (saveLog) {
+                                errorMsg.append("附件" + showName + "下载失败！!");
+                            }
+                        }
                     }
-                } catch (Exception e) {
-                    logger.error("保存附件异常：" + e.getMessage());
-                    errorCount++;
                 }
+            }catch (Exception e){
+
             }
+
             //保存附件
             if (Validate.isList(saveFileList)) {
                 bathSave(saveFileList);
             }
-            if (errorCount == 0) {
-                resultMsg.setFlag(true);
-                resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getCode());
-                resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getValue());
-            } else {
-                if (errorCount == totalFileCount) {
-                    resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_FILE_EMPTY.getCode());
-                    resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_FILE_EMPTY.getValue());
-                } else if (errorCount < totalFileCount) {
-                    resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_FILE_NOT_ALL.getCode());
-                    resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_FILE_NOT_ALL.getValue());
+            String errorStr = errorMsg.toString();
+            if (saveLog) {
+                log.setResult(Constant.EnumState.YES.getValue());
+                if (Validate.isString(errorStr)) {
+                    log.setLogCode(IFResultCode.IFMsgCode.SZEC_SIGN_05.getCode());
+                    log.setMessage(IFResultCode.IFMsgCode.SZEC_SIGN_05.getValue() + errorStr);
+                } else {
+                    log.setLogCode(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getCode());
+                    log.setMessage(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getValue());
                 }
+                logService.save(log);
             }
-        } else {
-            resultMsg.setFlag(true);
-            resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getCode());
-            resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getValue());
-        }
-        return resultMsg;
 
+        }
     }
 
     /**
