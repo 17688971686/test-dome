@@ -155,7 +155,7 @@ public class ExpertReviewRepoImpl extends AbstractRepository<ExpertReview, Strin
      * 根据业务ID判断是否完成专家评分
      *
      * @param businessId
-     * @return
+     * @return 如果已完成，则返回true,否则返回false
      */
     @Override
     public boolean isFinishEPGrade(String businessId) {
@@ -170,9 +170,9 @@ public class ExpertReviewRepoImpl extends AbstractRepository<ExpertReview, Strin
             sqlBuilder.append(" and eps.expertReviewId = ( SELECT epr.id FROM cs_expert_review epr WHERE ");
             sqlBuilder.append(" epr." + ExpertReview_.businessId.getName() + " =:businessId )");
             sqlBuilder.setParam("businessId", businessId);
-
             int resultInt = returnIntBySql(sqlBuilder);
-            return (resultInt > 0);
+
+            return (resultInt > 0) ? false : true;
         }
         return true;
     }
