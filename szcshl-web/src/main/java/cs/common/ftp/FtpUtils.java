@@ -155,22 +155,16 @@ public class FtpUtils {
      */
     public boolean downLoadFile(String remoteFilePath,String fileName, FtpClientConfig config,OutputStream out){
         FTPClient ftp = null;
+        boolean downLoadSucess = false;
         try{
             ftp = getFtpClient(ftpClientPool,config);
             ftp.enterLocalPassiveMode();
             checkCharset(ftp,config);
             remoteFilePath = new String(remoteFilePath.getBytes(config.getChartset()), FTP.DEFAULT_CONTROL_ENCODING);
-            boolean sucess = ftp.changeWorkingDirectory(remoteFilePath);
-            if(sucess){
+            downLoadSucess = ftp.changeWorkingDirectory(remoteFilePath);
+            if(downLoadSucess){
                 fileName = new String(fileName.getBytes(config.getChartset()), FTP.DEFAULT_CONTROL_ENCODING);
-                sucess = ftp.retrieveFile(fileName, out);
-                if(sucess){
-                    return true;
-                }else{
-                    return false;
-                }
-            }else{
-                return false;
+                downLoadSucess = ftp.retrieveFile(fileName, out);
             }
         }catch (Exception e){
             logger.info("下载附件异常："+e.getMessage());
@@ -180,6 +174,7 @@ public class FtpUtils {
                 ftpClientPool.returnObject(config,ftp);
             }
         }
+        return downLoadSucess;
     }
 
     public boolean checkFileExist(String remoteFilePath, String filename,FtpClientConfig config) {
