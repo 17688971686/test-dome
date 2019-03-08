@@ -1222,7 +1222,9 @@
                                 </w:p>
                             </w:tc>
                         </w:tr>
-                        <w:tr w:rsidR="00A57520" w:rsidTr="00DB400F">
+<#list dispatchList as dispatch>
+    <#if (dispatch_index)==0>
+                       <w:tr w:rsidR="00A57520" w:rsidTr="00DB400F">
                             <w:trPr>
                                 <w:cantSplit/>
                                 <w:trHeight w:hRule="exact" w:val="728"/>
@@ -1431,7 +1433,8 @@
                                 </w:p>
                             </w:tc>
                         </w:tr>
-                    <#list dispatchList as dispatch>
+    </#if>
+                   <#-- <#list dispatchList as dispatch>-->
                         <#if (dispatch_index)==1>
                             <w:tr w:rsidR="00A57520" w:rsidTr="00B94C8B">
                                 <w:trPr>

@@ -29,8 +29,27 @@
             workName: workName,                         //获取流程列表
             QueryStatistics: QueryStatistics,           //通过条件，对项目进行查询统计
             signDetails: signDetails,                   //获取项目查看权限
+            encodePwd : encodePwd , //对秘密加密
         }
         return service;
+
+        function encodePwd(callBack){
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/account/encodePwd",
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof  callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
 
         function signDetails(signId, callBack) {
             var httpOptions = {

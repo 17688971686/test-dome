@@ -5,6 +5,7 @@ import cs.common.ResultMsg;
 import cs.common.constants.Constant;
 import cs.common.utils.Tools;
 import cs.common.utils.Validate;
+import cs.domain.sys.User;
 import cs.service.sys.UserService;
 import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
@@ -91,6 +92,14 @@ public class AccountController {
             }
         }
         return "forward:/";
+    }
+
+    @RequestMapping(name="密码加密" , path = "encodePwd" , method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.OK)
+    @ResponseBody
+    public ResultMsg encodePwd(){
+        userService.encodePwd();
+        return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "用户密码加密成功");
     }
 
     @RequestMapping(name = "修改密码", path = "password", method = RequestMethod.PUT)

@@ -204,6 +204,13 @@ public class User extends DomainBase {
     @ManyToMany(mappedBy="userList",fetch = FetchType.LAZY)
     private List<SysDept> sysDeptList;
 
+    /**
+     * 是否已经对密码进行加密过， 9 = 是 ， 0或null = 否
+     */
+    @Column(columnDefinition = "varchar(1)")
+    private String pwdEncode;
+
+
     //在职状态类型
     public enum JOB_STATE{
         /**
@@ -486,5 +493,13 @@ public class User extends DomainBase {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getPwdEncode() {
+        return pwdEncode;
+    }
+
+    public void setPwdEncode(String pwdEncode) {
+        this.pwdEncode = pwdEncode;
     }
 }

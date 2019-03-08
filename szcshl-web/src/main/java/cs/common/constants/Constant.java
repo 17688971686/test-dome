@@ -19,6 +19,8 @@ public class Constant {
     public static final String DEFAULT_DESIGN_COMPNAME = "编制单位";
     //专家默认费用
     public static final int EXPERT_REVIEW_COST = 1000;
+
+    public static final String  EencodeRules = "AES";
     /**
      * 默认需要上传的文件
      */

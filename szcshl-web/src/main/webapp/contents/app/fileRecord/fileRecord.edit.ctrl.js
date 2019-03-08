@@ -169,7 +169,6 @@
         vm.initInputValue = function($event,defaultValue,temp){
             var checkbox = $event.target;
             var checked = checkbox.checked;
-            console.log("333");
             if (checked) {
                 if((!defaultValue)){
                     return 1;
@@ -182,6 +181,41 @@
                 return defaultValue;
             }
         }//E_initInputValue
+
+        /**
+         * 打印其它资料时，先手动勾选打印数据
+         */
+        vm.otherFileWindow = function(signId){
+            vm.signId = signId;
+            $("#otherFileWindow").kendoWindow({
+                width: "660px",
+                height: "400px",
+                title: "归档资料",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Close"]
+            }).data("kendoWindow").center().open();
+            // printFile(vm.model.signid,'FILERECOED_OTHERFILE' , 'OTHER_FILE')
+        }
+
+        /**
+         * 确认打印
+         */
+        vm.otherFilePrint = function(){
+            var isCheck = $("#otherFileTable input[name='epConditionSort']:checked");
+            if (isCheck.length == 0) {
+                bsWin.alert("请选择数据");
+            } else {
+                window.parent.$("#otherFileWindow").data("kendoWindow").close();
+                var ids = [];
+                for (var i = 0; i < isCheck.length; i++) {
+                    ids.push(isCheck[i].value);
+                }
+                var idStr = ids.join(',');
+                fileRecordSvc.otherFilePrint(vm.signId , idStr);
+            }
+        }
     }
 
 })();

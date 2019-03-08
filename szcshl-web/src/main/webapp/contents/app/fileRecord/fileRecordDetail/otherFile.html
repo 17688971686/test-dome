@@ -1,0 +1,37 @@
+<table class="table table-bordered" id="otherFileTable">
+    <tr>
+        <td style="width: 10%;"><input type='checkbox' ng-model="epCondtion"/></td>
+        <td style="width: 30%;">其它资料</td>
+        <td style="width: 20%;">原件</td>
+        <td style="width: 20%;">复印件</td>
+        <td style="width: 20%;">份数</td>
+    </tr>
+    <tr ng-repeat="f in vm.otherFile">
+        <td >
+            <input   type='checkbox' name="epConditionSort" ng-checked="epCondtion" value="{{f.id}}"/>
+        </td>
+        <td style="border-top: none;">{{$index+1}}、{{vm.otherFile[$index].fileName}}</td>
+
+        <td style="border-top: none;">
+            <input type="checkbox" class="newcheckbox" ng-disabled="true"
+                   ng-model="vm.otherFile[$index].isHasOriginfile"
+                   ng-checked="vm.otherFile[$index].isHasOriginfile == '9'"
+                   ng-true-value="9" ng-false-value="0"/>
+        </td>
+        <td style="border-top: none;">
+            <input type="checkbox" class="newcheckbox" ng-disabled="true"
+                   ng-model="vm.otherFile[$index].isHasCopyfile"
+                   ng-checked="vm.otherFile[$index].isHasCopyfile == '9'"
+                   ng-true-value="9" ng-false-value="0"/>
+        </td>
+        <td style="border-top: none;">
+            <input type="text"  ng-disabled="true" style="width:40px;text-align:center;border-radius:0px;"  class="input-sm "
+                   ng-model="vm.otherFile[$index].totalNum">
+        </td>
+    </tr>
+</table>
+<p style="text-align: center;">
+    <button class="btn btn-sm btn-primary" style="margin-left:20px;"
+            ng-click="vm.otherFilePrint()">确认
+    </button>
+</p>

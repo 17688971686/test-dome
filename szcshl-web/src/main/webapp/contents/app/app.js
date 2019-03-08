@@ -72,6 +72,12 @@
                     controller: 'adminWelComeCtrl',
                     controllerAs: 'vm'
                 })
+                .state('encodePwd', {
+                    url: '/encodePwd',
+                    templateUrl: rootPath + '/admin/welcome.html',
+                    controller: 'encodePwdCtrl',
+                    controllerAs: 'vm'
+                })
                 .state('gtasks', {
                     url: '/gtasks',
                     templateUrl: rootPath + '/admin/gtasks.html',

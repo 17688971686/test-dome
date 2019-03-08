@@ -34,7 +34,9 @@
         <button ng-if="vm.fileRecord.fileReviewstage=='设备清单（国产）' ||vm.fileRecord.fileReviewstage=='设备清单（进口）'" class="btn btn-sm btn-primary" style="width: 70px;" ng-click="printFile(vm.fileRecord.signId,'FILERECORD' , 'STAGEHOMELAND')">打印预览</button>
 
 
-        <button  class="btn btn-sm btn-primary" style="width: 100px;  " ng-click="printFile(vm.fileRecord.signId,'FILERECOED_OTHERFILE' , 'OTHER_FILE')">打印其它资料</button>
+        <button class="btn btn-sm btn-primary" style="margin-left:20px;"
+                ng-click="vm.otherFileWindow(vm.fileRecord.signId)">打印其它资料
+        </button>
         <button ng-if=" vm.fileRecord.fileReviewstage=='项目概算'" class="btn btn-sm btn-primary" style="width: 100px;  " ng-click="printFile(vm.fileRecord.signId ,'FILERECOED_OTHERFILE' , 'DRAWING_FILE')">打印图纸备注</button>
 
 
@@ -141,3 +143,8 @@
     </table>
 </div>
 <!--  E修改文号 -->
+
+<!--其它资料打印弹框-->
+<div id="otherFileWindow" style="display: none">
+    <div ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/otherFile.html'"></div>
+</div>
