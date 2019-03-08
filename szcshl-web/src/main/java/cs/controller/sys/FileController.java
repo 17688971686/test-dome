@@ -149,6 +149,9 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     @Autowired
     private ProjectStopRepo projectStopRepo;
 
+    @Autowired
+    private FileRecordRepo fileRecordRepo;
+
     @Override
     public void setServletContext(ServletContext servletContext) {
         this.servletContext = servletContext;
@@ -1364,6 +1367,69 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         }
         return file;
     }
+
+    /**
+     * 打印归档资料
+     */
+    @RequestMapping(name = "打印归档资料", path = "otherFilePrint/{businessId}/{fileId}", method = RequestMethod.GET)
+    @ResponseStatus(value = HttpStatus.OK)
+    public  void otherFilePrint(@PathVariable String businessId , @PathVariable String fileId , HttpServletResponse response){
+        InputStream inputStream = null;
+        OutputStream out = null;
+        File file = null;
+        File printFile = null;
+        try {
+            String path = SysFileUtil.getUploadPath() + File.separator + Tools.generateRandomFilename() + Template.WORD_SUFFIX.getKey();
+            String fileName = "";
+            FileRecord FileRecord = fileRecordRepo.findById("signid",businessId);
+            Map<String, Object> otherFileData = new HashMap<>();
+            otherFileData.put("fileNo", FileRecord.getFileNo());
+            otherFileData.put("projectName", FileRecord.getProjectName());
+            otherFileData.put("projectCompany", FileRecord.getProjectCompany());
+            otherFileData.put("projectCode", FileRecord.getProjectCode());
+            otherFileData.put("OtherTitle", "归档表");
+            List<AddRegisterFile> addRegisterFileList = addRegisterFileRepo.findByIds(AddRegisterFile_.id.getName() , fileId , null);
+            otherFileData.put("otherFileList", addRegisterFileList);
+            file = TemplateUtil.createDoc(otherFileData, Template.OTHER_FILE.getKey(), path);
+            //重置结果集
+            response.reset();
+            //使用新的转换控件
+            out = response.getOutputStream();
+            if (file != null) {
+                inputStream = new FileInputStream(file);
+                Document doc = new Document(inputStream);
+                doc.save(out, com.aspose.words.SaveFormat.PDF);
+            }
+            response.setContentType("application/pdf");
+            //返回头 文件大小
+            //response.addHeader("Content-Length", "" + file.length());
+            response.setHeader("Content-Disposition", "inline;filename=" + new String(fileName.getBytes(), "ISO-8859-1"));
+
+            out.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+                if(out != null){
+                    out.close();
+                }
+                if (file != null) {
+                    Tools.deleteFile(file);
+                }
+                if (printFile != null) {
+                    Tools.deleteFile(printFile);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+
 
     /**
      * 导出功能

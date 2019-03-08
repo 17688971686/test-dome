@@ -9,8 +9,27 @@
         var service = {
             initFileRecordData: initFileRecordData,		//初始化流程数据
             saveFileRecord: saveFileRecord,				//保存
+            otherFilePrint : otherFilePrint , //归档资料打印
         };
         return service;
+        function otherFilePrint(businessId , fileId){
+            if (!businessId) {
+                bsWin.alert("没有项目阶段，找不到对应的打印模板，打印预览失败！");
+            } else {
+                var url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?version=" + (new Date()).getTime() + "&file=" + rootPath + "/file/otherFilePrint/" + businessId + "/" +fileId ;
+                $("#iframePreview").attr("src", url);
+                $("#previewModal").kendoWindow({
+                    width: "80%",
+                    height: "730px",
+                    title: "",
+                    visible: false,
+                    modal: true,
+                    closable: true,
+                    actions: ["Pin", "Minimize", "Maximize", "Close"]
+                }).data("kendoWindow").center().open();
+            }
+        }
+
 
         //S_初始化
         function initFileRecordData(vm) {

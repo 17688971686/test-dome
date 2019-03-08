@@ -1,6 +1,8 @@
 package cs.shiro;
 
 
+import cs.common.constants.Constant;
+import cs.common.utils.AESUtil;
 import cs.domain.sys.User;
 import cs.service.sys.UserService;
 import org.apache.shiro.authc.*;
@@ -8,8 +10,6 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
-import org.apache.shiro.subject.SimplePrincipalCollection;
-import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.log4j.Logger;
 
@@ -51,11 +51,16 @@ public class SystemRealm extends AuthorizingRealm {
        if(UNUSER.equals(user.getUseState()) || User.JOB_STATE.f.toString().equals(user.getJobState())){
             throw new DisabledAccountException();
         }
+
+        String password = user.getPassword();
+       if(null != user.getPwdEncode() && Constant.EnumState.YES.getValue().equals( user.getPwdEncode())){
+           password = AESUtil.AESDncode(Constant.EencodeRules , password);
+       }
        /* 加密的情况下使用
        SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(userName,
                 user.getPassword(), ByteSource.Util.bytes(user.getUserSalt()), getName());*/
         // 如果身份认证验证成功，返回一个AuthenticationInfo实现；
-        return new SimpleAuthenticationInfo(userName, user.getPassword(), getName());
+        return new SimpleAuthenticationInfo(userName, password , getName());
     }
 
 }

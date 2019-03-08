@@ -6,10 +6,7 @@ import cs.common.ResultMsg;
 import cs.common.constants.Constant;
 import cs.common.constants.Constant.EnumFlowNodeGroupName;
 import cs.common.constants.SysConstants;
-import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.SessionUtil;
-import cs.common.utils.StringUtil;
-import cs.common.utils.Validate;
+import cs.common.utils.*;
 import cs.domain.flow.RuProcessTask;
 import cs.domain.flow.RuTask;
 import cs.domain.project.AgentTask;
@@ -144,7 +141,9 @@ public class UserServiceImpl implements UserService {
             user.setCreatedBy(SessionUtil.getLoginName());
             user.setCreatedDate(now);
             //设置系统默认登录密码
-            user.setPassword(DEFAULT_PASSWORD);
+            user.setPassword(AESUtil.AESEncode(Constant.EencodeRules,DEFAULT_PASSWORD));
+            //新增用户时设置登录错误次数为0 ，不然登录时后台空指针错误
+            user.setLoginFailCount(0);
         }
         if (!Validate.isString(user.getUserNo())) {
             user.setUserNo(String.format("%03d", Integer.valueOf(findMaxUserNo()) + 1));
@@ -251,7 +250,8 @@ public class UserServiceImpl implements UserService {
     public void changePwd(String password) {
         User user = userRepo.getCacheUserById(SessionUtil.getUserId());
         if (user != null) {
-            user.setPassword(password);
+            user.setPassword(AESUtil.AESEncode(Constant.EencodeRules , password));
+            user.setPwdEncode(Constant.EnumState.YES.getValue());
             userRepo.save(user);
             fleshPostUserCache();
             logger.info(String.format("修改密码,用户名:%s", user.getDisplayName()));
@@ -662,11 +662,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void resetPwd(String ids) {
         List<User> userList = userRepo.getCacheUserListById(ids);
         for (User u : userList) {
-            u.setPassword(DEFAULT_PASSWORD);
+            u.setPassword(AESUtil.AESEncode(Constant.EencodeRules , DEFAULT_PASSWORD));
+            u.setPwdEncode(Constant.EnumState.YES.getValue());
             u.setModifiedBy(SessionUtil.getDisplayName());
             u.setModifiedDate(new Date());
         }
@@ -857,6 +858,25 @@ public class UserServiceImpl implements UserService {
         resultMap.put("orgIdList", orgIdList);
 
         return resultMap;
+    }
+
+    /**
+     * 密码加密
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void encodePwd() {
+        List<User> userList = userRepo.findAll();
+        if(null != userList && userList.size() > 0 ){
+            for(User u : userList){
+                //没加密过的才能加密成功
+                if(null == u.getPwdEncode() || Constant.EnumState.NO.getValue().equals(u.getPwdEncode())){
+                    u.setPassword(AESUtil.AESEncode(Constant.EencodeRules , u.getPassword()));
+                    u.setPwdEncode(Constant.EnumState.YES.getValue());
+                    userRepo.save(u);
+                }
+            }
+        }
     }
 
 

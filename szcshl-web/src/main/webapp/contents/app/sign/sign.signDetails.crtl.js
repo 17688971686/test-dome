@@ -3,9 +3,9 @@
 
     angular.module('app').controller('signDetailsCtrl', sign);
 
-    sign.$inject = ['sysfileSvc', 'signSvc', '$state', 'flowSvc', '$scope', 'templatePrintSvc', 'assistSvc'  , 'expertReviewSvc' , 'expertSvc'];
+    sign.$inject = ['sysfileSvc', 'signSvc', '$state', 'flowSvc', '$scope', 'templatePrintSvc', 'assistSvc'  , 'expertReviewSvc' , 'expertSvc' , 'fileRecordSvc'];
 
-    function sign(sysfileSvc, signSvc, $state, flowSvc, $scope, templatePrintSvc, assistSvc , expertReviewSvc , expertSvc) {
+    function sign(sysfileSvc, signSvc, $state, flowSvc, $scope, templatePrintSvc, assistSvc , expertReviewSvc , expertSvc , fileRecordSvc) {
         var vm = this;
         vm.model = {};							    //创建一个form对象
         vm.flow = {};                               //收文对象
@@ -197,6 +197,41 @@
          */
         vm.checkExpertDetail = function(expertId){
             expertSvc.queryExpertDetail(vm , expertId);
+        }
+
+        /**
+         * 打印其它资料时，先手动勾选打印数据
+         */
+        vm.otherFileWindow = function(signId){
+            vm.signId = signId;
+            $("#otherFileWindow").kendoWindow({
+                width: "660px",
+                height: "400px",
+                title: "归档资料",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Close"]
+            }).data("kendoWindow").center().open();
+            // printFile(vm.model.signid,'FILERECOED_OTHERFILE' , 'OTHER_FILE')
+        }
+
+        /**
+         * 确认打印
+         */
+        vm.otherFilePrint = function(){
+            var isCheck = $("#otherFileTable input[name='epConditionSort']:checked");
+            if (isCheck.length == 0) {
+                bsWin.alert("请选择数据");
+            } else {
+                window.parent.$("#otherFileWindow").data("kendoWindow").close();
+                var ids = [];
+                for (var i = 0; i < isCheck.length; i++) {
+                    ids.push(isCheck[i].value);
+                }
+                var idStr = ids.join(',');
+                fileRecordSvc.otherFilePrint(vm.signId , idStr);
+            }
         }
     }
 })();

@@ -171,5 +171,9 @@ public interface UserService {
     Map<String, Object>  getUserAuthForApp(User u);
 
 
+    /**
+     * 密码加密
+     */
+    void encodePwd();
 
 }
