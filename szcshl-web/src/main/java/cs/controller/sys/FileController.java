@@ -1034,7 +1034,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                                 signBugDtoList = signDto.getAssociateSignDtoList();
                             }
                             List<DispatchDocDto> dispatchBugList = new ArrayList<DispatchDocDto>();
-                            List<DispatchDocDto> dispatchBugViewList = new ArrayList<DispatchDocDto>();
+                            Map<String , DispatchDocDto> dispatchBugViewList = new HashMap<>();
                             if (null != signBugDtoList) {
                                 for (int i = 0,l=signBugDtoList.size(); i < l; i++) {
                                     if (null != signBugDtoList.get(i).getDispatchDocDto()) {
@@ -1042,13 +1042,13 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                                     }
                                 }
                             }
-                            dispatchBugViewList.add(getDispatchStage("项目建议书", dispatchBugList));
-                            dispatchBugViewList.add(getDispatchStage("可行性研究报告", dispatchBugList));
+                            dispatchBugViewList.put("项目建议书" , getDispatchStage("项目建议书", dispatchBugList));
+                            dispatchBugViewList.put("可行性研究报告" , getDispatchStage("可行性研究报告", dispatchBugList));
                             if (signDto != null && signDto.getIschangeEstimate() != null
                                     && "9".equals(signDto.getIschangeEstimate())) {
-                                dispatchBugViewList.add(getDispatchStage("项目概算", dispatchBugList));
+                                dispatchBugViewList.put("项目概算" , getDispatchStage("项目概算", dispatchBugList));
                             }
-                            dispatchData.put("dispatchList", dispatchBugList);
+                            dispatchData.put("dispatchList", dispatchBugViewList);
                             file = TemplateUtil.createDoc(dispatchData, Template.STAGE_BUDGET_DISPATCHDOC.getKey(), path);
                             break;
                         /**
