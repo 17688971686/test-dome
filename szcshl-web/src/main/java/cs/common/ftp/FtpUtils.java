@@ -20,7 +20,15 @@ public class FtpUtils {
     private static final String UTF_CHARSET = "UTF-8";
     private FtpClientPool ftpClientPool = new FtpClientPool(new FtpClientFactory(),new FtpPoolConfig());
 
-    private FTPClient getFtpClient(FtpClientPool ftpClientPool, FtpClientConfig config) throws Exception {
+    public FtpClientPool getFtpClientPool() {
+        return ftpClientPool;
+    }
+
+    public void setFtpClientPool(FtpClientPool ftpClientPool) {
+        this.ftpClientPool = ftpClientPool;
+    }
+
+    public FTPClient getFtpClient(FtpClientPool ftpClientPool, FtpClientConfig config) throws Exception {
         FTPClient client = null;
         try {
             client = ftpClientPool.borrowObject(config);
@@ -60,28 +68,31 @@ public class FtpUtils {
     }
 
     public boolean checkLink(FtpClientConfig k){
+        FTPClient client = null;
         try{
-           FTPClient client = ftpClientPool.borrowObject(k);
+           client = ftpClientPool.borrowObject(k);
            if(client != null){
                return true;
            }
         }catch (Exception e){
             return false;
+        }finally {
+            if(client != null){
+                ftpClientPool.returnObject(k,client);
+            }
         }
         return true;
     }
-    public boolean putFile(FtpClientConfig k,String remoteBaseDir,String filename, InputStream in) throws IOException {
+    public boolean putFile(FTPClient ftpClient,FtpClientConfig k,String remoteBaseDir,String filename, InputStream in) throws IOException {
         boolean result = false;
-        FTPClient ftp = null;
         try {
-            ftp = getFtpClient(ftpClientPool,k);
-            checkCharset(ftp,k);
+            checkCharset(ftpClient,k);
             // 内网设置为被动模式
-            ftp.enterLocalPassiveMode();
+            ftpClient.enterLocalPassiveMode();
             //涉及到中文问题 根据系统实际编码改变
             remoteBaseDir = new String(remoteBaseDir.getBytes(k.getChartset()==null?GHK_CHARSET:k.getChartset()), FTP.DEFAULT_CONTROL_ENCODING);
             filename = new String(filename.getBytes(k.getChartset()==null?GHK_CHARSET:k.getChartset()), FTP.DEFAULT_CONTROL_ENCODING);
-            if (!ftp.changeWorkingDirectory(remoteBaseDir)) {
+            if (!ftpClient.changeWorkingDirectory(remoteBaseDir)) {
                 //如果目录不存在创建目录
                 String[] dirs = remoteBaseDir.replace(File.separator, "@").split("@");
                 String tempPath = "";
@@ -90,25 +101,22 @@ public class FtpUtils {
                         continue;
                     }
                     tempPath += File.separator + dir;
-                    if (!ftp.changeWorkingDirectory(tempPath)) {
-                        if (!ftp.makeDirectory(tempPath)) {
+                    if (!ftpClient.changeWorkingDirectory(tempPath)) {
+                        if (!ftpClient.makeDirectory(tempPath)) {
                             return result;
                         } else {
-                            ftp.changeWorkingDirectory(tempPath);
+                            ftpClient.changeWorkingDirectory(tempPath);
                         }
                     }
                 }
             }
-            if (!ftp.storeFile(filename, in)) {
+            if (!ftpClient.storeFile(filename, in)) {
                 throw new IOException("无法上传附件【" + filename + "】请检查文件服务器地址和权限信息是否正确。");
             }
             result = true;
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if(ftp != null){
-                ftpClientPool.returnObject(k,ftp);
-            }
             try {
                 if(null != in){
                     in.close();
@@ -153,11 +161,9 @@ public class FtpUtils {
      * @param out
      * @return
      */
-    public boolean downLoadFile(String remoteFilePath,String fileName, FtpClientConfig config,OutputStream out){
-        FTPClient ftp = null;
+    public boolean downLoadFile(FTPClient ftp,String remoteFilePath,String fileName, FtpClientConfig config,OutputStream out){
         boolean downLoadSucess = false;
         try{
-            ftp = getFtpClient(ftpClientPool,config);
             ftp.enterLocalPassiveMode();
             checkCharset(ftp,config);
             remoteFilePath = new String(remoteFilePath.getBytes(config.getChartset()), FTP.DEFAULT_CONTROL_ENCODING);
@@ -168,21 +174,14 @@ public class FtpUtils {
             }
         }catch (Exception e){
             logger.info("下载附件异常："+e.getMessage());
-            return false;
-        }finally {
-            if(ftp != null){
-                ftpClientPool.returnObject(config,ftp);
-            }
         }
         return downLoadSucess;
     }
 
-    public boolean checkFileExist(String remoteFilePath, String filename,FtpClientConfig config) {
+    public boolean checkFileExist(FTPClient ftp,String remoteFilePath, String filename,FtpClientConfig config) {
         boolean result = false;
-        FTPClient ftp = null;
         InputStream is = null;
         try {
-            ftp = getFtpClient(ftpClientPool,config);
             ftp.enterLocalPassiveMode();
             checkCharset(ftp,config);
             remoteFilePath = new String(remoteFilePath.getBytes(config.getChartset()), FTP.DEFAULT_CONTROL_ENCODING);
@@ -195,18 +194,11 @@ public class FtpUtils {
                 if(is == null || ftp.getReplyCode() == FTPReply.FILE_UNAVAILABLE){
                     return false;
                 }
-                if(is != null){
-                    is.close();
-                    ftp.completePendingCommand();
-                }
-                return true;
+                result = true;
             }
         } catch (Exception e) {
             logger.info("校验附件是否存在异常："+e.getMessage());
         }finally {
-            if(ftp != null){
-                ftpClientPool.returnObject(config,ftp);
-            }
             if(is != null){
                 try {
                     is.close();
@@ -244,38 +236,5 @@ public class FtpUtils {
         return sb.toString();
     }
 
-    public static void main(String[] args) throws Exception {
-        try {
-            Ftp f = new Ftp();
-            f.setIpAddr("172.30.36.217");
-            f.setUserName("ftptest");
-            f.setPwd("123456");
-            FtpUtils ftpUtils = new FtpUtils();
-            FtpClientConfig k = ConfigProvider.getDownloadConfig(f);
-           //文件上传测试
-            /*String remote = File.separator + "ftp217" + File.separator + "test" + File.separator + "委附件";
-            File loaclFile = new File("D:\\鹏微公司服务器.txt");
-            boolean uploadResult = ftpUtils.putFile( k,remote,"鹏微公司服务器4.txt",new FileInputStream(loaclFile));
-            System.out.print("附件上传结果："+uploadResult);*/
-            //文件删除
-            /*String remote = File.separator + "ftp217" + File.separator + "test" + File.separator + "委附件" +  File.separator+"鹏微公司服务器4.txt";
-            boolean deleteResult = ftpUtils.remove(remote,k);
-            System.out.print("附件删除结果结果："+deleteResult);*/
-            //文件下载
-           /* String downLoadUrl = File.separator + "通知公告" + File.separator + "2c9ea45f60fdbc3e0160fdc02f910000";
-            String downLoadName = "2018_1_16_14_1988294872.txt";
-            File downFile = new File("D:\\鹏微公司服务器down.txt");
-            boolean downResult = ftpUtils.downLoadFile(downLoadUrl,downLoadName,k,new FileOutputStream(downFile));
-            System.out.print("附件下载结果："+downResult);*/
-            //验证文件是否存在
-            String checkFileUrl = File.separator + "通知公告" + File.separator + "2c9ea45f60fdbc3e0160fdc02f910000";
-            String checkFileName = "2018_1_16_14_1988294872.txt";
-            boolean downResult = ftpUtils.checkFileExist(checkFileUrl,checkFileName,k);
-            System.out.print("验证文件是否存在："+downResult);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
+
 }

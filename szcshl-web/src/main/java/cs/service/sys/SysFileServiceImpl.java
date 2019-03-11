@@ -20,6 +20,7 @@ import cs.model.sys.SysFileDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.sys.FtpRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
+import org.apache.commons.net.ftp.FTPClient;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
@@ -311,8 +312,10 @@ public class SysFileServiceImpl implements SysFileService {
             }
             Date now = new Date();
             FtpUtils ftpUtils = new FtpUtils();
+            FTPClient ftpClient = null;
             StringBuilder errorMsg = new StringBuilder();
             try {
+                ftpClient = ftpUtils.getFtpClient(ftpUtils.getFtpClientPool(),k);
                 //读取附件
                 while (!fileQueue.isEmpty()) {
                     SysFileDto sysFileDto = fileQueue.poll();
@@ -340,8 +343,9 @@ public class SysFileServiceImpl implements SysFileService {
                             sysFile.setFileType(showName.substring(showName.lastIndexOf("."), showName.length()));
                             uploadFileName = Tools.generateRandomFilename().concat(sysFile.getFileType());
                         }
-                        boolean uploadResult = ftpUtils.putFile(k, relativeFileUrl, uploadFileName, IOStreamUtil.getStreamDownloadOutFile(sysFileDto.getFileUrl()));
+                        boolean uploadResult = ftpUtils.putFile(ftpClient,k, relativeFileUrl, uploadFileName, IOStreamUtil.getStreamDownloadOutFile(sysFileDto.getFileUrl()));
                         if (uploadResult) {
+                            System.out.println("上传成功！还剩："+fileQueue.size()+"个附件！");
                             //保存数据库记录
                             if (fileExist) {
                                 sysFile.setModifiedBy(userId);
@@ -366,6 +370,14 @@ public class SysFileServiceImpl implements SysFileService {
                 }
             }catch (Exception e){
 
+            }finally {
+                try {
+                    if(ftpClient != null){
+                        ftpUtils.getFtpClientPool().returnObject(k,ftpClient);
+                    }
+                }catch (Exception ex){
+
+                }
             }
 
             //保存附件

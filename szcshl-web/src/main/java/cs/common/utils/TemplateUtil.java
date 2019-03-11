@@ -10,6 +10,7 @@ import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
+import org.apache.commons.net.ftp.FTPClient;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -135,44 +136,51 @@ public class TemplateUtil {
      * @param dataMap      数据
      * @return
      */
-    public static SysFile createTemplate(Ftp f, String mainId, String mainType,String businessId, String businessType, String sysfileType,
+    public static SysFile createTemplate(Ftp f, String mainId, String mainType, String businessId, String businessType, String sysfileType,
                                          String templateUrl, String fileName, String fileType, Map<String, Object> dataMap) {
         SysFile sysFile = null;
         String showName = fileName + fileType;
         String path = SysFileUtil.getUploadPath();
-        String relativeFileUrl = SysFileUtil.generatRelativeUrl(path, mainType, mainId, businessType,null);
+        String relativeFileUrl = SysFileUtil.generatRelativeUrl(path, mainType, mainId, businessType, null);
         File docFile = null;
+        //连接ftp
+        FtpUtils ftpUtils = new FtpUtils();
+        FtpClientConfig k = ConfigProvider.getUploadConfig(f);
+        FTPClient ftpClient = null;
         try {
-            docFile = createDoc(dataMap, templateUrl, path + File.separator + relativeFileUrl+ File.separator+showName);
-            fileType = fileType.toLowerCase();//统一转成小写
+            ftpClient = ftpUtils.getFtpClient(ftpUtils.getFtpClientPool(), k);
+            docFile = createDoc(dataMap, templateUrl, path + File.separator + relativeFileUrl + File.separator + showName);
+            //统一转成小写
+            fileType = fileType.toLowerCase();
             String uploadFileName = Tools.generateRandomFilename().concat(fileType);
-            //连接ftp
-            FtpUtils ftpUtils = new FtpUtils();
-            FtpClientConfig k = ConfigProvider.getUploadConfig(f);
+
             //上传到ftp,如果有根目录，则加入根目录
-            if(Validate.isString(k.getFtpRoot())){
+            if (Validate.isString(k.getFtpRoot())) {
                 if (relativeFileUrl.startsWith(File.separator)) {
                     relativeFileUrl = File.separator + k.getFtpRoot() + relativeFileUrl;
                 } else {
                     relativeFileUrl = File.separator + k.getFtpRoot() + relativeFileUrl + File.separator;
                 }
             }
-            boolean upLoadSucess = ftpUtils.putFile(k,relativeFileUrl,uploadFileName,new FileInputStream(docFile));
-            if(upLoadSucess){
+            boolean upLoadSucess = ftpUtils.putFile(ftpClient, k, relativeFileUrl, uploadFileName, new FileInputStream(docFile));
+            if (upLoadSucess) {
                 Tools.deleteFile(docFile);
-                sysFile = new SysFile(UUID.randomUUID().toString(), businessId, relativeFileUrl+ File.separator +uploadFileName, showName,
+                sysFile = new SysFile(UUID.randomUUID().toString(), businessId, relativeFileUrl + File.separator + uploadFileName, showName,
                         docFile.length(), fileType, mainId, mainType, sysfileType, businessType);
                 sysFile.setFtp(f);
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }finally {
-            if(docFile != null){
-                try {
-                    Tools.deleteFile(docFile);
-                } catch (IOException e) {
-                    e.printStackTrace();
+        } finally {
+            try {
+                if (ftpClient != null) {
+                    ftpUtils.getFtpClientPool().returnObject(k, ftpClient);
                 }
+                if (docFile != null) {
+                    Tools.deleteFile(docFile);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
 
@@ -182,46 +190,46 @@ public class TemplateUtil {
 
     /**
      * 通过遍历实体类，获取属性名、属性类型、属性值，并添加到Map集合中（适用于导出功能所添加的数据过多）
+     *
      * @param obj
      * @return
      */
-    public static Map<String , Object> entryAddMap(Object obj){
-        Map<String , Object> dataMap = new HashMap<>();
-        try{
+    public static Map<String, Object> entryAddMap(Object obj) {
+        Map<String, Object> dataMap = new HashMap<>();
+        try {
             Class c = obj.getClass();
             //获取实体类的所有属性，返回field数字
             Field[] fields = c.getDeclaredFields();
-            if(fields != null && fields.length > 0 ) {
-                for(Field field : fields){
+            if (fields != null && fields.length > 0) {
+                for (Field field : fields) {
                     //获取属性名
                     String name = field.getName();
                     //将属性名的首字母转为大写，方便构造get、set方法
-                    name = name.substring(0,1).toUpperCase()  + name.substring(1);
+                    name = name.substring(0, 1).toUpperCase() + name.substring(1);
                     Method method = null;
                     //构造get的方法
                     try {
-                         method = c.getMethod("get" + name);
-                    }catch(Exception e){
+                        method = c.getMethod("get" + name);
+                    } catch (Exception e) {
                         method = c.getMethod("get" + field.getName());
                     }
                     //获取属性类型
                     String type = field.getGenericType().toString();
                     //如果数据类型是Date类型，则需要转换为yyyy年MM月dd日
-                    if("class java.util.Date".equals(type)){
-                        dataMap.put(field.getName() , DateUtils.converToString((Date) method.invoke(obj) , "yyyy年MM月dd日"));
-                    }else if("class java.lang.String".equals(type)){
-                        dataMap.put( field.getName() , method.invoke(obj) == null ? "" : method.invoke(obj).toString().replaceAll("<" , "﹤").replaceAll(">" , "﹥"));
-                    }else{
-                        dataMap.put( field.getName() , method.invoke(obj));
+                    if ("class java.util.Date".equals(type)) {
+                        dataMap.put(field.getName(), DateUtils.converToString((Date) method.invoke(obj), "yyyy年MM月dd日"));
+                    } else if ("class java.lang.String".equals(type)) {
+                        dataMap.put(field.getName(), method.invoke(obj) == null ? "" : method.invoke(obj).toString().replaceAll("<", "﹤").replaceAll(">", "﹥"));
+                    } else {
+                        dataMap.put(field.getName(), method.invoke(obj));
                     }
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return dataMap;
     }
-
 
 
     public static void main(String[] args) {

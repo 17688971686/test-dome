@@ -333,14 +333,14 @@ public class SysRestController {
         String REST_SERVICE_URI = "http://localhost:8181/szcshl-web/intfc/pushProject";
         SignDto signDto = new SignDto();
         //委里收文编号
-        signDto.setFilecode("D201800732");
+        signDto.setFilecode("D201900732");
         signDto.setIschangeEstimate(null);
         signDto.setDeclaration((BigDecimal.valueOf(6835)));
         signDto.setUrgencydegree("一般");
         signDto.setMaindeptName("社会发展处");
         signDto.setAssistDeptUserName("李斌");
         signDto.setCountryCode("2017-440300-83-01-102870");
-        signDto.setProjectname("深圳大学卡尔森国际肿瘤中心用房改造装修工程");
+        signDto.setProjectname("深圳大学卡尔森国际肿瘤中心用房改造装修工程2");
         signDto.setProjectcode("Z-2017-Q83-102870-02-01");
         signDto.setBuiltCompUserName("刘泽慧");
         signDto.setAssistdeptName("投资处");

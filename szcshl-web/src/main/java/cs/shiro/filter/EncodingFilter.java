@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
- * Created by ldm on 2017/7/29 0029.
+ * @author ldm on 2017/7/29 0029.
  */
 public class EncodingFilter extends OncePerRequestFilter {
     private String encoding;
@@ -68,8 +68,7 @@ public class EncodingFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(final HttpServletRequest request,
-                                    HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(final HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         //设置request和response的编码格式
         if (this.encoding != null && (this.forceEncoding || request.getCharacterEncoding() == null)) {

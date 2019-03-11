@@ -43,6 +43,7 @@ import cs.service.sys.LogService;
 import cs.service.sys.SysFileService;
 import cs.service.topic.TopicInfoService;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.net.ftp.FTPClient;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -232,22 +233,23 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         }
         ResultMsg resultMsg = ResultMsg.error("");
         StringBuffer errorMsg = new StringBuffer();
-        try {
-            String fileUploadPath = SysFileUtil.getUploadPath();
-            String relativeFileUrl = SysFileUtil.generatRelativeUrl(fileUploadPath, mainType, mainId, sysBusiType, null);
+        String fileUploadPath = SysFileUtil.getUploadPath();
+        String relativeFileUrl = SysFileUtil.generatRelativeUrl(fileUploadPath, mainType, mainId, sysBusiType, null);
 
-            Ftp f = ftpRepo.findById(Ftp_.ipAddr.getName(), sysFileService.findFtpId());
-            FtpUtils ftpUtils = new FtpUtils();
-            FtpClientConfig k = ConfigProvider.getUploadConfig(f);
-            //上传到ftp,如果有根目录，则加入根目录
-            if (Validate.isString(k.getFtpRoot())) {
-                if (relativeFileUrl.startsWith(File.separator)) {
-                    relativeFileUrl = File.separator + k.getFtpRoot() + relativeFileUrl;
-                } else {
-                    relativeFileUrl = File.separator + k.getFtpRoot() + relativeFileUrl + File.separator;
-                }
+        Ftp f = ftpRepo.findById(Ftp_.ipAddr.getName(), sysFileService.findFtpId());
+        FtpUtils ftpUtils = new FtpUtils();
+        FtpClientConfig k = ConfigProvider.getUploadConfig(f);
+        //上传到ftp,如果有根目录，则加入根目录
+        if (Validate.isString(k.getFtpRoot())) {
+            if (relativeFileUrl.startsWith(File.separator)) {
+                relativeFileUrl = File.separator + k.getFtpRoot() + relativeFileUrl;
+            } else {
+                relativeFileUrl = File.separator + k.getFtpRoot() + relativeFileUrl + File.separator;
             }
-
+        }
+        FTPClient ftpClient = null;
+        try {
+            ftpClient = ftpUtils.getFtpClient(ftpUtils.getFtpClientPool(),k);
             for (MultipartFile multipartFile : multipartFileList) {
                 String fileName = multipartFile.getOriginalFilename();
                 if (fileName.indexOf(".") == -1) {
@@ -269,7 +271,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 } else {
                     uploadFileName = Tools.generateRandomFilename().concat(fileType);
                 }
-                boolean uploadResult = ftpUtils.putFile(k, relativeFileUrl, uploadFileName, multipartFile.getInputStream());
+                boolean uploadResult = ftpUtils.putFile(ftpClient,k, relativeFileUrl, uploadFileName, multipartFile.getInputStream());
                 if (uploadResult) {
                     //保存数据库记录
                     if (null != sysFile) {
@@ -289,6 +291,13 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             e.printStackTrace();
             resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "附件上传失败，连接ftp服务失败，请核查！");
         } finally {
+            try {
+                if(ftpClient != null){
+                    ftpUtils.getFtpClientPool().returnObject(k,ftpClient);
+                }
+            }catch (Exception ex){
+
+            }
 
         }
         resultMsg.setReMsg(resultMsg.getReMsg() + errorMsg.toString());
@@ -333,16 +342,18 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     @ResponseBody
     public ResultMsg checkFtpFile(@RequestParam String sysFileId) {
         ResultMsg resultMsg=null;
+        SysFile sysFile = sysFileService.findFileById(sysFileId);
+        String fileUrl = sysFile.getFileUrl();
+        String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
+        String checkFileName = fileUrl.substring(fileUrl.lastIndexOf(File.separator) + 1, fileUrl.length());
+        //连接ftp
+        Ftp f = sysFile.getFtp();
+        FtpUtils ftpUtils = new FtpUtils();
+        FtpClientConfig k = ConfigProvider.getDownloadConfig(f);
+        FTPClient ftpClient = null;
         try {
-            SysFile sysFile = sysFileService.findFileById(sysFileId);
-            String fileUrl = sysFile.getFileUrl();
-            String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
-            String checkFileName = fileUrl.substring(fileUrl.lastIndexOf(File.separator) + 1, fileUrl.length());
-            //连接ftp
-            Ftp f = sysFile.getFtp();
-            FtpUtils ftpUtils = new FtpUtils();
-            FtpClientConfig k = ConfigProvider.getDownloadConfig(f);
-            boolean checkResult = ftpUtils.checkFileExist(removeRelativeUrl, checkFileName, k);
+            ftpClient = ftpUtils.getFtpClient(ftpUtils.getFtpClientPool(),k);
+            boolean checkResult = ftpUtils.checkFileExist(ftpClient,removeRelativeUrl, checkFileName, k);
             if (checkResult) {
                 resultMsg = ResultMsg.ok("附件存在，可以进行下载操作！");
             } else {
@@ -350,6 +361,14 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             }
         } catch (Exception e) {
             resultMsg = ResultMsg.error("附件确认异常，请联系管理员查看！");
+        }finally {
+            try {
+                if(ftpClient != null){
+                    ftpUtils.getFtpClientPool().returnObject(k,ftpClient);
+                }
+            }catch (Exception ex){
+
+            }
         }
         return resultMsg;
     }
@@ -364,20 +383,22 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     @RequestMapping(name = "外链文件下载", path = "remoteDownload/{sysfileId}", method = RequestMethod.GET)
     public void remoteDownload(@PathVariable("sysfileId") String sysfileId, HttpServletResponse response) throws Exception {
         OutputStream out = response.getOutputStream();
+        SysFile sysFile = sysFileService.findFileById(sysfileId);
+        ResponseUtils.setResponeseHead(sysFile.getFileType(), response);
+        response.setHeader("Content-Disposition", "attachment; filename="
+                + new String(sysFile.getShowName().getBytes("GB2312"), "ISO8859-1"));
+        //获取相对路径
+        String fileUrl = sysFile.getFileUrl();
+        String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
+        String fileName = fileUrl.substring(fileUrl.lastIndexOf(File.separator) + 1, fileUrl.length());
+        //连接ftp
+        Ftp f = sysFile.getFtp();
+        FtpUtils ftpUtils = new FtpUtils();
+        FtpClientConfig k = ConfigProvider.getDownloadConfig(f);
+        FTPClient ftpClient = null;
         try {
-            SysFile sysFile = sysFileService.findFileById(sysfileId);
-            ResponseUtils.setResponeseHead(sysFile.getFileType(), response);
-            response.setHeader("Content-Disposition", "attachment; filename="
-                    + new String(sysFile.getShowName().getBytes("GB2312"), "ISO8859-1"));
-            //获取相对路径
-            String fileUrl = sysFile.getFileUrl();
-            String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
-            String fileName = fileUrl.substring(fileUrl.lastIndexOf(File.separator) + 1, fileUrl.length());
-            //连接ftp
-            Ftp f = sysFile.getFtp();
-            FtpUtils ftpUtils = new FtpUtils();
-            FtpClientConfig k = ConfigProvider.getDownloadConfig(f);
-            boolean downResult = ftpUtils.downLoadFile(removeRelativeUrl, fileName, k, out);
+            ftpClient = ftpUtils.getFtpClient(ftpUtils.getFtpClientPool(),k);
+            boolean downResult = ftpUtils.downLoadFile(ftpClient,removeRelativeUrl, fileName, k, out);
             if (downResult) {
 
             } else {
@@ -393,6 +414,9 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 if (out != null) {
                     out.close();
                 }
+                if(ftpClient != null){
+                    ftpUtils.getFtpClientPool().returnObject(k,ftpClient);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -403,24 +427,23 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     @RequestMapping(name = "文件下载", path = "fileDownload", method = RequestMethod.POST)
     public void fileDownload(@RequestParam String sysfileId, HttpServletResponse response) throws Exception {
         OutputStream out = response.getOutputStream();
+        SysFile sysFile = sysFileService.findFileById(sysfileId);
+        ResponseUtils.setResponeseHead(sysFile.getFileType(), response);
+        response.setHeader("Content-Disposition", "attachment; filename="
+                + new String(sysFile.getShowName().getBytes("GB2312"), "ISO8859-1"));
+        //获取相对路径
+        String fileUrl = sysFile.getFileUrl();
+        int seParatorIndex = fileUrl.lastIndexOf(File.separator);
+        String removeRelativeUrl = fileUrl.substring(0, seParatorIndex);
+        String fileName = fileUrl.substring(seParatorIndex + 1, fileUrl.length());
+        //连接ftp
+        Ftp f = sysFile.getFtp();
+        FtpUtils ftpUtils = new FtpUtils();
+        FtpClientConfig k = ConfigProvider.getDownloadConfig(f);
+        FTPClient ftpClient = null;
         try {
-            SysFile sysFile = sysFileService.findFileById(sysfileId);
-            ResponseUtils.setResponeseHead(sysFile.getFileType(), response);
-            response.setHeader("Content-Disposition", "attachment; filename="
-                    + new String(sysFile.getShowName().getBytes("GB2312"), "ISO8859-1"));
-            //获取相对路径
-            String fileUrl = sysFile.getFileUrl();
-            int seParatorIndex = fileUrl.lastIndexOf(File.separator);
-            String removeRelativeUrl = fileUrl.substring(0, seParatorIndex);
-            String fileName = fileUrl.substring(seParatorIndex + 1, fileUrl.length());
-            //连接ftp
-            Ftp f = sysFile.getFtp();
-            FtpUtils ftpUtils = new FtpUtils();
-            FtpClientConfig k = ConfigProvider.getDownloadConfig(f);
-            boolean downResult = ftpUtils.downLoadFile(removeRelativeUrl, fileName, k, out);
-            if (downResult) {
-
-            }
+            ftpClient = ftpUtils.getFtpClient(ftpUtils.getFtpClientPool(),k);
+            ftpUtils.downLoadFile(ftpClient,removeRelativeUrl, fileName, k, out);
             out.flush();
         } catch (Exception e) {
             e.printStackTrace();
@@ -428,6 +451,9 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             try {
                 if (out != null) {
                     out.close();
+                }
+                if(ftpClient != null){
+                    ftpUtils.getFtpClientPool().returnObject(k,ftpClient);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -466,24 +492,25 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         File file = null;
         InputStream inputStream = null;
         OutputStream out = null;
+        SysFile sysFile = sysFileService.findFileById(sysFileId);
+        //获取相对路径
+        String fileUrl = sysFile.getFileUrl();
+        String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
+        String storeFileName = fileUrl.substring(fileUrl.lastIndexOf(File.separator) + 1, fileUrl.length());
+        String fileType = sysFile.getFileType().toLowerCase();
+        //连接ftp
+        Ftp ftp = sysFile.getFtp();
+        FtpUtils ftpUtils = new FtpUtils();
+        FtpClientConfig k = ConfigProvider.getDownloadConfig(ftp);
+        FTPClient ftpClient = null;
         try {
-            SysFile sysFile = sysFileService.findFileById(sysFileId);
-            //获取相对路径
-            String fileUrl = sysFile.getFileUrl();
-            String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
-            String storeFileName = fileUrl.substring(fileUrl.lastIndexOf(File.separator) + 1, fileUrl.length());
-            String fileType = sysFile.getFileType().toLowerCase();
-            //连接ftp
-            Ftp ftp = sysFile.getFtp();
-            FtpUtils ftpUtils = new FtpUtils();
-            FtpClientConfig k = ConfigProvider.getDownloadConfig(ftp);
-
+            ftpClient = ftpUtils.getFtpClient(ftpUtils.getFtpClientPool(),k);
             //需要转换的类型，自己在方法实现
             if (AsposeUtil.neddConvertToPdf(fileType)) {
                 out = response.getOutputStream();
                 if (AsposeUtil.getLicense()) {
                     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                    ftpUtils.downLoadFile(removeRelativeUrl, storeFileName, k, byteArrayOutputStream);
+                    ftpUtils.downLoadFile(ftpClient,removeRelativeUrl, storeFileName, k, byteArrayOutputStream);
                     inputStream = IOStreamUtil.parse(byteArrayOutputStream);
                     switch (fileType) {
                         case ".doc":
@@ -509,7 +536,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             //如果是pdf文件，直接输出流，否则要先转为pdf
             else if (".pdf".equals(fileType) || ".png".equals(fileType) || ".jpg".equals(fileType) || ".gif".equals(fileType) || ".txt".equals(fileType) || ".text".equals(fileType)) {
                 out = response.getOutputStream();
-                ftpUtils.downLoadFile(removeRelativeUrl, storeFileName, k, out);
+                ftpUtils.downLoadFile(ftpClient,removeRelativeUrl, storeFileName, k, out);
             } else {
                 /*downFile = new File(SysFileUtil.getUploadPath() + File.separator + storeFileName);
                 out = new FileOutputStream(downFile);
@@ -560,6 +587,9 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 }
                 if (downFile != null) {
                     Tools.deleteFile(downFile);
+                }
+                if(ftpClient != null){
+                    ftpUtils.getFtpClientPool().returnObject(k,ftpClient);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -1550,17 +1580,19 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     public ResultMsg saveByFileBase64(@RequestParam(required = true) String sysFileId, @RequestParam(required = true) String base64String) {
         ResultMsg resultMsg;
         String errorMsg = "";
+        SysFile sysFile = sysFileRepo.findById(sysFileId);
+        String fileUrl = sysFile.getFileUrl();
+        String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
+        String uploadFileName = fileUrl.substring(fileUrl.lastIndexOf(File.separator) + 1, fileUrl.length());
+        //上传到ftp,
+        Ftp f = sysFile.getFtp();
+        FtpUtils ftpUtils = new FtpUtils();
+        FtpClientConfig k = ConfigProvider.getUploadConfig(f);
+        FTPClient ftpClient = null;
         try {
-            SysFile sysFile = sysFileRepo.findById(sysFileId);
-            String fileUrl = sysFile.getFileUrl();
-            String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
-            String uploadFileName = fileUrl.substring(fileUrl.lastIndexOf(File.separator) + 1, fileUrl.length());
-            //上传到ftp,
-            Ftp f = sysFile.getFtp();
-            FtpUtils ftpUtils = new FtpUtils();
-            FtpClientConfig k = ConfigProvider.getUploadConfig(f);
+            ftpClient = ftpUtils.getFtpClient(ftpUtils.getFtpClientPool(),k);
             Base64 decoder = new Base64();
-            boolean uploadResult = ftpUtils.putFile(k, removeRelativeUrl, uploadFileName, new ByteArrayInputStream(decoder.decode(base64String)));
+            boolean uploadResult = ftpUtils.putFile(ftpClient,k, removeRelativeUrl, uploadFileName, new ByteArrayInputStream(decoder.decode(base64String)));
             if (uploadResult) {
                 //保存数据库记录
                 sysFile.setModifiedBy(SessionUtil.getDisplayName());
@@ -1573,6 +1605,14 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         } catch (Exception e) {
             errorMsg += e.getMessage();
             resultMsg = new ResultMsg(false, MsgCode.ERROR.getValue(), "文件保存异常！");
+        }finally {
+            try {
+                if(ftpClient != null){
+                    ftpUtils.getFtpClientPool().returnObject(k,ftpClient);
+                }
+            }catch (Exception ex){
+
+            }
         }
         //添加日记记录
         Log log = new Log();
