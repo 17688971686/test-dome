@@ -221,9 +221,6 @@ public class ExpertServiceImpl implements ExpertService {
         BeanCopierUtils.copyProperties(expertDto, expert);
         //如果是新增，设置默认属性
         if(isCreate){
-            expert.setState(EnumExpertState.AUDITTING.getValue());
-            //是否作废（1为作废，0 为正常）,默认不作废
-            expert.setUnable(Constant.EnumState.NO.getValue());
             expert.setExpertID((new RandomGUID()).valueAfterMD5);
             //专家编码，系统自动生成
             expert.setExpertNo(String.format("%06d", Integer.valueOf(findMaxNumber()) + 1));
@@ -235,6 +232,14 @@ public class ExpertServiceImpl implements ExpertService {
         }
         expert.setModifiedDate(now);
         expert.setModifiedBy(updateUserNo);
+
+        if(!Validate.isString(expert.getState())){
+            expert.setState(EnumExpertState.AUDITTING.getValue());
+        }
+        if(!Validate.isString(expert.getUnable())){
+            //是否作废（1为作废，0 为正常）,默认不作废
+            expert.setUnable(Constant.EnumState.NO.getValue());
+        }
         expertRepo.save(expert);
         //设置返回值
         BeanCopierUtils.copyProperties(expert, expertDto);
