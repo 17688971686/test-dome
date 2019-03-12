@@ -1,10 +1,7 @@
 package cs.xss;
 
-import cs.common.ResultMsg;
 import cs.common.constants.SysConstants;
-import cs.common.utils.ReflectionUtils;
 import cs.common.utils.Validate;
-import cs.model.PageModelDto;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.owasp.esapi.ESAPI;
 import org.owasp.esapi.codecs.Codec;
@@ -12,11 +9,7 @@ import org.owasp.esapi.codecs.OracleCodec;
 import org.owasp.validator.html.*;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
 import java.net.URLDecoder;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by ldm on 2018/12/4 0004.
@@ -46,7 +39,7 @@ public class XssShieldUtil {
         }
     }
 
-    public void cleanXssObjectArr(List<Object[]> sourceObjArr) {
+    /*public void cleanXssObjectArr(List<Object[]> sourceObjArr) {
         if (Validate.isList(sourceObjArr)) {
             for (int i = 0, l = sourceObjArr.size(); i < l; i++) {
                 Object[] objectArr = sourceObjArr.get(i);
@@ -91,13 +84,13 @@ public class XssShieldUtil {
         }
     }
 
-    /**
+    *//**
      * 过滤返回page
      *
      * @param pageModelDto
      * @param <T>
      * @return
-     */
+     *//*
     public <T> void cleanPageXss(PageModelDto<T> pageModelDto) {
         if (Validate.isObject(pageModelDto)) {
             List<T> pageValueList = pageModelDto.getValue();
@@ -106,12 +99,12 @@ public class XssShieldUtil {
         }
     }
 
-    /**
+    *//**
      * 过滤返回resultMsg
      *
      * @param resultMsg
      * @return
-     */
+     *//*
     public void cleanResultMsgXss(ResultMsg resultMsg) {
         if (Validate.isObject(resultMsg)) {
             if (Validate.isString(resultMsg.getIdCode())) {
@@ -158,7 +151,7 @@ public class XssShieldUtil {
                 cleanObjXss(t);
             }
         }
-    }
+    }*/
 
     /**
      * 返回页面的字符串进行加密处理
@@ -168,7 +161,7 @@ public class XssShieldUtil {
      * @return
      */
     public String responseEncodeForHTML(String value){
-        return ESAPI.encoder().encodeForHTML(ESAPI.encoder().canonicalize(value));
+        return ESAPI.encoder().encodeForHTML(value);
     }
 
     /**
@@ -181,8 +174,10 @@ public class XssShieldUtil {
             try {
                 //按utf-8解碼:防止有害脚本
                 value = URLDecoder.decode(value, SysConstants.UTF8);
-                AntiSamy antiSamy = new AntiSamy();
+                //先过滤特殊字符再清洗数据
+                value = xssEncode(value);
                 //扫描
+                AntiSamy antiSamy = new AntiSamy();
                 CleanResults cr = antiSamy.scan(value, policy);
                 //获取清洗后的结果
                 value = cr.getCleanHTML();

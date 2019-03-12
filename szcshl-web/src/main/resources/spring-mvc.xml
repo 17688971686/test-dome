@@ -55,8 +55,8 @@
             <bean class="cs.ahelper.converter.CustomerFastJsonHttpMessageConverter">
                 <property name="supportedMediaTypes">
                     <list>
-                        <value>application/json;charset=UTF-8</value>
                         <value>text/html;charset=UTF-8</value>
+                        <value>application/json;charset=UTF-8</value>
                         <value>text/json;charset=UTF-8</value>
                     </list>
                 </property>
