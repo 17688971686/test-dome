@@ -76,9 +76,10 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
      */
     @Override
     public T findById(String idPropertyName, String idValue) {
+        Codec oracleCodec = new OracleCodec();
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" from  " + getPersistentClass().getSimpleName());
-        hqlBuilder.append(" where " + idPropertyName + " = :id ");
+        hqlBuilder.append(" where " + ESAPI.encoder().encodeForSQL(oracleCodec, idPropertyName) + " = :id ");
         hqlBuilder.setParam("id", idValue);
         Query<T> q = this.getCurrentSession().createQuery(hqlBuilder.getHqlString(), this.getPersistentClass());
         this.buildParams(q, hqlBuilder);
