@@ -99,11 +99,10 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
                 for (int i = 0, l = params.size(); i < l; i++) {
                     String paramName = params.get(i);
                     Object value = values.get(i);
-                    if (!Validate.isString(paramName) || !Validate.isObject(value)) {
-                        continue;
-                    }
-                    if (value instanceof String) {
-                        value = ESAPI.encoder().encodeForSQL(oracleCodec, value.toString());
+                    if (Validate.isObject(value)) {
+                        if (value instanceof String) {
+                            value = ESAPI.encoder().encodeForSQL(oracleCodec, value.toString());
+                        }
                     }
                     if (types.get(i) == null) {
                         query.setParameter(paramName, value);
