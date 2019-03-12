@@ -186,8 +186,9 @@ public class FileLibraryController {
         return ctrlName + "/addPolicyLibrary";
     }
 
-    @RequiresAuthentication
-    @RequestMapping(name="文件指标库列表",path="html/documentList",method=RequestMethod.GET)
+
+    @RequiresPermissions("fileLibrary#html/documentList#get")
+    @RequestMapping(name="文件指标库",path="html/documentList",method=RequestMethod.GET)
     public String documentList(){
         return ctrlName + "/documentList";
     }
