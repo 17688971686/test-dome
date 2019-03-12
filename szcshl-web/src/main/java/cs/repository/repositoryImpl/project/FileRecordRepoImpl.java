@@ -17,7 +17,7 @@ import org.springframework.stereotype.Repository;
 public class FileRecordRepoImpl extends AbstractRepository<FileRecord, String> implements FileRecordRepo {
 
     /**
-     * 根据业务ID判断是否完成专家评分
+     * 根据业务ID判断是否有归档
      *
      * @param businessId
      * @return
@@ -79,7 +79,7 @@ public class FileRecordRepoImpl extends AbstractRepository<FileRecord, String> i
                 sqlBuilder.setParam("stage2", ProjectConstant.REVIEW_STATE_ENUM.STAGESUG.getZhCode());
                 sqlBuilder.setParam("stage3", ProjectConstant.REVIEW_STATE_ENUM.STAGESTUDY.getZhCode());
                 sqlBuilder.setParam("stage4", ProjectConstant.REVIEW_STATE_ENUM.STAGEREPORT.getZhCode());
-                sqlBuilder.setParam("stage4", ProjectConstant.REVIEW_STATE_ENUM.STAGEOTHER.getZhCode());
+                sqlBuilder.setParam("stage5", ProjectConstant.REVIEW_STATE_ENUM.STAGEOTHER.getZhCode());
         }
         return returnIntBySql(sqlBuilder);
     }

@@ -1818,7 +1818,7 @@ public class SignServiceImpl implements SignService {
                 }
 
                 //如果没有完成归档信息，则不可以提交下一步
-                if (fileRecordRepo.isFileRecord(signid)) {
+                if (!fileRecordRepo.isFileRecord(signid)) {
                     return ResultMsg.error("您还没完成归档操作，不能进行下一步操作！");
                 }
 
