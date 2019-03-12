@@ -406,7 +406,6 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 out.write(resultMsg.getBytes());
             }
             out.flush();
-            out.close();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
