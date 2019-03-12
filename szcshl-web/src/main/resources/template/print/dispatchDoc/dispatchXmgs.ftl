@@ -1222,8 +1222,8 @@
                                 </w:p>
                             </w:tc>
                         </w:tr>
-<#list dispatchList as dispatch>
-    <#if (dispatch_index)==0>
+<#list dispatchList? keys as key>
+    <#if (key)=="项目建议书">
                        <w:tr w:rsidR="00A57520" w:rsidTr="00DB400F">
                             <w:trPr>
                                 <w:cantSplit/>
@@ -1435,7 +1435,7 @@
                         </w:tr>
     </#if>
                    <#-- <#list dispatchList as dispatch>-->
-                        <#if (dispatch_index)==1>
+                        <#if (key)=="可行性研究报告">
                             <w:tr w:rsidR="00A57520" w:rsidTr="00B94C8B">
                                 <w:trPr>
                                     <w:cantSplit/>
@@ -1622,7 +1622,7 @@
                                 </w:tc>
                             </w:tr>
                         </#if>
-                        <#if (dispatch_index)==2>
+                        <#if (key)=="项目概算">
                             <#if ischangeEstimate?? && ischangeEstimate == "9">
                                 <w:tr w:rsidR="00A57520" w:rsidTr="00B94C8B">
                                     <w:trPr>
@@ -1877,7 +1877,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="18"/>
                                         </w:rPr>
-                                        <w:t>${((dispatch.declareValue)?c)!}</w:t>
+                                        <w:t>${((dispatchList[key].declareValue)?c)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1900,7 +1900,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="18"/>
                                         </w:rPr>
-                                        <w:t>${((dispatch.authorizeValue)?c)!}</w:t>
+                                        <w:t>${((dispatchList[key].authorizeValue)?c)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1923,7 +1923,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="18"/>
                                         </w:rPr>
-                                        <w:t>${((dispatch.extraValue)?c)!}</w:t>
+                                        <w:t>${((dispatchList[key].extraValue)?c)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1946,7 +1946,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="18"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">${(dispatch.extraRate)!}</w:t>
+                                        <w:t xml:space="preserve">${(dispatchList[key].extraRate)!}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -1976,7 +1976,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="18"/>
                                         </w:rPr>
-                                        <w:t>${((dispatch.approveValue)?c)!}</w:t>
+                                        <w:t>${((dispatchList[key].approveValue)?c)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1999,7 +1999,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="18"/>
                                         </w:rPr>
-                                        <w:t>${(dispatch.remark)!}</w:t>
+                                        <w:t>${(dispatchList[key].remark)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2091,7 +2091,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${(dispatch.projectBuildNecess)!}</w:t>
+                                        <w:t>${(dispatchList[key].projectBuildNecess)!}</w:t>
                                     </w:r>
                                     <w:bookmarkEnd w:id="6"/>
                                     <w:bookmarkEnd w:id="7"/>
@@ -2163,7 +2163,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${(dispatch.buildSizeContent)!}</w:t>
+                                        <w:t>${(dispatchList[key].buildSizeContent)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2210,11 +2210,11 @@
                                             <w:sz w:val="24"/>
                                         </w:rPr>
 
-                                        <#if dispatch.dispatchStage?? && dispatch.dispatchStage == "项目建议书" >
+                                        <#if dispatchList[key].dispatchStage?? && dispatchList[key].dispatchStage == "项目建议书" >
                                             <w:t>投资匡算及资金来源</w:t>
-                                        <#elseif dispatch.dispatchStage?? && dispatch.dispatchStage == "可行性研究报告" >
+                                        <#elseif dispatchList[key].dispatchStage?? && dispatchList[key].dispatchStage == "可行性研究报告" >
                                             <w:t>投资估算及资金来源</w:t>
-                                        <#elseif dispatch.dispatchStage?? && dispatch.dispatchStage == "项目概算" >
+                                        <#elseif dispatchList[key].dispatchStage?? && dispatchList[key].dispatchStage == "项目概算" >
                                             <w:t>投资概算及资金来源</w:t>
                                         </#if>
 
@@ -2240,7 +2240,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${(dispatch.fundTotalOrigin)!}</w:t>
+                                        <w:t>${(dispatchList[key].fundTotalOrigin)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2334,7 +2334,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${(dispatch.nextWorkPlan)!}</w:t>
+                                        <w:t>${(dispatchList[key].nextWorkPlan)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
