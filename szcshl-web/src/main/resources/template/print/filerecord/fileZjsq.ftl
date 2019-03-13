@@ -551,7 +551,6 @@
                                         <w:tabs>
                                             <w:tab w:val="left" w:pos="4422"/>
                                         </w:tabs>
-                                        <w:spacing w:before="156" w:beforeLines="50" w:after="156" w:afterLines="50"/>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
@@ -574,6 +573,7 @@
                                 </w:p>
                                 <w:p>
                                     <w:pPr>
+                                        <w:spacing w:line="-1" w:lineRule="auto"/>
                                         <w:tabs>
                                             <w:tab w:val="left" w:pos="4422"/>
                                         </w:tabs>
@@ -785,7 +785,7 @@
                                 </w:p>
                                 <w:p>
                                     <w:pPr>
-                                        <w:spacing w:line="-1" w:lineRule="auto"/>
+                                        <w:spacing w:line="1" w:lineRule="auto"/>
                                         <w:tabs>
                                             <w:tab w:val="left" w:pos="2577"/>
                                         </w:tabs>
@@ -982,7 +982,7 @@
                                 </w:p>
                                 <w:p>
                                     <w:pPr>
-                                        <w:spacing w:line="-1" w:lineRule="auto"/>
+                                        <w:spacing w:line="1" w:lineRule="auto"/>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
@@ -1169,7 +1169,7 @@
                                 </w:p>
                                 <w:p>
                                     <w:pPr>
-                                        <w:spacing w:line="-1" w:lineRule="auto"/>
+                                        <w:spacing w:line="1" w:lineRule="auto"/>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
@@ -1356,7 +1356,7 @@
                                 </w:p>
                                 <w:p>
                                     <w:pPr>
-                                        <w:spacing w:line="-1" w:lineRule="auto"/>
+                                        <w:spacing w:line="1" w:lineRule="auto"/>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
@@ -1565,6 +1565,7 @@
                                 </w:p>
                                 <w:p>
                                     <w:pPr>
+                                        <w:spacing w:line="-1" w:lineRule="auto"/>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
@@ -1736,7 +1737,7 @@
                                 </w:p>
                                 <w:p>
                                     <w:pPr>
-                                        <w:spacing w:line="-1" w:lineRule="auto"/>
+                                        <w:spacing w:line="1" w:lineRule="auto"/>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
@@ -1932,7 +1933,6 @@
                                         <w:tabs>
                                             <w:tab w:val="left" w:pos="4422"/>
                                         </w:tabs>
-                                        <w:spacing w:before="156" w:beforeLines="50" w:after="156" w:afterLines="50"/>
                                         <w:ind w:firstLine="1560" w:firstLineChars="650"/>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
@@ -1949,6 +1949,7 @@
                                 </w:p>
                                 <w:p>
                                     <w:pPr>
+                                        <w:spacing w:line="-1" w:lineRule="auto"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
@@ -2226,7 +2227,7 @@
                                 </w:p>
                                 <w:p>
                                     <w:pPr>
-                                        <w:spacing w:line="-1" w:lineRule="auto"/>
+                                        <w:spacing w:line="1" w:lineRule="auto"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
@@ -2479,7 +2480,7 @@
                                 </w:p>
                                 <w:p>
                                     <w:pPr>
-                                        <w:spacing w:line="-1" w:lineRule="auto"/>
+                                        <w:spacing w:line="1" w:lineRule="auto"/>
                                         <w:tabs>
                                             <w:tab w:val="left" w:pos="4214"/>
                                         </w:tabs>
@@ -2669,7 +2670,7 @@
                             </w:tblPrEx>
                             <w:trPr>
                                 <w:cantSplit/>
-                                <w:trHeight w:val="1134" w:hRule="exact"/>
+                                <w:trHeight w:val="650" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -2679,7 +2680,7 @@
                                 </w:tcPr>
                                 <w:p>
                                     <w:pPr>
-                                        <w:spacing w:line="-1" w:lineRule="auto"/>
+                                        <w:spacing w:line="30" w:lineRule="auto"/>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
@@ -2730,7 +2731,7 @@
                             </w:tblPrEx>
                             <w:trPr>
                                 <w:cantSplit/>
-                                <w:trHeight w:val="850" w:hRule="exact"/>
+                                <w:trHeight w:val="650" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -2852,7 +2853,7 @@
                             </w:tblPrEx>
                             <w:trPr>
                                 <w:cantSplit/>
-                                <w:trHeight w:val="850" w:hRule="exact"/>
+                                <w:trHeight w:val="650" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -2960,7 +2961,7 @@
                             </w:tblPrEx>
                             <w:trPr>
                                 <w:cantSplit/>
-                                <w:trHeight w:val="760" w:hRule="exact"/>
+                                <w:trHeight w:val="650" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -3064,15 +3065,6 @@
                     </w:tbl>
                     <w:p>
                         <w:pPr>
-                            <w:rPr>
-                                <w:rFonts w:hint="eastAsia"/>
-                                <w:sz w:val="24"/>
-                            </w:rPr>
-                        </w:pPr>
-                    </w:p>
-                    <w:p>
-                        <w:pPr>
-                            <w:spacing w:line="30" w:lineRule="auto"/>
                             <w:rPr>
                                 <w:rFonts w:hint="eastAsia"/>
                                 <w:sz w:val="24"/>
