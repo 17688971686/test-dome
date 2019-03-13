@@ -95,20 +95,16 @@ public class FilingServiceImpl implements FilingService {
             }
             int maxSeq = filingRepo.findCurMaxSeq(year)+1;
             //序号改为单个数字的形式，去掉之前保留3个有效数字的格式
-            /*if (maxSeq < 1000) {
-                fileNumValue = String.format("%03d", Integer.valueOf(maxSeq));
-            } else {
-                fileNumValue = maxSeq + "";
-            }*/
             if(maxSeq < 1){
                 maxSeq = 1;
             }
             //课题代码(课题代码2017KT001，归档编号2016KD17001)
+            String fileNum = maxSeq > 999 ? maxSeq + "" : String.format("%03d", maxSeq);
             StringBuilder fileNumValue = new StringBuilder();
             fileNumValue.append(domain.getFilingCode().substring(0, 4));
             fileNumValue.append(ProjectConstant.FILE_RECORD_KEY.KD.toString());
             fileNumValue.append(year.substring(2, 4));
-            fileNumValue.append(maxSeq);
+            fileNumValue.append(fileNum);
             domain.setFileNo(fileNumValue.toString());
         }
 

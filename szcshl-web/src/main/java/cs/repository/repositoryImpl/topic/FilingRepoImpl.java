@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 public class FilingRepoImpl extends AbstractRepository<Filing, String> implements FilingRepo {
 
     /**
-     * 生成最大收文编号
+     * 生成最大课题归档编号
      * @param yearName
      * @return
      */

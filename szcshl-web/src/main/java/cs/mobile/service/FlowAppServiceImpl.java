@@ -1071,11 +1071,6 @@ public class FlowAppServiceImpl implements FlowAppService {
                 addSuppLetter.setAppoveStatus(Constant.EnumState.YES.getValue());
                 //判断生成序号
                 int curYearMaxSeq = addSuppLetterRepo.findybMaxSeq(addSuppLetter.getFileType())+1;
-                /*if(curYearMaxSeq < 1000){
-                    seq = String.format("%03d", Integer.valueOf(curYearMaxSeq+1));
-                }else{
-                    seq = (curYearMaxSeq+1)+"";
-                }*/
                 if(curYearMaxSeq < 1){
                     curYearMaxSeq = 1;
                 }
@@ -1084,7 +1079,8 @@ public class FlowAppServiceImpl implements FlowAppService {
                 //查询年份
                 String year = DateUtils.converToString(addSuppLetter.getSuppLetterTime(),DateUtils.DATE_YEAR);
                 //生成存档编号,年份+类型+存档年份+存档序号
-                String fileNumber = year + ProjectConstant.FILE_RECORD_KEY.YD.toString() + DateUtils.converToString(addSuppLetter.getSuppLetterTime(), "yy") + curYearMaxSeq;
+                String fileNumber = curYearMaxSeq > 999 ? curYearMaxSeq + "" : String.format("%03d", curYearMaxSeq);
+                fileNumber = year + ProjectConstant.FILE_RECORD_KEY.YD.toString() + DateUtils.converToString(addSuppLetter.getSuppLetterTime(), "yy") + fileNumber;
                 addSuppLetter.setFileCode(fileNumber);
                 addSuppLetterRepo.save(addSuppLetter);
                 break;

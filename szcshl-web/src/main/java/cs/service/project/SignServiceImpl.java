@@ -1902,9 +1902,10 @@ public class SignServiceImpl implements SignService {
                     if (maxSeq < 1) {
                         maxSeq = 1;
                     }
+                    String fileNum = maxSeq > 999 ? maxSeq + "" : String.format("%03d", maxSeq);
                     //归档编号=发文年份+档案类型+存档年份+存档顺序号
-                    String fileNum = DateUtils.converToString(sign.getDispatchdate(), DateUtils.DATE_YEAR) + seqType
-                            + DateUtils.converToString(fileRecord.getFileDate(), "yy") + maxSeq;
+                    fileNum = DateUtils.converToString(sign.getDispatchdate(), DateUtils.DATE_YEAR) + seqType
+                            + DateUtils.converToString(fileRecord.getFileDate(), "yy") + fileNum;
                     //设置本次的发文序号
                     fileRecord.setFileSeq(maxSeq);
                     fileRecord.setFileNo(fileNum);
@@ -2775,8 +2776,8 @@ public class SignServiceImpl implements SignService {
         if (maxSeq < 1) {
             maxSeq = 1;
         }
-        //String fileNum = maxSeq > 999 ? maxSeq + "" : String.format("%03d", maxSeq);
-        sign.setSignNum(yearName + orgType + maxSeq);
+        String fileNum = maxSeq > 999 ? maxSeq + "" : String.format("%03d", maxSeq);
+        sign.setSignNum(yearName + orgType + fileNum);
         sign.setSignSeq(maxSeq);
     }
 

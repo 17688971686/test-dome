@@ -721,7 +721,8 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
                 //查询年份
                 String year = DateUtils.converToString(addSuppLetter.getSuppLetterTime(), DateUtils.DATE_YEAR);
                 //生成存档编号,年份+类型+存档年份+存档序号
-                String fileNumber = year + ProjectConstant.FILE_RECORD_KEY.YD.toString() + DateUtils.converToString(addSuppLetter.getSuppLetterTime(), "yy") + maxSeq;
+                String fileNumber = maxSeq > 999 ? maxSeq + "" : String.format("%03d", maxSeq);
+                fileNumber = year + ProjectConstant.FILE_RECORD_KEY.YD.toString() + DateUtils.converToString(addSuppLetter.getSuppLetterTime(), "yy") + fileNumber;
                 addSuppLetter.setFileCode(fileNumber);
                 addSuppLetterRepo.save(addSuppLetter);
                 break;

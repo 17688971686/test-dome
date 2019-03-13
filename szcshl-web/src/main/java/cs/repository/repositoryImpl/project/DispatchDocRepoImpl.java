@@ -83,10 +83,8 @@ public class DispatchDocRepoImpl extends AbstractRepository<DispatchDoc, String>
         sqlBuilder.setParam("yearName", yearName);
         if (Constant.EnumState.PROCESS.getValue().equals(seqType)) {
             sqlBuilder.append(" and " + DispatchDoc_.dispatchStage.getName() + " != :dispatchStage1 and  " + DispatchDoc_.dispatchStage.getName() + " != :dispatchStage2 ");
-            //sqlBuilder.setParam("dispatchStage1",DEVICE_BILL_HOMELAND).setParam("dispatchStage2",DEVICE_BILL_IMPORT);
         } else {
             sqlBuilder.append(" and (" + DispatchDoc_.dispatchStage.getName() + " != :dispatchStage1 or " + DispatchDoc_.dispatchStage.getName() + " != :dispatchStage2 )");
-            //sqlBuilder.setParam("dispatchStage1",DEVICE_BILL_HOMELAND).setParam("dispatchStage2",DEVICE_BILL_IMPORT);
         }
         sqlBuilder.setParam("dispatchStage1", ProjectConstant.REVIEW_STATE_ENUM.STAGEHOMELAND.getZhCode());
         sqlBuilder.setParam("dispatchStage2", ProjectConstant.REVIEW_STATE_ENUM.STAGEIMPORT.getZhCode());

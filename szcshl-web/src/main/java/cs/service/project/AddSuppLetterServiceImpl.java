@@ -559,6 +559,7 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
         if(maxSeq < 1){
             maxSeq = 1;
         }
+        //拟补充资料函属于函文件，序号从1开始递增就行了
         //String fileNum = maxSeq > 999 ? maxSeq + "" : String.format("%03d", maxSeq);
         String fileNumValue =  Constant.ADDSUPPER_PREFIX+"["+yearName+"]"+maxSeq;
         addSuppLetter.setFilenum(fileNumValue);

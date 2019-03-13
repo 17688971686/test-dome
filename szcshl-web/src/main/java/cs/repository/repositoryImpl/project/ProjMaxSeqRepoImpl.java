@@ -9,8 +9,6 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
-import java.util.UUID;
-
 /**
  * Created by ldm on 2018/4/11.
  */

@@ -131,15 +131,11 @@ public class TopicInfoServiceImpl implements TopicInfoService {
         if (!Validate.isString(domain.getTopicCode())) {
             String yearString = DateUtils.converToString(domain.getCreatedDate(), DateUtils.DATE_YEAR);
             int maxSeq = topicInfoRepo.findCurMaxSeq(yearString) + 1;
-            /*if (maxSeq < 1000) {
-                fileNumValue = String.format("%03d", Integer.valueOf(maxSeq));
-            } else {
-                fileNumValue = (maxSeq) + "";
-            }*/
             if(maxSeq < 1){
                 maxSeq = 1;
             }
-            domain.setTopicCode(yearString + ProjectConstant.FILE_RECORD_KEY.KT.toString() + maxSeq);
+            String fileNum = maxSeq > 999 ? maxSeq + "" : String.format("%03d", maxSeq);
+            domain.setTopicCode(yearString + ProjectConstant.FILE_RECORD_KEY.KT.toString() + fileNum);
         }
         topicInfoRepo.save(domain);
         //修改流程负责人
