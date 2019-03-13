@@ -574,25 +574,24 @@
         //流程提交
         vm.commitNextStep = function () {
             vm.activitiName =  vm.flow.curNode.activitiName;
-
             if (vm.flow.isSuspended) {
                 bsWin.error("该流程目前为暂停状态，不能进行流转操作！");
                 return;
             } else {
                 var checkResult = signFlowSvc.checkBusinessFill(vm);
                 if (checkResult.resultTag) {
-
                     flowSvc.commit(vm.isCommit, vm.flow, function (data) {
                         if (data.flag || data.reCode == "ok") {
                             if(vm.activitiName == "确认归档") {
-                                
                                 vm.isFileRecord = true;
+                                //重新刷新归档信息
+                                vm.fileRecord={};
+                                signFlowSvc.getChargeFilerecord(vm);
                             }
                             bsWin.success("操作成功！", function () {
                                 if(!vm.isFileRecord){
                                     $state.go('gtasks');
                                 }
-
                             })
                         } else {
                             bsWin.alert(data.reMsg);

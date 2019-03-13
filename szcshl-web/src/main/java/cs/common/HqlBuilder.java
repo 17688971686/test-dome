@@ -7,7 +7,6 @@ import org.hibernate.type.Type;
 import org.owasp.esapi.ESAPI;
 import org.owasp.esapi.codecs.Codec;
 import org.owasp.esapi.codecs.OracleCodec;
-import org.owasp.esapi.codecs.WindowsCodec;
 
 import java.util.ArrayList;
 import java.util.List;
