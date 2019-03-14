@@ -28,6 +28,10 @@ public class FtpPoolConfig extends GenericKeyedObjectPoolConfig{
 		 */
 		setTestOnBorrow(true);
 		/**
+		 * 设定在归还对象时是否进行有效性检查
+		 */
+		setTestOnReturn(true);
+		/**
 		 * 设定在进行后台对象清理时，每次检查对象数
 		 */
 		setNumTestsPerEvictionRun(GenericObjectPool.DEFAULT_NUM_TESTS_PER_EVICTION_RUN);

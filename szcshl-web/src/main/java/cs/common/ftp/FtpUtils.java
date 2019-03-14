@@ -1,6 +1,5 @@
 package cs.common.ftp;
 
-import cs.domain.sys.Ftp;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
@@ -39,7 +38,6 @@ public class FtpUtils {
         return client;
     }
 
-
     private String performPerFile(FTPClient client, String fileName) throws Exception{
         String content = "";
         try {
@@ -63,7 +61,6 @@ public class FtpUtils {
             logger.error("ftp 通信错误 或 文件IO出错, 下载文件成功状态:"+client.getRemoteAddress(), e1);
             throw e1;
         }
-
         return content;
     }
 
@@ -77,9 +74,9 @@ public class FtpUtils {
         }catch (Exception e){
             return false;
         }finally {
-            if(client != null){
+           /* if(client != null){
                 ftpClientPool.returnObject(k,client);
-            }
+            }*/
         }
         return true;
     }
@@ -146,9 +143,9 @@ public class FtpUtils {
         }catch (Exception e){
             logger.info("删除附件异常："+e.getMessage());
         }finally {
-            if(ftp != null){
+           /* if(ftp != null){
                 ftpClientPool.returnObject(config,ftp);
-            }
+            }*/
         }
         return doResult;
     }

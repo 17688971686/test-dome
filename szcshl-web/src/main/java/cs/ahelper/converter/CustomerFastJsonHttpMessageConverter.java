@@ -34,9 +34,9 @@ public class CustomerFastJsonHttpMessageConverter extends FastJsonHttpMessageCon
         OutputStream out = outputMessage.getBody();
         String text = JSON.toJSONString(obj, mapping, super.getFeatures());
         // 对文本做HTML特殊字符转义
-        String result = convertJson(text);
+        // String result = convertJson(text);
         //输出页面
-        out.write(result.getBytes(super.getCharset()));
+        out.write(text.getBytes(super.getCharset()));
     }
 
     public void setDefaultDateFormat(String defaultDateFormat) {

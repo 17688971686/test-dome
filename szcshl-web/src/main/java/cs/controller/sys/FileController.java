@@ -291,14 +291,13 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             e.printStackTrace();
             resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "附件上传失败，连接ftp服务失败，请核查！");
         } finally {
-            try {
+            /*try {
                 if(ftpClient != null){
                     ftpUtils.getFtpClientPool().returnObject(k,ftpClient);
                 }
             }catch (Exception ex){
 
-            }
-
+            }*/
         }
         resultMsg.setReMsg(resultMsg.getReMsg() + errorMsg.toString());
         return resultMsg;
@@ -362,13 +361,13 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         } catch (Exception e) {
             resultMsg = ResultMsg.error("附件确认异常，请联系管理员查看！");
         }finally {
-            try {
+            /*try {
                 if(ftpClient != null){
                     ftpUtils.getFtpClientPool().returnObject(k,ftpClient);
                 }
             }catch (Exception ex){
 
-            }
+            }*/
         }
         return resultMsg;
     }
@@ -413,9 +412,9 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 if (out != null) {
                     out.close();
                 }
-                if(ftpClient != null){
+                /*if(ftpClient != null){
                     ftpUtils.getFtpClientPool().returnObject(k,ftpClient);
-                }
+                }*/
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -451,9 +450,9 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 if (out != null) {
                     out.close();
                 }
-                if(ftpClient != null){
+                /*if(ftpClient != null){
                     ftpUtils.getFtpClientPool().returnObject(k,ftpClient);
-                }
+                }*/
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -587,9 +586,9 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 if (downFile != null) {
                     Tools.deleteFile(downFile);
                 }
-                if(ftpClient != null){
+                /*if(ftpClient != null){
                     ftpUtils.getFtpClientPool().returnObject(k,ftpClient);
-                }
+                }*/
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -1605,13 +1604,13 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             errorMsg += e.getMessage();
             resultMsg = new ResultMsg(false, MsgCode.ERROR.getValue(), "文件保存异常！");
         }finally {
-            try {
+            /*try {
                 if(ftpClient != null){
                     ftpUtils.getFtpClientPool().returnObject(k,ftpClient);
                 }
             }catch (Exception ex){
 
-            }
+            }*/
         }
         //添加日记记录
         Log log = new Log();

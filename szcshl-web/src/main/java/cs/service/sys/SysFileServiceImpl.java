@@ -345,7 +345,7 @@ public class SysFileServiceImpl implements SysFileService {
                         }
                         boolean uploadResult = ftpUtils.putFile(ftpClient,k, relativeFileUrl, uploadFileName, IOStreamUtil.getStreamDownloadOutFile(sysFileDto.getFileUrl()));
                         if (uploadResult) {
-                            System.out.println("上传成功！还剩："+fileQueue.size()+"个附件！");
+                            //System.out.println("上传成功！还剩："+fileQueue.size()+"个附件！");
                             //保存数据库记录
                             if (fileExist) {
                                 sysFile.setModifiedBy(userId);
@@ -371,13 +371,13 @@ public class SysFileServiceImpl implements SysFileService {
             }catch (Exception e){
 
             }finally {
-                try {
+                /*try {
                     if(ftpClient != null){
                         ftpUtils.getFtpClientPool().returnObject(k,ftpClient);
                     }
                 }catch (Exception ex){
 
-                }
+                }*/
             }
 
             //保存附件
