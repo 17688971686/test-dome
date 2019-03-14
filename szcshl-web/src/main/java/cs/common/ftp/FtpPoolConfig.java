@@ -43,7 +43,7 @@ public class FtpPoolConfig extends GenericKeyedObjectPoolConfig{
 		/**
 		 * 对象池每个key最大实例化对象数
 		 */
-		setMaxTotalPerKey(30);
+		setMaxTotalPerKey(40);
 		/**
 		 * 对象池每个key最大的闲置对象数
 		 */
