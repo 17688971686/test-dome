@@ -406,7 +406,13 @@
 <!-- end table -->
 <!--<button class="btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印</button>-->
 <p style="text-align: center;">
-<button class=" btn btn-sm btn-primary" style="width: 100px; " ng-click="printFile(vm.model.signid,'SIGN' , 'STAGEBUDGET')">打印预览</button>
-<button class="btn btn-sm btn-primary" style="width: 100px;  " ng-click="printFile(vm.model.signid,'SIGN_OTHERFILE' , 'OTHER_FILE')">打印其它资料</button>
+<!--<button class=" btn btn-sm btn-primary" style="width: 100px; "
+        ng-click="printFile(vm.model.signid,'SIGN' , 'STAGEBUDGET')">打印预览</button>
+<button class="btn btn-sm btn-primary" style="width: 100px;  "
+        ng-click="printFile(vm.model.signid,'SIGN_OTHERFILE' , 'OTHER_FILE')">打印其它资料</button>-->
+    <button class=" btn btn-sm btn-primary" style="width: 100px; "
+            ng-click="downloadFile(vm.model.signid,'SIGN' , 'STAGEBUDGET')">下载</button>
+    <button class="btn btn-sm btn-primary" style="width: 100px;  "
+            ng-click="downloadFile(vm.model.signid,'SIGN_OTHERFILE' , 'OTHER_FILE')">下载其它资料</button>
 </p>
     <!-- E_项目概算 -->

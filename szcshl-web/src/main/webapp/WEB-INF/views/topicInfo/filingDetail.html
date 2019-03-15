@@ -309,5 +309,7 @@
     </table>
 </div>
 <!--
-<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印</button>-->
-<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="printFile(vm.model.id,'TOPICINFO' , 'TOPICINFO_FILERECORD')">打印预览</button>
+<!--<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;"
+        ng-click="printFile(vm.model.id,'TOPICINFO' , 'TOPICINFO_FILERECORD')">打印预览</button>-->
+<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;"
+        ng-click="downloadFile(vm.model.id,'TOPICINFO' , 'TOPICINFO_FILERECORD')">下载</button>

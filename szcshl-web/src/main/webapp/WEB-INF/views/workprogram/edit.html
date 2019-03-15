@@ -20,7 +20,7 @@
     </button>
     <go-back-flow></go-back-flow>   <!--流程回退按钮-->
     <flow-file-button></flow-file-button>   <!--附件上传按钮-->
-    <button  ng-if="vm.work.workreviveStage=='项目建议书'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="printFile(vm.work.id,'WORKPROGRAM','STAGESUG')">打印预览</button>
+    <!--<button  ng-if="vm.work.workreviveStage=='项目建议书'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="printFile(vm.work.id,'WORKPROGRAM','STAGESUG')">打印预览</button>
     <button  ng-if="vm.work.workreviveStage=='登记赋码'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="printFile(vm.work.id,'WORKPROGRAM','REGISTERCODE')">打印预览</button>
     <button  ng-if="vm.work.workreviveStage=='可行性研究报告'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="printFile(vm.work.id,'WORKPROGRAM','STAGESTUDY')">打印预览</button>
     <button  ng-if="vm.work.workreviveStage=='进口设备'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="printFile(vm.work.id,'WORKPROGRAM','STAGEDEVICE')">打印预览</button>
@@ -29,6 +29,16 @@
     <button  ng-if=" vm.work.workreviveStage=='其它'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="printFile(vm.work.id,'WORKPROGRAM','STAGEOTHER')">打印预览</button>
     <button ng-if="vm.work.expertSelectedDtoList" class="btn btn-sm btn-primary" style="width: 140px; margin: auto;"
             ng-click="printFile(vm.work.id,'WORKPROGRAM','INFORMATION')">打印专家信息预览
+    </button>-->
+    <button  ng-if="vm.work.workreviveStage=='项目建议书'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="downloadFile(vm.work.id,'WORKPROGRAM','STAGESUG')">下载</button>
+    <button  ng-if="vm.work.workreviveStage=='登记赋码'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="downloadFile(vm.work.id,'WORKPROGRAM','REGISTERCODE')">下载下载</button>
+    <button  ng-if="vm.work.workreviveStage=='可行性研究报告'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="downloadFile(vm.work.id,'WORKPROGRAM','STAGESTUDY')">下载</button>
+    <button  ng-if="vm.work.workreviveStage=='进口设备'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="downloadFile(vm.work.id,'WORKPROGRAM','STAGEDEVICE')">下载</button>
+    <button  ng-if="vm.work.workreviveStage=='设备清单（国产）' ||vm.work.workreviveStage=='设备清单（进口）'" class="btn btn-sm btn-primary" style="width: 70px;" ng-click="downloadFile(vm.work.id,'WORKPROGRAM','STAGEIMPORT')">下载</button>
+    <button  ng-if="vm.work.workreviveStage=='资金申请报告'" class="btn btn-sm btn-primary" style="width: 100px; margin: auto;" ng-click="downloadFile(vm.work.id,'WORKPROGRAM','STAGEREPORT')">下载</button>
+    <button  ng-if=" vm.work.workreviveStage=='其它'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="downloadFile(vm.work.id,'WORKPROGRAM','STAGEOTHER')">下载</button>
+    <button ng-if="vm.work.expertSelectedDtoList" class="btn btn-sm btn-primary" style="width: 140px; margin: auto;"
+            ng-click="downloadFile(vm.work.id,'WORKPROGRAM','INFORMATION')">下载专家信息预览
     </button>
     <button ng-if="vm.work.expertSelectedDtoList"  class="btn btn-sm btn-primary" style="width: 100px; margin: auto;"
              ng-click="exportInfo(vm.work.id,'WORKPROGRAM','INFORMATION' , '专家信息导出')">专家信息导出

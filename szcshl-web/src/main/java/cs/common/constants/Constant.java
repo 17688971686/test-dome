@@ -513,7 +513,80 @@ public class Constant {
         ACHIEVEMENT_USER_DETAIL("achievement/achievementUserDetail","员工业绩统计一栏表"),
         //ACHIEVEMENT_ASSIST_PROREVIEW("achievement/assistProReview","协办人评审项目一览表"),
         PROJECT_STOP("print/projectStop" , "项目暂停申请表"),
-        PROJECT_VPROJECT("print/vProject" , "委项目处理表")
+        PROJECT_VPROJECT("print/vProject" , "委项目处理表"),
+
+        /***************各阶段下载模板********************/
+        DOWNLOAD_SIGN_XMJYS("download/sign/xmjys" , "申报表-建议书"),
+        DOWNLOAD_WORKPROGRAM_XMJYS("download/workprogram/xmjys" , "工作方案-建议书"),
+        DOWNLOAD_DISPATHDOC_XMJYS("download/dispathDoc/xmjys" , "发文-建议书"),
+        DOWNLOAD_FILERECORD_XMJYS("download/filerecord/xmjys" , "归档-建议书"),
+
+        DOWNLOAD_DISPATHDOC_KXXYJ("download/dispathDoc/kxxyj" , "发文-可研"),
+        DOWNLOAD_FILERECORD_KXXYJ("download/filerecord/kxxyj" , "归档-可研"),
+
+        DOWNLOAD_SIGN_XMGS("download/sign/xmgs" , "申报表-概算"),
+        DOWNLOAD_DISPATHDOC_XMGS("download/dispathDoc/xmgs" , "发文-概算"),
+        DOWNLOAD_FILERECORD_XMGS("download/filerecord/xmgs" , "归档-概算"),
+        DOWNLOAD_FILERECORD_XMGSXS("download/filerecord/xmgsxs" , "归档-概算-协审"),
+
+        DOWNLOAD_SIGN_ZJSB("download/sign/zjsb" , "申报表-资金申报"),
+        DOWNLOAD_WORKPROGRAM_ZJSB("download/workprogram/zjsb" , "工作方案-资金申报"),
+        DOWNLOAD_FILERECORD_ZJSB("download/filerecord/zjsb" , "归档-资金申报"),
+        DOWNLOAD_DISPATHDOC_ZJSB("download/dispathDoc/zjsb" , "发文-资金申报"),
+
+        DOWNLOAD_SIGN_JKSB("download/sign/jksb" , "申报表-进口设备"),
+        DOWNLOAD_WORKPROGRAM_JKSB("download/workprogram/jksb" , "工作方案-进口设备"),
+        DOWNLOAD_FILERECORD_JKSB("download/filerecord/jksb" , "归档-进口设备"),
+        DOWNLOAD_DISPATHDOC_JKSB("download/dispathDoc/jksb" , "发文-进口设备"),
+
+        DOWNLOAD_SIGN_SBQD("download/sign/sbqd" , "申报表-设备清单"),
+        DOWNLOAD_WORKPROGRAM_SBQD("download/workprogram/sbqd" , "工作方案-设备清单"),
+        DOWNLOAD_FILERECORD_SBQD("download/filerecord/sbqd" , "归档-设备清单"),
+        DOWNLOAD_DISPATHDOC_SBQD("download/dispathDoc/sbqd" , "发文-设备清单"),
+
+
+        DOWNLOAD_WORKPROGRAM_OTHER("download/workprogram/other" , "工作方案-其它"),
+        DOWNLOAD_FILERECORD_OTHER("download/filerecord/other" , "归档-其它"),
+        DOWNLOAD_DISPATHDOC_OTHER("download/dispathDoc/other" , "发文-其它"),
+
+        DOWNLOAD_FILERECORD_DJFM("download/filerecord/djfm" , "归档-登记赋码"),
+        DOWNLOAD_DISPATHDOC_DJFM("download/dispathDoc/djfm" , "发文-登记赋码"),
+
+        DOWNLOAD_INFORMATION("download/expert_information", "专家信息"),
+
+        //专家评审费
+        DOWNLOAD_EXPERT_PAYMENT("download/expert_payment", "专家评审费"),
+        DOWNLOAD_EXPERT_PAYMENT_one("download/expert_payment_one", "专家评审费"),
+
+        //专家评分
+        DOWNLOAD_EXPERT_SCORD("download/expert_score", "专家评分"),
+
+        //单位评分
+        DOWNLOAD_UNIT_SCORE("download/unit_score", "单位评分"),
+
+        //其它资料
+        DOWNLOAD_OTHER_FILE("download/other", "其它资料"),
+        //拟补充资料函
+        DOWNLOAD_ADDSUPPLETER("download/common", "拟补充资料函"),
+        //专家申请表
+        DOWNLOAD_EXPERT("download/expert", "专家申请表"),
+        //专家聘书
+        DOWNLOAD_EXPERTOFFER("download/expertoffer", "专家聘书"),
+        //课题研究
+        DOWNLOAD_TOPICINFO_WORKPROGRAM("download/topicInfo/workProgramTopic", "课题研究_工作方案"),
+        DOWNLOAD_TOPICINFO_FILERECORD("download/topicInfo/fileTopic", "课题研究_归档"),
+
+        //月报简报
+        DOWNLOAD_MONTHLY("download/monthly/monthly", "月报简报"),
+
+        //借阅档案
+        DOWNLOAD_ARCHIVES_DETAIL("download/archives/archivesDetail", "借阅档案"),
+
+        DOWNLOAD_DD_REGISTER_FILE("download/registerFile", "拟补充资料清单"),
+        DOWNLOAD_PROJECT_STOP("download/projectStop" , "项目暂停申请表"),
+        DOWNLOAD_PROJECT_VPROJECT("download/vProject" , "委项目处理表"),
+
+
         ;
 
         private String key;

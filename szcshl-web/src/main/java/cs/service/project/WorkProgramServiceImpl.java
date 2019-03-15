@@ -732,7 +732,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         }
 
 
-        if (result.length() > 0) {
+        if (result.length() >= 0) {
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(), result + "生成失败！", null);
         } else {
 

@@ -33,8 +33,10 @@
     </tbody>
 </table>
 
+<!--<button class="form-control btn-sm btn-primary" ng-if="vm.model.expertReviewDto.expertSelectedDtoList"
+        style="width: 200px; margin: auto;" ng-click="printFile(vm.model.signid,'SIGN_EXPERT' , 'SIGN_EXPERT_SCORE')">打印预览</button>-->
 <button class="form-control btn-sm btn-primary" ng-if="vm.model.expertReviewDto.expertSelectedDtoList"
-        style="width: 200px; margin: auto;" ng-click="printFile(vm.model.signid,'SIGN_EXPERT' , 'SIGN_EXPERT_SCORE')">打印预览</button>
+        style="width: 200px; margin: auto;" ng-click="downloadFile(vm.model.signid,'SIGN_EXPERT' , 'SIGN_EXPERT_SCORE')">下载</button>
 
 <!-- end 专家评分 -->
 
@@ -68,7 +70,10 @@
     </tr>
     </tbody>
 </table>
-<button ng-if="vm.model.unitScoreDto" class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="printFile(vm.model.unitScoreDto.id,'SIGN_UNIT' , 'SIGN_UNIT_SCORE')">打印预览</button>
+<#--<button ng-if="vm.model.unitScoreDto" class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;"
+        ng-click="printFile(vm.model.unitScoreDto.id,'SIGN_UNIT' , 'SIGN_UNIT_SCORE')">打印预览</button>-->
+<button ng-if="vm.model.unitScoreDto" class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;"
+        ng-click="downloadFile(vm.model.unitScoreDto.id,'SIGN_UNIT' , 'SIGN_UNIT_SCORE')">下载</button>
 
 <!-- end 单位评分 -->
 

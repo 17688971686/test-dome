@@ -82,5 +82,8 @@
         </tr>
         </tbody>
     </table>    <!-- end table -->
-    <button ng-show="vm.isDisplay"  class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="printFile(vm.suppletter.id,'ADDSUPPLETER' ,'ADDSUPPLETER')">打印预览</button>
+   <!-- <button ng-show="vm.isDisplay"  class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;"
+            ng-click="printFile(vm.suppletter.id,'ADDSUPPLETER' ,'ADDSUPPLETER')">打印预览</button>-->
+    <button ng-show="vm.isDisplay"  class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;"
+            ng-click="downloadFile(vm.suppletter.id,'ADDSUPPLETER' ,'ADDSUPPLETER')">下载</button>
 </div>

@@ -539,8 +539,13 @@
 <!--<button class="btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印
 </button>-->
 <p style="text-align: center;">
-    <button ng-if="vm.fileRecord.fileReviewstage == '项目建议书'" class="btn btn-sm btn-primary" style="width: 100px; " ng-click="printFile(vm.model.signid,'FILERECORD' , 'STAGESUG')">打印预览</button>
-    <button ng-if="vm.fileRecord.fileReviewstage == '登记赋码'" class="btn btn-sm btn-primary" style="width: 100px; " ng-click="printFile(vm.model.signid,'FILERECORD' , 'REGISTERCODE')">打印预览</button>
+    <!--<button ng-if="vm.fileRecord.fileReviewstage == '项目建议书'" class="btn btn-sm btn-primary" style="width: 100px; " ng-click="printFile(vm.model.signid,'FILERECORD' , 'STAGESUG')">打印预览</button>
+    <button ng-if="vm.fileRecord.fileReviewstage == '登记赋码'" class="btn btn-sm btn-primary" style="width: 100px; " ng-click="printFile(vm.model.signid,'FILERECORD' , 'REGISTERCODE')">打印预览</button>-->
+    <button ng-if="vm.fileRecord.fileReviewstage == '项目建议书'" class="btn btn-sm btn-primary" style="width: 100px; "
+            ng-click="downloadFile(vm.model.signid,'FILERECORD' , 'STAGESUG')">下载</button>
+    <button ng-if="vm.fileRecord.fileReviewstage == '登记赋码'" class="btn btn-sm btn-primary" style="width: 100px; "
+            ng-click="downloadFile(vm.model.signid,'FILERECORD' , 'REGISTERCODE')">下载</button>
+
     <button class="btn btn-sm btn-primary" style="margin-left:20px;"
             ng-click="vm.otherFileWindow(vm.model.signid)">打印其它资料
     </button></p>
