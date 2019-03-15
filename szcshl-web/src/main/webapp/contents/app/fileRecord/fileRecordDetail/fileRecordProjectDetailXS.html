@@ -904,7 +904,7 @@
 <button class="btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="vm.templatePage('sign_filerecord_xmgs_xs')">打印
 -->
 <p style="text-align: center;">
-    <button class="btn btn-sm btn-primary" style="width: 100px; "
+    <!--<button class="btn btn-sm btn-primary" style="width: 100px; "
             ng-click="printFile(vm.model.signid,'FILERECORD' , 'STAGEBUDGET_XS')">打印预览
     </button>
     <button class="btn btn-sm btn-primary" style="margin-left:20px;"
@@ -912,6 +912,15 @@
     </button>
     <button class="btn btn-sm btn-primary" style="width: 100px;  "
             ng-click="printFile(vm.model.signid,'FILERECOED_OTHERFILE' , 'DRAWING_FILE')">打印图纸备注
+    </button>-->
+    <button class="btn btn-sm btn-primary" style="width: 100px; "
+            ng-click="downloadFile(vm.model.signid,'FILERECORD' , 'STAGEBUDGET_XS')">下载
+    </button>
+    <button class="btn btn-sm btn-primary" style="margin-left:20px;"
+            ng-click="vm.otherFileWindow(vm.model.signid)">下载其它资料
+    </button>
+    <button class="btn btn-sm btn-primary" style="width: 100px;  "
+            ng-click="downloadFile(vm.model.signid,'FILERECOED_OTHERFILE' , 'DRAWING_FILE')">下载图纸备注
     </button>
 </p>
 <!-- 项目概算 -->

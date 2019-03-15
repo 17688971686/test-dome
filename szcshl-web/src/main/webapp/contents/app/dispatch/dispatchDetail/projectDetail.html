@@ -278,11 +278,18 @@
     </tbody>
 </table>
 
-<button ng-if="vm.dispatchDoc.dispatchStage == '项目建议书'" class="form-control btn-sm btn-primary"
+<!--<button ng-if="vm.dispatchDoc.dispatchStage == '项目建议书'" class="form-control btn-sm btn-primary"
         style="width: 100px; margin: auto;" ng-click="printFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGESUG')">打印预览
 </button>
 
 <button ng-if="vm.dispatchDoc.dispatchStage == '登记赋码'" class="form-control btn-sm btn-primary"
         style="width: 100px; margin: auto;" ng-click="printFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'REGISTERCODE')">打印预览
+</button>-->
+<button ng-if="vm.dispatchDoc.dispatchStage == '项目建议书'" class="form-control btn-sm btn-primary"
+        style="width: 100px; margin: auto;" ng-click="downloadFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGESUG')">下载
+</button>
+
+<button ng-if="vm.dispatchDoc.dispatchStage == '登记赋码'" class="form-control btn-sm btn-primary"
+        style="width: 100px; margin: auto;" ng-click="downloadFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'REGISTERCODE')">下载
 </button>
 <!--  E 项目建议书-->

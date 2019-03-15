@@ -19,7 +19,7 @@
     </button>
     <button class="btn btn-sm btn-primary" ng-click="vm.clickUploadBt();" id="upload_file_bt">上传附件</button>
     <button class="btn btn-sm btn-primary" ng-click="vm.clickDetailBt();" id="detail_file_bt">查看附件</button>
-    <button  ng-if="vm.dispatchDoc.dispatchStage=='资金申请报告'"  class=" btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="printFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGEREPORT')">打印预览</button>
+    <#--<button  ng-if="vm.dispatchDoc.dispatchStage=='资金申请报告'"  class=" btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="printFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGEREPORT')">打印预览</button>
     <button  ng-if="vm.dispatchDoc.dispatchStage=='设备清单（国产）'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="printFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGEHOMELAND')">打印预览</button>
     <button  ng-if="vm.dispatchDoc.dispatchStage=='设备清单（进口）'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="printFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGEIMPORT')">打印预览</button>
     <button  ng-if="vm.dispatchDoc.dispatchStage=='可行性研究报告'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="printFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGESTUDY')">打印预览</button>
@@ -28,6 +28,17 @@
     <button  ng-if="vm.dispatchDoc.dispatchStage=='项目概算'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="printFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGEBUDGET')">打印预览</button>
     <button  ng-if="vm.dispatchDoc.dispatchStage=='项目建议书'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="printFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGESUG')">打印预览</button>
     <button  ng-if="vm.dispatchDoc.dispatchStage=='登记赋码'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="printFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'REGISTERCODE')">打印预览</button>
+-->
+
+    <button  ng-if="vm.dispatchDoc.dispatchStage=='资金申请报告'"  class=" btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="downloadFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGEREPORT')">下载</button>
+    <button  ng-if="vm.dispatchDoc.dispatchStage=='设备清单（国产）'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="downloadFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGEHOMELAND')">下载</button>
+    <button  ng-if="vm.dispatchDoc.dispatchStage=='设备清单（进口）'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="downloadFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGEIMPORT')">下载</button>
+    <button  ng-if="vm.dispatchDoc.dispatchStage=='可行性研究报告'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="downloadFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGESTUDY')">下载</button>
+    <button  ng-if="vm.dispatchDoc.dispatchStage=='进口设备'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="downloadFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGEDEVICE')">下载</button>
+    <button  ng-if="vm.dispatchDoc.dispatchStage=='其它'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="downloadFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGEOTHER')">下载</button>
+    <button  ng-if="vm.dispatchDoc.dispatchStage=='项目概算'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="downloadFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGEBUDGET')">下载</button>
+    <button  ng-if="vm.dispatchDoc.dispatchStage=='项目建议书'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="downloadFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGESUG')">下载</button>
+    <button  ng-if="vm.dispatchDoc.dispatchStage=='登记赋码'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="downloadFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'REGISTERCODE')">下载</button>
 
 </div>
 <div class="toolbar" ng-show="vm.isControl">

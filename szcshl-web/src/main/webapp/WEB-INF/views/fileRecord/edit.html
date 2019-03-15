@@ -15,7 +15,7 @@
         <button class="btn btn-sm btn-primary" ng-click="vm.clickUploadBt();" id="upload_file_bt">上传附件</button>
         <button class="btn btn-sm btn-primary" ng-click="vm.clickDetailBt();" id="detail_file_bt">查看附件</button>
 
-        <button ng-if="vm.fileRecord.fileReviewstage=='项目建议书'" class="btn btn-sm btn-primary" style="width: 70px;" ng-click="printFile(vm.fileRecord.signId,'FILERECORD' , 'STAGESUG')">打印预览</button>
+      <!--  <button ng-if="vm.fileRecord.fileReviewstage=='项目建议书'" class="btn btn-sm btn-primary" style="width: 70px;" ng-click="printFile(vm.fileRecord.signId,'FILERECORD' , 'STAGESUG')">打印预览</button>
 
         <button ng-if="vm.fileRecord.fileReviewstage=='登记赋码'" class="btn btn-sm btn-primary" style="width: 70px;" ng-click="printFile(vm.fileRecord.signId,'FILERECORD' , 'REGISTERCODE')">打印预览</button>
 
@@ -38,7 +38,30 @@
                 ng-click="vm.otherFileWindow(vm.fileRecord.signId)">打印其它资料
         </button>
         <button ng-if=" vm.fileRecord.fileReviewstage=='项目概算'" class="btn btn-sm btn-primary" style="width: 100px;  " ng-click="printFile(vm.fileRecord.signId ,'FILERECOED_OTHERFILE' , 'DRAWING_FILE')">打印图纸备注</button>
+-->
+        <button ng-if="vm.fileRecord.fileReviewstage=='项目建议书'" class="btn btn-sm btn-primary" style="width: 70px;" ng-click="downloadFile(vm.fileRecord.signId,'FILERECORD' , 'STAGESUG')">下载</button>
 
+        <button ng-if="vm.fileRecord.fileReviewstage=='登记赋码'" class="btn btn-sm btn-primary" style="width: 70px;" ng-click="downloadFile(vm.fileRecord.signId,'FILERECORD' , 'REGISTERCODE')">下载</button>
+
+
+        <button ng-if="vm.fileRecord.fileReviewstage=='可行性研究报告'" class="btn btn-sm btn-primary" style="width: 70px; " ng-click="downloadFile(vm.fileRecord.signId,'FILERECORD' , 'STAGESTUDY')">下载</button>
+
+
+        <button ng-if="vm.fileRecord.fileReviewstage=='资金申请报告'" class="btn btn-sm btn-primary" style="width: 70px; " ng-click="downloadFile(vm.fileRecord.signId,'FILERECORD' , 'STAGEREPORT')">下载</button>
+
+        <button ng-if="!vm.isassistproc && vm.fileRecord.fileReviewstage=='项目概算'" class="btn btn-sm btn-primary" style="width: 70px;" ng-click="downloadFile(vm.fileRecord.signId,'FILERECORD' , 'STAGEBUDGET')">下载</button>
+
+        <button ng-if="vm.isassistproc && vm.fileRecord.fileReviewstage=='项目概算'" class="btn btn-sm btn-primary" style="width: 70px;" ng-click="downloadFile(vm.fileRecord.signId,'FILERECORD' , 'STAGEBUDGET_XS')">下载</button>
+
+        <button ng-if="vm.fileRecord.fileReviewstage=='进口设备'" class="btn btn-sm btn-primary"  style="width: 70px;" ng-click="downloadFile(vm.fileRecord.signId,'FILERECORD' , 'STAGEDEVICE')">下载</button>
+
+        <button ng-if="vm.fileRecord.fileReviewstage=='设备清单（国产）' ||vm.fileRecord.fileReviewstage=='设备清单（进口）'" class="btn btn-sm btn-primary" style="width: 70px;" ng-click="downloadFile(vm.fileRecord.signId,'FILERECORD' , 'STAGEHOMELAND')">下载</button>
+
+
+        <button class="btn btn-sm btn-primary" style="margin-left:20px;"
+                ng-click="vm.otherFileWindow(vm.fileRecord.signId)">下载其它资料
+        </button>
+        <button ng-if=" vm.fileRecord.fileReviewstage=='项目概算'" class="btn btn-sm btn-primary" style="width: 100px;  " ng-click="downloadFile(vm.fileRecord.signId ,'FILERECOED_OTHERFILE' , 'DRAWING_FILE')">下载图纸备注</button>
 
     </div>
     <div class="toolbar" ng-show="vm.isControl">

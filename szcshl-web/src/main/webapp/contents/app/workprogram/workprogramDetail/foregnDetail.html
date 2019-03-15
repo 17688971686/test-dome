@@ -214,11 +214,17 @@
             </tr>
         </table>
         <p style="text-align: center;margin-top: 5px;">
-            <button class="btn btn-sm btn-primary"
+            <!--<button class="btn btn-sm btn-primary"
                     ng-click="printFile(w.id,'WORKPROGRAM','STAGEDEVICE')">打印预览
             </button>
             <button ng-if="w.expertSelectedDtoList"  class="btn btn-sm btn-primary"
                     ng-click="printFile(w.id,'WORKPROGRAM','INFORMATION')">打印专家信息预览
+            </button>-->
+            <button class="btn btn-sm btn-primary"
+                    ng-click="downloadFile(w.id,'WORKPROGRAM','STAGEDEVICE')">下载
+            </button>
+            <button ng-if="w.expertSelectedDtoList"  class="btn btn-sm btn-primary"
+                    ng-click="downloadFile(w.id,'WORKPROGRAM','INFORMATION')">下载专家信息预览
             </button>
             <button ng-if="w.expertSelectedDtoList"  class="btn btn-sm btn-primary"
                     ng-click="exportInfo(w.id,'WORKPROGRAM','INFORMATION' , '专家信息导出')">专家信息导出
@@ -439,12 +445,18 @@
             </tr>
         </table>
         <p style="text-align: center;margin-top: 5px;">
-            <button class="btn btn-sm btn-primary"
+            <!--<button class="btn btn-sm btn-primary"
                     ng-click="printFile(w.id,'WORKPROGRAM','STAGEDEVICE')">打印预览
             </button>
             <button ng-if="w.expertSelectedDtoList" class="btn btn-sm btn-primary"
                     ng-click="printFile(w.id,'WORKPROGRAM','INFORMATION')">打印专家信息预览
-            </button>
+            </button>-->
+                <button class="btn btn-sm btn-primary"
+                        ng-click="downloadFile(w.id,'WORKPROGRAM','STAGEDEVICE')">下载
+                </button>
+                <button ng-if="w.expertSelectedDtoList" class="btn btn-sm btn-primary"
+                        ng-click="downloadFile(w.id,'WORKPROGRAM','INFORMATION')">下载专家信息预览
+                </button>
             <button ng-if="w.expertSelectedDtoList"  class="btn btn-sm btn-primary"
                     ng-click="exportInfo(w.id,'WORKPROGRAM','INFORMATION' , '专家信息导出')">专家信息导出
             </button>

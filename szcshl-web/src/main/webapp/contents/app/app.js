@@ -60,7 +60,7 @@
             return formatDate;
         }
     })
-        .config(["$stateProvider", "$locationProvider", "$urlRouterProvider", 'cfpLoadingBarProvider', function ($stateProvider, $locationProvider, $urlRouterProvider, cfpLoadingBarProvider) {
+        .config(["$stateProvider", "$locationProvider", "$urlRouterProvider", 'cfpLoadingBarProvider', function ($stateProvider, $locationProvider, $urlRouterProvider, cfpLoadingBarProvider ) {
             $locationProvider.hashPrefix(''); // 1.6.x版本使用路由功能需加上这句
             cfpLoadingBarProvider.parentSelector = '#loading-bar-container';
             cfpLoadingBarProvider.spinnerTemplate = '<div style="position:fixed;width:100%;height:100%;left:0;top:0; z-index:10001;background:rgba(0, 0, 0, 0.3);overflow: hidden;"><div style="position: absolute;top:30%; width: 400px;height:40px;left:50%;"><i class="fa fa-spinner fa-pulse fa-1x fa-fw"></i>数据加载中...</div></div>';
@@ -1410,7 +1410,7 @@
                 })
 
             //end 博士后基地结束
-        }]).run(function ($rootScope, $http, $state, $stateParams, bsWin) {
+        }]).run(function ($rootScope, $http, $state, $stateParams, bsWin , FileSaver) {
         $rootScope.rootPath = rootPath;
         $rootScope.DICT = DICTOBJ;
         //kendo 语言
@@ -1593,6 +1593,102 @@
                 }).data("kendoWindow").center().open();
             }
         }
+
+        //打印预览-下载，生成word模板直接预览
+        $rootScope.downloadFile = function (businessId, businessType, stageType) {
+            if (!businessId || !businessType || !stageType) {
+                bsWin.alert("没有项目阶段，找不到对应的打印模板，打印预览失败！");
+            } else {
+                var httpOptions = {
+                    method: 'get',
+                    url: rootPath + "/file/downloadPreview/" + businessId + "/" + businessType + "/" + stageType,
+                    headers : {
+                        "contentType" : "application/json;charset=utf-8"
+                    },
+                    traditional : true,
+                    dataType : "json",
+                    responseType: 'arraybuffer',
+                }
+                var httpSuccess = function success(response) {
+                    var blob = new Blob([response.data] , {type : "application/msword"});
+                    var d = new Date();
+                    var fileName =  d.getFullYear() + (d.getMonth() + 1) + d.getDate()  + d.getHours()  + d.getMinutes() +  d.getSeconds();
+                    switch (businessType){
+                        case "SIGN":
+                            fileName += "项目报审登记表.doc";
+                            break;
+                        case "WORKPROGRAM":
+                            if("INFORMATION" == stageType){
+                                fileName += "专家信息表.doc";
+                            }else{
+                                fileName += "工作方案表.doc";
+                            }
+
+                            break;
+                        case "DISPATCHDOC":
+                            fileName += "发文审批表.doc";
+                            break;
+                        case "FILERECORD":
+                            fileName += "归档表.doc";
+                            break;
+                        case "SIGN_OTHERFILE":
+                            if(stageType == 'OTHER_FILE'){
+                                fileName += "其他资料.doc";
+                            }else if(stageType == 'DRAWING_FILE'){
+                                fileName += "图纸资料.doc";
+                            }
+                            break;
+                        case "ADDSUPPLETER":
+                            fileName += "拟补充资料函.doc";
+                            break;
+                        case "EXPERT" :
+                            fileName += "专家申请表.doc";
+                            break;
+                        case "EXPERTOFFER":
+                            fileName += "专家聘书表.doc";
+                            break;
+                        case "TOPICINFO":
+                            if(stageType == 'TOPICINFO_FILERECORD'){
+                                fileName += "课题研究归档表.doc";
+                            }else if(stageType == 'TOPICINFO_WORKPROGRAM'){
+                                fileName += "课题研究工作方案.doc";
+                            }
+                            break;
+                        case "MONTHLY":
+                            fileName += "月报简报.doc";
+                            break;
+                        case "ARCHIVES":
+                            fileName += "借阅档案.doc";
+                            break;
+                        case "ADDSUPPLEFILE":
+                            fileName += "补充资料清单.doc";
+                            break;
+                        case "VPROJECT":
+                            fileName += "委项目处理表.doc";
+                            break;
+                        case "PROJECTSTOP":
+                            fileName += "项目暂停表.doc";
+                            break;
+
+                    }
+                    if("SIGN_EXPERT_PAY" == stageType){
+                        fileName += "专家评审费.doc";
+                    }else if(stageType == 'SIGN_EXPERT_SCORE'){
+                        fileName += "专家评分.doc";
+                    }else if(stageType == 'SIGN_UNIT_SCORE'){
+                        fileName += "单位评分.doc";
+                    }
+                    FileSaver.saveAs(blob, fileName);
+                };
+                common.http({
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+
+            }
+        }
+
         //评审费打印。判断开户行和银行账户信息完不完整
         $rootScope.isBankCard = function (signid, payData) {
             var flag = false;
@@ -1630,7 +1726,8 @@
                     var idStr = ids.join(',');
 
                     if (!flag) {
-                        $rootScope.printFile(idStr, 'SIGN_EXPERT', 'SIGN_EXPERT_PAY');
+                        // $rootScope.printFile(idStr, 'SIGN_EXPERT', 'SIGN_EXPERT_PAY');
+                        $rootScope.downloadFile(idStr, 'SIGN_EXPERT', 'SIGN_EXPERT_PAY');
                     }
                 }
 

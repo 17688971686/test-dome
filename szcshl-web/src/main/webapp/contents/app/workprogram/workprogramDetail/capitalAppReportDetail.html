@@ -202,9 +202,15 @@
             </tr>
         </table>
     </div>
-    <button  class="form-control btn-sm btn-primary"  style="width: 100px; margin: auto;display: inline;margin-left: 45%" ng-click="printFile(w.id,'WORKPROGRAM','STAGEREPORT')">打印预览</button>
+    <!--<button  class="form-control btn-sm btn-primary"  style="width: 100px; margin: auto;display: inline;margin-left: 45%"
+             ng-click="printFile(w.id,'WORKPROGRAM','STAGEREPORT')">打印预览</button>
     <button ng-if="w.expertSelectedDtoList"  class="form-control btn-sm btn-primary"
             style="width: 120px; margin: auto;display: inline"  ng-click="printFile(w.id,'WORKPROGRAM','INFORMATION')">打印专家信息预览
+    </button>-->
+    <button  class="form-control btn-sm btn-primary"  style="width: 100px; margin: auto;display: inline;margin-left: 45%"
+             ng-click="downloadFile(w.id,'WORKPROGRAM','STAGEREPORT')">下载</button>
+    <button ng-if="w.expertSelectedDtoList"  class="form-control btn-sm btn-primary"
+            style="width: 120px; margin: auto;display: inline"  ng-click="downloadFile(w.id,'WORKPROGRAM','INFORMATION')">下载专家信息预览
     </button>
     <button ng-if="w.expertSelectedDtoList"  class="form-control btn-sm btn-primary"
             style="width: 120px; margin: auto;display: inline"  ng-click="exportInfo(w.id,'WORKPROGRAM','INFORMATION' , '专家信息导出')">专家信息导出
@@ -404,13 +410,21 @@
         </table>
     </div>
     <p style="width: 100%;text-align: center;">
-        <button class="form-control btn-sm btn-primary"
+        <!--<button class="form-control btn-sm btn-primary"
                 style="width: 100px; margin: auto;display: inline;margin-left: 45%"
                 ng-click="printFile(w.id,'WORKPROGRAM','STAGEREPORT')">打印预览
         </button>
         <button ng-if="w.expertSelectedDtoList" class="form-control btn-sm btn-primary"
                 style="width: 120px; margin: auto;display: inline"
                 ng-click="printFile(w.id,'WORKPROGRAM','INFORMATION')">打印专家信息预览
+        </button>-->
+        <button class="form-control btn-sm btn-primary"
+                style="width: 100px; margin: auto;display: inline;margin-left: 45%"
+                ng-click="downloadFile(w.id,'WORKPROGRAM','STAGEREPORT')">下载
+        </button>
+        <button ng-if="w.expertSelectedDtoList" class="form-control btn-sm btn-primary"
+                style="width: 120px; margin: auto;display: inline"
+                ng-click="downloadFile(w.id,'WORKPROGRAM','INFORMATION')">下载专家信息预览
         </button>
         <button ng-if="w.expertSelectedDtoList"  class="form-control btn-sm btn-primary"
                 style="width: 120px; margin: auto;display: inline"  ng-click="exportInfo(w.id,'WORKPROGRAM','INFORMATION' , '专家信息导出')">专家信息导出

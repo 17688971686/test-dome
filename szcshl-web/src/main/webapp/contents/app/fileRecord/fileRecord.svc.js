@@ -16,7 +16,7 @@
             if (!businessId) {
                 bsWin.alert("没有项目阶段，找不到对应的打印模板，打印预览失败！");
             } else {
-                var url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?version=" + (new Date()).getTime() + "&file=" + rootPath + "/file/otherFilePrint/" + businessId + "/" +fileId ;
+               /* var url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?version=" + (new Date()).getTime() + "&file=" + rootPath + "/file/otherFilePrint/" + businessId + "/" +fileId ;
                 $("#iframePreview").attr("src", url);
                 $("#previewModal").kendoWindow({
                     width: "80%",
@@ -26,7 +26,29 @@
                     modal: true,
                     closable: true,
                     actions: ["Pin", "Minimize", "Maximize", "Close"]
-                }).data("kendoWindow").center().open();
+                }).data("kendoWindow").center().open();*/
+                var httpOptions = {
+                    method: 'get',
+                    url: rootPath + "/file/otherFileDownload/" + businessId + "/" +fileId,
+                    headers : {
+                        "contentType" : "application/json;charset=utf-8"
+                    },
+                    traditional : true,
+                    dataType : "json",
+                    responseType: 'arraybuffer',
+                }
+                var httpSuccess = function success(response) {
+                    var blob = new Blob([response.data] , {type : "application/msword"});
+                    var d = new Date();
+                    var fileName =  d.getFullYear() + (d.getMonth() + 1) + d.getDate()  + d.getHours()  + d.getMinutes() +  d.getSeconds();
+                    fileName +=  "其他资料.doc";
+                    FileSaver.saveAs(blob, fileName);
+                };
+                common.http({
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
             }
         }
 

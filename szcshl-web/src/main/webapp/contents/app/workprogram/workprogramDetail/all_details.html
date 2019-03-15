@@ -222,7 +222,7 @@
 
         </table>
         <p style="text-align: center;margin-top:5px;">
-            <button  ng-if="w.workreviveStage=='项目建议书'" class="btn btn-sm btn-primary"
+            <!--<button  ng-if="w.workreviveStage=='项目建议书'" class="btn btn-sm btn-primary"
                       ng-click="printFile(w.id,'WORKPROGRAM','STAGESUG')">打印预览
             </button>
             <button  ng-if="w.workreviveStage=='登记赋码'" class="btn btn-sm btn-primary"
@@ -239,7 +239,25 @@
             </button>
             <button ng-if="w.expertSelectedDtoList"  class="btn btn-sm btn-primary"
                     ng-click="printFile(w.id,'WORKPROGRAM','INFORMATION')">打印专家信息预览
-            </button>
+            </button>-->
+                <button  ng-if="w.workreviveStage=='项目建议书'" class="btn btn-sm btn-primary"
+                         ng-click="downloadFile(w.id,'WORKPROGRAM','STAGESUG')">下载
+                </button>
+                <button  ng-if="w.workreviveStage=='登记赋码'" class="btn btn-sm btn-primary"
+                         ng-click="downloadFile(w.id,'WORKPROGRAM','REGISTERCODE')">下载
+                </button>
+                <button ng-if="w.workreviveStage=='可行性研究报告'" class="btn btn-sm btn-primary"
+                        ng-click="downloadFile(w.id,'WORKPROGRAM','STAGESTUDY')">下载
+                </button>
+                <button ng-if="w.workreviveStage=='项目概算'" class="btn btn-sm btn-primary"
+                        ng-click="downloadFile(w.id,'WORKPROGRAM','STAGEBUDGET')">下载
+                </button>
+                <button ng-if="w.workreviveStage=='其它'" class="btn btn-sm btn-primary"
+                        ng-click="downloadFile(w.id,'WORKPROGRAM','STAGEOTHER')">下载
+                </button>
+                <button ng-if="w.expertSelectedDtoList"  class="btn btn-sm btn-primary"
+                        ng-click="downloadFile(w.id,'WORKPROGRAM','INFORMATION')">下载专家信息预览
+                </button>
             <button ng-if="w.expertSelectedDtoList"  class="btn btn-sm btn-primary"
                     ng-click="exportInfo(w.id,'WORKPROGRAM','INFORMATION', '专家信息导出')">专家信息导出
             </button>
@@ -454,7 +472,7 @@
             </tr>
         </table>
         <p style="width: 100%;text-align: center;margin-top:5px;">
-            <button ng-if="w.workreviveStage=='项目建议书'" class="btn btn-sm btn-primary"
+            <#--<button ng-if="w.workreviveStage=='项目建议书'" class="btn btn-sm btn-primary"
                     ng-click="printFile(w.id,'WORKPROGRAM','STAGESUG')">打印预览
             </button>
             <button  ng-if="w.workreviveStage=='登记赋码'" class="btn btn-sm btn-primary"
@@ -471,7 +489,25 @@
             </button>
             <button ng-if="w.expertSelectedDtoList" class="btn btn-sm btn-primary"
                     ng-click="printFile(w.id,'WORKPROGRAM','INFORMATION')">打印专家信息预览
-            </button>
+            </button>-->
+                <button ng-if="w.workreviveStage=='项目建议书'" class="btn btn-sm btn-primary"
+                        ng-click="downloadFile(w.id,'WORKPROGRAM','STAGESUG')">下载
+                </button>
+                <button  ng-if="w.workreviveStage=='登记赋码'" class="btn btn-sm btn-primary"
+                         ng-click="downloadFile(w.id,'WORKPROGRAM','REGISTERCODE')">下载
+                </button>
+                <button ng-if="w.workreviveStage=='可行性研究报告'" class="btn btn-sm btn-primary"
+                        ng-click="downloadFile(w.id,'WORKPROGRAM','STAGESTUDY')">下载
+                </button>
+                <button ng-if="w.workreviveStage=='项目概算'" class="btn btn-sm btn-primary"
+                        ng-click="downloadFile(w.id,'WORKPROGRAM','STAGEBUDGET')">下载
+                </button>
+                <button ng-if="w.workreviveStage=='其它'" class="btn btn-sm btn-primary"
+                        ng-click="downloadFile(w.id,'WORKPROGRAM','STAGEOTHER')">下载
+                </button>
+                <button ng-if="w.expertSelectedDtoList" class="btn btn-sm btn-primary"
+                        ng-click="downloadFile(w.id,'WORKPROGRAM','INFORMATION')">下载专家信息预览
+                </button>
             <button ng-if="w.expertSelectedDtoList"  class="btn btn-sm btn-primary"
                     ng-click="exportInfo(w.id,'WORKPROGRAM','INFORMATION' , '专家信息导出')">专家信息导出
             </button>

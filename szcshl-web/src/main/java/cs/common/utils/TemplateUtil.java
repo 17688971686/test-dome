@@ -173,9 +173,9 @@ public class TemplateUtil {
             e.printStackTrace();
         } finally {
             try {
-                if (ftpClient != null) {
+               /* if (ftpClient != null) {
                     ftpUtils.getFtpClientPool().returnObject(k, ftpClient);
-                }
+                }*/
                 if (docFile != null) {
                     Tools.deleteFile(docFile);
                 }
