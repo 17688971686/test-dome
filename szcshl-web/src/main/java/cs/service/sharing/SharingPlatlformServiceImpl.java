@@ -148,8 +148,8 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
         }
         linkSql.append(" ) )");
         if(isOrgUser){
-            objects = new Object[]{EnumState.YES.getValue(),"2",userId,"1",SessionUtil.getUserInfo().getOrg().getId(),"3",userId};
-            types = new Type[]{StringType.INSTANCE,StringType.INSTANCE,StringType.INSTANCE,StringType.INSTANCE,StringType.INSTANCE,StringType.INSTANCE,StringType.INSTANCE};
+            objects = new Object[]{EnumState.YES.getValue(),"2",userId,"1",SessionUtil.getUserInfo().getOrg().getId()};
+            types = new Type[]{StringType.INSTANCE,StringType.INSTANCE,StringType.INSTANCE,StringType.INSTANCE,StringType.INSTANCE};
         }else {
             objects = new Object[]{EnumState.YES.getValue(),"2",userId};
             types = new Type[]{StringType.INSTANCE,StringType.INSTANCE,StringType.INSTANCE};
