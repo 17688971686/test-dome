@@ -584,10 +584,7 @@ public class Constant {
 
         DOWNLOAD_DD_REGISTER_FILE("download/registerFile", "拟补充资料清单"),
         DOWNLOAD_PROJECT_STOP("download/projectStop" , "项目暂停申请表"),
-        DOWNLOAD_PROJECT_VPROJECT("download/vProject" , "委项目处理表"),
-
-
-        ;
+        DOWNLOAD_PROJECT_VPROJECT("download/vProject" , "委项目处理表");
 
         private String key;
         private String value;

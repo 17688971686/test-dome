@@ -27,7 +27,7 @@ public class OfficeUserDto extends BaseDto {
 	
 	private String departId;	//关联办事处ID
 	
-	private Dept dept;
+	private DeptDto deptDto;
 	
 	public String getOfficeID() {
 		return officeID;
@@ -79,12 +79,12 @@ public class OfficeUserDto extends BaseDto {
 		this.departId = departId;
 	}
 
-	public Dept getDept() {
-		return dept;
+	public DeptDto getDeptDto() {
+		return deptDto;
 	}
 
-	public void setDept(Dept dept) {
-		this.dept = dept;
+	public void setDeptDto(DeptDto deptDto) {
+		this.deptDto = deptDto;
 	}
 
 	public String getDeptName() {
