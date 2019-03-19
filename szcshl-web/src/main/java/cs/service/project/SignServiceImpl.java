@@ -518,7 +518,7 @@ public class SignServiceImpl implements SignService {
 
     @Override
     public SignDto findById(String signid, boolean queryAll) {
-        Sign sign = signRepo.findById(signid);
+        Sign sign = signRepo.findById( Sign_.signid.getName() , signid);
         SignDto signDto = new SignDto();
         if (!Validate.isObject(sign) || !Validate.isString(sign.getSignid())) {
             return null;
@@ -640,13 +640,13 @@ public class SignServiceImpl implements SignService {
             }
 
             //如果是协审项目，还要查询项目协审方案信息
-            if (EnumState.YES.getValue().equals(sign.getIsassistproc())) {
+            if (  EnumState.YES.getValue().equals(sign.getIsassistproc())) {
                 List<AssistPlanSignDto> planSignDtoList = assistPlanSignService.findBySignId(sign.getSignid());
                 //设置项目名称之类的信息
                 planSignDtoList.forEach(ps -> {
                     if (!Validate.isString(ps.getProjectName())) {
                         String newProjectName = signDto.getProjectname();
-                        if (ps.getSplitNum() > 1) {
+                        if (null != ps.getSplitNum() && ps.getSplitNum() > 1) {
                             newProjectName += "（" + ps.getSplitNum() + "）";
                         }
                         ps.setProjectName(newProjectName);

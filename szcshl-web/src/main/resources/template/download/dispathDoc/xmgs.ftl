@@ -1227,7 +1227,7 @@
                        <w:tr w:rsidR="00A57520" w:rsidTr="00DB400F">
                             <w:trPr>
                                 <w:cantSplit/>
-                                <w:trHeight w:hRule="exact" w:val="728"/>
+                                <w:trHeight w:hRule="exact" w:val="700"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -1271,29 +1271,28 @@
                                     </w:r>
                                 </w:p>
                             </w:tc>
-                            <w:tc>
-                                <w:tcPr>
-                                    <w:tcW w:w="1417" w:type="dxa"/>
-                                    <w:vMerge/>
-                                    <w:vAlign w:val="center"/>
-                                </w:tcPr>
-                                <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
-                                    <w:pPr>
-                                        <w:jc w:val="center"/>
-                                        <w:rPr>
-                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                        <w:t>项目建议书</w:t>
-                                    </w:r>
-                                </w:p>
-                            </w:tc>
+                           <w:tc>
+                               <w:tcPr>
+                                   <w:tcW w:w="1417" w:type="dxa"/>
+                                   <w:vAlign w:val="center"/>
+                               </w:tcPr>
+                               <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                   <w:pPr>
+                                       <w:jc w:val="center"/>
+                                       <w:rPr>
+                                           <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
+                                           <w:sz w:val="24"/>
+                                       </w:rPr>
+                                   </w:pPr>
+                                   <w:r>
+                                       <w:rPr>
+                                           <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                           <w:sz w:val="24"/>
+                                       </w:rPr>
+                                       <w:t>项目建议书</w:t>
+                                   </w:r>
+                               </w:p>
+                           </w:tc>
                             <w:tc>
                                 <w:tcPr>
                                     <w:tcW w:w="1276" w:type="dxa"/>
@@ -1435,11 +1434,11 @@
                         </w:tr>
     </#if>
                    <#-- <#list dispatchList as dispatch>-->
-                        <#if (key)=="可行性研究报告">
+                        <#if (key)=="可行性研究">
                             <w:tr w:rsidR="00A57520" w:rsidTr="00B94C8B">
                                 <w:trPr>
                                     <w:cantSplit/>
-                                    <w:trHeight w:hRule="exact" w:val="728"/>
+                                    <w:trHeight w:hRule="exact" w:val="700"/>
                                     <w:jc w:val="center"/>
                                 </w:trPr>
                                 <w:tc>
@@ -1623,11 +1622,11 @@
                             </w:tr>
                         </#if>
                         <#if (key)=="项目概算">
-                            <#if ischangeEstimate?? && ischangeEstimate == "9">
+                            <#if ischangeEstimate?? && ischangeEstimate == 9>
                                 <w:tr w:rsidR="00A57520" w:rsidTr="00B94C8B">
                                     <w:trPr>
                                         <w:cantSplit/>
-                                        <w:trHeight w:hRule="exact" w:val="728"/>
+                                        <w:trHeight w:hRule="exact" w:val="700"/>
                                         <w:jc w:val="center"/>
                                     </w:trPr>
                                     <w:tc>
@@ -2361,7 +2360,7 @@
                             </w:tblPrEx>
                             <w:trPr>
                                 <w:cantSplit/>
-                                <w:trHeight w:val="900" w:hRule="exact"/>
+                                <w:trHeight w:val="700" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -2393,7 +2392,6 @@
                             <w:tc>
                                 <w:tcPr>
                                     <w:tcW w:w="1417" w:type="dxa"/>
-                                    <w:vMerge/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
@@ -2404,19 +2402,17 @@
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     </w:pPr>
-
                                     <w:r>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                    <#if ischangeEstimate?? && ischangeEstimate == "9" >
+                                    <#if ischangeEstimate?? && ischangeEstimate == 9 >
                                         <w:t>调整概算阶段</w:t>
                                     <#else >
                                         <w:t>概算审核阶段</w:t>
                                     </#if>
                                     </w:r>
-
                                 </w:p>
                             </w:tc>
                             <w:tc>
@@ -2753,7 +2749,7 @@
                         <w:tr w:rsidR="00A57520" w:rsidTr="00B94C8B">
                             <w:trPr>
                                 <w:cantSplit/>
-                            <#if ischangeEstimate?? && ischangeEstimate == "9">
+                            <#if ischangeEstimate?? && ischangeEstimate == 9>
                                 <w:trHeight w:hRule="exact" w:val="1400"/>
                             <#else >
                                 <w:trHeight w:hRule="exact" w:val="696"/>
@@ -2851,7 +2847,7 @@
                         <w:tr w:rsidR="00A57520" w:rsidTr="00B94C8B">
                             <w:trPr>
                                 <w:cantSplit/>
-                            <#if ischangeEstimate?? && ischangeEstimate == "9">
+                            <#if ischangeEstimate?? && ischangeEstimate == 9>
                                 <w:trHeight w:hRule="exact" w:val="1400"/>
                             <#else >
                                 <w:trHeight w:hRule="exact" w:val="696"/>
@@ -2924,7 +2920,7 @@
                         <w:tr w:rsidR="00A57520" w:rsidTr="00DB400F">
                             <w:trPr>
                                 <w:cantSplit/>
-                            <#if ischangeEstimate?? && ischangeEstimate == "9">
+                            <#if ischangeEstimate?? && ischangeEstimate == 9>
                                 <w:trHeight w:hRule="exact" w:val="1400"/>
                             <#else >
                                 <w:trHeight w:hRule="exact" w:val="696"/>
@@ -2997,7 +2993,7 @@
                         <w:tr w:rsidR="00A57520" w:rsidTr="00DB400F">
                             <w:trPr>
                                 <w:cantSplit/>
-                            <#if ischangeEstimate?? && ischangeEstimate == "9">
+                            <#if ischangeEstimate?? && ischangeEstimate == 9>
                                 <w:trHeight w:hRule="exact" w:val="1400"/>
                             <#else >
                                 <w:trHeight w:hRule="exact" w:val="696"/>

@@ -2062,7 +2062,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 dispatchData.put("ministerSuggesttion", sugge);
                 dispatchData.put("viceDirectorSuggesttion", vice);
                 //是否调概
-                dispatchData.put("ischangeEstimate", signDto == null ? "" : signDto.getIschangeEstimate());
+                dispatchData.put("ischangeEstimate", (signDto == null || signDto.getIschangeEstimate() == null) ? 0 : signDto.getIschangeEstimate());
 
                 ProjectConstant.REVIEW_STATE_ENUM disReviewStateEnum = ProjectConstant.REVIEW_STATE_ENUM.getByEnCode(stageType);
                 if(Validate.isObject(disReviewStateEnum)){
@@ -2118,7 +2118,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                                 signBugDtoList = signDto.getAssociateSignDtoList();
                             }
                             List<DispatchDocDto> dispatchBugList = new ArrayList<DispatchDocDto>();
-                            Map<String , DispatchDocDto> dispatchBugViewList = new HashMap<>();
+                            Map<String , DispatchDocDto> dispatchBugViewList = new LinkedHashMap<>();
                             if (null != signBugDtoList) {
                                 for (int i = 0,l=signBugDtoList.size(); i < l; i++) {
                                     if (null != signBugDtoList.get(i).getDispatchDocDto()) {
@@ -2127,7 +2127,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                                 }
                             }
                             dispatchBugViewList.put("项目建议书" , getDispatchStage("项目建议书", dispatchBugList));
-                            dispatchBugViewList.put("可行性研究报告" , getDispatchStage("可行性研究报告", dispatchBugList));
+                            dispatchBugViewList.put("可行性研究" , getDispatchStage("可行性研究报告", dispatchBugList));
                             if (signDto != null && signDto.getIschangeEstimate() != null
                                     && "9".equals(signDto.getIschangeEstimate())) {
                                 dispatchBugViewList.put("项目概算" , getDispatchStage("项目概算", dispatchBugList));
