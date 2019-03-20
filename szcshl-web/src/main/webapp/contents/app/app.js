@@ -60,7 +60,7 @@
             return formatDate;
         }
     })
-        .config(["$stateProvider", "$locationProvider", "$urlRouterProvider", 'cfpLoadingBarProvider', function ($stateProvider, $locationProvider, $urlRouterProvider, cfpLoadingBarProvider ) {
+        .config(["$stateProvider", "$locationProvider", "$urlRouterProvider", 'cfpLoadingBarProvider', function ($stateProvider, $locationProvider, $urlRouterProvider, cfpLoadingBarProvider) {
             $locationProvider.hashPrefix(''); // 1.6.x版本使用路由功能需加上这句
             cfpLoadingBarProvider.parentSelector = '#loading-bar-container';
             cfpLoadingBarProvider.spinnerTemplate = '<div style="position:fixed;width:100%;height:100%;left:0;top:0; z-index:10001;background:rgba(0, 0, 0, 0.3);overflow: hidden;"><div style="position: absolute;top:30%; width: 400px;height:40px;left:50%;"><i class="fa fa-spinner fa-pulse fa-1x fa-fw"></i>数据加载中...</div></div>';
@@ -359,23 +359,23 @@
             //end#meeting
 
             //begin#room
-            .state('room', {
-                url: '/room',
-                params: {'businessId': '', 'businessType': ''},
-                templateUrl: rootPath + '/room/html/roomlist.html',
-                controller: 'roomCtrl',
-                controllerAs: 'vm'
-            })
-            .state('roomCount', {
-                url: '/roomCount',
-                params: {'id': ''},
-                templateUrl: rootPath + '/room/html/countlist.html',
-                controller: 'roomCountCtrl',
-                controllerAs: 'vm'
-            })
-            //end#room
+                .state('room', {
+                    url: '/room',
+                    params: {'businessId': '', 'businessType': ''},
+                    templateUrl: rootPath + '/room/html/roomlist.html',
+                    controller: 'roomCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('roomCount', {
+                    url: '/roomCount',
+                    params: {'id': ''},
+                    templateUrl: rootPath + '/room/html/countlist.html',
+                    controller: 'roomCountCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#room
 
-            //begin#company
+                //begin#company
                 .state('company', {
                     url: '/company',
                     templateUrl: rootPath + '/company/html/list.html',
@@ -735,11 +735,11 @@
                     controller: 'sharingPlatlformCtrl',
                     controllerAs: 'vm'
                 }).state('sharingPlatlformEdit', {
-                url: '/sharingPlatlformEdit/:sharId',
-                templateUrl: rootPath + '/sharingPlatlform/html/edit.html',
-                controller: 'sharingPlatlformEditCtrl',
-                controllerAs: 'vm'
-            })
+                    url: '/sharingPlatlformEdit/:sharId',
+                    templateUrl: rootPath + '/sharingPlatlform/html/edit.html',
+                    controller: 'sharingPlatlformEditCtrl',
+                    controllerAs: 'vm'
+                })
             //资料共享详情页
                 .state('sharingDetil', {
                     url: '/sharingDetil/:sharId',
@@ -1410,7 +1410,7 @@
                 })
 
             //end 博士后基地结束
-        }]).run(function ($rootScope, $http, $state, $stateParams, bsWin , FileSaver) {
+        }]).run(function ($rootScope, $http, $state, $stateParams, bsWin, FileSaver) {
         $rootScope.rootPath = rootPath;
         $rootScope.DICT = DICTOBJ;
         //kendo 语言
@@ -1602,25 +1602,25 @@
                 var httpOptions = {
                     method: 'get',
                     url: rootPath + "/file/downloadPreview/" + businessId + "/" + businessType + "/" + stageType,
-                    headers : {
-                        "contentType" : "application/json;charset=utf-8"
+                    headers: {
+                        "contentType": "application/json;charset=utf-8"
                     },
-                    traditional : true,
-                    dataType : "json",
+                    traditional: true,
+                    dataType: "json",
                     responseType: 'arraybuffer',
                 }
                 var httpSuccess = function success(response) {
-                    var blob = new Blob([response.data] , {type : "application/msword"});
+                    var blob = new Blob([response.data], {type: "application/msword"});
                     var d = new Date();
-                    var fileName =  d.getFullYear() + (d.getMonth() + 1) + d.getDate()  + d.getHours()  + d.getMinutes() +  d.getSeconds();
-                    switch (businessType){
+                    var fileName = d.getFullYear() + (d.getMonth() + 1) + d.getDate() + d.getHours() + d.getMinutes() + d.getSeconds();
+                    switch (businessType) {
                         case "SIGN":
                             fileName += "项目报审登记表.doc";
                             break;
                         case "WORKPROGRAM":
-                            if("INFORMATION" == stageType){
+                            if ("INFORMATION" == stageType) {
                                 fileName += "专家信息表.doc";
-                            }else{
+                            } else {
                                 fileName += "工作方案表.doc";
                             }
 
@@ -1632,9 +1632,9 @@
                             fileName += "归档表.doc";
                             break;
                         case "SIGN_OTHERFILE":
-                            if(stageType == 'OTHER_FILE'){
+                            if (stageType == 'OTHER_FILE') {
                                 fileName += "其他资料.doc";
-                            }else if(stageType == 'DRAWING_FILE'){
+                            } else if (stageType == 'DRAWING_FILE') {
                                 fileName += "图纸资料.doc";
                             }
                             break;
@@ -1648,9 +1648,9 @@
                             fileName += "专家聘书表.doc";
                             break;
                         case "TOPICINFO":
-                            if(stageType == 'TOPICINFO_FILERECORD'){
+                            if (stageType == 'TOPICINFO_FILERECORD') {
                                 fileName += "课题研究归档表.doc";
-                            }else if(stageType == 'TOPICINFO_WORKPROGRAM'){
+                            } else if (stageType == 'TOPICINFO_WORKPROGRAM') {
                                 fileName += "课题研究工作方案.doc";
                             }
                             break;
@@ -1671,11 +1671,11 @@
                             break;
 
                     }
-                    if("SIGN_EXPERT_PAY" == stageType){
+                    if ("SIGN_EXPERT_PAY" == stageType) {
                         fileName += "专家评审费.doc";
-                    }else if(stageType == 'SIGN_EXPERT_SCORE'){
+                    } else if (stageType == 'SIGN_EXPERT_SCORE') {
                         fileName += "专家评分.doc";
-                    }else if(stageType == 'SIGN_UNIT_SCORE'){
+                    } else if (stageType == 'SIGN_UNIT_SCORE') {
                         fileName += "单位评分.doc";
                     }
                     FileSaver.saveAs(blob, fileName);
@@ -1697,12 +1697,12 @@
                 bsWin.alert("评审费未发放，不能进行打印操作！");
             } else {
                 var isCheck = $("input[name = 'selectExpert']:checked");
-                if(!isCheck || isCheck.length == 0 ){
+                if (!isCheck || isCheck.length == 0) {
                     bsWin.alert("请选择数据！");
-                }else{
+                } else {
                     var ids = [];
                     for (var i = 0; i < isCheck.length; i++) {
-                        var expertSelectedDtoList = JSON.parse(isCheck[i].value)  ;
+                        var expertSelectedDtoList = JSON.parse(isCheck[i].value);
                         ids.push(expertSelectedDtoList.id);
                         //必须是确认参与的专家
                         if (expertSelectedDtoList.isConfrim == "9"

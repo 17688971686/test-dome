@@ -362,7 +362,7 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
             BeanCopierUtils.copyProperties(ol,orgDto);
             if(Validate.isList(ol.getUsers())){
                 ol.getUsers().forEach( ul ->{
-                    if("t".equals(ul.getJobState()) && !SUPER_ACCOUNT.equals(ul.getLoginName())){
+                    if((User.JOB_STATE.t.toString()).equals(ul.getJobState()) && !SUPER_ACCOUNT.equals(ul.getLoginName())){
                         UserDto userDto = new UserDto();
                         userDto.setDisplayName(ul.getDisplayName());
                         userDto.setId(ul.getId());
@@ -376,10 +376,8 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
         });
         resultMap.put("orgDtoList",orgDtoList);
 
-        //2、查询没有部门的用户（在职，部门ID为空的用户）
-        HqlBuilder userSql = HqlBuilder.create();
-        userSql.append(" select * from cs_user where "+ User_.jobState.getName()+" = 't' and (orgid is null or orgid = '') ");
-        List<User> noOrgUserList = userRepo.findBySql(userSql);
+        //2、查询评审中心中心领导（主任和副主任）
+        List<User> noOrgUserList = userRepo.findCenterLeader();
         List<UserDto> userDtoList2 = new ArrayList<>();
         if(noOrgUserList != null && noOrgUserList.size() > 0){
             noOrgUserList.forEach( ul ->{

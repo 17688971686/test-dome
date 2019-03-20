@@ -62,13 +62,13 @@
             <tr ng-hide="vm.model.isNoPermission == 9">
                 <td class="text-right">共享用户：</td>
                 <td>
-                    <table class="table">
+                    <table class="table" >
                         <tr>
-                            <td style="width: 85px;">
+                            <td style="width: 100px;">
                                 中心领导
                             </td>
                             <td>
-                                <li ng-repeat="u in vm.noOrgUsetList" style="width: 80px;float: left;">
+                                <li ng-repeat="u in vm.noOrgUsetList" style="width: 100px;float: left;">
                                     <input type="checkbox" name="shareUser" value="{{u.id}}" ng-checked="{{u.isChecked}}"/>{{u.displayName}}</li>
                                 </li>
                             </td>
@@ -76,7 +76,7 @@
                         <tr ng-repeat="o in vm.shareOrgList">
                             <td>{{o.name}}</td>
                             <td>
-                                <li ng-repeat="u in o.userDtos" style="width: 80px;float: left;">
+                                <li ng-repeat="u in o.userDtos" style="width: 100px;float: left;">
                                     <input type="checkbox" tit="{{o.id}}" name="shareUser" value="{{u.id}}" ng-checked="{{u.isChecked}}" ng-disabled="{{u.isDisabled}}"/>{{u.displayName}}</li>
                                 </li>
                             </td>

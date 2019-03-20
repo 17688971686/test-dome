@@ -37,14 +37,16 @@ public interface UserRepo extends IRepository<User, String> {
 
     /**
      * 验证待办人是否是当前分办部门的人员
+     *
      * @param orgId
      * @param userIdList
      * @return
      */
-    boolean checkIsSignOrgDeptUser(String signId,String orgId, String userIdList);
+    boolean checkIsSignOrgDeptUser(String signId, String orgId, String userIdList);
 
     /**
      * 验证用户是否是部长下的管理人员
+     *
      * @param orgType
      * @param orgId
      * @param mainUserId
@@ -54,12 +56,14 @@ public interface UserRepo extends IRepository<User, String> {
 
     /**
      * 查询在职的部门用户
+     *
      * @return
      */
     List<UserDto> findUserAndOrg();
 
     /**
      * 检验用户是否已经转为代办
+     *
      * @param takeUserId
      * @return
      */
@@ -67,8 +71,15 @@ public interface UserRepo extends IRepository<User, String> {
 
     /**
      * 判断设定的用户是否为请假人（已经设定代办人的人）
+     *
      * @param takeUserId
      * @return
      */
     boolean checkUserSetTask(String takeUserId);
+
+    /**
+     * 查询评审中心中心领导
+     * @return
+     */
+    List<User> findCenterLeader();
 }

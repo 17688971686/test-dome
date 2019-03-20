@@ -262,6 +262,19 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
         return count>0;
     }
 
+    @Override
+    public List<User> findCenterLeader() {
+        HqlBuilder userSql = HqlBuilder.create();
+        userSql.append(" select * from cs_user where ").append(User_.jobState.getName());
+        userSql.append(" =:jobState and (orgid is null or orgid = '') ");
+        userSql.setParam("jobState",User.JOB_STATE.t.toString());
+        userSql.append(" and id in (select USERS_ID from CS_USER_CS_ROLE where ROLES_ID in (select id from CS_ROLE where ROLENAME =:zr or ROLENAME =:fzr)) ");
+        userSql.setParam("zr", Constant.EnumFlowNodeGroupName.DIRECTOR.getValue());
+        userSql.setParam("fzr",Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue());
+
+        return findBySql(userSql);
+    }
+
     private boolean checkUser(String signId,String orgId,String userId){
         OrgDept orgDept = orgDeptRepo.findOrgDeptById(orgId);
         //判断是部门还是组
@@ -337,7 +350,7 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
 
 
     /**
-     * 刷新所有在职用户细腻系
+     * 刷新所有在职用户
      */
     @Override
     public void fleshPostUserCache() {

@@ -74,8 +74,8 @@ public class SharingPlatlformController {
     @RequiresAuthentication
     //@RequiresPermissions("sharingPlatlform#initOrgAndUser#post")
     @RequestMapping(name = "获取部门和用户数据", path = "initOrgAndUser", method = RequestMethod.POST)
-    public @ResponseBody
-    Map<String, Object> initOrgAndUser() {
+    @ResponseBody
+    public Map<String, Object> initOrgAndUser() {
         return sharingPlatlformService.initOrgAndUser(true);
     }
 
