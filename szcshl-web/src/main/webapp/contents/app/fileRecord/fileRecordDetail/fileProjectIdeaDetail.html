@@ -546,8 +546,12 @@
     <button ng-if="vm.fileRecord.fileReviewstage == '登记赋码'" class="btn btn-sm btn-primary" style="width: 100px; "
             ng-click="downloadFile(vm.model.signid,'FILERECORD' , 'REGISTERCODE')">下载</button>
 
-    <button class="btn btn-sm btn-primary" style="margin-left:20px;"
+   <!-- <button class="btn btn-sm btn-primary" style="margin-left:20px;"
             ng-click="vm.otherFileWindow(vm.model.signid)">打印其它资料
-    </button></p>
+    </button>-->
+    <button class="btn btn-sm btn-primary" style="margin-left:20px;"
+            ng-click="vm.otherFileWindow(vm.model.signid)">下载其它资料
+    </button>
+</p>
 
 <!-- E 项目建议书-->

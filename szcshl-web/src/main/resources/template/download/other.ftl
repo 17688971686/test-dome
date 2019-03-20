@@ -145,7 +145,7 @@
                                             <w:szCs w:val="40"/>
                                             <w:lang w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>评估论证${OtherTitle}${otherFileType}清单</w:t>
+                                        <w:t>评估论证${OtherTitle!}${otherFileType!}清单</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>

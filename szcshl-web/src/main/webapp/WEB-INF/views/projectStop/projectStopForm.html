@@ -119,7 +119,9 @@
                 </td>
                 <td width="15%" class="text-right">已用工作日:</td>
                 <td >
-                    {{vm.sign.countUsedWorkday}}
+                    <input type="number" class="form-control input-sm " style="width: 120px;" id="userDays" name="userDays"
+                           ng-model="vm.projectStop.userDays" data-val="true" data-val-required="必填"/>
+                    <span data-valmsg-for="userDays" data-valmsg-replace="true" class="errors"></span>
                 </td>
             </tr>
             <tr>

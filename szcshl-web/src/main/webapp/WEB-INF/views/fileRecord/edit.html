@@ -56,7 +56,7 @@
         <button ng-if="vm.fileRecord.fileReviewstage=='进口设备'" class="btn btn-sm btn-primary"  style="width: 70px;" ng-click="downloadFile(vm.fileRecord.signId,'FILERECORD' , 'STAGEDEVICE')">下载</button>
 
         <button ng-if="vm.fileRecord.fileReviewstage=='设备清单（国产）' ||vm.fileRecord.fileReviewstage=='设备清单（进口）'" class="btn btn-sm btn-primary" style="width: 70px;" ng-click="downloadFile(vm.fileRecord.signId,'FILERECORD' , 'STAGEHOMELAND')">下载</button>
-
+        <button  ng-if="vm.fileRecord.fileReviewstage=='其它'" class="btn btn-sm btn-primary" style="width: 70px;"  ng-click="downloadFile(vm.fileRecord.signId,'FILERECORD' , 'STAGEOTHER')">下载</button>
 
         <button class="btn btn-sm btn-primary" style="margin-left:20px;"
                 ng-click="vm.otherFileWindow(vm.fileRecord.signId)">下载其它资料

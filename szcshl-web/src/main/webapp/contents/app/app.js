@@ -1612,7 +1612,8 @@
                 var httpSuccess = function success(response) {
                     var blob = new Blob([response.data], {type: "application/msword"});
                     var d = new Date();
-                    var fileName = d.getFullYear() + (d.getMonth() + 1) + d.getDate() + d.getHours() + d.getMinutes() + d.getSeconds();
+                    // var fileName = d.getFullYear() + (d.getMonth() + 1) + d.getDate() + d.getHours() + d.getMinutes() + d.getSeconds();
+                    var fileName = "";
                     switch (businessType) {
                         case "SIGN":
                             fileName += "项目报审登记表.doc";
@@ -1668,6 +1669,9 @@
                             break;
                         case "PROJECTSTOP":
                             fileName += "项目暂停表.doc";
+                            break;
+                        case "FILERECOED_OTHERFILE":
+                            fileName += "图纸资料.doc";
                             break;
 
                     }

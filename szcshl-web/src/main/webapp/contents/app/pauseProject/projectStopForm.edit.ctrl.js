@@ -42,6 +42,9 @@
                 vm.sign = vm.projectStop.signDispaWork;
                 //评审天数-剩余工作日
                 vm.sign.countUsedWorkday = vm.sign.reviewdays-vm.sign.surplusdays;
+                if(!vm.projectStop.stopid){
+                    vm.projectStop.userDays = vm.sign.countUsedWorkday;
+                }
                 if (vm.projectStop.isSupplementMaterial == "9") {
                     vm.projectStop.sysBusiType = "中心发补充材料函";
                 }

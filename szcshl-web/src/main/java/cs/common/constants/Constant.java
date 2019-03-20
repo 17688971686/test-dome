@@ -517,7 +517,7 @@ public class Constant {
 
         /***************各阶段下载模板********************/
         DOWNLOAD_SIGN_XMJYS("download/sign/xmjys" , "申报表-建议书"),
-        DOWNLOAD_WORKPROGRAM_XMJYS("download/workprogram/xmjys" , "工作方案-建议书"),
+        DOWNLOAD_WORKPROGRAM_XMJYS("download/workProgram/xmjys" , "工作方案-建议书"),
         DOWNLOAD_DISPATHDOC_XMJYS("download/dispathDoc/xmjys" , "发文-建议书"),
         DOWNLOAD_FILERECORD_XMJYS("download/filerecord/xmjys" , "归档-建议书"),
 
@@ -527,25 +527,25 @@ public class Constant {
         DOWNLOAD_SIGN_XMGS("download/sign/xmgs" , "申报表-概算"),
         DOWNLOAD_DISPATHDOC_XMGS("download/dispathDoc/xmgs" , "发文-概算"),
         DOWNLOAD_FILERECORD_XMGS("download/filerecord/xmgs" , "归档-概算"),
-        DOWNLOAD_FILERECORD_XMGSXS("download/filerecord/xmgsxs" , "归档-概算-协审"),
+        DOWNLOAD_FILERECORD_XMGSXS("download/filerecord/xmgsXS" , "归档-概算-协审"),
 
         DOWNLOAD_SIGN_ZJSB("download/sign/zjsb" , "申报表-资金申报"),
-        DOWNLOAD_WORKPROGRAM_ZJSB("download/workprogram/zjsb" , "工作方案-资金申报"),
+        DOWNLOAD_WORKPROGRAM_ZJSB("download/workProgram/zjsb" , "工作方案-资金申报"),
         DOWNLOAD_FILERECORD_ZJSB("download/filerecord/zjsb" , "归档-资金申报"),
         DOWNLOAD_DISPATHDOC_ZJSB("download/dispathDoc/zjsb" , "发文-资金申报"),
 
         DOWNLOAD_SIGN_JKSB("download/sign/jksb" , "申报表-进口设备"),
-        DOWNLOAD_WORKPROGRAM_JKSB("download/workprogram/jksb" , "工作方案-进口设备"),
+        DOWNLOAD_WORKPROGRAM_JKSB("download/workProgram/jksb" , "工作方案-进口设备"),
         DOWNLOAD_FILERECORD_JKSB("download/filerecord/jksb" , "归档-进口设备"),
         DOWNLOAD_DISPATHDOC_JKSB("download/dispathDoc/jksb" , "发文-进口设备"),
 
         DOWNLOAD_SIGN_SBQD("download/sign/sbqd" , "申报表-设备清单"),
-        DOWNLOAD_WORKPROGRAM_SBQD("download/workprogram/sbqd" , "工作方案-设备清单"),
+        DOWNLOAD_WORKPROGRAM_SBQD("download/workProgram/sbqd" , "工作方案-设备清单"),
         DOWNLOAD_FILERECORD_SBQD("download/filerecord/sbqd" , "归档-设备清单"),
         DOWNLOAD_DISPATHDOC_SBQD("download/dispathDoc/sbqd" , "发文-设备清单"),
 
 
-        DOWNLOAD_WORKPROGRAM_OTHER("download/workprogram/other" , "工作方案-其它"),
+        DOWNLOAD_WORKPROGRAM_OTHER("download/workProgram/other" , "工作方案-其它"),
         DOWNLOAD_FILERECORD_OTHER("download/filerecord/other" , "归档-其它"),
         DOWNLOAD_DISPATHDOC_OTHER("download/dispathDoc/other" , "发文-其它"),
 

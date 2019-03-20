@@ -3,9 +3,9 @@
 
     angular.module('app').factory('fileRecordSvc', fileRecord);
 
-    fileRecord.$inject = ['bsWin', '$http'];
+    fileRecord.$inject = ['bsWin', '$http' , 'FileSaver'];
 
-    function fileRecord(bsWin, $http) {
+    function fileRecord(bsWin, $http , FileSaver) {
         var service = {
             initFileRecordData: initFileRecordData,		//初始化流程数据
             saveFileRecord: saveFileRecord,				//保存
@@ -40,8 +40,8 @@
                 var httpSuccess = function success(response) {
                     var blob = new Blob([response.data] , {type : "application/msword"});
                     var d = new Date();
-                    var fileName =  d.getFullYear() + (d.getMonth() + 1) + d.getDate()  + d.getHours()  + d.getMinutes() +  d.getSeconds();
-                    fileName +=  "其他资料.doc";
+                    // var fileName =  d.getFullYear() + (d.getMonth() + 1) + d.getDate()  + d.getHours()  + d.getMinutes() +  d.getSeconds();
+                   var fileName =  "其他资料.doc";
                     FileSaver.saveAs(blob, fileName);
                 };
                 common.http({

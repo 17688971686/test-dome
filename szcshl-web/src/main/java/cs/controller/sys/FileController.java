@@ -1938,7 +1938,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                          * 项目概算
                          */
                         case STAGEBUDGET:
-                            file = TemplateUtil.createDoc(fileData, Template.DOWNLOAD_FILERECORD_XMGSXS.getKey(), path);
+                            file = TemplateUtil.createDoc(fileData, Template.DOWNLOAD_FILERECORD_XMGS.getKey(), path);
                             break;
                         /**
                          * 概算协审
@@ -2514,7 +2514,11 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             }
             response.setContentType("application/msword");
             response.setHeader("Content-Disposition", "inline;filename=" + new String(fileName.getBytes(), "ISO-8859-1"));
-
+            byte[] arr = new byte[1024];
+            int len;
+            while( ( len=inputStream.read(arr) ) != -1 ) {
+                out.write(arr, 0, len);
+            }
             out.flush();
         } catch (Exception e) {
             e.printStackTrace();

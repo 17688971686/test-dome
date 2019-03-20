@@ -3,9 +3,9 @@
 
     angular.module('app').controller('signDetailsCtrl', sign);
 
-    sign.$inject = ['sysfileSvc', 'signSvc', '$state', 'flowSvc', '$scope', 'templatePrintSvc', 'assistSvc'  , 'expertReviewSvc' , 'expertSvc' , 'fileRecordSvc'];
+    sign.$inject = ['sysfileSvc', 'signSvc', '$state', 'flowSvc', '$scope', 'templatePrintSvc', 'assistSvc'  , 'expertReviewSvc' , 'expertSvc' , 'fileRecordSvc' , 'bsWin'];
 
-    function sign(sysfileSvc, signSvc, $state, flowSvc, $scope, templatePrintSvc, assistSvc , expertReviewSvc , expertSvc , fileRecordSvc) {
+    function sign(sysfileSvc, signSvc, $state, flowSvc, $scope, templatePrintSvc, assistSvc , expertReviewSvc , expertSvc , fileRecordSvc , bsWin) {
         var vm = this;
         vm.model = {};							    //创建一个form对象
         vm.flow = {};                               //收文对象

@@ -56,6 +56,9 @@
                 }else{
                     vm.sign.countUsedWorkday = 12-vm.sign.surplusdays;
                 }
+                if(!vm.projectStop.stopId){
+                    vm.projectStop.userDays = vm.sign.countUsedWorkday;
+                }
             });
             pauseProjectSvc.getProjectStopBySignId(signId,function (data) {
                 if(data.length>0) {
@@ -65,6 +68,9 @@
                     }
                     if (vm.projectStop.isPuaseApprove == "9") {
                         vm.projectStop.sysBusiType = "申报单位要求暂停审核函";
+                    }
+                    if(!vm.projectStop.stopid){
+                        vm.projectStop.userDays = vm.sign.countUsedWorkday;
                     }
                     sysfileSvc.findByBusinessId(vm.projectStop.stopid, function (data) {
                         vm.sysFilelists = data;
