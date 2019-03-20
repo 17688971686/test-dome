@@ -518,7 +518,7 @@ public class SignServiceImpl implements SignService {
 
     @Override
     public SignDto findById(String signid, boolean queryAll) {
-        Sign sign = signRepo.findById( Sign_.signid.getName() , signid);
+        Sign sign = signRepo.findById(signid);
         SignDto signDto = new SignDto();
         if (!Validate.isObject(sign) || !Validate.isString(sign.getSignid())) {
             return null;
