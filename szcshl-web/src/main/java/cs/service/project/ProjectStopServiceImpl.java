@@ -111,7 +111,7 @@ public class ProjectStopServiceImpl implements ProjectStopService {
     @Transactional(rollbackFor = Exception.class)
     public ResultMsg savePauseProject(ProjectStopDto projectStopDto) {
         try {
-            ProjectStop projectStop = new ProjectStop();
+
             Sign sign = signRepo.findById(projectStopDto.getSignid());
             //1、判断项目当前的状态
             if (Constant.EnumState.STOP.getValue().equals(sign.getSignState())) {
@@ -133,10 +133,11 @@ public class ProjectStopServiceImpl implements ProjectStopService {
             if (isHaveApproveing) {
                 return ResultMsg.error("操作失败，该项目已有暂停记录在处理！");
             }
-            if (!Validate.isObject(projectStop.getExpectpausedays())) {
+            if (!Validate.isObject(projectStopDto.getExpectpausedays())) {
                 return ResultMsg.error("操作失败，没填写预计暂停天数！");
             }
             ResultMsg saveResult = saveProjectStop(projectStopDto);
+            ProjectStop projectStop = (ProjectStop)saveResult.getReObj();
             if(saveResult.isFlag()){
                 //1、启动流程
                 ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(FlowConstant.PROJECT_STOP_FLOW, projectStop.getStopid(),
@@ -157,6 +158,7 @@ public class ProjectStopServiceImpl implements ProjectStopService {
                 if (Validate.isList(agentTaskList)) {
                     agentTaskService.updateAgentInfo(agentTaskList, processInstance.getId(), processInstance.getName());
                 }
+
                 //设置流程实例ID
                 projectStop.setProcessInstanceId(processInstance.getId());
                 projectStop.setSign(sign);
