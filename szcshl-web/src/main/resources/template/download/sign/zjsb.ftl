@@ -1403,7 +1403,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">    电子文</w:t>
+                                        <w:t xml:space="preserve">    电子文档</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -1418,7 +1418,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">                   </w:t>
+                                        <w:t xml:space="preserve">                 </w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>

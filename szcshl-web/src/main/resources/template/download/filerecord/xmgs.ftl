@@ -86,7 +86,6 @@
                     </w:p>
                     <w:p>
                         <w:pPr>
-                            <w:spacing w:line="-1" w:lineRule="auto"/>
                             <w:jc w:val="center"/>
                             <w:outlineLvl w:val="1"/>
                             <w:rPr>
@@ -569,7 +568,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="22"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">                原件 复印件 扫描                     原件/复印件 扫描</w:t>
+                                        <w:t xml:space="preserve">                原件 复印件 扫描件                     原件/复印件 扫描件</w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p>
@@ -1048,7 +1047,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="22"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">     复印件   扫描                        复印件    </w:t>
+                                        <w:t xml:space="preserve">     复印件   扫描件                        复印件    </w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p>
@@ -1301,7 +1300,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="22"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">  原件   扫描                         原件  电子版/扫描 </w:t>
+                                        <w:t xml:space="preserve">  原件   扫描件                         原件  电子版/扫描件 </w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p>
@@ -1887,7 +1886,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="22"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">原件 复印件 扫描                  原件复印件份数 电子/扫描</w:t>
+                                        <w:t xml:space="preserve">原件 复印件 扫描件                  原件复印件份数 电子/扫描件</w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p>
@@ -1982,7 +1981,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="22"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve"> </w:t>
+                                        <w:t xml:space="preserve">  </w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -2007,7 +2006,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="22"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">   </w:t>
+                                        <w:t xml:space="preserve">    </w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -2077,7 +2076,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="22"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">   </w:t>
+                                        <w:t xml:space="preserve">     </w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -2158,7 +2157,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="22"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">      评审费发放表        </w:t>
+                                        <w:t xml:space="preserve">      评审费发放表         </w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -2176,7 +2175,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="22"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">   </w:t>
+                                        <w:t xml:space="preserve">    </w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -2246,7 +2245,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="22"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">   </w:t>
+                                        <w:t xml:space="preserve">     </w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -2369,7 +2368,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="22"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve"> </w:t>
+                                        <w:t xml:space="preserve">  </w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -2394,7 +2393,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="22"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">   </w:t>
+                                        <w:t xml:space="preserve">    </w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -2464,7 +2463,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="22"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">   </w:t>
+                                        <w:t xml:space="preserve">     </w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>

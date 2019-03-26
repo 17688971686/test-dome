@@ -919,7 +919,6 @@
                                 <w:p>
                                     <w:pPr>
                                         <w:jc w:val="center"/>
-                                        <w:spacing w:line="30" w:lineRule="auto"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>

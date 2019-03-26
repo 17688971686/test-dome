@@ -385,12 +385,12 @@
                     <td style="border-top:none;width:18%;">&nbsp;</td>
                     <td style="border-top:none;width:8%;">份数</td>
                     <td style="border-top:none;width:8%;">原件</td>
-                    <td style="border-top:none;width:8%;">附件</td>
+                    <td style="border-top:none;width:8%;">复印件</td>
                     <td style="border-top:none;width:8%;">扫描件</td>
                     <td style="border-top:none;width:18%;">&nbsp;</td>
                     <td style="border-top:none;width:8%;">份数</td>
                     <td style="border-top:none;width:8%;">原件</td>
-                    <td style="border-top:none;width:8%;">附件</td>
+                    <td style="border-top:none;width:8%;">复印件</td>
                     <td style="border-top:none;width:8%;">扫描件</td>
                 </tr>
                 <tr>
@@ -460,25 +460,29 @@
                                                          ng-checked="vm.fileRecord.expertScan==9" ng-true-value="9" ng-false-value="0"></td>
                     <td style="border-top:none;text-align:right;">评审费发放表</td>
                     <td style="border-top:none;">
-                         <input ng-disabled="true"  type="text"  class=" input-sm " ng-disabled="true"
+                        <input ng-disabled="true"  type="text"  class=" input-sm " ng-disabled="true"
                                data-val="true" data-val-digits="只能输入数字" style="width:40px;text-align:center;"
                                ng-model="vm.fileRecord.stageCostCount" name="stageCostCount"
                                id="stageCostCount">
                         <span data-valmsg-for="stageCostCount"
                               data-valmsg-replace="true" class="errors"></span>
                     </td>
-                    <td style="border-top:none;"> <input ng-disabled="true"  type="checkbox" class="newcheckbox"  ng-disabled="true"
+                    <td style="border-top:none;">
+                       <!-- <input ng-disabled="true"  type="checkbox" class="newcheckbox"  ng-disabled="true"
                                                         ng-click="vm.fileRecord.stageCostCount = initInputValue($event,vm.fileRecord.stageCostCount)"
                                                         ng-model="vm.fileRecord.stageCostOriginal"
-                                                         ng-checked="vm.fileRecord.stageCostOriginal==9"  ng-true-value="9" ng-false-value="0"></td>
+                                                         ng-checked="vm.fileRecord.stageCostOriginal==9"  ng-true-value="9" ng-false-value="0">-->
+                    </td>
                     <td style="border-top:none;"> <input ng-disabled="true"  type="checkbox" class="newcheckbox"  ng-disabled="true"
                                                         ng-click="vm.fileRecord.stageCostCount = initInputValue($event,vm.fileRecord.stageCostCount)"
                                                         ng-model="vm.fileRecord.stageCostCopy"
                                                          ng-checked="vm.fileRecord.stageCostCopy==9" ng-true-value="9" ng-false-value="0"></td>
-                    <td style="border-top:none;"> <input ng-disabled="true"  type="checkbox" class="newcheckbox"  ng-disabled="true"
+                    <td style="border-top:none;">
+                       <input ng-disabled="true"  type="checkbox" class="newcheckbox"  ng-disabled="true"
                                                         ng-click="vm.fileRecord.stageCostCount = initInputValue($event,vm.fileRecord.stageCostCount)"
                                                         ng-model="vm.fileRecord.stageCostScan"
-                                                         ng-checked="vm.fileRecord.stageCostScan==9"  ng-true-value="9" ng-false-value="0"></td>
+                                                         ng-checked="vm.fileRecord.stageCostScan==9"  ng-true-value="9" ng-false-value="0">
+                    </td>
                 </tr>
                 <tr>
                     <td style="border-top:none;text-align:right;">专家个人意见书</td>

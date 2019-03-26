@@ -1241,7 +1241,6 @@
                             <w:tc>
                                 <w:tcPr>
                                     <w:tcW w:w="1417" w:type="dxa"/>
-                                    <w:vMerge/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
@@ -1257,7 +1256,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>项目建议书阶段</w:t>
+                                        <w:t>项目建议书</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1963,7 +1962,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>可行性研究报告阶段</w:t>
+                                        <w:t>可行性研究报告</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>

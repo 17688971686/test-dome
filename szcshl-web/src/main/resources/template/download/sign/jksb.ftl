@@ -649,7 +649,6 @@
                                     <w:pPr>
                                         <w:widowControl/>
                                         <w:jc w:val="center"/>
-                                        <w:spacing w:line="50" w:lineRule="auto"/>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:cs="宋体"/>
                                             <w:kern w:val="0"/>
