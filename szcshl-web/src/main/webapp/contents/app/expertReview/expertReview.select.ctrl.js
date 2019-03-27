@@ -3,9 +3,9 @@
 
     angular.module('app').controller('expertSelectCtrl', expertReview);
 
-    expertReview.$inject = ['expertReviewSvc', 'expertConditionSvc', 'expertSvc', '$state', 'bsWin', '$scope','workprogramSvc'];
+    expertReview.$inject = ['expertReviewSvc', 'expertConditionSvc', 'expertSvc', '$state', 'bsWin', '$scope','workprogramSvc' , '$cacheFactory'];
 
-    function expertReview(expertReviewSvc, expertConditionSvc, expertSvc, $state, bsWin, $scope,workprogramSvc) {
+    function expertReview(expertReviewSvc, expertConditionSvc, expertSvc, $state, bsWin, $scope,workprogramSvc , $cacheFactory) {
         var vm = this;
         vm.title = '选择专家';
         vm.conMaxIndex = 0;                             //条件号
@@ -368,13 +368,26 @@
 
         //保存选择的境外专家
         vm.saveOutExpert = function () {
-            var selectIds = common.getKendoCheckId('#outExpertGrid');
+            // var selectIds = common.getKendoCheckId('#outExpertGrid');
+            var selectIds = $("#outExpertGrid input[name='checkbox']:checked");
             if (selectIds.length == 0) {
                 bsWin.alert("请先选择专家！");
             } else {
                 var selExpertIdArr = [];
+                var excludeIds = vm.excludeIds.split(",");
+
                 $.each(selectIds, function (i, obj) {
-                    selExpertIdArr.push(obj.value);
+                    var flag = false;
+                    $.each(excludeIds , function(j , obj2){
+                        if(obj.value == obj2){
+                            flag = true;
+                            return;
+                        }
+                    });
+                    if(!flag){
+                        selExpertIdArr.push(obj.value);
+                    }
+
                 });
                 expertReviewSvc.saveOutExpert(vm.businessId, vm.minBusinessId, vm.businessType, selExpertIdArr.join(","), vm.expertReview.id, vm.isCommit, function (data) {
                     if (data.flag || data.reCode == 'ok') {

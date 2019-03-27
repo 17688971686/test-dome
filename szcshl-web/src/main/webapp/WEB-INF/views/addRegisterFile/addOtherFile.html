@@ -23,7 +23,7 @@
             <td style="width:80px;">复印件</td>
             <td >资料类型</td>
         </tr>
-        <tr ng-repeat="x in vm.addRegisters ">
+        <tr ng-repeat="x in vm.addRegisters">
             <td class="text-center">
                 <input type="checkbox" ng-checked="addRegistersCheck" name="addRegistersCheck"
                        value="{{vm.addRegisters[$index].id}}"/>
@@ -41,11 +41,13 @@
             <td>
                 <input type="checkbox" style="width:50px;"
                        ng-model="vm.addRegisters[$index].isHasOriginfile" id="isHasOriginfile"
+                       ng-checked="vm.addRegisters[$index].isHasOriginfile == 9"
                        name="isHasOriginfile"  ng-click="vm.addRegisters[$index].totalNum = initInputValue($event,vm.addRegisters[$index].totalNum)" ng-true-value="9" ng-false-value="0">
             </td>
             <td>
                 <input type="checkbox" style="width:50px;"
                        ng-model="vm.addRegisters[$index].isHasCopyfile" id="isHasCopyfile"
+                       ng-checked="vm.addRegisters[$index].isHasCopyfile == 9"
                        name="isHasCopyfile" ng-click="vm.addRegisters[$index].totalNum = initInputValue($event,vm.addRegisters[$index].totalNum)" ng-true-value="9" ng-false-value="0">
             </td>
             <td>
