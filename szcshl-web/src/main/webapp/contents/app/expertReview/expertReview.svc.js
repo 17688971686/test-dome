@@ -98,7 +98,7 @@
             var columns = [
                 {
                     template: function (item) {
-                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />", item.expertID)
+                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' value = '{0}' />", item.expertID)
                     },
                     filterable: false,
                     width: 25,
