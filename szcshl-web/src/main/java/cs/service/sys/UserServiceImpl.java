@@ -144,6 +144,7 @@ public class UserServiceImpl implements UserService {
             user.setPassword(AESUtil.AESEncode(Constant.EencodeRules,DEFAULT_PASSWORD));
             //新增用户时设置登录错误次数为0 ，不然登录时后台空指针错误
             user.setLoginFailCount(0);
+            user.setPwdEncode(Constant.EnumState.YES.getValue());
         }
         if (!Validate.isString(user.getUserNo())) {
             user.setUserNo(String.format("%03d", Integer.valueOf(findMaxUserNo()) + 1));

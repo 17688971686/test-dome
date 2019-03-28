@@ -690,7 +690,7 @@
                                 </w:p>
                             </w:tc>
                         </w:tr>
-                        <#list addFileList as addFile>
+                        <#list fileObjList as fileObj>
                         <w:tr>
                             <w:tblPrEx>
                                 <w:tblLayout w:type="fixed"/>
@@ -735,7 +735,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${(addFile.fileName)!}</w:t>
+                                        <w:t>${(fileObj.fileName)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -804,7 +804,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <#if (addFile.isHasOriginfile)?? && (addFile.isHasOriginfile)=="9">
+                                        <#if (fileObj.isHasOriginfile)?? && (fileObj.isHasOriginfile)=="9">
                                             <w:sym w:font="Wingdings 2" w:char="F052" />
                                         <#else>
                                             <w:t xml:space="preserve">□</w:t>
@@ -846,7 +846,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <#if (addFile.isHasCopyfile)?? && (addFile.isHasCopyfile)=="9">
+                                        <#if (fileObj.isHasCopyfile)?? && (fileObj.isHasCopyfile)=="9">
                                             <w:sym w:font="Wingdings 2" w:char="F052" />
                                         <#else>
                                             <w:t xml:space="preserve">□</w:t>
@@ -888,12 +888,6 @@
                                         </w:rPr>
                                         <w:fldChar w:fldCharType="begin"/>
                                     </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
-                                            <w:sz w:val="24"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
                                         <w:r>
                                             <w:rPr>
                                                 <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
@@ -929,7 +923,7 @@
                                                 <w:szCs w:val="24"/>
                                                 <w:lang w:val="en-US" w:eastAsia="zh-CN" w:bidi="ar-SA"/>
                                             </w:rPr>
-                                            <w:instrText xml:space="preserve">${(addFile.totalNum)!}</w:instrText>
+                                            <w:instrText xml:space="preserve">${(fileObj.totalNum)!}</w:instrText>
                                         </w:r>
                                         <w:r>
                                             <w:rPr>
@@ -949,7 +943,6 @@
                                         </w:r>
                                         <w:bookmarkStart w:id="1" w:name="_GoBack"/>
                                         <w:bookmarkEnd w:id="1"/>
-                                    </w:r>
                                 </w:p>
                             </w:tc>
                             <w:tc>
@@ -971,20 +964,19 @@
                                 </w:tcPr>
                                 <w:p>
                                     <w:pPr>
-                                        <w:jc w:val="center"/>
                                         <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${(addFile.suppleDate)!?string("yyyy年MM月dd日")}</w:t>
+                                        <w:t>${(fileObj.suppleDate)!?string("yyyy年MM月dd日")}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
