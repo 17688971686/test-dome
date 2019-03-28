@@ -21,19 +21,20 @@
 
         var vm = this;
 
+        vm.orgList = [];
         // 初始化列表
         var userFilter = {
-            field: "organ.organRel",
-            operator: "like",
+            field: "organ.organId",
+            operator: "eq",
             value: "|"
         };
 
         userSvc.bsTableControl(vm, userFilter);
 
         function reloadBsTable(treeNode) {
-            vm.organName = treeNode.oldname || treeNode.organName || "-";
-            vm.organId = treeNode.organId;
-            userFilter.value = "|" + treeNode.organId + "|";
+           /* vm.organName = treeNode.oldname || treeNode.organName || "-";
+            vm.organId = treeNode.organId;*/
+            userFilter.value = treeNode.organId;
             userSvc.reloadBsTable(vm, userFilter);
         }
 
@@ -89,8 +90,9 @@
 
         function initOrganTree() {
             organTree && organTree.destroy();
-
+            vm.orgList = [];
             organSvc.getOrganList(vm, function (data) {
+                vm.orgList = data;
                 organTree = $.fn.zTree.init($("#organTree"), {
                     treeId: "organId",
                     data: {

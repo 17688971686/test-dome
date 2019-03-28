@@ -92,8 +92,11 @@
                     <div class="form-group">
                         <label for="organName" class="col-sm-3 control-label">所属机构：</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" id="organName" name="organName"
-                                   ng-model="vm.organName" disabled/>
+                            <select class="form-control" id="organName" name="organName" ng-model="vm.model.organ.organId">
+                                <option value="">请选择</option>
+                                <option ng-repeat="x in vm.orgList" value="{{x.organId}}"
+                                        ng-selected="vm.model.organ && (vm.model.organ.organId == x.organId)">{{x.organName}}</option>
+                            </select>
                         </div>
                     </div>
                     <div class="form-group">

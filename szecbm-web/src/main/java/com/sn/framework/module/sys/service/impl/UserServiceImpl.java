@@ -10,6 +10,7 @@ import com.sn.framework.module.sys.domain.Role;
 import com.sn.framework.module.sys.domain.User;
 import com.sn.framework.module.sys.model.UserDto;
 import com.sn.framework.module.sys.model.UserInfoDto;
+import com.sn.framework.module.sys.repo.IOrganRepo;
 import com.sn.framework.module.sys.repo.IResourceRepo;
 import com.sn.framework.module.sys.repo.IUserRepo;
 import com.sn.framework.module.sys.service.IUserService;
@@ -47,7 +48,8 @@ public class UserServiceImpl extends SServiceImpl<IUserRepo, User, UserDto> impl
     private ShiroProperties shiroProperties;
     @Autowired
     private IResourceRepo resourceRepo;
-
+    @Autowired
+    private IOrganRepo organRepo;
     /**
      * 默认密码：默认值为123456
      */
@@ -120,7 +122,6 @@ public class UserServiceImpl extends SServiceImpl<IUserRepo, User, UserDto> impl
             if (ObjectUtils.isEmpty(ignoreProperties)) {
                 ignoreProperties = new String[]{"createdDate", "modifiedDate", "roles", "password"};
             }
-
             user = dto.convert(domainCls, ignoreProperties);
             if (StringUtil.isBlank(user.getUserId())) {
                 user.setUserId(IdWorker.get32UUID());
@@ -155,6 +156,10 @@ public class UserServiceImpl extends SServiceImpl<IUserRepo, User, UserDto> impl
             }
             user.setCreatedBy(createdBy);
             user.setModifiedBy(createdBy);
+            //如果有部门，则新增部门
+            if(Validate.isObject(dto.getOrgan()) && Validate.isString(dto.getOrgan().getOrganId())){
+                user.setOrgan(organRepo.getById(dto.getOrgan().getOrganId()));
+            }
             baseRepo.save(user);
         } else {
             logger.warn(String.format("用户名称:%s 已经存在，请重新输入！", dto.getUsername()));
@@ -172,6 +177,19 @@ public class UserServiceImpl extends SServiceImpl<IUserRepo, User, UserDto> impl
                 ignoreProperties = new String[]{"createdDate", "modifiedDate", "createdBy", "password", "userSalt", "userDataType"};
             }
             BeanUtils.copyProperties(dto, user, ignoreProperties);
+            if(Validate.isObject(dto.getOrgan()) && Validate.isString(dto.getOrgan().getOrganId())){
+                boolean isnew = true;
+                if(Validate.isObject(user.getOrgan()) && Validate.isString(user.getOrgan().getOrganId())){
+                    if(dto.getOrgan().getOrganId().equals(user.getOrgan().getOrganId())){
+                        isnew = false;
+                    }
+                }
+                if(isnew){
+                    user.setOrgan(organRepo.getById(dto.getOrgan().getOrganId()));
+                }
+            }else{
+                user.setOrgan(null);
+            }
             user.setModifiedBy(SessionUtil.getUsername());
             user.setModifiedDate(new Date());
             baseRepo.save(user);

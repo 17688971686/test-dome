@@ -15,7 +15,7 @@ sn:
 spring:
   datasource:
     driver-class-name: oracle.jdbc.OracleDriver
-    url: jdbc:oracle:thin:@192.168.1.30:1521:orcl
+    url: jdbc:oracle:thin:@192.168.1.31:1521:orcl
     username: szec_secret
     password: 123456
 
