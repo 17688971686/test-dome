@@ -15,7 +15,7 @@
         vm.confirmEPListReplace = [];                   //已经调整过的聘请专家列表（已经经过确认的专家）
         vm.matchEPMap = {};                             //保存符合条件的专家信息
         vm.selectIds = [],                              //已经抽取的专家信息ID（用于排除查询）
-        vm.businessId = $state.params.businessId;       //专家评审方案业务ID
+            vm.businessId = $state.params.businessId;       //专家评审方案业务ID
         vm.minBusinessId = $state.params.minBusinessId; //专家抽取方案业务ID
         vm.businessType = $state.params.businessType;   //专家业务类型
         vm.taskId = $state.params.taskId;               //任务ID
@@ -148,8 +148,8 @@
                 vm.expertReview = data;
                 //显示随机收取按钮
                 /*if((vm.expertReview.finishExtract > 0) ||(vm.expertReview.state == 9 || vm.expertReview.state == '9')){
-                    vm.isAutoDraf = true;
-                }*/
+                 vm.isAutoDraf = true;
+                 }*/
                 //将综合分数转换为string类型，以防遍历时默认选中出问题
                 if(vm.expertReview.expertSelConditionDtoList) {
                     $.each(vm.expertReview.expertSelConditionDtoList , function(i , obj){
@@ -374,21 +374,29 @@
                 bsWin.alert("请先选择专家！");
             } else {
                 var selExpertIdArr = [];
-                var excludeIds = vm.excludeIds.split(",");
-
-                $.each(selectIds, function (i, obj) {
-                    var flag = false;
-                    $.each(excludeIds , function(j , obj2){
-                        if(obj.value == obj2){
-                            flag = true;
-                            return;
+                if(vm.excludeIds){
+                    var excludeIds = vm.excludeIds.split(",");
+                    $.each(selectIds, function (i, obj) {
+                        var flag = false;
+                        $.each(excludeIds , function(j , obj2){
+                            if(obj.value == obj2){
+                                flag = true;
+                                return;
+                            }
+                        });
+                        if(!flag){
+                            selExpertIdArr.push(obj.value);
                         }
-                    });
-                    if(!flag){
-                        selExpertIdArr.push(obj.value);
-                    }
 
-                });
+                    });
+                }  else{
+                    $.each(selectIds, function (i, obj) {
+                        selExpertIdArr.push(obj.value);
+
+                    });
+                }
+
+
                 expertReviewSvc.saveOutExpert(vm.businessId, vm.minBusinessId, vm.businessType, selExpertIdArr.join(","), vm.expertReview.id, vm.isCommit, function (data) {
                     if (data.flag || data.reCode == 'ok') {
                         //更新专家评审费用
@@ -789,18 +797,18 @@
             }
             window.history.back();
             /*if (vm.isback) {
-                $state.go('MaintainProjectEdit',{
-                    signid: vm.businessId,
-                    processInstanceId:vm.processInstanceId
-                });
-            } else {
-                $("#outExpertDiv").remove();
-                $("#selfExpertDiv").remove();
-                $state.go('flowWPEdit', {
-                    signid: vm.businessId,
-                    taskid: vm.taskId
-                });
-            }*/
+             $state.go('MaintainProjectEdit',{
+             signid: vm.businessId,
+             processInstanceId:vm.processInstanceId
+             });
+             } else {
+             $("#outExpertDiv").remove();
+             $("#selfExpertDiv").remove();
+             $state.go('flowWPEdit', {
+             signid: vm.businessId,
+             taskid: vm.taskId
+             });
+             }*/
 
         }
 

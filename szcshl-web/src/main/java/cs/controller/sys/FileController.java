@@ -2449,7 +2449,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     stage = "项目概算";
                 }
                 Map<String, Object> addFileData = new HashMap<>();
-                addFileData.put("addFileList", addRegisterFileList2);
+                addFileData.put("fileObjList", addRegisterFileList2);
                 addFileData.put("signNum", signss.getSignNum());
                 addFileData.put("projectname", signss.getProjectname());
                 addFileData.put("builtcompanyName", signss.getBuiltcompanyName());
