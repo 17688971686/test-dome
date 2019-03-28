@@ -348,6 +348,17 @@
                                     vm.selectIds.splice(j , 1);
                                 }
                             })
+                            if(vm.excludeIds) {
+                                var excludeIds = vm.excludeIds.split(",");
+                                $.each(excludeIds , function(k , id){
+
+                                    if(obj.expertDto.expertID == id ){
+                                        excludeIds.splice(k , 1);
+                                    }
+                                })
+                                vm.excludeIds =  excludeIds.join(",");
+                            }
+
                         }
                         expertReviewSvc.delSelectedExpert(vm.expertReview.id, ids.join(','), vm.isCommit, function (data) {
                             if (data.flag || data.reCode == 'ok') {
@@ -396,7 +407,6 @@
                     });
                 }
 
-
                 expertReviewSvc.saveOutExpert(vm.businessId, vm.minBusinessId, vm.businessType, selExpertIdArr.join(","), vm.expertReview.id, vm.isCommit, function (data) {
                     if (data.flag || data.reCode == 'ok') {
                         //更新专家评审费用
@@ -409,6 +419,7 @@
                         vm.reFleshSelEPInfo(data.reObj.selectedDtoList);
 
                         bsWin.success("操作成功！", function () {
+
                             window.parent.$("#outExpertDiv").data("kendoWindow").close();
                         });
                     } else {
