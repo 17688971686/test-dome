@@ -2489,7 +2489,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                    <#if stageCostOriginal?? && stageCostOriginal=="9">
+                                    <#if stageCostCopy?? && stageCostCopy=="9">
                                         <w:sym w:font="Wingdings 2" w:char="F052" />
                                     <#else>
                                         <w:t xml:space="preserve">□</w:t>

@@ -212,7 +212,6 @@
                                 </w:tcPr>
                                 <w:p>
                                     <w:pPr>
-                                        <w:spacing w:line="30" w:lineRule="auto"/>
                                         <w:pStyle w:val="15"/>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
@@ -412,7 +411,6 @@
                                 </w:tcPr>
                                 <w:p>
                                     <w:pPr>
-                                        <w:spacing w:line="30" w:lineRule="auto"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
