@@ -3123,16 +3123,16 @@
                                         </w:rPr>
                                     </w:pPr>
                                     <w:r>
-                                    <w:rPr>
-                                        <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                        <w:sz w:val="24"/>
-                                    </w:rPr>
-                                <#if officialDisposeOriginal?? && officialDisposeOriginal=="9">
-                                    <w:sym w:font="Wingdings 2" w:char="F052" />
-                                <#else>
-                                    <w:t xml:space="preserve">□</w:t>
-                                </#if>
-                                </w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    <#if officialDisposeOriginal?? && officialDisposeOriginal=="9">
+                                        <w:sym w:font="Wingdings 2" w:char="F052" />
+                                    <#else>
+                                        <w:t xml:space="preserve">□</w:t>
+                                    </#if>
+                                    </w:r>
                                 </w:p>
                             </w:tc>
                             <w:tc>
@@ -5505,13 +5505,13 @@
                         xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">
                 <Template>Normal</Template>
                 <Pages>1</Pages>
-                <Words>75</Words>
-                <Characters>433</Characters>
+                <Words>73</Words>
+                <Characters>421</Characters>
                 <Lines>3</Lines>
                 <Paragraphs>1</Paragraphs>
                 <ScaleCrop>false</ScaleCrop>
                 <LinksUpToDate>false</LinksUpToDate>
-                <CharactersWithSpaces>507</CharactersWithSpaces>
+                <CharactersWithSpaces>493</CharactersWithSpaces>
                 <Application>WPS Office_10.1.0.7022_F1E327BC-269C-435d-A152-05C5408002CA</Application>
                 <DocSecurity>0</DocSecurity>
             </Properties>
@@ -5528,7 +5528,7 @@
                 <dc:creator>wayne</dc:creator>
                 <cp:lastModifiedBy>Administrator</cp:lastModifiedBy>
                 <cp:lastPrinted>2010-06-11T03:00:00Z</cp:lastPrinted>
-                <dcterms:modified xsi:type="dcterms:W3CDTF">2017-12-20T06:16:53Z</dcterms:modified>
+                <dcterms:modified xsi:type="dcterms:W3CDTF">2017-12-22T06:49:42Z</dcterms:modified>
                 <dc:title>深圳市政府投资项目评审中心</dc:title>
                 <cp:revision>714</cp:revision>
             </cp:coreProperties>
@@ -5689,16 +5689,16 @@
                     <w:sig w:usb0="00000000" w:usb1="00000000" w:usb2="00000000" w:usb3="00000000" w:csb0="80000000"
                            w:csb1="00000000"/>
                 </w:font>
-                <w:font w:name="Wingdings 2">
-                    <w:panose1 w:val="05020102010507070707"/>
+                <w:font w:name="Webdings">
+                    <w:panose1 w:val="05030102010509060703"/>
                     <w:charset w:val="00"/>
                     <w:family w:val="auto"/>
                     <w:pitch w:val="default"/>
                     <w:sig w:usb0="00000000" w:usb1="00000000" w:usb2="00000000" w:usb3="00000000" w:csb0="80000000"
                            w:csb1="00000000"/>
                 </w:font>
-                <w:font w:name="Webdings">
-                    <w:panose1 w:val="05030102010509060703"/>
+                <w:font w:name="Wingdings 2">
+                    <w:panose1 w:val="05020102010507070707"/>
                     <w:charset w:val="00"/>
                     <w:family w:val="auto"/>
                     <w:pitch w:val="default"/>
@@ -5763,6 +5763,122 @@
                          xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape"
                          mc:Ignorable="w14 wp14">
                 <w:abstractNum w:abstractNumId="0">
+                    <w:nsid w:val="3AE64C6D"/>
+                    <w:multiLevelType w:val="multilevel"/>
+                    <w:tmpl w:val="3AE64C6D"/>
+                    <w:lvl w:ilvl="0" w:tentative="0">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="japaneseCounting"/>
+                        <w:lvlText w:val="%1、"/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:tabs>
+                                <w:tab w:val="left" w:pos="420"/>
+                            </w:tabs>
+                            <w:ind w:left="420" w:hanging="420"/>
+                        </w:pPr>
+                        <w:rPr>
+                            <w:rFonts w:hint="default"/>
+                        </w:rPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="1" w:tentative="0">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerLetter"/>
+                        <w:lvlText w:val="%2)"/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:tabs>
+                                <w:tab w:val="left" w:pos="840"/>
+                            </w:tabs>
+                            <w:ind w:left="840" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="2" w:tentative="0">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerRoman"/>
+                        <w:lvlText w:val="%3."/>
+                        <w:lvlJc w:val="right"/>
+                        <w:pPr>
+                            <w:tabs>
+                                <w:tab w:val="left" w:pos="1260"/>
+                            </w:tabs>
+                            <w:ind w:left="1260" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="3" w:tentative="0">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="decimal"/>
+                        <w:lvlText w:val="%4."/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:tabs>
+                                <w:tab w:val="left" w:pos="1680"/>
+                            </w:tabs>
+                            <w:ind w:left="1680" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="4" w:tentative="0">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerLetter"/>
+                        <w:lvlText w:val="%5)"/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:tabs>
+                                <w:tab w:val="left" w:pos="2100"/>
+                            </w:tabs>
+                            <w:ind w:left="2100" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="5" w:tentative="0">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerRoman"/>
+                        <w:lvlText w:val="%6."/>
+                        <w:lvlJc w:val="right"/>
+                        <w:pPr>
+                            <w:tabs>
+                                <w:tab w:val="left" w:pos="2520"/>
+                            </w:tabs>
+                            <w:ind w:left="2520" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="6" w:tentative="0">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="decimal"/>
+                        <w:lvlText w:val="%7."/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:tabs>
+                                <w:tab w:val="left" w:pos="2940"/>
+                            </w:tabs>
+                            <w:ind w:left="2940" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="7" w:tentative="0">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerLetter"/>
+                        <w:lvlText w:val="%8)"/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:tabs>
+                                <w:tab w:val="left" w:pos="3360"/>
+                            </w:tabs>
+                            <w:ind w:left="3360" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="8" w:tentative="0">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerRoman"/>
+                        <w:lvlText w:val="%9."/>
+                        <w:lvlJc w:val="right"/>
+                        <w:pPr>
+                            <w:tabs>
+                                <w:tab w:val="left" w:pos="3780"/>
+                            </w:tabs>
+                            <w:ind w:left="3780" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                </w:abstractNum>
+                <w:abstractNum w:abstractNumId="1">
                     <w:nsid w:val="3B2C4953"/>
                     <w:multiLevelType w:val="multilevel"/>
                     <w:tmpl w:val="3B2C4953"/>
@@ -5884,6 +6000,9 @@
                     </w:lvl>
                 </w:abstractNum>
                 <w:num w:numId="1">
+                    <w:abstractNumId w:val="1"/>
+                </w:num>
+                <w:num w:numId="2">
                     <w:abstractNumId w:val="0"/>
                 </w:num>
             </w:numbering>
@@ -5900,10 +6019,10 @@
                         xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
                         xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml"
                         xmlns:sl="http://schemas.openxmlformats.org/schemaLibrary/2006/main" mc:Ignorable="w14">
+                <w:view w:val="normal"/>
                 <w:zoom w:percent="100"/>
-                <w:doNotDisplayPageBoundaries w:val="1"/>
-                <w:bordersDoNotSurroundHeader w:val="1"/>
-                <w:bordersDoNotSurroundFooter w:val="1"/>
+                <w:bordersDoNotSurroundHeader w:val="0"/>
+                <w:bordersDoNotSurroundFooter w:val="0"/>
                 <w:documentProtection w:enforcement="0"/>
                 <w:defaultTabStop w:val="420"/>
                 <w:hyphenationZone w:val="360"/>
@@ -5924,7 +6043,6 @@
                     <w:doNotWrapTextWithPunct/>
                     <w:doNotUseEastAsianBreakRules/>
                     <w:useWord2002TableStyleRules/>
-                    <w:growAutofit/>
                     <w:useFELayout/>
                     <w:useNormalStyleForList/>
                     <w:doNotUseIndentAsNumberingTabStop/>
@@ -5945,7 +6063,7 @@
                                      w:val="11"/>
                 </w:compat>
                 <w:rsids>
-                    <w:rsidRoot w:val="009073D7"/>
+                    <w:rsidRoot w:val="00172A27"/>
                     <w:rsid w:val="000061DE"/>
                     <w:rsid w:val="00011F42"/>
                     <w:rsid w:val="00014223"/>
@@ -6177,7 +6295,6 @@
                     <w:rsid w:val="005850CE"/>
                     <w:rsid w:val="0059242B"/>
                     <w:rsid w:val="005934EE"/>
-                    <w:rsid w:val="005A06EE"/>
                     <w:rsid w:val="005B00D1"/>
                     <w:rsid w:val="005B0D5D"/>
                     <w:rsid w:val="005B2B1E"/>
@@ -6215,6 +6332,7 @@
                     <w:rsid w:val="006900DB"/>
                     <w:rsid w:val="006943C8"/>
                     <w:rsid w:val="00695C8B"/>
+                    <w:rsid w:val="006967EF"/>
                     <w:rsid w:val="006A6966"/>
                     <w:rsid w:val="006D0115"/>
                     <w:rsid w:val="006D0EE5"/>
@@ -6233,7 +6351,6 @@
                     <w:rsid w:val="00701479"/>
                     <w:rsid w:val="00703348"/>
                     <w:rsid w:val="007060D2"/>
-                    <w:rsid w:val="00707784"/>
                     <w:rsid w:val="007102D7"/>
                     <w:rsid w:val="00710DEE"/>
                     <w:rsid w:val="00711230"/>
@@ -6273,12 +6390,12 @@
                     <w:rsid w:val="007C5BE5"/>
                     <w:rsid w:val="007C5D22"/>
                     <w:rsid w:val="007C7955"/>
+                    <w:rsid w:val="007D1AE5"/>
                     <w:rsid w:val="007E6D30"/>
                     <w:rsid w:val="007F664B"/>
                     <w:rsid w:val="00805C8B"/>
                     <w:rsid w:val="00806328"/>
                     <w:rsid w:val="008169AA"/>
-                    <w:rsid w:val="00816E1D"/>
                     <w:rsid w:val="0082072F"/>
                     <w:rsid w:val="00821448"/>
                     <w:rsid w:val="00821FE0"/>
@@ -6319,6 +6436,7 @@
                     <w:rsid w:val="0091016C"/>
                     <w:rsid w:val="00913B8C"/>
                     <w:rsid w:val="00921443"/>
+                    <w:rsid w:val="00921502"/>
                     <w:rsid w:val="0092447D"/>
                     <w:rsid w:val="00924EA7"/>
                     <w:rsid w:val="00936470"/>
@@ -6363,6 +6481,7 @@
                     <w:rsid w:val="00A22ECC"/>
                     <w:rsid w:val="00A268AD"/>
                     <w:rsid w:val="00A37447"/>
+                    <w:rsid w:val="00A377AB"/>
                     <w:rsid w:val="00A37940"/>
                     <w:rsid w:val="00A42381"/>
                     <w:rsid w:val="00A4708C"/>
@@ -6554,7 +6673,6 @@
                     <w:rsid w:val="00E66242"/>
                     <w:rsid w:val="00E673CF"/>
                     <w:rsid w:val="00E74028"/>
-                    <w:rsid w:val="00E740AF"/>
                     <w:rsid w:val="00E758CC"/>
                     <w:rsid w:val="00E75D5E"/>
                     <w:rsid w:val="00E826FB"/>
@@ -6627,9 +6745,8 @@
                     <w:rsid w:val="00FF12B9"/>
                     <w:rsid w:val="00FF1D1B"/>
                     <w:rsid w:val="00FF7469"/>
-                    <w:rsid w:val="347B1083"/>
-                    <w:rsid w:val="4D6B23B9"/>
-                    <w:rsid w:val="6DF911EB"/>
+                    <w:rsid w:val="47071673"/>
+                    <w:rsid w:val="7AA52062"/>
                 </w:rsids>
                 <m:mathPr>
                     <m:brkBin m:val="before"/>

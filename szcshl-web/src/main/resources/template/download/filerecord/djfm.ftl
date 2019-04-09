@@ -1751,7 +1751,25 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">其他重要资料（备注）         </w:t>
+                                        <w:t xml:space="preserve">其他重要资料（备注） </w:t>
+                                    </w:r>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    <#if otherImportFileOriginal?? && otherImportFileOriginal=="9">
+                                        <w:sym w:font="Wingdings 2" w:char="F052" />
+                                    <#else>
+                                        <w:t xml:space="preserve">□</w:t>
+                                    </#if>
+                                    </w:r>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t xml:space="preserve">      </w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
