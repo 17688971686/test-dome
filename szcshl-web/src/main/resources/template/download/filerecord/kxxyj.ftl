@@ -415,7 +415,7 @@
                                 <w:tcPr>
                                     <w:tcW w:w="4942" w:type="dxa"/>
                                     <w:gridSpan w:val="3"/>
-                                    <w:vAlign w:val="top"/>
+                                    <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
                                     <w:pPr>
@@ -462,7 +462,7 @@
                             <w:tc>
                                 <w:tcPr>
                                     <w:tcW w:w="2415" w:type="dxa"/>
-                                    <w:vAlign w:val="top"/>
+                                    <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
                                     <w:pPr>

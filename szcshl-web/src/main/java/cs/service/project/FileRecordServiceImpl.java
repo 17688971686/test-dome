@@ -140,10 +140,10 @@ public class FileRecordServiceImpl implements FileRecordService {
             fileRecordDto.setIsSupplementary(sign.getIsSupplementary()==null? Constant.EnumState.NO.getValue():sign.getIsSupplementary() );
             fileRecordDto.setProjectChargeUser(priUser == null ? "" : priUser.getDisplayName());
             //设置默认文件标题
-            String fileTitle = "《";
+            String fileTitle = "";
             fileTitle += sign.getProjectname() == null ? "" : sign.getProjectname();
             fileTitle += (sign.getReviewstage() == null ? "" : sign.getReviewstage());
-            fileTitle += "》";
+//            fileTitle += "》";
             fileTitle += (sign.getIsAdvanced() == null ? "" : sign.getIsAdvanced());
             fileRecordDto.setFileTitle(fileTitle);
             //是否协审
