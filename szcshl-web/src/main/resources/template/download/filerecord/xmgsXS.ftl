@@ -416,7 +416,7 @@
                                     <w:tcBorders>
                                         <w:top w:val="single" w:color="auto" w:sz="4" w:space="0"/>
                                     </w:tcBorders>
-                                    <w:vAlign w:val="top"/>
+                                    <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
                                     <w:pPr>
@@ -425,13 +425,6 @@
                                             <w:sz w:val="22"/>
                                         </w:rPr>
                                     </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="22"/>
-                                        </w:rPr>
-                                        <w:t>文件标题：</w:t>
-                                    </w:r>
                                     <w:r>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
@@ -477,7 +470,7 @@
                                 <w:tcPr>
                                     <w:tcW w:w="2619" w:type="dxa"/>
                                     <w:gridSpan w:val="3"/>
-                                    <w:vAlign w:val="top"/>
+                                    <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
                                     <w:pPr>
