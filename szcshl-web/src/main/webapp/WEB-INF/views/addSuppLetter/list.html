@@ -41,8 +41,11 @@
 			<td class="text-center">{{a.filenum}}</td>
 			<td class="text-center">
 				<!-- <button class="btn btn-xs btn-primary" ng-hide="a.filenum" ng-click="vm.getFilenum(a.id);"> <span class="glyphicon glyphicon-pencil">生成文件字号</span></button> -->
-				<button ng-hide="a.processInstanceId" class="btn btn-xs btn-primary" ng-click="vm.findByIdAddSuppLetter(a.id);"><span class="glyphicon glyphicon-pencil">编辑</span></button>
-                <button ng-hide="a.processInstanceId" class="btn btn-xs btn-danger" ng-click="vm.removeAddSuppLetter( $index , a.id);"><span class="glyphicon glyphicon-remove">删除</span></button>
+				<button ng-hide="a.processInstanceId || a.userName != '${CURRENT_USER.loginName}' || '${CURRENT_USER.loginName}' != 'admin'" class="btn btn-xs btn-primary"
+						ng-click="vm.findByIdAddSuppLetter(a.id);">
+					<span class="glyphicon glyphicon-pencil">编辑</span></button>
+                <button ng-hide="a.processInstanceId || a.userName != '${CURRENT_USER.loginName}' || '${CURRENT_USER.loginName}' != 'admin'" class="btn btn-xs btn-danger"
+						ng-click="vm.removeAddSuppLetter( $index , a.id);"><span class="glyphicon glyphicon-remove">删除</span></button>
                 <a ng-show="a.processInstanceId" class="btn btn-xs btn-info" href="#/suppLetterView/{{a.id}}"><span class="glyphicon glyphicon-search">查看</span></a>
 			</td>
 		</tr>

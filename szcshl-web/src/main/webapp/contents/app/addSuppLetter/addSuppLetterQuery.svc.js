@@ -283,7 +283,7 @@
                     template: function (item) {
                         //如果拟补充资料函还未发起流程（保存异常或者提交附件失败）
                         //则这里可以编辑
-                        if(item.createdBy == curUserId && (!item.processInstanceId)){
+                        if((item.createdBy == curUserId  || isSuperUser )&& (!item.processInstanceId) ){
                             return "<a class='btn btn-xs btn-primary' href='#addSuppLetterEdit/"+item.id+"'><span class='glyphicon glyphicon-pencil'></span>编辑</a><a class='btn btn-xs btn-danger' ng-click='vm.deleteById(\""+item.id+"\")'><span class='glyphicon glyphicon-remove'></span>删除</a>";
                         }else{
                             return "";
