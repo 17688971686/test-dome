@@ -1242,9 +1242,10 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 proMeetShow = new ProMeetShow();
             }
             if (temp == proMeetDtoList.get(i).getInnerSeq().intValue()) {
-                if (dateArr[0].equals(DateUtils.converToString(proMeetDtoList.get(i).getProMeetDate(), ""))) {
+               if (dateArr[0].equals(DateUtils.converToString(proMeetDtoList.get(i).getProMeetDate(), ""))) {
                     if (StringUtil.isNotBlank(proMeetDtoList.get(i).getRbName())) {
-                        proMeetShow.setProName1(proMeetDtoList.get(i).getRbName() + "(" + proMeetDtoList.get(i).getAddressName() + ")");
+                        proMeetShow.setProName1(proMeetDtoList.get(i).getRbName() + "(" + proMeetDtoList.get(i).getAddressName() + ")【"
+                                + proMeetDtoList.get(i).getAddUserOrgName() + "：" + proMeetDtoList.get(i).getAddUserName() + "】");
                     } else if (StringUtil.isNotBlank(proMeetDtoList.get(i).getProName())) {
                         proMeetShow.setProName1(proMeetDtoList.get(i).getProName() + "项目调研");
                     }
@@ -1254,7 +1255,8 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                     continue;
                 } else if (dateArr[1].equals(DateUtils.converToString(proMeetDtoList.get(i).getProMeetDate(), ""))) {
                     if (StringUtil.isNotBlank(proMeetDtoList.get(i).getRbName())) {
-                        proMeetShow.setProName2(proMeetDtoList.get(i).getRbName() + "(" + proMeetDtoList.get(i).getAddressName() + ")");
+                        proMeetShow.setProName2(proMeetDtoList.get(i).getRbName() + "(" + proMeetDtoList.get(i).getAddressName() + ")【"
+                                + proMeetDtoList.get(i).getAddUserOrgName() + "：" + proMeetDtoList.get(i).getAddUserName() + "】");
                     } else if (StringUtil.isNotBlank(proMeetDtoList.get(i).getProName())) {
                         proMeetShow.setProName2(proMeetDtoList.get(i).getProName() + "项目调研");
                     }
@@ -1264,7 +1266,8 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                     continue;
                 } else if (dateArr[2].equals(DateUtils.converToString(proMeetDtoList.get(i).getProMeetDate(), ""))) {
                     if (StringUtil.isNotBlank(proMeetDtoList.get(i).getRbName())) {
-                        proMeetShow.setProName3(proMeetDtoList.get(i).getRbName() + "(" + proMeetDtoList.get(i).getAddressName() + ")");
+                        proMeetShow.setProName3(proMeetDtoList.get(i).getRbName() + "(" + proMeetDtoList.get(i).getAddressName() + ")【"
+                                + proMeetDtoList.get(i).getAddUserOrgName() + "：" + proMeetDtoList.get(i).getAddUserName() + "】");
                     } else if (StringUtil.isNotBlank(proMeetDtoList.get(i).getProName())) {
                         proMeetShow.setProName3(proMeetDtoList.get(i).getProName() + "项目调研");
                     }
@@ -1274,7 +1277,8 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                     continue;
                 } else if (dateArr[3].equals(DateUtils.converToString(proMeetDtoList.get(i).getProMeetDate(), ""))) {
                     if (StringUtil.isNotBlank(proMeetDtoList.get(i).getRbName())) {
-                        proMeetShow.setProName4(proMeetDtoList.get(i).getRbName() + "(" + proMeetDtoList.get(i).getAddressName() + ")");
+                        proMeetShow.setProName4(proMeetDtoList.get(i).getRbName() + "(" + proMeetDtoList.get(i).getAddressName() + ")【"
+                                + proMeetDtoList.get(i).getAddUserOrgName() + "：" + proMeetDtoList.get(i).getAddUserName() + "】");
                     } else if (StringUtil.isNotBlank(proMeetDtoList.get(i).getProName())) {
                         proMeetShow.setProName4(proMeetDtoList.get(i).getProName() + "项目调研");
                     }
@@ -1284,7 +1288,8 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                     continue;
                 } else if (dateArr[4].equals(DateUtils.converToString(proMeetDtoList.get(i).getProMeetDate(), ""))) {
                     if (StringUtil.isNotBlank(proMeetDtoList.get(i).getRbName())) {
-                        proMeetShow.setProName5(proMeetDtoList.get(i).getRbName() + "(" + proMeetDtoList.get(i).getAddressName() + ")");
+                        proMeetShow.setProName5(proMeetDtoList.get(i).getRbName() + "(" + proMeetDtoList.get(i).getAddressName() + ")【"
+                                + proMeetDtoList.get(i).getAddUserOrgName() + "：" + proMeetDtoList.get(i).getAddUserName() + "】");
                     } else if (StringUtil.isNotBlank(proMeetDtoList.get(i).getProName())) {
                         proMeetShow.setProName5(proMeetDtoList.get(i).getProName() + "项目调研");
                     }

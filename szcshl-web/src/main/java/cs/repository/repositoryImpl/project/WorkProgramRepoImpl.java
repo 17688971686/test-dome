@@ -11,6 +11,7 @@ import cs.domain.expert.ExpertSelected_;
 import cs.domain.meeting.RoomBooking;
 import cs.domain.meeting.RoomBooking_;
 import cs.domain.project.*;
+import cs.domain.sys.User;
 import cs.model.expert.ExpertSelectedDto;
 import cs.model.meeting.RoomBookingDto;
 import cs.model.project.ProMeetDto;
@@ -20,6 +21,7 @@ import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.repository.repositoryImpl.expert.ExpertSelConditionRepo;
 import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
+import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.sql.WorkSql;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
@@ -46,6 +48,9 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram, String>
     private ExpertReviewRepo expertReviewRepo;
     @Autowired
     private SignBranchRepo signBranchRepo;
+
+    @Autowired
+    private UserRepo userRepo;
 
     /**
      * 根据收文编号，查询对应工作方案
@@ -323,11 +328,11 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram, String>
         List<ProMeetDto> proAmMeetDtoList = new ArrayList<ProMeetDto>();
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append(" select a.*,row_number() over(partition by a.rbday order by a.rbday) innerSeq from (");
-        sqlBuilder.append(" select t.rbday,t.rbname,t.addressname from cs_room_booking t ");
+        sqlBuilder.append(" select t.rbday,t.rbname,t.addressname,t.dueToPeople from cs_room_booking t ");
         sqlBuilder.append(" where t.rbday between TRUNC(SYSDATE) and TRUNC(SYSDATE + 4)");
         sqlBuilder.append(" and to_number(to_char(t.begintime,'hh24')) > 12 ");
         sqlBuilder.append(" union all ");
-        sqlBuilder.append(" select t.rbday,t.rbname,t.addressname from cs_room_booking t ");
+        sqlBuilder.append(" select t.rbday,t.rbname,t.addressname,t.dueToPeople from cs_room_booking t ");
         sqlBuilder.append(" where t.rbday between TRUNC(SYSDATE) and TRUNC(SYSDATE + 4) ");
         sqlBuilder.append(" and to_number(to_char(t.begintime,'hh24')) between 8 and 12 ");
         sqlBuilder.append(" and to_number(to_char(t.endtime,'hh24')) > 12 ");
@@ -346,8 +351,13 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram, String>
                 if (null != objRow[2]) {
                     proMeetDto.setAddressName((String) objRow[2]);
                 }
-                if (null != objRow[3]) {
-                    proMeetDto.setInnerSeq((BigDecimal) objRow[3]);
+                if(null != objRow[3]){
+                    proMeetDto.setAddUserName((String)objRow[3]);
+                    User user  = userRepo.findUserByName((String )objRow[3]);
+                    proMeetDto.setAddUserOrgName( (null == user || null == user.getOrg()) ? "" : user.getOrg().getName());
+                }
+                if (null != objRow[4]) {
+                    proMeetDto.setInnerSeq((BigDecimal) objRow[4]);
                 }
                 proAmMeetDtoList.add(proMeetDto);
             }

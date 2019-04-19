@@ -21,6 +21,10 @@ public class ProMeetDto{
 
     private String addressName;//会议地点
 
+    private String addUserName;//添加会议人
+
+    private String addUserOrgName;//添加人部门
+
     private BigDecimal innerSeq;
 
 
@@ -62,5 +66,21 @@ public class ProMeetDto{
 
     public void setInnerSeq(BigDecimal innerSeq) {
         this.innerSeq = innerSeq;
+    }
+
+    public String getAddUserName() {
+        return addUserName;
+    }
+
+    public void setAddUserName(String addUserName) {
+        this.addUserName = addUserName;
+    }
+
+    public String getAddUserOrgName() {
+        return addUserOrgName;
+    }
+
+    public void setAddUserOrgName(String addUserOrgName) {
+        this.addUserOrgName = addUserOrgName;
     }
 }
