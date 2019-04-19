@@ -34,5 +34,18 @@
         vm.findByIdAddSuppLetter = function (id) {
         	$state.go('addSuppLetterEdit', {id: id});
         }
+
+        vm.removeAddSuppLetter = function ( index , id) {
+            common.confirm({
+                vm: vm,
+                title: "",
+                msg: "确认删除数据吗？",
+                fn: function () {
+                    $('.confirmDialog').modal('hide');
+                    vm.suppletterlist.splice(index , 1);
+                    addSuppLetterSvc.deleteById(vm, id);
+                }
+            });
+        }
     }
 })();
