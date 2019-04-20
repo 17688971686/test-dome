@@ -524,7 +524,7 @@
                             options.vm.sysFilelists = [];
                             options.vm.sysFilelists = data;
                             $("#commonQueryWindow").kendoWindow({
-                                width: "50%",
+                                width: "75%",
                                 height: "500px",
                                 title: "附件上传列表",
                                 visible: false,

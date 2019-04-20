@@ -57,7 +57,7 @@ public class SysFileController {
     @RequiresAuthentication
     @RequestMapping(name = "根据业务ID获取附件", path = "findByBusinessId", method = RequestMethod.GET)
     @ResponseBody
-    public List<SysFileDto> findByBusinessId(@RequestParam(required = true) String businessId) {
+    public List<SysFileDto> findByBusinessId(@RequestParam String businessId) {
         List<SysFileDto> sysfileDto = sysFileService.findByBusinessId(businessId);
         return sysfileDto;
     }
@@ -65,7 +65,7 @@ public class SysFileController {
     @RequiresAuthentication
     @RequestMapping(name = "根据主模块ID获取附件", path = "findByMainId", method = RequestMethod.GET)
     @ResponseBody
-    public List<SysFileDto> findByMainId(@RequestParam(required = true) String mainId) {
+    public List<SysFileDto> findByMainId(@RequestParam String mainId) {
         List<SysFileDto> sysfileDto = sysFileService.findByMainId(mainId);
         return sysfileDto;
     }
@@ -75,7 +75,7 @@ public class SysFileController {
     @RequestMapping(name = "文件上传", path = "fileUpload", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg upload(HttpServletRequest request, @RequestParam(name = "file") MultipartFile[] multipartFileList,
-                            @RequestParam(required = true) String businessId, String mainId, String mainType,
+                            @RequestParam String businessId, String mainId, String mainType,
                             String sysfileType, String sysBusiType) {
         ResultMsg resultMsg = new ResultMsg(false, "error", "");
         if (multipartFileList == null || multipartFileList.length == 0) {
@@ -147,7 +147,7 @@ public class SysFileController {
     @RequiresAuthentication
     @RequestMapping(name = "ftp文件校验", path = "fileSysCheck", method = RequestMethod.GET)
     @ResponseBody
-    public ResultMsg checkFtpFile(@RequestParam(required = true) String sysFileId) {
+    public ResultMsg checkFtpFile(@RequestParam String sysFileId) {
         ResultMsg resultMsg;
         try {
             SysFile sysFile = sysFileService.getById(sysFileId);
@@ -219,7 +219,7 @@ public class SysFileController {
 
     @RequestMapping(name = "文件下载", path = "fileDownload", method = RequestMethod.GET)
     @ResponseStatus(value = HttpStatus.OK)
-    public void fileDownload(@RequestParam(required = true)String sysfileId, HttpServletResponse response) throws Exception {
+    public void fileDownload(@RequestParam String sysfileId, HttpServletResponse response) throws Exception {
         OutputStream out = response.getOutputStream();
         try {
             SysFile sysFile = sysFileService.getById(sysfileId);
@@ -255,7 +255,7 @@ public class SysFileController {
 
     @RequestMapping(name = "附件删除", path = "", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void delete(@RequestParam(required = true) String sysFileId) {
+    public void delete(@RequestParam String sysFileId) {
         sysFileService.deleteByFileId(sysFileId);
     }
 

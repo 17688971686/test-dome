@@ -28,6 +28,11 @@ public class Project extends DomainBase {
     @Column(columnDefinition = "VARCHAR(32)")
     private String fileCode;
 
+    /**
+     * 评审中心收文编号
+     */
+    @Column(columnDefinition = "VARCHAR(16)")
+    private String signNum;
     //项目名称
     @Column(columnDefinition = "VARCHAR(200)")
     private String projectName;
@@ -280,5 +285,13 @@ public class Project extends DomainBase {
 
     public void setAssistUserName(String assistUserName) {
         this.assistUserName = assistUserName;
+    }
+
+    public String getSignNum() {
+        return signNum;
+    }
+
+    public void setSignNum(String signNum) {
+        this.signNum = signNum;
     }
 }

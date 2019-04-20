@@ -1,0 +1,53 @@
+<meta charset="UTF-8">
+<div class="well well-sm" style="background:white;width: 100%; margin: 0 auto; min-width: 500px;">
+    <div class="toolbar">
+        <form name="chartForm" id="chartForm" style="width:750px;margin:0 auto;">
+            <ul class="list-inline">
+                <li><h4><strong> 图表类型 </strong></h4></li>
+                <li style="height: 30px;">
+                    <input type="radio" name="chart" value="histogram"
+                           ng-model="vm.chartType"
+                           ng-checked="vm.chartType == 'histogram'"/> 柱状图
+                    <span style="font-size: 12px;">【申报金额统计】</span>
+                </li>
+                <li style="height: 30px;">
+                    <input type="radio" name="chart" value="lineChart"
+                           ng-model="vm.chartType"
+                           ng-checked="vm.chartType == 'lineChart'"/> 折线图
+                    <span style="font-size: 12px;">【项目类别统计】</span>
+                </li>
+                <li style="height: 30px;">
+                    <input type="radio" name="chart" value="pie"
+                           ng-model="vm.chartType"
+                           ng-checked="vm.chartType == 'pie'"/> 饼&nbsp;&nbsp;&nbsp;图
+                    <span style="font-size: 12px;">【项目金额统计】</span>
+                </li>
+                <li>
+                    <go-back></go-back>
+                </li>
+            </ul>
+
+            <ul class="list-inline">
+                <li><h4><strong> 时间范围 </strong></h4></li>
+                <li style="margin-bottom: 10px;">
+                    开始日期：<input kendo-date-picker k-format="'yyyy-MM-dd'"
+                                ng-model="vm.startTime" name="studyBeginTime" id="studyBeginTime"/>
+                </li>
+                <li>
+                    结束日期：<input kendo-date-picker k-format="'yyyy-MM-dd'" name="studyEndTime" id="studyEndTime"
+                                ng-model="vm.endTime" data-datecompare-msg="结束日期必须大于开始日期"/>
+                </li>
+                <li>
+                    <button class="btn btn-sm btn-success" ng-click="vm.resetChart()">开始统计</button>
+                </li>
+            </ul>
+        </form>
+
+    </div>
+
+    <div style="margin-top:20px;">
+        <div id="histogram" ng-show="vm.showHistogram" style="width: 1000px; height: 660px; ; margin: auto auto;"></div>
+        <div id="pie" ng-show="vm.showPie" style="width: 1000px; height: 660px ; margin: auto auto;"></div>
+        <div id="lineChart" ng-show="vm.showLineChart" style="width: 1000px; height: 660px; margin: auto auto;"></div>
+    </div>
+</div>

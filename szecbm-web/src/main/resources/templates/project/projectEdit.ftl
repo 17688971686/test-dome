@@ -14,7 +14,7 @@
 <section class="content">
     <div class="well well-sm" style="background:white;">
         <form id="form" name="form" ng-init="vm.model.fillDate = '${.now?string("yyyy-MM-dd")}'">
-            <div class="toolbar" >
+            <div class="toolbar" style="margin-bottom: 10px;">
                 <button class="btn btn-sm btn-primary" ui-sref="projectManage">
                     <span class="glyphicon glyphicon-chevron-left"></span> 返回
                 </button>

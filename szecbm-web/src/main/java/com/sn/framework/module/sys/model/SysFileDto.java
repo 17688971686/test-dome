@@ -24,11 +24,24 @@ public class SysFileDto extends SysFile {
      */
     private String fileSizeStr;
 
+    /**
+     * 创建日期字符串，用于前端显示
+     */
+    private String createDateStr;
+
     public String getFileSizeStr() {
         return fileSizeStr;
     }
 
     public void setFileSizeStr(String fileSizeStr) {
         this.fileSizeStr = fileSizeStr;
+    }
+
+    public String getCreateDateStr() {
+        return createDateStr;
+    }
+
+    public void setCreateDateStr(String createDateStr) {
+        this.createDateStr = createDateStr;
     }
 }

@@ -6,6 +6,7 @@ import org.owasp.esapi.ESAPI;
 import org.owasp.esapi.codecs.Codec;
 import org.owasp.esapi.codecs.WindowsCodec;
 
+import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
@@ -290,6 +291,16 @@ public class StringUtil extends StringUtils {
         return strArr.contains(str);
     }
 
+    public static String getCompressFileName(String attSavePath) {
+        int lastIndex = attSavePath.lastIndexOf(".");
+        String fileName = attSavePath.substring(0,lastIndex);
+        String fileType = attSavePath.substring(lastIndex);
+        return fileName+"_min"+fileType;
+    }
+
+    public static String getFilePath(String fullPath) {
+        return fullPath.substring(0,fullPath.lastIndexOf(File.separator));
+    }
     public static void main(String[] args) {
         /*String checkString = "select u.* from user u";
         //生成一个Oracle编码器实例
@@ -303,7 +314,7 @@ public class StringUtil extends StringUtils {
             System.out.println(jo.getString(SMSUtils.MSG_PARAMS.accessToken.toString()));
             System.out.println(jo.getString(SMSUtils.MSG_PARAMS.tokenMsg.toString()));
         }*/
-        System.out.println("1234".substring(0,2));
+        System.out.println(StringUtil.getFilePath("sdgasdgd"+File.separator+"33335235sggs"+File.separator+"gg.png"));
     }
 
 

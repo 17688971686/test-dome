@@ -4,15 +4,6 @@
 <#macro projectEditInfo isEdit=true modelKey="model" >
 <table class="table table-bordered table-striped">
     <tr>
-        <td class="text-right" width="200">收文编号：<span class="text-red">(*)</span></td>
-        <td>
-            <input style="width:200px;" type="text" maxlength="300" class="form-control input-sm"
-                   <#if !isEdit>disabled</#if>
-                   id="fileCode" name="fileCode" style="width: 200px;" data-val="true" data-val-required="必填"
-                   ng-model="vm.${modelKey}.fileCode">
-            <span data-valmsg-for="fileCode" data-valmsg-replace="true" class="text-red"></span>
-        </td>
-
         <td class="text-right" width="200">项目名称：<span class="text-red">(*)</span></td>
         <td>
             <input style="width:200px;" type="text" maxlength="300" class="form-control input-sm"
@@ -21,22 +12,13 @@
                    ng-model="vm.${modelKey}.projectName">
             <span data-valmsg-for="projectName" data-valmsg-replace="true" class="text-red"></span>
         </td>
-    </tr>
-    <tr>
         <td class="text-right">评审阶段：<span class="text-red">(*)</span></td>
         <td>
             <select class="form-control input-sm" style="width:200px;" ng-model="vm.${modelKey}.reviewStage"
                     <#if !isEdit>disabled</#if>
                     name="reviewStage" id="reviewStage" data-val="true" data-val-required="必填" >
-            <option value="">---请选择---</option>
-            <option value="项目建议书" ng-selected="'项目建议书' == vm.model.reviewStage">项目建议书</option>
-            <option value="可行性研究报告" ng-selected="'可行性研究报告' == vm.model.reviewStage">可行性研究报告</option>
-            <option value="项目概算" ng-selected="'项目概算' == vm.model.reviewStage">项目概算</option>
-            <option value="资金申请报告" ng-selected="'资金申请报告' == vm.model.reviewStage">资金申请报告</option>
-            <option value="进口设备" ng-selected="'进口设备' == vm.model.reviewStage">进口设备</option>
-            <option value="设备清单（国产）" ng-selected="'设备清单（国产）' == vm.model.reviewStage">设备清单（国产）</option>
-            <option value="设备清单（进口）" ng-selected="'设备清单（进口）' == vm.model.reviewStage">设备清单（进口）</option>
-            <option value="其它" ng-selected="'其它' == vm.model.reviewStage">其它</option>
+                <option value="">---请选择---</option>
+                <option ng-repeat="x in DICT.REVIEW_STAGE.dicts" value="{{x.dictName}}" ng-selected="x.dictName== vm.${modelKey}.reviewStage">{{x.dictName}}</option>
             </select>
             <span ng-show="vm.${modelKey}.reviewStage=='项目建议书'||vm.${modelKey}.reviewStage=='可行性研究报告'||vm.${modelKey}.reviewStage=='项目概算'||vm.${modelKey}.reviewStage=='资金申请报告'">
                     	<input class="text-right" type="checkbox" style="width:20px;"
@@ -50,14 +32,24 @@
                                ng-false-value="0"> 是否调概
             </span>
             <span data-valmsg-for="reviewStage" data-valmsg-replace="true" class="text-red"></span>
-        </td>
-        <td class="text-right">项目单位：<span class="text-red">(*)</span></td>
+    </tr>
+    <tr>
+        <td class="text-right" width="200">收文编号：<span class="text-red">(*)</span></td>
         <td>
             <input style="width:200px;" type="text" maxlength="300" class="form-control input-sm"
                    <#if !isEdit>disabled</#if>
-                   id="proUnit" name="proUnit" style="width: 200px;" data-val="true" data-val-required="必填"
-                   ng-model="vm.${modelKey}.proUnit">
-            <span data-valmsg-for="proUnit" data-valmsg-replace="true" class="text-red"></span>
+                   id="signNum" name="signNum" style="width: 200px;" data-val="true" data-val-required="必填"
+                   ng-model="vm.${modelKey}.signNum">
+            <span data-valmsg-for="signNum" data-valmsg-replace="true" class="text-red"></span>
+        </td>
+        <td class="text-right" width="200">委里编号：<span class="text-red">(*)</span></td>
+        <td>
+            <input style="width:200px;" type="text" maxlength="300" class="form-control input-sm"
+                   <#if !isEdit>disabled</#if>
+                   id="fileCode" name="fileCode" style="width: 200px;" data-val="true" data-val-required="必填"
+                   ng-model="vm.${modelKey}.fileCode">
+            <span data-valmsg-for="fileCode" data-valmsg-replace="true" class="text-red"></span>
+        </td>
         </td>
     </tr>
 
@@ -92,7 +84,7 @@
     </tr>
     <tr>
         <td class="text-right">第一负责人：<span class="text-red">(*)</span></td>
-        <td colspan="3">
+        <td >
             <select class="form-control input-sm" style="width:200px;" ng-model="vm.${modelKey}.mainUser"
                     ng-change="vm.checkPrincipal();"
                     <#if !isEdit>disabled</#if> id="mainUser" name="mainUser" data-val="true" data-val-required="必填">
@@ -103,6 +95,14 @@
                 </option>
             </select>
             <span data-valmsg-for="mainUser" data-valmsg-replace="true" class="text-red"></span>
+        </td>
+        <td class="text-right">项目单位：<span class="text-red">(*)</span></td>
+        <td>
+            <input style="width:200px;" type="text" maxlength="300" class="form-control input-sm"
+                   <#if !isEdit>disabled</#if>
+                   id="proUnit" name="proUnit" style="width: 200px;" data-val="true" data-val-required="必填"
+                   ng-model="vm.${modelKey}.proUnit">
+            <span data-valmsg-for="proUnit" data-valmsg-replace="true" class="text-red"></span>
         </td>
     </tr>
     <tr>
@@ -222,7 +222,7 @@
             <td style="text-align: center;">{{ x.fileSizeStr }}</td>
         <#--    <td style="text-align: center;">{{ x.sysBusiType }}</td>-->
             <td style="text-align: center;">{{ x.createdBy }}</td>
-            <td style="text-align: center;">{{ x.createdDate }}</td>
+            <td style="text-align: center;">{{ x.createDateStr }}</td>
             <td style="text-align: center;">
                 <button ng-click="vm.downloadSysFile(x.sysFileId)" id="linksbtn" class="btn btn-xs btn-primary"><i class="fa fa-cloud-download" aria-hidden="true"></i>下载</button>
                 <button   <#if !isEdit>style="display: none" </#if> class="btn btn-xs btn-danger" ng-click="vm.delSysFile(x.sysFileId)"><i class="fa fa-times" aria-hidden="true"></i>删除</button>
