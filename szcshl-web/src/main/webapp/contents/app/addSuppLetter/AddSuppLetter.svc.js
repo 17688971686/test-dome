@@ -17,9 +17,44 @@
             initSuppListDate: initSuppListDate,         //初始化拟补充资料函列表
             initFlowDeal: initFlowDeal,                 //初始化流程数据
             startSignSupperFlow : startSignSupperFlow,  //发起拟补充资料函流程
+            deleteById : deleteById , //通过id删除拟补充资料函
         };
 
         return service;
+
+        // begin#deleteById
+        function deleteById(vm, id) {
+            vm.isSubmit = true;
+            var httpOptions = {
+                method: 'post',
+                url: url_addSuppLetter + "/deleteById",
+                params: {id : id }
+            };
+
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm: vm,
+                    response: response,
+                    fn: function () {
+                        common.alert({
+                            vm: vm,
+                            msg: "操作成功",
+                            closeDialog: true,
+                            fn: function () {
+                                vm.isSubmit = false;
+                            }
+                        })
+                    }
+                });
+            };
+
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
 
         //S_发起拟补充资料函流程
         function startSignSupperFlow(id,callBack){
