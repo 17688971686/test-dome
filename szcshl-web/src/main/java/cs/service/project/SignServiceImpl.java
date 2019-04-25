@@ -1,6 +1,7 @@
 package cs.service.project;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Sets;
 import cs.ahelper.projhelper.DisUtil;
 import cs.ahelper.projhelper.ProjUtil;
 import cs.ahelper.projhelper.WorkPGUtil;
@@ -1417,8 +1418,9 @@ public class SignServiceImpl implements SignService {
                     if (!expertReviewService.checkReviewCost(signid)) {
                         return ResultMsg.error("您还没完成专家评审费发放，不能进行下一步操作！");
                     }
-                    if (!checkFileUpload(signid)) {
-                        return ResultMsg.error( "您还没上传[评审意见]或者[审核意见]附件信息！");
+                    ResultMsg fileResult = checkFileUpload(signid);
+                    if (!fileResult.isFlag()) {
+                        return ResultMsg.error( "请先上传设定附件["+fileResult.getReMsg()+"]中,至少一个附件！");
                     }
                     //有项目负责人，则项目负责人审核
                     userList = signPrincipalService.getAllSecondPriUser(signid);
@@ -1959,21 +1961,31 @@ public class SignServiceImpl implements SignService {
 
     /**
      * 验证是否已经上传附件
-     *
+     *（如果有配置，优先匹配设置的附件，否则默认匹配"评审意见"或者"审核意见"中的一个）
      * @param signid
      * @return
      */
     @Override
-    public boolean checkFileUpload(String signid) {
+    public ResultMsg checkFileUpload(String signid) {
+        String checkFileString = "评审意见,审核意见";
+        SysConfigDto checkFileConfig = sysConfigService.findByKey(SysConstants.SYS_CONFIG_ENUM.CHECKFILE.toString());
+        if(Validate.isObject(checkFileConfig) && Validate.isString(checkFileConfig.getConfigValue())){
+            checkFileString = checkFileConfig.getConfigValue();
+        }
+        List<String> setValues = StringUtil.getSplit(checkFileString,SEPARATE_COMMA);
+        Set<String> checkFileSet = Sets.newHashSet(setValues);
+
         boolean isUploadMainFile = false;
         List<SysFile> fileList = sysFileRepo.findByMainId(signid);
         for (SysFile sysFile : fileList) {
             String fileShowName = sysFile.getShowName();
-            if (fileShowName.contains("评审意见") || fileShowName.contains("审核意见")) {
+            fileShowName = fileShowName.substring(0,fileShowName.lastIndexOf("."));
+            if (checkFileSet.contains(fileShowName)) {
                 isUploadMainFile = true;
+                break;
             }
         }
-        return isUploadMainFile;
+        return new ResultMsg(isUploadMainFile,Constant.MsgCode.OK.getValue(),checkFileString);
     }
 
 

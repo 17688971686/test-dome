@@ -1501,8 +1501,9 @@ public class FlowServiceImpl implements FlowService {
                         if (!expertReviewService.checkReviewCost(s.getMergeId())) {
                             return ResultMsg.error("合并发文次项目,还没完成专家评审费发放，不能进行下一步操作！");
                         }
-                        if (!signService.checkFileUpload(s.getMergeId())) {
-                            return ResultMsg.error("合并发文次项目,还没上传[评审意见]或者[审核意见]附件信息！");
+                        ResultMsg fileResult = signService.checkFileUpload(s.getMergeId());
+                        if (!fileResult.isFlag()) {
+                            return ResultMsg.error( "合并发文次项目,请先上传设定附件["+fileResult.getReMsg()+"]中,至少一个附件！");
                         }
                     }
                 }
@@ -1510,8 +1511,9 @@ public class FlowServiceImpl implements FlowService {
                 if (!expertReviewService.checkReviewCost(signid)) {
                     return ResultMsg.error("您还没完成专家评审费发放，不能进行下一步操作！");
                 }
-                if (!signService.checkFileUpload(signid)) {
-                    return ResultMsg.error("您还没上传[评审意见]或者[审核意见]附件信息！");
+                ResultMsg fileResult = signService.checkFileUpload(signid);
+                if (!fileResult.isFlag()) {
+                    return ResultMsg.error("请先上传设定附件["+fileResult.getReMsg()+"]中,至少一个附件！");
                 }
                 //取环节处理人
                 userList = signPrincipalService.getAllSecondPriUser(signid);

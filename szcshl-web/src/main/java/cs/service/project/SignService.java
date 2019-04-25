@@ -323,7 +323,7 @@ public interface SignService {
      * @param signId
      * @return
      */
-    boolean checkFileUpload(String signId);
+    ResultMsg checkFileUpload(String signId);
 
     /**
      * 获取主项目负责人
