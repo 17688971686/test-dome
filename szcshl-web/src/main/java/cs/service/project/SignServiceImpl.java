@@ -1973,16 +1973,21 @@ public class SignServiceImpl implements SignService {
             checkFileString = checkFileConfig.getConfigValue();
         }
         List<String> setValues = StringUtil.getSplit(checkFileString,SEPARATE_COMMA);
-        Set<String> checkFileSet = Sets.newHashSet(setValues);
+        //Set<String> checkFileSet = Sets.newHashSet(setValues);
 
         boolean isUploadMainFile = false;
         List<SysFile> fileList = sysFileRepo.findByMainId(signid);
         for (SysFile sysFile : fileList) {
-            String fileShowName = sysFile.getShowName();
-            fileShowName = fileShowName.substring(0,fileShowName.lastIndexOf("."));
-            if (checkFileSet.contains(fileShowName)) {
-                isUploadMainFile = true;
+            if(isUploadMainFile){
                 break;
+            }
+            String fileShowName = sysFile.getShowName();
+          /*  fileShowName = fileShowName.substring(0,fileShowName.lastIndexOf("."));*/
+            for(String checkFileName : setValues){
+                if (fileShowName.contains(checkFileName)) {
+                    isUploadMainFile = true;
+                    break;
+                }
             }
         }
         return new ResultMsg(isUploadMainFile,Constant.MsgCode.OK.getValue(),checkFileString);
