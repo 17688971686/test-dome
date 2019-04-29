@@ -111,7 +111,7 @@ public class FileRecordServiceImpl implements FileRecordService {
         if (fileRecord != null && Validate.isString(fileRecord.getFileRecordId())) {
             BeanCopierUtils.copyProperties(fileRecord, fileRecordDto);
             //查询补充资料函信息
-            List<AddRegisterFile> registerFileList = addRegisterFileRepo.findByIds(AddRegisterFile_.businessId.getName(),signid," businessType asc");
+            List<AddRegisterFile> registerFileList = addRegisterFileRepo.findByIds(AddRegisterFile_.businessId.getName(),signid," businessType asc,createdDate asc");
             if(Validate.isList(registerFileList)){
                 registerFileList.forEach(rgf -> {
                     AddRegisterFileDto dto = new AddRegisterFileDto();

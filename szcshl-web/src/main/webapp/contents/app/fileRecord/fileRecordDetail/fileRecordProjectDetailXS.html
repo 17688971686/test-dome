@@ -817,14 +817,14 @@
                     <td style="border-top: none;">{{$index+1}}、{{vm.otherFile[$index].fileName}}</td>
                     <td style="border-top: none;">
                         <input type="checkbox" class="newcheckbox" ng-disabled="true"
-                               ng-model="vm.otherFile[$index].isHasCopyfile"
-                               ng-checked="vm.otherFile[$index].isHasCopyfile == '9'"
+                               ng-model="vm.otherFile[$index].isHasOriginfile"
+                               ng-checked="vm.otherFile[$index].isHasOriginfile == '9'"
                                ng-true-value="9" ng-false-value="0"/>
                     </td>
                     <td style="border-top: none;">
                         <input type="checkbox" class="newcheckbox" ng-disabled="true"
-                               ng-model="vm.otherFile[$index].isHasOriginfile"
-                               ng-checked="vm.otherFile[$index].isHasOriginfile == '9'"
+                               ng-model="vm.otherFile[$index].isHasCopyfile"
+                               ng-checked="vm.otherFile[$index].isHasCopyfile == '9'"
                                ng-true-value="9" ng-false-value="0"/>
                     </td>
                     <td style="border-top: none;">

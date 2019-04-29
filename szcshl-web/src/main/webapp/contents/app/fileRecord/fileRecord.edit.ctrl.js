@@ -216,6 +216,18 @@
                 fileRecordSvc.otherFilePrint(vm.signId , idStr);
             }
         }
+
+        /**
+         * 其他资料/补充资料函，复选框重置
+         * @param temp
+         * @param index
+         */
+        vm.resetOtherCancelBox = function (temp , index) {
+            var cheboxObj = $("input[name='"+temp+"_" + index + "']:checked");
+            if(cheboxObj.length==0){
+                vm.addRegisters[index][temp] = '0';
+            }
+        }
     }
 
 })();
