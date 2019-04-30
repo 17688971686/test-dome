@@ -9,13 +9,21 @@
         <li class="active">{{vm.title}}</li>
     </ol>
     <div class="toolbar">
+    <@shiro.hasPermission name="partyMeet#html/addPartyMeeting#get">
         <a class="btn btn-sm btn-success" style="margin-left:10px;" href="#/addPartyMeet/">
             <span class="glyphicon glyphicon-plus"></span>新增</a>
+    </@shiro.hasPermission>
     </div>
     <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
 </div>
 <script type="text/template" id="columnBtns">
+    <@shiro.hasPermission name="partyMeet#html/addPartyMeeting#get">
     <a class="btn btn-xs btn-primary" href="#/addPartyMeet/{0}" ><span class="glyphicon glyphicon-pencil"></span>编辑</a>
+    </@shiro.hasPermission>
+    <@shiro.hasPermission name="partyMeet#html/partyMeetDetail#get">
     <a class="btn btn-xs btn-primary" href="#/partyMeetDetail/{0}"  ><span class="glyphicon glyphicon-pencil"></span>查看</a>
-   <button class="btn btn-xs btn-warning" ng-click="{1}" ><span class="glyphicon glyphicon-warning-sign"></span>删除</button>
+    </@shiro.hasPermission>
+    <@shiro.hasPermission name="partyMeet#html/addPartyMeeting#get">
+    <button class="btn btn-xs btn-warning" ng-click="{1}" ><span class="glyphicon glyphicon-warning-sign"></span>删除</button>
+    </@shiro.hasPermission>
 </script>
