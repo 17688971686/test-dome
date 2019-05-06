@@ -91,6 +91,10 @@
                 vm.businessId = businessId;
                 vm.businessType = businessType;
 
+                //因为弹框时会是上一个项目的内容，所以在关闭窗口后强制刷新页面
+                var onClose = function(){
+                    window.location.reload();
+                }
                 $("#addOtherFile").kendoWindow({
                     width: "840px",
                     height: "480px",
@@ -98,6 +102,7 @@
                     visible: false,
                     modal: true,
                     closable: true,
+                    close : onClose,
                     actions: ["Pin", "Minimize", "Maximize", "Close"]
                 }).data("kendoWindow").center().open();
             }
@@ -223,8 +228,8 @@
          * @param index
          */
         vm.resetOtherCancelBox = function (temp , index) {
-            var cheboxObj = $("input[name='"+temp+"_" + index + "']:checked");
-            if(cheboxObj.length==0){
+            var cheboxObj = $("input[name='"+temp+"_" + index + "']").is(':checked');
+            if(!cheboxObj){
                 vm.addRegisters[index][temp] = '0';
             }
         }

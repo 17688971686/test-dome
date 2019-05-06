@@ -390,7 +390,7 @@
                             <w:tc>
                                 <w:tcPr>
                                     <w:tcW w:w="1183" w:type="dxa"/>
-                                    <w:vAlign w:val="top"/>
+                                    <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
                                     <w:pPr>
