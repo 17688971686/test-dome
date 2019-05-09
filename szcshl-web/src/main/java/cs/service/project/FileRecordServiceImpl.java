@@ -110,16 +110,6 @@ public class FileRecordServiceImpl implements FileRecordService {
         FileRecord fileRecord = fileRecordRepo.findById("signid",signid);
         if (fileRecord != null && Validate.isString(fileRecord.getFileRecordId())) {
             BeanCopierUtils.copyProperties(fileRecord, fileRecordDto);
-            //查询补充资料函信息
-            List<AddRegisterFile> registerFileList = addRegisterFileRepo.findByIds(AddRegisterFile_.businessId.getName(),signid," businessType asc,createdDate asc");
-            if(Validate.isList(registerFileList)){
-                registerFileList.forEach(rgf -> {
-                    AddRegisterFileDto dto = new AddRegisterFileDto();
-                    BeanCopierUtils.copyProperties(rgf,dto);
-                    dtoList.add(dto);
-                });
-
-            }
         } else {
             //如果是新增，则要初始化
             User priUser = signPrincipalService.getMainPriUser(signid);
@@ -148,8 +138,18 @@ public class FileRecordServiceImpl implements FileRecordService {
             fileRecordDto.setFileTitle(fileTitle);
             //是否协审
             fileRecordDto.setIsassistproc(sign.getIsassistproc());
-        }
 
+        }
+        //查询补充资料函信息
+        List<AddRegisterFile> registerFileList = addRegisterFileRepo.findByIds(AddRegisterFile_.businessId.getName(),signid," businessType asc,createdDate asc");
+        if(Validate.isList(registerFileList)){
+            registerFileList.forEach(rgf -> {
+                AddRegisterFileDto dto = new AddRegisterFileDto();
+                BeanCopierUtils.copyProperties(rgf,dto);
+                dtoList.add(dto);
+            });
+
+        }
         fileRecordDto.setRegisterFileDto(dtoList);
         return fileRecordDto;
     }

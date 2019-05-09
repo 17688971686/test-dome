@@ -139,7 +139,7 @@ public class FileLibraryController {
      * begin html
      */
     @RequiresPermissions("fileLibrary#html/fileLibrary#get")
-    @RequestMapping(name="质量管理文件库", path ="html/fileLibrary",method= RequestMethod.GET)
+    @RequestMapping(name="质量文件库维护", path ="html/fileLibrary",method= RequestMethod.GET)
     public String list(){
         return ctrlName + "/fileLibrary";
     }
@@ -147,14 +147,14 @@ public class FileLibraryController {
 
     //@RequiresPermissions("fileLibrary#html/fileList#get")
     @RequiresAuthentication
-    @RequestMapping(name="质量管理文件库-文件列表",path ="html/fileList",method=RequestMethod.GET)
+    @RequestMapping(name="质量文件库维护-文件列表",path ="html/fileList",method=RequestMethod.GET)
     public String fileList(){
         return ctrlName + "/fileList";
     }
 
     //@RequiresPermissions("fileLibrary#html/fileEdit#get")
     @RequiresAuthentication
-    @RequestMapping(name="质量管理文件库-新建文件",path="html/fileEdit",method=RequestMethod.GET)
+    @RequestMapping(name="质量文件库维护-新建文件",path="html/fileEdit",method=RequestMethod.GET)
     public String fileEdit(){
         return ctrlName + "/fileEdit";
     }
@@ -188,7 +188,7 @@ public class FileLibraryController {
 
 
     @RequiresPermissions("fileLibrary#html/documentList#get")
-    @RequestMapping(name="文件指标库",path="html/documentList",method=RequestMethod.GET)
+    @RequestMapping(name="质量文件库",path="html/documentList",method=RequestMethod.GET)
     public String documentList(){
         return ctrlName + "/documentList";
     }

@@ -69,43 +69,42 @@
         }
 
         /******以下是其它资料添加*****/
-
         vm.addOtherFile = function (businessId, businessType) {
-            if(!vm.addRegisters){
-                vm.addRegisters = [];
-            }
-            if (!businessId) {
-                bsWin.alert("请先保存数据！");
-            } else {
-                if(businessType == "2"){
-                    vm.addRegisters = vm.drawingFile;
-                    vm.showFilePage = true;
-                    vm.showFileOther = false;
-                    vm.showSignOther = false;
-                }else{
-                    vm.addRegisters = vm.otherFile;
-                    vm.showFileOther = true;
-                    vm.showFilePage = false;
-                    vm.showSignOther = false;
+            if(vm.fileRecord && vm.fileRecord.fileRecordId ){
+                if(!vm.addRegisters){
+                    vm.addRegisters = [];
                 }
-                vm.businessId = businessId;
-                vm.businessType = businessType;
+                if (!businessId) {
+                    bsWin.alert("请先保存数据！");
+                } else {
+                    if(businessType == "2"){
+                        vm.addRegisters = vm.drawingFile;
+                        vm.showFilePage = true;
+                        vm.showFileOther = false;
+                        vm.showSignOther = false;
+                    }else{
+                        vm.addRegisters = vm.otherFile;
+                        vm.showFileOther = true;
+                        vm.showFilePage = false;
+                        vm.showSignOther = false;
+                    }
+                    vm.businessId = businessId;
+                    vm.businessType = businessType;
 
-                //因为弹框时会是上一个项目的内容，所以在关闭窗口后强制刷新页面
-                var onClose = function(){
-                    window.location.reload();
+                    $("#addOtherFile_" + vm.signId ).kendoWindow({
+                        width: "840px",
+                        height: "480px",
+                        title: "补充资料编辑",
+                        visible: false,
+                        modal: true,
+                        closable: true,
+                        actions: ["Pin", "Minimize", "Maximize", "Close"],
+                    }).data("kendoWindow").center().open();
                 }
-                $("#addOtherFile").kendoWindow({
-                    width: "840px",
-                    height: "480px",
-                    title: "补充资料编辑",
-                    visible: false,
-                    modal: true,
-                    closable: true,
-                    close : onClose,
-                    actions: ["Pin", "Minimize", "Maximize", "Close"]
-                }).data("kendoWindow").center().open();
+            }else{
+                bsWin.alert("请先保存归档信息");
             }
+
 
         }
 
@@ -130,7 +129,7 @@
         }
         //删除其它资料
         vm.deleteRegisterFile = function () {
-            var isCheked = $("#addOtherFile input[name='addRegistersCheck']:checked")
+            var isCheked = $("#addOtherFile_"+   vm.signId  +" input[name='addRegistersCheck']:checked")
             if (isCheked.length < 1) {
                 bsWin.alert("请选择要删除的记录！");
             } else {
@@ -165,8 +164,8 @@
 
         vm.resetCancelBox = function (temp) {
             var cheboxObj = $("input[name='"+temp+"']:checked");
-           if(cheboxObj.length==0){
-               vm.fileRecord[temp] = '0';
+            if(cheboxObj.length==0){
+                vm.fileRecord[temp] = '0';
             }
         }
 
