@@ -494,7 +494,6 @@
                                 <w:p>
                                     <w:pPr>
                                         <w:jc w:val="center"/>
-                                        <w:spacing w:line="-1" w:lineRule="auto"/>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
@@ -998,7 +997,6 @@
                                     <w:pPr>
                                         <w:ind w:left="4500"/>
                                         <w:jc w:val="left"/>
-                                        <w:spacing w:line="-1" w:lineRule="auto"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
@@ -1105,7 +1103,6 @@
                                     <w:pPr>
                                         <w:ind w:left="4500"/>
                                         <w:jc w:val="left"/>
-                                        <w:spacing w:line="-1" w:lineRule="auto"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
