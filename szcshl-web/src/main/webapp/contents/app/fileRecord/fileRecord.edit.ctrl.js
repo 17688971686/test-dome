@@ -16,9 +16,10 @@
         vm.isControl=$state.params.isControl;		//按钮显示
         //是否协审归档（默认不是）
         vm.isassistproc = false;
-        vm.drawingFile = [];//图纸资料
-        vm.otherFile = [];//其它资料
-        vm.declareFile = [];//建议书申报资料
+        vm.drawingFile = [];    //图纸资料
+        vm.otherFile = [];      //其它资料
+        vm.declareFile = [];    //建议书申报资料
+        vm.addRegisters = [];   //弹出框资料
         //初始化附件上传控件
         vm.initFileUpload = function () {
             if (!vm.fileRecord.fileRecordId) {
@@ -45,7 +46,10 @@
         activate();
         function activate() {
             fileRecordSvc.initFileRecordData(vm);
-
+            //销毁之前的弹窗
+            if($("#addOtherFile").data("kendoWindow")){
+                $("#addOtherFile").data("kendoWindow").destroy();
+            }
         }
 
         vm.create = function () {
@@ -71,19 +75,17 @@
         /******以下是其它资料添加*****/
         vm.addOtherFile = function (businessId, businessType) {
             if(vm.fileRecord && vm.fileRecord.fileRecordId ){
-                if(!vm.addRegisters){
-                    vm.addRegisters = [];
-                }
                 if (!businessId) {
                     bsWin.alert("请先保存数据！");
                 } else {
+                    vm.addRegisters = [];
                     if(businessType == "2"){
-                        vm.addRegisters = vm.drawingFile;
+                        vm.addRegisters = vm.drawingFile || [];
                         vm.showFilePage = true;
                         vm.showFileOther = false;
                         vm.showSignOther = false;
                     }else{
-                        vm.addRegisters = vm.otherFile;
+                        vm.addRegisters = vm.otherFile || [];
                         vm.showFileOther = true;
                         vm.showFilePage = false;
                         vm.showSignOther = false;
@@ -91,21 +93,27 @@
                     vm.businessId = businessId;
                     vm.businessType = businessType;
 
-                    $("#addOtherFile_" + vm.signId ).kendoWindow({
-                        width: "840px",
-                        height: "480px",
-                        title: "补充资料编辑",
-                        visible: false,
-                        modal: true,
-                        closable: true,
-                        actions: ["Pin", "Minimize", "Maximize", "Close"],
-                    }).data("kendoWindow").center().open();
+                    var fileWindow = $("#addOtherFile");
+                    if(fileWindow.data("kendoWindow")){
+                        fileWindow.data("kendoWindow").refresh().open();
+                    }else{
+                        fileWindow.kendoWindow({
+                            width: "840px",
+                            height: "480px",
+                            title: "补充资料编辑",
+                            visible: false,
+                            modal: false,
+                            closable: true,
+                            actions: ["Pin", "Minimize", "Maximize", "Close"],
+                            close:function(data){
+
+                            }
+                        }).data("kendoWindow").center().open();
+                    }
                 }
             }else{
                 bsWin.alert("请先保存归档信息");
             }
-
-
         }
 
         //新建其它资料
@@ -119,8 +127,9 @@
         //保存其它资料
         vm.saveRegisterFile = function () {
             addRegisterFileSvc.saveRegisterFile(vm.addRegisters, function (data) {
+                vm.addRegisters = [];
                 if (data.flag || data.reCode == 'ok') {
-                    vm.addRegisters = data.reObj;
+                    vm.addRegisters = data.reObj || [];
                     bsWin.alert("操作成功");
                 } else {
                     bsWin.alert(data.reMsg);
@@ -129,7 +138,7 @@
         }
         //删除其它资料
         vm.deleteRegisterFile = function () {
-            var isCheked = $("#addOtherFile_"+   vm.signId  +" input[name='addRegistersCheck']:checked")
+            var isCheked = $("#addOtherFile input[name='addRegistersCheck']:checked")
             if (isCheked.length < 1) {
                 bsWin.alert("请选择要删除的记录！");
             } else {
