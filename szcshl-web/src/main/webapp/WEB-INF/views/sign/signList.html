@@ -116,17 +116,25 @@
                             <option value="9">已办结项目</option>
                         </select>
                     </td>
-                    <td class="text-right" style="width:10%;min-width: 80px;min-width:120px;">提前介入</td>
-                    <td>
+                    <td style="padding-left: 5%" colspan="2">
+                        <span style="padding-right: 2%;">提前介入 <input type="checkbox" name="isAdvanced" operator="eq" value="9"
+                                          ng-model="vm.project.isAdvanced" ng-true-value="提前介入" ng-false-value="正常"/></span>
+                    <span>是否调概 <input type="checkbox" name="ischangeEstimate" operator="eq" value="9"
+                                      ng-model="vm.project.ischangeEstimate" ng-true-value="调概" ng-false-value="正常"/></span>
+                    </td>
+                    <!--<td>
                         <select  ng-model="vm.project.isAdvanced" class="form-control select-sm">
                             <option value="">请选择</option>
                             <option value="提前介入">是</option>
                             <option value="正常">否</option>
                         </select>
-                    </td>
+                    </td>-->
                     <!--进行判断-->
                     <input ng-if="vm.project.isAdvanced=='正常'" name="isAdvanced" operator="ne" value="isNull" hidden/>
                     <input ng-if="vm.project.isAdvanced=='提前介入'" name="isAdvanced" operator="eq" value="9" hidden/>
+
+                    <input ng-if="vm.project.ischangeEstimate=='正常'" name="ischangeEstimate" operator="ne" value="isNull" hidden/>
+                    <input ng-if="vm.project.ischangeEstimate=='调概'" name="ischangeEstimate" operator="eq" value="9" hidden/>
 
                     <td class="text-right" style="width:10%;min-width: 80px;min-width:120px;">主办部门</td>
                     <td width="15%">

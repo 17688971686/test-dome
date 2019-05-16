@@ -130,6 +130,13 @@ public class SignRestServiceImpl implements SignRestService {
         }
         //申报金额调整(由于委里定义的接口，Declaration这个字段为申报金额字段，所以这里要调整下)；
         signDto.setAppalyInvestment(signDto.getDeclaration());
+
+        //如果是概算项目，并且是调概项目，则在项目名称后加“(调概项目)”
+        if(ProjectConstant.REVIEW_STATE_ENUM.STAGEBUDGET.equals(signDto.getReviewstage())
+                && Constant.EnumState.YES.getValue().equals(signDto.getIschangeEstimate())){
+            signDto.setProjectname(signDto.getProjectname() + "(调概项目)");
+        }
+
         //定义返回对象
         ResultMsg resultMsg = null;
         try {
@@ -197,7 +204,11 @@ public class SignRestServiceImpl implements SignRestService {
         }
         //申报金额调整(由于委里定义的接口，Declaration这个字段为申报金额字段，所以这里要调整下)；
         signDto.setAppalyInvestment(signDto.getDeclaration());
-
+        //如果是概算项目，并且是调概项目，则在项目名称后加“(调概项目)”
+        if(ProjectConstant.REVIEW_STATE_ENUM.STAGEBUDGET.equals(signDto.getReviewstage())
+                && Constant.EnumState.YES.getValue().equals(signDto.getIschangeEstimate())){
+            signDto.setProjectname(signDto.getProjectname() + "(调概项目)");
+        }
         ResultMsg resultMsg = null;
         try {
             resultMsg = signService.reserveAddSign(signDto);
@@ -315,7 +326,7 @@ public class SignRestServiceImpl implements SignRestService {
                     return new ResultMsg(true, IFResultCode.IFMsgCode.SZEC_SEND_OK.getCode(), sign.getProjectname() + "[" + sign.getFilecode() + "]回传成功！\n");
                 } else {
                     return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SEND_ERROR.getCode(),
-                             sign.getProjectname() + "[" + sign.getFilecode() + "]回传失败！" + fGWResponse.getRedes()+ "\n" );
+                            sign.getProjectname() + "[" + sign.getFilecode() + "]回传失败！" + fGWResponse.getRedes()+ "\n" );
                 }
             } else {
                 return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SEND_ERROR.getCode(),
@@ -323,7 +334,7 @@ public class SignRestServiceImpl implements SignRestService {
             }
         } catch (Exception e) {
             return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_DEAL_ERROR.getCode(),
-                     sign.getProjectname() + "[" + sign.getFilecode() + "]回传异常！" + e.getMessage()+ "\n" );
+                    sign.getProjectname() + "[" + sign.getFilecode() + "]回传异常！" + e.getMessage()+ "\n" );
         }
     }
 
@@ -388,7 +399,7 @@ public class SignRestServiceImpl implements SignRestService {
        /* SysConfigDto sysConfigDto = sysConfigService.findByKey(RETURN_FGW_URL.getValue());*/
         SysConfigDto sysConfigDto = sysConfigService.findByKey(SysConstants.SYS_CONFIG_ENUM.RETURN_FGW_URL.toString());
         if (Validate.isObject(sysConfigDto)) {
-           return sysConfigDto.getConfigValue();
+            return sysConfigDto.getConfigValue();
         } else {
             BusinessProperties businessProperties = SpringContextUtil.getBean(SYS_BUSI_PROP_BEAN);
             return businessProperties.getFgwProjIfs();

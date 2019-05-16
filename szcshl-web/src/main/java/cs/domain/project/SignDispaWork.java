@@ -393,6 +393,12 @@ public class SignDispaWork {
     @Column(columnDefinition = "VARCHAR(2)")
     private String mergeDisMain;
 
+    /**
+     * 是否调概
+     */
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String ischangeEstimate;
+
 
     public String getMergeDis() {
         return mergeDis;
@@ -904,5 +910,13 @@ public class SignDispaWork {
 
     public void setDispatchRemark(String dispatchRemark) {
         this.dispatchRemark = dispatchRemark;
+    }
+
+    public String getIschangeEstimate() {
+        return ischangeEstimate;
+    }
+
+    public void setIschangeEstimate(String ischangeEstimate) {
+        this.ischangeEstimate = ischangeEstimate;
     }
 }
