@@ -74,19 +74,19 @@ public class PartyMeetController {
 
 
     @RequiresPermissions("partyMeet#html/partyMeetList#get")
-    @RequestMapping(name = "党务会议列表" , path = "html/partyMeetList" , method = RequestMethod.GET)
+    @RequestMapping(name = "党务会议管理" , path = "html/partyMeetList" , method = RequestMethod.GET)
     public String partyMeetList(){
         return ctrlName + "/partyMeetList";
     }
 
     @RequiresPermissions("partyMeet#html/addPartyMeeting#get")
-    @RequestMapping(name = "党员会议添加" , path = "html/addPartyMeeting" , method = RequestMethod.GET )
+    @RequestMapping(name = "党员会议编辑" , path = "html/addPartyMeeting" , method = RequestMethod.GET )
     public String partyMeeting(){
         return ctrlName + "/addPartyMeeting";
     }
 
     @RequiresPermissions("partyMeet#html/partyMeetDetail#get")
-    @RequestMapping(name = "党员会议详情页" , path = "html/partyMeetDetail" , method = RequestMethod.GET )
+    @RequestMapping(name = "党员会议查看" , path = "html/partyMeetDetail" , method = RequestMethod.GET )
     public String partyMeetDetail(){
         return ctrlName + "/partyMeetDetail";
     }
