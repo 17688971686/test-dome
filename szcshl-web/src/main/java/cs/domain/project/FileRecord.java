@@ -1091,6 +1091,12 @@ public class FileRecord extends DomainBase{
 	@Column(columnDefinition = "VARCHAR(2)")
 	private String assistBudgetCountScan;
 
+	/**
+	 * 表单编码
+	 */
+	@Column(columnDefinition = "VARCHAR(16)")
+	private String formNum;
+
 	//收文，一对一
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="signId",unique = true)
@@ -3102,5 +3108,13 @@ public class FileRecord extends DomainBase{
 
 	public void setFeasibilityReplyCount(Integer feasibilityReplyCount) {
 		this.feasibilityReplyCount = feasibilityReplyCount;
+	}
+
+	public String getFormNum() {
+		return formNum;
+	}
+
+	public void setFormNum(String formNum) {
+		this.formNum = formNum;
 	}
 }
