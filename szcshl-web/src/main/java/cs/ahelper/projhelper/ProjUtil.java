@@ -32,9 +32,13 @@ public class ProjUtil {
      * @return
      */
     public static boolean checkProjDataValidate(SignDto signDto) {
-        if (!Validate.isString(signDto.getProjectname()) || !Validate.isString(signDto.getReviewstage())
-                || !Validate.isString(signDto.getProjectcode()) || !Validate.isString(signDto.getFilecode())) {
+        if (!Validate.isString(signDto.getProjectname()) || !Validate.isString(signDto.getReviewstage()) || !Validate.isString(signDto.getFilecode())) {
             return false;
+        }
+        //登记赋码没有项目代码,其它阶段要有项目代码
+        if(!ProjectConstant.REVIEW_STATE_ENUM.REGISTERCODE.getZhCode().equals(signDto.getReviewstage())
+                && !Validate.isString(signDto.getProjectcode())){
+            return  false;
         }
         return true;
     }
