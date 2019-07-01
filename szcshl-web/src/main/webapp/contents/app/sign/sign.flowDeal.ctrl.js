@@ -122,7 +122,6 @@
             });
             // 初始化业务信息
             signSvc.initFlowPageData(vm.model.signid, function (data) {
-
                 vm.model = data;
                 vm.curDate = data.curDate;
                 var deActive = $("#myTab .active");
@@ -1297,7 +1296,7 @@
                     ids.push(isCheck[i].value);
                 }
                 console.log(ids.join(','));
-                expertReviewSvc.updateJoinState(vm.expertReview.id,"", "", ids.join(','), '9', vm.isCommit, function (data) {
+                expertReviewSvc.updateJoinState(vm.model.expertReviewDto.id,"", "", ids.join(','), '9', vm.isCommit, function (data) {
                     if(data.flag || data.reCode == 'ok'){
                         vm.reFleshJoinState(ids, '9');
                         bsWin.success("操作成功！");
@@ -1318,7 +1317,8 @@
                 for (var i = 0; i < isCheck.length; i++) {
                     ids.push(isCheck[i].value);
                 }
-                expertReviewSvc.updateJoinState(vm.expertReview.id,"", "", ids.join(','), '0', vm.isCommit, function (data) {
+                console.log("vm",vm.model);
+                expertReviewSvc.updateJoinState(vm.model.expertReviewDto.id,"", "", ids.join(','), '0', vm.isCommit, function (data) {
                     if(data.flag || data.reCode == 'ok'){
                         vm.reFleshJoinState(ids, '0');
                         bsWin.success("操作成功！");
