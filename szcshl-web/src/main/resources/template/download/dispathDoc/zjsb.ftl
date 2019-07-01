@@ -1398,7 +1398,7 @@
                                 </w:p>
                             </w:tc>
                         </w:tr>
-                        <w:tr>
+                        <#--<w:tr>
                             <w:tblPrEx>
                                 <w:tblBorders>
                                     <w:top w:val="single" w:color="auto" w:sz="4" w:space="0"/>
@@ -1574,7 +1574,7 @@
                                         <w:t>核减<w:br />（增）率</w:t>
                                     </w:r>
                                 </w:p>
-                               <#-- <w:p>
+                               &lt;#&ndash; <w:p>
                                     <w:pPr>
                                         <w:jc w:val="center"/>
                                         <w:rPr>
@@ -1589,7 +1589,7 @@
                                         </w:rPr>
                                         <w:t>（增）率</w:t>
                                     </w:r>
-                                </w:p>-->
+                                </w:p>&ndash;&gt;
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
@@ -2233,7 +2233,7 @@
                                 </w:p>
                             </w:tc>
                         </w:tr>
-                        </#list>
+                        </#list>-->
 
                         <w:tr>
                             <w:tblPrEx>
